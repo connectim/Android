@@ -1,0 +1,92 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = 'org.greenrobot'
+archivesBaseName = 'greendao-generator'
+version = '3.2.0'
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.freemarker:freemarker:2.3.23'
+    testCompile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'src-template'
+        }
+    }
+    test {
+        java {
+            srcDir 'src-test'
+        }
+    }
+}
+
+test {
+    doFirst {
+        mkdir 'test-out'
+    }
+    doLast {
+        delete 'test-out'
+    }
+}
+
+javadoc {
+    failOnError = false
+    title = "greenDAO Generator ${version} API"
+    // Unfinished APIs:
+    excludes = ['org/greenrobot/daogenerator/Query*']
+    options.bottom = 'Available under the GPLv3 - <i>Copyright &#169; 2011-2016 <a href="http://greenrobot.org/">greenrobot.org</a>. All Rights Reserved.</i>'
+    doLast {
+        copy {
+            from '../javadoc-style/'
+            into "build/docs/javadoc/"
+        }
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            // Basic definitions are defined in root project
+            pom.project {
+                name 'greenDAO Generator'
+                description 'Code generator for greenDAO, the light and fast ORM for Android'
+
+                licenses {
+                    license {
+                        name 'GNU General Public License, Version 3'
+                        url 'http://www.gnu.org/licenses/gpl.txt'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }
+    }
+}

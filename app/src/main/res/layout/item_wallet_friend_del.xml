@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<connect.view.SideScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_ffffff">
+        <RelativeLayout
+            android:id="@id/bottom_layout"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_toRightOf="@id/content_layout"
+            android:orientation="horizontal">
+            <View
+                android:layout_width="@dimen/px_1"
+                android:layout_height="@dimen/dp_40"
+                android:layout_centerVertical="true"
+                android:background="@color/color_d1d5da"/>
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@+id/delete_tv"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/message_trash2x"
+                android:padding="@dimen/dp_10"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_ffffff"
+            android:layout_centerVertical="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <connect.view.roundedimageview.RoundedImageView
+                    android:id="@+id/avater_rimg"
+                    android:layout_width="@dimen/dp_38"
+                    android:layout_height="@dimen/dp_38"
+                    android:layout_marginLeft="@dimen/dp_15"
+                    android:layout_marginTop="@dimen/dp_9"
+                    android:layout_marginBottom="@dimen/dp_9"
+                    android:scaleType="fitXY"
+                    app:riv_corner_radius="@dimen/px_6"/>
+                <TextView
+                    android:id="@+id/name_tv"
+                    style="@style/BaseTextStyle.16"
+                    android:layout_marginLeft="@dimen/dp_22"
+                    android:text=""/>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</connect.view.SideScrollView>

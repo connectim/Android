@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="destruct_timer">
+        <item>5 Seconds</item>
+        <item>10 Seconds</item>
+        <item>30 Seconds</item>
+        <item>1 Minute</item>
+        <item>30 Minutes</item>
+        <item>1 Hour</item>
+        <item>24 Hours</item>
+        <item>Disable self-destruct</item>
+    </string-array>
+    <integer-array name="destruct_timer_long">
+        <item>5000</item>
+        <item>10000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+        <item>86400000</item>
+        <item>0</item>
+    </integer-array>
+
+    <string-array name="prompt_txt">
+        <item>transpond</item>
+        <item>copy</item>
+        <item>delete</item>
+    </string-array>
+    <string-array name="prompt_img">
+        <item>transpond</item>
+        <item>save</item>
+        <item>delete</item>
+    </string-array>
+    <string-array name="prompt_video">
+        <item>transpond</item>
+        <item>delete</item>
+    </string-array>
+    <string-array name="prompt_delete">
+        <item>delete</item>
+    </string-array>
+    <string-array name="prompt_all">
+        <item>transpond</item>
+        <item>save</item>
+        <item>delete</item>
+        <item>copy</item>
+    </string-array>
+</resources>

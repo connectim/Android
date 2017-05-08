@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/showtime"
+              android:orientation="horizontal">
+
+    <connect.view.ChatHeadImg
+        android:id="@id/roundimg_head"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_10"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@id/usernameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_3"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:textSize="@dimen/sp_12"/>
+
+        <RelativeLayout
+            android:id="@id/content_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/message_box_white2x">
+
+            <connect.ui.activity.chat.view.EmoTextView
+                android:id="@id/txtmsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:maxWidth="@dimen/dp_220"
+                android:paddingBottom="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_11"
+                android:paddingRight="@dimen/dp_9"
+                android:paddingTop="@dimen/dp_10"
+                android:autoLink="phone|email|web"
+                android:textColor="@color/color_black"
+                android:textColorLink="@color/color_6277AE"
+                android:textSize="@dimen/sp_14"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <connect.ui.activity.chat.view.BurnProBar
+        android:id="@id/burnprogressbar"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dp_5"/>
+</LinearLayout>

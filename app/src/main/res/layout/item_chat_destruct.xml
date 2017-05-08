@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/showtime">
+
+    <RelativeLayout
+        android:id="@id/content_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:layout_width="@dimen/dp_280"
+            android:layout_height="wrap_content"
+            android:background="@color/color_e2e4e6"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:src="@mipmap/lock2x"/>
+
+            <TextView
+                android:layout_width="@dimen/dp_280"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_13"
+                android:layout_marginTop="@dimen/dp_15"
+                android:gravity="center"
+                android:textColor="@color/color_767a82"
+                android:text="@string/Chat_You_are_start_encrypt_chat_Messages_encrypted"
+                android:textSize="@dimen/sp_12"/>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

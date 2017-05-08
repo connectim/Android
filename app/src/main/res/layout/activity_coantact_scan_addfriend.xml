@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical" >
+
+    <SurfaceView
+        android:id="@+id/capture_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/capture_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/capture_mask_top"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/color_161A21" />
+
+        <RelativeLayout
+            android:id="@+id/content_rela"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/capture_mask_top">
+            <!--<RelativeLayout
+                android:id="@+id/capture_crop_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>-->
+            <connect.view.ScanBgView
+                android:id="@+id/capture_crop_view"
+                android:layout_width="@dimen/dp_250"
+                android:layout_height="@dimen/dp_250"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/capture_mask_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/content_rela"
+            android:background="@color/color_161A21">
+        </RelativeLayout>
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/capture_mask_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@id/capture_mask_bottom"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/capture_mask_top"
+            android:layout_toLeftOf="@id/content_rela"
+            android:background="@color/color_161A21" />
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/capture_mask_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@id/capture_mask_bottom"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/capture_mask_top"
+            android:layout_toRightOf="@id/content_rela"
+            android:background="@color/color_161A21" />
+
+        <TextView
+            android:id="@+id/bottom_capture_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:drawableTop="@mipmap/contract_add_scan3x"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_ffffff"
+            android:text="@string/Link_Scan"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/dp_80"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:id="@+id/bottom_scan_rela"
+            android:layout_width="@dimen/dp_130"
+            android:layout_height="@dimen/dp_150"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/shape_stroke_00ffbf"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_below="@+id/move_up_img">
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@+id/bottom_scan_img"
+                android:layout_marginTop="@dimen/dp_14"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_100"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                style="@style/BaseTextStyle"
+                android:layout_below="@+id/bottom_scan_img"
+                android:text="@string/Set_My_QR_code"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/scan_rela"
+            android:layout_width="@dimen/dp_250"
+            android:layout_height="@dimen/dp_270"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/shape_stroke_00ffbf"
+            android:layout_below="@id/capture_mask_top"
+            android:visibility="gone">
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@+id/scan_img"
+                android:layout_width="@dimen/dp_180"
+                android:layout_height="@dimen/dp_180"
+                android:layout_marginTop="@dimen/dp_35"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:id="@+id/address_tv"
+                style="@style/BaseTextStyle"
+                android:text=""
+                android:layout_marginTop="@dimen/dp_15"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/scan_img"/>
+        </RelativeLayout>
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/move_down_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/scan_rela"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/move_down2x"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/move_up_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_below="@+id/content_rela"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/move_up2x"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_52">
+        <TextView
+            android:id="@+id/photos_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_10"
+            android:textColor="@color/color_ffffff"
+            android:text="@string/Chat_Album"
+            android:src="@mipmap/camera2x"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="150dp"
+            android:lines="1"
+            android:textColor="@color/color_ffffff"
+            android:textSize="@dimen/sp_18"
+            android:layout_centerInParent="true"
+            android:text="@string/Link_Scan"/>
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@id/right_img"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_10"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/close_white3x"/>
+    </RelativeLayout>
+
+</RelativeLayout>

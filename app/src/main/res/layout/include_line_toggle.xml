@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_52"
+                android:background="@color/color_white"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16">
+
+    <TextView
+        android:id="@id/txt"
+        style="@style/BaseTextStyle.16"
+        android:layout_centerVertical="true"
+        android:textColor="@color/color_black"/>
+
+    <View
+        android:id="@+id/toggle"
+        style="@style/BtnSwitchStyle"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+</RelativeLayout>

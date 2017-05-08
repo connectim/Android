@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="destruct_timer">
+        <item>5秒</item>
+        <item>10秒</item>
+        <item>30秒</item>
+        <item>1分钟</item>
+        <item>30分钟</item>
+        <item>1小时</item>
+        <item>24小时</item>
+        <item>退出阅后即焚</item>
+    </string-array>
+    <integer-array name="destruct_timer_long">
+        <item>5000</item>
+        <item>10000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+        <item>86400000</item>
+        <item>0</item>
+    </integer-array>
+
+    <string-array name="prompt_txt">
+        <item>转发</item>
+        <item>复制</item>
+        <item>删除</item>
+    </string-array>
+    <string-array name="prompt_img">
+        <item>转发</item>
+        <item>保存到手机</item>
+        <item>删除</item>
+    </string-array>
+    <string-array name="prompt_video">
+        <item>转发</item>
+        <item>删除</item>
+    </string-array>
+    <string-array name="prompt_delete">
+        <item>删除</item>
+    </string-array>
+    <string-array name="prompt_all">
+        <item>转发</item>
+        <item>保存到手机</item>
+        <item>删除</item>
+        <item>复制</item>
+    </string-array>
+</resources>

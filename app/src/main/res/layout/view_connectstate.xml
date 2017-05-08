@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_45"
+                android:background="@color/color_161A21">
+
+    <TextView
+        android:id="@id/txt1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/Chat_Not_connected"
+        android:textStyle="bold"
+        android:textColor="@color/color_ffffff"
+        android:textSize="@dimen/sp_17"/>
+
+    <ProgressBar
+        android:id="@id/probar1"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/txt1"
+        android:indeterminateDrawable="@anim/rotate_progressbar"
+        android:visibility="gone"/>
+
+</RelativeLayout>

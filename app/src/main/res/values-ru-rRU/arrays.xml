@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="destruct_timer">
+        <item>5секунд</item>
+        <item>10секунд</item>
+        <item>30секунд</item>
+        <item>1минута</item>
+        <item>30минута</item>
+        <item>1час</item>
+        <item>24час</item>
+        <item>После выхода из режима чтения самоуничтожние</item>
+    </string-array>
+    <integer-array name="destruct_timer_long">
+        <item>5000</item>
+        <item>10000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+        <item>86400000</item>
+        <item>0</item>
+    </integer-array>
+
+    <string-array name="prompt_txt">
+        <item>Переслать</item>
+        <item>Копировать</item>
+        <item>Удалить</item>
+    </string-array>
+    <string-array name="prompt_img">
+        <item>Переслать</item>
+        <item>Сохранить на телефон</item>
+        <item>Удалить</item>
+    </string-array>
+    <string-array name="prompt_video">
+        <item>Переслать</item>
+        <item>Удалить</item>
+    </string-array>
+    <string-array name="prompt_delete">
+        <item>Удалить</item>
+    </string-array>
+    <string-array name="prompt_all">
+        <item>Переслать</item>
+        <item>Сохранить на телефон</item>
+        <item>Удалить</item>
+        <item>Копировать</item>
+    </string-array>
+</resources>

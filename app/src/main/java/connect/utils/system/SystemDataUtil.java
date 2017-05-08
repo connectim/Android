@@ -1,0 +1,214 @@
+package connect.utils.system;
+
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+
+import connect.ui.activity.contact.bean.PhoneContactBean;
+import connect.ui.base.BaseApplication;
+import connect.utils.GlobalLanguageUtil;
+import connect.utils.log.LogManager;
+import connect.wallet.jni.AllNativeMethod;
+
+/**
+ * Created by Administrator on 2017/4/27 0027.
+ */
+
+public class SystemDataUtil {
+
+    /**
+     * Get the APP version Name
+     * @param context
+     * @return
+     */
+    public static String getVersionName(Context context) {
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo info;
+            info = manager.getPackageInfo(context.getPackageName(), 0);
+            return info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            LogManager.getLogger().e("Exception",e.toString());
+        }
+        return null;
+    }
+
+    /**
+     * screen width
+     * @return
+     */
+    public static int getScreenWidth() {
+        Context context = BaseApplication.getInstance().getBaseContext();
+        return context.getResources().getDisplayMetrics().widthPixels;
+    }
+
+    /**
+     * screen height
+     * @return
+     */
+    public static int getScreenHeight() {
+        Context context = BaseApplication.getInstance().getBaseContext();
+        return context.getResources().getDisplayMetrics().heightPixels;
+    }
+
+    /**
+     * android device id
+     *
+     * @return
+     */
+    public static String getDeviceId() {
+        String deviceId = "";
+        Context context = BaseApplication.getInstance().getBaseContext();
+        try {
+            deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (deviceId == null || "".equals(deviceId)) {
+            UUID uuid = UUID.randomUUID();
+            deviceId = uuid.toString().replace("-", "");
+        }
+        return AllNativeMethod.cdGetHash256(deviceId);
+    }
+
+    /**
+     * Gets the current state
+     */
+    public static String getCountry(){
+        Locale locale = Locale.getDefault();
+        return locale.getCountry();
+    }
+
+    /**
+     * Gets the current language
+     */
+    public static String getDeviceLanguage() {
+        Locale locale = Locale.getDefault();
+        return locale.getLanguage();
+    }
+
+    /**
+     * For country code
+     */
+    public static String getCountryCode(){
+        Locale locale = Locale.getDefault();
+        Currency currency = Currency.getInstance(locale);
+        return currency.getCurrencyCode();
+    }
+
+    /**
+     * Set up the language
+     */
+    public static void setAppLanguage(Context context,String languageCode){
+        Locale myLocale;
+        if(TextUtils.isEmpty(languageCode)){
+            myLocale = Locale.getDefault();
+        }else if(languageCode.equals("zh")){
+            myLocale = Locale.SIMPLIFIED_CHINESE;
+        }else if(languageCode.equals("ru")){
+            myLocale = new Locale("ru","RU");
+        }else{
+            myLocale = Locale.ENGLISH;
+        }
+        Resources resources = context.getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+        // user select language
+        config.locale = myLocale;
+        resources.updateConfiguration(config, dm);
+
+        //Switch the notification bar expression language
+        GlobalLanguageUtil.getInstance().transLanguage();
+    }
+
+    /**
+     * getAddressContacts Access to the phone address book contacts (optimize query speed)
+     * @return Object
+     * @Exception
+     */
+    public static List<PhoneContactBean> getLoadAddresSbook(Context context) {
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        String contactIds = "";
+        int i = 0;
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String contactId = cursor.getString(cursor.getColumnIndex("_id"));
+                map.put(cursor.getInt(cursor.getColumnIndex("_id")), cursor.getString(cursor.getColumnIndex("display_name")));
+                if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    if (i != 0) {
+                        contactIds += ",";
+                    }
+                    contactIds += contactId;
+                    i++;
+                }
+            }
+            cursor.close();
+        }
+        Cursor phonesCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " in ( " + contactIds + ")", null, null);
+        i = 0;
+        List<PhoneContactBean> loacList = new ArrayList<PhoneContactBean>();
+        List<String> tempList = new ArrayList<String>();
+        PhoneContactBean contacts = null;
+        int nowContact = 0;
+        if (phonesCursor != null) {
+            if (phonesCursor.moveToFirst()) {
+                do {
+                    String phoneNumber = phonesCursor.getString(phonesCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    if (phoneNumber != null) {
+                        phoneNumber = phoneNumber.replaceAll(" ", "");
+                    }
+                    nowContact = phonesCursor.getInt(phonesCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
+                    contacts = new PhoneContactBean();
+                    contacts.setId(nowContact + "");
+                    contacts.setPhone(phoneNumber);
+                    contacts.setName(map.get(nowContact));
+                    loacList.add(contacts);
+                    tempList.add(phoneNumber);
+                    i++;
+                } while (phonesCursor.moveToNext());
+            }
+            phonesCursor.close();
+        }
+
+        //Get Sim card
+        ContentResolver cr = context.getContentResolver();
+        final String SIM_URI_ADN = "content://icc/adn";// SIM card
+        Uri uri = Uri.parse(SIM_URI_ADN);
+        cursor = cr.query(uri, null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                contacts = new PhoneContactBean();
+                contacts.setName(cursor.getString(cursor.getColumnIndex("name")));
+                contacts.setPhone(cursor.getString(cursor
+                        .getColumnIndex("number")));
+                if (!tempList.contains(contacts.getPhone())) {
+                    loacList.add(contacts);
+                }
+            }
+            cursor.close();
+        }
+        return loacList;
+    }
+
+}

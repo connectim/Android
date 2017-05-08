@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f0f0f6">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:orientation="horizontal"
+        android:background="@drawable/shape_stroke_20_ffffff">
+        <EditText
+            style="@style/EditStyle"
+            android:id="@+id/name_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toLeftOf="@+id/close_ib"
+            android:textSize="@dimen/sp_18"
+
+            android:maxLength="20"
+            android:background="@null"/>
+        <ImageButton
+            android:contentDescription="@string/app_name"
+            android:id="@+id/close_ib"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/dp_10"
+            android:src="@mipmap/input_del"
+            android:background="@color/color_clear"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/id_tip_tv"
+        style="@style/BaseTextStyle"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_5"
+        android:textColor="@color/color_858998"
+        android:text="@string/Set_CONNECT_ID_set_success_no_set"
+        android:visibility="gone"/>
+
+
+</LinearLayout>

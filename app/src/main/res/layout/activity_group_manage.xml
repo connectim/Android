@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_bg_activity"
+    android:orientation="vertical"
+    tools:context="connect.ui.activity.chat.set.GroupManageActivity">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:id="@id/groupset_sureinvite"
+        layout="@layout/include_line_toggle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_10"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_5"
+        android:text="@string/Link_the_group_member_can_see_the_QR"
+        android:textColor="@color/color_68656f"
+        android:textSize="@dimen/sp_12"/>
+
+    <include
+        android:id="@id/groupset_introdue"
+        layout="@layout/include_txt_right_img"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/px_2"
+        android:background="@color/color_bg_activity"/>
+
+    <include
+        android:id="@id/groupset_transferto"
+        layout="@layout/include_txt_right_img"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"/>
+
+</LinearLayout>

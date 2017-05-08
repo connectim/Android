@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+// If your IDE fails to run generation (NoClassDefFoundError), run it using gradle
+mainClassName = "com.green.GreenDb"
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+dependencies {
+    compile project(path: ':DaoGenerator')
+}
+
+uploadArchives.enabled = false

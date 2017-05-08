@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        html, body { height: 100%; margin: 0; padding: 0; }
+        #map { height: 100%; }
+        </style>
+    <script sasync defer src="http://maps.google.cn/maps/api/js?v=3.21&key=AIzaSyBKQ5UyBV3fLorvDvUemeY2aMZRbzgJBvU&sensor=false&signed_in=true&callback=initMap">
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?v=3.21&key=AIzaSyBKQ5UyBV3fLorvDvUemeY2aMZRbzgJBvU&sensor=false&signed_in=true&callback=initMap">
+    </script>
+    <script type="text/javascript">
+        var map;
+        var geocoder;
+        var selfmarker;
+        var clickmarker;
+        function initMap() {
+        //国内 maps.google.cn  境外 maps.googleapis.com
+        if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+        getLocPosition, locPostionError, {
+        timeout: 3000
+        });
+        } else {
+        showFailInfo("The browser does not support access to geographical location");
+        }
+        }
+        // 获取位置成功 只打开网络可以定位，只打开GPS也可以定位。
+        function getLocPosition(position) {
+        var lati = -34.397;
+        var lng = 150.644;
+        if(position!= null){
+            lati = position.coords.latitude;
+            lng = position.coords.longitude;
+        }
+
+        var myLatlng = new google.maps.LatLng(lati, lng);
+        var mapOptions = {
+        zoom: 16,
+        center: myLatlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(
+        document.getElementById("map"),
+        mapOptions
+        );
+        selfmarker = new google.maps.Marker({
+        map: map,
+        position: myLatlng,
+        draggable: false,
+        animation: google.maps.Animation.DROP, //动画方式呈现标记 该标记放置在地图上时，该标记应该从地图顶部下落到其最终位置
+        });
+        selfmarker.addListener('click', function () {
+        if (selfmarker.getAnimation() !== null) {
+        selfmarker.setAnimation(null);
+        } else {
+        selfmarker.setAnimation(google.maps.Animation.BOUNCE);//标记应该在原地弹跳。弹跳标记将持续弹跳，直到其 animation 属性显式设置为 null
+        setTimeout(function () {
+        if (selfmarker.getAnimation() !== null) {
+        selfmarker.setAnimation(null);
+        }
+        }, 1200);
+        }
+        });
+        //
+        geocoder = new google.maps.Geocoder();
+        //监听点击地图事件
+        google.maps.event.addListener(map, 'click', function (event) {
+        clickMarker(event.latLng);
+        });
+        }
+        // 获取位置失败
+        function locPostionError(error) {
+        var errorinfo = "";
+        switch (error.code) {
+        case error.PERMISSION_DENIED:
+        errorinfo = "User denied the request for Geolocation.";
+        break;
+        case error.POSITION_UNAVAILABLE:
+        errorinfo = "Location information is unavailable.";
+        break;
+        case error.TIMEOUT:
+        errorinfo = "The request to get user location timed out.";
+        break;
+        case error.UNKNOWN_ERROR:
+        errorinfo = "An unknown error occurred.";
+        break;
+        default:
+        errorinfo = "An unknown error occurred.";
+        break;
+        }
+        showFailInfo(errorinfo);
+
+        getLocPosition(null);
+        }
+        //地图初始化点击
+        function initMarker(lati, lonti) {
+        var initLatLng = {lat: lati, lng: lonti};
+        clickMarker(initLatLng)
+        }
+        //地图点击
+        function clickMarker(location) {
+        //clearOverlays(infowindow);//清除地图中的标记
+        if (clickmarker != null) {
+        clickmarker.setMap(null)
+        }
+        clickmarker = new google.maps.Marker({
+        map: map,
+        position: location,
+        draggable: true,
+        animation: google.maps.Animation.DROP,
+        });
+        }
+        //根据经纬度获取地址
+        function geoLocation() {
+        if (geocoder) {
+        var indexloc = null;
+        if (clickmarker == null) {
+        indexloc = selfmarker.position;
+        } else {
+        indexloc = clickmarker.position;
+        }
+        geocoder.geocode({'location': indexloc}, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+        components = results[0].address_components;
+        var address = "";
+        for (var i = 0; i < components.length; i++) {
+        var com = components[i];
+        if (com.types == "street_number" || com.types == "postal_code" || com.types == "postal_code_suffix") {
+        continue
+        }
+        if (com.hasOwnProperty("long_name")) {
+        address = address + " " + com.long_name;
+        }
+        }
+        showSuccessInfo(indexloc.lat(), indexloc.lng(), address);
+        } else {
+        showFailInfo('No results found');
+        }
+        } else {
+        showFailInfo("Geocoder failed due to: " + status);
+        }
+        });
+        } else {
+        showFailInfo("Geocoder failed");
+        }
+        }
+        function showFailInfo(info) {
+            callJsObj.showFailInfo(info);
+        }
+        function showSuccessInfo(lati, lonti, info) {
+            callJsObj.showSuccessInfo(lati, lonti, info);
+        }
+        </script>
+</head>
+<body>
+<div id="map"></div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <connect.view.roundedimageview.RoundedImageView
+        android:id="@+id/avater_rimg"
+        android:layout_width="@dimen/dp_45"
+        android:layout_height="@dimen/dp_45"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_horizontal"
+        app:riv_corner_radius="@dimen/px_8" />
+    <TextView
+        android:id="@+id/name_tv"
+        style="@style/BaseTextStyle"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_5"
+        android:lines="1"
+        android:text=""/>
+
+</LinearLayout>

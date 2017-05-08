@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@color/color_white"
+              android:orientation="horizontal">
+
+    <View
+        android:layout_width="@dimen/px_1"
+        android:layout_height="@dimen/dp_32"
+        android:layout_gravity="center_vertical"
+        android:background="@color/color_line_diviver"/>
+
+    <RelativeLayout
+        android:id="@id/bottom_trash"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_70"
+        android:gravity="center">
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:layout_width="@dimen/dp_31"
+            android:layout_height="@dimen/dp_70"
+            android:src="@mipmap/message_trash2x"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="@dimen/px_1"
+        android:layout_height="@dimen/dp_32"
+        android:layout_gravity="center_vertical"
+        android:background="@color/color_line_diviver"/>
+
+    <RelativeLayout
+        android:id="@id/bottom_notify"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_70"
+        android:gravity="center">
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@id/notify"
+            android:layout_width="@dimen/dp_31"
+            android:layout_height="@dimen/dp_31"
+            android:src="@drawable/sec_msg_notitfy"/>
+    </RelativeLayout>
+</LinearLayout>

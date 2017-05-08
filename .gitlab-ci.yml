@@ -1,0 +1,18 @@
+stages:
+  - build
+
+before_script:
+  - chmod u+x ./gradlew
+  - export ANDROID_HOME=/root/android-sdk-linux
+
+build:
+  stage: build
+  script:
+    - cp ~/connect.jks ./app/
+    - ./gradlew assembleRelease
+    - fir publish -T cd1893d84b7d111de375a93f143ec22b ./app/build/outputs/apk/app-release.apk
+  tags:
+    - ci
+  artifacts:
+    paths:
+    - app/build/outputs/

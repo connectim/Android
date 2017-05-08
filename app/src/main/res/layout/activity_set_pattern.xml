@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f0f0f6">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <connect.view.TopToolBar
+            android:id="@id/toolbar_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_70"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/setting_password_lock"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_52"
+            android:background="@drawable/selector_list_item_bg"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_82">
+            <TextView
+                style="@style/BaseTextStyle.16"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/Set_Pattern_Password" />
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@+id/patter_password_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_10"
+                android:src="@mipmap/switch_off"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/changepatter_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/selector_list_item_bg">
+            <View
+                style="@style/BaseViewLine.eeeeee"
+                android:layout_marginLeft="@dimen/dp_15"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_15">
+                <TextView
+                    style="@style/BaseTextStyle.16"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_52"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:gravity="center_vertical"
+                    android:text="@string/Set_Change_Pattern"/>
+                <ImageView
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/group_item_arrow"
+                    android:layout_marginLeft="@dimen/dp_10"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            style="@style/BaseTextStyle"
+            android:layout_margin="@dimen/dp_10"
+            android:text="@string/Set_Patten_can_prevent_access_data_required_when_entering"/>
+
+    </LinearLayout>
+
+    <Button
+        style="@style/ButtonLongStyle"
+        android:id="@id/next_btn"
+        android:layout_marginTop="@dimen/dp_15"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dp_35"
+        android:text="@string/Set_Start_encrypted_messaging_next"
+        android:visibility="gone"/>
+
+</RelativeLayout>

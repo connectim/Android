@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_ffffff">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_60"
+        android:background="@color/color_f1f1f1">
+
+        <TextView
+            android:id="@+id/source_tv"
+            style="@style/BaseTextStyle.14"
+            android:layout_width="match_parent"
+            android:textColor="@color/color_858998"
+            android:layout_marginRight="@dimen/dp_30"
+            android:gravity="right"
+            android:visibility="gone"/>
+
+        <connect.view.roundedimageview.RoundedImageView
+            android:id="@+id/avater_rimg"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginTop="@dimen/dp_30"
+            app:riv_corner_radius="@dimen/px_6"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="fitXY"/>
+        <TextView
+            android:id="@+id/name_tv"
+            style="@style/BaseTextStyle.16"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_5" />
+    </LinearLayout>
+    
+    <View
+        style="@style/BaseViewLine.d1d5da"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+        <TextView
+            style="@style/BaseTextStyle"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textStyle="bold"
+            android:text="@string/Set_ID" />
+        <TextView
+            android:id="@+id/address_tv"
+            style="@style/BaseTextStyle"
+            android:textColor="@color/color_007aff"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:text="" />
+    </LinearLayout>
+    <View
+        style="@style/BaseViewLine.d1d5da"/>
+
+    <Button
+        android:id="@+id/addFriend_btn"
+        style="@style/ButtonLongStyle"
+        android:layout_marginTop="@dimen/dp_40"
+        android:text="@string/Link_Add_to_Contacts"/>
+
+    <Button
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:id="@+id/transfer_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_40"
+        android:background="@drawable/shape_stroke_5554d5"
+        android:textAllCaps="false"
+        android:textSize="@dimen/sp_18"
+        android:textColor="@color/color_ffffff"
+        android:text="@string/Wallet_Transfer"/>
+
+</LinearLayout>

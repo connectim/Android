@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<connect.view.SideScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@id/bottom_layout"
+            layout="@layout/part_chat_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/content_layout"/>
+
+        <include
+            android:id="@id/content_layout"
+            layout="@layout/part_chat_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</connect.view.SideScrollView>

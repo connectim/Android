@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_width="87dp"
+        android:layout_height="87dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/shape_circular_stroke_cecece"
+        android:layout_marginTop="@dimen/dp_50">
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/start_img"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
+            android:src="@mipmap/recordiing_sound2x"
+            android:layout_centerInParent="true"/>
+
+        <connect.view.camera.CricleProgressbar
+            android:id="@+id/myProgressBar"
+            android:layout_width="@dimen/dp_83"
+            android:layout_height="@dimen/dp_83"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/status_tv"
+        style="@style/BaseTextStyle"
+        android:textColor="@color/color_767a82"
+        android:text=""
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_30" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/jump_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_10"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_80"
+            android:textSize="@dimen/sp_18"
+            android:textColor="@color/color_007aff"
+            android:visibility="gone"
+            android:text="@string/Login_created_by_random_number_generator"/>
+    </RelativeLayout>
+
+</LinearLayout>

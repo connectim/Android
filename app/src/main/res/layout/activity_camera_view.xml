@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/surfaceView_rela"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_161A21"/>
+
+    <TextView
+        android:id="@+id/camera_describe_tv"
+        style="@style/BaseTextStyle"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/bottom_rela"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
+        android:text="@string/Login_Camera_guide_tip"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:textColor="@color/color_ffffff"/>
+
+    <RelativeLayout
+        android:id="@+id/bottom_rela"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/close_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_10"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_35"
+            android:src="@mipmap/cancel_take_photo3x"/>
+
+        <RelativeLayout
+            android:id="@+id/retake_rela"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_toLeftOf="@+id/video_btn"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_circular_161a21"
+            android:visibility="gone">
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/retake_photo3x"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/send_rela"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_toRightOf="@+id/video_btn"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_circular_ffffff"
+            android:visibility="gone">
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/send_photo3x"/>
+        </RelativeLayout>
+
+        <connect.view.camera.VideoBtnView
+            android:id="@+id/video_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/retake_rela"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/change_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_35"
+            android:src="@mipmap/switch_camera_button3x"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

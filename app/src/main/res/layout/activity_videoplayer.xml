@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_black">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <SurfaceView
+        android:id="@id/surfaceview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_50"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_tans_10_black"
+        android:clickable="true"
+        android:gravity="center">
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@id/img2"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:layout_margin="@dimen/dp_10"
+            android:layout_centerVertical="true"
+            android:src="@drawable/selector_state_video"/>
+
+        <TextView
+            android:id="@id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/img2"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp_14"/>
+
+        <TextView
+            android:id="@id/txt2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_7"
+            android:layout_centerVertical="true"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp_14"/>
+
+        <ProgressBar
+            android:id="@id/probar2"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="4dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginRight="@dimen/dp_3"
+            android:layout_toLeftOf="@id/txt2"
+            android:layout_toRightOf="@id/txt1"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/com_bg_progressbar_2096ff"/>
+    </RelativeLayout>
+</RelativeLayout>

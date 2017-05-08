@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/color_eceef3"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:background="@color/color_f1f1f1"
+        android:paddingLeft="@dimen/dp_15"/>
+    <RelativeLayout
+        android:id="@+id/content_rela"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_15"
+        android:background="@drawable/selector_list_item_bg">
+        <connect.view.roundedimageview.RoundedImageView
+            android:id="@+id/avatar_rimg"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/contract_new_friend3x"
+            app:riv_corner_radius="@dimen/px_6"/>
+        <TextView
+            style="@style/BaseTextStyle"
+            android:layout_toRightOf="@+id/avatar_rimg"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:text="@string/Link_Through_the_network_search"/>
+        <TextView
+            android:id="@+id/name_tv"
+            style="@style/BaseTextStyle.14"
+            android:layout_toRightOf="@+id/avatar_rimg"
+            android:layout_alignBottom="@+id/avatar_rimg"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:textStyle="bold"
+            android:text=""/>
+    </RelativeLayout>
+
+</LinearLayout>

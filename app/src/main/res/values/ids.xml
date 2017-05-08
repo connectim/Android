@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- general -->
+    <item name="status_key" type="id"/>
+    <item name="position_key" type="id"/>
+    <item name="toolbar" type="id"/>
+    <item name="image_view" type="id"/>
+    <item name="text_view" type="id"/>
+    <item name="back" type="id"/>
+    <item name="content_top" type="id"/>
+
+    <item name="view1" type="id"/>
+    <item name="siderbar" type="id"/>
+    <item name="recyclerview" type="id"/>
+    <item name="burnprogressbar" type="id"/>
+    <item name="select" type="id"/>
+    <item name="layout_first" type="id"/>
+    <item name="layout_second" type="id"/>
+    <item name="msgstateview" type="id"/>
+    <item name="txt1" type="id"/>
+    <item name="txt2" type="id"/>
+    <item name="txt3" type="id"/>
+    <item name="txt4" type="id"/>
+    <item name="txt5" type="id"/>
+    <item name="txt6" type="id"/>
+    <item name="txt7" type="id"/>
+    <item name="txt8" type="id"/>
+    <item name="edittxt1" type="id"/>
+    <item name="img1" type="id"/>
+    <item name="img2" type="id"/>
+    <item name="img3" type="id"/>
+    <item name="img4" type="id"/>
+    <item name="probar1" type="id"/>
+    <item name="probar2" type="id"/>
+    <item name="btn" type="id"/>
+    <item name="btn1" type="id"/>
+    <item name="btn2" type="id"/>
+    <item name="btn3" type="id"/>
+    <item name="roundimg1" type="id"/>
+    <item name="roundimg2" type="id"/>
+    <item name="badgetv" type="id"/>
+    <item name="contact_badgetv" type="id"/>
+    <item name="badgetv1" type="id"/>
+    <item name="badgetv2" type="id"/>
+    <item name="viewpager" type="id"/>
+    <item name="framelayout" type="id"/>
+    <item name="videoproview" type="id"/>
+    <item name="connectstate" type="id"/>
+    <item name="relativelayout_1" type="id"/>
+    <item name="relativelayout_2" type="id"/>
+    <item name="relativelayout_3" type="id"/>
+    <item name="gridview" type="id"/>
+    <item name="gallery" type="id"/>
+    <item name="checkbox" type="id"/>
+    <item name="surfaceview" type="id"/>
+    <item name="upgradeview" type="id"/>
+
+    <!-- TopToolBar -->
+    <item name="left_img" type="id"/>
+    <item name="title_img" type="id"/>
+    <item name="title_tv" type="id"/>
+    <item name="right_lin" type="id"/>
+    <item name="right_text" type="id"/>
+    <item name="right_img" type="id"/>
+
+    <!-- System camera -->
+    <item name="photo" type="id"/>
+    <item name="camera" type="id"/>
+    <item name="vcr" type="id"/>
+    <item name="album" type="id"/>
+    <item name="videoview" type="id"/>
+    <item name="play" type="id"/>
+
+    <item name="recycler_fragment_chat" type="id"/>
+    <item name="home_content" type="id"/>
+    <item name="home_bottom" type="id"/>
+    <item name="roundimg_head" type="id"/>
+    <item name="roundimg_head_small" type="id"/>
+    <item name="usernameText" type="id"/>
+    <item name="contactText" type="id"/>
+    <item name="directTxtView" type="id"/>
+
+    <!-- Dialog -->
+    <item name="cancel" type="id"/>
+    <item name="confirm" type="id"/>
+    <item name="left_tv" type="id"/>
+    <item name="right_tv" type="id"/>
+    <item name="edit" type="id"/>
+
+    <!-- LoginForPhoneActivity -->
+    <item name="toolbar_top" type="id"/>
+    <item name="country_code_tv" type="id"/>
+    <item name="phone_et" type="id"/>
+    <item name="next_btn" type="id"/>
+
+    <!-- SignInVerifyActivity -->
+    <item name="code_et" type="id"/>
+    <item name="phone_tv" type="id"/>
+    <item name="voice_tv" type="id"/>
+
+    <!-- RegisterActivity -->
+    <item name="userhead_img" type="id"/>
+    <item name="nickname_et" type="id"/>
+    <item name="password_et" type="id"/>
+    <item name="passwordhint_tv" type="id"/>
+    <item name="passwordedit_tv" type="id"/>
+
+    <!-- Zxing -->
+    <item name="decode" type="id"/>
+    <item name="decode_failed" type="id"/>
+    <item name="decode_succeeded" type="id"/>
+    <item name="quit" type="id"/>
+    <item name="restart_preview" type="id"/>
+    <item name="return_scan_result" type="id"/>
+    <item name="select_album" type="id"/>
+
+    <!-- LocalLoginActivity -->
+    <item name="nickname_lin" type="id"/>
+
+    <item name="msg" type="id"/>
+    <item name="contact" type="id"/>
+    <item name="wallet" type="id"/>
+    <item name="set" type="id"/>
+    <item name="listview" type="id"/>
+
+    <item name="content_notice" type="id"/>
+    <item name="content_layout" type="id"/>
+    <item name="bottom_layout" type="id"/>
+    <item name="bottom_trash" type="id"/>
+    <item name="bottom_notify" type="id"/>
+    <item name="recycler_chat" type="id"/>
+    <item name="notify" type="id"/>
+    <item name="privacy" type="id"/>
+
+    <!-- Message details -->
+    <item name="img" type="id"/>
+    <item name="gif" type="id"/>
+    <item name="roundimg" type="id"/>
+    <item name="linearlayout" type="id"/>
+    <item name="scrollview" type="id"/>
+    <item name="state" type="id"/>
+    <item name="imgs" type="id"/>
+    <item name="txt" type="id"/>
+    <item name="record" type="id"/>
+    <item name="showtime" type="id"/>
+    <item name="txtmsg" type="id"/>
+    <item name="imgmsg" type="id"/>
+    <item name="voicemsg" type="id"/>
+    <item name="videomsg" type="id"/>
+    <item name="emotionmsg" type="id"/>
+    <item name="layout_bottom" type="id"/>
+    <item name="layout_inputbottom" type="id"/>
+    <item name="recordview" type="id"/>
+    <item name="inputmore" type="id"/>
+    <item name="inputedit" type="id"/>
+    <item name="inputface" type="id"/>
+    <item name="inputvoice" type="id"/>
+    <item name="inputtxt" type="id"/>
+    <item name="layout_exbottom" type="id"/>
+    <item name="emoji_pagernum" type="id"/>
+    <item name="emoji_tabview" type="id"/>
+    <item name="emoji_pagerview" type="id"/>
+    <item name="more_pagerview" type="id"/>
+    <item name="more_indicator" type="id"/>
+    <item name="search" type="id"/>
+    <item name="photo_library" type="id"/>
+    <item name="take_photo_video" type="id"/>
+
+    <item name="toggle" type="id"/>
+    <item name="top" type="id"/>
+    <item name="mute" type="id"/>
+    <item name="clear" type="id"/>
+    <item name="map_gaode" type="id"/>
+    <item name="count" type="id"/>
+    <item name="save" type="id"/>
+    <item name="join" type="id"/>
+    <item name="delete" type="id"/>
+    <item name="groupset_groupname" type="id"/>
+    <item name="groupset_myname" type="id"/>
+    <item name="groupset_qrcode" type="id"/>
+    <item name="groupset_manage" type="id"/>
+    <item name="groupset_sureinvite" type="id"/>
+    <item name="groupset_introdue" type="id"/>
+    <item name="groupset_transferto" type="id"/>
+
+    <!-- The wallet -->
+    <item name="btc" type="id"/>
+    <item name="add_note" type="id"/>
+    <item name="transfer" type="id"/>
+    <item name="transfer_to" type="id"/>
+    <item name="pay" type="id"/>
+    <item name="amoutinput" type="id"/>
+    <item name="password" type="id"/>
+    <item name="forget_pwd" type="id"/>
+    <item name="retry" type="id"/>
+    <item name="circle" type="id"/>
+
+    <!-- include -->
+    <item name="group" type="id"/>
+    <item name="friend" type="id"/>
+</resources>

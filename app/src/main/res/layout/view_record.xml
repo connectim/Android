@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent">
+
+    <LinearLayout
+        android:id="@id/relativelayout_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:background="@color/color_ebecee"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@id/img1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:src="@drawable/shape_reddot"/>
+
+        <TextView
+            android:id="@id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/sp_14"/>
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:src="@mipmap/voice_play_icon2x"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/Chat_Slide_left_to_cancel"
+            android:textColor="@color/color_68656f"
+            android:textSize="@dimen/sp_14"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@id/relativelayout_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:background="@color/color_ebecee"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:src="@mipmap/chatbar_record_cancel"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="@string/Chat_Release_to_cancel"
+            android:textColor="@color/color_red"
+            android:textSize="@dimen/sp_14"/>
+    </LinearLayout>
+
+    <connect.ui.activity.chat.view.DiffuseView
+        android:id="@id/record"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:diffuse_color="@color/color_green"
+        app:diffuse_image="@mipmap/chatbar_recording"/>
+</RelativeLayout>

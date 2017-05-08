@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="@dimen/dp_130"
+              android:layout_height="@dimen/dp_130"
+              android:background="@drawable/shape_stroke_transblack"
+              android:gravity="center_horizontal"
+              android:orientation="vertical">
+
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:src="@mipmap/connect_pay2x"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/Wallet_Connect_Pay"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/sp_12"/>
+
+    <LinearLayout
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/dot_left"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:background="@drawable/sec_dot_graywhite"/>
+
+        <View
+            android:id="@+id/dot_centre"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:background="@drawable/sec_dot_graywhite"/>
+
+        <View
+            android:id="@+id/dot_right"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:background="@drawable/sec_dot_graywhite"/>
+    </LinearLayout>
+</LinearLayout>

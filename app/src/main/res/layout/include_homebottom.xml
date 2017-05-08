@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_f1f1f1"
+                android:orientation="horizontal">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/px_1"
+        android:background="@color/color_b3b5bc"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/msg_rela"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_weight="1">
+
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@id/msg"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/selector_message"/>
+
+            <connect.view.MaterialBadgeTextView
+                android:id="@id/badgetv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp__10"
+                android:layout_toRightOf="@id/msg"
+                android:background="@color/color_red"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp_10"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/contact_rela"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_weight="1">
+
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@id/contact"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/selector_contact"/>
+
+            <connect.view.MaterialBadgeTextView
+                android:id="@id/contact_badgetv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp__10"
+                android:layout_toRightOf="@id/contact"
+                android:background="@color/color_red"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp_10"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/wallet_rela"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_weight="1">
+
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@id/wallet"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/selector_moment"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/set_rela"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_weight="1">
+
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@id/set"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/selector_setting"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

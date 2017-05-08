@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_161A21">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/dp_25"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15"
+        android:background="@drawable/shape_8px_ffffff">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/address_lin"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_70"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/BaseTextStyle.14"
+                    android:text="@string/Wallet_Your_Bitcoin_Address_Title"/>
+                <TextView
+                    android:id="@+id/address_tv"
+                    style="@style/BaseTextStyle.14"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:text=""/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/amount_lin"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_70"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <TextView
+                    style="@style/BaseTextStyle.14"
+                    android:text="@string/Wallet_Scan_to_pay_me"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20">
+                    <TextView
+                        style="@style/BaseTextStyle.16"
+                        android:text="@string/Set_BTC_symbol"/>
+                    <EditText
+                        android:id="@+id/amount_et"
+                        style="@style/EditStyle"
+                        android:layout_width="match_parent"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_36"
+                        android:layout_marginLeft="@dimen/dp_15"
+                        android:inputType="numberDecimal"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/px_4"
+            android:layerType="software"
+            android:background="@drawable/shape_dash"/>
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/scan_img"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_width="@dimen/dp_220"
+            android:layout_height="@dimen/dp_220"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/setAmount_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/color_face18"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/Wallet_Set_Amount"/>
+
+</LinearLayout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_161A21">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_50"
+        android:layout_marginRight="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_50"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:background="@drawable/shape_stroke_00ffbf">
+
+        <connect.view.HightEqWidthImage
+            android:id="@+id/scan_img"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_38"
+            android:layout_marginRight="@dimen/dp_38"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_36"/>
+
+        <TextView
+            android:id="@+id/address_tv"
+            style="@style/BaseTextStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_14"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:text=""/>
+    </LinearLayout>
+
+</LinearLayout>

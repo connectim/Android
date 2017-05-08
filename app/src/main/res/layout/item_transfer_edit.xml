@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_stroke_20_ffffff"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/edit_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="@string/Wallet_Amount_BTC"
+            android:textColor="@color/color_858998"
+            android:textSize="@dimen/sp_14"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/edit_symbol_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@color/color_black"
+                android:text="@string/Set_BTC_symbol"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/amoutinput_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_toRightOf="@id/edit_symbol_tv"
+                android:background="@color/color_white"
+                android:inputType="numberDecimal"
+                android:maxLength="12"
+                android:text=""
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/sp_36"
+                android:textStyle="bold"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@id/linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/px_4"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:background="@drawable/shape_dash"
+                android:layerType="software"/>
+
+            <TextView
+                android:id="@+id/fee_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_11"
+                android:paddingTop="@dimen/dp_7"
+                android:text="@string/Wallet_Fee_BTC"
+                android:textColor="@color/color_161A21"
+                android:textSize="@dimen/sp_14"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8">
+
+        <TextView
+            android:id="@+id/add_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/dp_5"
+            android:paddingTop="@dimen/dp_5"
+            android:text="@string/Wallet_Add_note"
+            android:textColor="@color/color_6277AE"/>
+
+        <TextView
+            android:id="@+id/transfer_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/shape_stroke_b3b5bc"
+            android:gravity="center_horizontal"
+            android:minWidth="@dimen/dp_80"
+            android:padding="@dimen/dp_4"
+            android:textColor="@color/color_white"/>
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_9"
+            android:layout_toLeftOf="@id/transfer_tv"
+            android:src="@mipmap/transfer2x"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/amount_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/dp_19"
+        android:layout_marginTop="@dimen/dp_18"
+        android:text="@string/Wallet_Balance"/>
+
+</LinearLayout>

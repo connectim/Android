@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@id/layout_first"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_10">
+
+        <connect.view.roundedimageview.RoundedImageView
+            android:id="@id/roundimg"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_centerHorizontal="true"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/roundimg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/sp_12"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/layout_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_20">
+
+        <EditText
+            android:id="@id/edit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50"
+            android:background="@drawable/shape_stroke_858998"
+            android:hint="@string/Wallet_Enter_number"
+            android:inputType="number"
+            android:paddingLeft="@dimen/dp_20"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/sp_16"/>
+
+    </RelativeLayout>
+
+
+    <connect.view.transferEdit.TransferEditView
+        android:id="@+id/transfer_edit_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"/>
+
+    <Button
+        android:id="@id/btn"
+        style="@style/ButtonLongStyle"
+        android:layout_marginTop="@dimen/dp_10"
+        android:enabled="true"
+        android:text="@string/Wallet_Prepare_Lucky_Packet"/>
+
+</LinearLayout>

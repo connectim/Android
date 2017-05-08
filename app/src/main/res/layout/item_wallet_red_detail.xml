@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_ffffff"
+    android:padding="@dimen/dp_12">
+
+    <connect.view.roundedimageview.RoundedImageView
+        android:id="@+id/avater_rimg"
+        android:layout_width="@dimen/dp_38"
+        android:layout_height="@dimen/dp_38"
+        android:scaleType="fitXY"/>
+
+    <TextView
+        android:id="@+id/name_tv"
+        style="@style/BaseTextStyle"
+        android:layout_toRightOf="@+id/avater_rimg"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/money_tv"
+        style="@style/BaseTextStyle"
+        android:layout_toRightOf="@+id/avater_rimg"
+        android:layout_alignBottom="@+id/avater_rimg"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="bold"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/time_tv"
+        style="@style/BaseTextStyle"
+        android:layout_alignParentRight="true"
+        android:text="asdasdas"/>
+
+    <TextView
+        android:id="@+id/best_tv"
+        style="@style/BaseTextStyle"
+        android:layout_below="@+id/time_tv"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/color_face18"
+        android:text="@string/Chat_Best_luck"
+        android:visibility="gone"/>
+</RelativeLayout>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="@dimen/dp_250"
+              android:layout_height="wrap_content"
+              android:background="@drawable/shape_11px_f1f1f1"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@id/title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_10"
+        android:textColor="@color/color_161A21"
+        android:textSize="17sp"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/message_tv"
+        style="@style/BaseTextStyle.14"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textSize="13sp"
+        android:visibility="gone"
+        android:textColor="@color/color_6d6e75" />
+    
+    <EditText
+        android:id="@id/edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_10"
+        android:background="@drawable/shape_stroke_20_ffffff"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:textSize="14sp">
+    </EditText>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/px_1"
+        android:background="@color/color_d1d5da"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@id/left_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/Common_Cancel"
+            android:textColor="@color/color_007aff"
+            android:textSize="@dimen/sp_16"/>
+
+        <View
+            android:layout_width="@dimen/px_1"
+            android:layout_height="match_parent"
+            android:background="@color/color_d1d5da"/>
+
+        <TextView
+            android:id="@id/right_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/Set_Save"
+            android:textColor="@color/color_007aff"
+            android:textSize="@dimen/sp_16"/>
+    </LinearLayout>
+</LinearLayout>

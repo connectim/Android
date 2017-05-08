@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_bg_activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <connect.view.TopToolBar
+            android:id="@id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <connect.ui.activity.chat.view.ChatRecyclerView
+                android:id="@id/recycler_chat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:fadeScrollbars="true"
+                android:overScrollMode="never"
+                android:scrollbars="vertical"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@id/layout_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:minHeight="@dimen/dp_40"
+            android:orientation="vertical">
+
+            <include
+                android:id="@id/layout_inputbottom"
+                layout="@layout/include_chat_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <connect.ui.activity.chat.view.ExBottomLayout
+                android:id="@id/layout_exbottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <connect.ui.activity.chat.view.RecordView
+        android:id="@id/recordview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"/>
+</RelativeLayout>

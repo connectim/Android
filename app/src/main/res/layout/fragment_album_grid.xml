@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/layout_first"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:background="@color/color_161A21">
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_20"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
+            android:src="@mipmap/album_arrow_back2x"/>
+
+        <TextView
+            android:id="@+id/tv_dir_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/iv_back"
+            android:maxLines="1"
+            android:maxWidth="200dp"
+            android:text="@string/Chat_All_Image"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/sp_18"/>
+
+        <TextView
+            android:id="@+id/tv_selected_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_28"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/sec_green"
+            android:enabled="false"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:text="@string/Common_OK"
+            android:textColor="@drawable/sec_txt_white"
+            android:textSize="@dimen/sp_14"/>
+    </RelativeLayout>
+
+    <GridView
+        android:id="@id/gridview"
+        android:layout_below="@id/layout_first"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:horizontalSpacing="2dp"
+        android:numColumns="3"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="2dp" />
+
+    <TextView
+        android:id="@id/txt2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/Chat_No_Pictures"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_161A21"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@id/txt"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_6"
+            android:text="@string/Chat_All_Image_Video"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp_16"/>
+
+        <TextView
+            android:id="@id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_alignParentRight="true"
+            android:enabled="false"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_12"
+            android:text="@string/Chat_Preview"
+            android:textColor="@drawable/sec_txt_white"
+            android:textSize="@dimen/sp_16"/>
+    </RelativeLayout>
+</RelativeLayout>

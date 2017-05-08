@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/shape_stroke_chatbottom"
+              android:orientation="horizontal"
+              android:paddingBottom="@dimen/dp_9"
+              android:paddingLeft="@dimen/dp_8"
+              android:paddingRight="@dimen/dp_8"
+              android:paddingTop="@dimen/dp_9">
+
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:id="@id/inputmore"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_gravity="bottom"
+        android:scaleType="fitXY"
+        android:src="@mipmap/chatbar_more"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_weight="1">
+
+        <connect.ui.activity.chat.view.ChatEditText
+            android:id="@id/inputedit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_edittext"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center_vertical|left"
+            android:imeOptions="actionSend"
+            android:maxLines="3"
+            android:textSize="@dimen/sp_16"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@id/inputface"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@mipmap/chatbar_face"/>
+
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:id="@id/inputvoice"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:scaleType="fitXY"
+        android:src="@mipmap/chatbar_record"/>
+
+    <TextView
+        android:id="@id/inputtxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:background="@drawable/shape_stroke_green"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/dp_7"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_7"
+        android:text="@string/Link_Send"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"/>
+</LinearLayout>

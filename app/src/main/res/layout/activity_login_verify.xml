@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_ffffff"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:id="@id/code_et"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:gravity="center"
+        android:hint="@string/Login_Code"
+        android:inputType="number"
+        android:maxLength="6"
+        android:textColor="@color/color_161A21"
+        android:textColorHint="@color/color_161A21"
+        android:textSize="@dimen/sp_36"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        style="@style/BaseTextStyle.14"
+        android:layout_marginTop="@dimen/dp_40"
+        android:gravity="center"
+        android:text="@string/Set_verification_code_has_been_send_to_phone"/>
+
+    <TextView
+        android:id="@id/phone_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_10"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/color_00c400"
+        android:textSize="@dimen/sp_16"/>
+    <TextView
+        android:id="@id/voice_tv"
+        style="@style/BaseTextStyle.14"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/sp_18"
+        android:padding="@dimen/dp_5"
+        android:text="@string/Chat_Send_vioce"
+        android:textColor="@color/color_007aff"
+        android:visibility="gone"/>
+    <Button
+        android:id="@id/next_btn"
+        style="@style/ButtonLongStyle"
+        android:layout_marginTop="@dimen/dp_20"
+        android:enabled="false"/>
+</LinearLayout>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f0f0f6">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_72"
+        android:src="@mipmap/bitcoin_luckybag3x"
+        android:id="@+id/imageView" />
+
+    <TextView
+        style="@style/BaseTextStyle.14"
+        android:layout_marginTop="@dimen/dp_48"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/Wallet_My_Balance"/>
+
+    <TextView
+        android:id="@+id/amount_tv"
+        style="@style/BaseTextStyle.16"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/color_38415e"
+        android:padding="@dimen/dp_12"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:text=""/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/wallet_menu_recycler"
+        android:layout_marginTop="@dimen/dp_70"
+        android:fadingEdge="none"
+        android:overScrollMode="never"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_10">
+
+    <TextView
+        android:id="@+id/status_tv"
+        style="@style/BaseTextStyle.16"
+        android:textStyle="bold"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/money_tv"
+        style="@style/BaseTextStyle.16"
+        android:layout_alignParentRight="true"
+        android:text=""/>
+
+    <TextView
+        android:id="@id/time_tv"
+        style="@style/BaseTextStyle.14"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_below="@+id/status_tv"
+        android:textColor="@color/color_858998"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/number_tv"
+        style="@style/BaseTextStyle.14"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_below="@+id/status_tv"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/color_adb3bc"
+        android:text=""/>
+
+</RelativeLayout>

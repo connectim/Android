@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f0f0f6">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_50"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/setting_phone"/>
+
+    <TextView
+        android:id="@+id/hint_tv"
+        style="@style/BaseTextStyle.14"
+        android:layout_marginTop="@dimen/dp_50"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/mobile_tv"
+        style="@style/BaseTextStyle.16"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_5"
+        android:textSize="@dimen/sp_32"
+        android:text=""/>
+
+    <Button
+        android:id="@+id/link_btn"
+        style="@style/ButtonLongStyle"
+        android:layout_marginTop="@dimen/dp_20" />
+
+</LinearLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="@dimen/dp_10">
+
+    <LinearLayout
+        android:id="@id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_8px_ffffff"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_57"
+            android:layout_gravity="center_horizontal"
+            android:drawableLeft="@mipmap/message_stopwatch_icon2x"
+            android:drawablePadding="@dimen/dp_5"
+            android:gravity="center"
+            android:text="@string/Chat_et_self_destruct_timer"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/sp_16"/>
+
+        <ListView
+            android:id="@id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:dividerHeight="@dimen/dp_0"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/shape_8px_ffffff">
+
+        <TextView
+            android:id="@id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_57"
+            android:gravity="center"
+            android:text="@string/Common_Cancel"
+            android:textColor="@color/color_red"
+            android:textSize="@dimen/sp_18"/>
+    </RelativeLayout>
+</LinearLayout>

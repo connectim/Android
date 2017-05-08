@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/shape_11px_f1f1f1">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        android:gravity="left|center"
+        android:text="@string/Chat_Tips"
+        android:textColor="@color/color_161A21"
+        android:textSize="16sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
+    <TextView
+        android:id="@+id/messageTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleTextView"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center_horizontal"
+        android:text=""
+        android:textColor="@color/color_161A21"
+        android:textSize="16sp"/>
+
+    <View
+        style="@style/BaseViewLine.858998"
+        android:id="@+id/bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/messageTextView"
+        android:background="@color/color_d1d5da"/>
+
+    <LinearLayout
+        android:id="@+id/cancel_ok_re"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/messageTextView"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/cancelBtn"
+            android:layout_width="0px"
+            android:layout_height="@dimen/dp_40"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/Common_Cancel"
+            android:textColor="@color/color_007aff"
+            android:textSize="@dimen/sp_16" />
+        <View
+            android:id="@+id/centre_line"
+            android:layout_width="@dimen/px_1"
+            android:layout_height="match_parent"
+            android:background="@color/color_d1d5da"/>
+        <TextView
+            android:id="@+id/okBtn"
+            android:layout_width="0px"
+            android:layout_height="@dimen/dp_40"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/Common_OK"
+            android:textColor="@color/color_007aff"
+            android:textSize="@dimen/sp_16" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f0f0f6">
+
+    <connect.view.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        style="@style/BaseTextStyle"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_20"
+        android:text="@string/Set_Your_private_key_will_be_encrypted_with_new_password" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:orientation="horizontal"
+        android:background="@drawable/shape_stroke_20_ffffff">
+        <EditText
+            style="@style/EditStyle"
+            android:id="@+id/password_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/close_ib"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textSize="@dimen/sp_18"
+            android:hint="@string/Set_Enter_new_password"
+            android:inputType="textPassword"
+            android:background="@null" />
+        <ImageButton
+            android:contentDescription="@string/app_name"
+            android:id="@+id/password_ib"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/dp_10"
+            android:src="@mipmap/input_del"
+            android:background="@color/color_clear"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <TextView
+        style="@style/BaseTextStyle"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_25"
+        android:text="@string/Set_Password_Hint" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:orientation="horizontal"
+        android:background="@drawable/shape_stroke_20_ffffff">
+        <EditText
+            style="@style/EditStyle"
+            android:id="@+id/passwordhint_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/close_ib"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textSize="@dimen/sp_18"
+            android:background="@null" />
+        <ImageButton
+            android:contentDescription="@string/app_name"
+            android:id="@+id/passwordhint_ib"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/dp_10"
+            android:src="@mipmap/input_del"
+            android:background="@color/color_clear"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+</LinearLayout>
