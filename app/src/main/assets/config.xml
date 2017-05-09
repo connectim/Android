@@ -29,7 +29,7 @@
     <property>
         <APP_MODE>release</APP_MODE>
         <HTTP_MODE>true</HTTP_MODE>
-        <SERVER_ADDRESS>https://cccc</SERVER_ADDRESS>
+        <SERVER_ADDRESS>cccc</SERVER_ADDRESS>
         <SOCKET_ADDRESS>cc</SOCKET_ADDRESS>
         <SOCKET_PORT>19090</SOCKET_PORT>
         <SHARE_CARD_ADDRESS>cc</SHARE_CARD_ADDRESS>
