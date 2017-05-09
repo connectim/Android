@@ -23,6 +23,12 @@
 
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*  # The algorithm used in confusion
 
+# wallet
+-keep class connect.wallet.jni.** {*;}
+
+# connect
+-keep class protos.Connect {*;}
+
 # Keep which classes are not confused
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
@@ -34,10 +40,17 @@
 -keep public class com.android.vending.licensing.ILicensingService
 -keep public class * extends connect.ui.base.BaseActivity
 
+# R file
+-keep class **.R$* {*;}
+
+# Do not mapping can also display line numbers, avoid Unknown Source
+-keepattributes SourceFile,LineNumberTable
+
 # Keep the native method not confused
 -keepclasseswithmembernames class * {
     native <methods>;
 }
+
 -keepclasseswithmembers class * {   # Keep custom control classes not confused
     public <init>(android.content.Context, android.util.AttributeSet);
 }
@@ -58,6 +71,13 @@
 # butterknife
 -dontwarn butterknife.**
 -keep class butterknife.** { *;}
+-keep class **$$ViewBinder { *; }
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
 
 # greendao
 -dontwarn org.greenrobot.greendao.**
@@ -75,9 +95,20 @@
 -dontwarn com.google.**
 -keep class com.google.** { *;}
 
-# Okhttp
+# OkHttp3
+-dontwarn com.squareup.okhttp3.**
+-keep class com.squareup.okhttp3.** { *;}
 -dontwarn okio.**
--keep class okio.** { *;}
+
+# Okio
+-dontwarn com.squareup.**
+-dontwarn okio.**
+-keep public class org.codehaus.* { *; }
+-keep public class java.nio.* { *; }
+
+# Bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
 
 # so
 -libraryjars libs/armeabi/libadd.so

@@ -12,7 +12,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.login.contract.ScanLoginContract;
-import connect.ui.activity.set.BackUpActivity;
 import connect.ui.activity.set.presenter.BackUpPresenter;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastEUtil;
