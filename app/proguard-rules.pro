@@ -34,6 +34,9 @@
 -keep public class com.android.vending.licensing.ILicensingService
 -keep public class * extends connect.ui.base.BaseActivity
 
+# Do not mapping can also display line numbers, avoid Unknown Source
+-keepattributes SourceFile,LineNumberTable
+
 # Keep the native method not confused
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -58,6 +61,17 @@
 # butterknife
 -dontwarn butterknife.**
 -keep class butterknife.** { *;}
+-keep class **$$ViewBinder { *; }
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
+
+# Bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
 
 # greendao
 -dontwarn org.greenrobot.greendao.**
