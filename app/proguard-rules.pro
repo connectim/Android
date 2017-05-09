@@ -27,7 +27,11 @@
 -keep class connect.wallet.jni.** {*;}
 
 # connect
--keep class protos.Connect {*;}
+-keep class protos.Connect{*;}
+
+-keep class protos.Connect$*{
+    *;
+}
 
 # Keep which classes are not confused
 -keep public class * extends android.app.Activity
@@ -68,6 +72,15 @@
     public static final android.os.Parcelable$Creator *;
 }
 
+-keepclassmembers class * implements Java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
 # butterknife
 -dontwarn butterknife.**
 -keep class butterknife.** { *;}
@@ -80,8 +93,18 @@
 }
 
 # greendao
--dontwarn org.greenrobot.greendao.**
--keep class org.greenrobot.greendao.** { *;}
+### greenDAO 3
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+# If you do not use SQLCipher:
+# -dontwarn org.greenrobot.greendao.database.**
+# If you do not use RxJava:
+-dontwarn rx.**
+# sqlcipher
+-dontwarn net.sqlcipher.**
+-keep class net.sqlcipher.** {*;}
 
 # pinyin4j
 -dontwarn demo.**
@@ -106,9 +129,36 @@
 -keep public class org.codehaus.* { *; }
 -keep public class java.nio.* { *; }
 
+# Glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+# -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+# EventBus
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(Java.lang.Throwable);
+}
+
 # Bugly
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
+
+# Gson
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
+-keep public class com.google.gson.**
+-keep public class com.google.gson.** {*;}
+-keep  class connect.ui.activity.wallet.bean.RateBean {*;}
 
 # so
 -libraryjars libs/armeabi/libadd.so

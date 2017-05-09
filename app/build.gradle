@@ -45,13 +45,6 @@ android {
     }
 
     signingConfigs {
-        debug {
-            keyAlias 'connecttest'
-            keyPassword 'connecttest'
-            storeFile file('connect.jks')
-            storePassword 'connecttest'
-        }
-
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
