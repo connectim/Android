@@ -130,6 +130,12 @@ public class MsgLuckyHolder extends MsgChatHolder {
                         case 6://A phone number can only get once
                             ToastEUtil.makeText(context,R.string.Set_A_phone_number_can_only_grab_once,2).show();
                             break;
+                        case 7://PAUSE
+                            ToastEUtil.makeText(context,R.string.Chat_system_luckypackage_have_been_frozen,2).show();
+                            break;
+                        case 8://DEVICELIMIT
+                            ToastEUtil.makeText(context,R.string.Chat_one_device_can_only_grab_a_luckypackage,2).show();
+                            break;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

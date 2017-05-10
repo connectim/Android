@@ -710,4 +710,6 @@
     <string name="Wallet_transferOutVia_return_Success">退回转账成功</string>
     <string name="app_name">Connect</string>
     <string name="app_name_im">CONNECT.IM</string>
+    <string name="Chat_system_luckypackage_have_been_frozen">红包被系统管理员暂停</string>
+    <string name="Chat_one_device_can_only_grab_a_luckypackage">一个设备只能抢一个红包</string>
 </resources>
