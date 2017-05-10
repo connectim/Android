@@ -710,4 +710,6 @@
     <string name="Wallet_transferOutVia_return_Success">Успешный возврат перечисленных денежных средств</string>
     <string name="app_name">Connect</string>
     <string name="app_name_im">CONNECT.IM</string>
+    <string name="Chat_system_luckypackage_have_been_frozen">Красный конверт подвешен системный администратор</string>
+    <string name="Chat_one_device_can_only_grab_a_luckypackage">Устройство может только захватить красный конверт</string>
 </resources>

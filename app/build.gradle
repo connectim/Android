@@ -45,13 +45,6 @@ android {
     }
 
     signingConfigs {
-        debug {
-            keyAlias 'connecttest'
-            keyPassword 'connecttest'
-            storeFile file('connect.jks')
-            storePassword 'connecttest'
-        }
-
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
@@ -62,8 +55,8 @@ android {
 
     buildTypes {
         debug {
-            shrinkResources true
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
         }

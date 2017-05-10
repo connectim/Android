@@ -86,11 +86,13 @@ public class ShakeHandBean extends InterParse {
         String deviceId = SystemDataUtil.getDeviceId();
         String deviceName = Build.DEVICE;
         String local = SystemDataUtil.getDeviceLanguage();
+        String uuid=SystemDataUtil.getLocalUid();
         Connect.DeviceInfo deviceInfo = Connect.DeviceInfo.newBuilder()
                 .setDeviceId(deviceId)
                 .setDeviceName(deviceName)
                 .setLocale(local)
-                .setCv(0).build();
+                .setCv(0)
+                .setUuid(uuid).build();
         Connect.GcmData gcmDataTemp = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE, saltByte, deviceInfo.toByteString());
 
         //imTransferData

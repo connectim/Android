@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
@@ -87,6 +88,18 @@ public class SystemDataUtil {
             deviceId = uuid.toString().replace("-", "");
         }
         return AllNativeMethod.cdGetHash256(deviceId);
+    }
+
+    public static String getLocalUid() {
+        Context context = BaseApplication.getInstance().getBaseContext();
+        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        final String tmDevice, tmSerial, androidId;
+        tmDevice = "" + tm.getDeviceId();
+        tmSerial = "" + tm.getSimSerialNumber();
+        androidId = "" + Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        String uniqueId = deviceUuid.toString();
+        return AllNativeMethod.cdGetHash256(uniqueId);
     }
 
     /**
