@@ -1,6 +1,8 @@
 package connect.ui.activity.home;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,6 +50,7 @@ import connect.ui.activity.login.LoginForPhoneActivity;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.support.ScanUrlAnalysisUtil;
 import connect.ui.base.BaseFragmentActivity;
+import connect.ui.broadcast.KeepLiveReceiver;
 import connect.ui.service.HttpsService;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
@@ -105,8 +108,6 @@ public class HomeActivity extends BaseFragmentActivity {
     }
 
     public static void startActivity(Activity activity) {
-        //String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
-        //SystemDataUtil.setAppLanguage(activity,languageCode);
         ActivityUtil.next(activity, HomeActivity.class);
     }
 
@@ -140,6 +141,8 @@ public class HomeActivity extends BaseFragmentActivity {
 
                 requestAppUpdata();
                 checkWebOpen();
+
+                registerScreenReceiver();
             }
         }.execute();
     }
@@ -340,6 +343,13 @@ public class HomeActivity extends BaseFragmentActivity {
         checkUpdata.check();
     }
 
+    private void registerScreenReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+        registerReceiver(new KeepLiveReceiver(), filter);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
@@ -349,9 +359,6 @@ public class HomeActivity extends BaseFragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //ConnectManager.getInstance().exitConnect();//close socket
-        //SharePreferenceUser.unLinkSharePreferrnce();
-        //SharedPreferenceUtil.getInstance().clearMap();
         EventBus.getDefault().unregister(this);
     }
 }

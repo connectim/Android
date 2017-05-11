@@ -233,7 +233,7 @@ public class ConnectManager {
     /** Whether can initiate reconnection */
     private boolean canConnect = true;
     /** Heart rate */
-    private final long HEART_FREQUENCY = 10 * 1000;
+    private final long HEART_FREQUENCY = 4 * 60 * 1000;
     /** Recently received a message of time */
     private long lastReceiverTime;
     /** The heartbeat polling timer */

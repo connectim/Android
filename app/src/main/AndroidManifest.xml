@@ -116,6 +116,14 @@
             android:name=".login.RandomSendActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".login.KeepLiveActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:finishOnTaskLaunch="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/LiveActivityStyle"/>
+        <activity
             android:name="connect.view.clip.ClipImageActivity"
             android:screenOrientation="portrait"/>
         <activity
@@ -331,7 +339,6 @@
         <activity
             android:name=".chat.exts.VideoPlayerActivity"
             android:screenOrientation="portrait"/>
-        <service android:name="com.amap.api.location.APSService"/>
 
         <receiver android:name="connect.ui.broadcast.NotificationBroadcastReceiver"
                   android:exported="false">
@@ -345,6 +352,7 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
+
         <service android:name="connect.ui.service.HttpsService"/>
         <service android:name="connect.ui.service.SocketService"/>
         <service android:name="connect.ui.service.UpdataService"/>
@@ -388,7 +396,5 @@
         </activity>
         <activity android:name="connect.ui.activity.login.DBUpdateActivity">
         </activity>
-        <activity android:name=".login.ResultActivity"/>
-        <activity android:name=".login.ScanCaptureActivity"/>
     </application>
 </manifest>
