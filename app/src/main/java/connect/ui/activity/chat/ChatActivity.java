@@ -25,6 +25,7 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.db.green.DaoHelper.ContactHelper;
+import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.DaoHelper.ConversionSettingHelper;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.TransactionHelper;
@@ -522,7 +523,7 @@ public class ChatActivity extends BaseChatActvity {
                     toolbar.setTitle(titleName+String.format(Locale.ENGLISH,"(%d)",memEntities.size()));
                 }
                 break;
-            case 1://havae started
+            case 1://have started
                 String name = baseChat.nickName();
                 StringBuffer indexName = new StringBuffer();
                 indexName.append(name.charAt(0));

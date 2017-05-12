@@ -1,8 +1,11 @@
 package connect.ui.activity.login;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,7 +23,8 @@ import connect.ui.base.BaseActivity;
 public class KeepLiveActivity extends BaseActivity {
     private final static String Tag = "KeepLive";
 
-    public static KeepLiveActivity keepLiveActivity = null;
+    public KeepLiveActivity activity;
+    private BroadcastReceiver receiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,19 +34,12 @@ public class KeepLiveActivity extends BaseActivity {
 
     public static void startActity(Context context) {
         Intent intent = new Intent(context, KeepLiveActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    public static void stopActivity() {
-        if (keepLiveActivity != null) {
-            keepLiveActivity.finish();
-        }
     }
 
     @Override
     public void initView() {
-        keepLiveActivity = this;
+        activity = this;
 
         Window window = getWindow();
         window.setGravity(Gravity.LEFT | Gravity.TOP);
@@ -52,5 +49,39 @@ public class KeepLiveActivity extends BaseActivity {
         params.width = 1;
         params.height = 1;
         window.setAttributes(params);
+
+        receiver =new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                finish();
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("KeepLive");
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkScreenOn();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            unregisterReceiver(receiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkScreenOn() {
+        PowerManager manager = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = manager.isScreenOn();
+        if (isScreenOn) {
+            finish();
+        }
     }
 }

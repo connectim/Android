@@ -1,8 +1,6 @@
 package connect.ui.activity.home;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,14 +48,13 @@ import connect.ui.activity.login.LoginForPhoneActivity;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.support.ScanUrlAnalysisUtil;
 import connect.ui.base.BaseFragmentActivity;
-import connect.ui.broadcast.KeepLiveReceiver;
 import connect.ui.service.HttpsService;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
+import connect.utils.ProgressUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissiomUtilNew;
-import connect.utils.ProgressUtil;
 import connect.view.MaterialBadgeTextView;
 
 /**
@@ -141,8 +138,6 @@ public class HomeActivity extends BaseFragmentActivity {
 
                 requestAppUpdata();
                 checkWebOpen();
-
-                registerScreenReceiver();
             }
         }.execute();
     }
@@ -341,13 +336,6 @@ public class HomeActivity extends BaseFragmentActivity {
     private void requestAppUpdata() {
         checkUpdata = new CheckUpdata(activity);
         checkUpdata.check();
-    }
-
-    private void registerScreenReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_USER_PRESENT);
-        registerReceiver(new KeepLiveReceiver(), filter);
     }
 
     @Override

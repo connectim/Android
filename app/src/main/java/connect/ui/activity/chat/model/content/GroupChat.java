@@ -143,7 +143,7 @@ public class GroupChat extends NormalChat {
 
     public String groupEcdh() {
         if (groupEntity == null) return "";
-        return groupEntity.getIdentifier();
+        return groupEntity.getEcdh_key();
     }
 
     public void setGroupEntity(GroupEntity groupEntity) {

@@ -108,7 +108,7 @@ public class MsgRecManager {
                 if (TextUtils.isEmpty(errInfo)) {
                     errInfo = "";
                 }
-                LogManager.getLogger().d(Tag, "exception order: [" + ack.get(1) + "][" + ack.get(6) + "]" + e.getMessage());
+                LogManager.getLogger().d(Tag, "exception order info: [" + ack.get(1) + "][" + ack.get(6) + "]" + errInfo);
             }
         }
 
@@ -120,7 +120,7 @@ public class MsgRecManager {
             boolean isAvailable = SharedPreferenceUtil.getInstance().isAvailableKey();
             if (!isAvailable) {
                 ConnectManager.getInstance().exitConnect();//close socket
-                if (SystemUtil.isRunBackGround()) {//run in front
+                if (SystemUtil.isRunBackGround()) {// run in front
                     Context context = BaseApplication.getInstance().getBaseContext();
                     Intent intent = new Intent(context, StartActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//keep a single instance
