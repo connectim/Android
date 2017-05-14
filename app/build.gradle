@@ -13,8 +13,8 @@ android {
         applicationId "connect.im"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 10
-        versionName "0.1.0"
+        versionCode 9
+        versionName "0.0.9"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
