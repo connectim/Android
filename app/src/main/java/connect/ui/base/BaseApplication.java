@@ -34,7 +34,7 @@ public class BaseApplication extends Application{
         //建议在测试阶段建议设置成true，发布时设置为false。
         //区分开 测试bug跟正式bug
         CrashReport.initCrashReport(getApplicationContext(),
-                true ? "9b63c64ee1" : "cf78e82d4f",
+                false ? "9b63c64ee1" : "cf78e82d4f",
                 true);
         //google Fcm推送
         //FcmPush.init(this);

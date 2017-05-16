@@ -42,11 +42,11 @@ import connect.ui.activity.chat.model.content.GroupChat;
 import connect.ui.activity.common.ConversationActivity;
 import connect.ui.activity.common.bean.ConverType;
 import connect.ui.activity.home.bean.MsgNoticeBean;
-import connect.ui.activity.wallet.support.ScanUrlAnalysisUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.RegularUtil;
+import connect.utils.scan.ResolveUrlUtil;
 import connect.view.TopToolBar;
 
 public class OuterWebsiteActivity extends BaseActivity {
@@ -65,7 +65,7 @@ public class OuterWebsiteActivity extends BaseActivity {
     private String title = "";
     private String subtitle = "";
     private String imgUrl = "";
-    private ScanUrlAnalysisUtil analysisUtil;
+    private ResolveUrlUtil resolveUrlUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,7 +162,7 @@ public class OuterWebsiteActivity extends BaseActivity {
             webSettings.setPluginState(WebSettings.PluginState.ON);
             webSettings.setDisplayZoomControls(false);
         }
-        analysisUtil = new ScanUrlAnalysisUtil(activity);
+        resolveUrlUtil = new ResolveUrlUtil(activity);
     }
 
     private void openUrlBrowser(String url){
@@ -207,15 +207,15 @@ public class OuterWebsiteActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MsgNoticeBean notice) {
-        analysisUtil.showMsgTip(notice,"web");
+        resolveUrlUtil.showMsgTip(notice,false);
     }
 
     private WebViewClient myWebViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             inUrl = url;
-            if(RegularUtil.matches(url, analysisUtil.Web_Url)){
-                analysisUtil.checkAppOpen(url);
+            if(RegularUtil.matches(url, resolveUrlUtil.Web_Url)){
+                resolveUrlUtil.checkAppOpen(url);
                 return true;
             }else{
                 view.loadUrl(url);

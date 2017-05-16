@@ -1,7 +1,5 @@
 package connect.ui.activity.home.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -14,46 +12,28 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.ContactHelper;
-import connect.db.green.DaoHelper.MessageHelper;
-import connect.db.green.bean.ContactEntity;
-import connect.im.model.FailMsgsManager;
 import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.MsgChatReceiver;
-import connect.ui.activity.chat.bean.MsgEntity;
-import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.bean.Talker;
-import connect.ui.activity.chat.model.ChatMsgUtil;
-import connect.ui.activity.chat.model.content.FriendChat;
-import connect.ui.activity.chat.model.content.NormalChat;
 import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.AboutActivity;
 import connect.ui.activity.set.AddressActivity;
 import connect.ui.activity.set.GeneralActivity;
+import connect.ui.activity.set.ModifyInfoActivity;
 import connect.ui.activity.set.PrivateActivity;
 import connect.ui.activity.set.SafetyActivity;
 import connect.ui.activity.set.SupportActivity;
-import connect.ui.activity.set.ModifyInfoActivity;
-import connect.ui.base.BaseApplication;
 import connect.ui.base.BaseFragment;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.ExCountDownTimer;
 import connect.utils.ProgressUtil;
-import connect.utils.TimeUtil;
 import connect.utils.glide.GlideUtil;
 import connect.view.TopToolBar;
 import connect.view.roundedimageview.RoundedImageView;
-import protos.Connect;
 
 /**
  * setting

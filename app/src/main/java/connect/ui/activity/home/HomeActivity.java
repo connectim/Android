@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -46,7 +47,6 @@ import connect.ui.activity.home.fragment.WalletFragment;
 import connect.ui.activity.home.view.CheckUpdata;
 import connect.ui.activity.login.LoginForPhoneActivity;
 import connect.ui.activity.login.bean.UserBean;
-import connect.ui.activity.wallet.support.ScanUrlAnalysisUtil;
 import connect.ui.base.BaseFragmentActivity;
 import connect.ui.service.HttpsService;
 import connect.utils.ActivityUtil;
@@ -55,6 +55,7 @@ import connect.utils.FileUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissiomUtilNew;
 import connect.utils.ProgressUtil;
+import connect.utils.scan.ResolveUrlUtil;
 import connect.view.MaterialBadgeTextView;
 
 /**
@@ -92,7 +93,7 @@ public class HomeActivity extends BaseFragmentActivity {
     private ContactFragment contactFragment;
     private SetFragment setFragment;
     private WalletFragment walletFragment;
-    private ScanUrlAnalysisUtil analysisUtil;
+    private ResolveUrlUtil resolveUrlUtil;
     private CheckUpdata checkUpdata;
 
     @Override
@@ -198,7 +199,7 @@ public class HomeActivity extends BaseFragmentActivity {
             objs = (Object[]) notice.object;
         }
         if(objs[0] instanceof MsgSendBean){
-            analysisUtil.showMsgTip(notice,"web");
+            resolveUrlUtil.showMsgTip(notice,false);
         }
     }
 
@@ -331,8 +332,11 @@ public class HomeActivity extends BaseFragmentActivity {
     }
 
     private void checkWebOpen() {
-        analysisUtil = new ScanUrlAnalysisUtil(activity);
-        analysisUtil.checkWebOpen();
+        resolveUrlUtil = new ResolveUrlUtil(activity);
+        String value = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.WEB_OPEN_APP);
+        if (!TextUtils.isEmpty(value)) {
+            resolveUrlUtil.checkAppOpen(value);
+        }
     }
 
     private void requestAppUpdata() {
