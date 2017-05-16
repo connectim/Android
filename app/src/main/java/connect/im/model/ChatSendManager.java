@@ -1,12 +1,14 @@
 package connect.im.model;
 
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 
-import java.util.Map;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -15,8 +17,7 @@ import java.util.concurrent.TimeUnit;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
-import connect.ui.activity.chat.model.ChatMsgUtil;
-import connect.ui.base.BaseApplication;
+import connect.utils.StringUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
@@ -98,93 +99,125 @@ public class ChatSendManager {
                 break;
         }
         if (canFailReSend) {
-            sendDelayFailMsg(roomkey, msgid, order, bytes);
+            FailMsgsManager.getInstance().sendDelayFailMsg(roomkey, msgid, order, bytes);
         }
     }
 
-    private class SendChatRun implements Runnable {
-        private SocketACK order;
+    public void sendToMsg(SocketACK ack, ByteString byteString) {
+        SendChatRun sendChatRun = new SendChatRun(false, ack, byteString);
+        threadPoolExecutor.execute(sendChatRun);
+    }
+
+    protected class SendChatRun implements Runnable {
+        private boolean transfer;
+        private SocketACK ack;
         private ByteString bytes;
 
-        SendChatRun(SocketACK order, ByteString bytes) {
-            this.order = order;
+        SendChatRun(SocketACK ack, ByteString bytes) {
+            this.transfer = true;
+            this.ack = ack;
+            this.bytes = bytes;
+        }
+
+        SendChatRun(boolean transfer, SocketACK ack, ByteString bytes) {
+            this.transfer = transfer;
+            this.ack = ack;
             this.bytes = bytes;
         }
 
         @Override
         public synchronized void run() {
             try {
-                String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+                ByteBuffer byteBuffer = null;
+                if (transfer) { // transferData,Encapsulating server checksum data
+                    String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+                    Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE,
+                            Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), bytes);
+                    String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
+                    Connect.IMTransferData transferData = Connect.IMTransferData.newBuilder().
+                            setSign(signHash).setCipherData(gcmData).build();
+                    byteBuffer = protoToByteBuffer(ack.getOrder(), transferData.toByteArray());
+                } else {
+                    byteBuffer = protoToByteBuffer(ack.getOrder(), bytes.toByteArray());
+                }
 
-                //transferData
-                Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE,
-                        Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), bytes);
-                String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
-                Connect.IMTransferData transferData = Connect.IMTransferData.newBuilder().
-                        setSign(signHash).setCipherData(gcmData).build();
-
-                MsgSendManager.getInstance().sendMessage(order.getOrder(), transferData.toByteArray());
+                sendToBytes(byteBuffer);
             } catch (Exception e) {
                 e.printStackTrace();
                 String errInfo = e.getMessage();
                 if (TextUtils.isEmpty(errInfo)) {
                     errInfo = "";
                 }
-                LogManager.getLogger().d(Tag, "exception order: [" + order.getOrder()[0] + "][" + order.getOrder()[1] + "]" + e.getMessage());
+                LogManager.getLogger().d(Tag, "exception order: [" + ack.getOrder()[0] + "][" + ack.getOrder()[1] + "]" + errInfo);
             }
         }
-    }
 
-    public void sendDelayFailMsg(String roomkey, String msgid) {
-        sendDelayFailMsg(roomkey, msgid, null, null);
-    }
-
-    /**
-     * Delay message sent failure
-     *
-     * @param msgid
-     * @param roomkey
-     */
-    public void sendDelayFailMsg(String roomkey, String msgid, SocketACK order, ByteString msgbyte) {
-        long delaytime = 0;
-        if (TextUtils.isEmpty(roomkey)) {
-            delaytime = MSGTIME_OTHER;
-        } else {
-            delaytime = MSGTIME_CHAT;
-        }
-        FailMsgsManager.getInstance().insertFailMsg(roomkey, msgid, order, msgbyte, null);
-
-        if (!TextUtils.isEmpty(msgid)) {
-            android.os.Message msg = new Message();
-            msg.what = MSG_FAIL;
-            msg.obj = msgid;
-            delayFailHandler.sendMessageDelayed(msg, delaytime);
-        }
-    }
-
-    /** Chat messages failure time */
-    private final long MSGTIME_CHAT = 10 * 1000;
-    /** Other messages sent failure time */
-    private final long MSGTIME_OTHER = 1000;
-    /** Failure message */
-    private final int MSG_FAIL = 100;
-
-    /**
-     * Delay message sent failure
-     */
-    private Handler delayFailHandler = new Handler(BaseApplication.getInstance().getBaseContext().getMainLooper()) {
-        @Override
-        public void handleMessage(android.os.Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case MSG_FAIL:
-                    String msgid = (String) msg.obj;
-                    Map failMap = FailMsgsManager.getInstance().getFailMap(msgid);
-                    if (failMap != null) {
-                        ChatMsgUtil.updateMsgSendState("", msgid, 2);
+        private void sendToBytes(ByteBuffer byteBuffer) {
+            boolean avaliableConnc = true;
+            try {
+                SocketChannel channel = ConnectManager.getInstance().getSocketChannel();
+                avaliableConnc = ConnectManager.getInstance().avaliableConnect();
+                if (avaliableConnc) {
+                    while (byteBuffer.hasRemaining()) {
+                        channel.write(byteBuffer);
                     }
-                    break;
+                    LogManager.getLogger().d(Tag, "send message success");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                avaliableConnc = false;
+            }
+
+            if (!avaliableConnc) {
+                ConnectManager.getInstance().reconDelay();
             }
         }
-    };
+
+        /** version number */
+        private static final byte MSG_VERSION = 0x01;
+        /** Message length */
+        private static final int MSG_BODY_LENGTH = 4;
+        /** Message header length */
+        private static final int MSG_HEADER_LENGTH = 13;
+
+        /**
+         * Assemble Command + message to ByteBuffer
+         *
+         * @param orders
+         * @param msgBytes
+         * @return
+         */
+        private ByteBuffer protoToByteBuffer(byte[] orders, byte[] msgBytes) {
+            byte[] bytesLength = ByteBuffer.allocate(MSG_BODY_LENGTH).putInt(msgBytes.length).array();
+            byte[] headArr = new byte[MSG_HEADER_LENGTH + msgBytes.length];
+
+            byte[] randomBytes = SecureRandom.getSeed(4);
+
+            ByteBuffer header = ByteBuffer.allocate(MSG_HEADER_LENGTH);
+            header.put(orders[0]);
+            header.put(bytesLength);
+            header.put(orders[1]);
+            header.put(randomBytes);
+            header.put(StringUtil.MSG_HEADER_EXI);
+
+            byte[] ext = null;
+            try {
+                ext = StringUtil.byteTomd5(header.array());
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            ByteBuffer buffer = ByteBuffer.wrap(headArr);
+            buffer.put(MSG_VERSION);
+            buffer.put(orders[0]);
+            buffer.put(bytesLength);
+            buffer.put(orders[1]);
+            buffer.put(randomBytes);
+            buffer.put(ext[0]);
+            buffer.put(ext[1]);
+            buffer.put(msgBytes);
+            buffer.flip();
+            return buffer;
+        }
+    }
 }

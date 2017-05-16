@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.RecommandFriendEntity;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.ui.activity.contact.adapter.RecommendAdapter;
 import connect.ui.activity.contact.bean.SourceType;
@@ -96,7 +96,9 @@ public class RecommendActivity extends BaseActivity {
 
         @Override
         public void deleteItem(int position, RecommandFriendEntity entity) {
-            SendMsgUtil.noInterested(entity.getAddress(),"Not interested in");
+            UserOrderBean userOrderBean = new UserOrderBean();
+            userOrderBean.noInterested(entity.getAddress(),"Not interested in");
+
             ContactHelper.getInstance().removeRecommendEntity(entity.getPub_key());
             adapter.closeMenu();
 

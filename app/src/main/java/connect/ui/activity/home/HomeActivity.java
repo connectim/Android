@@ -52,9 +52,9 @@ import connect.ui.service.HttpsService;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
+import connect.utils.ProgressUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissiomUtilNew;
-import connect.utils.ProgressUtil;
 import connect.view.MaterialBadgeTextView;
 
 /**
@@ -105,8 +105,6 @@ public class HomeActivity extends BaseFragmentActivity {
     }
 
     public static void startActivity(Activity activity) {
-        //String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
-        //SystemDataUtil.setAppLanguage(activity,languageCode);
         ActivityUtil.next(activity, HomeActivity.class);
     }
 
@@ -136,6 +134,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 super.onPostExecute(aVoid);
                 ConnectState.getInstance().sendEvent(ConnectState.ConnectType.CONNECT);
                 EmoManager.getInstance();
+
                 HttpsService.startService(activity);
 
                 requestAppUpdata();
@@ -349,9 +348,6 @@ public class HomeActivity extends BaseFragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //ConnectManager.getInstance().exitConnect();//close socket
-        //SharePreferenceUser.unLinkSharePreferrnce();
-        //SharedPreferenceUtil.getInstance().clearMap();
         EventBus.getDefault().unregister(this);
     }
 }

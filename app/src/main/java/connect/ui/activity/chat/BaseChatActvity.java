@@ -9,7 +9,7 @@ import android.view.KeyEvent;
 
 import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.bean.ConversionEntity;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.chat.bean.RoomSession;
 import connect.ui.activity.chat.bean.Talker;
 import connect.ui.activity.chat.model.InputPanel;
@@ -53,7 +53,8 @@ public abstract class BaseChatActvity extends BaseActivity {
                 baseChat = new FriendChat(talker.getFriendEntity());
 
                 if (!TextUtils.isEmpty(baseChat.address())) {
-                    SendMsgUtil.friendChatCookie(baseChat.roomKey());
+                    UserOrderBean userOrderBean = new UserOrderBean();
+                    userOrderBean.friendChatCookie(baseChat.roomKey());
                 }
                 break;
             case 1:

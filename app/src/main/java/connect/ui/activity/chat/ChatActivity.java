@@ -25,6 +25,7 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.db.green.DaoHelper.ContactHelper;
+import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.DaoHelper.ConversionSettingHelper;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.TransactionHelper;
@@ -34,7 +35,7 @@ import connect.db.green.bean.GroupMemberEntity;
 import connect.db.green.bean.TransactionEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.BurnNotice;
 import connect.ui.activity.chat.bean.ExtBean;
 import connect.ui.activity.chat.bean.GatherBean;
@@ -175,21 +176,21 @@ public class ChatActivity extends BaseChatActvity {
     }
 
     public void loadChatInfor() {
-        new AsyncTask<Void, Void, List<BaseEntity>>() {
+        new AsyncTask<Void, Void, List<MsgEntity>>() {
 
             @Override
-            protected List<BaseEntity> doInBackground(Void... params) {
-                return baseChat.loadChatEntities();
+            protected List<MsgEntity> doInBackground(Void... params) {
+                return baseChat.loadMoreEntities(0);
             }
 
             @Override
-            protected void onPostExecute(List<BaseEntity> entities) {
+            protected void onPostExecute(List<MsgEntity> entities) {
                 super.onPostExecute(entities);
                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNSTATE, roomSession.getBurntime() == 0 ? 0 : 1);
 
                 chatAdapter.setDatas(entities);
 
-                BaseEntity encryEntity = (BaseEntity) baseChat.encryptChatMsg();
+                MsgEntity encryEntity = (MsgEntity) baseChat.encryptChatMsg();
                 if (entities.size() < 20 && encryEntity != null) {
                     long sendtime = entities.size() == 0 ? TimeUtil.getCurrentTimeInLong() :
                             entities.get(0).getMsgDefinBean().getSendtime();
@@ -203,15 +204,15 @@ public class ChatActivity extends BaseChatActvity {
 
     protected void loadMoreMsgs() {
         LogManager.getLogger().d(Tag, "loadMoreMsgs()");
-        new AsyncTask<Void, Void, List<BaseEntity>>() {
+        new AsyncTask<Void, Void, List<MsgEntity>>() {
             @Override
-            protected List<BaseEntity> doInBackground(Void... params) {
-                BaseEntity baseEntity = chatAdapter.getMsgEntities().get(0);
+            protected List<MsgEntity> doInBackground(Void... params) {
+                MsgEntity baseEntity = chatAdapter.getMsgEntities().get(0);
                 return baseChat.loadMoreEntities(baseEntity.getMsgDefinBean().getSendtime());
             }
 
             @Override
-            protected void onPostExecute(List<BaseEntity> msgEntities) {
+            protected void onPostExecute(List<MsgEntity> msgEntities) {
                 super.onPostExecute(msgEntities);
                 if (msgEntities.size() > 0) {
                     View firstChild = recyclerChat.getChildAt(0);
@@ -228,7 +229,7 @@ public class ChatActivity extends BaseChatActvity {
     public synchronized void onEventMainThread(MsgSend msgSend) {
         MsgDefinBean contentBean;
         String filePath = null;
-        BaseEntity bean = null;
+        MsgEntity bean = null;
         FileUpLoad upLoad = null;
         TransactionEntity transEntity = null;
 
@@ -239,7 +240,7 @@ public class ChatActivity extends BaseChatActvity {
 
         switch (msgSend.getMsgType()) {
             case Text:
-                bean = (BaseEntity) baseChat.txtMsg((String) objects[0]);
+                bean = (MsgEntity) baseChat.txtMsg((String) objects[0]);
                 if (objects.length == 2) {
                     if (((List<String>) objects[1]).size() > 0) {
                         bean.getMsgDefinBean().setExt1(new Gson().toJson(objects[1]));
@@ -250,14 +251,14 @@ public class ChatActivity extends BaseChatActvity {
             case Photo:
                 List<String> paths = (List<String>) objects[0];
                 for (String str : paths) {
-                    bean = (BaseEntity) baseChat.photoMsg(str, FileUtil.fileSize(str));
+                    bean = (MsgEntity) baseChat.photoMsg(str, FileUtil.fileSize(str));
                     contentBean = bean.getMsgDefinBean();
                     adapterInsetItem(bean);
 
                     upLoad = new PhotoUpload(activity, baseChat, contentBean, new FileUpLoad.FileUpListener() {
                         @Override
                         public void upSuccess(Object... objs) {
-                            BaseEntity index = (BaseEntity) baseChat.photoMsg((String) objs[1], (String) objs[3]);
+                            MsgEntity index = (MsgEntity) baseChat.photoMsg((String) objs[1], (String) objs[3]);
 
                             index.getMsgDefinBean().setMessage_id((String) objs[0]);
                             index.getMsgDefinBean().setUrl((String) objs[2]);
@@ -271,7 +272,7 @@ public class ChatActivity extends BaseChatActvity {
                 break;
             case Video:
                 filePath = (String) objects[0];
-                bean = (BaseEntity) baseChat.videoMsg(filePath, (int) objects[1], FileUtil.fileSize(filePath));
+                bean = (MsgEntity) baseChat.videoMsg(filePath, (int) objects[1], FileUtil.fileSize(filePath));
                 contentBean = bean.getMsgDefinBean();
 
                 Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
@@ -282,7 +283,7 @@ public class ChatActivity extends BaseChatActvity {
                 upLoad = new VideoUpload(activity, baseChat, contentBean, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(Object... objs) {
-                        BaseEntity index = (BaseEntity) baseChat.videoMsg((String) objs[1], (int) objs[3], (String) objs[4]);
+                        MsgEntity index = (MsgEntity) baseChat.videoMsg((String) objs[1], (int) objs[3], (String) objs[4]);
 
                         index.getMsgDefinBean().setMessage_id((String) objs[0]);
                         index.getMsgDefinBean().setUrl((String) objs[2]);
@@ -294,14 +295,14 @@ public class ChatActivity extends BaseChatActvity {
                 upLoad.fileHandle();
                 break;
             case Voice:
-                bean = (BaseEntity) baseChat.voiceMsg((String) objects[0], (int) objects[1], FileUtil.fileSize(filePath));
+                bean = (MsgEntity) baseChat.voiceMsg((String) objects[0], (int) objects[1], FileUtil.fileSize(filePath));
                 contentBean = bean.getMsgDefinBean();
                 adapterInsetItem(bean);
 
                 upLoad = new VoiceUpload(activity, baseChat, contentBean, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(Object... objs) {
-                        BaseEntity index = (BaseEntity) baseChat.voiceMsg((String) objs[1], (int) objs[2], (String) objs[3]);
+                        MsgEntity index = (MsgEntity) baseChat.voiceMsg((String) objs[1], (int) objs[2], (String) objs[3]);
 
                         index.getMsgDefinBean().setMessage_id((String) objs[0]);
                         baseChat.sendPushMsg(index);
@@ -310,11 +311,11 @@ public class ChatActivity extends BaseChatActvity {
                 upLoad.fileHandle();
                 break;
             case Emotion:
-                bean = (BaseEntity) baseChat.emotionMsg((String) objects[0]);
+                bean = (MsgEntity) baseChat.emotionMsg((String) objects[0]);
                 sendNormalMsg(bean);
                 break;
             case Name_Card:
-                bean = (BaseEntity) baseChat.cardMsg((ContactEntity) objects[0]);
+                bean = (MsgEntity) baseChat.cardMsg((ContactEntity) objects[0]);
                 sendNormalMsg(bean);
                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.SCROLLBOTTOM);
                 break;
@@ -322,16 +323,16 @@ public class ChatActivity extends BaseChatActvity {
                 long time = (long) objects[0];
                 RoomSession.getInstance().setBurntime(time);
 
-                bean = (BaseEntity) baseChat.destructMsg((Long) objects[0]);
+                bean = (MsgEntity) baseChat.destructMsg((Long) objects[0]);
                 sendNormalMsg(bean);
                 break;
             case Self_destruct_Receipt:
-                bean = (BaseEntity) baseChat.receiptMsg((String) objects[0]);
+                bean = (MsgEntity) baseChat.receiptMsg((String) objects[0]);
                 baseChat.sendPushMsg(bean);
                 break;
             case Request_Payment:
                 GatherBean gatherBean = (GatherBean) objects[0];
-                bean = (BaseEntity) baseChat.paymentMsg(gatherBean);
+                bean = (MsgEntity) baseChat.paymentMsg(gatherBean);
                 sendNormalMsg(bean);
                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.SCROLLBOTTOM);
 
@@ -339,7 +340,7 @@ public class ChatActivity extends BaseChatActvity {
                 TransactionHelper.getInstance().updateTransEntity(gatherBean.getHashid(), bean.getMsgid(), 0, gatherBean.getTotalMember());
                 break;
             case Transfer:
-                bean = (BaseEntity) baseChat.transferMsg((String) objects[0], (long) objects[1], (String) objects[2], 0);
+                bean = (MsgEntity) baseChat.transferMsg((String) objects[0], (long) objects[1], (String) objects[2], 0);
                 sendNormalMsg(bean);
                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.SCROLLBOTTOM);
 
@@ -348,14 +349,14 @@ public class ChatActivity extends BaseChatActvity {
                 break;
             case Location:
                 GeoAddressBean geoAddress = (GeoAddressBean) objects[0];
-                bean = (BaseEntity) baseChat.locationMsg(geoAddress.getPath(), geoAddress);
+                bean = (MsgEntity) baseChat.locationMsg(geoAddress.getPath(), geoAddress);
                 contentBean = bean.getMsgDefinBean();
                 adapterInsetItem(bean);
 
                 upLoad = new PhotoUpload(activity, baseChat, contentBean, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(Object... objs) {
-                        BaseEntity index = (BaseEntity) baseChat.locationMsg((String) objs[1], (GeoAddressBean) objs[2]);
+                        MsgEntity index = (MsgEntity) baseChat.locationMsg((String) objs[1], (GeoAddressBean) objs[2]);
                         index.getMsgDefinBean().setMessage_id((String) objs[0]);
                         index.getMsgDefinBean().setImageOriginWidth((Float) objs[3]);
                         index.getMsgDefinBean().setImageOriginHeight((Float) objs[4]);
@@ -366,12 +367,12 @@ public class ChatActivity extends BaseChatActvity {
                 upLoad.fileHandle();
                 break;
             case Lucky_Packet:
-                bean = (BaseEntity) baseChat.luckPacketMsg((String) objects[0], (String) objects[1], 0);
+                bean = (MsgEntity) baseChat.luckPacketMsg((String) objects[0], (String) objects[1], 0);
                 sendNormalMsg(bean);
                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.SCROLLBOTTOM);
                 break;
             case OUTER_WEBSITE:
-                bean = (BaseEntity) baseChat.outerWebsiteMsg((String) objects[0], (WebsiteExt1Bean) objects[1]);
+                bean = (MsgEntity) baseChat.outerWebsiteMsg((String) objects[0], (WebsiteExt1Bean) objects[1]);
                 sendNormalMsg(bean);
                 break;
         }
@@ -384,7 +385,7 @@ public class ChatActivity extends BaseChatActvity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public synchronized void onEventMainThread(RecExtBean bean) {
-        BaseEntity baseEntity = null;
+        MsgEntity baseEntity = null;
 
         Object[] objects = null;
         if (bean.getObj() != null) {
@@ -396,7 +397,7 @@ public class ChatActivity extends BaseChatActvity {
                 inputPanel.hideBottomPanel();
                 break;
             case DELMSG:
-                chatAdapter.removeItem((BaseEntity) objects[0]);
+                chatAdapter.removeItem((MsgEntity) objects[0]);
                 break;
             case RECENT_ALBUM://Picture taken recently
                 PermissiomUtilNew.getInstance().requestPermissom(activity,new String[]{PermissiomUtilNew.PERMISSIM_STORAGE},permissomCallBack);
@@ -437,14 +438,14 @@ public class ChatActivity extends BaseChatActvity {
                 }
                 break;
             case RESEND://resend message
-                reSendFailMsg((BaseEntity) objects[0]);
+                reSendFailMsg((MsgEntity) objects[0]);
                 break;
             case IMGVIEWER://Image viewer
                 ArrayList<String> imgs = chatAdapter.showImgMsgs();
                 ImageViewerActivity.startActivity(activity, (String) objects[0], imgs);
                 break;
             case NOTICE://notice message
-                adapterInsetItem((BaseEntity) baseChat.noticeMsg((String) objects[0]));
+                adapterInsetItem((MsgEntity) baseChat.noticeMsg((String) objects[0]));
                 break;
             case SCROLLBOTTOM:
                 final int itemCounts = chatAdapter.getItemCount();
@@ -455,7 +456,7 @@ public class ChatActivity extends BaseChatActvity {
                 chatAdapter.unReadVoice((String) objects[0]);
                 break;
             case NOTICE_NOTFRIEND://not friend
-                BaseEntity tempEntity = ((FriendChat) baseChat).strangerNotice();
+                MsgEntity tempEntity = ((FriendChat) baseChat).strangerNotice();
                 MessageHelper.getInstance().insertToMsg(tempEntity.getMsgDefinBean());
                 adapterInsetItem(tempEntity);
                 break;
@@ -483,7 +484,7 @@ public class ChatActivity extends BaseChatActvity {
                 GoogleMapActivity.startActivity(activity);
                 break;
             case LUCKPACKET_RECEIVE://receive a lucky packet
-                baseEntity = (BaseEntity) baseChat.clickReceiveLuckMsg((String) objects[0]);
+                baseEntity = (MsgEntity) baseChat.clickReceiveLuckMsg((String) objects[0]);
                 sendNormalMsg(false, baseEntity);
                 break;
             case GROUP_REMOVE://dissolute group
@@ -522,7 +523,7 @@ public class ChatActivity extends BaseChatActvity {
                     toolbar.setTitle(titleName+String.format(Locale.ENGLISH,"(%d)",memEntities.size()));
                 }
                 break;
-            case 1://havae started
+            case 1://have started
                 String name = baseChat.nickName();
                 StringBuffer indexName = new StringBuffer();
                 indexName.append(name.charAt(0));
@@ -542,7 +543,7 @@ public class ChatActivity extends BaseChatActvity {
         }
     }
 
-    protected void reSendFailMsg(BaseEntity msg) {
+    protected void reSendFailMsg(MsgEntity msg) {
         FileUpLoad upLoad = null;
         MsgDefinBean definBean = msg.getMsgDefinBean();
         switch (definBean.getType()) {
@@ -550,7 +551,7 @@ public class ChatActivity extends BaseChatActvity {
                 upLoad = new VoiceUpload(activity, baseChat, definBean, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(Object... objs) {
-                        BaseEntity index = (BaseEntity) baseChat.voiceMsg((String) objs[1], (int) objs[2], (String) objs[3]);
+                        MsgEntity index = (MsgEntity) baseChat.voiceMsg((String) objs[1], (int) objs[2], (String) objs[3]);
 
                         index.getMsgDefinBean().setMessage_id((String) objs[0]);
                         baseChat.sendPushMsg(index);
@@ -562,7 +563,7 @@ public class ChatActivity extends BaseChatActvity {
                 upLoad = new PhotoUpload(activity, baseChat, definBean, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(Object... objs) {
-                        BaseEntity index = (BaseEntity) baseChat.photoMsg((String) objs[1], (String) objs[3]);
+                        MsgEntity index = (MsgEntity) baseChat.photoMsg((String) objs[1], (String) objs[3]);
 
                         index.getMsgDefinBean().setMessage_id((String) objs[0]);
                         index.getMsgDefinBean().setUrl((String) objs[2]);
@@ -577,7 +578,7 @@ public class ChatActivity extends BaseChatActvity {
                 upLoad = new VideoUpload(activity, baseChat, definBean, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(Object... objs) {
-                        BaseEntity index = (BaseEntity) baseChat.videoMsg((String) objs[1], (int) objs[3], (String) objs[4]);
+                        MsgEntity index = (MsgEntity) baseChat.videoMsg((String) objs[1], (int) objs[3], (String) objs[4]);
 
                         index.getMsgDefinBean().setMessage_id((String) objs[0]);
                         index.getMsgDefinBean().setUrl((String) objs[2]);
@@ -592,7 +593,7 @@ public class ChatActivity extends BaseChatActvity {
                 upLoad = new PhotoUpload(activity, baseChat, definBean, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(Object... objs) {
-                        BaseEntity index = (BaseEntity) baseChat.locationMsg((String) objs[1], (GeoAddressBean) objs[2]);
+                        MsgEntity index = (MsgEntity) baseChat.locationMsg((String) objs[1], (GeoAddressBean) objs[2]);
                         index.getMsgDefinBean().setMessage_id((String) objs[0]);
                         index.getMsgDefinBean().setImageOriginWidth((Float) objs[3]);
                         index.getMsgDefinBean().setImageOriginHeight((Float) objs[4]);
@@ -611,7 +612,7 @@ public class ChatActivity extends BaseChatActvity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MsgChatReceiver receiver) {
         if (receiver.getPubKey().equals(talker.getTalkKey())) {
-            BaseEntity bean = receiver.getBean();
+            MsgEntity bean = receiver.getBean();
             bean.setPubkey(talker.getTalkKey());
 
             long time = 0;
@@ -667,7 +668,7 @@ public class ChatActivity extends BaseChatActvity {
                         RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
                         ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
 
-                        BaseEntity destructEntity = (BaseEntity) baseChat.destructMsg(time);
+                        MsgEntity destructEntity = (MsgEntity) baseChat.destructMsg(time);
                         destructEntity.getMsgDefinBean().setSenderInfoExt(msgbean.getSenderInfoExt());
                         sendNormalMsg(destructEntity);
                     }
@@ -681,18 +682,18 @@ public class ChatActivity extends BaseChatActvity {
      *
      * @param bean
      */
-    protected void adapterInsetItem(BaseEntity bean) {
+    protected void adapterInsetItem(MsgEntity bean) {
         chatAdapter.insertItem(bean);
         if (scrollHelper.isScrollBottom() || !talker.getTalkKey().equals(bean.getMsgDefinBean().getPublicKey())) {
             RecExtBean.sendRecExtMsg(RecExtBean.ExtType.SCROLLBOTTOM);
         }
     }
 
-    protected void sendNormalMsg(BaseEntity bean) {
+    protected void sendNormalMsg(MsgEntity bean) {
         sendNormalMsg(true,bean);
     }
 
-    protected void sendNormalMsg(boolean needSend, BaseEntity bean) {
+    protected void sendNormalMsg(boolean needSend, MsgEntity bean) {
         MessageHelper.getInstance().insertToMsg(bean.getMsgDefinBean());
         adapterInsetItem(bean);
         if (needSend) {
@@ -760,7 +761,7 @@ public class ChatActivity extends BaseChatActvity {
         String draft = inputPanel.getDraft();
 
         if (chatAdapter.getMsgEntities().size() != 0) {
-            BaseEntity lastmsg = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
+            MsgEntity lastmsg = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
             if (lastmsg != null) {
                 showtxt = ChatMsgUtil.showContentTxt(talker.getTalkType(), lastmsg.getMsgDefinBean());
                 sendtime = lastmsg.getMsgDefinBean().getSendtime();

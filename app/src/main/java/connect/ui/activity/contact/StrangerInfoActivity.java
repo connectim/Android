@@ -1,7 +1,6 @@
 package connect.ui.activity.contact;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +18,7 @@ import butterknife.OnClick;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.FriendRequestEntity;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.exts.TransferToActivity;
 import connect.ui.activity.contact.bean.MsgSendBean;
@@ -157,7 +156,9 @@ public class StrangerInfoActivity extends BaseActivity {
                         MsgSendBean msgSendBean = new MsgSendBean();
                         msgSendBean.setType(MsgSendBean.SendType.TypeSendFriendQuest);
                         msgSendBean.setTips(value);
-                        SendMsgUtil.requestAddFriend(sendUserInfo.getAddress(),sendUserInfo.getPubKey(),value,sourceType.getType(),msgSendBean);
+
+                        UserOrderBean userOrderBean = new UserOrderBean();
+                        userOrderBean.requestAddFriend(sendUserInfo.getAddress(),sendUserInfo.getPubKey(),value,sourceType.getType(),msgSendBean);
                     }
 
                     @Override
