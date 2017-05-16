@@ -12,13 +12,13 @@ import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.im.inter.InterParse;
+import connect.im.model.ChatSendManager;
 import connect.im.model.ConnectManager;
 import connect.im.model.FailMsgsManager;
-import connect.im.model.MsgSendManager;
 import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.bean.RoMsgEntity;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.RobotChat;
 import connect.ui.activity.home.bean.MsgFragmReceiver;
@@ -101,7 +101,7 @@ public class ShakeHandBean extends InterParse {
                 setCipherData(gcmDataTemp).
                 setSign(signHash).build();
 
-        MsgSendManager.getInstance().sendMessage(SocketACK.HAND_SHAKE_SECOND.getOrder(), imTransferData.toByteArray());
+        ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_SECOND, imTransferData.toByteString());
     }
 
     /**
@@ -128,7 +128,7 @@ public class ShakeHandBean extends InterParse {
     }
 
     private void welcomeRobotMsg() {
-        RoMsgEntity entity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
+        MsgEntity entity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
         entity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
         MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), entity.getMsgDefinBean());
 

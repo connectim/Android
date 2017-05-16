@@ -2,6 +2,8 @@ package connect.im.model;
 
 import android.os.Message;
 
+import com.google.protobuf.ByteString;
+
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -78,7 +80,7 @@ public class ConnectManager {
                     socketChannel.register(selector, SelectionKey.OP_READ);
 
                     Connect.IMRequest firstShake = SendMsgUtil.firstLoginShake();
-                    MsgSendManager.getInstance().sendMessage(SocketACK.HAND_SHAKE_FIRST.getOrder(), firstShake.toByteArray());
+                    ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, firstShake.toByteString());
                 } else {
                     socketChannel.register(selector, SelectionKey.OP_CONNECT);
                 }
@@ -100,7 +102,7 @@ public class ConnectManager {
                                 selectionKey.interestOps(SelectionKey.OP_READ);
 
                                 Connect.IMRequest firstShake = SendMsgUtil.firstLoginShake();
-                                MsgSendManager.getInstance().sendMessage(SocketACK.HAND_SHAKE_FIRST.getOrder(), firstShake.toByteArray());
+                                ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, firstShake.toByteString());
                             } else {//An error occurred; unregister the channel.
                                 selectionKey.cancel();
                                 reconDelay();
@@ -286,7 +288,7 @@ public class ConnectManager {
             public void run() {
                 long curtime = TimeUtil.getCurrentTimeInLong();
                 if (curtime < lastReceiverTime + HEART_FREQUENCY * 2) {
-                    MsgSendManager.getInstance().sendMessage(SocketACK.HEART_BREAK.getOrder(), new byte[]{});
+                    ChatSendManager.getInstance().sendToMsg(SocketACK.HEART_BREAK, ByteString.copyFrom(new byte[]{}));
                     checkUserCookie();
                 } else {
                     stopConnect();

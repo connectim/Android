@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.util.Locale;
 
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgDirect;
 import connect.ui.activity.chat.bean.MsgEntity;
@@ -41,7 +41,7 @@ public class MsgVideoHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(final MsgBaseHolder msgBaseHolder, final BaseEntity entity) {
+    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         final MsgDefinBean bean = entity.getMsgDefinBean();
         String url = bean.getContent();

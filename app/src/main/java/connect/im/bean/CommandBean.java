@@ -16,12 +16,10 @@ import java.util.zip.GZIPInputStream;
 
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
-import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.ParamHelper;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.db.green.bean.ContactEntity;
-import connect.db.green.bean.ConversionEntity;
 import connect.db.green.bean.FriendRequestEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
@@ -34,7 +32,6 @@ import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
 import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.bean.RoMsgEntity;
 import connect.ui.activity.chat.bean.Talker;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
@@ -786,7 +783,7 @@ public class CommandBean extends InterParse {
             case 0://Get the success
                 packageInfo = Connect.ExternalRedPackageInfo.parseFrom(buffer);
                 if (packageInfo.getSystem()) {
-                    RoMsgEntity msgEntity = RobotChat.getInstance().luckPacketMsg(packageInfo.getHashId(), packageInfo.getTips(), 1);
+                    MsgEntity msgEntity = RobotChat.getInstance().luckPacketMsg(packageInfo.getHashId(), packageInfo.getTips(), 1);
                     msgEntity.getMsgDefinBean().setMessage_id(packageInfo.getMsgId());
                     msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().roomKey(),
                             BaseApplication.getInstance().getString(R.string.app_name),

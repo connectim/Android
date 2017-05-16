@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import connect.db.green.DaoHelper.TransactionHelper;
 import connect.db.green.bean.TransactionEntity;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.GatherBean;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.exts.GatherDetailGroupActivity;
@@ -38,7 +38,7 @@ public class MsgPayHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final BaseEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean definBean = entity.getMsgDefinBean();
 

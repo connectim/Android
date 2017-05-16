@@ -36,6 +36,7 @@ public class PhotoUpload extends FileUpLoad {
 
     @Override
     public void fileHandle() {
+        super.fileHandle();
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -82,7 +83,6 @@ public class PhotoUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                ChatSendManager.getInstance().sendDelayFailMsg(bean.getPublicKey(),bean.getMessage_id());
                 fileUp();
             }
         }.execute();
@@ -93,7 +93,7 @@ public class PhotoUpload extends FileUpLoad {
         if (mediaFile == null) {
             return;
         }
-        ResultUpFile(mediaFile, new FileResult() {
+        resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
                 String content = getThumbUrl(mediaFile.getUrl(), mediaFile.getToken());

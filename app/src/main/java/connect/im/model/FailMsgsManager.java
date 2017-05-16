@@ -1,5 +1,7 @@
 package connect.im.model;
 
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
@@ -15,7 +17,9 @@ import connect.db.green.bean.GroupEntity;
 import connect.im.bean.SocketACK;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.model.ChatMsgUtil;
+import connect.ui.base.BaseApplication;
 import connect.utils.StringUtil;
+import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.adapter.MsgDefTypeAdapter;
@@ -105,6 +109,42 @@ public class FailMsgsManager {
             }
         }
     }
+
+    /**
+     * Delay message sent failure
+     *
+     * @param msgid
+     * @param roomkey
+     */
+    public void sendDelayFailMsg(String roomkey, String msgid, SocketACK order, ByteString msgbyte) {
+        FailMsgsManager.getInstance().insertFailMsg(roomkey, msgid, order, msgbyte, null);
+
+        long delaytime = TextUtils.isEmpty(roomkey) ? MSGTIME_OTHER : MSGTIME_CHAT;
+        android.os.Message msg = new Message();
+        msg.what = TimeUtil.msgidToInt(msgid);
+        msg.obj = msgid;
+        delayFailHandler.sendMessageDelayed(msg, delaytime);
+    }
+
+    /** Chat messages failure time */
+    private final long MSGTIME_CHAT = 10 * 1000;
+    /** Other messages sent failure time */
+    private final long MSGTIME_OTHER = 1000;
+
+    /**
+     * Delay message sent failure
+     */
+    private Handler delayFailHandler = new Handler(BaseApplication.getInstance().getBaseContext().getMainLooper()) {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            String msgid = (String) msg.obj;
+            Map failMap = FailMsgsManager.getInstance().getFailMap(msgid);
+            if (failMap != null) {
+                ChatMsgUtil.updateMsgSendState("", msgid, 2);
+            }
+        }
+    };
 
     /***************************  Accept failure message set  *************************************************/
     public void insertReceiveMsg(String pubkey, String msgid, Object object) {

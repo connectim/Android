@@ -18,7 +18,7 @@ import java.io.File;
 
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgDirect;
 import connect.ui.activity.chat.bean.MsgEntity;
@@ -42,7 +42,7 @@ public class MsgImgHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final BaseEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean bean = entity.getMsgDefinBean();
         String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();

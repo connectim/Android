@@ -192,7 +192,6 @@ public class ChatParseBean extends InterParse {
         chatBean.setMsgDefinBean(definBean);
         chatBean.setSendstate(0);
         chatBean.setPubkey(pubkey);
-        chatBean.setMsgid(definBean.getMessage_id());
 
         MsgChatReceiver msgChatReceiver = new MsgChatReceiver(chatBean);
         msgChatReceiver.setPubKey(pubkey);

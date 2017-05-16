@@ -12,7 +12,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import connect.db.SharedPreferenceUtil;
 import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.WebsiteExt1Bean;
 import connect.ui.activity.chat.exts.OuterWebsiteActivity;
@@ -44,7 +44,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final BaseEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean definBean = entity.getMsgDefinBean();
         final String content = definBean.getContent();

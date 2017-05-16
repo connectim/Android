@@ -6,8 +6,8 @@ import java.util.Map;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
+import connect.im.model.ChatSendManager;
 import connect.im.model.FailMsgsManager;
-import connect.im.model.MsgSendManager;
 import connect.im.model.NotificationManager;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.home.bean.MsgNoticeBean;
@@ -76,7 +76,7 @@ public abstract class InterParse {
                 .setCipherData(gcmData)
                 .setSign(signHash).build();
 
-        MsgSendManager.getInstance().sendMessage(socketack.getOrder(), backAck.toByteArray());
+        ChatSendManager.getInstance().sendToMsg(socketack, backAck.toByteString());
     }
 
     /**

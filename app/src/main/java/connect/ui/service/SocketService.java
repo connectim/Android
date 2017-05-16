@@ -1,8 +1,10 @@
 package connect.ui.service;
 
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -13,8 +15,6 @@ import connect.im.model.ConnectManager;
  * Created by gtq on 2016/11/21.
  */
 public class SocketService extends Service {
-
-    private final static int FOREGROUND_ID = 1000;
 
     @Nullable
     @Override

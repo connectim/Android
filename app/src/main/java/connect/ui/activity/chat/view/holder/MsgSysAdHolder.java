@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.AdBean;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.exts.OuterWebsiteActivity;
 import connect.ui.activity.set.AboutActivity;
 import connect.utils.TimeUtil;
@@ -41,7 +41,7 @@ public class MsgSysAdHolder extends MsgBaseHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final BaseEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         adBean = new Gson().fromJson(entity.getMsgDefinBean().getContent(), AdBean.class);
 

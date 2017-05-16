@@ -134,6 +134,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 super.onPostExecute(aVoid);
                 ConnectState.getInstance().sendEvent(ConnectState.ConnectType.CONNECT);
                 EmoManager.getInstance();
+
                 HttpsService.startService(activity);
 
                 requestAppUpdata();
