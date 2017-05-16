@@ -1,4 +1,4 @@
-package connect.im.bean;
+package connect.im.parser;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -24,9 +24,11 @@ import connect.db.green.bean.FriendRequestEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.db.green.bean.ParamEntity;
+import connect.im.bean.Session;
+import connect.im.bean.UserCookie;
+import connect.im.bean.UserOrderBean;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
-import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgEntity;
@@ -409,7 +411,7 @@ public class CommandBean extends InterParse {
                 return;
         }
 
-        SendMsgUtil.requestFriendsByVersion();
+        requestFriendsByVersion();
         Connect.ReceiveAcceptFriendRequest friendRequest = Connect.ReceiveAcceptFriendRequest.parseFrom(buffer);
 
         FriendRequestEntity friendRequestEntity = ContactHelper.getInstance().loadFriendRequest(friendRequest.getAddress());
@@ -669,7 +671,8 @@ public class CommandBean extends InterParse {
                     setSign(signInfo).
                     setData(chatInfo).build();
 
-            SendMsgUtil.uploadRandomCookie(cookie);
+            UserOrderBean userOrderBean = new UserOrderBean();
+            userOrderBean.uploadRandomCookie(cookie);
 
             //save random prikey and salt
             userCookie = new UserCookie();

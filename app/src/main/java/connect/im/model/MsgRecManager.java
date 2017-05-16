@@ -12,11 +12,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import connect.db.SharedPreferenceUtil;
-import connect.im.bean.CommandBean;
-import connect.im.bean.ExceptionBean;
-import connect.im.bean.MsgParseBean;
-import connect.im.bean.ReceiptBean;
-import connect.im.bean.ShakeHandBean;
+import connect.im.parser.CommandBean;
+import connect.im.parser.ExceptionBean;
+import connect.im.parser.MsgParseBean;
+import connect.im.parser.ReceiptBean;
+import connect.im.parser.ShakeHandBean;
 import connect.im.inter.InterParse;
 import connect.ui.activity.login.StartActivity;
 import connect.ui.base.BaseApplication;

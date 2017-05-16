@@ -1,4 +1,4 @@
-package connect.im.bean;
+package connect.im.parser;
 
 import com.google.gson.Gson;
 
@@ -17,6 +17,9 @@ import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.MessageEntity;
 import connect.db.green.bean.ParamEntity;
+import connect.im.bean.MsgType;
+import connect.im.bean.Session;
+import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;

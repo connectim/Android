@@ -60,7 +60,7 @@ public class FailMsgsManager {
         if (sendFailMap == null) {
             sendFailMap = new HashMap<>();
         }
-        Map<String, Object> valueMap = sendFailMap.get(roomid);
+        Map<String, Object> valueMap = sendFailMap.get(msgid);
         if (valueMap == null) {
             valueMap = new HashMap<>();
         }
@@ -98,6 +98,8 @@ public class FailMsgsManager {
             Map.Entry<String, Map<String, Object>> entity = entryIterator.next();
             Map<String, Object> failMap = entity.getValue();
 
+            String msgid = entity.getKey();
+            Object keyObj = failMap.get(PUBKEY);
             Object object = failMap.get(ACKORDER);
             Object msgObj = failMap.get(OBJECT);
             if (object == null || msgObj == null) {
@@ -105,7 +107,7 @@ public class FailMsgsManager {
             } else {
                 SocketACK ack = (SocketACK) object;
                 ByteString msgByte = (ByteString) msgObj;
-                ChatSendManager.getInstance().sendMsgidMsg(ack, null, msgByte);
+                ChatSendManager.getInstance().sendAckMsg(ack, (String) keyObj, msgid, msgByte);
             }
         }
     }
@@ -117,7 +119,7 @@ public class FailMsgsManager {
      * @param roomkey
      */
     public void sendDelayFailMsg(String roomkey, String msgid, SocketACK order, ByteString msgbyte) {
-        FailMsgsManager.getInstance().insertFailMsg(roomkey, msgid, order, msgbyte, null);
+        insertFailMsg(roomkey, msgid, order, msgbyte, null);
 
         long delaytime = TextUtils.isEmpty(roomkey) ? MSGTIME_OTHER : MSGTIME_CHAT;
         android.os.Message msg = new Message();
@@ -141,7 +143,7 @@ public class FailMsgsManager {
             String msgid = (String) msg.obj;
             Map failMap = FailMsgsManager.getInstance().getFailMap(msgid);
             if (failMap != null) {
-                ChatMsgUtil.updateMsgSendState("", msgid, 2);
+                ChatMsgUtil.updateMsgSendState((String) failMap.get(PUBKEY), msgid, 2);
             }
         }
     };

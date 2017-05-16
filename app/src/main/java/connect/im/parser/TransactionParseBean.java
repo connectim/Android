@@ -1,4 +1,4 @@
-package connect.im.bean;
+package connect.im.parser;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -15,7 +15,6 @@ import connect.db.green.bean.GroupMemberEntity;
 import connect.db.green.bean.TransactionEntity;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
-import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgEntity;
@@ -171,7 +170,7 @@ public class TransactionParseBean extends InterParse{
         String showName = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
         String content = context.getResources().getString(R.string.Chat_paid_the_bill_to, showName, context.getString(R.string.Chat_You));
         if (friendEntity == null) {
-            SendMsgUtil.requestFriendsByVersion();
+            requestFriendsByVersion();
             FailMsgsManager.getInstance().insertReceiveMsg(billNotice.getSender(), TimeUtil.timestampToMsgid(), content);
         } else {
             String pubkey = friendEntity.getPub_key();

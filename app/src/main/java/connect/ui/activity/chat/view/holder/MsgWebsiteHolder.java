@@ -10,10 +10,10 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.db.SharedPreferenceUtil;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.WebsiteExt1Bean;
 import connect.ui.activity.chat.exts.OuterWebsiteActivity;
 import connect.ui.activity.chat.exts.TransferToActivity;
@@ -83,7 +83,9 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                         transEnd = content.length();
                     }
                     String transToken = content.substring(transStart, transEnd);
-                    SendMsgUtil.outerTransfer(transToken);
+
+                    UserOrderBean userOrderBean = new UserOrderBean();
+                    userOrderBean.outerTransfer(transToken);
                 } else if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE_PACKET)) {//outer lucky packet
                     GlideUtil.loadImage(typeImg, R.mipmap.luckybag3x);
 
@@ -130,7 +132,8 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                                 int type = redPackage.getSystem() ? 1 : 0;
                                 PacketDetailActivity.startActivity((Activity) context, hashid, type);
                             } else {
-                                SendMsgUtil.outerRedPacket(token);
+                                UserOrderBean userOrderBean = new UserOrderBean();
+                                userOrderBean.outerRedPacket(token);
                             }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();

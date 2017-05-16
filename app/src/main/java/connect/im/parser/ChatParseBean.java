@@ -1,4 +1,4 @@
-package connect.im.bean;
+package connect.im.parser;
 
 import android.text.TextUtils;
 
@@ -20,9 +20,9 @@ import connect.db.green.DaoHelper.ParamHelper;
 import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.ParamEntity;
+import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
-import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgDefinBean;
@@ -80,7 +80,7 @@ public class ChatParseBean extends InterParse {
 
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(friendPubKey);
         if (friendEntity == null) {
-            SendMsgUtil.requestFriendsByVersion();
+            requestFriendsByVersion();
         }
 
         Connect.MessageData messageData = msgpost.getMsgData();
