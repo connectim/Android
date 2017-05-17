@@ -1,16 +1,22 @@
 package connect.im.inter;
 
+import android.text.TextUtils;
+
+import com.google.protobuf.ByteString;
+
 import java.nio.ByteBuffer;
 import java.util.Map;
 
 import connect.db.SharedPreferenceUtil;
+import connect.db.green.DaoHelper.ParamManager;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
+import connect.im.model.ChatSendManager;
 import connect.im.model.FailMsgsManager;
-import connect.im.model.MsgSendManager;
 import connect.im.model.NotificationManager;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.home.bean.MsgNoticeBean;
+import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -26,6 +32,9 @@ public abstract class InterParse {
 
     protected byte ackByte;
     protected ByteBuffer byteBuffer;
+
+    public InterParse() {
+    }
 
     public InterParse(byte ackByte, ByteBuffer byteBuffer) {
         this.ackByte = ackByte;
@@ -76,7 +85,7 @@ public abstract class InterParse {
                 .setCipherData(gcmData)
                 .setSign(signHash).build();
 
-        MsgSendManager.getInstance().sendMessage(socketack.getOrder(), backAck.toByteArray());
+        ChatSendManager.getInstance().sendToMsg(socketack, backAck.toByteString());
     }
 
     /**
@@ -148,5 +157,26 @@ public abstract class InterParse {
 
     protected void pushNoticeMsg(String pubkey,int type,String content) {
         NotificationManager.getInstance().pushNoticeMsg(pubkey,type,content);
+    }
+
+    protected void commandToIMTransfer(String msgid, SocketACK ack, ByteString byteString) {
+        Connect.Command command = Connect.Command.newBuilder().setMsgId(msgid).
+                setDetail(byteString).build();
+        ChatSendManager.getInstance().sendMsgidMsg(ack, msgid, command.toByteString());
+    }
+
+    /**
+     * sycn contact
+     *
+     * @return
+     */
+    protected void requestFriendsByVersion() {
+        String version = ParamManager.getInstance().getString(ParamManager.COUNT_FRIENDLIST);
+        if (TextUtils.isEmpty(version)) {
+            version = "0";
+        }
+        Connect.SyncRelationship syncRelationship = Connect.SyncRelationship.newBuilder()
+                .setVersion(version).build();
+        commandToIMTransfer(TimeUtil.timestampToMsgid(), SocketACK.CONTACT_SYNC, syncRelationship.toByteString());
     }
 }

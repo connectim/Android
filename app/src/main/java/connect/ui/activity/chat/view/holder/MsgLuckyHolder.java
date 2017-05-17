@@ -1,7 +1,6 @@
 package connect.ui.activity.chat.view.holder;
 
 import android.app.Activity;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -10,9 +9,8 @@ import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.bean.MessageEntity;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
-import connect.ui.activity.chat.bean.RecExtBean;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.TransferExt;
 import connect.ui.activity.wallet.PacketDetailActivity;
 import connect.utils.DialogUtil;
@@ -37,7 +35,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final BaseEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

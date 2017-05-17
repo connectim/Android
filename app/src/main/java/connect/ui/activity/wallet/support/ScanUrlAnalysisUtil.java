@@ -14,7 +14,7 @@ import java.net.URL;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.ui.activity.chat.exts.OuterWebsiteActivity;
@@ -173,6 +173,7 @@ public class ScanUrlAnalysisUtil {
     }
 
     private void dealResult(String resule, ScanResultBean resultBean){
+        UserOrderBean userOrderBean = null;
         switch (resule){
             case TYPE_WEB_FRIEND:
                 if (!resultBean.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getAddress())) {
@@ -204,13 +205,17 @@ public class ScanUrlAnalysisUtil {
                 MsgSendBean transferBean = new MsgSendBean();
                 transferBean.setType(MsgSendBean.SendType.TypeOutTransfer);
                 transferBean.setTips(resultBean.getTip());
-                SendMsgUtil.outerTransfer(resultBean.getToken(), transferBean);
+
+                userOrderBean = new UserOrderBean();
+                userOrderBean.outerTransfer(resultBean.getToken(), transferBean);
                 break;
             case TYPE_WEB_PACKET:
                 MsgSendBean packetBean = new MsgSendBean();
                 packetBean.setType(MsgSendBean.SendType.TypeOutPacket);
                 packetBean.setTips(resultBean.getTip());
-                SendMsgUtil.outerRedPacket(resultBean.getToken(), packetBean);
+
+                userOrderBean = new UserOrderBean();
+                userOrderBean.outerRedPacket(resultBean.getToken(), packetBean);
                 break;
             case TYPE_WEB_GROUNP:
                 ApplyJoinGroupActivity.startActivity(activity, ApplyJoinGroupActivity.EApplyGroup.TOKEN, resultBean.getToken());

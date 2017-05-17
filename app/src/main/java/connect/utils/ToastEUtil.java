@@ -76,6 +76,8 @@ public class ToastEUtil {
         mTextView.setText(message);
         if(stutas == TOAST_STATUS_FAILE){
             statusImg.setImageResource(R.mipmap.attention_message3x);
+        }else{
+            statusImg.setImageResource(R.mipmap.success_message3x);
         }
         return result;
     }

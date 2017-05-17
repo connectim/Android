@@ -15,7 +15,7 @@ import connect.ui.activity.locmap.bean.GeoAddressBean;
 import connect.ui.activity.login.bean.UserBean;
 
 /**
- *public methods to extract
+ * public methods to extract
  * Created by gtq on 2016/12/19.
  */
 public abstract class NormalChat extends BaseChat {
@@ -174,6 +174,4 @@ public abstract class NormalChat extends BaseChat {
     public abstract String nickName();
 
     public abstract String address();
-
-    public abstract String nickName(String pubkey);
 }

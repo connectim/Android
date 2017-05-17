@@ -1,4 +1,4 @@
-package connect.im.bean;
+package connect.im.parser;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -16,25 +16,24 @@ import java.util.zip.GZIPInputStream;
 
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
-import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.ParamHelper;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.db.green.bean.ContactEntity;
-import connect.db.green.bean.ConversionEntity;
 import connect.db.green.bean.FriendRequestEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.db.green.bean.ParamEntity;
+import connect.im.bean.Session;
+import connect.im.bean.UserCookie;
+import connect.im.bean.UserOrderBean;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
-import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
 import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.bean.RoMsgEntity;
 import connect.ui.activity.chat.bean.Talker;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
@@ -243,99 +242,85 @@ public class CommandBean extends InterParse {
         String version = ParamManager.getInstance().getString(ParamManager.COUNT_FRIENDLIST);
         if (TextUtils.isEmpty(version)) {
             Connect.SyncUserRelationship relationship = Connect.SyncUserRelationship.parseFrom(buffer);
-            //Synchronous buddy list
             Connect.RelationShip friendShip = relationship.getRelationShip();
-            version = TextUtils.isEmpty(friendShip.getVersion()) ? "" : friendShip.getVersion();
-            ParamManager.getInstance().putValue(ParamManager.COUNT_FRIENDLIST, version);
-            List<Connect.FriendInfo> friendInfoList = friendShip.getFriendsList();
-            if (friendInfoList == null || friendInfoList.size() == 0) return;
+
+            version = friendShip.getVersion();
 
             List<ContactEntity> friendInfoEntities = new ArrayList();
-            ContactEntity entity = null;
+            List<Connect.FriendInfo> friendInfoList = friendShip.getFriendsList();
             for (Connect.FriendInfo friendInfo : friendInfoList) {
-                if (TextUtils.isEmpty(friendInfo.getPubKey()) || TextUtils.isEmpty(friendInfo.getAddress())) {
-                    continue;
-                }
-
-                entity = ContactHelper.getInstance().loadFriendEntity(friendInfo.getPubKey());
-                if (entity == null) {
-                    entity = new ContactEntity();
-                }
-                entity.setUsername(friendInfo.getUsername());
-                entity.setAvatar(friendInfo.getAvatar());
-                entity.setPub_key(friendInfo.getPubKey());
-                entity.setAddress(friendInfo.getAddress());
-                entity.setCommon(friendInfo.getCommon() ? 1 : 0);
-                entity.setSource(friendInfo.getSource());
-                entity.setRemark(friendInfo.getRemark());
-                friendInfoEntities.add(entity);
+                ContactEntity contactEntity = new ContactEntity();
+                contactEntity.setUsername(friendInfo.getUsername());
+                contactEntity.setAvatar(friendInfo.getAvatar());
+                contactEntity.setPub_key(friendInfo.getPubKey());
+                contactEntity.setAddress(friendInfo.getAddress());
+                contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
+                contactEntity.setSource(friendInfo.getSource());
+                contactEntity.setRemark(friendInfo.getRemark());
+                friendInfoEntities.add(contactEntity);
             }
 
             //To add a system message contact
             String connect = BaseApplication.getInstance().getString(R.string.app_name);
-            entity = new ContactEntity();
-            entity.setPub_key(connect);
-            entity.setUsername(connect);
-            entity.setAddress(connect);
-            entity.setSource(-1);
-            friendInfoEntities.add(entity);
-
+            ContactEntity connectEntity = ContactHelper.getInstance().loadFriendEntity(connect);
+            if (connectEntity == null) {
+                connectEntity = new ContactEntity();
+                connectEntity.setPub_key(connect);
+                connectEntity.setUsername(connect);
+                connectEntity.setAddress(connect);
+                connectEntity.setSource(-1);
+                friendInfoEntities.add(connectEntity);
+            }
             ContactHelper.getInstance().insertContacts(friendInfoEntities);
+
             //Synchronous common group
             Connect.UserCommonGroups commonGroups = relationship.getUserCommonGroups();
-            if (commonGroups.getGroupsList() != null) {
-                List<Connect.GroupInfo> groupInfos = commonGroups.getGroupsList();
-                for (Connect.GroupInfo groupInfo : groupInfos) {
-                    Connect.Group group = groupInfo.getGroup();
-                    if (TextUtils.isEmpty(group.getIdentifier()) || TextUtils.isEmpty(group.getName())) {
-                        continue;
-                    }
+            List<Connect.GroupInfo> groupInfos = commonGroups.getGroupsList();
+            for (Connect.GroupInfo groupInfo : groupInfos) {
+                Connect.Group group = groupInfo.getGroup();
 
-                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(group.getIdentifier());
-                    if (groupEntity == null) {
-                        groupEntity = new GroupEntity();
-                    }
+                String groupKey = group.getIdentifier();
+                GroupEntity groupEntity = new GroupEntity();
+                groupEntity.setIdentifier(groupKey);
+                groupEntity.setVerify(group.getPublic() ? 1 : 0);
+                groupEntity.setName(group.getName());
+                groupEntity.setCommon(1);
+                groupEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
 
-                    groupEntity.setIdentifier(group.getIdentifier());
-                    groupEntity.setVerify(group.getPublic() ? 1 : 0);
-                    groupEntity.setName(group.getName());
-                    groupEntity.setCommon(1);
-                    groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
-
-                    String[] collaboratives = groupInfo.getEcdh().split("/");
-                    if (collaboratives.length < 2) {//Download failed
-                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, group.getIdentifier());
-                    } else {//Download successful
-                        String randPubkey = collaboratives[0];
-                        byte[] ecdhkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), randPubkey);
-                        Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
-                        byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, gcmData);
-                        String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
-                        LogManager.getLogger().d(Tag, "Retrieve the backup group ECDH :" + groupEcdh);
-                        groupEntity.setEcdh_key(groupEcdh);
-                        ContactHelper.getInstance().inserGroupEntity(groupEntity);
-                    }
-
-                    List<Connect.GroupMember> members = groupInfo.getMembersList();
-                    List<GroupMemberEntity> memberEntities = new ArrayList<>();
-                    for (Connect.GroupMember member : members) {
-                        GroupMemberEntity memberEntity = new GroupMemberEntity();
-                        memberEntity.setIdentifier(groupEntity.getIdentifier());
-                        memberEntity.setPub_key(member.getPubKey());
-                        memberEntity.setAddress(member.getAddress());
-                        memberEntity.setAvatar(member.getAvatar());
-                        memberEntity.setUsername(member.getUsername());
-                        memberEntity.setNick(member.getNick());
-                        memberEntity.setRole(member.getRole());
-                        memberEntity.setUsername(member.getUsername());
-                        memberEntities.add(memberEntity);
-                    }
-                    ContactHelper.getInstance().inserGroupMemEntity(memberEntities);
+                String[] collaboratives = groupInfo.getEcdh().split("/");
+                if (collaboratives.length < 2) {//Download failed
+                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, groupKey);
+                } else {// Download successful
+                    String randPubkey = collaboratives[0];
+                    byte[] ecdhkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), randPubkey);
+                    Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
+                    byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, gcmData);
+                    String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
+                    LogManager.getLogger().d(Tag, "Retrieve the backup group ECDH :" + groupEcdh);
+                    groupEntity.setEcdh_key(groupEcdh);
+                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
                 }
+
+                List<Connect.GroupMember> members = groupInfo.getMembersList();
+                List<GroupMemberEntity> memberEntities = new ArrayList<>();
+                for (Connect.GroupMember member : members) {
+                    GroupMemberEntity memberEntity = new GroupMemberEntity();
+                    memberEntity.setIdentifier(groupKey);
+                    memberEntity.setPub_key(member.getPubKey());
+                    memberEntity.setAddress(member.getAddress());
+                    memberEntity.setAvatar(member.getAvatar());
+                    memberEntity.setUsername(member.getUsername());
+                    memberEntity.setNick(member.getNick());
+                    memberEntity.setRole(member.getRole());
+                    memberEntity.setUsername(member.getUsername());
+                    memberEntities.add(memberEntity);
+                }
+                ContactHelper.getInstance().inserGroupMemEntity(memberEntities);
             }
         } else {
             Connect.ChangeRecords changeRecords = Connect.ChangeRecords.parseFrom(buffer);
-            ParamManager.getInstance().putValue(ParamManager.COUNT_FRIENDLIST, changeRecords.getVersion());
+            version = changeRecords.getVersion();
+
             List<Connect.ChangeRecord> recordsList = changeRecords.getChangeRecordsList();
             for (Connect.ChangeRecord record : recordsList) {
                 switch (record.getCategory()) {
@@ -349,8 +334,8 @@ public class CommandBean extends InterParse {
                         String pubKey = userInfo.getPubKey();
                         ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(pubKey);
                         if (entity == null) {
-                            entity = new ContactEntity();
                             newFriend = true;
+                            entity = new ContactEntity();
                         }
                         entity.setUsername(userInfo.getUsername());
                         entity.setAvatar(userInfo.getAvatar());
@@ -358,7 +343,7 @@ public class CommandBean extends InterParse {
                         entity.setAddress(userInfo.getAddress());
                         ContactHelper.getInstance().insertContact(entity);
 
-                        if (newFriend) { //Add a welcome message
+                        if (newFriend) { // Add a welcome message
                             NormalChat normalChat = new FriendChat(entity);
                             MsgSender msgSender = new MsgSender(entity.getPub_key(), entity.getUsername(), entity.getAddress(), entity.getAvatar());
                             String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, entity.getUsername());
@@ -366,10 +351,7 @@ public class CommandBean extends InterParse {
                             msgEntity.getMsgDefinBean().setSenderInfoExt(msgSender);
                             MessageHelper.getInstance().insertFromMsg(entity.getPub_key(), msgEntity.getMsgDefinBean());
 
-                            ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(entity.getPub_key());
-                            if (roomEntity == null) {
-                                ChatMsgUtil.updateRoomInfo(entity.getPub_key(), 0, TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
-                            }
+                            ChatMsgUtil.updateRoomInfo(entity.getPub_key(), 0, TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
                         }
 
                         FailMsgsManager.getInstance().receiveFailMsgs(pubKey);
@@ -377,6 +359,8 @@ public class CommandBean extends InterParse {
                 }
             }
         }
+
+        ParamManager.getInstance().putValue(ParamManager.COUNT_FRIENDLIST, version);
         ContactNotice.receiverContact();
     }
 
@@ -427,7 +411,7 @@ public class CommandBean extends InterParse {
                 return;
         }
 
-        SendMsgUtil.requestFriendsByVersion();
+        requestFriendsByVersion();
         Connect.ReceiveAcceptFriendRequest friendRequest = Connect.ReceiveAcceptFriendRequest.parseFrom(buffer);
 
         FriendRequestEntity friendRequestEntity = ContactHelper.getInstance().loadFriendRequest(friendRequest.getAddress());
@@ -687,7 +671,8 @@ public class CommandBean extends InterParse {
                     setSign(signInfo).
                     setData(chatInfo).build();
 
-            SendMsgUtil.uploadRandomCookie(cookie);
+            UserOrderBean userOrderBean = new UserOrderBean();
+            userOrderBean.uploadRandomCookie(cookie);
 
             //save random prikey and salt
             userCookie = new UserCookie();
@@ -801,7 +786,7 @@ public class CommandBean extends InterParse {
             case 0://Get the success
                 packageInfo = Connect.ExternalRedPackageInfo.parseFrom(buffer);
                 if (packageInfo.getSystem()) {
-                    RoMsgEntity msgEntity = RobotChat.getInstance().luckPacketMsg(packageInfo.getHashId(), packageInfo.getTips(), 1);
+                    MsgEntity msgEntity = RobotChat.getInstance().luckPacketMsg(packageInfo.getHashId(), packageInfo.getTips(), 1);
                     msgEntity.getMsgDefinBean().setMessage_id(packageInfo.getMsgId());
                     msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().roomKey(),
                             BaseApplication.getInstance().getString(R.string.app_name),

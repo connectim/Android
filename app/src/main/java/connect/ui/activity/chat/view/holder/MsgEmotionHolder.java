@@ -3,7 +3,7 @@ package connect.ui.activity.chat.view.holder;
 import android.view.View;
 
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.model.EmoManager;
 import connect.view.GifView;
@@ -22,7 +22,7 @@ public class MsgEmotionHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, BaseEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean bean= entity.getMsgDefinBean();
 

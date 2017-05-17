@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 
 import connect.db.green.DaoHelper.TransactionHelper;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDirect;
 import connect.ui.activity.chat.bean.TransferExt;
 import connect.ui.activity.chat.exts.TransferDetailActivity;
@@ -32,7 +32,7 @@ public class MsgTransferHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final BaseEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         if (entity.getTransStatus() <= 1) {
             stateTxt.setText(context.getString(R.string.Wallet_Unconfirmed));

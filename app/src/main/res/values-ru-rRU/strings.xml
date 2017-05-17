@@ -452,7 +452,7 @@
     <string name="Set_BTC_symbol">฿</string>
     <string name="Set_Backup_Private_Key">Резервное копирование приватного ключа</string>
     <string name="Set_Backup_decrypted_private_key">Резервное копирование расшифрованного приватного ключа</string>
-    <string name="Set_Backup_encrypted_private_key">Резервное копирование зашифрованого приватного ключа</string>
+    <string name="Set_Backup_encrypted_private_key">Резервное копирование закрытого ключа</string>
     <string name="Set_CONNECT_ID_can_only_be_set_once">CONNECT ID  можно установить только один раз</string>
     <string name="Set_CONNECT_ID_set_success_no_set">После успешного завершения установки CONNECT ID , не возможно изменить </string>
     <string name="Set_Call_failed_please_check_system_mail_application">Сбой вызова, просьба проверить системные приложения электронной почты</string>

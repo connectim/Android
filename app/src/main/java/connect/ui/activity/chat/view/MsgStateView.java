@@ -11,13 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
-import connect.ui.activity.chat.bean.RecExtBean;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import connect.ui.activity.R;
+import connect.ui.activity.chat.bean.MsgEntity;
+import connect.ui.activity.chat.bean.RecExtBean;
 
 /**
  * State news component
@@ -30,7 +30,7 @@ public class MsgStateView extends RelativeLayout {
     /** The message delay processing */
     private static final long MESSAGE_DELAY = 1000;
     /** Send the failure message */
-    private BaseEntity chatBean;
+    private MsgEntity chatBean;
 
     public MsgStateView(Context context) {
         super(context);
@@ -52,7 +52,7 @@ public class MsgStateView extends RelativeLayout {
         }
     };
 
-    public void setMsgEntity(BaseEntity bean) {
+    public void setMsgEntity(MsgEntity bean) {
         this.chatBean = bean;
     }
 

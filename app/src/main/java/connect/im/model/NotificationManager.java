@@ -41,11 +41,11 @@ public class NotificationManager {
 
     private static NotificationManager manager;
 
-    public static NotificationManager getInstance(){
-        if(manager==null){
-            synchronized (NotificationManager.class){
-                if(manager==null){
-                    manager=new NotificationManager();
+    public static NotificationManager getInstance() {
+        if (manager == null) {
+            synchronized (NotificationManager.class) {
+                if (manager == null) {
+                    manager = new NotificationManager();
                 }
             }
         }

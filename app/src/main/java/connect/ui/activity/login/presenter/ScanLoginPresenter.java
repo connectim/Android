@@ -13,6 +13,7 @@ import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.login.contract.ScanLoginContract;
 import connect.ui.activity.set.presenter.BackUpPresenter;
+import connect.utils.ConfigUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
@@ -73,7 +74,7 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter{
             }else{
                 byte[] byteArrayDe = Base64.decode(enStr, Base64.DEFAULT);
                 Connect.ExoprtPrivkeyQrcode privkeyQrcode = Connect.ExoprtPrivkeyQrcode.parseFrom(byteArrayDe);
-                switch (privkeyQrcode.getVersion()){
+                switch (privkeyQrcode.getVersion()) {
                     case 1:
                     case 2:
                         UserBean userBean = new UserBean();
@@ -81,13 +82,13 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter{
                         userBean.setTalkKey(privkeyQrcode.getEncriptionPri());
                         userBean.setPassHint(privkeyQrcode.getPasswordHint());
                         userBean.setPhone(privkeyQrcode.getPhone());
-                        userBean.setAvatar("https://short.connect.im/avatar/v1/"
+                        userBean.setAvatar(ConfigUtil.getInstance().serverAddress() + "/avatar/v1/"
                                 + privkeyQrcode.getAvatar() + ".jpg");
                         userBean.setConnectId(privkeyQrcode.getConnectId());
-                        mView.goinCodeLogin(userBean,"");
+                        mView.goinCodeLogin(userBean, "");
                         break;
                     default:
-                        ToastEUtil.makeText(mView.getActivity(),R.string.Login_Invalid_version_number,ToastEUtil.TOAST_STATUS_FAILE).show();
+                        ToastEUtil.makeText(mView.getActivity(), R.string.Login_Invalid_version_number, ToastEUtil.TOAST_STATUS_FAILE).show();
                         break;
                 }
             }

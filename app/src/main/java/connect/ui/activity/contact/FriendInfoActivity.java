@@ -24,7 +24,7 @@ import butterknife.OnClick;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.ChatActivity;
 import connect.ui.activity.chat.bean.Talker;
@@ -219,7 +219,9 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         msgSendBean.setType(MsgSendBean.SendType.TypeAddFavorites);
         msgSendBean.setCommon(!isSele);
         String remark = friendEntity.getRemark() == null ? "" : friendEntity.getRemark();
-        SendMsgUtil.setFriend(friendEntity.getAddress(), remark, !isSele, msgSendBean);
+
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.setFriend(friendEntity.getAddress(), remark, !isSele, msgSendBean);
     }
 
     @OnClick(R.id.add_block_tb)
@@ -241,7 +243,9 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
                         msgSendBean.setPubkey(friendEntity.getPub_key());
                         msgSendBean.setAddress(friendEntity.getAddress());
                         msgSendBean.setType(MsgSendBean.SendType.TypeDeleteFriend);
-                        SendMsgUtil.removeRelation(friendEntity.getAddress(), msgSendBean);
+
+                        UserOrderBean userOrderBean = new UserOrderBean();
+                        userOrderBean.removeRelation(friendEntity.getAddress(), msgSendBean);
                         break;
                     default:
                         break;

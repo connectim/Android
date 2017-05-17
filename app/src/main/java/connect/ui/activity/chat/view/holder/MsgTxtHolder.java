@@ -5,7 +5,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.view.EmoTextView;
 import connect.ui.activity.common.ConversationActivity;
@@ -24,7 +24,7 @@ public class MsgTxtHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, BaseEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean definBean = entity.getMsgDefinBean();
         String content = definBean.getContent();

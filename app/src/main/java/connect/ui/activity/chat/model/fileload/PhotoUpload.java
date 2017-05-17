@@ -11,6 +11,7 @@ import connect.db.green.DaoHelper.MessageHelper;
 import connect.im.bean.MsgType;
 import connect.im.model.ChatSendManager;
 import connect.ui.activity.chat.bean.MsgDefinBean;
+import connect.ui.activity.chat.bean.RoomSession;
 import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.utils.BitmapUtil;
@@ -35,6 +36,7 @@ public class PhotoUpload extends FileUpLoad {
 
     @Override
     public void fileHandle() {
+        super.fileHandle();
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -54,10 +56,8 @@ public class PhotoUpload extends FileUpLoad {
                     bean.setExt1(FileUtil.fileSize(comSecond));
                     MessageHelper.getInstance().insertToMsg(bean);
 
-                    //// TODO: 2017/1/21 Assemble the MediaFile should be split in two implementations
-                    String pubkey = SupportKeyUril.getPubKeyFromPriKey();
+                    String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
                     String priKey = SharedPreferenceUtil.getInstance().getPriKey();
-
                     Connect.GcmData gcmData = null;
                     Connect.RichMedia richMedia = null;
                     if (baseChat.roomType() == 2) {
@@ -65,8 +65,8 @@ public class PhotoUpload extends FileUpLoad {
                                 setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(comFist))).
                                 setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(comSecond))).build();
                     } else {
-                        Connect.GcmData firstGcmData = encodeAESGCMStructData(comFist);
-                        Connect.GcmData secondGcmData = encodeAESGCMStructData(comSecond);
+                        Connect.GcmData firstGcmData = encodeAESGCMStructData(comSecond);
+                        Connect.GcmData secondGcmData = encodeAESGCMStructData(comFist);
                         richMedia = Connect.RichMedia.newBuilder().
                                 setThumbnail(firstGcmData.toByteString()).
                                 setEntity(secondGcmData.toByteString()).build();
@@ -83,7 +83,6 @@ public class PhotoUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                ChatSendManager.getInstance().sendDelayFailMsg(bean.getPublicKey(),bean.getMessage_id());
                 fileUp();
             }
         }.execute();
@@ -94,7 +93,7 @@ public class PhotoUpload extends FileUpLoad {
         if (mediaFile == null) {
             return;
         }
-        ResultUpFile(mediaFile, new FileResult() {
+        resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
                 String content = getThumbUrl(mediaFile.getUrl(), mediaFile.getToken());

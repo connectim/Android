@@ -1,4 +1,4 @@
-package connect.im.bean;
+package connect.im.parser;
 
 import java.nio.ByteBuffer;
 
