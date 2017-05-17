@@ -199,7 +199,7 @@ public class HomeActivity extends BaseFragmentActivity {
             objs = (Object[]) notice.object;
         }
         if(objs[0] instanceof MsgSendBean){
-            resolveUrlUtil.showMsgTip(notice,false);
+            resolveUrlUtil.showMsgTip(notice,ResolveUrlUtil.TYPE_OPEN_WEB,false);
         }
     }
 

@@ -68,7 +68,7 @@ public class ScanTransferActivity extends BaseScanActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MsgNoticeBean notice) {
-        new ResolveUrlUtil(mActivity).showMsgTip(notice, true);
+        new ResolveUrlUtil(mActivity).showMsgTip(notice, ResolveUrlUtil.TYPE_OPEN_SCAN, true);
     }
 
     @Override

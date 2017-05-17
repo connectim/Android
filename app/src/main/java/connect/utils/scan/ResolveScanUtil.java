@@ -24,6 +24,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.RequestActivity;
 import connect.ui.activity.wallet.TransferAddressActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ConfigUtil;
 import connect.utils.RegularUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -40,9 +41,7 @@ import protos.Connect;
 public class ResolveScanUtil {
 
     public static final String TYPE_WEB_GROUP_ = "group:";
-    private String Request_Matches = "bitcoin:.*.?amount=.*";
     private String Url_Matches = "(?:(?:(?:[a-z]+:)?//))?(?:localhost|(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#][^\\s\"]*)?";
-    private String Connect_Url = ".*.connect.im";
     private Activity activity;
 
     public ResolveScanUtil(Activity activity) {
@@ -59,13 +58,14 @@ public class ResolveScanUtil {
             try {
                 URL url = new URL(value);
                 String host = url.getHost();
-                if(RegularUtil.matches(host, Connect_Url) && url.getQuery() != null && url.getQuery().contains("token")){
+                if(ConfigUtil.getInstance().serverAddress().contains(host) && url.getQuery() != null && url.getQuery().contains("token")){
                     String[] pathArray = url.getPath().split("/");
                     String token = Uri.parse(value).getQueryParameter("token");
 
                     ScanResultBean resultBean = new ScanResultBean();
                     resultBean.setType(pathArray[pathArray.length-1]);
                     resultBean.setToken(token == null ? "" : token);
+                    resultBean.setTip(ResolveUrlUtil.TYPE_OPEN_SCAN);
                     new ResolveUrlUtil(activity).dealResult(resultBean,true);
                 }else{
                     OuterWebsiteActivity.startActivity(activity,value);
@@ -93,15 +93,16 @@ public class ResolveScanUtil {
 
         // Determine whether to transfer links
         if(value.contains(RequestActivity.TRANSFER_SCAN_HEAD)) {
-            String amount = null;
+            Double amount = null;
             String valueBitcoin = value.replace(RequestActivity.TRANSFER_SCAN_HEAD,"");
             if(valueBitcoin.contains("amount")) {
-                amount = Uri.parse(valueBitcoin).getQueryParameter("amount");
+                String amountStr = Uri.parse(valueBitcoin).getQueryParameter("amount");
+                amount = Double.valueOf(amountStr);
                 String[] data = value.split("\\?" + RequestActivity.TRANSFER_AMOUNT_HEAD);
                 valueBitcoin = data[0].replace(RequestActivity.TRANSFER_SCAN_HEAD,"");
             }
             if(SupportKeyUril.checkAddress(valueBitcoin)){
-                checkIsFriend(valueBitcoin,Double.valueOf(amount),true);
+                checkIsFriend(valueBitcoin,amount,true);
                 return;
             }
             return;
@@ -126,7 +127,7 @@ public class ResolveScanUtil {
             protected void onPostExecute(ContactEntity friendEntity) {
                 super.onPostExecute(friendEntity);
                 if (friendEntity == null) {
-                    requestUserInfo(address,amount,false);
+                    requestUserInfo(address,amount,isTransfer);
                 } else {
                     if(isTransfer){
                         TransferToActivity.startActivity(activity,address,amount);

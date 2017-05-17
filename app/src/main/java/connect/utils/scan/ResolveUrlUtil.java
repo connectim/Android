@@ -30,6 +30,8 @@ public class ResolveUrlUtil {
     public static final String TYPE_WEB_TRANSFER = "transfer";
     public static final String TYPE_WEB_PACKET = "packet";
     public static final String TYPE_WEB_GROUNP = "group";
+    public static final String TYPE_OPEN_SCAN = "scan";
+    public static final String TYPE_OPEN_WEB= "web";
     public String Web_Url = "connectim://.*";
     private Activity activity;
 
@@ -52,7 +54,7 @@ public class ResolveUrlUtil {
         resultBean.setAddress(address == null ? "" : address);
         resultBean.setAmount(amount == null ? "" : amount);
         resultBean.setToken(token == null ? "" : token);
-        resultBean.setTip("web");
+        resultBean.setTip(TYPE_OPEN_WEB);
         dealResult(resultBean,false);
     }
 
@@ -117,14 +119,14 @@ public class ResolveUrlUtil {
      * @param notice
      * @param isCloseScan
      */
-    public void showMsgTip(MsgNoticeBean notice, boolean isCloseScan){
+    public void showMsgTip(MsgNoticeBean notice,String tips, boolean isCloseScan){
         Object[] objs = null;
         if (notice.object != null) {
             objs = (Object[]) notice.object;
         }
         MsgSendBean msgSendBean = (MsgSendBean) objs[0];
-        /*if (msgSendBean == null || !type.equals(msgSendBean.getTips()))
-            return;*/
+        if (msgSendBean == null || !tips.equals(msgSendBean.getTips()))
+            return;
         switch (notice.ntEnum) {
             case MSG_SEND_SUCCESS:
                 if(isCloseScan){

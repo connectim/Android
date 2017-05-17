@@ -113,71 +113,52 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
     }
 
     @Override
-    public void updataView(int status, long openMoney, final Connect.RedPackageInfo redPackageInfo) {
+    public void updataView(int status, long openMoney, long bestAmount, final Connect.RedPackageInfo redPackageInfo) {
         this.redPackageInfo = redPackageInfo;
         contentLin.setVisibility(View.VISIBLE);
         openMoneyTitleTv.setText(RateFormatUtil.longToDoubleBtc(openMoney));
 
-        List<Connect.GradRedPackageHistroy> list = redPackageInfo.getGradHistoryList();
-        Connect.RedPackage redPackage = redPackageInfo.getRedpackage();
-        if (redPackage.getDeadline() < 0)
-            overtimeTv.setVisibility(View.VISIBLE);
-        if (!redPackage.getExpired() && redPackage.getRemainSize() > 0 && redPackage.getTyp() == 1) {
-
-        }
         if(!TextUtils.isEmpty(redPackageInfo.getRedpackage().getTips())){
             noteTv.setText(redPackageInfo.getRedpackage().getTips());
         }
         openMoneyRela.setVisibility(View.VISIBLE);
-
         switch (status) {
-            case 0:
-                overtimeTv.setVisibility(View.GONE);
-                break;
-            case 1://Red envelope timeout and refund is not complete (hair)
+            case 1: // Bitcoin has been return to your wallet
                 overtimeTv.setVisibility(View.VISIBLE);
                 overtimeTv.setText(R.string.Chat_Bitcoin_has_been_return_to_your_wallet);
                 break;
-            case 2://A red envelope timeout refund finish (hair)
+            case 2: // Waitting for open
                 overtimeTv.setVisibility(View.VISIBLE);
-                overtimeTv.setText(R.string.Wallet_Overtime_Bitcoin_has_been_return_to_your_wallet);
+                overtimeTv.setText(R.string.Chat_Waitting_for_open);
+                toolbarTop.setRightImg(R.mipmap.wallet_share_payment2x);
                 break;
-            case 3://Red envelope timeout (closed)
+            case 3: // Lucky packet Overtime
                 overtimeTv.setVisibility(View.VISIBLE);
                 overtimeTv.setText(R.string.Chat_Lucky_packet_Overtime);
                 break;
-            case 4://Red packets waiting to be receiving (hair)
+            case 4: // Lucky packet transfering to your wallet
                 noConfirmTv.setVisibility(View.VISIBLE);
-                noConfirmTv.setText(R.string.Chat_Waitting_for_open);
-                toolbarTop.setRightImg(R.mipmap.wallet_share_payment2x);
+                noConfirmTv.setText(R.string.Chat_Lucky_packet_transfering_to_your_wallet);
                 break;
-            case 5://Red envelope has been brought out (closed)
+            case 5: // Good luck next time
                 noConfirmTv.setVisibility(View.VISIBLE);
                 openMoneyRela.setVisibility(View.GONE);
                 noConfirmTv.setTextColor(mActivity.getResources().getColor(R.color.color_b3b5bc));
                 noConfirmTv.setText(R.string.Wallet_Good_luck_next_time);
                 break;
-            case 6://A red envelope into your account (closed)
+            case 6: // Lucky packet transferred to your wallet
                 noConfirmTv.setVisibility(View.VISIBLE);
                 noConfirmTv.setText(R.string.Wallet_Lucky_packet_transferred_to_your_wallet);
                 break;
             default:
                 break;
         }
-
+        Connect.RedPackage redPackage = redPackageInfo.getRedpackage();
         openDetailTv.setText(mActivity.getResources().getString(R.string.Wallet_Opened,
                 redPackage.getSize() - redPackage.getRemainSize(),
                 redPackage.getSize()));
 
-        String bestAddress = "";
-        long bestAmount = 0;
-        for(Connect.GradRedPackageHistroy histroy : list){
-            if(bestAmount == 0 || bestAmount <= histroy.getAmount()){
-                bestAddress = histroy.getUserinfo().getAddress();
-                bestAmount = histroy.getAmount();
-            }
-        }
-        RedDerailAdapter redDerailAdapter = new RedDerailAdapter(list,bestAmount);
+        RedDerailAdapter redDerailAdapter = new RedDerailAdapter(redPackageInfo.getGradHistoryList(),bestAmount);
         listView.setAdapter(redDerailAdapter);
         redDerailAdapter.notifyDataSetChanged();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

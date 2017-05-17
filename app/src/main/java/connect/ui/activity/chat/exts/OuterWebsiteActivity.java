@@ -207,7 +207,7 @@ public class OuterWebsiteActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MsgNoticeBean notice) {
-        resolveUrlUtil.showMsgTip(notice,false);
+        resolveUrlUtil.showMsgTip(notice,ResolveUrlUtil.TYPE_OPEN_WEB,false);
     }
 
     private WebViewClient myWebViewClient = new WebViewClient() {

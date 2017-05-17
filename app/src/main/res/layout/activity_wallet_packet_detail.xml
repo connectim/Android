@@ -95,7 +95,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dp_20"
             android:textSize="@dimen/sp_14"
-            android:textColor="@color/color_ff6c5a"/>
+            android:textColor="@color/color_007aff"/>
 
         <TextView
             android:id="@+id/overtime_tv"
@@ -109,7 +109,7 @@
             android:layout_marginBottom="@dimen/dp_20"
             android:gravity="center_horizontal"
             android:textSize="@dimen/sp_14"
-            android:textColor="@color/color_007aff"/>
+            android:textColor="@color/color_ff6c5a"/>
 
     </RelativeLayout>
 
