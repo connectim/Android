@@ -6,16 +6,16 @@ import java.io.Serializable;
 
 public class MsgChatReceiver implements Serializable {
     private String pubKey;
-    private BaseEntity bean;
+    private MsgEntity bean;
 
     public MsgChatReceiver() {
     }
 
-    public MsgChatReceiver(BaseEntity bean) {
+    public MsgChatReceiver(MsgEntity bean) {
         this.bean = bean;
     }
 
-    public static void sendChatReceiver(String roomkey,BaseEntity entity){
+    public static void sendChatReceiver(String roomkey,MsgEntity entity){
         MsgChatReceiver receiver = new MsgChatReceiver();
         receiver.setPubKey(roomkey);
         receiver.setBean(entity);
@@ -30,11 +30,11 @@ public class MsgChatReceiver implements Serializable {
         this.pubKey = pubKey;
     }
 
-    public BaseEntity getBean() {
+    public MsgEntity getBean() {
         return bean;
     }
 
-    public void setBean(BaseEntity bean) {
+    public void setBean(MsgEntity bean) {
         this.bean = bean;
     }
 }

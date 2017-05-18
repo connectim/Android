@@ -7,8 +7,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
+import connect.im.model.ChatSendManager;
+import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgDefinBean;
+import connect.ui.activity.chat.bean.RoomSession;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.ui.activity.chat.model.content.GroupChat;
 import connect.utils.FileUtil;
@@ -34,6 +37,7 @@ public abstract class FileUpLoad {
     protected Connect.MediaFile mediaFile;
 
     public void fileHandle() {
+        FailMsgsManager.getInstance().sendDelayFailMsg(bean.getPublicKey(),bean.getMessage_id(),null,null);
     }
 
     public void fileUp() {
@@ -53,12 +57,12 @@ public abstract class FileUpLoad {
         if (baseChat.roomType() == 0) {
             gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, priKey, baseChat.roomKey(), ByteString.copyFrom(fileSie));
         } else if (baseChat.roomType() == 1) {
-            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), ByteString.copyFrom(fileSie));
+            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(((GroupChat)baseChat).groupEcdh()), ByteString.copyFrom(fileSie));
         }
         return gcmData;
     }
 
-    public void ResultUpFile(Connect.MediaFile mediaFile, final FileResult fileResult) {
+    public void resultUpFile(Connect.MediaFile mediaFile, final FileResult fileResult) {
         HttpRequest.getInstance().post(UriUtil.UPLOAD_FILE, mediaFile, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {

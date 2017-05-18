@@ -16,7 +16,6 @@ import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
 import connect.im.bean.UserCookie;
 import connect.im.model.ChatSendManager;
-import connect.ui.activity.chat.bean.BaseEntity;
 import connect.ui.activity.chat.bean.ExtBean;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgEntity;
@@ -82,7 +81,6 @@ public class FriendChat extends NormalChat {
         }
         MsgEntity chatBean = new MsgEntity();
         chatBean.setMsgDefinBean(msgDefinBean);
-        chatBean.setMsgid(msgDefinBean.getMessage_id());
         chatBean.setPubkey(contactEntity.getPub_key());
         chatBean.setRecAddress(address());
         chatBean.setSendstate(0);
@@ -91,7 +89,7 @@ public class FriendChat extends NormalChat {
 
     @Override
     public void sendPushMsg(Object bean) {
-        MsgDefinBean definBean = ((BaseEntity) bean).getMsgDefinBean();
+        MsgDefinBean definBean = ((MsgEntity) bean).getMsgDefinBean();
         String msgStr = new Gson().toJson(definBean);
 
         String priKey = null;
@@ -176,11 +174,6 @@ public class FriendChat extends NormalChat {
 
     public void setFriendEntity(ContactEntity friendEntity) {
         this.contactEntity = friendEntity;
-    }
-
-    @Override
-    public String nickName(String pubkey) {
-        return nickName();
     }
 
     public void setEncryType(EncryType encryType) {

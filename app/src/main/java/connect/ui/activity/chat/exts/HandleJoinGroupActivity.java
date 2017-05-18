@@ -26,11 +26,11 @@ import connect.db.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.ChatActivity;
 import connect.ui.activity.chat.bean.ApplyGroupBean;
-import connect.ui.activity.chat.bean.BaseEntity;
 import connect.ui.activity.chat.bean.CardExt1Bean;
 import connect.ui.activity.chat.bean.ContainerBean;
 import connect.ui.activity.chat.bean.GroupReviewBean;
 import connect.ui.activity.chat.bean.MsgDefinBean;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.Talker;
 import connect.ui.activity.contact.FriendInfoActivity;
 import connect.ui.activity.contact.StrangerInfoActivity;
@@ -83,7 +83,7 @@ public class HandleJoinGroupActivity extends BaseActivity {
     Button btn3;
 
     private HandleJoinGroupActivity activity;
-    private BaseEntity baseEntity;
+    private MsgEntity baseEntity;
 
     private Connect.GroupInfoBase infoBase = null;
 
@@ -99,7 +99,7 @@ public class HandleJoinGroupActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, BaseEntity entity) {
+    public static void startActivity(Activity activity, MsgEntity entity) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("entity", entity);
         ActivityUtil.next(activity, HandleJoinGroupActivity.class, bundle);
@@ -118,7 +118,7 @@ public class HandleJoinGroupActivity extends BaseActivity {
             }
         });
 
-        baseEntity = (BaseEntity) getIntent().getSerializableExtra("entity");
+        baseEntity = (MsgEntity) getIntent().getSerializableExtra("entity");
         MsgDefinBean definBean = baseEntity.getMsgDefinBean();
 
         ext1Bean = new Gson().fromJson(definBean.getExt1(), CardExt1Bean.class);

@@ -16,6 +16,10 @@ import connect.ui.activity.login.bean.UserBean;
 
 /**
  * public methods to extract
+<<<<<<< HEAD
+=======
+ * Created by gtq on 2016/12/19.
+>>>>>>> Android/develop
  */
 public abstract class NormalChat extends BaseChat {
 
@@ -171,6 +175,4 @@ public abstract class NormalChat extends BaseChat {
     public abstract String nickName();
 
     public abstract String address();
-
-    public abstract String nickName(String pubkey);
 }

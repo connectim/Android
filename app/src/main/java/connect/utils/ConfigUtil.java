@@ -24,7 +24,7 @@ public class ConfigUtil {
     private Map<String, String> keyMaps = null;
 
     public ConfigUtil() {
-        initConfig(ModeEnum.SANDBOX);
+            initConfig(ModeEnum.SANDBOX);
     }
 
     /**

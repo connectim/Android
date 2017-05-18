@@ -2,19 +2,15 @@ package connect.ui.activity.chat.model.content;
 
 import com.google.gson.Gson;
 
-import connect.db.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
 import connect.im.bean.SocketACK;
 import connect.im.model.ChatSendManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.AdBean;
-import connect.ui.activity.chat.bean.GatherBean;
 import connect.ui.activity.chat.bean.MsgDefinBean;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.bean.RoMsgEntity;
 import connect.ui.activity.chat.bean.TransferExt;
-import connect.ui.activity.chat.bean.WebsiteExt1Bean;
-import connect.ui.activity.locmap.bean.GeoAddressBean;
 import connect.ui.base.BaseApplication;
 import connect.utils.TimeUtil;
 import protos.Connect;
@@ -23,7 +19,7 @@ import protos.Connect;
  * robot message
  * Created by pujin on 2017/1/19.
  */
-public class RobotChat extends BaseChat {
+public class RobotChat extends NormalChat {
 
     private static RobotChat robotChat;
 
@@ -32,7 +28,11 @@ public class RobotChat extends BaseChat {
 
     public static RobotChat getInstance() {
         if (robotChat == null) {
-            robotChat = new RobotChat();
+            synchronized (RobotChat.class) {
+                if (robotChat == null) {
+                    robotChat = new RobotChat();
+                }
+            }
         }
         return robotChat;
     }
@@ -52,74 +52,14 @@ public class RobotChat extends BaseChat {
         return BaseApplication.getInstance().getString(R.string.app_name);
     }
 
-    @Override
-    public RoMsgEntity txtMsg(String string) {
-        RoMsgEntity bean = createBaseChat(MsgType.Text);
-        bean.getMsgDefinBean().setContent(string);
-        return bean;
-    }
-
-    @Override
-    public RoMsgEntity photoMsg(String string, String ext1) {
-        RoMsgEntity bean = createBaseChat(MsgType.Photo);
-        bean.getMsgDefinBean().setContent(string);
-        bean.getMsgDefinBean().setUrl(string);
-        bean.getMsgDefinBean().setExt1(ext1);
-        return bean;
-    }
-
-    @Override
-    public RoMsgEntity videoMsg(String string, int length, String ext1) {
-        return null;
-    }
-
-    @Override
-    public RoMsgEntity voiceMsg(String string, int size, String ext1) {
-        return null;
-    }
-
-    @Override
-    public RoMsgEntity transferMsg(String hashid, long amout, String note, int type) {
-        RoMsgEntity bean = createBaseChat(MsgType.Transfer);
-        bean.getMsgDefinBean().setContent(hashid);
-
-        TransferExt ext = new TransferExt(amout, note, type);
-        bean.getMsgDefinBean().setExt1(new Gson().toJson(ext));
-        return bean;
-    }
-
-    public RoMsgEntity locationMsg(String address, GeoAddressBean location) {
-        RoMsgEntity bean = createBaseChat(MsgType.Location);
-        bean.getMsgDefinBean().setContent(address);
-        bean.getMsgDefinBean().setLocationExt(location);
-        return bean;
-    }
-
-    @Override
-    public RoMsgEntity emotionMsg(String string) {
-        return null;
-    }
-
-    @Override
-    public RoMsgEntity luckPacketMsg(String string, String tips, int type) {
-        RoMsgEntity bean = createBaseChat(MsgType.Lucky_Packet);
-        bean.getMsgDefinBean().setContent(string);
-
-        TransferExt ext = new TransferExt();
-        ext.setNote(tips);
-        ext.setType(type);
-        bean.getMsgDefinBean().setExt1(new Gson().toJson(ext));
-        return bean;
-    }
-
     /**
      * group review
      * @param content
      * @param ext1
      * @return
      */
-    public RoMsgEntity groupReviewMsg(String content, String ext1) {
-        RoMsgEntity bean = createBaseChat(MsgType.GROUP_REVIEW);
+    public MsgEntity groupReviewMsg(String content, String ext1) {
+        MsgEntity bean = createBaseChat(MsgType.GROUP_REVIEW);
         bean.getMsgDefinBean().setContent(content);
         bean.getMsgDefinBean().setExt1(ext1);
         String connect = BaseApplication.getInstance().getBaseContext().getString(R.string.app_name);
@@ -127,15 +67,8 @@ public class RobotChat extends BaseChat {
         return bean;
     }
 
-    @Override
-    public RoMsgEntity noticeMsg(String string) {
-        RoMsgEntity bean = createBaseChat(MsgType.NOTICE);
-        bean.getMsgDefinBean().setContent(string);
-        return bean;
-    }
-
-    public RoMsgEntity outerPacketGetNoticfe(Connect.SystemRedpackgeNotice notice) {
-        RoMsgEntity bean = createBaseChat(MsgType.OUTERPACKET_GET);
+    public MsgEntity outerPacketGetNoticfe(Connect.SystemRedpackgeNotice notice) {
+        MsgEntity bean = createBaseChat(MsgType.OUTERPACKET_GET);
 
         TransferExt transferExt = new TransferExt(notice.getAmount(), "", 1);
         Connect.UserInfo receiver = notice.getReceiver();
@@ -145,8 +78,8 @@ public class RobotChat extends BaseChat {
         return bean;
     }
 
-    public RoMsgEntity systemAdNotice(AdBean adBean) {
-        RoMsgEntity bean = createBaseChat(MsgType.SYSTEM_AD);
+    public MsgEntity systemAdNotice(AdBean adBean) {
+        MsgEntity bean = createBaseChat(MsgType.SYSTEM_AD);
         bean.getMsgDefinBean().setContent(new Gson().toJson(adBean));
 
         String connect = BaseApplication.getInstance().getBaseContext().getString(R.string.app_name);
@@ -155,53 +88,15 @@ public class RobotChat extends BaseChat {
     }
 
     @Override
-    public Object cardMsg(ContactEntity entity) {
-        return null;
-    }
-
-    @Override
-    public Object destructMsg(long time) {
-        return null;
-    }
-
-    @Override
-    public Object receiptMsg(String string) {
-        return null;
-    }
-
-    @Override
-    public Object paymentMsg(GatherBean bean) {
-        return null;
-    }
-
-    @Override
-    public Object outerWebsiteMsg(String string, WebsiteExt1Bean bean) {
-        return null;
-    }
-
-    @Override
-    public Object encryptChatMsg() {
-        return null;
-    }
-
-    @Override
-    public Object clickReceiveLuckMsg(String string) {
-        RoMsgEntity chatBean = createBaseChat(MsgType.NOTICE_CLICKRECEIVEPACKET);
-        chatBean.getMsgDefinBean().setContent(string);
-        return chatBean;
-    }
-
-    @Override
-    public RoMsgEntity createBaseChat(MsgType type) {
+    public MsgEntity createBaseChat(MsgType type) {
         MsgDefinBean msgDefinBean = new MsgDefinBean();
         msgDefinBean.setType(type.type);
         msgDefinBean.setSendtime(TimeUtil.getCurrentTimeInLong());
         msgDefinBean.setMessage_id(TimeUtil.timestampToMsgid());
         msgDefinBean.setPublicKey(BaseApplication.getInstance().getString(R.string.app_name));
 
-        RoMsgEntity robotMsg = new RoMsgEntity();
+        MsgEntity robotMsg = new MsgEntity();
         robotMsg.setMsgDefinBean(msgDefinBean);
-        robotMsg.setMsgid(msgDefinBean.getMessage_id());
         robotMsg.setPubkey(BaseApplication.getInstance().getString(R.string.app_name));
         robotMsg.setSendstate(0);
         return robotMsg;
@@ -209,7 +104,7 @@ public class RobotChat extends BaseChat {
 
     @Override
     public void sendPushMsg(Object bean) {
-        RoMsgEntity roMsgEntity = (RoMsgEntity) bean;
+        MsgEntity roMsgEntity = (MsgEntity) bean;
         MsgDefinBean definBean = roMsgEntity.getMsgDefinBean();
         Connect.MSMessage.Builder builder = Connect.MSMessage.newBuilder();
         int type = roMsgEntity.getMsgDefinBean().getType();

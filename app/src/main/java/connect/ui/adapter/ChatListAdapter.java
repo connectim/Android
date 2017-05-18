@@ -126,8 +126,12 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             holder.bottomNotify.setVisibility(View.VISIBLE);
         }
 
-        holder.stangerTxt.setVisibility(0 == roomAttr.getStranger() || MemoryDataManager.getInstance().getPubKey().equals(roomAttr.getRoomid()) ?
-                View.GONE : View.VISIBLE);
+        if (0 == roomAttr.getStranger() || MemoryDataManager.getInstance().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
+            holder.stangerTxt.setVisibility(View.GONE);
+        } else {
+            holder.stangerTxt.setVisibility(View.VISIBLE);
+            holder.stangerTxt.setText(inflater.getContext().getString(R.string.Link_Stranger));
+        }
 
         if (roomAttr.getTop() == 1) {
             holder.conTop.setVisibility(View.VISIBLE);

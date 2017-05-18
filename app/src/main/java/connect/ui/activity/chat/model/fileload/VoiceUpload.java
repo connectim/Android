@@ -30,6 +30,7 @@ public class VoiceUpload extends FileUpLoad {
 
     @Override
     public void fileHandle() {
+        super.fileHandle();
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -63,7 +64,6 @@ public class VoiceUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                ChatSendManager.getInstance().sendDelayFailMsg(bean.getPublicKey(), bean.getMessage_id());
                 fileUp();
             }
         }.execute();
@@ -74,7 +74,7 @@ public class VoiceUpload extends FileUpLoad {
         if (mediaFile == null) {
             return;
         }
-        ResultUpFile(mediaFile, new FileResult() {
+        resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
                 String content = getUrl(mediaFile.getUrl(), mediaFile.getToken());

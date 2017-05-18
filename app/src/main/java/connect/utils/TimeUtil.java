@@ -64,6 +64,10 @@ public class TimeUtil {
         return getCurrentTimeInLong() + String.valueOf(pross).substring(1, 3 + 1);
     }
 
+    public static int msgidToInt(String msgid) {
+        return Integer.parseInt(msgid.substring(8));
+    }
+
     /**
      * Timestamp to descriptive time
      * @param msgtime

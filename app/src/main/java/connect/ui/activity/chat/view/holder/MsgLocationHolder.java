@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.view.BubbleImg;
 import connect.ui.activity.locmap.GoogleMapActivity;
@@ -26,7 +26,7 @@ public class MsgLocationHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final BaseEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean bean = entity.getMsgDefinBean();
         final GeoAddressBean geoAddres = bean.getLocationExt();

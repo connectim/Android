@@ -51,7 +51,7 @@
             android:layout_alignBottom="@id/videomsg"
             android:layout_alignLeft="@id/videomsg"
             android:layout_alignRight="@id/videomsg"
-            android:layout_marginRight="@dimen/dp_6"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/shape_bg_locbottom"
             android:gravity="left"
             android:paddingBottom="@dimen/dp_2"

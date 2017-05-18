@@ -27,17 +27,11 @@ public class BaseApplication extends Application{
         super.onCreate();
         mApplication = this;
 
-        //设置该CrashHandler为程序的默认处理器
-        /*UnCeHandler catchExcep = new UnCeHandler(this);
-        Thread.setDefaultUncaughtExceptionHandler(catchExcep);*/
-
-        //建议在测试阶段建议设置成true，发布时设置为false。
-        //区分开 测试bug跟正式bug
+        UnCeHandler catchExcep = new UnCeHandler(this);
+        Thread.setDefaultUncaughtExceptionHandler(catchExcep);
         CrashReport.initCrashReport(getApplicationContext(),
-                false ? "9b63c64ee1" : "cf78e82d4f",
-                true);
-        //google Fcm推送
-        //FcmPush.init(this);
+                ConfigUtil.getInstance().appMode() ?
+                        "9b63c64ee1" : "cf78e82d4f", true);
     }
 
     @Override

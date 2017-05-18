@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.bean.MsgSendBean;
@@ -103,7 +103,9 @@ public class FriendSetAliasActivity extends BaseActivity {
         MsgSendBean msgSendBean = new MsgSendBean();
         msgSendBean.setType(MsgSendBean.SendType.TypeFriendRemark);
         boolean common = friendEntity.getCommon() != null && friendEntity.getCommon() == 1;
-        SendMsgUtil.setFriend(friendEntity.getAddress(), friendEntity.getRemark(), common, msgSendBean);
+
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.setFriend(friendEntity.getAddress(), friendEntity.getRemark(), common, msgSendBean);
     }
 
     @Override

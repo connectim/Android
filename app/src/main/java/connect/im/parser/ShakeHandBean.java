@@ -1,5 +1,8 @@
-package connect.im.bean;
+package connect.im.parser;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 
@@ -11,15 +14,20 @@ import connect.db.MemoryDataManager;
 import connect.db.SharePreferenceUser;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
+import connect.db.green.DaoHelper.ParamHelper;
 import connect.db.green.DaoHelper.ParamManager;
+import connect.db.green.bean.ParamEntity;
+import connect.im.bean.ConnectState;
+import connect.im.bean.Session;
+import connect.im.bean.SocketACK;
+import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
+import connect.im.model.ChatSendManager;
 import connect.im.model.ConnectManager;
 import connect.im.model.FailMsgsManager;
-import connect.im.model.MsgSendManager;
-import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.bean.RoMsgEntity;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.RobotChat;
 import connect.ui.activity.home.bean.MsgFragmReceiver;
@@ -102,7 +110,7 @@ public class ShakeHandBean extends InterParse {
                 setCipherData(gcmDataTemp).
                 setSign(signHash).build();
 
-        MsgSendManager.getInstance().sendMessage(SocketACK.HAND_SHAKE_SECOND.getOrder(), imTransferData.toByteArray());
+        ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_SECOND, imTransferData.toByteString());
     }
 
     /**
@@ -121,19 +129,79 @@ public class ShakeHandBean extends InterParse {
             }
         }
 
-        SendMsgUtil.requestFriendsByVersion();
-        SendMsgUtil.connectLogin();
-        SendMsgUtil.pullOffLineMsg();
+        requestFriendsByVersion();
+        connectLogin();
+        pullOffLineMsg();
+        checkCurVersion();
         FailMsgsManager.getInstance().sendFailMsgs();
-        SendMsgUtil.checkCurVersion();
     }
 
     private void welcomeRobotMsg() {
-        RoMsgEntity entity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
+        MsgEntity entity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
         entity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
         MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), entity.getMsgDefinBean());
 
         ChatMsgUtil.updateRoomInfo(RobotChat.getInstance().roomKey(), 2, TimeUtil.getCurrentTimeInLong(), entity.getMsgDefinBean());
         MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+    }
+
+    /**
+     * login
+     */
+    private void connectLogin() {
+        String deviceId = SystemDataUtil.getDeviceId();
+        Connect.DeviceToken deviceToken = Connect.DeviceToken.newBuilder()
+                .setDeviceId(deviceId)
+                .setPushType("GCM").build();
+
+        String msgid = TimeUtil.timestampToMsgid();
+        commandToIMTransfer(msgid, SocketACK.CONTACT_LOGIN, deviceToken.toByteString());
+    }
+
+    /**
+     * pull offline message
+     */
+    protected void pullOffLineMsg() {
+        String msgid = TimeUtil.timestampToMsgid();
+        ChatSendManager.getInstance().sendMsgidMsg(SocketACK.PULL_OFFLINE, msgid, ByteString.copyFrom(new byte[]{}));
+    }
+
+    /**
+     * current version
+     */
+    protected void checkCurVersion() {
+        Context context = BaseApplication.getInstance().getBaseContext();
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), 0);
+            String versionCode = String.valueOf(packageInfo.versionCode);
+            String versionName = packageInfo.versionName;
+
+            boolean newVersion = false;
+            ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity("device_version");
+            if (paramEntity == null) {
+                paramEntity = new ParamEntity();
+                paramEntity.setKey("device_version");
+                newVersion = true;
+            } else {
+                newVersion = !versionName.equals(paramEntity.getValue());
+            }
+
+            if (newVersion) {
+                paramEntity.setValue(versionName);
+                ParamHelper.getInstance().insertParamEntity(paramEntity);
+
+                Connect.AppInfo appInfo = Connect.AppInfo.newBuilder()
+                        .setVersion(versionName)
+                        .setModel(Build.MODEL)
+                        .setOsVersion(Build.VERSION.RELEASE)
+                        .setPlatform("android").build();
+
+                String msgid = TimeUtil.timestampToMsgid();
+                commandToIMTransfer(msgid, SocketACK.UPLOAD_APPINFO, appInfo.toByteString());
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

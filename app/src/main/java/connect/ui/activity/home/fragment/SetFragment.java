@@ -11,12 +11,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.SharedPreferenceUtil;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.login.bean.UserBean;
@@ -150,8 +149,10 @@ public class SetFragment extends BaseFragment {
                     @Override
                     public void confirm(String value) {
                         ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
-                        SendMsgUtil.connectLogout();
                         HomeAction.sendTypeMsg(HomeAction.HomeType.DELAY_EXIT);
+
+                        UserOrderBean userOrderBean = new UserOrderBean();
+                        userOrderBean.connectLogout();
                     }
 
                     @Override

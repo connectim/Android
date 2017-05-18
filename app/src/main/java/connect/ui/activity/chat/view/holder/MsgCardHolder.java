@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.CardExt1Bean;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.contact.FriendInfoActivity;
@@ -35,7 +35,7 @@ public class MsgCardHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final BaseEntity baseEntity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity baseEntity) {
         super.buildRowData(msgBaseHolder, baseEntity);
         MsgDefinBean definBean = baseEntity.getMsgDefinBean();
         cardExt1Bean = new Gson().fromJson(definBean.getExt1(), CardExt1Bean.class);
