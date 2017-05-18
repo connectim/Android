@@ -12,6 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
@@ -70,7 +71,7 @@ public class ChatSendManager {
      * @param data
      */
     public void sendChatAckMsg(SocketACK order, String roomkey, Connect.MessageData data) {
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
 
         //messagePost
         String postsign = SupportKeyUril.signHash(priKey, data.toByteArray());
@@ -114,7 +115,7 @@ public class ChatSendManager {
         @Override
         public synchronized void run() {
             try {
-                String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+                String priKey = MemoryDataManager.getInstance().getPriKey();
 
                 //transferData
                 Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE,

@@ -11,6 +11,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -39,7 +40,6 @@ public class GroupGatherRecordsActivity extends BaseActivity {
     private GroupGatherRecordsActivity activity;
     private final int PAGESIZE_MAX = 10;
     private int page = 1;
-    private UserBean userBean;
     private GroupGatherRecordsAdapter recordsAdapter;
 
     @Override
@@ -67,8 +67,6 @@ public class GroupGatherRecordsActivity extends BaseActivity {
             }
         });
         toolbarTop.setTitle(null, R.string.Chat_History);
-
-        userBean = SharedPreferenceUtil.getInstance().getUser();
 
         recordsAdapter = new GroupGatherRecordsAdapter();
         listView.setAdapter(recordsAdapter);
@@ -106,7 +104,7 @@ public class GroupGatherRecordsActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.Crowdfundings crowdfundings = Connect.Crowdfundings.parseFrom(structData.getPlainData());
                     List<Connect.Crowdfunding> list = crowdfundings.getListList();
                     if (page > 1) {

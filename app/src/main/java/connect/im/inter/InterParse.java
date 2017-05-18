@@ -3,6 +3,7 @@ package connect.im.inter;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
@@ -66,7 +67,7 @@ public abstract class InterParse {
 
     protected void backAck(SocketACK socketack, int type, String msgid) {
         Connect.Ack ack = Connect.Ack.newBuilder().setType(type).setMsgId(msgid).build();
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
 
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE,
                 Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), ack.toByteString());

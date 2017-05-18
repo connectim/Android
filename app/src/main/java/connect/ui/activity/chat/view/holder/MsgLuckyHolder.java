@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.google.gson.Gson;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.bean.MessageEntity;
@@ -80,7 +81,6 @@ public class MsgLuckyHolder extends MsgChatHolder {
         OkHttpUtil.getInstance().postEncrySelf(uri, packageHash, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
@@ -91,7 +91,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
                         return;
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GrabRedPackageResp packageResp = Connect.GrabRedPackageResp.parseFrom(structData.getPlainData());
                     switch (packageResp.getStatus()) {
                         case 0://fail

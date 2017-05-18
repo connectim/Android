@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.BaseEntity;
@@ -89,7 +90,7 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                 break;
             case 103://External envelope was received
                 MsgSender msgSender = entity.getMsgDefinBean().getSenderInfoExt();
-                String receiverName = SharedPreferenceUtil.getInstance().getPubKey().equals(msgSender.publickey) ?
+                String receiverName = MemoryDataManager.getInstance().getPubKey().equals(msgSender.publickey) ?
                         context.getString(R.string.Chat_You) : msgSender.username;
 
                 builder = new SpannableStringBuilder(" "+context.getString(R.string.Chat_opened_Lucky_Packet_of, receiverName,context.getString(R.string.Chat_You)));

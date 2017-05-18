@@ -11,6 +11,7 @@ import android.widget.EditText;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -18,7 +19,7 @@ import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.SendOutBean;
 import connect.ui.activity.wallet.contract.PacketContract;
 import connect.ui.activity.wallet.presenter.PacketPresenter;
-import connect.ui.activity.wallet.support.TransaUtil;
+import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -43,9 +44,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
 
     private PacketActivity mActivity;
     private PacketContract.Presenter presenter;
-
-    private UserBean userBean;
-    private TransaUtil transaUtil;
+    private TransferUtil transaUtil;
     private PaymentPwd paymentPwd;
     private final String defilet_num = "1";
 
@@ -76,14 +75,13 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Wallet_Sent_via_link_luck_packet);
         toolbarTop.setRightText(R.string.Chat_History);
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         setPresenter(new PacketPresenter(this));
 
         packetNumberEt.setText(defilet_num);
         packetNumberEt.addTextChangedListener(presenter.getNumberWatcher());
         transferEditView.setNote(getString(R.string.Wallet_Best_wishes));
         transferEditView.setEditListener(presenter.getEditListener());
-        transaUtil = new TransaUtil();
+        transaUtil = new TransferUtil();
 
         presenter.start();
     }
@@ -113,9 +111,9 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
         final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
         if(null == presenter.getPendingPackage())
             return;
-        transaUtil.getOutputTran(mActivity, userBean.getAddress(), true,
+        transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), true,
                 presenter.getPendingPackage().getAddress(), transferEditView.getAvaAmount(),amount,
-                new TransaUtil.OnResultCall(){
+                new TransferUtil.OnResultCall(){
             @Override
             public void result(String inputString, String outputString) {
                 checkPayPassword(amount, inputString, outputString);
@@ -145,7 +143,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
 
     @Override
     public void goinPacketSend(SendOutBean sendOutBean) {
-        PacketSendActivity.startActivity(mActivity, sendOutBean, userBean);
+        PacketSendActivity.startActivity(mActivity, sendOutBean);
     }
 
     private void checkPayPassword(final long amount, final String inputString, final String outputString) {
@@ -154,7 +152,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
             paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
                 @Override
                 public void onTrue() {
-                    String samValue = transaUtil.getSignRawTrans(userBean.getPriKey(), inputString, outputString);
+                    String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     presenter.sendPacket(amount, samValue,transferEditView.getNote(),paymentPwd);
                 }
 

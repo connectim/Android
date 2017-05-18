@@ -94,7 +94,7 @@ public class LoginSeleUserActivity extends BaseActivity {
         public void itemOnClick(Object object, int position) {
             UserBean userBean = (UserBean)object;
             listUser.remove(userBean);
-            SharedPreferenceUtil.getInstance().putUserList(listUser);
+            SharedPreferenceUtil.getInstance().putUserList(userBean,SharedPreferenceUtil.USER_LIST_DEL);
         }
     };
 }

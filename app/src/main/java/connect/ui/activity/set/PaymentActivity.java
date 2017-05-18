@@ -11,6 +11,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -211,7 +212,7 @@ public class PaymentActivity extends BaseActivity {
     }
 
     private void requestSetPay(String pass){
-        byte[] ecdh  = SupportKeyUril.rawECDHkey(userBean.getPriKey(),userBean.getPubKey());
+        byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),userBean.getPubKey());
         try {
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, ecdh, pass.getBytes("UTF-8"));
             byte[] gcmDataByte = gcmData.toByteArray();
@@ -224,7 +225,7 @@ public class PaymentActivity extends BaseActivity {
                 public void onResponse(Connect.HttpResponse response) {
                     try {
                         Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                         Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
                         paySetBean.setPayPin(encryPass);
                         paySetBean.setVersionPay(payPinVersion.getVersion());

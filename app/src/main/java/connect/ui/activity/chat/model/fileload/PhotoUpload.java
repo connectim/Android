@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import com.google.protobuf.ByteString;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.im.bean.MsgType;
@@ -56,7 +57,7 @@ public class PhotoUpload extends FileUpLoad {
 
                     //// TODO: 2017/1/21 Assemble the MediaFile should be split in two implementations
                     String pubkey = SupportKeyUril.getPubKeyFromPriKey();
-                    String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+                    String priKey = MemoryDataManager.getInstance().getPriKey();
 
                     Connect.GcmData gcmData = null;
                     Connect.RichMedia richMedia = null;
@@ -72,7 +73,7 @@ public class PhotoUpload extends FileUpLoad {
                                 setEntity(secondGcmData.toByteString()).build();
                     }
 
-                    gcmData = EncryptionUtil.encodeAESGCMStructData(priKey, richMedia.toByteString());
+                    gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT,priKey, richMedia.toByteString());
                     mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
                 } catch (Exception e) {
                     e.printStackTrace();

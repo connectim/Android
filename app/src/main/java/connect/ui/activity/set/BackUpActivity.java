@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -117,7 +118,7 @@ public class BackUpActivity extends BaseActivity implements BackUpContract.View{
         CreateScan createScan = new CreateScan();
         switch (type){
             case 1:
-                bitmap = createScan.generateQRCode(userBean.getPriKey(), getResources().getColor(R.color.color_f0f0f6));
+                bitmap = createScan.generateQRCode(MemoryDataManager.getInstance().getPriKey(), getResources().getColor(R.color.color_f0f0f6));
                 backupImg.setImageBitmap(bitmap);
                 statusTv.setText(R.string.Login_Decrypted_private_key);
                 saveTv.setText(R.string.Set_Backup_decrypted_private_key);

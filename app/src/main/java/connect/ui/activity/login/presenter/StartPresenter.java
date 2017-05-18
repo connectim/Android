@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Random;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.login.bean.StartImagesBean;
 import connect.ui.activity.login.bean.UserBean;
@@ -108,11 +109,10 @@ public class StartPresenter implements StartContract.Presenter{
                     mView.goinLoginForPhone();
                 } else if (!TextUtils.isEmpty(userBean.getSalt())) {
                     openFromWeb(mActivity);
-                    UserBean userB = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
-                    mView.goinLoginPatter(userB);
+                    mView.goinLoginPatter();
                 } else {
                     openFromWeb(mActivity);
-                    SharedPreferenceUtil.getInstance().initPutMapStr(userBean.getPriKey(),userBean.getPubKey(),userBean.getAddress(),userBean.getAvatar());
+                    MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
                     mView.goinHome();
                 }
                 mActivity.finish();

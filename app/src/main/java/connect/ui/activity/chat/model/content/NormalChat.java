@@ -15,12 +15,9 @@ import connect.ui.activity.locmap.bean.GeoAddressBean;
 import connect.ui.activity.login.bean.UserBean;
 
 /**
- *public methods to extract
- * Created by gtq on 2016/12/19.
+ * public methods to extract
  */
 public abstract class NormalChat extends BaseChat {
-
-    protected UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
 
     @Override
     public void updateRoomMsg(String draft, String showText, long msgtime) {

@@ -85,7 +85,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     private FriendInfoActivity mActivity;
     private FriendInfoContract.Presenter presenter;
     private ContactEntity friendEntity;
-    private UserBean userBean;
 
     public static void startActivity(Activity activity, String pubKey) {
         Bundle bundle = new Bundle();
@@ -115,7 +114,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         toolbar.setTitle(null, R.string.Link_Profile);
         setPresenter(new FriendInfoPresenter(this));
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         Bundle bundle = getIntent().getExtras();
         String pubKey = bundle.getString("pubKey");
         friendEntity = ContactHelper.getInstance().loadFriendEntity(pubKey);

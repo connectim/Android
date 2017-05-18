@@ -20,6 +20,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -137,7 +138,7 @@ public class GroupSetActivity extends BaseActivity {
         relativelayout1.setOnClickListener(contactClick);
 
         groupVerify(findViewById(R.id.groupset_groupname), R.mipmap.message_groupchat_name2x, getString(R.string.Link_Group_Name), groupEntity.getName());
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
         if (myMember == null) {
             findViewById(R.id.groupset_myname).setVisibility(View.GONE);
         } else {
@@ -171,10 +172,9 @@ public class GroupSetActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_SETTING_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupSettingInfo settingInfo = Connect.GroupSettingInfo.parseFrom(structData.getPlainData());
 
                     setEntity.setDisturb(settingInfo.getMute() ? 1 : 0);
@@ -190,7 +190,7 @@ public class GroupSetActivity extends BaseActivity {
                     }
 
                     if (settingInfo.getPublic()) {
-                        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+                        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
                         if (myMember == null || myMember.getRole() == 0) {
                             findViewById(R.id.groupset_groupname).setEnabled(false);
                         } else {
@@ -417,7 +417,7 @@ public class GroupSetActivity extends BaseActivity {
             } else if (TAG_MEMBER.equals(address)) {
                 GroupMemberActivity.startActivity(activity, groupKey);
             } else {
-                if (SharedPreferenceUtil.getInstance().getAddress().equals(address)) {
+                if (MemoryDataManager.getInstance().getAddress().equals(address)) {
                     ModifyInfoActivity.startActivity(activity);
                 } else {
                     ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);

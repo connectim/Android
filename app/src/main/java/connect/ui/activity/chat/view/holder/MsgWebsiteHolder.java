@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
@@ -120,10 +121,9 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
-                        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
                             if (redPackage.getRemainSize() == 0) {//lucky packet is brought out
                                 String hashid = redPackage.getHashId();

@@ -10,6 +10,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.contact.adapter.AddPhoneAdapter;
@@ -40,7 +41,6 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
 
     private FriendAddPhoneActivity mActivity;
     private FriendAddContract.Presenter presenter;
-    private UserBean userBean;
     private AddPhoneAdapter adapter;
 
     @Override
@@ -67,7 +67,6 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
         toolbar.setRightTextEnable(false);
         setPresenter(new FriendAddPresenter(this));
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         adapter = new AddPhoneAdapter();
         adapter.setOnSeleListence(onSeleListence);
         listView.setAdapter(adapter);
@@ -123,7 +122,8 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
                     for(PhoneContactBean contactBean : seleList){
                         numbers = numbers + contactBean.getPhone() + ";";
                     }
-                    SystemUtil.sendPhoneSMS(mActivity, numbers, getString(R.string.Link_invite_encrypted_chat_with_APP_Download,userBean.getName()));
+                    SystemUtil.sendPhoneSMS(mActivity, numbers, getString(R.string.Link_invite_encrypted_chat_with_APP_Download,
+                            MemoryDataManager.getInstance().getName()));
                 }
             }
         }

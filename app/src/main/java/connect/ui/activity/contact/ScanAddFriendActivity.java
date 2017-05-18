@@ -25,6 +25,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.home.bean.MsgNoticeBean;
@@ -78,7 +79,6 @@ public class ScanAddFriendActivity extends BaseScanActivity {
     TextView photosTv;
 
     private ScanAddFriendActivity mActivity;
-    private UserBean userBean;
     private ResolveScanUtil resolveScanUtil;
 
     @Override
@@ -95,12 +95,11 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         mActivity = this;
         setViewFind(capturePreview, captureCropView, captureContainer);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(userBean.getAddress(), getResources().getColor(R.color.color_00ffbf));
+        Bitmap bitmap = createScan.generateQRCode(MemoryDataManager.getInstance().getAddress(), getResources().getColor(R.color.color_00ffbf));
         scanImg.setImageBitmap(bitmap);
         bottomScanImg.setImageBitmap(bitmap);
-        addressTv.setText(userBean.getAddress());
+        addressTv.setText(MemoryDataManager.getInstance().getAddress());
         resolveScanUtil = new ResolveScanUtil(mActivity);
     }
 

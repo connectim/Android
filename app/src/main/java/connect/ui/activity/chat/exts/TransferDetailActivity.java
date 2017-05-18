@@ -12,6 +12,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.TransactionHelper;
@@ -117,13 +118,12 @@ public class TransferDetailActivity extends BaseActivity {
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
-                        String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
                                 throw new Exception("Validation fails");
                             }
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
 
                             loadSenderInfo(bill.getSender());
@@ -182,9 +182,9 @@ public class TransferDetailActivity extends BaseActivity {
         String avatar = "";
         String name = "";
 
-        if (SharedPreferenceUtil.getInstance().getAddress().equals(address)) {
-            avatar = SharedPreferenceUtil.getInstance().getAvatar();
-            name = SharedPreferenceUtil.getInstance().getUser().getName();
+        if (MemoryDataManager.getInstance().getAddress().equals(address)) {
+            avatar = MemoryDataManager.getInstance().getAvatar();
+            name = MemoryDataManager.getInstance().getName();
         } else {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
             if (friendEntity != null) {
@@ -213,9 +213,9 @@ public class TransferDetailActivity extends BaseActivity {
         String avatar = "";
         String name = "";
 
-        if (SharedPreferenceUtil.getInstance().getAddress().equals(address)) {
-            avatar = SharedPreferenceUtil.getInstance().getAvatar();
-            name = SharedPreferenceUtil.getInstance().getUser().getName();
+        if (MemoryDataManager.getInstance().getAddress().equals(address)) {
+            avatar = MemoryDataManager.getInstance().getAvatar();
+            name = MemoryDataManager.getInstance().getName();
         } else {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
             if (friendEntity != null) {
@@ -251,7 +251,7 @@ public class TransferDetailActivity extends BaseActivity {
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
                             String avatar=userInfo.getAvatar();

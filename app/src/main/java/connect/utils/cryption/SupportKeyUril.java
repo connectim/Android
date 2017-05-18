@@ -14,6 +14,7 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.im.bean.Session;
@@ -65,7 +66,7 @@ public class SupportKeyUril {
      * @return
      */
     public static String getPubKeyFromPriKey() {
-        String prikey = SharedPreferenceUtil.getInstance().getPriKey();
+        String prikey = MemoryDataManager.getInstance().getPriKey();
         return AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
     }
 
@@ -157,7 +158,7 @@ public class SupportKeyUril {
     }
 
     public static String localHashKey() {
-        String key = AllNativeMethod.cdGetHash256(SharedPreferenceUtil.getInstance().getPriKey());
+        String key = AllNativeMethod.cdGetHash256(MemoryDataManager.getInstance().getPriKey());
         key = AllNativeMethod.cdGetHash256(key);
         return key;
     }

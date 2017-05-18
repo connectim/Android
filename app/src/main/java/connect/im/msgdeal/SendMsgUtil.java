@@ -10,6 +10,7 @@ import com.google.protobuf.ByteString;
 
 import java.io.UnsupportedEncodingException;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamHelper;
 import connect.db.green.DaoHelper.ParamManager;
@@ -45,7 +46,7 @@ public class SendMsgUtil {
     public static Connect.IMRequest firstLoginShake() {
         ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
 
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
         String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
         String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
 
@@ -167,7 +168,7 @@ public class SendMsgUtil {
      * @return
      */
     public static void requestAddFriend(Object... objects) {
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
         Connect.GcmData gcmData = null;
         try {
             gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, priKey, (String) objects[1], ((String) objects[2]).getBytes("utf-8"));

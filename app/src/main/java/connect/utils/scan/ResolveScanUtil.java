@@ -10,6 +10,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
@@ -147,7 +148,6 @@ public class ResolveScanUtil {
      * @param isTransfer
      */
     private void requestUserInfo(final String address, final Double amount, final boolean isTransfer) {
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(address)
                 .build();
@@ -156,7 +156,7 @@ public class ResolveScanUtil {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     if(sendUserInfo != null && !TextUtils.isEmpty(sendUserInfo.getPubKey())){
                         if(isTransfer){

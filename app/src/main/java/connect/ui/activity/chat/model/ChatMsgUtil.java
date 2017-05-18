@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -64,12 +65,12 @@ public class ChatMsgUtil {
         MsgDirect direct = null;
         MsgSender sender = definBean.getSenderInfoExt();
         if (sender == null) {
-            direct = (definBean.getPublicKey() == null || SharedPreferenceUtil.getInstance().getPubKey().equals(definBean.getPublicKey())) ? MsgDirect.From : MsgDirect.To;
+            direct = (definBean.getPublicKey() == null || MemoryDataManager.getInstance().getPubKey().equals(definBean.getPublicKey())) ? MsgDirect.From : MsgDirect.To;
         } else {
             if (TextUtils.isEmpty(sender.publickey)) {
-                direct = SharedPreferenceUtil.getInstance().getAddress().equals(sender.address) ? MsgDirect.To : MsgDirect.From;
+                direct = MemoryDataManager.getInstance().getAddress().equals(sender.address) ? MsgDirect.To : MsgDirect.From;
             } else {
-                direct = SharedPreferenceUtil.getInstance().getPubKey().equals(sender.publickey) ? MsgDirect.To : MsgDirect.From;
+                direct = MemoryDataManager.getInstance().getPubKey().equals(sender.publickey) ? MsgDirect.To : MsgDirect.From;
             }
         }
         return direct;
@@ -210,7 +211,7 @@ public class ChatMsgUtil {
                 break;
             case 1://show group member nickname
                 MsgSender msgSender = definBean.getSenderInfoExt();
-                if (msgSender != null && !msgSender.publickey.equals(SharedPreferenceUtil.getInstance().getPubKey())) {
+                if (msgSender != null && !msgSender.publickey.equals(MemoryDataManager.getInstance().getPubKey())) {
                     content = msgSender.username + ": " + content;
                 }
                 break;
@@ -252,7 +253,7 @@ public class ChatMsgUtil {
                 if (definBean.getType() == 1 && !TextUtils.isEmpty(definBean.getExt1())) {
                     List<String> addressList = new Gson().fromJson(definBean.getExt1(), new TypeToken<List<String>>() {
                     }.getType());
-                    String myAddress = SharedPreferenceUtil.getInstance().getAddress();
+                    String myAddress = MemoryDataManager.getInstance().getAddress();
                     if (addressList.contains(myAddress)) {
                         roomEntity.setNotice(1);
                     }

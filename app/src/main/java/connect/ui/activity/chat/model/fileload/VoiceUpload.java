@@ -3,6 +3,7 @@ package connect.ui.activity.chat.model.fileload;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.im.model.ChatSendManager;
@@ -36,8 +37,8 @@ public class VoiceUpload extends FileUpLoad {
                     bean.setExt1(FileUtil.fileSize(bean.getContent()));
                     MessageHelper.getInstance().insertToMsg(bean);
 
-                    String pubkey = SupportKeyUril.getPubKeyFromPriKey(SharedPreferenceUtil.getInstance().getUser().getPriKey());
-                    String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+                    String pubkey = SupportKeyUril.getPubKeyFromPriKey(MemoryDataManager.getInstance().getPriKey());
+                    String priKey = MemoryDataManager.getInstance().getPriKey();
 
                     Connect.GcmData gcmData = null;
                     Connect.RichMedia richMedia = null;
@@ -51,7 +52,7 @@ public class VoiceUpload extends FileUpLoad {
                                 setEntity(gcmData.toByteString()).build();
                     }
 
-                    gcmData = EncryptionUtil.encodeAESGCMStructData(priKey, richMedia.toByteString());
+                    gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, priKey, richMedia.toByteString());
                     mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
                 } catch (Exception e) {
                     e.printStackTrace();

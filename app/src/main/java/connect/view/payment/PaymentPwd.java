@@ -22,6 +22,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.ArrayList;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -261,8 +262,8 @@ public class PaymentPwd {
     private void decodePass(String pass){
         if(!TextUtils.isEmpty(paySetBean.getPayPin())){
             try {
-                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                byte[] ecdh  = SupportKeyUril.rawECDHkey(userBean.getPriKey(),userBean.getPubKey());
+                byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),
+                        MemoryDataManager.getInstance().getPubKey());
                 byte[] valueByte = StringUtil.hexStringToBytes(paySetBean.getPayPin());
                 byte[] passByte = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,ecdh,Connect.GcmData.parseFrom(valueByte));
                 String payPass = new String(passByte,"UTF-8");
@@ -363,13 +364,12 @@ public class PaymentPwd {
         Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.newBuilder()
                 .setVersion(paySetBean.getVersionPay())
                 .build();
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_VERSION, payPinVersion, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
                     if(payPinVersion.getVersion().equals(paySetBean.getVersionPay()) ){
                         decodePass(pass);
@@ -394,14 +394,13 @@ public class PaymentPwd {
      * @param pass
      */
     public void requestSetPayInfo(final String pass) {
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SUNC, ByteString.copyFrom(SupportKeyUril.createrBinaryRandom()),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.parseFrom(structData.getPlainData());
                             paySetBean.setPayPin(paymentSetting.getPayPin());
                             ParamManager.getInstance().putPaySet(paySetBean);
@@ -423,8 +422,7 @@ public class PaymentPwd {
      * @param pass
      */
     private void requestSetPay(String pass){
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        byte[] ecdh  = SupportKeyUril.rawECDHkey(userBean.getPriKey(),userBean.getPubKey());
+        byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),MemoryDataManager.getInstance().getPubKey());
         try {
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, ecdh, pass.getBytes("UTF-8"));
             byte[] gcmDataByte = gcmData.toByteArray();
@@ -437,7 +435,7 @@ public class PaymentPwd {
                 public void onResponse(Connect.HttpResponse response) {
                     try {
                         Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                         Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
                         paySetBean.setPayPin(encryPass);
                         paySetBean.setVersionPay(payPinVersion.getVersion());

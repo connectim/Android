@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.CommandBean;
 import connect.im.bean.ConnectState;
@@ -299,7 +300,7 @@ public class ConnectManager {
              */
             public synchronized void checkUserCookie() {
                 boolean checkExpire = false;
-                UserCookie userCookie = Session.getInstance().getUserCookie(SharedPreferenceUtil.getInstance().getPubKey());
+                UserCookie userCookie = Session.getInstance().getUserCookie(MemoryDataManager.getInstance().getPubKey());
                 if (userCookie != null) {
                     long curTime = TimeUtil.getCurrentTimeSecond();
                     checkExpire = curTime >= userCookie.getExpiredTime();

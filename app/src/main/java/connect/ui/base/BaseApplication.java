@@ -28,8 +28,8 @@ public class BaseApplication extends Application{
         mApplication = this;
 
         //设置该CrashHandler为程序的默认处理器
-        UnCeHandler catchExcep = new UnCeHandler(this);
-        Thread.setDefaultUncaughtExceptionHandler(catchExcep);
+        /*UnCeHandler catchExcep = new UnCeHandler(this);
+        Thread.setDefaultUncaughtExceptionHandler(catchExcep);*/
 
         //建议在测试阶段建议设置成true，发布时设置为false。
         //区分开 测试bug跟正式bug

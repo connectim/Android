@@ -11,6 +11,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.FriendRequestEntity;
@@ -73,7 +74,7 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             if(structData != null){
                                 Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
                                 List<Connect.UserInfo> list = usersInfo.getUsersList();

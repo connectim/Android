@@ -3,6 +3,7 @@ package connect.utils.scan;
 import android.app.Activity;
 import android.net.Uri;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
@@ -66,7 +67,7 @@ public class ResolveUrlUtil {
     public void dealResult(ScanResultBean resultBean,boolean isCloseScan){
         switch (resultBean.getType()){
             case TYPE_WEB_FRIEND:
-                if (!resultBean.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getAddress())) {
+                if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
                     ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(resultBean.getAddress());
                     if (friendEntity != null) {
                         FriendInfoActivity.startActivity(activity, resultBean.getAddress());
@@ -82,7 +83,7 @@ public class ResolveUrlUtil {
                 Double amount = null;
                 if (resultBean.getAmount() != null)
                     amount = Double.valueOf(resultBean.getAmount());
-                if (!resultBean.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getAddress())) {
+                if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
                     TransferToActivity.startActivity(activity, resultBean.getAddress(), amount);
                     if(isCloseScan){
                         ActivityUtil.goBack(activity);

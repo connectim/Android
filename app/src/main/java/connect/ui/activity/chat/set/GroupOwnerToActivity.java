@@ -11,6 +11,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.GroupMemberEntity;
@@ -85,7 +86,7 @@ public class GroupOwnerToActivity extends BaseActivity {
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
 
-        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey, MemoryDataManager.getInstance().getAddress());
         Collections.sort(groupMemEntities, compara);
 
         adapter = new GroupMemberSelectAdapter(activity, groupMemEntities);
@@ -165,7 +166,7 @@ public class GroupOwnerToActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_ATTORN, attorn, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
                 myMember.setRole(0);
                 ContactHelper.getInstance().inserGroupMemEntity(myMember);
 

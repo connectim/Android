@@ -15,6 +15,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -234,8 +235,7 @@ public class ContactSelectActivity extends BaseActivity {
     }
 
     protected void createNewGroup() {
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        String groupname = String.format(getString(R.string.Link_user_friends), userBean.getName());
+        String groupname = String.format(getString(R.string.Link_user_friends), MemoryDataManager.getInstance().getName());
 
         String ranprikey = EncryptionUtil.randomPriKey();
         String randpubkey = EncryptionUtil.randomPubKey(ranprikey);
@@ -248,10 +248,10 @@ public class ContactSelectActivity extends BaseActivity {
         List<Connect.AddGroupUserInfo> groupUserInfos = new ArrayList<>();
 
         for (ContactEntity entity : selectEntities) {
-            byte[] memberecdhkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), entity.getPub_key());
+            byte[] memberecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), entity.getPub_key());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
-            String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
+            String pubkey = MemoryDataManager.getInstance().getPubKey();
             String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
             String backup = String.format("%1$s/%2$s", pubkey, groupHex);
 
@@ -273,14 +273,13 @@ public class ContactSelectActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CREATE_GROUP, createGroup, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
                         throw new Exception("Validation fails");
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
                     loadGroupDb(groupname, groupInfo);
                     newGroupBroadCast(groupInfo);
@@ -357,7 +356,7 @@ public class ContactSelectActivity extends BaseActivity {
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.newBuilder().setSecretKey(groupEcdh)
                 .setIdentifier(groupInfo.getGroup().getIdentifier()).build();
 
-        String prikey = SharedPreferenceUtil.getInstance().getPriKey();
+        String prikey = MemoryDataManager.getInstance().getPriKey();
         for (Connect.GroupMember member : groupInfo.getMembersList()) {
             byte[] groupecdhkey = SupportKeyUril.rawECDHkey(prikey, member.getPubKey());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, groupecdhkey, groupMessage.toByteString());
@@ -384,14 +383,13 @@ public class ContactSelectActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_INVITE_TOKEN, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
                         throw new Exception("Validation fails");
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInviteResponseList responseList = Connect.GroupInviteResponseList.parseFrom(structData.getPlainData());
                     for (Connect.GroupInviteResponse res : responseList.getListList()) {
                         sendFriendInvite(res.getAddress(), res.getToken());
@@ -439,10 +437,10 @@ public class ContactSelectActivity extends BaseActivity {
 
         List<Connect.AddGroupUserInfo> addUsers = new ArrayList<>();
         for (ContactEntity entity : selectEntities) {
-            byte[] memberecdhkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), entity.getPub_key());
+            byte[] memberecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), entity.getPub_key());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, memberecdhkey, createGroupMessage.toByteArray());
 
-            String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
+            String pubkey = MemoryDataManager.getInstance().getPubKey();
             String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
             String backup = String.format("%1$s/%2$s", pubkey, groupHex);
 
@@ -485,7 +483,7 @@ public class ContactSelectActivity extends BaseActivity {
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.newBuilder().setSecretKey(groupEntity.getEcdh_key())
                 .setIdentifier(groupEntity.getIdentifier()).build();
 
-        String prikey = SharedPreferenceUtil.getInstance().getPriKey();
+        String prikey = MemoryDataManager.getInstance().getPriKey();
         for (GroupMemberEntity member : memEntities) {
             byte[] groupecdhkey = SupportKeyUril.rawECDHkey(prikey, member.getPub_key());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, groupecdhkey, groupMessage.toByteString());

@@ -27,6 +27,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ParamHelper;
@@ -248,7 +249,7 @@ public class HttpsService extends Service {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_USERS_EXPIRE_SALT, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
+                String prikey = MemoryDataManager.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, prikey, imResponse.getCipherData());
@@ -279,7 +280,7 @@ public class HttpsService extends Service {
                 new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
+                String prikey = MemoryDataManager.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, prikey, imResponse.getCipherData());
@@ -307,10 +308,9 @@ public class HttpsService extends Service {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PULLINFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
 
                     createLocalGroupInfo(groupInfo);
@@ -367,7 +367,7 @@ public class HttpsService extends Service {
             String ranprikey = EncryptionUtil.randomPriKey();
             String randpubkey = EncryptionUtil.randomPubKey(ranprikey);
 
-            String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+            String priKey = MemoryDataManager.getInstance().getPriKey();
             byte[] ecdhkey = SupportKeyUril.rawECDHkey(priKey, randpubkey);
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, groupecdhkey.getBytes("UTF-8"));
 
@@ -400,13 +400,13 @@ public class HttpsService extends Service {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupCollaborative groupCollaborative = Connect.GroupCollaborative.parseFrom(structData.getPlainData().toByteArray());
                     String[] infos = groupCollaborative.getCollaborative().split("/");
                     if (infos.length < 2) {
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownGroupBackUp, pubkey);
                     } else {
-                        byte[] ecdHkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), infos[0]);
+                        byte[] ecdHkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
                         ecdHkey = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdHkey, gcmData);
 
@@ -435,14 +435,13 @@ public class HttpsService extends Service {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_BACKUP, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.DownloadBackUpResp backUpResp = Connect.DownloadBackUpResp.parseFrom(structData.getPlainData().toByteArray());
                     String[] infos = backUpResp.getBackup().split("/");
                     if (infos.length >= 2) {
-                        byte[] ecdHkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), infos[0]);
+                        byte[] ecdHkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
                         structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, ecdHkey, gcmData);
                         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData().toByteArray());
@@ -476,14 +475,13 @@ public class HttpsService extends Service {
     }
 
     public void requestSetPayInfo() {
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SUNC, ByteString.copyFrom(SupportKeyUril.createrBinaryRandom()),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             PaySetBean paySetBean = null;
                             if (structData == null || structData.getPlainData() == null) {
                                 paySetBean = PaySetBean.initPaySet();
@@ -510,13 +508,12 @@ public class HttpsService extends Service {
         Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.newBuilder()
                 .setVersion("0")
                 .build();
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_VERSION, payPinVersion, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
                     paySetBean.setVersionPay(payPinVersion.getVersion());
                     ParamManager.getInstance().putPaySet(paySetBean);
@@ -539,8 +536,7 @@ public class HttpsService extends Service {
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(
-                                    SharedPreferenceUtil.getInstance().getUser().getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             PrivateSetBean privateSetBean = null;
                             if (structData == null) {
                                 privateSetBean = PrivateSetBean.initSetBean();
@@ -565,7 +561,7 @@ public class HttpsService extends Service {
     }
 
     private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, SharedPreferenceUtil.getInstance().getUser().getAddress());
+        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
@@ -616,14 +612,13 @@ public class HttpsService extends Service {
     }
 
     private void requestBlackList() {
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_LIST, ByteString.copyFrom(new byte[]{}),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             if(structData == null || structData.getPlainData() == null){
                                 return;
                             }

@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -373,7 +374,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
      * Get the wallet balance
      */
     private void requestWallet(){
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, SharedPreferenceUtil.getInstance().getUser().getAddress());
+        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
         accountBean = new WalletAccountBean(0L,0L);
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
