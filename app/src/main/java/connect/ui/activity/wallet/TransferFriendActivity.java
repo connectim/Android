@@ -17,10 +17,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.adapter.FriendGridAdapter;
 import connect.ui.activity.wallet.bean.FriendSeleBean;
@@ -33,7 +31,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.view.TopToolBar;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 
 /**
  * Transfer to friend

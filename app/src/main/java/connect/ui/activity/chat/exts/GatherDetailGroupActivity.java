@@ -30,6 +30,7 @@ import connect.ui.activity.chat.bean.RoomSession;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.wallet.BlockchainActivity;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
+import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
@@ -336,6 +337,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpResponse response) {
                 paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                TransferError.getInstance().showError(response.getCode(),response.getMessage());
             }
         });
     }

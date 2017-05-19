@@ -190,6 +190,10 @@
     <string name="ErrorCode_Create_error">创建错误</string>
     <string name="ErrorCode_Data_is_too_large">数据过大</string>
     <string name="ErrorCode_DecodeRawTransaction_error">解码原始事务错误</string>
+    <string name="ErrorCode_transaction_address_is_not_available">交易地址不可用</string>
+    <string name="ErrorCode_Transaction_information_is_incorrect">交易信息有误</string>
+    <string name="ErrorCode_Version_information_is_repeated">版本信息重复</string>
+    <string name="ErrorCode_The_fee_is_too_low">手续费过低</string>
     <string name="ErrorCode_Double_flowers">双花交易失败</string>
     <string name="ErrorCode_Ecdh_generation_failed">ecdh 生成失败</string>
     <string name="ErrorCode_Error">发生了错误</string>

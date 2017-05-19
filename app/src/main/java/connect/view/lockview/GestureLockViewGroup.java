@@ -242,7 +242,6 @@ public class GestureLockViewGroup extends RelativeLayout {
                         {
                             mPath.lineTo(mLastPathX, mLastPathY);
                         }
-
                     }
                 }
                 // The end of the line

@@ -1,4 +1,4 @@
-package connect.view.transferEdit;
+package connect.utils.transfer;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -43,7 +43,6 @@ import protos.Connect;
 
 /**
  * Transfer amount input
- * Created by Administrator on 2016/12/20.
  */
 public class TransferEditView extends LinearLayout implements View.OnClickListener{
 
@@ -121,13 +120,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         initView(null);
     }
 
-    /**
-     * Hide it when you don't need to display the available amount
-     */
-    public void setAmountTvGone(){
-        amountTv.setVisibility(View.GONE);
-    }
-
     public void initView(Double amount){
         if(amount != null){
             editDefault = RateFormatUtil.doubleToLongBtc(amount);
@@ -158,53 +150,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     }
 
     /**
-     * Input callback (mainly used to change the contents of the input box, the external supply port)
-     * @param onEditListener
-     */
-    public void setEditListener(OnEditListener onEditListener){
-        this.onEditListener = onEditListener;
-    }
-
-    /**
-     * Multiple transaction
-     */
-    public void setGroupEditTitle(){
-        editTitleTv.setText(context.getString(R.string.Wallet_Amount_Each) + "(BTC)");
-    }
-
-    /**
-     * Set the message
-     * @param str
-     */
-    public void setNote(String str){
-        addNote.setText(str);
-        note = str;
-    }
-    /**
-     * get the message
-     * @return
-     */
-    public String getNote(){
-        return note;
-    }
-
-    /**
-     * Whether the available balance is visible
-     * @param visibility
-     */
-    public void setVisibilityAmount(int visibility){
-        amountTv.setVisibility(visibility);
-    }
-
-    /**
-     * Set fee display
-     * @param visibility
-     */
-    public void setFeeVisibility(int visibility){
-        findViewById(R.id.linearlayout).setVisibility(visibility);
-    }
-
-    /**
      * Gets the current input bitcoin
      * @return
      */
@@ -227,13 +172,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
                     amoutinputEt.setText(transferTv.getText().toString().replaceAll("[^\\d.]*", ""));
                     transferTv.setText(context.getResources().getString(R.string.Set_BTC_symbol) + " " + currentBtc);
-                    /*if(!TextUtils.isEmpty(currentBtc)){
-                        amoutinputEt.setText(transferTv.getText().toString().replaceAll("[^\\d.]*", ""));
-                        transferTv.setText(context.getResources().getString(R.string.Set_BTC_symbol) + " " + currentBtc);
-                    }else{
-                        amoutinputEt.setText("");
-                        transferTv.setText(context.getResources().getString(R.string.Set_BTC_symbol) + " ");
-                    }*/
                     editTitleTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Amount_Symbol,otherRate.getCode()));
                 }else{
                     isEditBTC = true;
@@ -242,18 +180,11 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
                     transferTv.setText(otherRate.getSymbol() + " " + amoutinputEt.getText().toString());
                     amoutinputEt.setText(currentBtc);
-                    /*if(!TextUtils.isEmpty(currentBtc)){
-                        transferTv.setText(otherRate.getSymbol() + " " + amoutinputEt.getText().toString());
-                        amoutinputEt.setText(currentBtc);
-                    }else{
-                        amoutinputEt.setText("");
-                        transferTv.setText(otherRate.getSymbol() + " ");
-                    }*/
                     editTitleTv.setText(R.string.Wallet_Amount_BTC);
                 }
                 break;
             case R.id.add_note:
-                Dialog dialog = DialogUtil.showEditView(context, context.getResources().getString(R.string.Wallet_Add_note),
+                DialogUtil.showEditView(context, context.getResources().getString(R.string.Wallet_Add_note),
                         "", "", "", "", "",false,15,new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
@@ -397,6 +328,60 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                         RateFormatUtil.longToDoubleBtc(0)));
             }
         });
+    }
+
+    /**
+     * Hide it when you don't need to display the available amount
+     */
+    public void setAmountTvGone(){
+        amountTv.setVisibility(View.GONE);
+    }
+
+    /**
+     * Input callback (mainly used to change the contents of the input box, the external supply port)
+     * @param onEditListener
+     */
+    public void setEditListener(OnEditListener onEditListener){
+        this.onEditListener = onEditListener;
+    }
+
+    /**
+     * Multiple transaction
+     */
+    public void setGroupEditTitle(){
+        editTitleTv.setText(context.getString(R.string.Wallet_Amount_Each) + "(BTC)");
+    }
+
+    /**
+     * Set the message
+     * @param str
+     */
+    public void setNote(String str){
+        addNote.setText(str);
+        note = str;
+    }
+    /**
+     * get the message
+     * @return
+     */
+    public String getNote(){
+        return note;
+    }
+
+    /**
+     * Whether the available balance is visible
+     * @param visibility
+     */
+    public void setVisibilityAmount(int visibility){
+        amountTv.setVisibility(visibility);
+    }
+
+    /**
+     * Set fee display
+     * @param visibility
+     */
+    public void setFeeVisibility(int visibility){
+        findViewById(R.id.linearlayout).setVisibility(visibility);
     }
 
     public interface OnEditListener {

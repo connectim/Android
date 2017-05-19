@@ -16,7 +16,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.db.green.bean.ContactEntity;
@@ -24,9 +23,9 @@ import connect.db.green.bean.GroupEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgSend;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.PacketHistoryActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
+import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
@@ -41,7 +40,7 @@ import connect.view.MdStyleProgress;
 import connect.view.TopToolBar;
 import connect.view.payment.PaymentPwd;
 import connect.view.roundedimageview.RoundedImageView;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -281,6 +280,7 @@ public class RedPacketActivity extends BaseActivity {
                     ToastEUtil.makeText(activity, activity.getString(R.string.Wallet_error_lucky_packet_amount_too_small, 0.00005), 2).show();
                 }else {
                     paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                    TransferError.getInstance().showError(response.getCode(),response.getMessage());
                 }
             }
         });

@@ -14,13 +14,11 @@ public class GestureLockView extends View {
         STATUS_NO_FINGER, STATUS_FINGER_ON, STATUS_FINGER_UP
     }
     /**
-     *
-	 The current state of GestureLockView
+     * The current state of GestureLockView
      */
     private Mode mCurrentStatus = Mode.STATUS_NO_FINGER;
     /**
-     *
-	 width
+     * width
      */
     private int mWidth;
     /**

@@ -39,17 +39,14 @@ public class TransferUtil {
     private PaySetBean paySetBean;
     private String address;
     private List<TranAddressBean> outputList;
-    private boolean isAddFee;
+    private boolean isAddChangeAddress;
     private Dialog connectDialog;
 
     /**
      * Automatic calculation fee
-     * @param txs_length
-     * @param sentToLength
-     * @return
      */
-    public static long getAutoFeeWithUnspentLength(boolean isAddFee,int txs_length, int sentToLength) {
-        if(!isAddFee){
+    public static long getAutoFeeWithUnspentLength(boolean isAddChangeAddress,int txs_length, int sentToLength) {
+        if(isAddChangeAddress){
             sentToLength++;//the change of address
         }
         EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
@@ -60,15 +57,15 @@ public class TransferUtil {
 
     /**
      * whether is dusty transaction
-     * @param amount
-     * @return
      */
     public static boolean ishaveDustWithAmount(long amount) {
         EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
         return (amount * 1000 / (3 * 182)) < Double.valueOf(feeBean.getData()) * Math.pow(10, 8) / 10;
     }
 
-
+    /**
+     * Transfer front safety judgment
+     */
     public static boolean checkTransfer(Context context,long avaliableAmount, long amount) {
         long fee = ParamManager.getInstance().getPaySet().getFee();
         //Check account balance
@@ -86,13 +83,6 @@ public class TransferUtil {
 
     /**
      * Request transfer transaction(single address)
-     * @param activity
-     * @param address
-     * @param isPendding
-     * @param outAddress
-     * @param avaliableAmount
-     * @param amount
-     * @param onResultCall
      */
     public void getOutputTran(final Activity activity, final String address, boolean isPendding,
                               final String outAddress, long avaliableAmount, long amount, OnResultCall onResultCall) {
@@ -103,13 +93,6 @@ public class TransferUtil {
 
     /**
      * Request transfer transaction(more address)
-     * @param activity
-     * @param address
-     * @param isPendding
-     * @param outputList
-     * @param avaliableAmount
-     * @param amount
-     * @param onResultCall
      */
     public void getOutputTran(final Activity activity, final String address, boolean isPendding,
                               final List<TranAddressBean> outputList, long avaliableAmount, long amount, OnResultCall onResultCall) {
@@ -130,22 +113,33 @@ public class TransferUtil {
         Connect.UnspentOrder.Builder builder = Connect.UnspentOrder.newBuilder();
         builder.setSendToLength(outputList.size());
 
+        long amount = 0;
+        for (TranAddressBean tranAddressBean : outputList) {
+            amount = amount + tranAddressBean.getAmount();
+        }
+
+        // If you have intermediate transfer address, set up the second fee
+        if (isPendding) {
+            if (paySetBean.isAutoFee()){
+                long autoFee = getAutoFeeWithUnspentLength(true, 1, outputList.size());
+                if(autoFee >= paySetBean.getAutoMaxFee()){
+                    builder.setAmount(amount + paySetBean.getAutoMaxFee());
+                }else{
+                    builder.setAmount(amount + autoFee);
+                }
+            }else{
+                builder.setAmount(amount + paySetBean.getFee());
+            }
+        } else {
+            builder.setAmount(amount);
+        }
+
+        // Setting up the commission parameters
         if (paySetBean.isAutoFee()) {
             builder.setFee(0);
         }else{
             builder.setFee(paySetBean.getFee());
         }
-
-        long amount = 0;
-        for (TranAddressBean tranAddressBean : outputList) {
-            amount = amount + tranAddressBean.getAmount();
-        }
-        if (isPendding) {
-            builder.setAmount(amount + 10000);
-        } else {
-            builder.setAmount(amount);
-        }
-
         String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_OEDER, address);
         HttpRequest.getInstance().post(url, builder.build(), new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
@@ -166,15 +160,6 @@ public class TransferUtil {
     }
 
     private void checkUnspend(final Connect.UnspentOrderResponse orderResponse) {
-        /*message UnspentOrderResponse {
-                        repeated Unspent unspents = 1;
-                        bool completed = 2;//balance is not enough
-                        int64 amount = 3;
-                        bool package = 4;//Number of transactions more than 100 pen
-                        bool dust = 5;//Transfer amount is too small
-                        int64 fee = 6;//Determine whether the fee is too low
-                        int64 unspentAmount = 7;
-                    }*/
         if (!orderResponse.getCompleted()) {
             ToastEUtil.makeText(activity,R.string.Wallet_Insufficient_balance,ToastEUtil.TOAST_STATUS_FAILE).show();
             connectDialog.dismiss();
@@ -189,16 +174,21 @@ public class TransferUtil {
         checkFee(orderResponse);
     }
 
+    /**
+     * Check the handling charge
+     * @param orderResponse
+     */
     private void checkFee(final Connect.UnspentOrderResponse orderResponse) {
         if (paySetBean.isAutoFee()) {
             if (orderResponse.getFee() > paySetBean.getAutoMaxFee()) {
                 DialogUtil.showAlertTextView(activity, activity.getResources().getString(R.string.Set_tip_title),
                         activity.getResources().getString(R.string.Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue,
-                                RateFormatUtil.longToDoubleBtc(paySetBean.getAutoMaxFee())),
+                                RateFormatUtil.longToDoubleBtc(orderResponse.getFee())),
                         "", "", false, new DialogUtil.OnItemClickListener() {
                             @Override
                             public void confirm(String value) {
-                                checkDust(orderResponse);
+                                Connect.UnspentOrderResponse response = orderResponse.toBuilder().setFee(paySetBean.getAutoMaxFee()).build();
+                                checkDust(response);
                             }
 
                             @Override
@@ -210,7 +200,7 @@ public class TransferUtil {
                 checkDust(orderResponse);
             }
         } else {
-            long autoFee = getAutoFeeWithUnspentLength(isAddFee, orderResponse.getUnspentsList().size(), outputList.size());
+            long autoFee = getAutoFeeWithUnspentLength(isAddChangeAddress, orderResponse.getUnspentsList().size(), outputList.size());
             if (autoFee > orderResponse.getFee() || orderResponse.getDust()) {
                 DialogUtil.showAlertTextView(activity, activity.getResources().getString(R.string.Set_tip_title),
                         activity.getResources().getString(R.string.Wallet_Transaction_fee_too_low_Continue),
@@ -232,11 +222,11 @@ public class TransferUtil {
     }
 
     /**
-     * Check whether the change is too small
+     * Check the change
      * @param orderResponse
      */
     private void checkDust(final Connect.UnspentOrderResponse orderResponse){
-        isAddFee = false;
+        isAddChangeAddress = true;
         long change = orderResponse.getUnspentAmount() - (orderResponse.getAmount() + orderResponse.getFee());
         if (change < 0) {
             ToastUtil.getInstance().showToast(R.string.Wallet_Insufficient_balance);
@@ -244,6 +234,7 @@ public class TransferUtil {
             return;
         }
         if(change == 0){
+            isAddChangeAddress = false;
             getArrayValue(orderResponse.getFee(), orderResponse.getAmount(), orderResponse.getUnspentAmount(), orderResponse.getUnspentsList());
             return;
         }
@@ -253,7 +244,7 @@ public class TransferUtil {
                     "", "", false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {
-                            isAddFee = true;
+                            isAddChangeAddress = false;
                             getArrayValue(orderResponse.getFee(), orderResponse.getAmount(), orderResponse.getUnspentAmount(), orderResponse.getUnspentsList());
                         }
 
@@ -269,10 +260,6 @@ public class TransferUtil {
 
     /**
      * Assembly input and output transactions
-     * @param fee
-     * @param amount
-     * @param UnspentAmount
-     * @param list
      */
     private void getArrayValue(long fee, long amount,long UnspentAmount, List<Connect.Unspent> list) {
         ArrayList inputArray = new ArrayList<>();
@@ -290,11 +277,13 @@ public class TransferUtil {
         if(change < 0){
             return;
         }else if(change == 0){
+
         }else if(change > 0){
             if(ishaveDustWithAmount(change)){
-                if(isAddFee){
-                }else{
+                if(isAddChangeAddress){
                     return;
+                }else{
+
                 }
             }else{
                 outputMap.put(address, Double.valueOf(RateFormatUtil.longToDoubleBtc(change)));
@@ -303,14 +292,10 @@ public class TransferUtil {
 
         if(isPendding){
             for (TranAddressBean tranAddressBean : outputList) {
-                if(ishaveDustWithAmount(amount) && outputList.size() == 1)
-                    return;
                 outputMap.put(tranAddressBean.getAddress(), Double.valueOf(RateFormatUtil.longToDoubleBtc(amount)));
             }
         }else{
             for (TranAddressBean tranAddressBean : outputList) {
-                if(ishaveDustWithAmount(tranAddressBean.getAmount()))
-                    return;
                 if(outputMap.containsKey(tranAddressBean.getAddress())){
                     Double value = outputMap.get(tranAddressBean.getAddress());
                     outputMap.remove(tranAddressBean.getAddress());
@@ -320,13 +305,15 @@ public class TransferUtil {
                 }
             }
         }
-
         final String inputStrings = new Gson().toJson(inputArray);
         final String outputStrings = new Gson().toJson(outputMap);
         connectDialog.dismiss();
         onResultCall.result(inputStrings, outputStrings);
     }
 
+    /**
+     * Deal with the private key signature
+     */
     public String getSignRawTrans(String priKey, String inputStrings, String outputStrings) {
         String rawTranscation = AllNativeMethod.cdCreateRawTranscation(inputStrings + " " + outputStrings);
         ArrayList arrayList = new ArrayList<>();

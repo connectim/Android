@@ -85,41 +85,16 @@ public class PatterDrawActivity extends BaseActivity {
 
         drawpatterGestop.setChooseData(null);
         idGestureLockViewGroup.setOnGestureLockViewListener(onGestureLockViewListener);
-
         if(type.equals(TYPE_NEW)){
             idGestureLockViewGroup.setAnswer("","");
             idGestureLockViewGroup.setUnMatchExceedBoundary(1000);
-            userpassTv.setVisibility(View.GONE);
         }else {
             UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
             idGestureLockViewGroup.setAnswer(userBean.getPriKey(),userBean.getSalt());
+            userpassTv.setVisibility(View.VISIBLE);
         }
         showErrorHint(getString(R.string.Set_Draw_your_pattern),false);
     }
-
-    private GestureLockViewGroup.OnGestureLockViewListener onGestureLockViewListener
-            = new GestureLockViewGroup.OnGestureLockViewListener() {
-        @Override
-        public void onBlockSelected(int cId) {
-
-        }
-
-        @Override
-        public void onGestureEvent(boolean matched) {
-            gestureChange(matched);
-        }
-
-        @Override
-        public void onUnmatchedExceedBoundary() {//More than maximum number of errors
-            if (type.equals(TYPE_CHANGE)) {
-                ToastEUtil.makeText(mActivity,R.string.Login_Password_incorrect).show();
-                ActivityUtil.goBack(mActivity);
-            } else if (type.equals(TYPE_CLOSE)) {
-                ToastEUtil.makeText(mActivity,R.string.Login_Password_incorrect).show();
-                ActivityUtil.goBack(mActivity);
-            }
-        }
-    };
 
     @OnClick(R.id.left_img)
     void goback(View view) {
@@ -165,44 +140,82 @@ public class PatterDrawActivity extends BaseActivity {
                 });
     }
 
+    /**
+     * Gesture input after the completion of the correction
+     */
+    private GestureLockViewGroup.OnGestureLockViewListener onGestureLockViewListener
+            = new GestureLockViewGroup.OnGestureLockViewListener() {
+        @Override
+        public void onBlockSelected(int cId) {
+
+        }
+
+        @Override
+        public void onGestureEvent(boolean matched) {
+            gestureChange(matched);
+        }
+
+        @Override
+        public void onUnmatchedExceedBoundary() {
+            // More than maximum number of errors
+            if (type.equals(TYPE_CHANGE)) {
+                ToastEUtil.makeText(mActivity,R.string.Login_Password_incorrect).show();
+                ActivityUtil.goBack(mActivity);
+            } else if (type.equals(TYPE_CLOSE)) {
+                ToastEUtil.makeText(mActivity,R.string.Login_Password_incorrect).show();
+                ActivityUtil.goBack(mActivity);
+            }
+        }
+    };
+
     private void gestureChange(boolean matched){
-        if (type.equals(TYPE_NEW)) {
-            if (matched) {
-                drawpatterGestop.setChooseData(idGestureLockViewGroup.getMChoose());
-                ToastEUtil.makeText(mActivity,R.string.Set_Pattern_Setting_Success).show();
-                //String value = StringUtil.listToString(idGestureLockViewGroup.getMChoose());
-                putSharedPre(idGestureLockViewGroup.getAnswer(),idGestureLockViewGroup.getSalt());
-            } else {
-                String value = StringUtil.listToString(idGestureLockViewGroup.getMChoose());
-                if(TextUtils.isEmpty(idGestureLockViewGroup.getAnswer())){
-                    String patterSalt = SupportKeyUril.cdSaltPri();
-                    String gcmStr = SupportKeyUril.encodePri(MemoryDataManager.getInstance().getPriKey(),patterSalt,value);
+        switch (type){
+            case TYPE_NEW: // set
+                if (matched) {
                     drawpatterGestop.setChooseData(idGestureLockViewGroup.getMChoose());
-                    idGestureLockViewGroup.setAnswer(gcmStr,patterSalt);
-                    showErrorHint(getString(R.string.Set_Draw_pattern_again),false);
-                    toolbarTop.setRightText(R.string.Set_Reset);
-                }else{
-                    showErrorHint(getString(R.string.Set_Two_Patterns_do_not_match),true);
+                    ToastEUtil.makeText(mActivity,R.string.Set_Pattern_Setting_Success).show();
+                    putSharedPre(idGestureLockViewGroup.getAnswer(),idGestureLockViewGroup.getSalt());
+                } else {
+                    String value = StringUtil.listToString(idGestureLockViewGroup.getMChoose());
+                    if(TextUtils.isEmpty(idGestureLockViewGroup.getAnswer())){
+                        String patterSalt = SupportKeyUril.cdSaltPri();
+                        String gcmStr = SupportKeyUril.encodePri(MemoryDataManager.getInstance().getPriKey(),patterSalt,value);
+                        drawpatterGestop.setChooseData(idGestureLockViewGroup.getMChoose());
+                        idGestureLockViewGroup.setAnswer(gcmStr,patterSalt);
+                        showErrorHint(getString(R.string.Set_Draw_pattern_again),false);
+                        toolbarTop.setRightText(R.string.Set_Reset);
+                    }else{
+                        showErrorHint(getString(R.string.Set_Two_Patterns_do_not_match),true);
+                    }
                 }
-            }
-        } else if (type.equals(TYPE_CHANGE)) {
-            if (matched) {
-                type = TYPE_NEW;
-                initView();
-                showErrorHint(getString(R.string.Set_Enter_correct_please_enter_a_new_gesture),false);
-            } else {
-                showErrorHint(getString(R.string.Set_Password_incorrect_you_have_chance,idGestureLockViewGroup.getUnMatchExceedBoundary()),true);
-            }
-        } else if (type.equals(TYPE_CLOSE)) {
-            if (matched) {
-                ToastEUtil.makeText(mActivity,R.string.Set_Remove_Success).show();
-                putSharedPre(idGestureLockViewGroup.getPriKey(),"");
-            } else {
-                showErrorHint(getString(R.string.Set_Password_incorrect_you_have_chance,idGestureLockViewGroup.getUnMatchExceedBoundary()),true);
-            }
+                break;
+            case TYPE_CHANGE: // change
+                if (matched) {
+                    type = TYPE_NEW;
+                    initView();
+                    showErrorHint(getString(R.string.Set_Enter_correct_please_enter_a_new_gesture),false);
+                } else {
+                    showErrorHint(getString(R.string.Set_Password_incorrect_you_have_chance,idGestureLockViewGroup.getUnMatchExceedBoundary()),true);
+                }
+                break;
+            case TYPE_CLOSE: // closed
+                if (matched) {
+                    ToastEUtil.makeText(mActivity,R.string.Set_Remove_Success).show();
+                    putSharedPre(idGestureLockViewGroup.getPriKey(),"");
+                } else {
+                    showErrorHint(getString(R.string.Set_Password_incorrect_you_have_chance,idGestureLockViewGroup.getUnMatchExceedBoundary()),true);
+                }
+                break;
+            default:
+                break;
         }
     }
 
+    /**
+     * Passwords and encryption salt to save gestures
+     * @param value
+     * @param salt
+     */
     private void putSharedPre(String value,String salt) {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         userBean.setPriKey(value);
@@ -213,21 +226,14 @@ public class PatterDrawActivity extends BaseActivity {
             userBean.setSalt(salt);
             SharedPreferenceUtil.getInstance().putUser(userBean);
         }
-
-        if (type.equals(PatternActivity.LOGIN_STYPE)) {
-            List<Activity> list = BaseApplication.getInstance().getActivityList();
-            for (Activity activity : list) {
-                if (!activity.getClass().getName().equals(PatterDrawActivity.class.getName())){
-                    activity.finish();
-                }
-            }
-            HomeActivity.startActivity(mActivity);
-            mActivity.finish();
-        }else{
-            ActivityUtil.goBack(mActivity);
-        }
+        ActivityUtil.goBack(mActivity);
     }
 
+    /**
+     * According to the different status display text message
+     * @param resId
+     * @param isError
+     */
     private void showErrorHint(String resId,boolean isError){
         if(resId == null){
             drawpatterTv.setVisibility(View.INVISIBLE);

@@ -190,6 +190,10 @@
     <string name="ErrorCode_Create_error">Create error</string>
     <string name="ErrorCode_Data_is_too_large">Data is too large</string>
     <string name="ErrorCode_DecodeRawTransaction_error">DecodeRawTransaction error</string>
+    <string name="ErrorCode_transaction_address_is_not_available">transaction address is not available</string>
+    <string name="ErrorCode_Transaction_information_is_incorrect">Transaction information is incorrect</string>
+    <string name="ErrorCode_Version_information_is_repeated">Version information is repeated</string>
+    <string name="ErrorCode_The_fee_is_too_low">The fee is too low</string>
     <string name="ErrorCode_Double_flowers">Double flowers</string>
     <string name="ErrorCode_Ecdh_generation_failed">Ecdh generation failed</string>
     <string name="ErrorCode_Error">Error</string>
