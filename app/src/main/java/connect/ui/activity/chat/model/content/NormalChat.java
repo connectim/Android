@@ -16,11 +16,12 @@ import connect.ui.activity.login.bean.UserBean;
 
 /**
  * public methods to extract
+<<<<<<< HEAD
+=======
  * Created by gtq on 2016/12/19.
+>>>>>>> Android/develop
  */
 public abstract class NormalChat extends BaseChat {
-
-    protected UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
 
     @Override
     public void updateRoomMsg(String draft, String showText, long msgtime) {

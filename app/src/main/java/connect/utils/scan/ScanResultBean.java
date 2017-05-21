@@ -1,4 +1,4 @@
-package connect.ui.activity.wallet.bean;
+package connect.utils.scan;
 
 /**
  * Created by Administrator on 2017/2/26.
@@ -6,10 +6,19 @@ package connect.ui.activity.wallet.bean;
 
 public class ScanResultBean {
 
+    private String type;
     private String address;
     private String tip;
     private String amount;
     private String token;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getAddress() {
         return address;

@@ -17,6 +17,7 @@ import java.util.TimerTask;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.bean.SendOutBean;
@@ -61,15 +62,13 @@ public class PacketSendActivity extends BaseActivity {
     TextView hintTv;
 
     private PacketSendActivity mActivity;
-    private UserBean userBean;
     public static final String RED_PACKET = "red";
     public static final String OUT_VIA = "via";
     private SendOutBean sendOutBean;
 
-    public static void startActivity(Activity activity, SendOutBean sendOutBean, UserBean userBean) {
+    public static void startActivity(Activity activity, SendOutBean sendOutBean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("send", sendOutBean);
-        bundle.putSerializable("user", userBean);
         ActivityUtil.next(activity, PacketSendActivity.class, bundle);
     }
 
@@ -88,7 +87,6 @@ public class PacketSendActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
 
         Bundle bundle = getIntent().getExtras();
-        userBean = (UserBean) bundle.getSerializable("user");
         sendOutBean = (SendOutBean) bundle.getSerializable("send");
 
         if (sendOutBean.getType().equals(RED_PACKET)) {
@@ -103,8 +101,8 @@ public class PacketSendActivity extends BaseActivity {
             toolbarTop.setRightImg(R.mipmap.menu_white);
         }
 
-        GlideUtil.loadAvater(avaterRimg, userBean.getAvatar());
-        nameTv.setText(userBean.getName());
+        GlideUtil.loadAvater(avaterRimg, MemoryDataManager.getInstance().getAvatar());
+        nameTv.setText(MemoryDataManager.getInstance().getName());
         CreateScan createScan = new CreateScan();
         Bitmap bitmap = createScan.generateQRCode(sendOutBean.getUrl());
         scanImg.setImageBitmap(bitmap);

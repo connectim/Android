@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.parser.CommandBean;
 import connect.im.bean.ConnectState;
@@ -149,7 +150,7 @@ public class ConnectManager {
         protected Connect.IMRequest firstLoginShake() {
             ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
 
-            String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+            String priKey = MemoryDataManager.getInstance().getPriKey();
             String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
             String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
 
@@ -339,7 +340,7 @@ public class ConnectManager {
              */
             public synchronized void checkUserCookie() {
                 boolean checkExpire = false;
-                UserCookie userCookie = Session.getInstance().getUserCookie(SharedPreferenceUtil.getInstance().getPubKey());
+                UserCookie userCookie = Session.getInstance().getUserCookie(MemoryDataManager.getInstance().getPubKey());
                 if (userCookie != null) {
                     long curTime = TimeUtil.getCurrentTimeSecond();
                     checkExpire = curTime >= userCookie.getExpiredTime();

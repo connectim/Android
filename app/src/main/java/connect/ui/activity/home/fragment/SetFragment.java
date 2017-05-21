@@ -11,16 +11,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.google.protobuf.ByteString;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.SharedPreferenceUtil;
-import connect.im.bean.SocketACK;
 import connect.im.bean.UserOrderBean;
-import connect.im.model.ChatSendManager;
 import connect.ui.activity.R;
 import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.login.bean.UserBean;
@@ -35,11 +30,9 @@ import connect.ui.base.BaseFragment;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.TimeUtil;
 import connect.utils.glide.GlideUtil;
 import connect.view.TopToolBar;
 import connect.view.roundedimageview.RoundedImageView;
-import protos.Connect;
 
 /**
  * setting

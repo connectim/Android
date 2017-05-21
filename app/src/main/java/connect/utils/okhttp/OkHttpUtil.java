@@ -3,6 +3,7 @@ package connect.utils.okhttp;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.login.bean.UserBean;
 import connect.utils.cryption.EncryptionUtil;
@@ -51,8 +52,8 @@ public class OkHttpUtil {
      * @param resultCall
      */
     public void postEncrySelf(String url, ByteString bytes, final ResultCall resultCall){
-        UserBean user = SharedPreferenceUtil.getInstance().getUser();
-        Connect.IMRequest imRequest = getIMRequest(user.getPriKey(),user.getPubKey(),bytes);
+        Connect.IMRequest imRequest = getIMRequest(MemoryDataManager.getInstance().getPriKey(),
+                MemoryDataManager.getInstance().getPubKey(),bytes);
         if(null == imRequest)
             return;
         HttpRequest.getInstance().post(url,imRequest,resultCall);
@@ -67,9 +68,9 @@ public class OkHttpUtil {
      */
     public void postEncrySelf(String url, GeneratedMessageV3 body,SupportKeyUril.EcdhExts exts, final ResultCall resultCall){
         LogManager.getLogger().http("param:" + body.toString());
-        UserBean user = SharedPreferenceUtil.getInstance().getUser();
         ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
-        Connect.IMRequest imRequest = getIMRequest(exts,user.getPriKey(),user.getPubKey(),bytes);
+        Connect.IMRequest imRequest = getIMRequest(exts,MemoryDataManager.getInstance().getPriKey(),
+                MemoryDataManager.getInstance().getPubKey(),bytes);
         if(null == imRequest)
             return;
         HttpRequest.getInstance().post(url,imRequest,resultCall);

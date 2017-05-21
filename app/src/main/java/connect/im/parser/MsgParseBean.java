@@ -264,9 +264,9 @@ public class MsgParseBean extends InterParse {
                         mobileBind.getUsername());
                 entity = RobotChat.getInstance().txtMsg(content);
 
-                UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
+                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                 userBean.setPhone("");
-                SharedPreferenceUtil.getInstance().updataUser(userBean);
+                SharedPreferenceUtil.getInstance().putUser(userBean);
                 break;
             case 106://Groups will be dissolved
                 Connect.RemoveGroup removeGroup = Connect.RemoveGroup.parseFrom(message.getBody().toByteArray());

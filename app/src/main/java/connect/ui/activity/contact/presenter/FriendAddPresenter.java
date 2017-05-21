@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -144,7 +145,7 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     usersInfo = Connect.PhoneBookUsersInfo.parseFrom(structData.getPlainData());
                     ConvertUtil convertUtil = new ConvertUtil();
                     convertUtil.convertUserInfo(localList, usersInfo, handler);

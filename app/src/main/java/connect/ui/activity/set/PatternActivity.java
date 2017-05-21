@@ -99,9 +99,9 @@ public class PatternActivity extends BaseActivity {
 
     @OnClick(R.id.next_btn)
     void goNext(View view) {
-        UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         userBean.setBack(true);
-        SharedPreferenceUtil.getInstance().updataUser(userBean);
+        SharedPreferenceUtil.getInstance().putUser(userBean);
 
         List<Activity> list = BaseApplication.getInstance().getActivityList();
         for (Activity activity : list) {

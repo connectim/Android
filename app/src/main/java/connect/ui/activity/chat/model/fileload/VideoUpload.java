@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.im.model.ChatSendManager;
@@ -12,6 +13,7 @@ import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.utils.BitmapUtil;
 import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -38,8 +40,8 @@ public class VideoUpload extends FileUpLoad {
                     Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
                     String comFist = BitmapUtil.bitmapSavePath(thumbBitmap);
 
-                    String priKey = SharedPreferenceUtil.getInstance().getPriKey();
-                    String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
+                    String priKey = MemoryDataManager.getInstance().getPriKey();
+                    String pubkey = MemoryDataManager.getInstance().getPubKey();
 
                     Connect.GcmData firstGcmData = encodeAESGCMStructData(comFist);
                     Connect.GcmData secondGcmData = encodeAESGCMStructData(filePath);
@@ -47,7 +49,7 @@ public class VideoUpload extends FileUpLoad {
                     Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
                             setThumbnail(firstGcmData.toByteString()).
                             setEntity(secondGcmData.toByteString()).build();
-                    firstGcmData = EncryptionUtil.encodeAESGCMStructData(priKey, richMedia.toByteString());
+                    firstGcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT,priKey, richMedia.toByteString());
                     mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(firstGcmData).build();
 
                     bean.setImageOriginWidth(thumbBitmap.getWidth());

@@ -12,6 +12,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.RegisterPhotoActivity;
@@ -63,7 +64,7 @@ public class ModifyAvaterActivity extends BaseActivity implements ModifyAvaterCo
         toolbarTop.setTitle(null, R.string.Chat_Photo);
         toolbarTop.setRightImg(R.mipmap.menu_white);
         setPresenter(new ModifyAvaterPresenter(this));
-        GlideUtil.loadAvater(avatarImg,  SharedPreferenceUtil.getInstance().getAvatar() + "?size=400");
+        GlideUtil.loadAvater(avatarImg,  MemoryDataManager.getInstance().getAvatar() + "?size=400");
     }
 
     @Override

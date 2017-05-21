@@ -14,6 +14,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.home.HomeActivity;
@@ -47,10 +48,8 @@ public class LoginPatterActivity extends BaseActivity {
     private UserBean userBean;
     private Dialog dialogPass;
 
-    public static void startActivity(Activity activity, UserBean userBean) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("user", userBean);
-        ActivityUtil.next(activity, LoginPatterActivity.class, bundle);
+    public static void startActivity(Activity activity) {
+        ActivityUtil.next(activity, LoginPatterActivity.class);
     }
 
     @Override
@@ -65,8 +64,7 @@ public class LoginPatterActivity extends BaseActivity {
     public void initView() {
         mActivity = this;
         toolbarTop.setTitleImg(R.mipmap.logo_black_middle);
-        Bundle bundle = getIntent().getExtras();
-        userBean = (UserBean) bundle.getSerializable("user");
+        userBean = SharedPreferenceUtil.getInstance().getUser();
 
         idGestureLockViewGroup.setAnswer(userBean.getPriKey(),userBean.getSalt());
         idGestureLockViewGroup.setOnGestureLockViewListener(new GestureLockViewGroup.OnGestureLockViewListener() {
@@ -139,7 +137,7 @@ public class LoginPatterActivity extends BaseActivity {
     }
 
     private void goinHome(String priKey){
-        SharedPreferenceUtil.getInstance().initPutMapStr(priKey,userBean.getPubKey(),userBean.getAddress(),userBean.getAvatar());
+        MemoryDataManager.getInstance().putPriKey(priKey);
         HomeActivity.startActivity(mActivity);
         mActivity.finish();
     }

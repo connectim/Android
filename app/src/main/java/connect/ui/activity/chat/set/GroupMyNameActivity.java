@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.GroupMemberEntity;
@@ -69,7 +70,7 @@ public class GroupMyNameActivity extends BaseActivity {
         });
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
-        groupMemEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+        groupMemEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
         if (null != groupMemEntity) {
             edittxt1.setText(TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick());
         }

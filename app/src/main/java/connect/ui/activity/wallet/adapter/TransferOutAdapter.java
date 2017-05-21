@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.data.RateFormatUtil;
@@ -60,7 +61,7 @@ public class TransferOutAdapter extends BaseAdapter {
         viewHolder.avaterRimg.setVisibility(View.VISIBLE);
         viewHolder.avatarGridview.setVisibility(View.GONE);
         if(TextUtils.isEmpty(mListData.get(position).getReceiverInfo().getAvatar())){
-            GlideUtil.loadAvater(viewHolder.avaterRimg, SharedPreferenceUtil.getInstance().getUser().getAvatar());
+            GlideUtil.loadAvater(viewHolder.avaterRimg, MemoryDataManager.getInstance().getAvatar());
             viewHolder.nameTv.setText(mListData.get(position).getSender());
         }else{
             GlideUtil.loadAvater(viewHolder.avaterRimg,mListData.get(position).getReceiverInfo().getAvatar());

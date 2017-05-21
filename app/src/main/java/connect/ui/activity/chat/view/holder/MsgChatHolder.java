@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -143,7 +144,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 if (direct == MsgDirect.From && RoomSession.getInstance().getRoomType() == 0) {
                     GlideUtil.loadAvater(headImg, RoomSession.getInstance().getFriendAvatar());
                 } else if (direct == MsgDirect.To) {
-                    GlideUtil.loadAvater(headImg, SharedPreferenceUtil.getInstance().getAvatar());
+                    GlideUtil.loadAvater(headImg, MemoryDataManager.getInstance().getAvatar());
                 } else if (sender != null) {
                     GlideUtil.loadAvater(headImg, sender.avatar);
                 }
@@ -176,7 +177,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                         memberTxt.setVisibility(View.GONE);
                     }
                 } else {
-                    String imgpath = SharedPreferenceUtil.getInstance().getAvatar();
+                    String imgpath = MemoryDataManager.getInstance().getAvatar();
                     GlideUtil.loadAvater(headImg, imgpath);
                 }
                 break;

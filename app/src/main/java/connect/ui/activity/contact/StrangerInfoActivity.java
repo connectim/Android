@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.FriendRequestEntity;
@@ -59,7 +60,6 @@ public class StrangerInfoActivity extends BaseActivity {
     TextView sourceTv;
 
     private StrangerInfoActivity mActivity;
-    private UserBean userBean;
     private Connect.UserInfo sendUserInfo;
     private SourceType sourceType;
     private String address;
@@ -83,7 +83,6 @@ public class StrangerInfoActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         Bundle bundle = getIntent().getExtras();
         address = bundle.getString("address");
         sourceType = (SourceType) bundle.getSerializable("source");
@@ -150,7 +149,7 @@ public class StrangerInfoActivity extends BaseActivity {
             return;
         }
         DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Link_Send_friend_request),
-                "", mActivity.getResources().getString(R.string.Link_Send), "", "", getString(R.string.Link_Hello_I_am, userBean.getName()), false,-1,new DialogUtil.OnItemClickListener() {
+                "", mActivity.getResources().getString(R.string.Link_Send), "", "", getString(R.string.Link_Hello_I_am, MemoryDataManager.getInstance().getName()), false,-1,new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         MsgSendBean msgSendBean = new MsgSendBean();
@@ -184,7 +183,7 @@ public class StrangerInfoActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     updataView();
                 } catch (InvalidProtocolBufferException e) {

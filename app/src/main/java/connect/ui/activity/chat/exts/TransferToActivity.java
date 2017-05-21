@@ -14,6 +14,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -30,7 +31,7 @@ import connect.ui.activity.chat.model.content.NormalChat;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
-import connect.ui.activity.wallet.support.TransaUtil;
+import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -75,8 +76,6 @@ public class TransferToActivity extends BaseActivity {
 
     private TransferToActivity activity;
     private boolean isStranger = false;
-
-    private UserBean userBean;
     private ContactEntity friendEntity;
     private PaymentPwd paymentPwd;
 
@@ -128,14 +127,12 @@ public class TransferToActivity extends BaseActivity {
 
         toolbar.setTitle(getString(R.string.Wallet_Transfer));
         toolbar.setLeftImg(R.mipmap.back_white);
-
         toolbar.setLeftListence(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
             }
         });
-        userBean = SharedPreferenceUtil.getInstance().getUser();
 
         transferType = (TransferType) getIntent().getSerializableExtra(TRANSFER_TYPE);
         String transAddress = getIntent().getStringExtra(TRANSFER_PUBKEY);
@@ -192,8 +189,8 @@ public class TransferToActivity extends BaseActivity {
     private void checkWalletMoney() {
         final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
         paymentPwd = new PaymentPwd();
-        new TransaUtil().getOutputTran(activity, userBean.getAddress(), false, friendEntity.getAddress(),
-                transferEditView.getAvaAmount(), amount, new TransaUtil.OnResultCall() {
+        new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), false, friendEntity.getAddress(),
+                transferEditView.getAvaAmount(), amount, new TransferUtil.OnResultCall() {
             @Override
             public void result(String inputString, String outputString) {
                 checkPayPassword(amount, inputString, outputString);
@@ -206,7 +203,7 @@ public class TransferToActivity extends BaseActivity {
             paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
                 @Override
                 public void onTrue() {
-                    String samValue = new TransaUtil().getSignRawTrans(userBean.getPriKey(), inputString, outputString);
+                    String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     requestSingleSend(amount, samValue);
                 }
 
@@ -229,7 +226,7 @@ public class TransferToActivity extends BaseActivity {
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            final Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                            final Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess,new PaymentPwd.OnAnimationListener(){
                                 @Override
                                 public void onComplete() {
@@ -307,7 +304,7 @@ public class TransferToActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
                     friendEntity = new ContactEntity();

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -125,7 +126,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             holder.bottomNotify.setVisibility(View.VISIBLE);
         }
 
-        if (0 == roomAttr.getStranger() || SharedPreferenceUtil.getInstance().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
+        if (0 == roomAttr.getStranger() || MemoryDataManager.getInstance().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
             holder.stangerTxt.setVisibility(View.GONE);
         } else {
             holder.stangerTxt.setVisibility(View.VISIBLE);

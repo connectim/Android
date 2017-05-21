@@ -1,5 +1,6 @@
 package connect.utils.cryption;
 
+import connect.db.MemoryDataManager;
 import connect.utils.ConfigUtil;
 import connect.wallet.jni.AllNativeMethod;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -8,7 +9,6 @@ import protos.Connect;
 
 /**
  * Decryption related methods
- * Created by gtq on 2016/11/30.
  */
 public class DecryptionUtil {
 
@@ -18,6 +18,8 @@ public class DecryptionUtil {
     /**
      * Decryption TalkKey
      *
+     * @param talkKey
+     * @param pass
      * @return
      */
     public static String decodeTalkKey(String talkKey, String pass) {
@@ -32,33 +34,15 @@ public class DecryptionUtil {
         return null;
     }
 
-    /*********************************************************************************************************
-     *                                        GCMDATA ==> STRUCT DATA
-     *******************************************************************************************************/
-
-    /******************************************  The default extension type  ***************************************************/
     /**
-     * Use system Server_pubkey decryption
+     * Decryption Gcmdata returned to StructData
      *
      * @param gcmData
      * @return StructData
      */
-    public static Connect.StructData decodeAESGCMStructData(String priKey, Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(priKey, ConfigUtil.getInstance().serverPubkey(), gcmData);
+    public static Connect.StructData decodeAESGCMStructData(Connect.GcmData gcmData) {
+        return decodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, MemoryDataManager.getInstance().getPriKey(), gcmData);
     }
-
-    public static Connect.StructData decodeAESGCMStructData(String priKey, String pukkey, Connect.GcmData gcmData) {
-        try {
-            byte[] structs = DecryptionUtil.decodeAESGCM(priKey, pukkey, gcmData);
-            Connect.StructData structData = Connect.StructData.parseFrom(structs);
-            return structData;
-        } catch (InvalidProtocolBufferException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /****************************************** Specify the extension type ***************************************************/
 
     public static Connect.StructData decodeAESGCMStructData(SupportKeyUril.EcdhExts exts, String priKey, Connect.GcmData gcmData) {
         return decodeAESGCMStructData(exts, priKey, ConfigUtil.getInstance().serverPubkey(), gcmData);
@@ -80,23 +64,15 @@ public class DecryptionUtil {
         return null;
     }
 
-    /*********************************************************************************************************
-     *                                        GCMDATA decryption
-     *******************************************************************************************************/
-
-    /****************************************** The default extension type ***************************************************/
-
-    public static byte[] decodeAESGCM(String priKey, String pukkey, Connect.GcmData gcmData) {
-        byte[] rss = SupportKeyUril.rawECDHkey(priKey, pukkey);
-        return DecryptionUtil.decodeAESGCM(rss, gcmData);
-    }
-
-    public static byte[] decodeAESGCM(byte[] ecdhKey, Connect.GcmData gcmData) {
-        return decodeAESGCM(SupportKeyUril.EcdhExts.SALT, ecdhKey, gcmData);
-    }
-
-    /****************************************** Specify the extension type ***************************************************/
-
+    /**
+     * Decryption Gcmdata returns a byteArray containing
+     *
+     * @param exts
+     * @param priKey
+     * @param pukkey
+     * @param gcmData
+     * @return
+     */
     public static byte[] decodeAESGCM(SupportKeyUril.EcdhExts exts, String priKey, String pukkey, Connect.GcmData gcmData) {
         byte[] rss = SupportKeyUril.rawECDHkey(priKey, pukkey);
         return DecryptionUtil.decodeAESGCM(exts, rss, gcmData);

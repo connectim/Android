@@ -73,8 +73,8 @@ public class StartActivity extends BaseActivity implements StartContract.View{
     }
 
     @Override
-    public void goinLoginPatter(UserBean userB) {
-        LoginPatterActivity.startActivity(mActivity, userB);
+    public void goinLoginPatter() {
+        LoginPatterActivity.startActivity(mActivity);
     }
 
     @Override

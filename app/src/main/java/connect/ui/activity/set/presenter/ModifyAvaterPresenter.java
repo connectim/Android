@@ -17,6 +17,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.FileNotFoundException;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -65,7 +66,7 @@ public class ModifyAvaterPresenter implements ModifyAvaterContract.Presenter{
 
     @Override
     public void saveImageToGallery() {
-        String path = SharedPreferenceUtil.getInstance().getAvatar();
+        String path = MemoryDataManager.getInstance().getAvatar();
         if (!TextUtils.isEmpty(path)) {
             Glide.with(BaseApplication.getInstance())
                     .load(path + "?size=500")
@@ -119,13 +120,11 @@ public class ModifyAvaterPresenter implements ModifyAvaterContract.Presenter{
                         ProgressUtil.getInstance().dismissProgress();
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(
-                                    SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.AvatarInfo userAvatar = Connect.AvatarInfo.parseFrom(structData.getPlainData());
-                            UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
+                            UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                             userBean.setAvatar(userAvatar.getUrl());
-                            SharedPreferenceUtil.getInstance().updataUser(userBean);
-                            SharedPreferenceUtil.getInstance().putMapStr(SharedPreferenceUtil.PUB_AVATAR,userAvatar.getUrl());
+                            SharedPreferenceUtil.getInstance().putUser(userBean);
 
                             mView.requestAvaFninish(userAvatar.getUrl());
                         } catch (InvalidProtocolBufferException e) {

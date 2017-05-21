@@ -17,13 +17,14 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
-import connect.ui.activity.wallet.support.TransaUtil;
+import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
@@ -57,8 +58,7 @@ public class TransferAddressActivity extends BaseActivity {
 
     private TransferAddressActivity mActivity;
     private final int BOOK_CODE = 100;
-    private UserBean userBean;
-    private TransaUtil transaUtil;
+    private TransferUtil transaUtil;
     private PaymentPwd paymentPwd;
 
     public static void startActivity(Activity activity, String address) {
@@ -101,11 +101,10 @@ public class TransferAddressActivity extends BaseActivity {
         toolbarTop.setRightImg(R.mipmap.address_book3x);
 
         Bundle bundle = getIntent().getExtras();
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         addressTv.setText(bundle.getString("address",""));
         addressTv.addTextChangedListener(textWatcher);
         transferEditView.setEditListener(onEditListener);
-        transaUtil = new TransaUtil();
+        transaUtil = new TransferUtil();
         paymentPwd = new PaymentPwd();
     }
 
@@ -128,8 +127,8 @@ public class TransferAddressActivity extends BaseActivity {
         }
 
         final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        transaUtil.getOutputTran(mActivity, userBean.getAddress(), false, address,
-                transferEditView.getAvaAmount(),amount,new TransaUtil.OnResultCall(){
+        transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), false, address,
+                transferEditView.getAvaAmount(),amount,new TransferUtil.OnResultCall(){
             @Override
             public void result(String inputString, String outputString) {
                 checkPayPassword(amount, inputString, outputString);
@@ -149,7 +148,7 @@ public class TransferAddressActivity extends BaseActivity {
         paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue() {
-                String samValue = transaUtil.getSignRawTrans(userBean.getPriKey(), inputString, outputString);
+                String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                 requestBillingSend(amount, samValue);
             }
 
@@ -171,7 +170,7 @@ public class TransferAddressActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.BillHashId billHashId = Connect.BillHashId.parseFrom(structData.getPlainData());
 
                     ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));

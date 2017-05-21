@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -64,8 +65,7 @@ public class PacketPresenter implements PacketContract.Presenter{
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(),
-                                    imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             pendingRedPackage = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
@@ -98,8 +98,7 @@ public class PacketPresenter implements PacketContract.Presenter{
                     public void onComplete() {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(
-                                    SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
 
                             SendOutBean sendOutBean = new SendOutBean();

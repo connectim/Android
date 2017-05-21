@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 
 import java.io.UnsupportedEncodingException;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
@@ -30,7 +31,7 @@ public class UserOrderBean extends InterParse {
      * @return
      */
     public void requestAddFriend(Object... objects) {
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
         Connect.GcmData gcmData = null;
         try {
             gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, priKey, (String) objects[1], ((String) objects[2]).getBytes("utf-8"));

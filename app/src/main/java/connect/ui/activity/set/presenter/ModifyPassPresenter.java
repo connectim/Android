@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.google.gson.Gson;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.contract.ModifyPassContract;
@@ -70,8 +71,8 @@ public class ModifyPassPresenter implements ModifyPassContract.Presenter{
         new AsyncTask<Void, Void, Connect.ChangeLoginPassword>() {
             @Override
             protected Connect.ChangeLoginPassword doInBackground(Void... params) {
-                talkKey = SupportKeyUril.createTalkKey(SharedPreferenceUtil.getInstance().getPriKey(),
-                        SharedPreferenceUtil.getInstance().getAddress(), pass);
+                talkKey = SupportKeyUril.createTalkKey(MemoryDataManager.getInstance().getPriKey(),
+                        MemoryDataManager.getInstance().getAddress(), pass);
                 Connect.ChangeLoginPassword changeLoginPassword = Connect.ChangeLoginPassword.newBuilder()
                         .setPasswordHint(hint)
                         .setEncryptionPri(talkKey)
@@ -86,10 +87,10 @@ public class ModifyPassPresenter implements ModifyPassContract.Presenter{
                 OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_BACK_KEY, changeLoginPassword, new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
-                        UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
+                        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                         userBean.setPassHint(hint);
                         userBean.setTalkKey(talkKey);
-                        SharedPreferenceUtil.getInstance().updataUser(userBean);
+                        SharedPreferenceUtil.getInstance().putUser(userBean);
                         ActivityUtil.goBack(mView.getActivity());
                     }
 

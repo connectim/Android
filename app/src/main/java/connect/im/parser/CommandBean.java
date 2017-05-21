@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -199,7 +200,7 @@ public class CommandBean extends InterParse {
         }
 
         if (offComplete) {
-            Session.getInstance().setUpFailTime(SharedPreferenceUtil.getInstance().getPubKey(), 0);
+            Session.getInstance().setUpFailTime(MemoryDataManager.getInstance().getPubKey(), 0);
             uploadRandomCookie();
         }
     }
@@ -292,7 +293,7 @@ public class CommandBean extends InterParse {
                     HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, groupKey);
                 } else {// Download successful
                     String randPubkey = collaboratives[0];
-                    byte[] ecdhkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), randPubkey);
+                    byte[] ecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), randPubkey);
                     Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
                     byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, gcmData);
                     String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
@@ -509,7 +510,7 @@ public class CommandBean extends InterParse {
                 for (GroupMemberEntity memEntity : memEntities) {
                     String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
                     if (groupChange.hasInviteBy()) {
-                        String invitorname = memEntity.getAddress().equals(SharedPreferenceUtil.getInstance().getAddress()) ?
+                        String invitorname = memEntity.getAddress().equals(MemoryDataManager.getInstance().getAddress()) ?
                                 context.getString(R.string.Chat_You) : memberName;
                         noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, groupChange.getInviteBy().getUsername(), invitorname);
                     } else {
@@ -554,7 +555,7 @@ public class CommandBean extends InterParse {
                         ContactHelper.getInstance().inserGroupMemEntity(member);
 
                         String showName = "";
-                        if (groupAttorn.getAddress().equals(SharedPreferenceUtil.getInstance().getAddress())) {
+                        if (groupAttorn.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
                             showName = context.getString(R.string.Chat_You);
                         } else {
                             showName = TextUtils.isEmpty(member.getNick()) ? member.getUsername() : member.getNick();
@@ -600,7 +601,7 @@ public class CommandBean extends InterParse {
      * @param errNum
      */
     public void chatCookieInfo(int errNum) {
-        String pubKey = SharedPreferenceUtil.getInstance().getPubKey();
+        String pubKey = MemoryDataManager.getInstance().getPubKey();
         switch (errNum) {
             case 0://Save the generated temporary cookies
                 Session.getInstance().setUpFailTime(pubKey, 0);
@@ -614,13 +615,13 @@ public class CommandBean extends InterParse {
                 break;
             case 2:
             case 3:
-                int failTime = Session.getInstance().getUpFailTime(SharedPreferenceUtil.getInstance().getPubKey());
+                int failTime = Session.getInstance().getUpFailTime(MemoryDataManager.getInstance().getPubKey());
                 if (failTime <= 2) {
                     uploadRandomCookie();
                 } else {
                     Session.getInstance().setUserCookie(pubKey, null);
                 }
-                Session.getInstance().setUpFailTime(SharedPreferenceUtil.getInstance().getPubKey(), ++failTime);
+                Session.getInstance().setUpFailTime(MemoryDataManager.getInstance().getPubKey(), ++failTime);
                 break;
             case 4://cookie is overdue ,user old protocal
                 Session.getInstance().setUserCookie(pubKey, null);
@@ -632,7 +633,7 @@ public class CommandBean extends InterParse {
      * Upload a local public key
      */
     private void uploadRandomCookie() {
-        String cookieKey = "COOKIE:" + SharedPreferenceUtil.getInstance().getPubKey();
+        String cookieKey = "COOKIE:" + MemoryDataManager.getInstance().getPubKey();
 
         long curTime = TimeUtil.getCurrentTimeSecond();
         ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
@@ -652,7 +653,7 @@ public class CommandBean extends InterParse {
         }
 
         if (needUpload) {
-            String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+            String priKey = MemoryDataManager.getInstance().getPriKey();
             //Generate temporary private key and Salt
             String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
             String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
@@ -682,7 +683,7 @@ public class CommandBean extends InterParse {
             userCookie.setExpiredTime(expiredTime);
         }
 
-        Session.getInstance().setUserCookie(SharedPreferenceUtil.getInstance().getPubKey(), userCookie);
+        Session.getInstance().setUserCookie(MemoryDataManager.getInstance().getPubKey(), userCookie);
     }
 
     /**
