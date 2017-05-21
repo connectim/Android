@@ -2,6 +2,7 @@ package connect.im.bean;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.widget.SeekBar;
 
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
@@ -25,11 +26,13 @@ import connect.db.green.bean.ConversionEntity;
 import connect.db.green.bean.FriendRequestEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
+import connect.db.green.bean.MessageEntity;
 import connect.db.green.bean.ParamEntity;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
+import connect.ui.activity.chat.bean.BaseEntity;
 import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
@@ -74,6 +77,8 @@ public class CommandBean extends InterParse {
             receiveOffLineMsgs(byteBuffer);
         } else if (ackByte == 0x07) {
             HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
+        } else if (ackByte == 0x19) {
+            reloadUserCookie();
         } else {
             Connect.Command command = imTransferToCommand(byteBuffer);
             String msgid = command.getMsgId();
@@ -135,9 +140,6 @@ public class CommandBean extends InterParse {
                     break;
                 case 0x18://get friend chatcookie
                     friencChatCookie(command.getDetail(), msgid);
-                    break;
-                case 0x19://repeat apply group
-                    applyGroupRepeatInfo(command.getDetail(), msgid, command.getErrNo());
                     break;
             }
         }
@@ -235,7 +237,8 @@ public class CommandBean extends InterParse {
 
     /**
      * Sync contacts list
-     *20,465.61
+     * 20,465.61
+     *
      * @param buffer
      * @throws Exception
      */
@@ -533,7 +536,7 @@ public class CommandBean extends InterParse {
                     }
 
                     if (normalChat == null) {
-                        FailMsgsManager.getInstance().insertReceiveMsg(groupKey,TimeUtil.timestampToMsgid(), noticeStr);
+                        FailMsgsManager.getInstance().insertReceiveMsg(groupKey, TimeUtil.timestampToMsgid(), noticeStr);
                     } else {
                         MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
                         MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
@@ -615,10 +618,11 @@ public class CommandBean extends InterParse {
      *
      * @param errNum
      */
-    public void chatCookieInfo(int errNum) {
+    public void chatCookieInfo(int errNum) throws Exception {
         String pubKey = SharedPreferenceUtil.getInstance().getPubKey();
         switch (errNum) {
             case 0://Save the generated temporary cookies
+                ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.CONNECT);
                 Session.getInstance().setUpFailTime(pubKey, 0);
                 UserCookie userCookie = Session.getInstance().getUserCookie(pubKey);
 
@@ -626,7 +630,8 @@ public class CommandBean extends InterParse {
                 entity.setKey("COOKIE:" + pubKey + StringUtil.bytesToHexString(userCookie.getSalt()));
                 entity.setValue(new Gson().toJson(userCookie));
                 ParamHelper.getInstance().insertOrReplaceParamEntity(entity);
-                LogManager.getLogger().d(Tag, "The user save COOKIE:" + entity.getKey());
+
+                FailMsgsManager.getInstance().sendExpireMsg();
                 break;
             case 2:
             case 3:
@@ -756,17 +761,6 @@ public class CommandBean extends InterParse {
     }
 
     /**
-     * Repeat application group
-     *
-     * @param buffer
-     * @throws Exception
-     */
-    private void applyGroupRepeatInfo(ByteString buffer, Object... objs) throws Exception {
-        Connect.GroupApplyChange applyChange = Connect.GroupApplyChange.parseFrom(buffer);
-        ParamManager.getInstance().updateGroupApply(applyChange.getVerificationCode(), applyChange.getTips(), applyChange.getSource(), -1, (String) objs[0]);
-    }
-
-    /**
      * External transfer
      *
      * @param buffer
@@ -840,5 +834,37 @@ public class CommandBean extends InterParse {
         } else {
             receiptUserSendAckMsg(objs[0], MsgNoticeBean.NtEnum.MSG_SEND_SUCCESS);
         }
+    }
+
+    private void reloadUserCookie() {
+        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        //Generate temporary private key and Salt
+        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+        byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
+
+        LogManager.getLogger().d(Tag, "user create salt:" + StringUtil.bytesToHexString(randomSalt));
+
+        long expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
+        Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
+                setChatPubKey(randomPubKey).
+                setSalt(ByteString.copyFrom(randomSalt)).
+                setExpired(expiredTime).build();
+
+        String signInfo = SupportKeyUril.signHash(priKey, chatInfo.toByteArray());
+        Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder().
+                setSign(signInfo).
+                setData(chatInfo).build();
+
+        SendMsgUtil.uploadRandomCookie(cookie);
+
+        //save random prikey and salt
+        UserCookie userCookie = new UserCookie();
+        userCookie.setPriKey(randomPriKey);
+        userCookie.setPubKey(randomPubKey);
+        userCookie.setSalt(randomSalt);
+        userCookie.setExpiredTime(expiredTime);
+
+        Session.getInstance().setUserCookie(SharedPreferenceUtil.getInstance().getPubKey(), userCookie);
     }
 }

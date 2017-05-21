@@ -305,8 +305,12 @@ public class ConnectManager {
                     checkExpire = curTime >= userCookie.getExpiredTime();
                 }
                 if (checkExpire) {
-                    CommandBean commandBean = new CommandBean((byte) 0x00, null);
-                    commandBean.chatCookieInfo(3);
+                    try {
+                        CommandBean commandBean = new CommandBean((byte) 0x00, null);
+                        commandBean.chatCookieInfo(3);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };

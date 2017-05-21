@@ -188,30 +188,30 @@ public class FriendChat extends NormalChat {
     }
 
     private void loadUserCookie() {
-        if (userCookie == null) {
-            String pubKey = SharedPreferenceUtil.getInstance().getPubKey();
-            userCookie = Session.getInstance().getUserCookie(pubKey);
+        String cookieKey = "COOKIE:" + SharedPreferenceUtil.getInstance().getPubKey();
+        userCookie = null;
+        ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+        if (paramEntity != null) {
+            userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+        }
 
-            if (userCookie == null) {
-                encryType = EncryType.NORMAL;
-            }
+        if (userCookie == null) {
+            encryType = EncryType.NORMAL;
         }
     }
 
     public void loadFriendCookie(String pubkey) {
+        friendCookie = Session.getInstance().getUserCookie(pubkey);
         if (friendCookie == null) {
-            friendCookie = Session.getInstance().getUserCookie(pubkey);
-            if (friendCookie == null) {
-                String cookieFriend = "COOKIE:" + pubkey;
-                ParamEntity friendEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieFriend);
-                if (friendEntity != null) {
-                    friendCookie = new Gson().fromJson(friendEntity.getValue(), UserCookie.class);
-                }
+            String cookieFriend = "COOKIE:" + pubkey;
+            ParamEntity friendEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieFriend);
+            if (friendEntity != null) {
+                friendCookie = new Gson().fromJson(friendEntity.getValue(), UserCookie.class);
             }
+        }
 
-            if (friendCookie == null) {
-                encryType = EncryType.NORMAL;
-            }
+        if (friendCookie == null) {
+            encryType = EncryType.NORMAL;
         }
     }
 }

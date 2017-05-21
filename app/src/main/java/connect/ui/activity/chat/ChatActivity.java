@@ -642,7 +642,8 @@ public class ChatActivity extends BaseChatActvity {
                         String friendAvatar = talker.getFriendEntity().getAvatar();
                         String sendName = bean.getMsgDefinBean().getSenderInfoExt().username;
                         String sendAvatar = bean.getMsgDefinBean().getSenderInfoExt().avatar;
-                        if (!friendName.equals(sendName) || !friendAvatar.equals(sendAvatar)) {
+                        if (!(TextUtils.isEmpty(sendName) || TextUtils.isEmpty(sendAvatar)) &&
+                                !(friendName.equals(sendName) && friendAvatar.equals(sendAvatar))) {
                             ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(talker.getTalkKey());
                             if (entity != null) {
                                 entity.setUsername(sendName);

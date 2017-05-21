@@ -11,10 +11,13 @@ import java.util.Map;
 
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
+import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.im.bean.SocketACK;
+import connect.ui.activity.chat.bean.BaseEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.model.ChatMsgUtil;
+import connect.ui.activity.chat.model.content.FriendChat;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -65,6 +68,43 @@ public class FailMsgsManager {
         valueMap.put(OBJECT, msg);
         valueMap.put(EXT, ext);
         sendFailMap.put(msgid, valueMap);
+    }
+
+    public void insertFailMsg(String address, String msgid) {
+        if (sendFailMap == null) {
+            sendFailMap = new HashMap<>();
+        }
+        String expireUser = "USER:EXPIRE";
+        Map<String, Object> valueMap = sendFailMap.get(expireUser);
+        if (valueMap == null) {
+            valueMap = new HashMap<>();
+        }
+        valueMap.put("ADDRESS", address);
+        valueMap.put("MSGID", msgid);
+        sendFailMap.put(expireUser, valueMap);
+    }
+
+    public void sendExpireMsg() throws Exception {
+        if (sendFailMap == null) {
+            sendFailMap = new HashMap<>();
+        }
+
+        Map valueMap = getFailMap("USER:EXPIRE");
+        if (valueMap != null) {
+            Iterator<Map.Entry<String, String>> entryIterator = valueMap.entrySet().iterator();
+            while (entryIterator.hasNext()) {
+                Map.Entry<String, String> entity = entryIterator.next();
+                String address = entity.getKey();
+                String msgid = entity.getValue();
+
+                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
+                if (friendEntity != null) {
+                    FriendChat friendChat = new FriendChat(friendEntity);
+                    BaseEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
+                    friendChat.sendPushMsg(baseEntity);
+                }
+            }
+        }
     }
 
     public Map<String, Object> getFailMap(String msgid) {

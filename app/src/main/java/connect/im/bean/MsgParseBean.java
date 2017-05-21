@@ -1,6 +1,9 @@
 package connect.im.bean;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
+import com.google.protobuf.ByteString;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -19,6 +22,7 @@ import connect.db.green.bean.MessageEntity;
 import connect.db.green.bean.ParamEntity;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
+import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.AdBean;
 import connect.ui.activity.chat.bean.ApplyGroupBean;
@@ -41,6 +45,8 @@ import connect.ui.base.BaseApplication;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.log.LogManager;
+import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
 /**
@@ -148,6 +154,9 @@ public class MsgParseBean extends InterParse {
                 break;
             case 8://The other cookies expire, single side
                 halfRandom(msgid, recAddress);
+                break;
+            case 9://upload cookie expire
+                reloadUserCookie(msgid, recAddress);
                 break;
         }
         receiptMsg(msgid, 3);
@@ -410,5 +419,36 @@ public class MsgParseBean extends InterParse {
             BaseEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
             friendChat.sendPushMsg(baseEntity);
         }
+    }
+
+    private void reloadUserCookie(String msgid, String address) throws Exception {
+        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+
+        //Generate temporary private key and Salt
+        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+        byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
+        long expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
+        Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
+                setChatPubKey(randomPubKey).
+                setSalt(ByteString.copyFrom(randomSalt)).
+                setExpired(expiredTime).build();
+
+        String signInfo = SupportKeyUril.signHash(priKey, chatInfo.toByteArray());
+        Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder().
+                setSign(signInfo).
+                setData(chatInfo).build();
+
+        //save random prikey and salt
+        UserCookie userCookie = new UserCookie();
+        userCookie.setPriKey(randomPriKey);
+        userCookie.setPubKey(randomPubKey);
+        userCookie.setSalt(randomSalt);
+        userCookie.setExpiredTime(expiredTime);
+        Session.getInstance().setUserCookie(SharedPreferenceUtil.getInstance().getPubKey(), userCookie);
+
+        FailMsgsManager.getInstance().insertFailMsg(address,msgid);
+
+        SendMsgUtil.uploadRandomCookie(cookie);
     }
 }

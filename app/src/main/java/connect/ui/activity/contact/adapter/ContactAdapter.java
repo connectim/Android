@@ -223,8 +223,8 @@ public class ContactAdapter extends BaseAdapter {
         }
 
         if(curType == 3){
-            String curFirst = PinyinUtil.chatToPinyin(curName.charAt(0));
-            if(curType != lastType){
+            String curFirst = TextUtils.isEmpty(curName) ? "*" : PinyinUtil.chatToPinyin(curName.charAt(0));
+            if (curType != lastType) {
                 holder.topTv.setVisibility(View.VISIBLE);
                 holder.topTv.setText(curFirst);
             }else{

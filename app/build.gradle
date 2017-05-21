@@ -13,8 +13,8 @@ android {
         applicationId "connect.im"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 9
-        versionName "0.0.9"
+        versionCode 10
+        versionName "0.1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -63,8 +63,8 @@ android {
 
         release {
             buildConfigField "boolean", "LOG_DEBUG", "false"
-            shrinkResources true
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }

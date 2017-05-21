@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
@@ -75,31 +76,39 @@ public class SystemDataUtil {
      * @return
      */
     public static String getDeviceId() {
-        String deviceId = "";
+        String deviceId = null;
         Context context = BaseApplication.getInstance().getBaseContext();
         try {
             deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (deviceId == null || "".equals(deviceId)) {
-            UUID uuid = UUID.randomUUID();
-            deviceId = uuid.toString().replace("-", "");
+            deviceId = "";
         }
         return AllNativeMethod.cdGetHash256(deviceId);
     }
 
+    /**
+     * Pseudo-Unique ID
+     * @return
+     */
     public static String getLocalUid() {
-        Context context = BaseApplication.getInstance().getBaseContext();
-        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        final String tmDevice, tmSerial, androidId;
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
-        androidId = "" + Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
-        String uniqueId = deviceUuid.toString();
-        return AllNativeMethod.cdGetHash256(uniqueId);
+        String serial = null;
+        String deviceID = "35" +
+                Build.BOARD.length() % 10 + Build.BRAND.length() % 10 +
+                Build.CPU_ABI.length() % 10 + Build.DEVICE.length() % 10 +
+                Build.DISPLAY.length() % 10 + Build.HOST.length() % 10 +
+                Build.ID.length() % 10 + Build.MANUFACTURER.length() % 10 +
+                Build.MODEL.length() % 10 + Build.PRODUCT.length() % 10 +
+                Build.TAGS.length() % 10 + Build.TYPE.length() % 10 +
+                Build.USER.length() % 10;
+
+        try {
+            serial = android.os.Build.class.getField("SERIAL").get(null).toString();
+        } catch (Exception exception) {
+            serial = "serial";
+        }
+        serial = new UUID(deviceID.hashCode(), serial.hashCode()).toString();
+        return AllNativeMethod.cdGetHash256(serial);
     }
 
     /**
@@ -223,5 +232,4 @@ public class SystemDataUtil {
         }
         return loacList;
     }
-
 }
