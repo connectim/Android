@@ -46,6 +46,7 @@ public class HttpRequest {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
                 .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                .writeTimeout(10000L, TimeUnit.MILLISECONDS)
                 .addInterceptor(new LoggerInterceptor(false))
                 .hostnameVerifier(new HostnameVerifier() {
                     @Override

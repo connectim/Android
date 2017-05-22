@@ -3,6 +3,7 @@ package connect.ui.activity.contact.model;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -79,7 +80,9 @@ public class ConvertUtil {
                     } else {
                         contactBean.setStatus(1);
                     }
-                    arrayList.add(contactBean);
+                    if(!TextUtils.isEmpty(bookUserInfo.getPhoneHash())){
+                        arrayList.add(contactBean);
+                    }
                 }
 
                 for (PhoneContactBean contactBean : localList) {
@@ -89,7 +92,6 @@ public class ConvertUtil {
                         if (serverContactBean.getPhone().equals(phoneHmac)) {
                             isAdd = false;
                             serverContactBean.setName(contactBean.getName());
-                            break;
                         }
                     }
                     if(isAdd)

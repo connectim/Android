@@ -3,6 +3,7 @@ package connect.ui.activity.contact.presenter;
 import android.os.AsyncTask;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.google.protobuf.ByteString;
@@ -142,7 +143,9 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
                     requestEntity.setAddress(recommendEntity.getAddress());
                     requestEntity.setUsername(recommendEntity.getUsername());
                     requestEntity.setStatus(4);
-                    listRecommend.add(requestEntity);
+                    if(!TextUtils.isEmpty(recommendEntity.getUsername()) && !TextUtils.isEmpty(recommendEntity.getAddress())){
+                        listRecommend.add(requestEntity);
+                    }
                 }
                 listRuquest.clear();
                 listRuquest.addAll(ContactHelper.getInstance().loadFriendRequest());

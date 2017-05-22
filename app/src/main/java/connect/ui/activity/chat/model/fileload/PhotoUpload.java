@@ -42,8 +42,6 @@ public class PhotoUpload extends FileUpLoad {
             protected Void doInBackground(Void... params) {
                 try {
                     String filePath = bean.getContent();
-                /*String comFist = BitmapUtil.bitmapToString(filePath,BitmapUtil.bigWidth,BitmapUtil.bigHeight);
-                String comSecond = BitmapUtil.bitmapToString(comFist);*/
                     String comFist = BitmapUtil.resizeImage(filePath, BitmapUtil.bigWidth);
                     String comSecond = BitmapUtil.resizeImage(comFist, BitmapUtil.smallWidth);
 
