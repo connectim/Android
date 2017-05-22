@@ -24,9 +24,11 @@ import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgSend;
 import connect.ui.activity.login.bean.UserBean;
+import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.PacketHistoryActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.support.TransaUtil;
+import connect.ui.activity.wallet.support.TransferError;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -174,7 +176,7 @@ public class RedPacketActivity extends BaseActivity {
 
             @Override
             public void setFee() {
-
+                PayFeeActivity.startActivity(activity);
             }
         });
     }
@@ -282,6 +284,7 @@ public class RedPacketActivity extends BaseActivity {
                     ToastEUtil.makeText(activity, activity.getString(R.string.Wallet_error_lucky_packet_amount_too_small, 0.00005), 2).show();
                 }else {
                     paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                    TransferError.getInstance().showError(response.getCode(),response.getMessage());
                 }
             }
         });

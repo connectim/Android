@@ -20,6 +20,7 @@ import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.SendOutBean;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.support.TransaUtil;
+import connect.ui.activity.wallet.support.TransferError;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -181,6 +182,7 @@ public class TransferOutViaActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpResponse response) {
                 paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                TransferError.getInstance().showError(response.getCode(),response.getMessage());
             }
         });
     }

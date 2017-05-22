@@ -15,6 +15,7 @@ import connect.ui.activity.wallet.PacketSendActivity;
 import connect.ui.activity.wallet.bean.SendOutBean;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.contract.PacketContract;
+import connect.ui.activity.wallet.support.TransferError;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -121,6 +122,7 @@ public class PacketPresenter implements PacketContract.Presenter{
             @Override
             public void onError(Connect.HttpResponse response) {
                 paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                TransferError.getInstance().showError(response.getCode(),response.getMessage());
             }
         });
     }

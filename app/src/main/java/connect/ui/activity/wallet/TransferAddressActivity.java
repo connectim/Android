@@ -24,6 +24,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.support.TransaUtil;
+import connect.ui.activity.wallet.support.TransferError;
 import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
@@ -184,6 +185,7 @@ public class TransferAddressActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpResponse response) {
                 paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                TransferError.getInstance().showError(response.getCode(),response.getMessage());
             }
         });
     }

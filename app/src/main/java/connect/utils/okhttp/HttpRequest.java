@@ -98,7 +98,8 @@ public class HttpRequest {
             @Override
             public void onFailure(Call call, IOException e) {
                 ProgressUtil.getInstance().dismissProgress();
-                ToastUtil.getInstance().showToast(e.toString());
+                String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
+                ToastUtil.getInstance().showToast(errorNet);
             }
 
             @Override
@@ -137,7 +138,8 @@ public class HttpRequest {
             @Override
             public void onFailure(Call call, IOException e) {
                 ProgressUtil.getInstance().dismissProgress();
-                ToastUtil.getInstance().showToast(e.toString());
+                String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
+                ToastUtil.getInstance().showToast(errorNet);
             }
 
             @Override

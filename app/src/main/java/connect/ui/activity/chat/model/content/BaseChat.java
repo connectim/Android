@@ -135,6 +135,7 @@ public abstract class BaseChat<T> implements Serializable {
                 MsgEntity msgEntity = new MsgEntity();
                 msgEntity.setPubkey(roomKey());
                 msgEntity.setMsgDefinBean(definBean);
+                msgEntity.setReadstate(detailEntity.getState());
                 msgEntity.setSendstate(detailEntity.getSend_status());
                 msgEntity.setRecAddress(address());
                 msgEntity.setHashid(detailEntity.getHashid());

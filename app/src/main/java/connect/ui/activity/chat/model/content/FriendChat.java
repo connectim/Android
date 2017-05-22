@@ -181,11 +181,14 @@ public class FriendChat extends NormalChat {
     }
 
     private void loadUserCookie() {
-        String cookieKey = "COOKIE:" + SharedPreferenceUtil.getInstance().getPubKey();
-        userCookie = null;
-        ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
-        if (paramEntity != null) {
-            userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+        String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
+        userCookie = Session.getInstance().getUserCookie(pubkey);
+        if (userCookie == null) {
+            String cookieKey = "COOKIE:" + pubkey;
+            ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+            if (paramEntity != null) {
+                userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+            }
         }
 
         if (userCookie == null) {

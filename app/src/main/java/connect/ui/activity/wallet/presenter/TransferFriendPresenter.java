@@ -27,6 +27,7 @@ import connect.ui.activity.wallet.TransferActivity;
 import connect.ui.activity.wallet.TransferFriendSeleActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.contract.TransferFriendContract;
+import connect.ui.activity.wallet.support.TransferError;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -186,6 +187,7 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
                     @Override
                     public void onError(Connect.HttpResponse response) {
                         paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                        TransferError.getInstance().showError(response.getCode(),response.getMessage());
                     }
                 });
     }

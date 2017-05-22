@@ -420,34 +420,9 @@ public class MsgParseBean extends InterParse {
     }
 
     private void reloadUserCookie(String msgid, String address) throws Exception {
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        FailMsgsManager.getInstance().insertFailMsg(address, msgid);
 
-        //Generate temporary private key and Salt
-        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
-        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
-        byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
-        long expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
-        Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
-                setChatPubKey(randomPubKey).
-                setSalt(ByteString.copyFrom(randomSalt)).
-                setExpired(expiredTime).build();
-
-        String signInfo = SupportKeyUril.signHash(priKey, chatInfo.toByteArray());
-        Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder().
-                setSign(signInfo).
-                setData(chatInfo).build();
-
-        //save random prikey and salt
-        UserCookie userCookie = new UserCookie();
-        userCookie.setPriKey(randomPriKey);
-        userCookie.setPubKey(randomPubKey);
-        userCookie.setSalt(randomSalt);
-        userCookie.setExpiredTime(expiredTime);
-        Session.getInstance().setUserCookie(SharedPreferenceUtil.getInstance().getPubKey(), userCookie);
-
-        FailMsgsManager.getInstance().insertFailMsg(address,msgid);
-
-        UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.uploadRandomCookie(cookie);
+        CommandBean commandBean = new CommandBean((byte) 0x00, null);
+        commandBean.reloadUserCookie();
     }
 }

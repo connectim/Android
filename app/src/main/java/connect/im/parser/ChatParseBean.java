@@ -28,6 +28,8 @@ import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.model.ChatMsgUtil;
+import connect.ui.activity.chat.model.content.FriendChat;
+import connect.ui.activity.chat.model.content.NormalChat;
 import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.base.BaseApplication;
 import connect.utils.StringUtil;
@@ -103,6 +105,12 @@ public class ChatParseBean extends InterParse {
 
             ParamEntity toSaltEntity = ParamHelper.getInstance().likeParamEntity(StringUtil.bytesToHexString(toSalt.toByteArray()));
             if (toSaltEntity == null) {
+                String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
+                NormalChat normalChat = new FriendChat(friendEntity);
+                MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
+                normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime());
+                MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(),msgEntity.getMsgDefinBean());
+                MsgChatReceiver.sendChatReceiver(normalChat.roomKey(), msgEntity);
                 return;
             }
 
@@ -116,6 +124,13 @@ public class ChatParseBean extends InterParse {
         byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, priKey, pubkey, gcmData);
         if (contents.length > 10) {
             parseToGsonMsg(msgpost.getPubKey(), 0, contents);
+        } else {
+            String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
+            NormalChat normalChat = new FriendChat(friendEntity);
+            MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
+            normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime());
+            MsgChatReceiver.sendChatReceiver(normalChat.roomKey(), msgEntity);
+            MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(),msgEntity.getMsgDefinBean());
         }
     }
 

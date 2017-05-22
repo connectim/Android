@@ -21,6 +21,7 @@ import connect.db.SharedPreferenceUtil;
 import connect.im.bean.SocketACK;
 import connect.im.bean.UserOrderBean;
 import connect.im.model.ChatSendManager;
+import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.login.bean.UserBean;

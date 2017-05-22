@@ -94,20 +94,13 @@ public class FailMsgsManager {
         }
 
         Map valueMap = getFailMap("USER:EXPIRE");
-        if (valueMap != null) {
-            Iterator<Map.Entry<String, String>> entryIterator = valueMap.entrySet().iterator();
-            while (entryIterator.hasNext()) {
-                Map.Entry<String, String> entity = entryIterator.next();
-                String address = entity.getKey();
-                String msgid = entity.getValue();
-
-                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
-                if (friendEntity != null) {
-                    FriendChat friendChat = new FriendChat(friendEntity);
-                    MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
-                    friendChat.sendPushMsg(baseEntity);
-                }
-            }
+        String address = (String) valueMap.get("ADDRESS");
+        String msgid = (String) valueMap.get("MSGID");
+        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
+        if (friendEntity != null) {
+            FriendChat friendChat = new FriendChat(friendEntity);
+            MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
+            friendChat.sendPushMsg(baseEntity);
         }
     }
 

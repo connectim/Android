@@ -34,7 +34,6 @@ public class RecorderManager {
             mediaRecorder.setOutputFile(file.getPath());
             mediaRecorder.setMaxDuration(30000);
             mediaRecorder.setVideoSize(widthSize, heightSize);
-            mediaRecorder.setVideoFrameRate(24);
             mediaRecorder.setVideoEncodingBitRate(1024 * 1024);
             mediaRecorder.setPreviewDisplay(viewHolder.getSurface());
             // prepare

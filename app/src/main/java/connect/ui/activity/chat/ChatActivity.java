@@ -34,6 +34,7 @@ import connect.db.green.bean.ConversionSettingEntity;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.db.green.bean.TransactionEntity;
 import connect.im.bean.MsgType;
+import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.BurnNotice;

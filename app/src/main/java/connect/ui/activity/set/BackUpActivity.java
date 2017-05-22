@@ -120,7 +120,7 @@ public class BackUpActivity extends BaseActivity implements BackUpContract.View{
                 bitmap = createScan.generateQRCode(userBean.getPriKey(), getResources().getColor(R.color.color_f0f0f6));
                 backupImg.setImageBitmap(bitmap);
                 statusTv.setText(R.string.Login_Decrypted_private_key);
-                saveTv.setText(R.string.Set_Backup_decrypted_private_key);
+                saveTv.setText(R.string.Set_Backup_Private_Key);
                 describeTv.setText(R.string.Login_export_prikey_explain);
                 break;
             case 2:

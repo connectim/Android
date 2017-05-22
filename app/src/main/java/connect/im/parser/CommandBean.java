@@ -75,7 +75,7 @@ public class CommandBean extends InterParse {
         } else if (ackByte == 0x07) {
             HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
         } else if (ackByte == 0x19) {
-            reloadUserCookie();
+            //reloadUserCookie();
         } else {
             Connect.Command command = imTransferToCommand(byteBuffer);
             String msgid = command.getMsgId();
@@ -635,57 +635,28 @@ public class CommandBean extends InterParse {
      * Upload a local public key
      */
     private void uploadRandomCookie() {
-        String cookieKey = "COOKIE:" + SharedPreferenceUtil.getInstance().getPubKey();
-
         long curTime = TimeUtil.getCurrentTimeSecond();
-        ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
         boolean needUpload = true;//If you want to generate a temporary session cookies
-        UserCookie userCookie = null;
+        String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
 
-        if (paramEntity == null) {
-            needUpload = true;
-        } else {
-            userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+        UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
+        if (userCookie == null) {
+            String cookieKey = "COOKIE:" + pubkey;
+            ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+            if (paramEntity != null) {
+                userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+            }
+        }
+
+        if (userCookie != null) {
             if (curTime < userCookie.getExpiredTime()) {
                 needUpload = false;
-                LogManager.getLogger().d(Tag, "user local SALT:" + StringUtil.bytesToHexString(userCookie.getSalt()));
-            } else {
-                needUpload = true;
             }
         }
 
         if (needUpload) {
-            String priKey = SharedPreferenceUtil.getInstance().getPriKey();
-            //Generate temporary private key and Salt
-            String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
-            String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
-            byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
-
-            LogManager.getLogger().d(Tag, "user create salt:" + StringUtil.bytesToHexString(randomSalt));
-
-            long expiredTime = curTime + 24 * 60 * 60;
-            Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
-                    setChatPubKey(randomPubKey).
-                    setSalt(ByteString.copyFrom(randomSalt)).
-                    setExpired(expiredTime).build();
-
-            String signInfo = SupportKeyUril.signHash(priKey, chatInfo.toByteArray());
-            Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder().
-                    setSign(signInfo).
-                    setData(chatInfo).build();
-
-            UserOrderBean userOrderBean = new UserOrderBean();
-            userOrderBean.uploadRandomCookie(cookie);
-
-            //save random prikey and salt
-            userCookie = new UserCookie();
-            userCookie.setPriKey(randomPriKey);
-            userCookie.setPubKey(randomPubKey);
-            userCookie.setSalt(randomSalt);
-            userCookie.setExpiredTime(expiredTime);
+            reloadUserCookie();
         }
-
-        Session.getInstance().setUserCookie(SharedPreferenceUtil.getInstance().getPubKey(), userCookie);
     }
 
     /**
@@ -697,18 +668,16 @@ public class CommandBean extends InterParse {
     private void friencChatCookie(ByteString buffer, String msgid) throws Exception {
         Connect.ChatCookie cookie = Connect.ChatCookie.parseFrom(buffer);
         Connect.ChatCookieData cookieData = cookie.getData();
-
         if (TextUtils.isEmpty(cookieData.getChatPubKey())) {//friend use old protocal
             return;
         }
 
         byte[] friendSalt = cookieData.getSalt().toByteArray();
-
-        //Access to local cookies
         Map<String, Object> failMap = FailMsgsManager.getInstance().getFailMap(msgid);
         if (failMap == null) {
             return;
         }
+
         String pubkey = (String) failMap.get("EXT");
         String cookiePubKey = "COOKIE:" + pubkey;
         List<ParamEntity> paramEntities = ParamHelper.getInstance().likeParamEntities(cookiePubKey);
@@ -819,16 +788,44 @@ public class CommandBean extends InterParse {
         }
     }
 
-    private void reloadUserCookie() {
+    public void reloadUserCookie() {
+        long curTime = TimeUtil.getCurrentTimeSecond();
+        String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
+
+        boolean reGenerate = true;
+        UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
+        if (userCookie == null) {
+            String cookieKey = "COOKIE:" + pubkey;
+            ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+            if (paramEntity != null) {
+                userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+            }
+        }
+
+        if (userCookie != null) {
+            if (curTime < userCookie.getExpiredTime()) {
+                reGenerate = false;
+            }
+        }
+
         String priKey = SharedPreferenceUtil.getInstance().getPriKey();
-        //Generate temporary private key and Salt
-        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
-        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
-        byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
+        String randomPriKey = null;
+        String randomPubKey = null;
+        byte[] randomSalt = null;
+        long expiredTime = 0;
+        if (reGenerate) {
+            priKey = SharedPreferenceUtil.getInstance().getPriKey();
+            randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+            randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+            randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
+            expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
+        } else {
+            randomPriKey = userCookie.getPriKey();
+            randomPubKey = userCookie.getPubKey();
+            randomSalt = userCookie.getSalt();
+            expiredTime = userCookie.getExpiredTime();
+        }
 
-        LogManager.getLogger().d(Tag, "user create salt:" + StringUtil.bytesToHexString(randomSalt));
-
-        long expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
         Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
                 setChatPubKey(randomPubKey).
                 setSalt(ByteString.copyFrom(randomSalt)).
@@ -842,13 +839,11 @@ public class CommandBean extends InterParse {
         UserOrderBean userOrderBean = new UserOrderBean();
         userOrderBean.uploadRandomCookie(cookie);
 
-        //save random prikey and salt
-        UserCookie userCookie = new UserCookie();
+        userCookie = new UserCookie();
         userCookie.setPriKey(randomPriKey);
         userCookie.setPubKey(randomPubKey);
         userCookie.setSalt(randomSalt);
         userCookie.setExpiredTime(expiredTime);
-
         Session.getInstance().setUserCookie(SharedPreferenceUtil.getInstance().getPubKey(), userCookie);
     }
 }
