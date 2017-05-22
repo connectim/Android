@@ -11,10 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +25,6 @@ import connect.db.green.bean.ConversionEntity;
 import connect.db.green.bean.ConversionSettingEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
-import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.RecExtBean;
 import connect.ui.activity.contact.FriendInfoActivity;
@@ -37,12 +32,10 @@ import connect.ui.activity.contact.StrangerInfoActivity;
 import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.bean.SourceType;
 import connect.ui.activity.home.HomeActivity;
-import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.set.ModifyInfoActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.ProgressUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;

@@ -35,6 +35,8 @@ import connect.wallet.jni.AllNativeMethod;
 
 public class SystemDataUtil {
 
+    private static String Tag = "SystemDataUtil";
+
     /**
      * Get the APP version Name
      * @param context

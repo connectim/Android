@@ -149,6 +149,7 @@ public class AboutActivity extends BaseActivity {
                                 tvNewVersion.setText(mActivity.getString(R.string.Set_new_version,versionResponse.getVersion()));
                                 break;
                             case 0:
+                                tvNewVersion.setText(R.string.Set_This_is_the_newest_version);
                             case -1:
                                 tvNewVersion.setText(R.string.Set_This_is_the_newest_version);
                                 break;

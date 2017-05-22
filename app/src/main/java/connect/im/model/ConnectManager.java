@@ -2,6 +2,8 @@ package connect.im.model;
 
 import android.os.Message;
 
+import com.google.protobuf.ByteString;
+
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -13,16 +15,19 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import connect.db.SharedPreferenceUtil;
-import connect.im.bean.CommandBean;
+import connect.im.parser.CommandBean;
 import connect.im.bean.ConnectState;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
 import connect.im.bean.UserCookie;
-import connect.im.msgdeal.SendMsgUtil;
 import connect.utils.ConfigUtil;
+import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
+import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
 /**
@@ -77,8 +82,8 @@ public class ConnectManager {
                 if (socketChannel.connect(new InetSocketAddress(host, port))) {
                     socketChannel.register(selector, SelectionKey.OP_READ);
 
-                    Connect.IMRequest firstShake = SendMsgUtil.firstLoginShake();
-                    MsgSendManager.getInstance().sendMessage(SocketACK.HAND_SHAKE_FIRST.getOrder(), firstShake.toByteArray());
+                    Connect.IMRequest firstShake = firstLoginShake();
+                    ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, firstShake.toByteString());
                 } else {
                     socketChannel.register(selector, SelectionKey.OP_CONNECT);
                 }
@@ -99,8 +104,8 @@ public class ConnectManager {
                             if (socketChannel.finishConnect()) {
                                 selectionKey.interestOps(SelectionKey.OP_READ);
 
-                                Connect.IMRequest firstShake = SendMsgUtil.firstLoginShake();
-                                MsgSendManager.getInstance().sendMessage(SocketACK.HAND_SHAKE_FIRST.getOrder(), firstShake.toByteArray());
+                                Connect.IMRequest firstShake = firstLoginShake();
+                                ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, firstShake.toByteString());
                             } else {//An error occurred; unregister the channel.
                                 selectionKey.cancel();
                                 reconDelay();
@@ -133,6 +138,41 @@ public class ConnectManager {
             } finally {
                 stopConnect();
             }
+        }
+
+
+        /**
+         * A shake hands for the first time
+         *
+         * @return
+         */
+        protected Connect.IMRequest firstLoginShake() {
+            ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
+
+            String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+            String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+            String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+
+            String cdSeed = AllNativeMethod.cdCreateSeed(16, 4);
+            Connect.NewConnection newConnection = Connect.NewConnection.newBuilder().
+                    setPubKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey))).
+                    setSalt(ByteString.copyFrom(cdSeed.getBytes())).build();
+
+            UserCookie tempCookie = new UserCookie();
+            tempCookie.setPriKey(randomPriKey);
+            tempCookie.setPubKey(randomPubKey);
+            tempCookie.setSalt(cdSeed.getBytes());
+            Session.getInstance().setUserCookie("TEMPCOOKIE", tempCookie);
+
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
+                    priKey, ConfigUtil.getInstance().serverPubkey(), newConnection.toByteString());
+
+            String pukkey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
+            String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
+            return Connect.IMRequest.newBuilder().
+                    setSign(signHash).
+                    setPubKey(pukkey).
+                    setCipherData(gcmData).build();
         }
     }
 
@@ -233,7 +273,7 @@ public class ConnectManager {
     /** Whether can initiate reconnection */
     private boolean canConnect = true;
     /** Heart rate */
-    private final long HEART_FREQUENCY = 10 * 1000;
+    private final long HEART_FREQUENCY = 4 * 60 * 1000;
     /** Recently received a message of time */
     private long lastReceiverTime;
     /** The heartbeat polling timer */
@@ -286,7 +326,7 @@ public class ConnectManager {
             public void run() {
                 long curtime = TimeUtil.getCurrentTimeInLong();
                 if (curtime < lastReceiverTime + HEART_FREQUENCY * 2) {
-                    MsgSendManager.getInstance().sendMessage(SocketACK.HEART_BREAK.getOrder(), new byte[]{});
+                    ChatSendManager.getInstance().sendToMsg(SocketACK.HEART_BREAK, ByteString.copyFrom(new byte[]{}));
                     checkUserCookie();
                 } else {
                     stopConnect();

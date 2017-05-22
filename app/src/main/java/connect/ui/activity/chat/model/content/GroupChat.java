@@ -88,7 +88,6 @@ public class GroupChat extends NormalChat {
 
         MsgEntity chatBean = new MsgEntity();
         chatBean.setMsgDefinBean(msgDefinBean);
-        chatBean.setMsgid(msgDefinBean.getMessage_id());
         chatBean.setPubkey(groupEntity.getIdentifier());
         chatBean.setRecAddress(groupEntity.getIdentifier());
         chatBean.setSendstate(0);
@@ -143,7 +142,7 @@ public class GroupChat extends NormalChat {
 
     public String groupEcdh() {
         if (groupEntity == null) return "";
-        return groupEntity.getIdentifier();
+        return groupEntity.getEcdh_key();
     }
 
     public void setGroupEntity(GroupEntity groupEntity) {
@@ -167,7 +166,6 @@ public class GroupChat extends NormalChat {
         return memEntityMap.get(memberkey);
     }
 
-    @Override
     public String nickName(String pubkey) {
         String memberName = "";
         GroupMemberEntity groupMemEntity = loadGroupMember(pubkey);
@@ -184,7 +182,6 @@ public class GroupChat extends NormalChat {
     }
 
     public void setHeadimg(String path) {
-        LogManager.getLogger().d(Tag, "setHeadimg() :" + headImg());
         groupEntity.setAvatar(path);
     }
 }

@@ -52,7 +52,7 @@
                 android:layout_alignBottom="@id/videomsg"
                 android:layout_alignLeft="@id/videomsg"
                 android:layout_alignRight="@id/videomsg"
-                android:layout_marginLeft="@dimen/dp_7"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/shape_bg_locbottom"
                 android:gravity="left"
                 android:paddingLeft="@dimen/dp_2"

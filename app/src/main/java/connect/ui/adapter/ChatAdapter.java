@@ -14,7 +14,6 @@ import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.BaseEntity;
 import connect.ui.activity.chat.bean.ItemViewType;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgDirect;
@@ -33,7 +32,7 @@ public class ChatAdapter extends BaseChatAdapter {
     private LayoutInflater inflater;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
-    protected List<BaseEntity> msgEntities = new ArrayList<>();
+    protected List<MsgEntity> msgEntities = new ArrayList<>();
 
     public ChatAdapter(Activity activity, RecyclerView recycler, LinearLayoutManager manager) {
         this.inflater = LayoutInflater.from(activity);
@@ -41,12 +40,12 @@ public class ChatAdapter extends BaseChatAdapter {
         this.layoutManager = manager;
     }
 
-    public void setDatas(List<BaseEntity> entities) {
+    public void setDatas(List<MsgEntity> entities) {
         this.msgEntities = entities;
         notifyDataSetChanged();
     }
 
-    public List<BaseEntity> getMsgEntities() {
+    public List<MsgEntity> getMsgEntities() {
         return msgEntities;
     }
 
@@ -101,18 +100,18 @@ public class ChatAdapter extends BaseChatAdapter {
         holder.buildRowData(holder, msgEntities.get(position));
     }
 
-    public void insertItem(BaseEntity t) {
+    public void insertItem(MsgEntity t) {
         int posi = msgEntities.size();
         msgEntities.add(posi, t);
         notifyItemInserted(posi);
     }
 
-    public void insertMoreItems(List<BaseEntity> entities) {
+    public void insertMoreItems(List<MsgEntity> entities) {
         msgEntities.addAll(0, entities);
         notifyDataSetChanged();
     }
 
-    public void removeItem(BaseEntity t) {
+    public void removeItem(MsgEntity t) {
         int posi = msgEntities.lastIndexOf(t);
         if (posi >= 0) {
             msgEntities.remove(posi);
@@ -122,7 +121,7 @@ public class ChatAdapter extends BaseChatAdapter {
 
     public void updateItemSendState(String msgid, int state) {
         for (int i = 0; i < msgEntities.size(); i++) {
-            BaseEntity chatBean = msgEntities.get(i);
+            MsgEntity chatBean = msgEntities.get(i);
             if (chatBean.getMsgDefinBean().getMessage_id().equals(msgid)) {
                 chatBean.setSendstate(state);
                 break;
@@ -133,7 +132,7 @@ public class ChatAdapter extends BaseChatAdapter {
     public ArrayList<String> showImgMsgs() {
         ArrayList<String> imgList = new ArrayList<>();
         for (int i = 0; i < msgEntities.size(); i++) {
-            BaseEntity index = msgEntities.get(i);
+            MsgEntity index = msgEntities.get(i);
             MsgDefinBean definBean = index.getMsgDefinBean();
             if (definBean.getType() == MsgType.Photo.type) {
                 String thumb = definBean.getContent();
@@ -147,7 +146,7 @@ public class ChatAdapter extends BaseChatAdapter {
     public void unReadVoice(String msgid) {
         boolean startUnrRead = false;
         for (int i = 0; i < msgEntities.size(); i++) {
-            BaseEntity index = msgEntities.get(i);
+            MsgEntity index = msgEntities.get(i);
             if (index.getMsgDefinBean().getMessage_id().equals(msgid)) {
                 startUnrRead = true;
                 continue;
@@ -172,8 +171,8 @@ public class ChatAdapter extends BaseChatAdapter {
      */
     public void hasReadBurnMsg(String msgid) {
         for (int i = 0; i < msgEntities.size(); i++) {
-            BaseEntity index = msgEntities.get(i);
-            if (index instanceof MsgEntity) {
+            MsgEntity index = msgEntities.get(i);
+            if (!"Connect".equals(index.getPubkey())) {
                 if (index.getMsgDefinBean().getMessage_id().equals(msgid)) {
                     long burntime = TimeUtil.getCurrentTimeInLong();
                     ((MsgEntity) index).setBurnstarttime(burntime);
@@ -206,12 +205,12 @@ public class ChatAdapter extends BaseChatAdapter {
         notifyDataSetChanged();
     }
 
-    public BaseEntity firstEntity() {
+    public MsgEntity firstEntity() {
         if (msgEntities.size() == 0) return null;
         return msgEntities.get(0);
     }
 
-    public BaseEntity lastEntity() {
+    public MsgEntity lastEntity() {
         if (msgEntities.size() == 0) return null;
         return msgEntities.get(getItemCount() - 1);
     }

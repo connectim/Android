@@ -1,5 +1,7 @@
 package connect.im.model;
 
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
@@ -14,11 +16,13 @@ import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.im.bean.SocketACK;
-import connect.ui.activity.chat.bean.BaseEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
+import connect.ui.base.BaseApplication;
 import connect.utils.StringUtil;
+import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.adapter.MsgDefTypeAdapter;
@@ -59,7 +63,7 @@ public class FailMsgsManager {
         if (sendFailMap == null) {
             sendFailMap = new HashMap<>();
         }
-        Map<String, Object> valueMap = sendFailMap.get(roomid);
+        Map<String, Object> valueMap = sendFailMap.get(msgid);
         if (valueMap == null) {
             valueMap = new HashMap<>();
         }
@@ -100,7 +104,7 @@ public class FailMsgsManager {
                 ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
                 if (friendEntity != null) {
                     FriendChat friendChat = new FriendChat(friendEntity);
-                    BaseEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
+                    MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
                     friendChat.sendPushMsg(baseEntity);
                 }
             }
@@ -134,6 +138,8 @@ public class FailMsgsManager {
             Map.Entry<String, Map<String, Object>> entity = entryIterator.next();
             Map<String, Object> failMap = entity.getValue();
 
+            String msgid = entity.getKey();
+            Object keyObj = failMap.get(PUBKEY);
             Object object = failMap.get(ACKORDER);
             Object msgObj = failMap.get(OBJECT);
             if (object == null || msgObj == null) {
@@ -141,10 +147,46 @@ public class FailMsgsManager {
             } else {
                 SocketACK ack = (SocketACK) object;
                 ByteString msgByte = (ByteString) msgObj;
-                ChatSendManager.getInstance().sendMsgidMsg(ack, null, msgByte);
+                ChatSendManager.getInstance().sendAckMsg(ack, (String) keyObj, msgid, msgByte);
             }
         }
     }
+
+    /**
+     * Delay message sent failure
+     *
+     * @param msgid
+     * @param roomkey
+     */
+    public void sendDelayFailMsg(String roomkey, String msgid, SocketACK order, ByteString msgbyte) {
+        insertFailMsg(roomkey, msgid, order, msgbyte, null);
+
+        long delaytime = TextUtils.isEmpty(roomkey) ? MSGTIME_OTHER : MSGTIME_CHAT;
+        android.os.Message msg = new Message();
+        msg.what = TimeUtil.msgidToInt(msgid);
+        msg.obj = msgid;
+        delayFailHandler.sendMessageDelayed(msg, delaytime);
+    }
+
+    /** Chat messages failure time */
+    private final long MSGTIME_CHAT = 10 * 1000;
+    /** Other messages sent failure time */
+    private final long MSGTIME_OTHER = 1000;
+
+    /**
+     * Delay message sent failure
+     */
+    private Handler delayFailHandler = new Handler(BaseApplication.getInstance().getBaseContext().getMainLooper()) {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            String msgid = (String) msg.obj;
+            Map failMap = FailMsgsManager.getInstance().getFailMap(msgid);
+            if (failMap != null) {
+                ChatMsgUtil.updateMsgSendState((String) failMap.get(PUBKEY), msgid, 2);
+            }
+        }
+    };
 
     /***************************  Accept failure message set  *************************************************/
     public void insertReceiveMsg(String pubkey, String msgid, Object object) {

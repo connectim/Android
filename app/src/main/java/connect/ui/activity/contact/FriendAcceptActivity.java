@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.FriendRequestEntity;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.ui.activity.contact.bean.MsgSendBean;
 import connect.ui.activity.contact.bean.SourceType;
@@ -121,7 +121,9 @@ public class FriendAcceptActivity extends BaseActivity {
     void goAccept(View view) {
         MsgSendBean msgSendBean = new MsgSendBean();
         msgSendBean.setType(MsgSendBean.SendType.TypeAcceptFriendQuest);
-        SendMsgUtil.acceptFriendRequest(requestEntity.getAddress(), requestEntity.getSource(), msgSendBean);
+
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.acceptFriendRequest(requestEntity.getAddress(), requestEntity.getSource(), msgSendBean);
     }
 
     @Override

@@ -1,6 +1,4 @@
-package connect.im.bean;
-
-import android.text.TextUtils;
+package connect.im.parser;
 
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
@@ -20,13 +18,15 @@ import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.MessageEntity;
 import connect.db.green.bean.ParamEntity;
+import connect.im.bean.MsgType;
+import connect.im.bean.Session;
+import connect.im.bean.UserCookie;
+import connect.im.bean.UserOrderBean;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
-import connect.im.msgdeal.SendMsgUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.AdBean;
 import connect.ui.activity.chat.bean.ApplyGroupBean;
-import connect.ui.activity.chat.bean.BaseEntity;
 import connect.ui.activity.chat.bean.CardExt1Bean;
 import connect.ui.activity.chat.bean.GroupReviewBean;
 import connect.ui.activity.chat.bean.MsgChatReceiver;
@@ -34,7 +34,6 @@ import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
 import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.bean.RoMsgEntity;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.GroupChat;
@@ -45,7 +44,6 @@ import connect.ui.base.BaseApplication;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.log.LogManager;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
@@ -60,7 +58,7 @@ public class MsgParseBean extends InterParse {
     /**
      * Parsing the source 0:offline message 1:online message
      */
-    private int ext=0;
+    private int ext = 0;
 
     public MsgParseBean(byte ackByte, ByteBuffer byteBuffer) {
         super(ackByte, byteBuffer);
@@ -105,11 +103,11 @@ public class MsgParseBean extends InterParse {
         Connect.MSMessage msMessage = Connect.MSMessage.parseFrom(byteBuffer.array());
         backOnLineAck(5, msMessage.getMsgId());
 
-        RoMsgEntity robotMsg = robotMsgDeal(msMessage);
+        MsgEntity robotMsg = robotMsgDeal(msMessage);
         MessageHelper.getInstance().insertFromMsg(BaseApplication.getInstance().getString(R.string.app_name), robotMsg.getMsgDefinBean());
 
         MsgDefinBean definBean = robotMsg.getMsgDefinBean();
-        RoMsgEntity roMsgEntity = RobotChat.getInstance().createBaseChat(MsgType.toMsgType(definBean.getType()));
+        MsgEntity roMsgEntity = RobotChat.getInstance().createBaseChat(MsgType.toMsgType(definBean.getType()));
         roMsgEntity.setMsgDefinBean(definBean);
 
         String robotname = BaseApplication.getInstance().getString(R.string.app_name);
@@ -190,8 +188,8 @@ public class MsgParseBean extends InterParse {
     /**
      * robot notice message
      */
-    private RoMsgEntity robotMsgDeal(Connect.MSMessage message) throws Exception {
-        RoMsgEntity entity = null;
+    private MsgEntity robotMsgDeal(Connect.MSMessage message) throws Exception {
+        MsgEntity entity = null;
         switch (message.getCategory()) {
             case 1://text message
                 Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(message.getBody().toByteArray());
@@ -398,7 +396,7 @@ public class MsgParseBean extends InterParse {
         if (messageEntity != null) {
             FriendChat friendChat = new FriendChat(friendEntity);
             friendChat.setEncryType(FriendChat.EncryType.NORMAL);
-            BaseEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
+            MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
             friendChat.sendPushMsg(baseEntity);
         }
     }
@@ -416,7 +414,7 @@ public class MsgParseBean extends InterParse {
         if (messageEntity != null) {
             FriendChat friendChat = new FriendChat(friendEntity);
             friendChat.setEncryType(FriendChat.EncryType.HALF);
-            BaseEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
+            MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
             friendChat.sendPushMsg(baseEntity);
         }
     }
@@ -449,6 +447,7 @@ public class MsgParseBean extends InterParse {
 
         FailMsgsManager.getInstance().insertFailMsg(address,msgid);
 
-        SendMsgUtil.uploadRandomCookie(cookie);
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.uploadRandomCookie(cookie);
     }
 }
