@@ -34,6 +34,7 @@ public class GlideUtil {
         Glide.with(BaseApplication.getInstance())
                 .load(path)
                 .error(errorId)
+                //.placeholder(errorId)
                 //.thumbnail(0.2f)
                 .into(imageView);
     }
@@ -42,6 +43,7 @@ public class GlideUtil {
         Glide.with(BaseApplication.getInstance())
                 .load(path)
                 .transform(transformations)
+                //.placeholder(R.mipmap.img_default)
                 .error(R.mipmap.img_default)
                 //.thumbnail(0.2f)
                 .into(imageView);

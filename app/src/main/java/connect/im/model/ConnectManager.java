@@ -1,6 +1,7 @@
 package connect.im.model;
 
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 
@@ -225,7 +226,6 @@ public class ConnectManager {
      * The user logged out/account no longer detect abnormal initiate reconnection
      */
     public void exitConnect() {
-        canConnect = false;
         cancelTimer();
         stopConnect();
     }
@@ -264,14 +264,11 @@ public class ConnectManager {
      * connect success
      */
     public void connectSuccess() {
-        canConnect = true;
         reconHandler.removeMessages(TAG_CONNECT);
         resetFibonacci();
         ConnectManager.getInstance().launHeartBit();
     }
 
-    /** Whether can initiate reconnection */
-    private boolean canConnect = true;
     /** Heart rate */
     private final long HEART_FREQUENCY = 4 * 60 * 1000;
     /** Recently received a message of time */
@@ -303,7 +300,7 @@ public class ConnectManager {
     public synchronized void reconDelay() {
         LogManager.getLogger().d(Tag, "connectServer reconDelay()...");
         if (avaliableConnect()) return;
-        if (!canConnect) return;
+        if (!isCanConnect()) return;
 
         if (!reconHandler.hasMessages(TAG_CONNECT)) {
             long count = reconFibonacci[0] + reconFibonacci[1];
@@ -374,6 +371,6 @@ public class ConnectManager {
     }
 
     public boolean isCanConnect() {
-        return canConnect;
+        return !TextUtils.isEmpty(SharedPreferenceUtil.getInstance().getPriKey());
     }
 }

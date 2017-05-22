@@ -1,9 +1,12 @@
 package connect.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
+import android.os.Build;
 import android.os.Environment;
 
 import java.io.ByteArrayOutputStream;
@@ -144,5 +147,19 @@ public class BitmapUtil {
         byte imgdata[] = bytestream.toByteArray();
         bytestream.close();
         return imgdata;
+    }
+
+    public static Drawable getMaskDrawable(Context context, int maskId) {
+        Drawable drawable;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawable = context.getDrawable(maskId);
+        } else {
+            drawable = context.getResources().getDrawable(maskId);
+        }
+
+        if (drawable == null) {
+            throw new IllegalArgumentException("maskId is invalid");
+        }
+        return drawable;
     }
 }

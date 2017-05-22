@@ -82,7 +82,6 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
             passwordhintTv.setText(getString(R.string.Login_Password_Hint,userBean.getPassHint()));
             GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
         }
-
         setPresenter(new LocalLoginPresenter(this));
     }
 
@@ -147,12 +146,17 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
             nicknameTv.setText(userBean.getName());
             passwordhintTv.setText(getString(R.string.Login_Password_Hint,userBean.getPassHint()));
             GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
-        }
-
-        if(requestCode == SELE_USER_CODE){
-            List<UserBean> list = SharedPreferenceUtil.getInstance().getUserList();
-            if(list == null || list.size() == 0){
-                ActivityUtil.goBack(mActivity);
+        }else{
+            if(requestCode == SELE_USER_CODE){
+                List<UserBean> list = SharedPreferenceUtil.getInstance().getUserList();
+                if(list == null || list.size() == 0){
+                    ActivityUtil.goBack(mActivity);
+                }else {
+                    userBean = list.get(0);
+                    nicknameTv.setText(userBean.getName());
+                    passwordhintTv.setText(getString(R.string.Login_Password_Hint,userBean.getPassHint()));
+                    GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
+                }
             }
         }
     }

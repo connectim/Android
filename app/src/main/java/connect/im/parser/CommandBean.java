@@ -75,7 +75,7 @@ public class CommandBean extends InterParse {
         } else if (ackByte == 0x07) {
             HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
         } else if (ackByte == 0x19) {
-            //reloadUserCookie();
+            reloadUserCookie();
         } else {
             Connect.Command command = imTransferToCommand(byteBuffer);
             String msgid = command.getMsgId();
@@ -813,6 +813,7 @@ public class CommandBean extends InterParse {
         String randomPubKey = null;
         byte[] randomSalt = null;
         long expiredTime = 0;
+
         if (reGenerate) {
             priKey = SharedPreferenceUtil.getInstance().getPriKey();
             randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
@@ -823,7 +824,7 @@ public class CommandBean extends InterParse {
             randomPriKey = userCookie.getPriKey();
             randomPubKey = userCookie.getPubKey();
             randomSalt = userCookie.getSalt();
-            expiredTime = userCookie.getExpiredTime();
+            expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
         }
 
         Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().

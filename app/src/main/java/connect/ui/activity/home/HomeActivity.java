@@ -30,6 +30,7 @@ import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoManager;
 import connect.db.green.bean.FriendRequestEntity;
 import connect.im.bean.ConnectState;
+import connect.im.bean.Session;
 import connect.im.model.ConnectManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.ChatActivity;
@@ -120,6 +121,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 SharePreferenceUser.initSharePreferrnce(userBean.getPubKey());
                 LogManager.getLogger().d(Tag, "*** userBean.getPubKey() :" + userBean.getPubKey());
 
+                Session.getInstance().clearUserCookie();
                 DaoManager.getInstance().closeDataBase();
                 DaoManager.getInstance().switchDataBase();
                 FileUtil.getExternalStorePath();
@@ -173,9 +175,9 @@ public class HomeActivity extends BaseFragmentActivity {
                 //Remove the local login information
                 SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
                 //close socket
+                SharedPreferenceUtil.getInstance().clearMap();
                 ConnectManager.getInstance().exitConnect();
                 SharePreferenceUser.unLinkSharePreferrnce();
-                SharedPreferenceUtil.getInstance().clearMap();
                 DaoManager.getInstance().closeDataBase();
                 HttpsService.stopServer(activity);
 

@@ -80,7 +80,7 @@ public class DiffuseView extends ImageView {
         }
 
         animator = ValueAnimator.ofFloat(widthFloat, width);
-        animator.setDuration(700);
+        animator.setDuration(500);
         animator.setInterpolator(new LinearInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

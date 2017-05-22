@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
@@ -26,6 +27,8 @@ import connect.ui.activity.chat.bean.MsgDirect;
 import connect.ui.activity.chat.inter.FileDownLoad;
 import connect.ui.base.BaseApplication;
 import connect.utils.FileUtil;
+import connect.utils.glide.GlideUtil;
+import connect.utils.glide.MaskTransformation;
 import connect.utils.system.SystemUtil;
 import connect.utils.glide.BlurTransformation;
 
@@ -78,61 +81,17 @@ public class BubbleImg extends RelativeLayout {
         addView(imageView, imgParams);
     }
 
-    public void loadUri(MsgDirect direct, final String pukkey, String msgid, String url) {
-        msgDirect = direct;
+    private int width;
+    private int height;
 
-        imageView.setImageBitmap(null);
-        final String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
+    public void calculateSize(String localpath){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(localpath, options);
 
-        if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(localPath)) {
-            progressBar.setVisibility(GONE);
-            String local = FileUtil.islocalFile(url) ? url : localPath;
-            Glide.with(BaseApplication.getInstance())
-                    .load(local)
-                    .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            loadBackImg(resource);
-                        }
+        width=options.outWidth;
+        height=options.outHeight;
 
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            loadBackImg(BitmapFactory.decodeResource(context.getResources(), R.mipmap.img_error));
-                        }
-                    });
-        } else {
-            FileDownLoad.getInstance().downChatFile(url, pukkey, new FileDownLoad.IFileDownLoad() {
-                @Override
-                public void successDown(byte[] bytes) {
-                    progressBar.setVisibility(GONE);
-                    FileUtil.byteArrToFilePath(bytes, localPath);
-                    loadBackImg(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                }
-
-                @Override
-                public void failDown() {
-                    loadBackImg(BitmapFactory.decodeResource(context.getResources(), R.mipmap.img_error));
-                }
-
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    int progress = (int) (bytesWritten * 100 / totalSize);
-                    progressBar.setVisibility(VISIBLE);
-                    progressBar.setProgress(progress);
-                }
-            });
-        }
-    }
-
-    protected void loadBackImg(Bitmap source) {
-        getRoundCornerImage(source);
-    }
-
-    public void getRoundCornerImage(Bitmap bitmap_in) {
-        int width = bitmap_in.getWidth();
-        int height = bitmap_in.getHeight();
         int maxDp = SystemUtil.dipToPx(160);
         if (height != 0 && width != 0) {
             double scale = (width * 1.00) / height;
@@ -147,47 +106,51 @@ public class BubbleImg extends RelativeLayout {
             width = maxDp;
             height = maxDp;
         }
+    }
 
-        LayoutParams params = (LayoutParams) getLayoutParams();
-        params.width = width;
-        params.height = height;
-        setLayoutParams(params);
 
-        new AsyncTask<Object, Void, Bitmap>() {
+    public void loadUri(final MsgDirect direct, final String pukkey, final String msgid, final String url) {
+        msgDirect = direct;
 
-            @Override
-            protected Bitmap doInBackground(Object... params) {
-                int width = (int) params[0];
-                int height = (int) params[1];
+        imageView.setImageBitmap(null);
+        final String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
 
-                Bitmap roundConcerImage = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-                Canvas canvas = new Canvas(roundConcerImage);
-                Paint paint = new Paint();
-                Rect rect = new Rect(0, 0, width, height);
-                Rect rectF = new Rect(0, 0, (int) params[2], (int) params[3]);
-                paint.setAntiAlias(true);
+        if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(localPath)) {
+            progressBar.setVisibility(GONE);
+            String local = FileUtil.islocalFile(url) ? url : localPath;
+            calculateSize(local);
 
-                Bitmap bitmap_bg = BitmapFactory.decodeResource(context.getResources(),
-                        msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x);
-
-                NinePatch patch = new NinePatch(bitmap_bg, bitmap_bg.getNinePatchChunk(), null);
-                patch.draw(canvas, rect);
-                paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-                canvas.drawBitmap((Bitmap) params[4], rectF, rect, paint);
-
-                if (openBurn) {
-                    BlurTransformation transformation = new BlurTransformation(BaseApplication.getInstance(),20);
-                    roundConcerImage = transformation.blur(roundConcerImage);
+            Glide.with(BaseApplication.getInstance())
+                    .load(local)
+                    .override(width, height)
+                    .bitmapTransform(new CenterCrop(context), new MaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x))
+                    .into(imageView);
+        } else {
+            FileDownLoad.getInstance().downChatFile(url, pukkey, new FileDownLoad.IFileDownLoad() {
+                @Override
+                public void successDown(byte[] bytes) {
+                    progressBar.setVisibility(GONE);
+                    FileUtil.byteArrToFilePath(bytes, localPath);
+                    loadUri(direct, pukkey, msgid, localPath);
                 }
-                return roundConcerImage;
-            }
 
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                super.onPostExecute(bitmap);
-                imageView.setImageBitmap(bitmap);
-            }
-        }.execute(width, height, bitmap_in.getWidth(), bitmap_in.getHeight(), bitmap_in);
+                @Override
+                public void failDown() {
+                    Glide.with(BaseApplication.getInstance())
+                            .load( R.mipmap.img_error)
+                            .override(width,height)
+                            .bitmapTransform(new CenterCrop(context),new MaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x))
+                            .into(imageView);
+                }
+
+                @Override
+                public void onProgress(long bytesWritten, long totalSize) {
+                    int progress = (int) (bytesWritten * 100 / totalSize);
+                    progressBar.setVisibility(VISIBLE);
+                    progressBar.setProgress(progress);
+                }
+            });
+        }
     }
 
     public boolean isOpenBurn() {
