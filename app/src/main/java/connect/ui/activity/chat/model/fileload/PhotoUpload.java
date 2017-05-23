@@ -7,17 +7,14 @@ import android.os.AsyncTask;
 import com.google.protobuf.ByteString;
 
 import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.MessageHelper;
 import connect.im.bean.MsgType;
-import connect.im.model.ChatSendManager;
 import connect.ui.activity.chat.bean.MsgDefinBean;
-import connect.ui.activity.chat.bean.RoomSession;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -52,7 +49,6 @@ public class PhotoUpload extends FileUpLoad {
                     bean.setImageOriginWidth(options.outWidth);
                     bean.setImageOriginHeight(options.outHeight);
                     bean.setExt1(FileUtil.fileSize(comSecond));
-                    MessageHelper.getInstance().insertToMsg(bean);
 
                     String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
                     String priKey = SharedPreferenceUtil.getInstance().getPriKey();
@@ -81,6 +77,16 @@ public class PhotoUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                if (MsgType.toMsgType(bean.getType()) == MsgType.Photo) {
+                    msgEntity = (MsgEntity) baseChat.photoMsg(bean.getContent(), bean.getExt1());
+                } else if (MsgType.toMsgType(bean.getType()) == MsgType.Location) {
+                    msgEntity = (MsgEntity) baseChat.locationMsg(bean.getContent(), bean.getLocationExt());
+                }
+                msgEntity.getMsgDefinBean().setMessage_id(bean.getMessage_id());
+                msgEntity.getMsgDefinBean().setImageOriginWidth(bean.getImageOriginWidth());
+                msgEntity.getMsgDefinBean().setImageOriginHeight(bean.getImageOriginHeight());
+                localEncryptionSuccess(msgEntity);
+
                 fileUp();
             }
         }.execute();
@@ -88,9 +94,6 @@ public class PhotoUpload extends FileUpLoad {
 
     @Override
     public void fileUp() {
-        if (mediaFile == null) {
-            return;
-        }
         resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
@@ -98,10 +101,16 @@ public class PhotoUpload extends FileUpLoad {
                 String url = getUrl(mediaFile.getUrl(), mediaFile.getToken());
 
                 if (MsgType.toMsgType(bean.getType()) == MsgType.Photo) {
-                    fileUpListener.upSuccess(bean.getMessage_id(), content, url, bean.getExt1(), bean.getImageOriginWidth(), bean.getImageOriginHeight());
+                    msgEntity = (MsgEntity) baseChat.photoMsg(content, bean.getExt1());
+                    msgEntity.getMsgDefinBean().setUrl(url);
                 } else if (MsgType.toMsgType(bean.getType()) == MsgType.Location) {
-                    fileUpListener.upSuccess(bean.getMessage_id(), content, bean.getLocationExt(), bean.getImageOriginWidth(), bean.getImageOriginHeight());
+                    msgEntity = (MsgEntity) baseChat.locationMsg(content, bean.getLocationExt());
                 }
+                msgEntity.getMsgDefinBean().setMessage_id(bean.getMessage_id());
+                msgEntity.getMsgDefinBean().setImageOriginWidth(bean.getImageOriginWidth());
+                msgEntity.getMsgDefinBean().setImageOriginHeight(bean.getImageOriginHeight());
+
+                uploadSuccess(msgEntity);
             }
         });
     }

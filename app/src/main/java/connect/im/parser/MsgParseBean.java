@@ -3,8 +3,6 @@ package connect.im.parser;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +27,10 @@ import connect.ui.activity.chat.bean.AdBean;
 import connect.ui.activity.chat.bean.ApplyGroupBean;
 import connect.ui.activity.chat.bean.CardExt1Bean;
 import connect.ui.activity.chat.bean.GroupReviewBean;
-import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
 import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.GroupChat;
 import connect.ui.activity.chat.model.content.NormalChat;
@@ -42,7 +38,6 @@ import connect.ui.activity.chat.model.content.RobotChat;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.base.BaseApplication;
 import connect.utils.StringUtil;
-import connect.utils.TimeUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
@@ -103,19 +98,15 @@ public class MsgParseBean extends InterParse {
         Connect.MSMessage msMessage = Connect.MSMessage.parseFrom(byteBuffer.array());
         backOnLineAck(5, msMessage.getMsgId());
 
-        MsgEntity robotMsg = robotMsgDeal(msMessage);
-        MessageHelper.getInstance().insertFromMsg(BaseApplication.getInstance().getString(R.string.app_name), robotMsg.getMsgDefinBean());
-
-        MsgDefinBean definBean = robotMsg.getMsgDefinBean();
+        String robotname = BaseApplication.getInstance().getString(R.string.app_name);
+        MsgEntity msgEntity = robotMsgDeal(msMessage);
+        MessageHelper.getInstance().insertFromMsg(robotname, msgEntity.getMsgDefinBean());
+        MsgDefinBean definBean = msgEntity.getMsgDefinBean();
         MsgEntity roMsgEntity = RobotChat.getInstance().createBaseChat(MsgType.toMsgType(definBean.getType()));
         roMsgEntity.setMsgDefinBean(definBean);
 
-        String robotname = BaseApplication.getInstance().getString(R.string.app_name);
-        ChatMsgUtil.updateRoomInfo(robotname, 2, TimeUtil.getCurrentTimeInLong(), definBean);
-        pushNoticeMsg(robotname, 2, ChatMsgUtil.showContentTxt(2, definBean));
-
-        MsgChatReceiver receiver = new MsgChatReceiver(roMsgEntity);
-        EventBus.getDefault().post(receiver);
+        RobotChat.getInstance().updateRoomMsg(null, definBean.showContentTxt(2), definBean.getSendtime(),-1,true);
+        pushNoticeMsg(robotname, 2, msgEntity);
     }
 
     /**
@@ -287,7 +278,6 @@ public class MsgParseBean extends InterParse {
                 break;
         }
 
-
         entity.setSendstate(1);
         entity.setReadstate(0);
         if (entity.getMsgDefinBean().getSenderInfoExt() == null) {
@@ -309,8 +299,8 @@ public class MsgParseBean extends InterParse {
             NormalChat normalChat = new FriendChat(friendEntity);
             MsgEntity msgEntity = normalChat.strangerNotice();
 
-            MsgChatReceiver.sendChatReceiver(pubkey, msgEntity);
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
         }
     }
 
@@ -325,8 +315,8 @@ public class MsgParseBean extends InterParse {
             NormalChat normalChat = new FriendChat(friendEntity);
             MsgEntity msgEntity = normalChat.blackFriendNotice();
 
-            MsgChatReceiver.sendChatReceiver(pubkey, msgEntity);
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgEntity);
         }
     }
 
@@ -341,8 +331,8 @@ public class MsgParseBean extends InterParse {
             NormalChat normalChat = new GroupChat(groupEntity);
             MsgEntity msgEntity = normalChat.notMemberNotice();
 
-            MsgChatReceiver.sendChatReceiver(groupkey, msgEntity);
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupkey, msgEntity);
         }
     }
 

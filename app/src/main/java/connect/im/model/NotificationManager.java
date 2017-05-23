@@ -12,6 +12,12 @@ import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
+
+import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionSettingHelper;
 import connect.db.green.DaoHelper.ParamManager;
@@ -20,7 +26,11 @@ import connect.db.green.bean.ConversionSettingEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.ChatActivity;
+import connect.ui.activity.chat.bean.MsgDefinBean;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.Talker;
+import connect.ui.activity.chat.model.ChatMsgUtil;
+import connect.ui.activity.chat.model.content.NormalChat;
 import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.base.BaseApplication;
@@ -29,8 +39,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.GlobalLanguageUtil;
 import connect.utils.TimeUtil;
 import connect.utils.system.SystemUtil;
-
-import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * notify bar
@@ -60,27 +68,46 @@ public class NotificationManager {
         @Override
         public void handleMessage(android.os.Message msg) {
             super.handleMessage(msg);
-            Bundle bundle=msg.getData();
-            MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
-
-            String pubkey = bundle.getString("KEY");
-            int type = bundle.getInt("TYPE");
-            String content = bundle.getString("CONTENT");
-            showNotification(pubkey, type, content);
-
             TIME_SENDNOTIFY = TimeUtil.getCurrentTimeInLong();
+
+            boolean isAt = false;
+            Bundle bundle=msg.getData();
+            int type = bundle.getInt("TYPE");
+            String pubkey = bundle.getString("KEY");
+            MsgEntity msgEntity = (MsgEntity) bundle.getSerializable("CONTENT");
+            MsgDefinBean definBean=msgEntity.getMsgDefinBean();
+
+            if (definBean.getType() == 1 && !TextUtils.isEmpty(definBean.getExt1())) {
+                List<String> addressList = new Gson().fromJson(definBean.getExt1(), new TypeToken<List<String>>() {
+                }.getType());
+                String myAddress = SharedPreferenceUtil.getInstance().getAddress();
+                if (addressList.contains(myAddress)) { // at me
+                    isAt = true;
+                }
+            }
+
+            NormalChat normalChat = ChatMsgUtil.loadBaseChat(pubkey);
+            if (normalChat != null) {
+                normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime(), isAt ? 1 : -1, true);
+                MsgFragmReceiver.refreshRoom();
+            }
+
+            showNotification(pubkey, type, isAt ?
+                    BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me) :
+                    definBean.showContentTxt(type)
+            );
         }
     };
 
     /*** Refresh a message time recently */
-    public void pushNoticeMsg(String pubkey, int type, String content) {
+    public void pushNoticeMsg(String pubkey, int type, MsgEntity msgEntity) {
         mHandler.removeMessages(MSG_NOTICE);
 
         android.os.Message message = mHandler.obtainMessage(MSG_NOTICE);
         Bundle bundle = new Bundle();
         bundle.putString("KEY", pubkey);
         bundle.putInt("TYPE", type);
-        bundle.putString("CONTENT", content);
+        bundle.putSerializable("CONTENT", msgEntity);
         message.setData(bundle);
 
         if (TimeUtil.getCurrentTimeInLong() - TIME_SENDNOTIFY < MSG_DELAYMILLIS) {
@@ -181,7 +208,7 @@ public class NotificationManager {
         mBuilder.setAutoCancel(true);
         mBuilder.setOngoing(false);
         mBuilder.setDefaults(NotificationCompat.DEFAULT_LIGHTS);
-        android.app.NotificationManager mNotificationManager = (android.app.NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        android.app.NotificationManager mNotificationManager = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = mBuilder.build();//API 16
         mNotificationManager.notify(1001, notification);
     }

@@ -31,13 +31,14 @@ import connect.utils.log.LogManager;
 /**
  * Created by gtq on 2016/11/21.
  */
-public class ChatListFragment extends BaseFragment {
+public class ConversationFragment extends BaseFragment {
+
     @Bind(R.id.recycler_fragment_chat)
     RecyclerView recyclerFragmentChat;
     @Bind(R.id.connectstate)
     ConnectStateView connectStateView;
 
-    private String Tag = "ChatListFragment";
+    private String Tag = "ConversationFragment";
     private Activity activity;
     private View view;
 
@@ -54,23 +55,15 @@ public class ChatListFragment extends BaseFragment {
         return view;
     }
 
-    public static ChatListFragment startFragment() {
-        ChatListFragment chatListFragment = new ChatListFragment();
+    public static ConversationFragment startFragment() {
+        ConversationFragment chatListFragment = new ConversationFragment();
         return chatListFragment;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MsgFragmReceiver receiver) {
         LogManager.getLogger().d(Tag, "onEventMainThread()");
-        switch (receiver.fragRecType) {
-            case ALL:
-                loadRooms();
-                break;
-            case ROOM:
-                reCountUnread();
-                break;
-
-        }
+        loadRooms();
     }
 
     /**
