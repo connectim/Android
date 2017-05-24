@@ -33,7 +33,7 @@ public class ResolveUrlUtil {
     public static final String TYPE_WEB_GROUNP = "group";
     public static final String TYPE_OPEN_SCAN = "scan";
     public static final String TYPE_OPEN_WEB= "web";
-    public String Web_Url = "connectim://.*";
+    public static String Web_Url = "connectim://.*";
     private Activity activity;
 
     public ResolveUrlUtil(Activity activity) {

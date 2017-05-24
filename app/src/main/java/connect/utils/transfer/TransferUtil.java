@@ -46,8 +46,8 @@ public class TransferUtil {
      * Automatic calculation fee
      */
     public static long getAutoFeeWithUnspentLength(boolean isAddChangeAddress,int txs_length, int sentToLength) {
-        if(isAddChangeAddress){
-            sentToLength++;//the change of address
+        if(isAddChangeAddress){ // the change of address
+            sentToLength++;
         }
         EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
         int txSize = 148 * txs_length + 34 * sentToLength + 10;
@@ -181,8 +181,8 @@ public class TransferUtil {
     private void checkFee(final Connect.UnspentOrderResponse orderResponse) {
         if (paySetBean.isAutoFee()) {
             if (orderResponse.getFee() > paySetBean.getAutoMaxFee()) {
-                DialogUtil.showAlertTextView(activity, activity.getResources().getString(R.string.Set_tip_title),
-                        activity.getResources().getString(R.string.Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue,
+                DialogUtil.showAlertTextView(activity, activity.getString(R.string.Set_tip_title),
+                        activity.getString(R.string.Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue,
                                 RateFormatUtil.longToDoubleBtc(orderResponse.getFee())),
                         "", "", false, new DialogUtil.OnItemClickListener() {
                             @Override
@@ -202,8 +202,8 @@ public class TransferUtil {
         } else {
             long autoFee = getAutoFeeWithUnspentLength(isAddChangeAddress, orderResponse.getUnspentsList().size(), outputList.size());
             if (autoFee > orderResponse.getFee() || orderResponse.getDust()) {
-                DialogUtil.showAlertTextView(activity, activity.getResources().getString(R.string.Set_tip_title),
-                        activity.getResources().getString(R.string.Wallet_Transaction_fee_too_low_Continue),
+                DialogUtil.showAlertTextView(activity, activity.getString(R.string.Set_tip_title),
+                        activity.getString(R.string.Wallet_Transaction_fee_too_low_Continue),
                         "", "", false, new DialogUtil.OnItemClickListener() {
                             @Override
                             public void confirm(String value) {

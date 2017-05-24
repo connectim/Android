@@ -43,7 +43,6 @@ public class PacketHistoryActivity extends BaseActivity {
     private int page = 1;
     private RedHistoryAdapter redHistoryAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

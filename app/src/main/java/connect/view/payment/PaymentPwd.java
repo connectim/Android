@@ -22,6 +22,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.ArrayList;
 
+import javax.crypto.spec.DESedeKeySpec;
+
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
@@ -48,7 +50,7 @@ import protos.Connect;
  * Pay components
  * Created by Administrator on 2016/12/23.
  */
-public class PaymentPwd {
+public class PaymentPwd implements View.OnClickListener{
 
     private ControlScrollViewPager viewPager;
 
@@ -88,12 +90,7 @@ public class PaymentPwd {
 
         viewPager = (ControlScrollViewPager) view.findViewById(R.id.view_pager);
         closeImg = (ImageView) view.findViewById(R.id.close_img);
-        closeImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
+        closeImg.setOnClickListener(this);
         initViewPage();
 
         Window mWindow = dialog.getWindow();
@@ -106,7 +103,7 @@ public class PaymentPwd {
 
         titleTv = (TextView)view.findViewById(R.id.title_tv);
 
-        if(paySetBean.getNoSecretPay()){
+        if(paySetBean != null && paySetBean.getNoSecretPay()){
             statusChange(5);
             onTrueListener.onTrue();
         }
@@ -139,12 +136,7 @@ public class PaymentPwd {
 
     private void initSetPay(View view) {
         TextView retryTv = (TextView) view.findViewById(R.id.retry_tv);
-        retryTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewPager.setCurrentItem(0);
-            }
-        });
+        retryTv.setOnClickListener(this);
     }
 
     private void initEditPay(View view) {
@@ -165,19 +157,25 @@ public class PaymentPwd {
     private void initPassForget(View view) {
         TextView forgetTv = (TextView) view.findViewById(R.id.forget_tv);
         TextView retryTv = (TextView) view.findViewById(R.id.retry_tv);
-        retryTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewPager.setCurrentItem(0);
-            }
-        });
+        retryTv.setOnClickListener(this);
+        forgetTv.setOnClickListener(this);
+    }
 
-        forgetTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.close_img:
+                dialog.cancel();
+                break;
+            case R.id.retry_tv:
+                viewPager.setCurrentItem(0);
+                break;
+            case R.id.forget_tv:
                 ActivityUtil.next(activity, PaymentActivity.class);
-            }
-        });
+                break;
+            default:
+                break;
+        }
     }
 
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -459,8 +457,6 @@ public class PaymentPwd {
     public interface OnTrueListener {
 
         void onTrue();
-
-        void onFalse();
 
     }
 

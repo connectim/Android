@@ -219,11 +219,6 @@ public class RedPacketActivity extends BaseActivity {
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     sendPacket(amount, samValue);
                 }
-
-                @Override
-                public void onFalse() {
-
-                }
             });
         }
     }

@@ -170,11 +170,6 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     presenter.requestSend(amount, samValue,transferEditView.getNote(),paymentPwd);
                 }
-
-                @Override
-                public void onFalse() {
-
-                }
             });
 
         }

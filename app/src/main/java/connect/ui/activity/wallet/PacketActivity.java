@@ -153,11 +153,6 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     presenter.sendPacket(amount, samValue,transferEditView.getNote(),paymentPwd);
                 }
-
-                @Override
-                public void onFalse() {
-
-                }
             });
         }
     }

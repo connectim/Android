@@ -1,12 +1,14 @@
 package connect.utils.transfer;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -19,7 +21,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.ui.activity.set.bean.PaySetBean;
@@ -28,11 +29,10 @@ import connect.ui.activity.wallet.bean.RateBean;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
 import connect.ui.base.BaseApplication;
 import connect.utils.DialogUtil;
-import connect.utils.data.RateFormatUtil;
-import connect.utils.data.RateDataUtil;
 import connect.utils.RegularUtil;
-import connect.utils.StringUtil;
 import connect.utils.UriUtil;
+import connect.utils.data.RateDataUtil;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -111,6 +111,29 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         addNote.setOnClickListener(this);
         transferTv = (TextView)view.findViewById(R.id.transfer_tv);
         transferTv.setOnClickListener(this);
+
+        // Shielding EditText paste function
+        amoutinputEt.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+
+            }
+        });
     }
 
     /**
@@ -131,11 +154,9 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         if(paySetBean == null){
             return;
         }
-
         editTitleTv.setText(context.getString(R.string.Wallet_Amount_BTC));
         editSymbolTv.setText(btcBean.getSymbol());
-        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                RateFormatUtil.longToDoubleBtc(0)));
+        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit, RateFormatUtil.longToDoubleBtc(0)));
         amoutinputEt.addTextChangedListener(textWatcher);
         amoutinputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
         amoutinputEt.setFilters(btcInputFilters);
@@ -144,17 +165,8 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         }else{
             feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
         }
-
         requestRate();
         requestWallet();
-    }
-
-    /**
-     * Gets the current input bitcoin
-     * @return
-     */
-    public String getCurrentBtc(){
-        return currentBtc;
     }
 
     @Override
@@ -242,10 +254,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                 }
             }
 
-            if(onEditListener != null){
-                onEditListener.onEdit(s.toString());
-            }
-
             //Conversion to other currencies
             if (otherRate != null && otherRate.getRate() != null) {
                 if (TextUtils.isEmpty(s)) {
@@ -265,16 +273,12 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
             } else {//Get no exchange rate
                 transferTv.setText(R.string.Wallet_Transfer_Unable);
             }
+
+            if(onEditListener != null){
+                onEditListener.onEdit(s.toString());
+            }
         }
     };
-
-    /**
-     * available balance
-     * @return
-     */
-    public Long getAvaAmount(){
-        return null == accountBean.getAvaAmount() ? 0 : accountBean.getAvaAmount();
-    }
 
     /**
      * The exchange-rate
@@ -331,6 +335,22 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     }
 
     /**
+     * Gets the current input bitcoin
+     * @return
+     */
+    public String getCurrentBtc(){
+        return currentBtc;
+    }
+
+    /**
+     * available balance
+     * @return
+     */
+    public Long getAvaAmount(){
+        return null == accountBean.getAvaAmount() ? 0 : accountBean.getAvaAmount();
+    }
+
+    /**
      * Hide it when you don't need to display the available amount
      */
     public void setAmountTvGone(){
@@ -343,13 +363,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
      */
     public void setEditListener(OnEditListener onEditListener){
         this.onEditListener = onEditListener;
-    }
-
-    /**
-     * Multiple transaction
-     */
-    public void setGroupEditTitle(){
-        editTitleTv.setText(context.getString(R.string.Wallet_Amount_Each) + "(BTC)");
     }
 
     /**

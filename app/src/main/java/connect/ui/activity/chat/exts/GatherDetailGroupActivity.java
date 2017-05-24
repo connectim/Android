@@ -280,11 +280,6 @@ public class GatherDetailGroupActivity extends BaseActivity {
                     String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     groupMemPayment(samValue);
                 }
-
-                @Override
-                public void onFalse() {
-
-                }
             });
         }
     }

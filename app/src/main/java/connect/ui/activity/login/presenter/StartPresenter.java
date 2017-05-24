@@ -28,6 +28,8 @@ import connect.ui.activity.login.bean.StartImagesBean;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.login.contract.StartContract;
 import connect.ui.base.BaseApplication;
+import connect.utils.RegularUtil;
+import connect.utils.scan.ResolveUrlUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
@@ -200,8 +202,8 @@ public class StartPresenter implements StartContract.Presenter{
     private void openFromWeb(Activity activity){
         Intent i_getvalue = activity.getIntent();
         String action = i_getvalue.getAction();
-        if(Intent.ACTION_VIEW.equals(action)){
-            Uri uri = i_getvalue.getData();
+        Uri uri = i_getvalue.getData();
+        if(Intent.ACTION_VIEW.equals(action) && RegularUtil.matches(uri.toString(), ResolveUrlUtil.Web_Url)){
             SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.WEB_OPEN_APP,uri.toString());
         }
     }

@@ -129,11 +129,6 @@ public class TransferOutViaActivity extends BaseActivity {
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     sendExternal(amount, samValue);
                 }
-
-                @Override
-                public void onFalse() {
-
-                }
             });
         }
     }

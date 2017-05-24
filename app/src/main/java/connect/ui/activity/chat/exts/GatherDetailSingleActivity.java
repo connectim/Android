@@ -251,11 +251,6 @@ public class GatherDetailSingleActivity extends BaseActivity {
                     String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     requestPublicTx(samValue);
                 }
-
-                @Override
-                public void onFalse() {
-
-                }
             });
         }
     }

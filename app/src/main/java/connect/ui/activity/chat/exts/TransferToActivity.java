@@ -205,11 +205,6 @@ public class TransferToActivity extends BaseActivity {
                     String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     requestSingleSend(amount, samValue);
                 }
-
-                @Override
-                public void onFalse() {
-
-                }
             });
         }
     }

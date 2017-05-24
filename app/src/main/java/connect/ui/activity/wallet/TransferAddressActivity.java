@@ -150,11 +150,6 @@ public class TransferAddressActivity extends BaseActivity {
                 String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                 requestBillingSend(amount, samValue);
             }
-
-            @Override
-            public void onFalse() {
-
-            }
         });
     }
 
