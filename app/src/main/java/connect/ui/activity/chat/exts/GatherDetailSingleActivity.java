@@ -275,7 +275,6 @@ public class GatherDetailSingleActivity extends BaseActivity {
                     String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
                     String noticeContent = getString(R.string.Chat_paid_the_bill_to, activity.getString(R.string.Chat_You), contactName);
                     RecExtBean.sendRecExtMsg(RecExtBean.ExtType.NOTICE, noticeContent);
-                    ChatMsgUtil.insertNoticeMsg(entity.getPub_key(), noticeContent);
                 }
 
                 TransactionHelper.getInstance().updateTransEntity(billDetail.getHash(), msgId, 1);

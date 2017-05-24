@@ -1,6 +1,9 @@
 package connect.ui.activity.chat.bean;
 
+import connect.db.SharedPreferenceUtil;
+import connect.ui.activity.R;
 import connect.ui.activity.locmap.bean.GeoAddressBean;
+import connect.ui.base.BaseApplication;
 
 import java.io.Serializable;
 
@@ -144,5 +147,76 @@ public class MsgDefinBean implements Serializable{
 
     public void setSenderInfoExt(MsgSender senderInfoExt) {
         this.senderInfoExt = senderInfoExt;
+    }
+
+
+    /**
+     * Display the list in the session
+     *
+     * @return
+     */
+    public String showContentTxt(int type) {
+        String content = "";
+        switch (getType()) {
+            case 1://text
+                content = getContent();
+                break;
+            case 2://voice
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Audio);
+                break;
+            case 3://picture
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Picture);
+                break;
+            case 4://video
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Video);
+                break;
+            case 5://expression
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Expression);
+                break;
+            case 11://burn message
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Snapchat);
+                break;
+            case 12://burn back
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Snapchat);
+                break;
+            case 14:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Funding);
+                break;
+            case 15:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Transfer);
+                break;
+            case 16:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Red_packet);
+                break;
+            case 17:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Location);
+                break;
+            case 18:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card);
+                break;
+            case 23:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Group_Namecard);
+                break;
+            case 24:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Group_certification);
+                break;
+            default:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Tips);
+                break;
+        }
+
+        switch (type) {
+            case 0:
+                break;
+            case 1://show group member nickname
+                MsgSender msgSender = getSenderInfoExt();
+                if (msgSender != null && !msgSender.publickey.equals(SharedPreferenceUtil.getInstance().getPubKey())) {
+                    content = msgSender.username + ": " + content;
+                }
+                break;
+            case 2:
+                break;
+        }
+        return content;
     }
 }

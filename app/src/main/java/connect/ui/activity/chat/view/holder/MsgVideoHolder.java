@@ -182,16 +182,16 @@ public class MsgVideoHolder extends MsgChatHolder {
         final String localPath = FileUtil.newContactFileName(baseEntity.getPubkey(), bean.getMessage_id(), FileUtil.FileType.VIDEO);
 
         if (FileUtil.islocalFile(url)) {
-            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND,String.valueOf(bean.getType()), url);
+            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND,String.valueOf(bean.getType()), url,bean.getSize());
         } else if (FileUtil.isExistFilePath(localPath)) {
-            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND,String.valueOf(bean.getType()), localPath);
+            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND,String.valueOf(bean.getType()), localPath,bean.getSize());
         } else {
             FileDownLoad.getInstance().downChatFile(url, baseEntity.getPubkey(), new FileDownLoad.IFileDownLoad() {
                 @Override
                 public void successDown(byte[] bytes) {
                     videoProView.loadState(true, 0);
                     FileUtil.byteArrToFilePath(bytes, localPath);
-                    ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(bean.getType()), localPath);
+                    ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(bean.getType()), localPath,bean.getSize());
                 }
 
                 @Override

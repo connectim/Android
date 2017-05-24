@@ -20,6 +20,7 @@ import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
+import connect.ui.activity.chat.model.content.NormalChat;
 import connect.ui.base.BaseApplication;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -206,8 +207,6 @@ public class FailMsgsManager {
             receiveFailMap = new HashMap<>();
         }
 
-        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
-        if (groupEntity == null) return;
         Map<String, Object> objectMap = receiveFailMap.get(pubkey);
         if (objectMap == null) {
             return;
@@ -218,22 +217,28 @@ public class FailMsgsManager {
             Map.Entry<String, Object> entry = entries.next();
             Object object = entry.getValue();
 
-            if (object instanceof String) {
-                ChatMsgUtil.insertNoticeMsg(pubkey, (String) object);
-            } else if (object instanceof Connect.GcmData) {
-                byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,
-                        StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), (Connect.GcmData) object);
-                String content = new String(contents);
-                if (!TextUtils.isEmpty(content) && content.length() > 10) {//sometime parse error
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    gsonBuilder.registerTypeAdapter(MsgDefinBean.class, new MsgDefTypeAdapter());
-                    MsgDefinBean definBean = gsonBuilder.create().fromJson(content, MsgDefinBean.class);
+            NormalChat normalChat = ChatMsgUtil.loadBaseChat(pubkey);
+            if (normalChat != null) {
+                if (object instanceof String) {
+                    MsgEntity noticeMsg = normalChat.noticeMsg((String) object);
+                    MessageHelper.getInstance().insertFromMsg(pubkey, noticeMsg.getMsgDefinBean());
+                    normalChat.updateRoomMsg(null, noticeMsg.getMsgDefinBean().showContentTxt(normalChat.roomType()), noticeMsg.getMsgDefinBean().getSendtime());
+                } else if (object instanceof Connect.GcmData) {
+                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
 
-                    MessageHelper.getInstance().insertFromMsg(pubkey, definBean);
-                    ChatMsgUtil.updateRoomInfo(pubkey, 1, definBean.getSendtime(), definBean);
+                    byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,
+                            StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), (Connect.GcmData) object);
+                    String content = new String(contents);
+
+                    if (!TextUtils.isEmpty(content) && content.length() > 10) {//sometime parse error
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        gsonBuilder.registerTypeAdapter(MsgDefinBean.class, new MsgDefTypeAdapter());
+                        MsgDefinBean definBean = gsonBuilder.create().fromJson(content, MsgDefinBean.class);
+                        normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime());
+                    }
                 }
+                entries.remove();
             }
-            entries.remove();
         }
     }
 }

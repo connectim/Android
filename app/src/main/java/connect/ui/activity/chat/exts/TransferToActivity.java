@@ -293,8 +293,8 @@ public class TransferToActivity extends BaseActivity {
             NormalChat friendChat = new FriendChat(friendEntity);
             MsgEntity msgEntity = friendChat.transferMsg(hashid, amount, transferEditView.getNote(), 0);
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-            String showTxt = ChatMsgUtil.showContentTxt(0, msgEntity.getMsgDefinBean());
-            friendChat.updateRoomMsg("", showTxt, TimeUtil.getCurrentTimeInLong());
+            String showTxt = msgEntity.getMsgDefinBean().showContentTxt(0);
+            friendChat.updateRoomMsg(null, showTxt, TimeUtil.getCurrentTimeInLong());
 
             TransactionHelper.getInstance().updateTransEntity(hashid, msgEntity.getMsgid(), 1);
         }

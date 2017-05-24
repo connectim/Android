@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import com.google.protobuf.ByteString;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -38,6 +41,7 @@ import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.TimeUtil;
 import connect.utils.glide.GlideUtil;
+import connect.utils.log.LogManager;
 import connect.view.TopToolBar;
 import connect.view.roundedimageview.RoundedImageView;
 import protos.Connect;
@@ -73,6 +77,7 @@ public class SetFragment extends BaseFragment {
     @Bind(R.id.address_scan_img)
     ImageView addressScanImg;
 
+    private String Tag = "SetFragment";
     private FragmentActivity mActivity;
     private UserBean userBean;
 

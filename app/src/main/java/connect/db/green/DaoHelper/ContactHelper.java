@@ -433,7 +433,7 @@ public class ContactHelper extends BaseDao {
         MessageHelper.getInstance().deleteRoomMsg(pubkey);
         FileUtil.deleteContactFile(pubkey);
 
-        MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+        MsgFragmReceiver.refreshRoom();
     }
 
     public void deleteEntity(String address) {
@@ -464,7 +464,7 @@ public class ContactHelper extends BaseDao {
         quitGroup(groupKey);
 
         ContactNotice.receiverGroup();
-        MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+        MsgFragmReceiver.refreshRoom();
     }
 
     /**

@@ -27,9 +27,7 @@ import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.RobotChat;
-import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.base.BaseApplication;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
@@ -136,12 +134,11 @@ public class ShakeHandBean extends InterParse {
     }
 
     private void welcomeRobotMsg() {
-        MsgEntity entity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
-        entity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
-        MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), entity.getMsgDefinBean());
+        MsgEntity msgEntity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
+        msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
+        MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), msgEntity.getMsgDefinBean());
 
-        ChatMsgUtil.updateRoomInfo(RobotChat.getInstance().roomKey(), 2, TimeUtil.getCurrentTimeInLong(), entity.getMsgDefinBean());
-        MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+        RobotChat.getInstance().updateRoomMsg(null,msgEntity.getMsgDefinBean().showContentTxt(2),msgEntity.getMsgDefinBean().getSendtime(),-1,true);
     }
 
     /**

@@ -40,7 +40,7 @@ import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.bean.MsgSendBean;
 import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.home.bean.MsgNoticeBean;
-import connect.ui.activity.home.fragment.ChatListFragment;
+import connect.ui.activity.home.fragment.ConversationFragment;
 import connect.ui.activity.home.fragment.ContactFragment;
 import connect.ui.activity.home.fragment.SetFragment;
 import connect.ui.activity.home.fragment.WalletFragment;
@@ -89,7 +89,7 @@ public class HomeActivity extends BaseFragmentActivity {
     private String Tag = "HomeActivity";
     private HomeActivity activity;
 
-    private ChatListFragment chatListFragment;
+    private ConversationFragment chatListFragment;
     private ContactFragment contactFragment;
     private SetFragment setFragment;
     private WalletFragment walletFragment;
@@ -259,7 +259,7 @@ public class HomeActivity extends BaseFragmentActivity {
     }
 
     public void setDefaultFragment() {
-        chatListFragment = ChatListFragment.startFragment();
+        chatListFragment = ConversationFragment.startFragment();
         contactFragment = ContactFragment.startFragment();
         walletFragment = WalletFragment.startFragment();
         setFragment = SetFragment.startFragment();

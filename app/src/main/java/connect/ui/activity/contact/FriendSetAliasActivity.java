@@ -86,7 +86,7 @@ public class FriendSetAliasActivity extends BaseActivity {
                 if(sendBean.getType() == MsgSendBean.SendType.TypeFriendRemark){
                     ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
                     ContactNotice.receiverFriend();
-                    MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+                    MsgFragmReceiver.refreshRoom();
                     ActivityUtil.goBack(mActivity);
                 }
                 break;
