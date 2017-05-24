@@ -9,15 +9,12 @@ import com.google.protobuf.ByteString;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.im.bean.MsgType;
-import connect.im.model.ChatSendManager;
 import connect.ui.activity.chat.bean.MsgDefinBean;
-import connect.ui.activity.chat.bean.RoomSession;
 import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
