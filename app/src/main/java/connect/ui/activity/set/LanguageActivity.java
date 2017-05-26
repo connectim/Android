@@ -13,7 +13,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.SharedPreferenceUtil;
-import connect.im.model.ConnectManager;
 import connect.ui.activity.R;
 import connect.ui.activity.home.HomeActivity;
 import connect.ui.activity.set.adapter.CurrencyAdapter;
@@ -21,9 +20,10 @@ import connect.ui.activity.set.manager.LanguageData;
 import connect.ui.activity.wallet.bean.RateBean;
 import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.ActivityUtil;
 import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.view.TopToolBar;
 
 /**
@@ -82,8 +82,8 @@ public class LanguageActivity extends BaseActivity {
     @OnClick(R.id.right_lin)
     void save(View view) {
         String code = adapter.getSeleCurrency();
-        if(!TextUtils.isEmpty(code)){
-            ConnectManager.getInstance().stopConnect();
+        if (!TextUtils.isEmpty(code)) {
+            PushMessage.pushMessage(ServiceAck.STOP_CONNECT, null);
             changeLanguage(code);
         }
     }

@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.StringUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -141,7 +143,7 @@ public class ChatSendManager {
                     byteBuffer = protoToByteBuffer(ack.getOrder(), bytes.toByteArray());
                 }
 
-                sendToBytes(byteBuffer);
+                PushMessage.pushMessage(ServiceAck.MESSAGE, byteBuffer);
             } catch (Exception e) {
                 e.printStackTrace();
                 String errInfo = e.getMessage();
@@ -149,27 +151,6 @@ public class ChatSendManager {
                     errInfo = "";
                 }
                 LogManager.getLogger().d(Tag, "exception order: [" + ack.getOrder()[0] + "][" + ack.getOrder()[1] + "]" + errInfo);
-            }
-        }
-
-        private void sendToBytes(ByteBuffer byteBuffer) {
-            boolean avaliableConnc = true;
-            try {
-                SocketChannel channel = ConnectManager.getInstance().getSocketChannel();
-                avaliableConnc = ConnectManager.getInstance().avaliableConnect();
-                if (avaliableConnc) {
-                    while (byteBuffer.hasRemaining()) {
-                        channel.write(byteBuffer);
-                    }
-                    LogManager.getLogger().d(Tag, "send message success");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                avaliableConnc = false;
-            }
-
-            if (!avaliableConnc) {
-                ConnectManager.getInstance().reconDelay();
             }
         }
 

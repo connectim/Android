@@ -105,6 +105,7 @@ public class HttpsService extends Service {
         initSoundPool();
         if (HttpRequest.isConnectNet()) {
             SocketService.startService(service);
+            PushService.startService(service);
         }
 
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);

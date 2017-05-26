@@ -20,6 +20,8 @@ import connect.im.parser.ShakeHandBean;
 import connect.im.inter.InterParse;
 import connect.ui.activity.login.StartActivity;
 import connect.ui.base.BaseApplication;
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.log.LogManager;
 import connect.utils.system.SystemUtil;
 
@@ -119,7 +121,7 @@ public class MsgRecManager {
         public synchronized boolean isKeyAvaliable() {
             boolean isAvailable = SharedPreferenceUtil.getInstance().isAvailableKey();
             if (!isAvailable) {
-                ConnectManager.getInstance().exitConnect();//close socket
+                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, null);//close socket
                 if (SystemUtil.isRunBackGround()) {// run in front
                     Context context = BaseApplication.getInstance().getBaseContext();
                     Intent intent = new Intent(context, StartActivity.class);
