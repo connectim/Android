@@ -1,11 +1,17 @@
 package connect.utils.okhttp;
 
+import android.text.TextUtils;
+import android.widget.Toast;
+
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
+import connect.db.green.DaoHelper.ParamManager;
+import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
+import connect.ui.base.BaseApplication;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
@@ -106,6 +112,11 @@ public class OkHttpUtil {
      * @return
      */
     private Connect.IMRequest getIMRequest(String priKey, String pubKey, ByteString bytes) {
+        String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
+        if(TextUtils.isEmpty(index)){
+            Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_Request_Error,Toast.LENGTH_LONG).show();
+            return null;
+        }
         return getIMRequest(SupportKeyUril.EcdhExts.SALT, priKey, pubKey, bytes);
     }
 
