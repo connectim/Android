@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
 
+import java.nio.ByteBuffer;
+
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.ConnectState;
 import connect.ui.service.bean.PushMessage;
@@ -37,8 +39,8 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
 
             if (isCanConnect()) {
                 if (TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART) {
-                    PushMessage.pushMessage(ServiceAck.STOP_CONNECT, null);//close socket
-                    PushMessage.pushMessage(ServiceAck.CONNECT_START, null);
+                    PushMessage.pushMessage(ServiceAck.STOP_CONNECT, ByteBuffer.allocate(0));//close socket
+                    PushMessage.pushMessage(ServiceAck.CONNECT_START, ByteBuffer.allocate(0));
                     lastReceiveTime = TimeUtil.getCurrentTimeInLong();
                 }
             }

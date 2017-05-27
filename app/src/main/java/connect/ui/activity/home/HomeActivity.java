@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import butterknife.Bind;
@@ -177,7 +178,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
                 //close socket
                 SharedPreferenceUtil.getInstance().clearMap();
-                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, null);
+                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, ByteBuffer.allocate(0));
                 SharePreferenceUser.unLinkSharePreferrnce();
                 DaoManager.getInstance().closeDataBase();
                 HttpsService.stopServer(activity);

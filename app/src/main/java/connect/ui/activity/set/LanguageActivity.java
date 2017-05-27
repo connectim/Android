@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import butterknife.Bind;
@@ -83,7 +84,7 @@ public class LanguageActivity extends BaseActivity {
     void save(View view) {
         String code = adapter.getSeleCurrency();
         if (!TextUtils.isEmpty(code)) {
-            PushMessage.pushMessage(ServiceAck.STOP_CONNECT, null);
+            PushMessage.pushMessage(ServiceAck.STOP_CONNECT, ByteBuffer.allocate(0));
             changeLanguage(code);
         }
     }

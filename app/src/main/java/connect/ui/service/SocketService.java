@@ -97,11 +97,14 @@ public class SocketService extends Service {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            LogManager.getLogger().d(Tag, "onServiceConnected");
             pushBinder = IMessage.Stub.asInterface(service);
+            PushMessage.pushMessage(ServiceAck.BIND_SUCCESS, ByteBuffer.allocate(0));
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            LogManager.getLogger().d(Tag, "onServiceDisconnected");
             Intent intent = new Intent(service, PushService.class);
             service.startService(intent);
             service.bindService(intent, localConnect, Service.BIND_IMPORTANT);
@@ -124,7 +127,7 @@ public class SocketService extends Service {
                     MsgByteManager.getInstance().putByteMsg(byteBuffer);
                     break;
                 case HEART_BEAT:
-                    ChatSendManager.getInstance().sendToMsg(SocketACK.HEART_BREAK, ByteString.copyFrom(new byte[]{}));
+                    ChatSendManager.getInstance().sendToMsg(SocketACK.HEART_BREAK, ByteString.copyFrom(new byte[0]));
                     checkUserCookie();
                     break;
                 case CONNCET_REFRESH:
@@ -157,6 +160,7 @@ public class SocketService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unbindService(localConnect);
         EventBus.getDefault().unregister(this);
     }
 }

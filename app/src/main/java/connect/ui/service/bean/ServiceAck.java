@@ -8,14 +8,15 @@ import java.util.Map;
  */
 
 public enum ServiceAck {
-    HAND_SHAKE(1),
-    CONNECT_START(2),
-    CONNECT_SUCCESS(3),
-    MESSAGE(4),
-    HEART_BEAT(5),
-    EXIT_ACCOUNT(6),
-    STOP_CONNECT(7),
-    CONNCET_REFRESH(8);
+    BIND_SUCCESS(1),
+    HAND_SHAKE(2),
+    CONNECT_START(3),
+    CONNECT_SUCCESS(4),
+    MESSAGE(5),
+    HEART_BEAT(6),
+    EXIT_ACCOUNT(7),
+    STOP_CONNECT(8),
+    CONNCET_REFRESH(9);
 
     int ack;
     ServiceAck(int ack){

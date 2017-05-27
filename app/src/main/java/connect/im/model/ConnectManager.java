@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 import connect.db.SharedPreferenceUtil;
 import connect.im.IMessage;
 import connect.ui.service.bean.ServiceAck;
-import connect.utils.ConfigUtil;
 import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
@@ -75,7 +74,7 @@ public class ConnectManager {
                 if (socketChannel.connect(new InetSocketAddress(host, port))) {
                     socketChannel.register(selector, SelectionKey.OP_READ);
 
-                    iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),null);
+                    iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),new byte[0]);
                 } else {
                     socketChannel.register(selector, SelectionKey.OP_CONNECT);
                 }
@@ -95,7 +94,7 @@ public class ConnectManager {
                             if (socketChannel.finishConnect()) {
                                 selectionKey.interestOps(SelectionKey.OP_READ);
 
-                                iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),null);
+                                iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),new byte[0]);
                             } else {//An error occurred; unregister the channel.
                                 selectionKey.cancel();
                                 reconDelay();
@@ -171,15 +170,8 @@ public class ConnectManager {
 
         String address = "sandbox.connect.im";
         int port = 19090;
-
         try {
-            iMessage.connectMessage(ServiceAck.CONNECT_START.getAck(), null);
-            iMessage.connectMessage(ServiceAck.CONNCET_REFRESH.getAck(), null);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        try {
-            iMessage.connectMessage(ServiceAck.CONNCET_REFRESH.getAck(), null);
+            iMessage.connectMessage(ServiceAck.CONNCET_REFRESH.getAck(), new byte[0]);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -332,7 +324,7 @@ public class ConnectManager {
                 long curtime = TimeUtil.getCurrentTimeInLong();
                 if (curtime < lastReceiverTime + HEART_FREQUENCY * 2) {
                     try {
-                        iMessage.connectMessage(ServiceAck.HEART_BEAT.getAck(),null);
+                        iMessage.connectMessage(ServiceAck.HEART_BEAT.getAck(),new byte[0]);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }

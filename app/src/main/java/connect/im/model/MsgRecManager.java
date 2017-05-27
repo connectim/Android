@@ -121,7 +121,7 @@ public class MsgRecManager {
         public synchronized boolean isKeyAvaliable() {
             boolean isAvailable = SharedPreferenceUtil.getInstance().isAvailableKey();
             if (!isAvailable) {
-                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, null);//close socket
+                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, ByteBuffer.allocate(0));//close socket
                 if (SystemUtil.isRunBackGround()) {// run in front
                     Context context = BaseApplication.getInstance().getBaseContext();
                     Intent intent = new Intent(context, StartActivity.class);

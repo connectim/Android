@@ -16,7 +16,6 @@ import connect.ui.service.bean.ServiceAck;
 
 public class PushService extends Service {
 
-
     private PushService service;
     private IMessage localBinder;
     private PushBinder pushBinder;
@@ -48,13 +47,10 @@ public class PushService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        intent = new Intent(this, SocketService.class);
-        bindService(intent, pushConnect, Service.BIND_IMPORTANT);
-
         return super.onStartCommand(intent, flags, startId);
     }
 
-    class PushConnect implements ServiceConnection{
+    class PushConnect implements ServiceConnection {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -79,6 +75,10 @@ public class PushService extends Service {
             ServiceAck serviceAck=ServiceAck.valueOf(type);
 
             switch (serviceAck) {
+                case BIND_SUCCESS:
+                    Intent intent = new Intent(service, SocketService.class);
+                    bindService(intent, pushConnect, Service.BIND_IMPORTANT);
+                    break;
                 case MESSAGE:
                     ByteBuffer byteBuffer = ByteBuffer.wrap(message);
                     connectManager.sendToBytes(byteBuffer);
@@ -97,5 +97,11 @@ public class PushService extends Service {
                     break;
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbindService(pushConnect);
     }
 }
