@@ -202,7 +202,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.set_alias_rela)
     void goSetAlias(View view) {
-        FriendSetAliasActivity.startActivity(mActivity, friendEntity);
+        FriendSetAliasActivity.startActivity(mActivity, friendEntity.getPub_key());
     }
 
     @OnClick(R.id.tansfer_record_rela)

@@ -29,9 +29,9 @@ public class BaseApplication extends Application{
 
         UnCeHandler catchExcep = new UnCeHandler(this);
         Thread.setDefaultUncaughtExceptionHandler(catchExcep);
-        CrashReport.initCrashReport(getApplicationContext(),
+        /*CrashReport.initCrashReport(getApplicationContext(),
                 ConfigUtil.getInstance().appMode() ?
-                        "9b63c64ee1" : "cf78e82d4f", true);
+                        "9b63c64ee1" : "cf78e82d4f", true);*/
     }
 
     @Override
