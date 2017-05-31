@@ -104,7 +104,7 @@ public class ShakeHandBean extends InterParse {
                 .setCv(0)
                 .setUuid(uuid);
 
-        String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
         String cookieKey = "COOKIE:" + pubkey;
         ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
         if (paramEntity != null) {
