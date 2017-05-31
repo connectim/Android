@@ -6,6 +6,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.StringUtil;
 import connect.utils.log.LogManager;
 
@@ -124,7 +126,7 @@ public class MsgByteManager {
                             headcheck.put(front);
                             headcheck.put(StringUtil.MSG_HEADER_EXI);
                             if (!checkMsgHeader(headcheck.array())) {
-                                ConnectManager.getInstance().stopConnect();
+                                PushMessage.pushMessage(ServiceAck.STOP_CONNECT,ByteBuffer.allocate(0));
                                 return;
                             }
 

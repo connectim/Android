@@ -23,15 +23,14 @@ import connect.im.bean.SocketACK;
 import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.ChatSendManager;
-import connect.im.model.ConnectManager;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.RobotChat;
-import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.base.BaseApplication;
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -119,7 +118,7 @@ public class ShakeHandBean extends InterParse {
     private void connectSuccess() {
         ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.CONNECT);
 
-        ConnectManager.getInstance().connectSuccess();
+        PushMessage.pushMessage(ServiceAck.CONNECT_SUCCESS,ByteBuffer.allocate(0));
         String version = ParamManager.getInstance().getString(ParamManager.COUNT_FRIENDLIST);
         if (TextUtils.isEmpty(version)) {
             int vrsion = SharePreferenceUser.getInstance().getIntValue(SharePreferenceUser.CONTACT_VERSION);
@@ -137,12 +136,11 @@ public class ShakeHandBean extends InterParse {
     }
 
     private void welcomeRobotMsg() {
-        MsgEntity entity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
-        entity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
-        MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), entity.getMsgDefinBean());
+        MsgEntity msgEntity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
+        msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
+        MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), msgEntity.getMsgDefinBean());
 
-        ChatMsgUtil.updateRoomInfo(RobotChat.getInstance().roomKey(), 2, TimeUtil.getCurrentTimeInLong(), entity.getMsgDefinBean());
-        MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+        RobotChat.getInstance().updateRoomMsg(null,msgEntity.getMsgDefinBean().showContentTxt(2),msgEntity.getMsgDefinBean().getSendtime(),-1,true);
     }
 
     /**
@@ -203,5 +201,41 @@ public class ShakeHandBean extends InterParse {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * A shake hands for the first time
+     *
+     * @return
+     */
+    public void firstLoginShake() {
+        ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
+
+        String priKey = MemoryDataManager.getInstance().getPriKey();
+        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+
+        String cdSeed = AllNativeMethod.cdCreateSeed(16, 4);
+        Connect.NewConnection newConnection = Connect.NewConnection.newBuilder().
+                setPubKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey))).
+                setSalt(ByteString.copyFrom(cdSeed.getBytes())).build();
+
+        UserCookie tempCookie = new UserCookie();
+        tempCookie.setPriKey(randomPriKey);
+        tempCookie.setPubKey(randomPubKey);
+        tempCookie.setSalt(cdSeed.getBytes());
+        Session.getInstance().setUserCookie("TEMPCOOKIE", tempCookie);
+
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
+                priKey, ConfigUtil.getInstance().serverPubkey(), newConnection.toByteString());
+
+        String pukkey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
+        String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
+        Connect.IMRequest imRequest = Connect.IMRequest.newBuilder().
+                setSign(signHash).
+                setPubKey(pukkey).
+                setCipherData(gcmData).build();
+
+        ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, imRequest.toByteString());
     }
 }

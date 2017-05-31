@@ -16,10 +16,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.green.DaoHelper.ContactHelper;
+import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.model.ChatOuterHelper;
+import connect.ui.activity.chat.bean.MsgEntity;
+import connect.ui.activity.chat.model.content.BaseChat;
+import connect.ui.activity.chat.model.content.FriendChat;
+import connect.ui.activity.chat.model.content.GroupChat;
 import connect.ui.activity.contact.adapter.ShareCardContactAdapter;
 import connect.ui.activity.contact.model.ContactListManage;
 import connect.ui.activity.home.bean.ContactBean;
@@ -102,13 +106,18 @@ public class ShareCardContactActivity extends BaseActivity {
                     "", "", false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {
-                            if(contactBean.getStatus() == 2){
+                            BaseChat baseChat;
+                            if (contactBean.getStatus() == 2) {
                                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(contactBean.getPub_key());
-                                ChatOuterHelper.sendCardTo(1,friendEntity,groupEntity);
+                                baseChat=new GroupChat(groupEntity);
                             }else{
                                 ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(contactBean.getPub_key());
-                                ChatOuterHelper.sendCardTo(0,friendEntity,acceptFriend);
+                                baseChat=new FriendChat(acceptFriend);
                             }
+                            MsgEntity msgEntity = (MsgEntity) baseChat.cardMsg(friendEntity);
+                            baseChat.sendPushMsg(msgEntity);
+                            MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+                            baseChat.updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgEntity.getMsgDefinBean().getSendtime());
 
                             List<Activity> list = BaseApplication.getInstance().getActivityList();
                             for (Activity activity : list) {

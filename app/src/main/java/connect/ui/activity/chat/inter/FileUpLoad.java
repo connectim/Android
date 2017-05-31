@@ -7,11 +7,14 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
+import connect.db.green.DaoHelper.MessageHelper;
 import connect.im.model.ChatSendManager;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgDefinBean;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.RoomSession;
+import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.ui.activity.chat.model.content.GroupChat;
 import connect.utils.FileUtil;
@@ -32,12 +35,15 @@ import protos.Connect;
 public abstract class FileUpLoad {
 
     protected Context context;
+    protected MsgEntity msgEntity;
     protected BaseChat baseChat;
     protected MsgDefinBean bean;
     protected Connect.MediaFile mediaFile;
 
     public void fileHandle() {
-        FailMsgsManager.getInstance().sendDelayFailMsg(bean.getPublicKey(),bean.getMessage_id(),null,null);
+        if (baseChat.roomType() != 2) {
+            FailMsgsManager.getInstance().sendDelayFailMsg(bean.getPublicKey(), bean.getMessage_id(), null, null);
+        }
     }
 
     public void fileUp() {
@@ -87,6 +93,24 @@ public abstract class FileUpLoad {
         void resultUpUrl(Connect.FileData mediaFile);
     }
 
+    /**
+     * saves Local encryption information
+     * @param msgEntity
+     */
+    public void localEncryptionSuccess(MsgEntity msgEntity) {
+        MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+        baseChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(0), msgEntity.getMsgDefinBean().getSendtime());
+    }
+
+    /**
+     * Send upload successful file information
+     * @param msgEntity
+     */
+    public void uploadSuccess(MsgEntity msgEntity) {
+        baseChat.sendPushMsg(msgEntity);
+        fileUpListener.upSuccess(bean.getMessage_id());
+    }
+
     protected String getThumbUrl(String url, String token) {
         return url + "/thumb?pub_key=" + bean.getPublicKey() + "&token=" + token;
     }
@@ -98,6 +122,6 @@ public abstract class FileUpLoad {
     protected FileUpListener fileUpListener;
 
     public interface FileUpListener {
-        void upSuccess(Object... objs);
+        void upSuccess(String msgid);
     }
 }

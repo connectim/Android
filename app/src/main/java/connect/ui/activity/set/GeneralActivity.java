@@ -93,6 +93,6 @@ public class GeneralActivity extends BaseActivity {
         ConversionHelper.getInstance().clearRooms();
         MessageHelper.getInstance().clearChatMsgs();
 
-        MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+        MsgFragmReceiver.refreshRoom();
     }
 }

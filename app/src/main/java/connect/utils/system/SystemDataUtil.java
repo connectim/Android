@@ -109,7 +109,6 @@ public class SystemDataUtil {
             serial = "serial";
         }
         serial = new UUID(deviceID.hashCode(), serial.hashCode()).toString();
-        LogManager.getLogger().d(Tag, serial);
         return AllNativeMethod.cdGetHash256(serial);
     }
 
@@ -240,5 +239,4 @@ public class SystemDataUtil {
         }
         return loacList;
     }
-
 }

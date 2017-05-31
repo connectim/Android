@@ -20,7 +20,6 @@ import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.ContainerBean;
 import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
@@ -269,7 +268,6 @@ public class GatherDetailSingleActivity extends BaseActivity {
                     String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
                     String noticeContent = getString(R.string.Chat_paid_the_bill_to, activity.getString(R.string.Chat_You), contactName);
                     RecExtBean.sendRecExtMsg(RecExtBean.ExtType.NOTICE, noticeContent);
-                    ChatMsgUtil.insertNoticeMsg(entity.getPub_key(), noticeContent);
                 }
 
                 TransactionHelper.getInstance().updateTransEntity(billDetail.getHash(), msgId, 1);

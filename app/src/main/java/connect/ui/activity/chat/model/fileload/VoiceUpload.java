@@ -6,8 +6,8 @@ import android.os.AsyncTask;
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
-import connect.im.model.ChatSendManager;
 import connect.ui.activity.chat.bean.MsgDefinBean;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.utils.FileUtil;
@@ -41,20 +41,14 @@ public class VoiceUpload extends FileUpLoad {
                     String pubkey = SupportKeyUril.getPubKeyFromPriKey(MemoryDataManager.getInstance().getPriKey());
                     String priKey = MemoryDataManager.getInstance().getPriKey();
 
-                    Connect.GcmData gcmData = null;
-                    Connect.RichMedia richMedia = null;
-                    if (baseChat.roomType() == 2) {
-                        Connect.GcmData firstGcmData = encodeAESGCMStructData(bean.getContent());
-                        richMedia = Connect.RichMedia.newBuilder().
-                                setEntity(firstGcmData.toByteString()).build();
-                    } else {
-                        gcmData = encodeAESGCMStructData(bean.getContent());
-                        richMedia = Connect.RichMedia.newBuilder().
+                    if (baseChat.roomType() != 2) {
+                        Connect.GcmData gcmData = encodeAESGCMStructData(bean.getContent());
+                        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
                                 setEntity(gcmData.toByteString()).build();
-                    }
 
                     gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, priKey, richMedia.toByteString());
                     mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -64,21 +58,27 @@ public class VoiceUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                fileUp();
+                msgEntity = (MsgEntity) baseChat.voiceMsg(bean.getContent(), bean.getSize(), bean.getExt1());
+                msgEntity.getMsgDefinBean().setMessage_id(bean.getMessage_id());
+                localEncryptionSuccess(msgEntity);
+
+                if (mediaFile != null) {
+                    fileUp();
+                }
             }
         }.execute();
     }
 
     @Override
     public void fileUp() {
-        if (mediaFile == null) {
-            return;
-        }
         resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
                 String content = getUrl(mediaFile.getUrl(), mediaFile.getToken());
-                fileUpListener.upSuccess(bean.getMessage_id(), content, bean.getSize(), bean.getExt1());
+                MsgEntity index = (MsgEntity) baseChat.voiceMsg(content, bean.getSize(), bean.getExt1());
+                index.getMsgDefinBean().setMessage_id(bean.getMessage_id());
+
+                uploadSuccess(index);
             }
         });
     }

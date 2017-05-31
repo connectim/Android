@@ -226,7 +226,6 @@ public class ContactAdapter extends BaseAdapter {
         SideScrollView sideView;
         RelativeLayout contentLayout;
         ImageView bottomSetImg;
-
         TextView bottomCount;
     }
 

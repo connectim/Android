@@ -88,7 +88,6 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
         List<Connect.GradRedPackageHistroy> list = redPackageInfo.getGradHistoryList();
         Connect.RedPackage redPackage = redPackageInfo.getRedpackage();
         String address = MemoryDataManager.getInstance().getAddress();
-
         int status;
         boolean isHava = false;
         long openMoney = 0;

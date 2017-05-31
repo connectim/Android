@@ -58,4 +58,11 @@ public class Session {
         }
         return userCookieMap.get(pbk);
     }
+
+    public void clearUserCookie() {
+        if (userCookieMap == null) {
+            userCookieMap = new HashMap<>();
+        }
+        userCookieMap.clear();
+    }
 }

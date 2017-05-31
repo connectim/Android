@@ -374,7 +374,7 @@
     <string name="Login_Camera_guide_tip">Tap to take photo and hold to record vedio</string>
     <string name="Login_Code">CODE</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">Collecting Sounds as Random Seed...</string>
-    <string name="Login_Decrypted_private_key">Decrypted private key</string>
+    <string name="Login_Decrypted_private_key">Private key</string>
     <string name="Login_Edit">Edit</string>
     <string name="Login_Encrypted_private_key">Encrypted private key</string>
     <string name="Login_Generated_Failure">Create failed, please make sure you\'ve made sound/voice around the mic</string>
@@ -456,7 +456,7 @@
     <string name="Set_BTC_symbol">฿</string>
     <string name="Set_Backup_Private_Key">Backup Private Key</string>
     <string name="Set_Backup_decrypted_private_key">Backup decrypted private key</string>
-    <string name="Set_Backup_encrypted_private_key">Backup private key</string>
+    <string name="Set_Backup_encrypted_private_key">Backup encrypted private key</string>
     <string name="Set_CONNECT_ID_can_only_be_set_once">CONNECT ID can only be set once</string>
     <string name="Set_CONNECT_ID_set_success_no_set">CONNECT ID can\'t be modified after setting successfully</string>
     <string name="Set_Call_failed_please_check_system_mail_application">Call failed, please check system mail application</string>

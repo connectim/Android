@@ -15,7 +15,7 @@ public class AudioUtil {
     /** Total recording time */
     private final long RECORD_TOTAL = 60000;
     /** Recording timing frequency */
-    private final long RECORD_FREQUENCY = 500;
+    private final long RECORD_FREQUENCY = 300;
     /** Recording timer recording up to 60s per 1s return recording decibel */
     private RecordTimer recordTimer = new RecordTimer(RECORD_TOTAL, RECORD_FREQUENCY);
     /** Recording address */

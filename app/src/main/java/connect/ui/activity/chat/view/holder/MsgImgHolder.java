@@ -50,7 +50,6 @@ public class MsgImgHolder extends MsgChatHolder {
         if (!TextUtils.isEmpty(definBean.getExt())) {
             imgmsg.setOpenBurn(true);
         }
-        imgmsg.setLayoutParams(calculateSize((RelativeLayout.LayoutParams) imgmsg.getLayoutParams(), bean.getImageOriginWidth(), bean.getImageOriginHeight()));
         imgmsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url);
 
         contentLayout.setOnClickListener(new View.OnClickListener() {
@@ -69,26 +68,6 @@ public class MsgImgHolder extends MsgChatHolder {
                 }
             }
         });
-    }
-
-    private RelativeLayout.LayoutParams calculateSize(RelativeLayout.LayoutParams params, float width, float height) {
-        int maxDp = SystemUtil.dipToPx(160);
-        if (height != 0 && width != 0) {
-            double scale = (width * 1.00) / height;
-            if (width >= height) {
-                width = maxDp;
-                height = (int) (width / scale);
-            } else {
-                height = maxDp;
-                width = (int) (height * scale);
-            }
-        } else {
-            width = maxDp;
-            height = maxDp;
-        }
-        params.width = (int) width;
-        params.height = (int) height;
-        return params;
     }
 
     @Override

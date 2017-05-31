@@ -27,6 +27,7 @@ import connect.ui.activity.wallet.PacketHistoryActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
+import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -172,7 +173,7 @@ public class RedPacketActivity extends BaseActivity {
 
             @Override
             public void setFee() {
-
+                PayFeeActivity.startActivity(activity);
             }
         });
     }

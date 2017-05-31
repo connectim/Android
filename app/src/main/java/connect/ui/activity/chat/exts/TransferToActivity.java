@@ -24,7 +24,6 @@ import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSend;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.NormalChat;
 import connect.ui.activity.set.PayFeeActivity;
@@ -283,8 +282,8 @@ public class TransferToActivity extends BaseActivity {
             NormalChat friendChat = new FriendChat(friendEntity);
             MsgEntity msgEntity = friendChat.transferMsg(hashid, amount, transferEditView.getNote(), 0);
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-            String showTxt = ChatMsgUtil.showContentTxt(0, msgEntity.getMsgDefinBean());
-            friendChat.updateRoomMsg("", showTxt, TimeUtil.getCurrentTimeInLong());
+            String showTxt = msgEntity.getMsgDefinBean().showContentTxt(0);
+            friendChat.updateRoomMsg(null, showTxt, TimeUtil.getCurrentTimeInLong());
 
             TransactionHelper.getInstance().updateTransEntity(hashid, msgEntity.getMsgid(), 1);
         }

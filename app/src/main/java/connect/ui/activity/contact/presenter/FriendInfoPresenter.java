@@ -97,7 +97,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     ContactHelper.getInstance().insertContact(friendEntity);
                     ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
                     if (roomEntity != null) {
-                        MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+                        MsgFragmReceiver.refreshRoom();
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

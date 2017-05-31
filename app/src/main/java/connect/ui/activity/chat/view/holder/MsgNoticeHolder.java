@@ -1,6 +1,7 @@
 package connect.ui.activity.chat.view.holder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
@@ -23,6 +24,7 @@ import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.contact.StrangerInfoActivity;
 import connect.ui.activity.contact.bean.SourceType;
 import connect.ui.activity.wallet.PacketDetailActivity;
+import connect.ui.base.BaseApplication;
 
 /**
  * Created by gtq on 2016/12/19.
@@ -83,7 +85,7 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                 if (TextUtils.isEmpty(definBean.getContent()) || "0".equals(definBean.getContent())) {
                     content = context.getResources().getString(R.string.Chat_disable_the_self_descruct, name);
                 } else {
-                    content = context.getResources().getString(R.string.Chat_set_the_self_destruct_timer_to, name, ChatMsgUtil.parseBurnTime(definBean.getContent()));
+                    content = context.getResources().getString(R.string.Chat_set_the_self_destruct_timer_to, name, parseBurnTime(definBean.getContent()));
                 }
                 notice.setText(content);
                 break;
@@ -126,5 +128,26 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                 notice.setText(showTxt);
                 break;
         }
+    }
+
+    /**
+     * Burn after reading time
+     *
+     * @param time
+     * @return
+     */
+    public String parseBurnTime(String time) {
+        Context context = BaseApplication.getInstance().getBaseContext();
+        int posi = 0;
+        int intTime = Integer.parseInt(time);
+
+        String[] strings = context.getResources().getStringArray(R.array.destruct_timer);
+        int[] destimes = context.getResources().getIntArray(R.array.destruct_timer_long);
+        for (int i = 0; i < destimes.length; i++) {
+            if (destimes[i] == intTime) {
+                posi = i;
+            }
+        }
+        return strings[posi];
     }
 }

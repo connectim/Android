@@ -98,7 +98,7 @@ public class RobotChat extends NormalChat {
         MsgEntity robotMsg = new MsgEntity();
         robotMsg.setMsgDefinBean(msgDefinBean);
         robotMsg.setPubkey(BaseApplication.getInstance().getString(R.string.app_name));
-        robotMsg.setSendstate(0);
+        robotMsg.setSendstate(1);//default send success
         return robotMsg;
     }
 

@@ -75,11 +75,15 @@ public abstract class BaseChat<T> implements Serializable {
 
     public abstract T createBaseChat(MsgType type);
 
-    public synchronized void updateRoomMsg(String draft, String showText, long msgtime) {
+    public void updateRoomMsg(String draft, String showText, long msgtime) {
         updateRoomMsg(draft, showText, msgtime, -1);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at) {
+        updateRoomMsg(draft, showText, msgtime, at, false);
+    }
+
+    public void updateRoomMsg(String draft, String showText, long msgtime, int at, boolean newmsg) {
         if (TextUtils.isEmpty(roomKey())) {
             return;
         }
@@ -92,18 +96,22 @@ public abstract class BaseChat<T> implements Serializable {
 
         roomEntity.setName(nickName());
         roomEntity.setAvatar(headImg());
-        roomEntity.setDraft(draft);
         roomEntity.setType(roomType());
         roomEntity.setContent(showText);
         roomEntity.setLast_time(msgtime);
         roomEntity.setStranger(isStranger ? 1 : 0);
-        roomEntity.setUnread_count(0);
+
+        int unread = (null == roomEntity.getUnread_count()) ? 0 : roomEntity.getUnread_count();
+        roomEntity.setUnread_count(newmsg ? ++unread : 0);
+        if (draft != null) {
+            roomEntity.setDraft(draft);
+        }
         if (at == 0 || at == 1) {
             roomEntity.setNotice(at);
         }
 
         ConversionHelper.getInstance().insertRoomEntity(roomEntity);
-        MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+        MsgFragmReceiver.refreshRoom();
     }
 
     public abstract void sendPushMsg(T bean);
@@ -135,6 +143,7 @@ public abstract class BaseChat<T> implements Serializable {
                 MsgEntity msgEntity = new MsgEntity();
                 msgEntity.setPubkey(roomKey());
                 msgEntity.setMsgDefinBean(definBean);
+                msgEntity.setReadstate(detailEntity.getState());
                 msgEntity.setSendstate(detailEntity.getSend_status());
                 msgEntity.setRecAddress(address());
                 msgEntity.setHashid(detailEntity.getHashid());

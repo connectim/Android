@@ -178,7 +178,6 @@ public class TransferOutViaActivity extends BaseActivity {
             public void onError(Connect.HttpResponse response) {
                 paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
                 TransferError.getInstance().showError(response.getCode(),response.getMessage());
-
             }
         });
     }

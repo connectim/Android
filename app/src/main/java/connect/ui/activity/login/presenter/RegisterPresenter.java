@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -142,6 +143,7 @@ public class RegisterPresenter implements RegisterContract.Presenter{
 
                     @Override
                     public void onError(Connect.HttpResponse response) {
+                        Toast.makeText(mView.getActivity(),response.getMessage(),Toast.LENGTH_LONG).show();
                         ProgressUtil.getInstance().dismissProgress();
                     }
                 });

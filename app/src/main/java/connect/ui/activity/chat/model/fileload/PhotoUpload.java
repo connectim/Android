@@ -8,11 +8,9 @@ import com.google.protobuf.ByteString;
 
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.MessageHelper;
 import connect.im.bean.MsgType;
-import connect.im.model.ChatSendManager;
 import connect.ui.activity.chat.bean.MsgDefinBean;
-import connect.ui.activity.chat.bean.RoomSession;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.utils.BitmapUtil;
@@ -43,8 +41,6 @@ public class PhotoUpload extends FileUpLoad {
             protected Void doInBackground(Void... params) {
                 try {
                     String filePath = bean.getContent();
-                /*String comFist = BitmapUtil.bitmapToString(filePath,BitmapUtil.bigWidth,BitmapUtil.bigHeight);
-                String comSecond = BitmapUtil.bitmapToString(comFist);*/
                     String comFist = BitmapUtil.resizeImage(filePath, BitmapUtil.bigWidth);
                     String comSecond = BitmapUtil.resizeImage(comFist, BitmapUtil.smallWidth);
 
@@ -55,7 +51,6 @@ public class PhotoUpload extends FileUpLoad {
                     bean.setImageOriginWidth(options.outWidth);
                     bean.setImageOriginHeight(options.outHeight);
                     bean.setExt1(FileUtil.fileSize(comSecond));
-                    MessageHelper.getInstance().insertToMsg(bean);
 
                     String pubkey = MemoryDataManager.getInstance().getPubKey();
                     String priKey = MemoryDataManager.getInstance().getPriKey();
@@ -85,6 +80,16 @@ public class PhotoUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                if (MsgType.toMsgType(bean.getType()) == MsgType.Photo) {
+                    msgEntity = (MsgEntity) baseChat.photoMsg(bean.getContent(), bean.getExt1());
+                } else if (MsgType.toMsgType(bean.getType()) == MsgType.Location) {
+                    msgEntity = (MsgEntity) baseChat.locationMsg(bean.getContent(), bean.getLocationExt());
+                }
+                msgEntity.getMsgDefinBean().setMessage_id(bean.getMessage_id());
+                msgEntity.getMsgDefinBean().setImageOriginWidth(bean.getImageOriginWidth());
+                msgEntity.getMsgDefinBean().setImageOriginHeight(bean.getImageOriginHeight());
+                localEncryptionSuccess(msgEntity);
+
                 fileUp();
             }
         }.execute();
@@ -92,9 +97,6 @@ public class PhotoUpload extends FileUpLoad {
 
     @Override
     public void fileUp() {
-        if (mediaFile == null) {
-            return;
-        }
         resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
@@ -102,10 +104,16 @@ public class PhotoUpload extends FileUpLoad {
                 String url = getUrl(mediaFile.getUrl(), mediaFile.getToken());
 
                 if (MsgType.toMsgType(bean.getType()) == MsgType.Photo) {
-                    fileUpListener.upSuccess(bean.getMessage_id(), content, url, bean.getExt1(), bean.getImageOriginWidth(), bean.getImageOriginHeight());
+                    msgEntity = (MsgEntity) baseChat.photoMsg(content, bean.getExt1());
+                    msgEntity.getMsgDefinBean().setUrl(url);
                 } else if (MsgType.toMsgType(bean.getType()) == MsgType.Location) {
-                    fileUpListener.upSuccess(bean.getMessage_id(), content, bean.getLocationExt(), bean.getImageOriginWidth(), bean.getImageOriginHeight());
+                    msgEntity = (MsgEntity) baseChat.locationMsg(content, bean.getLocationExt());
                 }
+                msgEntity.getMsgDefinBean().setMessage_id(bean.getMessage_id());
+                msgEntity.getMsgDefinBean().setImageOriginWidth(bean.getImageOriginWidth());
+                msgEntity.getMsgDefinBean().setImageOriginHeight(bean.getImageOriginHeight());
+
+                uploadSuccess(msgEntity);
             }
         });
     }

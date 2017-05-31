@@ -28,14 +28,12 @@ import connect.db.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.Talker;
 import connect.ui.activity.home.bean.HomeAction;
-import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.activity.home.bean.RoomAttrBean;
 import connect.ui.activity.home.view.ShowTextView;
 import connect.utils.FileUtil;
-import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.TimeUtil;
 import connect.utils.glide.GlideUtil;
+import connect.utils.system.SystemDataUtil;
 import connect.view.MaterialBadgeTextView;
 import connect.view.SideScrollView;
 import connect.view.roundedimageview.RoundedImageView;
@@ -80,7 +78,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
 
     @Override
     public void onBindViewHolder(ListChatHolder holder, final int position) {
-        RoomAttrBean roomAttr = roomAttrBeanList.get(position);
+        final RoomAttrBean roomAttr = roomAttrBeanList.get(position);
         holder.directTxt.showText(roomAttr.getAt(),roomAttr.getDraft(), TextUtils.isEmpty(roomAttr.getContent()) ? "" : roomAttr.getContent());
         try {
             long sendtime = roomAttr.getTimestamp();
@@ -161,11 +159,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     closeMenu(scrollView);
                     closeMenu();
                 } else {
-                    if (roomAttrBeanList.size() <= position) {
-                        return;
-                    }
                     closeMenu();
-                    RoomAttrBean roomAttr = roomAttrBeanList.get(position);
                     Talker talker = null;
                     switch (roomAttr.getRoomtype()) {
                         case 0:
@@ -196,14 +190,14 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             public void onClick(View v) {
                 SideScrollView scrollView = (SideScrollView) v.getTag();
                 scrollView.closeMenu();
-                RoomAttrBean roomAttr = roomAttrBeanList.get(position);
-                removeData(position);
 
                 String roomid = roomAttr.getRoomid();
                 ConversionHelper.getInstance().deleteRoom(roomid);
                 MessageHelper.getInstance().deleteRoomMsg(roomid);
                 FileUtil.deleteContactFile(roomid);
-                MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+
+                roomAttrBeanList.remove(roomAttr);
+                notifyItemRemoved(position);
             }
         });
         holder.bottomNotify.setTag(holder.itemView);
@@ -232,7 +226,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         int firstItemPosition = layoutManager.findFirstVisibleItemPosition();
         if (position - firstItemPosition >= 0) {
-//            View view = recyclerView.getChildAt(position - firstItemPosition + 1);
             View view = recyclerView.getChildAt(position - firstItemPosition);
             if (null != recyclerView.getChildViewHolder(view)) {
                 return (ListChatHolder) recyclerView.getChildViewHolder(view);
@@ -282,11 +275,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             badgeTxt = (MaterialBadgeTextView) contentLayout.findViewById(R.id.badgetv);
             ((SideScrollView) itemView).setSideScrollListener(sideScrollListener);
         }
-    }
-
-    public void removeData(int position) {
-        roomAttrBeanList.remove(position);
-        notifyItemRemoved(position);
     }
 
     public void closeMenu(SideScrollView scrollView) {
