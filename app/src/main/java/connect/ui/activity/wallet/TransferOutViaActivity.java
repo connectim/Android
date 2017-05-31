@@ -95,6 +95,9 @@ public class TransferOutViaActivity extends BaseActivity {
     @OnClick(R.id.ok_btn)
     void goTransferOut(View view) {
         final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
+        if(null == pendingRedPackage){
+            return;
+        }
         transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), true, pendingRedPackage.getAddress(),
                 transferEditView.getAvaAmount(),amount, new TransferUtil.OnResultCall(){
             @Override

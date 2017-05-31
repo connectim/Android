@@ -92,8 +92,6 @@ public class ClipZoomImageView extends ImageView implements OnScaleGestureListen
 
     /**
      * Automatic scaling task
-     *
-     * @author zhy
      */
     private class AutoScaleRunnable implements Runnable {
         static final float BIGGER = 1.07f;
@@ -134,8 +132,7 @@ public class ClipZoomImageView extends ImageView implements OnScaleGestureListen
             if (((tmpScale > 1f) && (currentScale < mTargetScale))
                     || ((tmpScale < 1f) && (mTargetScale < currentScale))) {
                 ClipZoomImageView.this.postDelayed(this, 16);
-            } else
-            {
+            } else {
                 final float deltaScale = mTargetScale / currentScale;
                 mScaleMatrix.postScale(deltaScale, deltaScale, x, y);
                 checkBorder();
@@ -332,13 +329,13 @@ public class ClipZoomImageView extends ImageView implements OnScaleGestureListen
     }
 
     /**
-     *Cut the image and return the bitmap object after the cut
+     * Cut the image and return the bitmap object after the cut
      *
      * @return
      */
     public Bitmap clip() {
         Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(),
-                Bitmap.Config.ARGB_8888);
+                Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
         draw(canvas);
         return Bitmap.createBitmap(bitmap, mHorizontalPadding,

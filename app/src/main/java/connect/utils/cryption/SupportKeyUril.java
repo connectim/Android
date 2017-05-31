@@ -116,6 +116,9 @@ public class SupportKeyUril {
      */
     public static String hmacSHA512(String data, String key) {
         String result = "";
+        if(TextUtils.isEmpty(data) || TextUtils.isEmpty(key)){
+            return result;
+        }
         byte[] bytesKey = key.getBytes();
         final SecretKeySpec secretKey = new SecretKeySpec(bytesKey, "HmacSHA512");
         try {

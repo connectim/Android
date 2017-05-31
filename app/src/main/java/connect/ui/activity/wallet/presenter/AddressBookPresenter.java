@@ -6,9 +6,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.db.MemoryDataManager;
 import connect.db.SharePreferenceUser;
-import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.wallet.bean.AddressBean;
 import connect.ui.activity.wallet.contract.AddressBookContract;
@@ -70,6 +68,9 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
 
     @Override
     public void requestAddAddress(final String address) {
+        if(null == listAddress){
+            return;
+        }
         if(listAddress.contains(address)){
             ToastEUtil.makeText(mView.getActivity(),R.string.Chat_Address_already_exists).show();
         }

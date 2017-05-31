@@ -124,9 +124,9 @@ public class CameraManager {
         if (Camera.getNumberOfCameras() <= 1) {
             return null;
         }
-        mCamera.stopPreview();
-        mCamera.release();
         try {
+            mCamera.stopPreview();
+            mCamera.release();
             cameraPosition = cameraPosition == 1 ? 0 : 1;
             Camera mNewCamera = getCameraInstance(cameraPosition);
             setParametersCamera(activity,mNewCamera);

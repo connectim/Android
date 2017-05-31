@@ -23,6 +23,8 @@ import connect.utils.log.LogManager;
  */
 
 public class SharedPreferenceUtil {
+    private static SharedPreferenceUtil sharePreUtil;
+    private static SharedPreferences sharePre;
 
     public static final String SP_NAME = "sp_name";
     public static final String START_IMAGES_HASH = "start_hash";
@@ -30,18 +32,14 @@ public class SharedPreferenceUtil {
     public static final String FIRST_INTO_APP = "first_into_app";
     public static final String WEB_OPEN_APP = "web_open_app";
     public static final String APP_LANGUAGE_CODE = "app_language_code";
-
     public static final String USER_INFO_LIST = "user_info_list";
     public static final String USER_INFO = "user_info";
     public static final String ESTIMATE_FEE = "esti_fee";
     public static final String ROOM_TYPE = "ROOM_TYPE";
     public static final String ROOM_KEY = "ROOM_KEY";
     public static final String ROOM_ECDH = "ROOM_ECDH";
-
-    private static SharedPreferenceUtil sharePreUtil;
-    private static SharedPreferences sharePre;
-    public static String USER_LIST_ADD = "ADD";
-    public static String USER_LIST_DEL = "DEL";
+    public static final String USER_LIST_ADD = "ADD";
+    public static final String USER_LIST_DEL = "DEL";
 
     /** user SharedPreference name */
     public static final String SHAREPRE_NAME = "SHAREPRE_NAME";
@@ -57,7 +55,7 @@ public class SharedPreferenceUtil {
     }
 
     private static SharedPreferenceUtil getInstance(Context context) {
-        if (null == sharePreUtil) {
+        if (null == sharePreUtil || null == sharePre) {
             sharePreUtil = new SharedPreferenceUtil();
             sharePre = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
             LogManager.getLogger().d(Tag, "*** SP_NAME :" + SP_NAME);
