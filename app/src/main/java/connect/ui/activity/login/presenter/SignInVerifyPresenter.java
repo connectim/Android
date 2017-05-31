@@ -215,14 +215,14 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
         OkHttpUtil.getInstance().postEncrySelf(url, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
+                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                 if(type.equals(LinkChangePhoneActivity.LINK_TYPE)){
                     userBean.setPhone(countryCode + "-" + phone);
                 }else if(type.equals(LinkChangePhoneActivity.UNLINK_TYPE)) {
                     userBean.setPhone("");
                 }
                 ToastEUtil.makeText(mView.getActivity(),R.string.Set_Set_success).show();
-                SharedPreferenceUtil.getInstance().updataUser(userBean);
+                SharedPreferenceUtil.getInstance().putUser(userBean);
                 List<Activity> list = BaseApplication.getInstance().getActivityList();
                 for (Activity activity : list) {
                     if (activity.getClass().getName().equals(LinkChangePhoneActivity.class.getName())){

@@ -22,10 +22,10 @@ import protos.Connect;
  */
 public class RedDerailAdapter extends BaseAdapter {
 
-    private final Long bestAmount;
+    private Long bestAmount = 0L;
     private List<Connect.GradRedPackageHistroy> mListData = new ArrayList<>();
 
-    public RedDerailAdapter(List<Connect.GradRedPackageHistroy> mListData,Long bestAmount) {
+    public RedDerailAdapter(List<Connect.GradRedPackageHistroy> mListData,long bestAmount) {
         this.mListData = mListData;
         this.bestAmount = bestAmount;
     }

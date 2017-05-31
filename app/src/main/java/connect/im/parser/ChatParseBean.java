@@ -8,6 +8,7 @@ import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionSettingHelper;
@@ -86,10 +87,10 @@ public class ChatParseBean extends InterParse {
 
         SupportKeyUril.EcdhExts ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
         if (TextUtils.isEmpty(messageData.getChatPubKey())) {//old protocol
-            priKey = SharedPreferenceUtil.getInstance().getPriKey();
+            priKey = MemoryDataManager.getInstance().getPriKey();
             pubkey = friendPubKey;
         } else if (null == messageData.getVer() || messageData.getVer().size() == 0) {//half random
-            priKey = SharedPreferenceUtil.getInstance().getPriKey();
+            priKey = MemoryDataManager.getInstance().getPriKey();
 
             ByteString fromSalt = messageData.getSalt();
             pubkey = messageData.getChatPubKey();
@@ -151,7 +152,7 @@ public class ChatParseBean extends InterParse {
      */
     protected void inviteJoinGroup(Connect.MessagePost msgpost) throws Exception {
         Connect.GcmData gcmData = msgpost.getMsgData().getCipherData();
-        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, SharedPreferenceUtil.getInstance().getPriKey(),
+        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, MemoryDataManager.getInstance().getPriKey(),
                 msgpost.getPubKey(), gcmData);
 
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData());
@@ -203,7 +204,6 @@ public class ChatParseBean extends InterParse {
         msgEntity.setMsgDefinBean(definBean);
         msgEntity.setSendstate(0);
         msgEntity.setPubkey(pubkey);
-
         RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
         pushNoticeMsg(pubkey, type, msgEntity);
     }

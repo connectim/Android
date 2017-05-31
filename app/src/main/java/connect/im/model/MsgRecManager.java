@@ -11,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.parser.CommandBean;
 import connect.im.parser.ExceptionBean;
@@ -119,7 +120,7 @@ public class MsgRecManager {
          * @return
          */
         public synchronized boolean isKeyAvaliable() {
-            boolean isAvailable = SharedPreferenceUtil.getInstance().isAvailableKey();
+            boolean isAvailable = MemoryDataManager.getInstance().isAvailableKey();
             if (!isAvailable) {
                 PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, ByteBuffer.allocate(0));//close socket
                 if (SystemUtil.isRunBackGround()) {// run in front

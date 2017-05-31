@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -138,7 +139,7 @@ public class TransactionParseBean extends InterParse{
 
         String receiverAddress = notice.getReceiver();
         String receiverName = "";
-        if (SharedPreferenceUtil.getInstance().getAddress().equals(receiverAddress)) {
+        if (MemoryDataManager.getInstance().getAddress().equals(receiverAddress)) {
             receiverName = context.getString(R.string.Chat_You);
         } else {
             if (isFriendNotice) {
@@ -200,7 +201,7 @@ public class TransactionParseBean extends InterParse{
         }
 
         String senderName = "";
-        if (SharedPreferenceUtil.getInstance().getAddress().equals(crowdfundingNotice.getSender())) {
+        if (MemoryDataManager.getInstance().getAddress().equals(crowdfundingNotice.getSender())) {
             senderName = context.getString(R.string.Chat_You);
         } else {
             GroupMemberEntity senderEntity = ContactHelper.getInstance().loadGroupMemByAds(groupid, crowdfundingNotice.getReceiver());
@@ -245,13 +246,13 @@ public class TransactionParseBean extends InterParse{
     private void outerTransfer(Connect.TransferNotice notice) {
         ContactEntity friendEntity = null;
         Connect.UserInfo userInfo = notice.getReceiver();
-        if (SharedPreferenceUtil.getInstance().getPubKey().equals(userInfo.getPubKey())) {
+        if (MemoryDataManager.getInstance().getPubKey().equals(userInfo.getPubKey())) {
             userInfo = notice.getSender();
-        } else if (SharedPreferenceUtil.getInstance().getPubKey().equals(notice.getSender().getPubKey())) {
+        } else if (MemoryDataManager.getInstance().getPubKey().equals(notice.getSender().getPubKey())) {
             userInfo = notice.getReceiver();
         }
 
-        if (SharedPreferenceUtil.getInstance().getPubKey().equals(userInfo.getPubKey())) {
+        if (MemoryDataManager.getInstance().getPubKey().equals(userInfo.getPubKey())) {
             return;
         }
 

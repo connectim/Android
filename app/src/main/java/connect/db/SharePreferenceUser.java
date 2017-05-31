@@ -55,10 +55,6 @@ public class SharePreferenceUser {
         return sharePreUtil;
     }
 
-    public boolean isContains(String key) {
-        return sharePre.contains(key);
-    }
-
     public void remove(String key) {
         SharedPreferences.Editor editor = sharePre.edit();
         editor.remove(key);
@@ -77,22 +73,12 @@ public class SharePreferenceUser {
         editor.apply();
     }
 
-    public void putLong(String key, long value) {
-        SharedPreferences.Editor editor = sharePre.edit();
-        editor.putLong(key, value);
-        editor.apply();
-    }
-
     public String getStringValue(String key) {
         return sharePre.getString(key, "");
     }
 
     public int getIntValue(String key) {
         return sharePre.getInt(key, 0);
-    }
-
-    public long getLongValue(String key) {
-        return sharePre.getLong(key, 0);
     }
 
     public void putAddressBook(ArrayList list) {

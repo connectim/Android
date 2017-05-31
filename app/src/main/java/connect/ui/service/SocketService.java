@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.nio.ByteBuffer;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.IMessage;
 import connect.im.bean.ConnectState;
@@ -142,7 +143,7 @@ public class SocketService extends Service {
      */
     public synchronized void checkUserCookie() {
         boolean checkExpire = false;
-        UserCookie userCookie = Session.getInstance().getUserCookie(SharedPreferenceUtil.getInstance().getPubKey());
+        UserCookie userCookie = Session.getInstance().getUserCookie(MemoryDataManager.getInstance().getPubKey());
         if (userCookie != null) {
             long curTime = TimeUtil.getCurrentTimeSecond();
             checkExpire = curTime >= userCookie.getExpiredTime();

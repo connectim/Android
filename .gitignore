@@ -43,4 +43,4 @@ captures/
 .externalNativeBuild
 
 # config.xml
-app/src/main/assets/config.xml
+# app/src/main/assets/config.xml

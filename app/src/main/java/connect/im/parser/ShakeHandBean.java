@@ -11,6 +11,7 @@ import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharePreferenceUser;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -73,7 +74,7 @@ public class ShakeHandBean extends InterParse {
             throw new Exception("verifySign ");
         }
 
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
         byte[] bytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, priKey, ConfigUtil.getInstance().serverPubkey(), response.getCipherData());
         Connect.StructData structData = Connect.StructData.parseFrom(bytes);
         Connect.NewConnection newConnection = Connect.NewConnection.parser().parseFrom(structData.getPlainData());
@@ -226,7 +227,7 @@ public class ShakeHandBean extends InterParse {
     public void firstLoginShake() {
         ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
 
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
         String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
         String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
 

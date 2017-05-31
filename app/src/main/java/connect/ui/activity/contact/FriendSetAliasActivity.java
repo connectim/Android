@@ -41,9 +41,9 @@ public class FriendSetAliasActivity extends BaseActivity {
     private FriendSetAliasActivity mActivity;
     private ContactEntity friendEntity;
 
-    public static void startActivity(Activity activity, ContactEntity friendEntity) {
+    public static void startActivity(Activity activity, String pubKey) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("bean", friendEntity);
+        bundle.putSerializable("pubKey", pubKey);
         ActivityUtil.next(activity, FriendSetAliasActivity.class, bundle);
     }
 
@@ -63,8 +63,7 @@ public class FriendSetAliasActivity extends BaseActivity {
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Set_Remark_and_Tag);
 
-        Bundle bundle = getIntent().getExtras();
-        friendEntity = (ContactEntity) bundle.getSerializable("bean");
+        friendEntity = ContactHelper.getInstance().loadFriendEntity(getIntent().getExtras().getString("pubKey"));
         nicknameEt.setText(friendEntity.getRemark());
         saveTv.setEnabled(true);
     }

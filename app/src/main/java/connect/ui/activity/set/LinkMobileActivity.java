@@ -133,9 +133,9 @@ public class LinkMobileActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_UNBIND_MOBILE, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
+                UserBean userBean =  SharedPreferenceUtil.getInstance().getUser();
                 userBean.setPhone("");
-                SharedPreferenceUtil.getInstance().updataUser(userBean);
+                SharedPreferenceUtil.getInstance().putUser(userBean);
                 ProgressUtil.getInstance().dismissProgress();
                 initView();
             }

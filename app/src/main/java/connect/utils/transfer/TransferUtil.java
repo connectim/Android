@@ -1,4 +1,4 @@
-package connect.ui.activity.wallet.support;
+package connect.utils.transfer;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -30,7 +30,7 @@ import protos.Connect;
 /**
  * Created by Administrator on 2016/12/18.
  */
-public class TransaUtil {
+public class TransferUtil {
 
     private Activity activity;
     private OnResultCall onResultCall;
@@ -74,7 +74,7 @@ public class TransaUtil {
             return false;
         }
 
-        if (ishaveDustWithAmount(amount)) {
+        if (TransferUtil.ishaveDustWithAmount(amount)) {
             ToastEUtil.makeText(context,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
             return false;
         }
@@ -96,7 +96,7 @@ public class TransaUtil {
      */
     public void getOutputTran(final Activity activity, final String address, boolean isPendding,
                               final List<TranAddressBean> outputList, long avaliableAmount, long amount, OnResultCall onResultCall) {
-        if (!checkTransfer(activity,avaliableAmount,amount)){
+        if (!TransferUtil.checkTransfer(activity,avaliableAmount,amount)){
             return;
         }
         this.onResultCall = onResultCall;

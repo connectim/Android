@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionSettingHelper;
@@ -80,7 +81,7 @@ public class NotificationManager {
             if (definBean.getType() == 1 && !TextUtils.isEmpty(definBean.getExt1())) {
                 List<String> addressList = new Gson().fromJson(definBean.getExt1(), new TypeToken<List<String>>() {
                 }.getType());
-                String myAddress = SharedPreferenceUtil.getInstance().getAddress();
+                String myAddress = MemoryDataManager.getInstance().getAddress();
                 if (addressList.contains(myAddress)) { // at me
                     isAt = true;
                 }

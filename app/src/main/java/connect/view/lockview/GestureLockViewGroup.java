@@ -97,7 +97,7 @@ public class GestureLockViewGroup extends RelativeLayout {
      * Callback interface
      */
     private OnGestureLockViewListener mOnGestureLockViewListener;
-    private String salt;
+    private String salt = "";
     private String priKey;
 
     public GestureLockViewGroup(Context context, AttributeSet attrs) {
@@ -242,7 +242,6 @@ public class GestureLockViewGroup extends RelativeLayout {
                         {
                             mPath.lineTo(mLastPathX, mLastPathY);
                         }
-
                     }
                 }
                 // The end of the line
@@ -378,6 +377,10 @@ public class GestureLockViewGroup extends RelativeLayout {
 
     public String getAnswer() {
         return mAnswer;
+    }
+
+    public String getSalt() {
+        return salt;
     }
 
     /**

@@ -1,7 +1,6 @@
 package connect.ui.activity.wallet.contract;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
@@ -11,7 +10,7 @@ import connect.db.green.bean.ContactEntity;
 import connect.ui.base.BasePresenter;
 import connect.ui.base.BaseView;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 
 /**
  * Created by Administrator on 2017/4/18 0018.

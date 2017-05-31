@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import android.widget.RelativeLayout;
 
 import connect.ui.activity.R;
+import connect.utils.glide.GlideUtil;
 
 public class ClipImageLayout extends RelativeLayout {
 
@@ -41,7 +42,8 @@ public class ClipImageLayout extends RelativeLayout {
     }
 
     public void setImage(String path) {
-        mZoomImageView.setImageBitmap(BitmapFactory.decodeFile(path));
+        GlideUtil.loadAvater(mZoomImageView,path);
+        //mZoomImageView.setImageBitmap(BitmapFactory.decodeFile(path));
     }
 
     /**

@@ -11,7 +11,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.List;
 
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -27,7 +26,6 @@ import connect.ui.activity.wallet.TransferActivity;
 import connect.ui.activity.wallet.TransferFriendSeleActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.contract.TransferFriendContract;
-import connect.ui.activity.wallet.support.TransferError;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -37,9 +35,10 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.transfer.TransferError;
 import connect.view.MdStyleProgress;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -149,7 +148,7 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            final Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                            final Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
                                 @Override
                                 public void onComplete() {

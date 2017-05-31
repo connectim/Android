@@ -63,7 +63,8 @@ public class SearchActivity extends BaseActivity {
 
     @OnClick(R.id.cancel_tv)
     void goBack(View view) {
-        ActivityUtil.goBackBottom(mActivity);
+        ActivityUtil.goBackWithResult(mActivity, 0,null,android.R.anim.fade_in,android.R.anim.fade_out);
+        //ActivityUtil.goBackBottom(mActivity);
     }
 
     @Override

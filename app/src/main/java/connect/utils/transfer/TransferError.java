@@ -1,4 +1,4 @@
-package connect.ui.activity.wallet.support;
+package connect.utils.transfer;
 
 import android.widget.Toast;
 

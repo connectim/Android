@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import com.google.protobuf.ByteString;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.MsgType;
 import connect.ui.activity.chat.bean.MsgDefinBean;
@@ -15,6 +16,7 @@ import connect.ui.activity.chat.model.content.BaseChat;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -50,8 +52,9 @@ public class PhotoUpload extends FileUpLoad {
                     bean.setImageOriginHeight(options.outHeight);
                     bean.setExt1(FileUtil.fileSize(comSecond));
 
-                    String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
-                    String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+                    String pubkey = MemoryDataManager.getInstance().getPubKey();
+                    String priKey = MemoryDataManager.getInstance().getPriKey();
+
                     Connect.GcmData gcmData = null;
                     Connect.RichMedia richMedia = null;
                     if (baseChat.roomType() == 2) {
@@ -66,7 +69,7 @@ public class PhotoUpload extends FileUpLoad {
                                 setEntity(secondGcmData.toByteString()).build();
                     }
 
-                    gcmData = EncryptionUtil.encodeAESGCMStructData(priKey, richMedia.toByteString());
+                    gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT,priKey, richMedia.toByteString());
                     mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
                 } catch (Exception e) {
                     e.printStackTrace();

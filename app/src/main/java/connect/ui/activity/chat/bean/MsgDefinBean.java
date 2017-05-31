@@ -1,5 +1,6 @@
 package connect.ui.activity.chat.bean;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.locmap.bean.GeoAddressBean;
@@ -210,7 +211,7 @@ public class MsgDefinBean implements Serializable{
                 break;
             case 1://show group member nickname
                 MsgSender msgSender = getSenderInfoExt();
-                if (msgSender != null && !msgSender.publickey.equals(SharedPreferenceUtil.getInstance().getPubKey())) {
+                if (msgSender != null && !msgSender.publickey.equals(MemoryDataManager.getInstance().getPubKey())) {
                     content = msgSender.username + ": " + content;
                 }
                 break;

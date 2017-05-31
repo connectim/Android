@@ -23,7 +23,6 @@ import connect.view.TopToolBar;
 
 /**
  * Picture cut
- * Created by Administrator on 2017/3/17.
  */
 
 public class ClipImageActivity extends BaseActivity {

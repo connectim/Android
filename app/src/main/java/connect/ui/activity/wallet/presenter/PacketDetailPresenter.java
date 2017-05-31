@@ -6,6 +6,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.wallet.contract.PacketDetailContract;
 import connect.utils.UriUtil;
@@ -43,7 +44,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     redPackageInfo = Connect.RedPackageInfo.parseFrom(structData.getPlainData());
                     requestUserInfo();
                     getRedStatus();
@@ -68,7 +69,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     mView.updataSendView(sendUserInfo);
                 } catch (InvalidProtocolBufferException e) {
@@ -86,8 +87,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
     private void getRedStatus() {
         List<Connect.GradRedPackageHistroy> list = redPackageInfo.getGradHistoryList();
         Connect.RedPackage redPackage = redPackageInfo.getRedpackage();
-        String address = SharedPreferenceUtil.getInstance().getAddress();
-
+        String address = MemoryDataManager.getInstance().getAddress();
         int status;
         boolean isHava = false;
         long openMoney = 0;

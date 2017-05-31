@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import java.nio.ByteBuffer;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.ConnectState;
 import connect.ui.service.bean.PushMessage;
@@ -51,6 +52,6 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
     }
 
     public boolean isCanConnect() {
-        return !TextUtils.isEmpty(SharedPreferenceUtil.getInstance().getPriKey());
+        return !TextUtils.isEmpty(MemoryDataManager.getInstance().getPriKey());
     }
 }

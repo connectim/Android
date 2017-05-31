@@ -19,6 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.IMessage;
 import connect.ui.service.bean.ServiceAck;
@@ -354,7 +355,7 @@ public class ConnectManager {
     }
 
     public boolean isCanConnect() {
-        return !TextUtils.isEmpty(SharedPreferenceUtil.getInstance().getPriKey());
+        return !TextUtils.isEmpty(MemoryDataManager.getInstance().getPriKey());
     }
 
     public void setiMessage(IMessage iMessage) {

@@ -22,15 +22,15 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Random;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.login.bean.StartImagesBean;
 import connect.ui.activity.login.bean.UserBean;
-import connect.ui.activity.login.bean.WebOpenBean;
 import connect.ui.activity.login.contract.StartContract;
-import connect.ui.activity.wallet.support.ScanUrlAnalysisUtil;
 import connect.ui.base.BaseApplication;
+import connect.utils.RegularUtil;
+import connect.utils.scan.ResolveUrlUtil;
 import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.glide.OnDownloadTarget;
@@ -111,11 +111,10 @@ public class StartPresenter implements StartContract.Presenter{
                     mView.goinLoginForPhone();
                 } else if (!TextUtils.isEmpty(userBean.getSalt())) {
                     openFromWeb(mActivity);
-                    UserBean userB = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
-                    mView.goinLoginPatter(userB);
+                    mView.goinLoginPatter();
                 } else {
                     openFromWeb(mActivity);
-                    SharedPreferenceUtil.getInstance().initPutMapStr(userBean.getPriKey(),userBean.getPubKey(),userBean.getAddress(),userBean.getAvatar());
+                    MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
                     mView.goinHome();
                 }
                 mActivity.finish();
@@ -196,13 +195,16 @@ public class StartPresenter implements StartContract.Presenter{
         }
     }
 
+    /**
+     * Save url with open the App
+     * @param activity
+     */
     private void openFromWeb(Activity activity){
         Intent i_getvalue = activity.getIntent();
         String action = i_getvalue.getAction();
-        if(Intent.ACTION_VIEW.equals(action)){
-            Uri uri = i_getvalue.getData();
-            WebOpenBean webOpenBean = ScanUrlAnalysisUtil.WebOpenAppData(uri);
-            SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.WEB_OPEN_APP,new Gson().toJson(webOpenBean));
+        Uri uri = i_getvalue.getData();
+        if(Intent.ACTION_VIEW.equals(action) && RegularUtil.matches(uri.toString(), ResolveUrlUtil.Web_Url)){
+            SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.WEB_OPEN_APP,uri.toString());
         }
     }
 
