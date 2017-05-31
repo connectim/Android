@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -47,11 +48,10 @@ public class AddressActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_My_QR_code);
 
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(userBean.getAddress(),mActivity.getResources().getColor(R.color.color_00ffbf));
+        Bitmap bitmap = createScan.generateQRCode(MemoryDataManager.getInstance().getAddress(),mActivity.getResources().getColor(R.color.color_00ffbf));
         scanImg.setImageBitmap(bitmap);
-        addressTv.setText(userBean.getAddress());
+        addressTv.setText(MemoryDataManager.getInstance().getAddress());
     }
 
     @OnClick(R.id.left_img)

@@ -10,6 +10,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -99,7 +100,7 @@ public class FriendRecordActivity extends BaseActivity {
 
     private void requestRecord() {
         Connect.FriendRecords friendRecords = Connect.FriendRecords.newBuilder()
-                .setSelfAddress(SharedPreferenceUtil.getInstance().getAddress())
+                .setSelfAddress(MemoryDataManager.getInstance().getAddress())
                 .setFriendAddress(friendEntity.getAddress())
                 .setPageSize(MAX_RECOMMEND_COUNT)
                 .setPageIndex(page)
@@ -109,8 +110,7 @@ public class FriendRecordActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(),
-                            imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.FriendBillsMessage friendBillsMessage = Connect.FriendBillsMessage.parseFrom(structData.getPlainData());
                     List<Connect.FriendBill> listBill = friendBillsMessage.getFriendBillsList();
                     if (listBill.size() >= MAX_RECOMMEND_COUNT) {

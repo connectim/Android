@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -70,10 +71,10 @@ public class ExportPriActivity extends BaseActivity {
 
         userBean = SharedPreferenceUtil.getInstance().getUser();
         userBean.setBack(true);
-        SharedPreferenceUtil.getInstance().updataUser(userBean);
+        SharedPreferenceUtil.getInstance().putUser(userBean);
 
         CreateScan createScan = new CreateScan();
-        bitmap = createScan.generateQRCode(userBean.getPriKey(), getResources().getColor(R.color.color_ffffff));
+        bitmap = createScan.generateQRCode(MemoryDataManager.getInstance().getPriKey(), getResources().getColor(R.color.color_ffffff));
         backupImg.setImageBitmap(bitmap);
 
         scanner = new MediaScannerConnection(mActivity, new MediaScannerConnection.MediaScannerConnectionClient() {

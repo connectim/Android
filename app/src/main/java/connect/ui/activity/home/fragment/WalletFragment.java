@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -173,7 +174,7 @@ public class WalletFragment extends BaseFragment {
     }
 
     private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, SharedPreferenceUtil.getInstance().getUser().getAddress());
+        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {

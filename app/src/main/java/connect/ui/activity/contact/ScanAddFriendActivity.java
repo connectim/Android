@@ -25,14 +25,16 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.home.bean.MsgNoticeBean;
 import connect.ui.activity.login.bean.UserBean;
-import connect.ui.activity.wallet.support.ScanUrlAnalysisUtil;
 import connect.ui.base.BaseScanActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.scan.ResolveScanUtil;
+import connect.utils.scan.ResolveUrlUtil;
 import connect.utils.system.SystemUtil;
 import connect.view.ScanBgView;
 import connect.view.album.entity.ImageInfo;
@@ -77,8 +79,7 @@ public class ScanAddFriendActivity extends BaseScanActivity {
     TextView photosTv;
 
     private ScanAddFriendActivity mActivity;
-    private UserBean userBean;
-    private ScanUrlAnalysisUtil analysisUtil;
+    private ResolveScanUtil resolveScanUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,23 +95,22 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         mActivity = this;
         setViewFind(capturePreview, captureCropView, captureContainer);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(userBean.getAddress(), getResources().getColor(R.color.color_00ffbf));
+        Bitmap bitmap = createScan.generateQRCode(MemoryDataManager.getInstance().getAddress(), getResources().getColor(R.color.color_00ffbf));
         scanImg.setImageBitmap(bitmap);
         bottomScanImg.setImageBitmap(bitmap);
-        addressTv.setText(userBean.getAddress());
-        analysisUtil = new ScanUrlAnalysisUtil(mActivity);
+        addressTv.setText(MemoryDataManager.getInstance().getAddress());
+        resolveScanUtil = new ResolveScanUtil(mActivity);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MsgNoticeBean notice) {
-        analysisUtil.showMsgTip(notice, "scan");
+        new ResolveUrlUtil(mActivity).showMsgTip(notice,ResolveUrlUtil.TYPE_OPEN_SCAN, true);
     }
 
     @Override
     public void scanCall(String value) {
-        analysisUtil.analysisUrl(value);
+        resolveScanUtil.analysisUrl(value);
     }
 
     @OnClick(R.id.right_img)
@@ -230,7 +230,7 @@ public class ScanAddFriendActivity extends BaseScanActivity {
             ProgressUtil.getInstance().dismissProgress();
             switch (msg.what){
                 case PARSE_BARCODE_SUC:
-                    analysisUtil.analysisUrl((String) msg.obj);
+                    resolveScanUtil.analysisUrl((String) msg.obj);
                     break;
             }
 

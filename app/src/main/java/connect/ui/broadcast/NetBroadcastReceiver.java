@@ -5,9 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 
+import java.nio.ByteBuffer;
+
+import connect.db.MemoryDataManager;
+import connect.db.SharedPreferenceUtil;
 import connect.im.bean.ConnectState;
-import connect.im.model.ConnectManager;
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 
@@ -32,10 +38,10 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
                 (mobileState != null && NetworkInfo.State.CONNECTED == mobileState)) {//Network connection is successful
             LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Switch to the network environment");
 
-            if (ConnectManager.getInstance().isCanConnect()) {
+            if (isCanConnect()) {
                 if (TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART) {
-                    ConnectManager.getInstance().stopConnect();
-                    ConnectManager.getInstance().connectServer();
+                    PushMessage.pushMessage(ServiceAck.STOP_CONNECT, ByteBuffer.allocate(0));//close socket
+                    PushMessage.pushMessage(ServiceAck.CONNECT_START, ByteBuffer.allocate(0));
                     lastReceiveTime = TimeUtil.getCurrentTimeInLong();
                 }
             }
@@ -43,5 +49,9 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
             LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Network disconnection");
             ConnectState.getInstance().sendEvent(ConnectState.ConnectType.DISCONN);
         }
+    }
+
+    public boolean isCanConnect() {
+        return !TextUtils.isEmpty(MemoryDataManager.getInstance().getPriKey());
     }
 }

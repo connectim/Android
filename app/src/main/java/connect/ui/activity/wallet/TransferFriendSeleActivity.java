@@ -16,6 +16,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
@@ -186,9 +187,8 @@ public class TransferFriendSeleActivity extends BaseActivity {
     private List<ContactEntity> loadGropMember() {
         ArrayList<ContactEntity> list = new ArrayList<>();
         List<GroupMemberEntity> allMembers = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         for (GroupMemberEntity groupMemEntity : allMembers) {
-            if (userBean.getPubKey().equals(groupMemEntity.getPub_key()))
+            if (MemoryDataManager.getInstance().getPubKey().equals(groupMemEntity.getPub_key()))
                 continue;
             ContactEntity friendEntity = new ContactEntity();
             friendEntity.setAvatar(groupMemEntity.getAvatar());

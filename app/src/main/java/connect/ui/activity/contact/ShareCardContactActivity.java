@@ -26,6 +26,7 @@ import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.GroupChat;
 import connect.ui.activity.contact.adapter.ShareCardContactAdapter;
 import connect.ui.activity.contact.model.ContactListManage;
+import connect.ui.activity.home.bean.ContactBean;
 import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
@@ -48,8 +49,8 @@ public class ShareCardContactActivity extends BaseActivity {
     SideBar siderbar;
 
     private ShareCardContactActivity mActivity;
-    private List<ContactEntity> groupList;
-    private HashMap<String, List<ContactEntity>> friendMap;
+    private List<ContactBean> groupList;
+    private HashMap<String, List<ContactBean>> friendMap;
     private ShareCardContactAdapter adapter;
     private ContactEntity friendEntity;
 
@@ -83,7 +84,7 @@ public class ShareCardContactActivity extends BaseActivity {
             public void onTouchingLetterChanged(String s) {
                 int position = adapter.getPositionForSection(s.charAt(0));
                 if(position >= 0){
-                    listView.setSelection(position + 1);
+                    listView.setSelection(position);
                 }
             }
         });
@@ -98,19 +99,19 @@ public class ShareCardContactActivity extends BaseActivity {
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener(){
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final ContactEntity roomAttrBean = (ContactEntity)parent.getAdapter().getItem(position);
+            final ContactBean contactBean = (ContactBean) parent.getAdapter().getItem(position);
             DialogUtil.showAlertTextView(mActivity,
                     mActivity.getResources().getString(R.string.Chat_Share_contact),
-                    mActivity.getString(R.string.Chat_Share_contact_to,friendEntity.getUsername(),roomAttrBean.getUsername()),
+                    mActivity.getString(R.string.Chat_Share_contact_to,friendEntity.getUsername(),contactBean.getName()),
                     "", "", false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {
-                            BaseChat baseChat = null;
-                            if (TextUtils.isEmpty(roomAttrBean.getAddress())) {
-                                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomAttrBean.getPub_key());
+                            BaseChat baseChat;
+                            if (contactBean.getStatus() == 2) {
+                                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(contactBean.getPub_key());
                                 baseChat=new GroupChat(groupEntity);
                             }else{
-                                ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(roomAttrBean.getPub_key());
+                                ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(contactBean.getPub_key());
                                 baseChat=new FriendChat(acceptFriend);
                             }
                             MsgEntity msgEntity = (MsgEntity) baseChat.cardMsg(friendEntity);
@@ -140,8 +141,8 @@ public class ShareCardContactActivity extends BaseActivity {
             @Override
             protected Void doInBackground(Void... params) {
                 ContactListManage contactManage = new ContactListManage();
-                groupList = contactManage.getGroupList();
-                friendMap = contactManage.getFriendListNoSys(friendEntity.getPub_key());
+                groupList = contactManage.getGroupData();
+                friendMap = contactManage.getFriendListExcludeSys(friendEntity.getPub_key());
                 return null;
             }
 
@@ -154,7 +155,7 @@ public class ShareCardContactActivity extends BaseActivity {
     }
 
     private void bindData() {
-        ArrayList<ContactEntity> finalList = new ArrayList<>();
+        ArrayList<ContactBean> finalList = new ArrayList<>();
         finalList.addAll(friendMap.get("favorite"));
         finalList.addAll(groupList);
         finalList.addAll(friendMap.get("friend"));

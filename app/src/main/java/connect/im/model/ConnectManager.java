@@ -1,10 +1,10 @@
 package connect.im.model;
 
 import android.os.Message;
+import android.os.RemoteException;
 import android.text.TextUtils;
 
-import com.google.protobuf.ByteString;
-
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -14,22 +14,18 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
-import connect.im.parser.CommandBean;
-import connect.im.bean.ConnectState;
-import connect.im.bean.Session;
-import connect.im.bean.SocketACK;
-import connect.im.bean.UserCookie;
-import connect.utils.ConfigUtil;
-import connect.utils.StringUtil;
+import connect.im.IMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.TimeUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
-import connect.wallet.jni.AllNativeMethod;
-import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/21.
@@ -40,6 +36,7 @@ public class ConnectManager {
     private boolean selectorRun = true;
     private Selector selector;
     private SocketChannel socketChannel;
+    private IMessage iMessage;
 
     private static ConnectManager connectManager;
 
@@ -57,24 +54,19 @@ public class ConnectManager {
     /**
      * connect service runnable
      */
-    private class connectRunnable implements Runnable {
+    private class ConnectRunnable implements Runnable {
 
-        /** service host */
         private String host;
-        /** port */
         private int port;
 
-        private int threadId;
-
-        public connectRunnable(String host, int port) {
+        public ConnectRunnable(String host, int port) {
             this.host = host;
             this.port = port;
-            threadId = (int) (Math.random() * 100);
             selectorRun = true;
         }
 
         @Override
-        public synchronized void run() {
+        public void run() {
             try {
                 socketChannel = SocketChannel.open();
                 socketChannel.configureBlocking(false);
@@ -83,30 +75,27 @@ public class ConnectManager {
                 if (socketChannel.connect(new InetSocketAddress(host, port))) {
                     socketChannel.register(selector, SelectionKey.OP_READ);
 
-                    Connect.IMRequest firstShake = firstLoginShake();
-                    ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, firstShake.toByteString());
+                    iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),new byte[0]);
                 } else {
                     socketChannel.register(selector, SelectionKey.OP_CONNECT);
                 }
 
                 while (selectorRun && selector != null) {
-                    LogManager.getLogger().d(Tag, "selector :threadId " + threadId);
                     selector.select();
                     Set<SelectionKey> setKeys = selector.selectedKeys();
                     if (setKeys == null) continue;
+
                     Iterator<SelectionKey> selectionKeys = selector.selectedKeys().iterator();
                     SelectionKey selectionKey = null;
                     while (selectionKeys.hasNext()) {
                         selectionKey = selectionKeys.next();
                         selectionKeys.remove();
 
-                        LogManager.getLogger().d(Tag, "selectionKeys : threadId" + threadId);
                         if (selectionKey.isConnectable()) {
                             if (socketChannel.finishConnect()) {
                                 selectionKey.interestOps(SelectionKey.OP_READ);
 
-                                Connect.IMRequest firstShake = firstLoginShake();
-                                ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, firstShake.toByteString());
+                                iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),new byte[0]);
                             } else {//An error occurred; unregister the channel.
                                 selectionKey.cancel();
                                 reconDelay();
@@ -127,7 +116,9 @@ public class ConnectManager {
                                 lastReceiverTime = TimeUtil.getCurrentTimeInLong();
 
                                 byteBuffer.flip();
-                                MsgByteManager.getInstance().putByteMsg(byteBuffer);
+                                byte[] byteArr = new byte[byteBuffer.limit()];
+                                byteBuffer.get(byteArr);
+                                iMessage.connectMessage(ServiceAck.MESSAGE.getAck(), byteArr);
                             }
                         }
                     }
@@ -140,48 +131,12 @@ public class ConnectManager {
                 stopConnect();
             }
         }
-
-
-        /**
-         * A shake hands for the first time
-         *
-         * @return
-         */
-        protected Connect.IMRequest firstLoginShake() {
-            ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
-
-            String priKey = SharedPreferenceUtil.getInstance().getPriKey();
-            String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
-            String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
-
-            String cdSeed = AllNativeMethod.cdCreateSeed(16, 4);
-            Connect.NewConnection newConnection = Connect.NewConnection.newBuilder().
-                    setPubKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey))).
-                    setSalt(ByteString.copyFrom(cdSeed.getBytes())).build();
-
-            UserCookie tempCookie = new UserCookie();
-            tempCookie.setPriKey(randomPriKey);
-            tempCookie.setPubKey(randomPubKey);
-            tempCookie.setSalt(cdSeed.getBytes());
-            Session.getInstance().setUserCookie("TEMPCOOKIE", tempCookie);
-
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
-                    priKey, ConfigUtil.getInstance().serverPubkey(), newConnection.toByteString());
-
-            String pukkey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
-            String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
-            return Connect.IMRequest.newBuilder().
-                    setSign(signHash).
-                    setPubKey(pukkey).
-                    setCipherData(gcmData).build();
-        }
     }
 
-    public boolean avaliableConnect() {
+    public synchronized boolean avaliableConnect() {
         if (!HttpRequest.isConnectNet()) {
             stopConnect();
         }
-
         return avaliableChannel();
     }
 
@@ -204,7 +159,7 @@ public class ConnectManager {
         return false;
     }
 
-    public synchronized void connectServer() {
+    public void connectServer() {
         LogManager.getLogger().d(Tag, "connectServer conect service...");
         boolean reliNet = HttpRequest.isConnectNet();
         if (!reliNet) {
@@ -214,12 +169,58 @@ public class ConnectManager {
             stopConnect();
         }
 
-        String address = ConfigUtil.getInstance().socketAddress();
-        int port = ConfigUtil.getInstance().socketPort();
+        String address = "sandbox.connect.im";
+        int port = 19090;
+        try {
+            iMessage.connectMessage(ServiceAck.CONNCET_REFRESH.getAck(), new byte[0]);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
-        ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
-        Thread connectThread = new Thread(new connectRunnable(address, port));
+        Thread connectThread = new Thread(new ConnectRunnable(address, port));
         connectThread.start();
+    }
+
+    public synchronized void sendToBytes(ByteBuffer byteBuffer) {
+        WriteRunnable writeRunnable = new WriteRunnable(byteBuffer);
+        threadPoolExecutor.execute(writeRunnable);
+    }
+
+    private static final int coreSize = 3;
+    private static final int maxSize = 6;
+    private static final int aliveSize = 1;
+
+    private static BlockingQueue<Runnable> linkedBlockingQueue = new LinkedBlockingQueue<>();
+    private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(coreSize, maxSize, aliveSize, TimeUnit.DAYS, linkedBlockingQueue);
+
+    class WriteRunnable implements Runnable {
+
+        ByteBuffer byteBuffer;
+        WriteRunnable(ByteBuffer byteBuffer) {
+            this.byteBuffer = byteBuffer;
+        }
+
+        @Override
+        public void run() {
+            boolean avaliableConnc = true;
+            try {
+                SocketChannel channel = getSocketChannel();
+                avaliableConnc = avaliableConnect();
+                if (avaliableConnc) {
+                    while (byteBuffer.hasRemaining()) {
+                        channel.write(byteBuffer);
+                    }
+                    LogManager.getLogger().d(Tag, "send message success");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                avaliableConnc = false;
+            }
+
+            if (!avaliableConnc) {
+                reconDelay();
+            }
+        }
     }
 
     /**
@@ -266,11 +267,11 @@ public class ConnectManager {
     public void connectSuccess() {
         reconHandler.removeMessages(TAG_CONNECT);
         resetFibonacci();
-        ConnectManager.getInstance().launHeartBit();
+        launHeartBit();
     }
 
     /** Heart rate */
-    private final long HEART_FREQUENCY = 4 * 60 * 1000;
+    private final long HEART_FREQUENCY = 30 * 1000;
     /** Recently received a message of time */
     private long lastReceiverTime;
     /** The heartbeat polling timer */
@@ -323,31 +324,14 @@ public class ConnectManager {
             public void run() {
                 long curtime = TimeUtil.getCurrentTimeInLong();
                 if (curtime < lastReceiverTime + HEART_FREQUENCY * 2) {
-                    ChatSendManager.getInstance().sendToMsg(SocketACK.HEART_BREAK, ByteString.copyFrom(new byte[]{}));
-                    checkUserCookie();
+                    try {
+                        iMessage.connectMessage(ServiceAck.HEART_BEAT.getAck(),new byte[0]);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     stopConnect();
                     reconDelay();
-                }
-            }
-
-            /**
-             * check cookie expire time
-             */
-            public synchronized void checkUserCookie() {
-                boolean checkExpire = false;
-                UserCookie userCookie = Session.getInstance().getUserCookie(SharedPreferenceUtil.getInstance().getPubKey());
-                if (userCookie != null) {
-                    long curTime = TimeUtil.getCurrentTimeSecond();
-                    checkExpire = curTime >= userCookie.getExpiredTime();
-                }
-                if (checkExpire) {
-                    try {
-                        CommandBean commandBean = new CommandBean((byte) 0x00, null);
-                        commandBean.chatCookieInfo(3);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         };
@@ -371,6 +355,10 @@ public class ConnectManager {
     }
 
     public boolean isCanConnect() {
-        return !TextUtils.isEmpty(SharedPreferenceUtil.getInstance().getPriKey());
+        return !TextUtils.isEmpty(MemoryDataManager.getInstance().getPriKey());
+    }
+
+    public void setiMessage(IMessage iMessage) {
+        this.iMessage = iMessage;
     }
 }

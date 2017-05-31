@@ -31,7 +31,7 @@ public class GlideModelConfig extends OkHttpGlideModule {
         builder.setBitmapPool(new LruBitmapPool(memorySize));
 
         // Define the image format
-        // builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
+        //builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
         builder.setDecodeFormat(DecodeFormat.PREFER_RGB_565);
     }
 

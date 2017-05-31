@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.GroupEntity;
@@ -85,7 +86,7 @@ public class GroupQRActivity extends BaseActivity {
         toolbar.setRightListence(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
                 final ArrayList<String> list = new ArrayList<>();
                 if (myMember.getRole() == 1) {
                     list.add(activity.getResources().getString(R.string.Link_Refresh_QR_Code));
@@ -139,10 +140,9 @@ public class GroupQRActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(url, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupHash groupHash = Connect.GroupHash.parseFrom(structData.getPlainData());
 
                     String hash = groupHash.getHash();
@@ -175,10 +175,9 @@ public class GroupQRActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_SHARE, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupUrl groupUrl = Connect.GroupUrl.parseFrom(structData.getPlainData());
                     if(TextUtils.isEmpty(groupUrl.getUrl())){
                         ToastEUtil.makeText(activity,R.string.Link_Share_failed,ToastEUtil.TOAST_STATUS_FAILE).show();

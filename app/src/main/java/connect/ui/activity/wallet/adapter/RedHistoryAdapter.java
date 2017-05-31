@@ -65,7 +65,10 @@ public class RedHistoryAdapter extends BaseAdapter {
         viewHolder.moneyTv.setText(RateFormatUtil.longToDoubleBtc(redPackage.getMoney()) + parent.getContext().getString(R.string.Set_BTC_symbol));
         viewHolder.timeTv.setText(TimeUtil.getTime(redPackage.getCreatedAt() * 1000,TimeUtil.DATE_FORMAT_MONTH_HOUR));
 
-        if(redPackage.getDeadline() < 0){
+        if(redPackage.getRemainSize() == 0){
+            viewHolder.numberTv.setText(parent.getContext().getString(R.string.Wallet_Opened,
+                    redPackage.getSize() - redPackage.getRemainSize(),redPackage.getSize()));
+        }else if(redPackage.getDeadline() < 0){
             viewHolder.numberTv.setText(parent.getContext().getString(R.string.Chat_Expired,
                     redPackage.getSize() - redPackage.getRemainSize(),redPackage.getSize()));
         }else {

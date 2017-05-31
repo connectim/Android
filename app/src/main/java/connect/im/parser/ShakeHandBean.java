@@ -6,10 +6,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharePreferenceUser;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -22,13 +24,14 @@ import connect.im.bean.SocketACK;
 import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.ChatSendManager;
-import connect.im.model.ConnectManager;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
 import connect.ui.activity.chat.model.content.RobotChat;
 import connect.ui.base.BaseApplication;
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -71,7 +74,7 @@ public class ShakeHandBean extends InterParse {
             throw new Exception("verifySign ");
         }
 
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
         byte[] bytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, priKey, ConfigUtil.getInstance().serverPubkey(), response.getCipherData());
         Connect.StructData structData = Connect.StructData.parseFrom(bytes);
         Connect.NewConnection newConnection = Connect.NewConnection.parser().parseFrom(structData.getPlainData());
@@ -93,12 +96,27 @@ public class ShakeHandBean extends InterParse {
         String deviceName = Build.DEVICE;
         String local = SystemDataUtil.getDeviceLanguage();
         String uuid=SystemDataUtil.getLocalUid();
-        Connect.DeviceInfo deviceInfo = Connect.DeviceInfo.newBuilder()
+
+        Connect.DeviceInfo.Builder deviceBuilder = Connect.DeviceInfo.newBuilder()
                 .setDeviceId(deviceId)
                 .setDeviceName(deviceName)
                 .setLocale(local)
                 .setCv(0)
-                .setUuid(uuid).build();
+                .setUuid(uuid);
+
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
+        String cookieKey = "COOKIE:" + pubkey;
+        ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+        if (paramEntity != null) {
+            UserCookie userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+            Connect.ChatCookieData cookieData = Connect.ChatCookieData.newBuilder().
+                    setChatPubKey(userCookie.getPubKey()).
+                    setSalt(ByteString.copyFrom(userCookie.getSalt())).
+                    setExpired(userCookie.getExpiredTime()).build();
+            deviceBuilder.setChatCookieData(cookieData);
+        }
+
+        Connect.DeviceInfo deviceInfo = deviceBuilder.build();
         Connect.GcmData gcmDataTemp = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE, saltByte, deviceInfo.toByteString());
 
         //imTransferData
@@ -116,7 +134,7 @@ public class ShakeHandBean extends InterParse {
     private void connectSuccess() {
         ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.CONNECT);
 
-        ConnectManager.getInstance().connectSuccess();
+        PushMessage.pushMessage(ServiceAck.CONNECT_SUCCESS,ByteBuffer.allocate(0));
         String version = ParamManager.getInstance().getString(ParamManager.COUNT_FRIENDLIST);
         if (TextUtils.isEmpty(version)) {
             int vrsion = SharePreferenceUser.getInstance().getIntValue(SharePreferenceUser.CONTACT_VERSION);
@@ -199,5 +217,41 @@ public class ShakeHandBean extends InterParse {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * A shake hands for the first time
+     *
+     * @return
+     */
+    public void firstLoginShake() {
+        ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
+
+        String priKey = MemoryDataManager.getInstance().getPriKey();
+        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+
+        String cdSeed = AllNativeMethod.cdCreateSeed(16, 4);
+        Connect.NewConnection newConnection = Connect.NewConnection.newBuilder().
+                setPubKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey))).
+                setSalt(ByteString.copyFrom(cdSeed.getBytes())).build();
+
+        UserCookie tempCookie = new UserCookie();
+        tempCookie.setPriKey(randomPriKey);
+        tempCookie.setPubKey(randomPubKey);
+        tempCookie.setSalt(cdSeed.getBytes());
+        Session.getInstance().setUserCookie("TEMPCOOKIE", tempCookie);
+
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
+                priKey, ConfigUtil.getInstance().serverPubkey(), newConnection.toByteString());
+
+        String pukkey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
+        String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
+        Connect.IMRequest imRequest = Connect.IMRequest.newBuilder().
+                setSign(signHash).
+                setPubKey(pukkey).
+                setCipherData(gcmData).build();
+
+        ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, imRequest.toByteString());
     }
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -55,12 +56,12 @@ public class ChatMsgUtil {
         MsgDirect direct = null;
         MsgSender sender = definBean.getSenderInfoExt();
         if (sender == null) {
-            direct = (definBean.getPublicKey() == null || SharedPreferenceUtil.getInstance().getPubKey().equals(definBean.getPublicKey())) ? MsgDirect.From : MsgDirect.To;
+            direct = (definBean.getPublicKey() == null || MemoryDataManager.getInstance().getPubKey().equals(definBean.getPublicKey())) ? MsgDirect.From : MsgDirect.To;
         } else {
             if (TextUtils.isEmpty(sender.publickey)) {
-                direct = SharedPreferenceUtil.getInstance().getAddress().equals(sender.address) ? MsgDirect.To : MsgDirect.From;
+                direct = MemoryDataManager.getInstance().getAddress().equals(sender.address) ? MsgDirect.To : MsgDirect.From;
             } else {
-                direct = SharedPreferenceUtil.getInstance().getPubKey().equals(sender.publickey) ? MsgDirect.To : MsgDirect.From;
+                direct = MemoryDataManager.getInstance().getPubKey().equals(sender.publickey) ? MsgDirect.To : MsgDirect.From;
             }
         }
         return direct;
@@ -94,6 +95,77 @@ public class ChatMsgUtil {
                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MSGSTATE, roomkey, msgid, state);
             }
         }
+    }
+
+    /**
+<<<<<<< HEAD
+     * Display the list in the session
+     *
+     * @return
+     */
+    public static String showContentTxt(int type, MsgDefinBean definBean) {
+        String content = "";
+        switch (definBean.getType()) {
+            case 1://text
+                content = definBean.getContent();
+                break;
+            case 2://voice
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Audio);
+                break;
+            case 3://picture
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Picture);
+                break;
+            case 4://video
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Video);
+                break;
+            case 5://expression
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Expression);
+                break;
+            case 11://burn message
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Snapchat);
+                break;
+            case 12://burn back
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Snapchat);
+                break;
+            case 14:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Funding);
+                break;
+            case 15:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Transfer);
+                break;
+            case 16:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Red_packet);
+                break;
+            case 17:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Location);
+                break;
+            case 18:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card);
+                break;
+            case 23:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Group_Namecard);
+                break;
+            case 24:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Group_certification);
+                break;
+            default:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Tips);
+                break;
+        }
+
+        switch (type) {
+            case 0:
+                break;
+            case 1://show group member nickname
+                MsgSender msgSender = definBean.getSenderInfoExt();
+                if (msgSender != null && !msgSender.publickey.equals(MemoryDataManager.getInstance().getPubKey())) {
+                    content = msgSender.username + ": " + content;
+                }
+                break;
+            case 2:
+                break;
+        }
+        return content;
     }
 
     /**

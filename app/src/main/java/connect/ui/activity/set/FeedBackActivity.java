@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -59,9 +60,8 @@ public class FeedBackActivity extends BaseActivity {
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_FeedBack);
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
-        webView.loadUrl("https://www.connect.im/mobile/feedback/" + userBean.getAddress() + "?locale=" + languageCode);
+        webView.loadUrl("https://www.connect.im/mobile/feedback/" + MemoryDataManager.getInstance().getAddress() + "?locale=" + languageCode);
         webView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

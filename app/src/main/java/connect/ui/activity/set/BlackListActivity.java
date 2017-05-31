@@ -12,6 +12,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
@@ -38,7 +39,6 @@ public class BlackListActivity extends BaseActivity {
     ListView listView;
 
     private BlackListActivity mActivity;
-    private UserBean userBean;
     private BlackAdapter adapter;
 
     @Override
@@ -56,7 +56,6 @@ public class BlackListActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Link_Black_List);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         adapter = new BlackAdapter();
         adapter.setOnItemChildListence(childClickListence);
         listView.setAdapter(adapter);
@@ -82,7 +81,7 @@ public class BlackListActivity extends BaseActivity {
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
                             List<Connect.UserInfo> list = usersInfo.getUsersList();
                             adapter.setDataNotify(list);

@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,11 +20,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharePreferenceUser;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
@@ -31,7 +34,6 @@ import connect.db.green.DaoManager;
 import connect.db.green.bean.FriendRequestEntity;
 import connect.im.bean.ConnectState;
 import connect.im.bean.Session;
-import connect.im.model.ConnectManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.ChatActivity;
 import connect.ui.activity.chat.bean.Talker;
@@ -40,22 +42,24 @@ import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.bean.MsgSendBean;
 import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.home.bean.MsgNoticeBean;
-import connect.ui.activity.home.fragment.ConversationFragment;
 import connect.ui.activity.home.fragment.ContactFragment;
+import connect.ui.activity.home.fragment.ConversationFragment;
 import connect.ui.activity.home.fragment.SetFragment;
 import connect.ui.activity.home.fragment.WalletFragment;
 import connect.ui.activity.home.view.CheckUpdata;
 import connect.ui.activity.login.LoginForPhoneActivity;
 import connect.ui.activity.login.bean.UserBean;
-import connect.ui.activity.wallet.support.ScanUrlAnalysisUtil;
 import connect.ui.base.BaseFragmentActivity;
 import connect.ui.service.HttpsService;
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.scan.ResolveUrlUtil;
 import connect.view.MaterialBadgeTextView;
 
 /**
@@ -93,8 +97,12 @@ public class HomeActivity extends BaseFragmentActivity {
     private ContactFragment contactFragment;
     private SetFragment setFragment;
     private WalletFragment walletFragment;
-    private ScanUrlAnalysisUtil analysisUtil;
+    private ResolveUrlUtil resolveUrlUtil;
     private CheckUpdata checkUpdata;
+
+    public static void startActivity(Activity activity) {
+        ActivityUtil.next(activity, HomeActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,10 +111,6 @@ public class HomeActivity extends BaseFragmentActivity {
         ButterKnife.bind(this);
         initView();
         EventBus.getDefault().register(this);
-    }
-
-    public static void startActivity(Activity activity) {
-        ActivityUtil.next(activity, HomeActivity.class);
     }
 
     @Override
@@ -126,7 +130,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 DaoManager.getInstance().switchDataBase();
                 FileUtil.getExternalStorePath();
 
-                CrashReport.putUserData(activity, "userAddress", SharedPreferenceUtil.getInstance().getAddress());
+                CrashReport.putUserData(activity, "userAddress", MemoryDataManager.getInstance().getAddress());
                 CrashReport.setUserSceneTag(activity, Integer.valueOf(ConfigUtil.getInstance().getCrashTags()));
                 return null;
             }
@@ -175,8 +179,8 @@ public class HomeActivity extends BaseFragmentActivity {
                 //Remove the local login information
                 SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
                 //close socket
-                SharedPreferenceUtil.getInstance().clearMap();
-                ConnectManager.getInstance().exitConnect();
+                MemoryDataManager.getInstance().clearMap();
+                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, ByteBuffer.allocate(0));
                 SharePreferenceUser.unLinkSharePreferrnce();
                 DaoManager.getInstance().closeDataBase();
                 HttpsService.stopServer(activity);
@@ -199,7 +203,7 @@ public class HomeActivity extends BaseFragmentActivity {
             objs = (Object[]) notice.object;
         }
         if(objs[0] instanceof MsgSendBean){
-            analysisUtil.showMsgTip(notice,"web");
+            resolveUrlUtil.showMsgTip(notice,ResolveUrlUtil.TYPE_OPEN_WEB,false);
         }
     }
 
@@ -332,8 +336,11 @@ public class HomeActivity extends BaseFragmentActivity {
     }
 
     private void checkWebOpen() {
-        analysisUtil = new ScanUrlAnalysisUtil(activity);
-        analysisUtil.checkWebOpen();
+        resolveUrlUtil = new ResolveUrlUtil(activity);
+        String value = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.WEB_OPEN_APP);
+        if (!TextUtils.isEmpty(value)) {
+            resolveUrlUtil.checkAppOpen(value);
+        }
     }
 
     private void requestAppUpdata() {

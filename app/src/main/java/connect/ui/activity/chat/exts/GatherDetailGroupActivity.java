@@ -20,25 +20,22 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.db.SharedPreferenceUtil;
+import connect.db.MemoryDataManager;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.db.green.DaoHelper.TransactionHelper;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.ContainerBean;
 import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.bean.RoomSession;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.wallet.BlockchainActivity;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
-import connect.ui.activity.wallet.support.TransaUtil;
-import connect.ui.activity.wallet.support.TransferError;
+import connect.utils.transfer.TransferError;
+import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.TimeUtil;
-import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -145,21 +142,20 @@ public class GatherDetailGroupActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CROWDFUN_INFO, hashId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
                         throw new Exception("Validation fails");
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     crowdfunding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
                     List<Connect.CrowdfundingRecord> records = crowdfunding.getRecords().getListList();
 
                     Connect.UserInfo senderInfo = crowdfunding.getSender();
                     GlideUtil.loadAvater(roundimg, senderInfo.getAvatar());
                     String senderName = "";
-                    if (SharedPreferenceUtil.getInstance().getAddress().equals(senderInfo.getAddress())) {
+                    if (MemoryDataManager.getInstance().getAddress().equals(senderInfo.getAddress())) {
                         senderName = activity.getString(R.string.Chat_You);
                     } else {
                         senderName = senderInfo.getUsername();
@@ -176,7 +172,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
                     txt3.setText(String.format(getString(R.string.Wallet_Goal), RateFormatUtil.longToDoubleBtc(crowdfunding.getTotal())));
 
                     long singePayAmount = crowdfunding.getTotal() / crowdfunding.getSize();
-                    if (SharedPreferenceUtil.getInstance().getAddress().equals(senderInfo.getAddress())) {
+                    if (MemoryDataManager.getInstance().getAddress().equals(senderInfo.getAddress())) {
                         txt4.setText(String.format(getString(R.string.Wallet_BTC_Each), RateFormatUtil.longToDoubleBtc(singePayAmount)));
                     } else {
                         txt4.setText(String.format(getString(R.string.Wallet_BTC_Each), RateFormatUtil.longToDoubleBtc(singePayAmount)));
@@ -185,7 +181,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
                     if (crowdfunding.getStatus() == 0) {
                         layoutFirst.setVisibility(View.GONE);
                         txt6.setVisibility(View.VISIBLE);
-                        if (SharedPreferenceUtil.getInstance().getAddress().equals(senderInfo.getAddress())) {//You initiate the raise
+                        if (MemoryDataManager.getInstance().getAddress().equals(senderInfo.getAddress())) {//You initiate the raise
                             btn.setVisibility(View.GONE);
                         } else {
                             btn.setVisibility(View.VISIBLE);
@@ -204,7 +200,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
                     ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.GATHER_DETAIL, msgId, 1, payMemCount, crowdSize);
 
                     for (Connect.CrowdfundingRecord record : records) {
-                        if (SharedPreferenceUtil.getInstance().getAddress().equals(record.getUser().getAddress())) {
+                        if (MemoryDataManager.getInstance().getAddress().equals(record.getUser().getAddress())) {
                             txt6.setVisibility(View.GONE);
                             btn.setVisibility(View.GONE);
                         }
@@ -227,7 +223,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
      * Get the wallet balance
      */
     private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, SharedPreferenceUtil.getInstance().getUser().getAddress());
+        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
@@ -263,9 +259,9 @@ public class GatherDetailGroupActivity extends BaseActivity {
     protected void requestGatherPayment() {
         final long amount = crowdfunding.getTotal() / crowdfunding.getSize();
         WalletAccountBean accountBean = ParamManager.getInstance().getWalletAmount();
-        new TransaUtil().getOutputTran(activity, SharedPreferenceUtil.getInstance().getAddress(), false,
+        new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), false,
                 crowdfunding.getSender().getAddress(), accountBean.getAvaAmount(),amount,
-                new TransaUtil.OnResultCall() {
+                new TransferUtil.OnResultCall() {
             @Override
             public void result(String inputString, String outputString) {
                 checkPayPassword(inputString, outputString);
@@ -279,13 +275,8 @@ public class GatherDetailGroupActivity extends BaseActivity {
             paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
                 @Override
                 public void onTrue() {
-                    String samValue = new TransaUtil().getSignRawTrans(SharedPreferenceUtil.getInstance().getPriKey(), inputString, outputString);
+                    String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     groupMemPayment(samValue);
-                }
-
-                @Override
-                public void onFalse() {
-
                 }
             });
         }
@@ -304,7 +295,6 @@ public class GatherDetailGroupActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CROWDFUN_PAY, funding, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess);
@@ -312,7 +302,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
                         throw new Exception("Validation fails");
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.Crowdfunding crowdfunding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
 
                     String contactName = crowdfunding.getSender().getUsername();

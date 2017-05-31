@@ -20,6 +20,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
@@ -54,7 +55,6 @@ public class SearchServerActivity extends BaseActivity {
     LinearLayout resultLin;
 
     private SearchServerActivity mActivity;
-    private UserBean userBean;
 
     public static void startActivity(Activity activity, String text) {
         Bundle bundle = new Bundle();
@@ -76,7 +76,6 @@ public class SearchServerActivity extends BaseActivity {
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Search_friends);
-        userBean = SharedPreferenceUtil.getInstance().getUser();
 
         searchEdit.setOnKeyListener(keyListener);
         searchEdit.addTextChangedListener(textWatcher);
@@ -101,7 +100,7 @@ public class SearchServerActivity extends BaseActivity {
             nickname.setText(userInfo.getUsername());
 
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
-            if(userInfo.getPubKey().equals(userBean.getPubKey())){
+            if(userInfo.getPubKey().equals(MemoryDataManager.getInstance().getPubKey())){
                 resultLin.removeAllViews();
                 noResultTv.setVisibility(View.VISIBLE);
             }else if(friendEntity != null){
@@ -198,8 +197,7 @@ public class SearchServerActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(
-                            SharedPreferenceUtil.getInstance().getUser().getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     updataView(userInfo);
                 } catch (InvalidProtocolBufferException e) {

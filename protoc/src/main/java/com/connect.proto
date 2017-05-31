@@ -570,12 +570,14 @@ message CommandDetail {
 int32 cmd_type=1;
 Command cmd=2;
 }
+
 message DeviceInfo {
-string deviceId=1;
-string deviceName=2;
-string locale = 3;
-int32 cv = 4;
-string uuid=5;
+    string deviceId = 1;
+    string deviceName = 2;
+    string locale = 3;
+    int32 cv = 4;
+    string uuid = 5;
+    ChatCookieData chatCookieData = 6;
 }
 
 message QuitMessage {

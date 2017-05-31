@@ -11,6 +11,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -39,7 +40,6 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
     private TransferOutViaHistoryActivity mActivity;
     private final int PAGESIZE_MAX = 10;
     private int page = 1;
-    private UserBean userBean;
     private TransferOutAdapter transferOutAdapter;
 
     @Override
@@ -56,7 +56,6 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Chat_History);
-        userBean = SharedPreferenceUtil.getInstance().getUser();
 
         transferOutAdapter = new TransferOutAdapter();
         listView.setAdapter(transferOutAdapter);
@@ -98,7 +97,7 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.ExternalBillingInfos externalBillingInfos = Connect.ExternalBillingInfos.parseFrom(structData.getPlainData());
                     List<Connect.ExternalBillingInfo> list = externalBillingInfos.getExternalBillingInfosList();
 

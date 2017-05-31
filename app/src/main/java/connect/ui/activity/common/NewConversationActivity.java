@@ -20,6 +20,7 @@ import connect.ui.activity.R;
 import connect.ui.activity.common.bean.ConverType;
 import connect.ui.activity.contact.adapter.ShareCardContactAdapter;
 import connect.ui.activity.contact.model.ContactListManage;
+import connect.ui.activity.home.bean.ContactBean;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -41,8 +42,8 @@ public class NewConversationActivity extends BaseActivity {
     private static final int CODE_REQUEST = 512;
 
     private NewConversationActivity activity;
-    private List<ContactEntity> groupList;
-    private HashMap<String, List<ContactEntity>> friendMap;
+    private List<ContactBean> groupList;
+    private HashMap<String, List<ContactBean>> friendMap;
     private ShareCardContactAdapter adapter;
 
     private ConverType converType;
@@ -94,7 +95,7 @@ public class NewConversationActivity extends BaseActivity {
             public void onTouchingLetterChanged(String s) {
                 int position = adapter.getPositionForSection(s.charAt(0));
                 if(position >= 0){
-                    listView.setSelection(position + 1);
+                    listView.setSelection(position);
                 }
             }
         });
@@ -104,16 +105,16 @@ public class NewConversationActivity extends BaseActivity {
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener(){
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final ContactEntity roomAttrBean = (ContactEntity)parent.getAdapter().getItem(position);
+            final ContactBean roomAttrBean = (ContactBean)parent.getAdapter().getItem(position);
 
             String title = "";
             String message = "";
             switch (converType) {
                 case URL:
-                    message = getString(R.string.Link_Share_to, roomAttrBean.getUsername());
+                    message = getString(R.string.Link_Share_to, roomAttrBean.getName());
                     break;
                 case TRANSPOND:
-                    message = getString(R.string.Link_Send_to, roomAttrBean.getUsername());
+                    message = getString(R.string.Link_Send_to, roomAttrBean.getName());
                     break;
             }
 
@@ -137,8 +138,8 @@ public class NewConversationActivity extends BaseActivity {
             @Override
             protected Void doInBackground(Void... params) {
                 ContactListManage contactManage = new ContactListManage();
-                groupList = contactManage.getGroupList();
-                friendMap = contactManage.getFriendListNoSys("");
+                groupList = contactManage.getGroupData();
+                friendMap = contactManage.getFriendListExcludeSys("");
                 return null;
             }
 
@@ -151,7 +152,7 @@ public class NewConversationActivity extends BaseActivity {
     }
 
     private void bindData() {
-        ArrayList<ContactEntity> finalList = new ArrayList<>();
+        ArrayList<ContactBean> finalList = new ArrayList<>();
         finalList.addAll(friendMap.get("favorite"));
         finalList.addAll(groupList);
         finalList.addAll(friendMap.get("friend"));

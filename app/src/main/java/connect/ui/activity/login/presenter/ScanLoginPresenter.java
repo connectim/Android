@@ -134,12 +134,4 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter{
                 });
     }
 
-    public interface OnScanLoginListence{
-        Activity getActivity();
-
-        void goinCodeLogin(UserBean userBean,String token);
-
-        void goinRegister(String priKey);
-    }
-
 }

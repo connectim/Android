@@ -91,7 +91,7 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
                 }else{
                     setBtnEnabled(false);
                 }
-            } catch (NumberParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 setBtnEnabled(false);
             }

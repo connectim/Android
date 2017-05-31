@@ -16,23 +16,22 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.db.SharedPreferenceUtil;
+import connect.db.MemoryDataManager;
 import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.adapter.FriendGridAdapter;
 import connect.ui.activity.wallet.bean.FriendSeleBean;
 import connect.ui.activity.wallet.bean.TranAddressBean;
 import connect.ui.activity.wallet.contract.TransferFriendContract;
 import connect.ui.activity.wallet.presenter.TransferFriendPresenter;
-import connect.ui.activity.wallet.support.TransaUtil;
+import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.view.TopToolBar;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 
 /**
  * Transfer to friend
@@ -55,9 +54,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
 
     private TransferFriendActivity mActivity;
     private TransferFriendContract.Presenter presenter;
-
-    private UserBean userBean;
-    private TransaUtil transaUtil;
+    private TransferUtil transaUtil;
     private FriendGridAdapter friendGridAdapter;
     private final int BACK_CODE = 102;
     private final int BACK_DEL_CODE = 103;
@@ -96,8 +93,6 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         List<ContactEntity> list = friendSeleBean.getList();
         presenter.setListData(list);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
-
         friendGridAdapter = new FriendGridAdapter();
         listView.setAdapter(friendGridAdapter);
         listView.setOnItemClickListener(presenter.getItemClickListener());
@@ -107,7 +102,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         transferEditView.setEditListener(presenter.getOnEditListener());
         presenter.horizontal_layout(listView);
 
-        transaUtil = new TransaUtil();
+        transaUtil = new TransferUtil();
         paymentPwd = new PaymentPwd();
     }
 
@@ -158,8 +153,8 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         for (ContactEntity friendEntity : presenter.getListFriend()) {
             arrayList.add(new TranAddressBean(friendEntity.getAddress(), amount));
         }
-        transaUtil.getOutputTran(mActivity, userBean.getAddress(), false, arrayList,
-                transferEditView.getAvaAmount(), amount, new TransaUtil.OnResultCall() {
+        transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), false, arrayList,
+                transferEditView.getAvaAmount(), amount, new TransferUtil.OnResultCall() {
                     @Override
                     public void result(String inputString, String outputString) {
                         checkPayPassword(amount, inputString, outputString);
@@ -172,13 +167,8 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
             paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
                 @Override
                 public void onTrue() {
-                    String samValue = transaUtil.getSignRawTrans(userBean.getPriKey(), inputString, outputString);
+                    String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     presenter.requestSend(amount, samValue,transferEditView.getNote(),paymentPwd);
-                }
-
-                @Override
-                public void onFalse() {
-
                 }
             });
 

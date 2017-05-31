@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.db.SharePreferenceUser;
-import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.wallet.bean.AddressBean;
 import connect.ui.activity.wallet.contract.AddressBookContract;
@@ -50,7 +49,7 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.AddressBook addressBook = Connect.AddressBook.parseFrom(structData.getPlainData());
                             List<Connect.AddressBook.AddressInfo> list = addressBook.getAddressInfoList();
                             listAddress = switchList(list);
@@ -69,6 +68,9 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
 
     @Override
     public void requestAddAddress(final String address) {
+        if(null == listAddress){
+            return;
+        }
         if(listAddress.contains(address)){
             ToastEUtil.makeText(mView.getActivity(),R.string.Chat_Address_already_exists).show();
         }
