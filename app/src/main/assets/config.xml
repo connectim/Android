@@ -25,17 +25,4 @@
         </SERVER_PUBKEY>
         <CRASH_TAGS>40295</CRASH_TAGS>
     </property>
-
-    <property>
-        <APP_MODE>release</APP_MODE>
-        <HTTP_MODE>true</HTTP_MODE>
-        <SERVER_ADDRESS>https://short.connect.im</SERVER_ADDRESS>
-        <SOCKET_ADDRESS>im.connect.im</SOCKET_ADDRESS>
-        <SOCKET_PORT>19090</SOCKET_PORT>
-        <SHARE_CARD_ADDRESS>https://me.connect.im/share/v1/contact/</SHARE_CARD_ADDRESS>
-        <SHARE_PAY_ADDRESS>https://transfer.connect.im/share/v1/pay</SHARE_PAY_ADDRESS>
-        <SERVER_PUBKEY>038bf4f74a5aaad532179c9714e2fa6ac8342b5b2c608572e4a12e8708401e0632
-        </SERVER_PUBKEY>
-        <CRASH_TAGS>40297</CRASH_TAGS>
-    </property>
 </Propertys>
