@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
@@ -95,12 +96,27 @@ public class ShakeHandBean extends InterParse {
         String deviceName = Build.DEVICE;
         String local = SystemDataUtil.getDeviceLanguage();
         String uuid=SystemDataUtil.getLocalUid();
-        Connect.DeviceInfo deviceInfo = Connect.DeviceInfo.newBuilder()
+
+        Connect.DeviceInfo.Builder deviceBuilder = Connect.DeviceInfo.newBuilder()
                 .setDeviceId(deviceId)
                 .setDeviceName(deviceName)
                 .setLocale(local)
                 .setCv(0)
-                .setUuid(uuid).build();
+                .setUuid(uuid);
+
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
+        String cookieKey = "COOKIE:" + pubkey;
+        ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+        if (paramEntity != null) {
+            UserCookie userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+            Connect.ChatCookieData cookieData = Connect.ChatCookieData.newBuilder().
+                    setChatPubKey(userCookie.getPubKey()).
+                    setSalt(ByteString.copyFrom(userCookie.getSalt())).
+                    setExpired(userCookie.getExpiredTime()).build();
+            deviceBuilder.setChatCookieData(cookieData);
+        }
+
+        Connect.DeviceInfo deviceInfo = deviceBuilder.build();
         Connect.GcmData gcmDataTemp = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE, saltByte, deviceInfo.toByteString());
 
         //imTransferData
