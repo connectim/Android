@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PBRule>
-    <CheckPB name='TestPB'>
+    <TestPB>
         <attr name='name' ext='reg'>[0-9]{12}</attr>
         <attr name='age' ext='string'></attr>
         <attr name='phone' ext='int'></attr>
         <attr name='money' ext='float'></attr>
         <attr name='sex' ext='bool'></attr>
-    </CheckPB>
+    </TestPB>
 
-    <CheckPB name='HttpResponse'>
+    <HttpResponse>
         <attr name='code' ext='int'></attr>
         <attr name='message' ext='string'></attr>
-    </CheckPB>
+    </HttpResponse>
 </PBRule>

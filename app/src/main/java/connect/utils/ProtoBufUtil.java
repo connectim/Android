@@ -23,6 +23,7 @@ import connect.ui.base.BaseApplication;
 
 public class ProtoBufUtil {
 
+    private String Tag = "ProtoBufUtil";
     private static ProtoBufUtil protoBufUtil;
     private Map<String, Map<String, Map>> protoBufMap = new HashMap<>();
 
@@ -66,11 +67,12 @@ public class ProtoBufUtil {
                 case XmlPullParser.START_DOCUMENT:
                     break;
                 case XmlPullParser.START_TAG:
-                    nameTxt = pullParser.getAttributeValue("", "name");
                     extTxt = pullParser.getAttributeValue("", "ext");
                     if (TextUtils.isEmpty(extTxt)) {
+                        nameTxt = pullParser.getName();
                         pbTxt = nameTxt;
                     } else {
+                        nameTxt = pullParser.getAttributeValue("", "name");
                         eventType = pullParser.next();
                         contentTxt = pullParser.getText();
 
