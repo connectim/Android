@@ -98,7 +98,7 @@ public class TransactionActivity extends BaseActivity {
                 try {
                     Connect.Transactions transactions = Connect.Transactions.parseFrom(response.getBody());
                     List<Connect.Transaction> list = transactions.getTransactionsList();
-                    ArrayList<Connect.Transaction> listChecks = new ArrayList<Connect.Transaction>();
+                    ArrayList<Connect.Transaction> listChecks = new ArrayList<>();
                     for(Connect.Transaction transaction : list){
                         if(ProtoBufUtil.getInstance().checkProtoBuf(transaction)){
                             listChecks.add(transaction);

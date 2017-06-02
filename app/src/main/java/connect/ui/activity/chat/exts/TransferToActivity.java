@@ -226,7 +226,9 @@ public class TransferToActivity extends BaseActivity {
                                 public void onComplete() {
                                     try {
                                         Connect.BillHashId billHashId = Connect.BillHashId.parseFrom(structData.getPlainData());
-                                        requestPublicTx(billHashId.getHash(), samValue);
+                                        if(ProtoBufUtil.getInstance().checkProtoBuf(billHashId)){
+                                            requestPublicTx(billHashId.getHash(), samValue);
+                                        }
                                     } catch (InvalidProtocolBufferException e) {
                                         e.printStackTrace();
                                     }

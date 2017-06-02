@@ -37,6 +37,7 @@ import connect.ui.activity.contact.StrangerInfoActivity;
 import connect.ui.activity.contact.bean.SourceType;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -217,7 +218,10 @@ public class HandleJoinGroupActivity extends BaseActivity {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    infoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)){
+                        infoBase = groupInfoBase;
+                    }
                     showGroupInfo();
                 } catch (Exception e) {
                     e.printStackTrace();

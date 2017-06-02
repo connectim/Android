@@ -19,6 +19,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.adapter.RedHistoryAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -105,19 +106,21 @@ public class PacketHistoryActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.RedPackageInfos redPackageInfos = Connect.RedPackageInfos.parseFrom(structData.getPlainData());
-                    List<Connect.RedPackageInfo> list = redPackageInfos.getRedPackageInfosList();
-                    if(page > 1){
-                        redHistoryAdapter.setNotifyData(list,false);
-                    }else{
-                        redHistoryAdapter.setNotifyData(list,true);
-                    }
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(redPackageInfos)){
+                        List<Connect.RedPackageInfo> list = redPackageInfos.getRedPackageInfosList();
+                        if(page > 1){
+                            redHistoryAdapter.setNotifyData(list,false);
+                        }else{
+                            redHistoryAdapter.setNotifyData(list,true);
+                        }
 
-                    listView.stopRefresh();
-                    listView.stopLoadMore();
-                    if(list.size() == PAGESIZE_MAX){
-                        listView.setPullLoadEnable(true);
-                    }else{
-                        listView.setPullLoadEnable(false);
+                        listView.stopRefresh();
+                        listView.stopLoadMore();
+                        if(list.size() == PAGESIZE_MAX){
+                            listView.setPullLoadEnable(true);
+                        }else{
+                            listView.setPullLoadEnable(false);
+                        }
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

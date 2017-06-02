@@ -150,8 +150,11 @@ public class HttpsService extends Service {
         HttpsService.sendEstimatefee();
 
         if (ParamHelper.getInstance().loadParamEntity(ParamManager.COUNTRY_RATE) == null) {
-            RateBean rateBean = RateDataUtil.getInstance().getRate(SystemDataUtil.getCountryCode());
-            ParamManager.getInstance().putCountryRate(rateBean);
+            String countryCode = SystemDataUtil.getCountryCode();
+            if(!TextUtils.isEmpty(countryCode)){
+                RateBean rateBean = RateDataUtil.getInstance().getRate(countryCode);
+                ParamManager.getInstance().putCountryRate(rateBean);
+            }
         }
 
         HttpsService.sendBlackList();
@@ -319,8 +322,9 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
-
-                    createLocalGroupInfo(groupInfo);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)){
+                        createLocalGroupInfo(groupInfo);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -409,6 +413,9 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupCollaborative groupCollaborative = Connect.GroupCollaborative.parseFrom(structData.getPlainData().toByteArray());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(groupCollaborative)){
+                        return;
+                    }
                     String[] infos = groupCollaborative.getCollaborative().split("/");
                     if (infos.length < 2) {
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownGroupBackUp, pubkey);
@@ -446,6 +453,9 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.DownloadBackUpResp backUpResp = Connect.DownloadBackUpResp.parseFrom(structData.getPlainData().toByteArray());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(backUpResp)){
+                        return;
+                    }
                     String[] infos = backUpResp.getBackup().split("/");
                     if (infos.length >= 2) {
                         byte[] ecdHkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), infos[0]);

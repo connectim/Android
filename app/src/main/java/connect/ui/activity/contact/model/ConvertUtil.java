@@ -53,10 +53,10 @@ public class ConvertUtil {
      * Query whether registered users to add
      *
      * @param localList
-     * @param bookUsersInfo
+     * @param listUserInfo
      * @param handler
      */
-    public void convertUserInfo(final List<PhoneContactBean> localList, final Connect.PhoneBookUsersInfo bookUsersInfo, final Handler handler) {
+    public void convertUserInfo(final List<PhoneContactBean> localList, final ArrayList<Connect.PhoneBookUserInfo> listUserInfo, final Handler handler) {
         new AsyncTask<Void, Void, HashMap<String,List<PhoneContactBean>>>() {
             @Override
             protected HashMap<String,List<PhoneContactBean>> doInBackground(Void... params) {
@@ -64,7 +64,7 @@ public class ConvertUtil {
                 ArrayList<PhoneContactBean> arrayList = new ArrayList<>();
                 ArrayList<PhoneContactBean> local = new ArrayList<>();
 
-                for (Connect.PhoneBookUserInfo bookUserInfo : bookUsersInfo.getUsersList()) {
+                for (Connect.PhoneBookUserInfo bookUserInfo : listUserInfo) {
                     Connect.UserInfo userInfo = bookUserInfo.getUser();
                     PhoneContactBean contactBean = new PhoneContactBean();
                     contactBean.setNickName(userInfo.getUsername());

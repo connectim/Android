@@ -126,6 +126,9 @@ public class TransferDetailActivity extends BaseActivity {
                             }
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
+                            if(!ProtoBufUtil.getInstance().checkProtoBuf(bill)){
+                                return;
+                            }
 
                             loadSenderInfo(bill.getSender());
                             loadReceiverInfo(bill.getReceiver());

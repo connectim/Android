@@ -140,6 +140,9 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     billDetail = Connect.Bill.parseFrom(structData.getPlainData());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(billDetail)){
+                        return;
+                    }
 
                     String username = "";
                     ContactEntity entity = null;

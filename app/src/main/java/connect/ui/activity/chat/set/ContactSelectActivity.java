@@ -39,6 +39,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.adapter.MulContactAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -281,8 +282,10 @@ public class ContactSelectActivity extends BaseActivity {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
-                    loadGroupDb(groupname, groupInfo);
-                    newGroupBroadCast(groupInfo);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)){
+                        loadGroupDb(groupname, groupInfo);
+                        newGroupBroadCast(groupInfo);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -392,7 +395,9 @@ public class ContactSelectActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInviteResponseList responseList = Connect.GroupInviteResponseList.parseFrom(structData.getPlainData());
                     for (Connect.GroupInviteResponse res : responseList.getListList()) {
-                        sendFriendInvite(res.getAddress(), res.getToken());
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(res)){
+                            sendFriendInvite(res.getAddress(), res.getToken());
+                        }
                     }
 
                     ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {

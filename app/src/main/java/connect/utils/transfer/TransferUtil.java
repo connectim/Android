@@ -18,6 +18,7 @@ import connect.ui.activity.set.bean.PaySetBean;
 import connect.ui.activity.wallet.bean.SignRawBean;
 import connect.ui.activity.wallet.bean.TranAddressBean;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
@@ -146,7 +147,9 @@ public class TransferUtil {
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     Connect.UnspentOrderResponse orderResponse = Connect.UnspentOrderResponse.parseFrom(response.getBody());
-                    checkUnspend(orderResponse);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(orderResponse)){
+                        checkUnspend(orderResponse);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -22,6 +22,7 @@ import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.contract.NewFriendContract;
 import connect.ui.activity.home.bean.WalletMenuBean;
 import connect.ui.activity.wallet.adapter.WalletMenuAdapter;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -78,7 +79,12 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             if(structData != null){
                                 Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
-                                List<Connect.UserInfo> list = usersInfo.getUsersList();
+                                ArrayList<Connect.UserInfo> list = new ArrayList<>();
+                                for(Connect.UserInfo userInfo : usersInfo.getUsersList()){
+                                    if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                                        list.add(userInfo);
+                                    }
+                                }
                                 ContactHelper.getInstance().inserRecommendEntity(list);
                             }
                             queryFriend();

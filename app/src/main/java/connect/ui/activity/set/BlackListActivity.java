@@ -7,6 +7,7 @@ import android.widget.ListView;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -21,6 +22,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.adapter.BlackAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -84,7 +86,13 @@ public class BlackListActivity extends BaseActivity {
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
                             List<Connect.UserInfo> list = usersInfo.getUsersList();
-                            adapter.setDataNotify(list);
+                            ArrayList<Connect.UserInfo> listCheck = new ArrayList<>();
+                            for(Connect.UserInfo userInfo : list){
+                                if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                                    listCheck.add(userInfo);
+                                }
+                            }
+                            adapter.setDataNotify(listCheck);
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }

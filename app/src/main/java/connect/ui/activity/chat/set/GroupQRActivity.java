@@ -24,6 +24,7 @@ import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -144,16 +145,17 @@ public class GroupQRActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupHash groupHash = Connect.GroupHash.parseFrom(structData.getPlainData());
-
-                    String hash = groupHash.getHash();
-                    if (TextUtils.isEmpty(hash)) {
-                        toolbar.setRightImg(null);
-                        txt3.setVisibility(View.VISIBLE);
-                    } else {
-                        txt3.setVisibility(View.GONE);
-                        CreateScan createScan = new CreateScan();
-                        Bitmap bitmap = createScan.generateQRCode(hash, getResources().getColor(R.color.color_white));
-                        img1.setImageBitmap(bitmap);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupHash)){
+                        String hash = groupHash.getHash();
+                        if (TextUtils.isEmpty(hash)) {
+                            toolbar.setRightImg(null);
+                            txt3.setVisibility(View.VISIBLE);
+                        } else {
+                            txt3.setVisibility(View.GONE);
+                            CreateScan createScan = new CreateScan();
+                            Bitmap bitmap = createScan.generateQRCode(hash, getResources().getColor(R.color.color_white));
+                            img1.setImageBitmap(bitmap);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -179,7 +181,7 @@ public class GroupQRActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupUrl groupUrl = Connect.GroupUrl.parseFrom(structData.getPlainData());
-                    if(TextUtils.isEmpty(groupUrl.getUrl())){
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(groupUrl)){
                         ToastEUtil.makeText(activity,R.string.Link_Share_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
                         return;
                     }

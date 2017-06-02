@@ -114,7 +114,6 @@ public class UriUtil {
     /** Many people transfer */
     public static String WALLET_BILLING_MUILT_SEND = "/wallet/v1/billing/muilt_send";
 
-
     /**======================================================================================
      *                                contact
      * ====================================================================================== */
@@ -177,7 +176,6 @@ public class UriUtil {
     public static String GROUP_REJECT = "/connect/v1/group/reject";
     /** Upload groups face */
     public static String GROUP_AVATAR = "/connect/v1/group/avatar";
-
     /** Single initiate payment */
     public static String BILLING_RECIVE = "/wallet/v1/billing/recive";
     /** Group a collection */

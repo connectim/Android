@@ -17,6 +17,7 @@ import connect.ui.activity.R;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -130,7 +131,10 @@ public class ApplyJoinGroupActivity extends BaseActivity {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    infoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)){
+                        infoBase = groupInfoBase;
+                    }
                     requestBaseInfoSucces();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -157,16 +161,18 @@ public class ApplyJoinGroupActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInfoBaseShare baseShare = Connect.GroupInfoBaseShare.parseFrom(structData.getPlainData());
-                    groupKey[0] = baseShare.getIdentifier();
-                    infoBase = Connect.GroupInfoBase.newBuilder()
-                            .setAvatar(baseShare.getAvatar())
-                            .setHash(baseShare.getHash())
-                            .setCount(baseShare.getCount())
-                            .setName(baseShare.getName())
-                            .setPublic(baseShare.getPublic())
-                            .setSummary(baseShare.getSummary()).build();
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(baseShare)){
+                        groupKey[0] = baseShare.getIdentifier();
+                        infoBase = Connect.GroupInfoBase.newBuilder()
+                                .setAvatar(baseShare.getAvatar())
+                                .setHash(baseShare.getHash())
+                                .setCount(baseShare.getCount())
+                                .setName(baseShare.getName())
+                                .setPublic(baseShare.getPublic())
+                                .setSummary(baseShare.getSummary()).build();
 
-                    requestBaseInfoSucces();
+                        requestBaseInfoSucces();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -193,7 +199,10 @@ public class ApplyJoinGroupActivity extends BaseActivity {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    infoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)){
+                        infoBase = groupInfoBase;
+                    }
                     requestBaseInfoSucces();
                 } catch (Exception e) {
                     e.printStackTrace();
