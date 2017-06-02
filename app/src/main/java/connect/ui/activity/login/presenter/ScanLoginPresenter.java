@@ -15,6 +15,7 @@ import connect.ui.activity.login.contract.ScanLoginContract;
 import connect.ui.activity.set.presenter.BackUpPresenter;
 import connect.utils.ConfigUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
@@ -111,15 +112,19 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter{
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,priKey,imResponse.getCipherData());
                             Connect.UserExistedToken existedToken = Connect.UserExistedToken.parseFrom(structData.getPlainData());
-                            Connect.UserInfo userInfo = existedToken.getUserInfo();
-                            UserBean userBean = new UserBean();
-                            userBean.setAddress(userInfo.getAddress());
-                            userBean.setName(userInfo.getUsername());
-                            userBean.setAvatar(userInfo.getAvatar());
-                            userBean.setPriKey(priKey);
-                            userBean.setPubKey(userInfo.getPubKey());
-                            userBean.setConnectId(userInfo.getConnectId());
-                            mView.goinCodeLogin(userBean,existedToken.getToken());
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(existedToken)){
+                                Connect.UserInfo userInfo = existedToken.getUserInfo();
+                                if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                                    UserBean userBean = new UserBean();
+                                    userBean.setAddress(userInfo.getAddress());
+                                    userBean.setName(userInfo.getUsername());
+                                    userBean.setAvatar(userInfo.getAvatar());
+                                    userBean.setPriKey(priKey);
+                                    userBean.setPubKey(userInfo.getPubKey());
+                                    userBean.setConnectId(userInfo.getConnectId());
+                                    mView.goinCodeLogin(userBean,existedToken.getToken());
+                                }
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }

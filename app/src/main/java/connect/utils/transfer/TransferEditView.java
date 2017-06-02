@@ -29,6 +29,7 @@ import connect.ui.activity.wallet.bean.RateBean;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
 import connect.ui.base.BaseApplication;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
 import connect.utils.data.RateDataUtil;
@@ -317,9 +318,11 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                 try {
                     if (response.getCode() == 2000) {
                         Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        accountBean = new WalletAccountBean(unspentAmount.getAmount(),unspentAmount.getAvaliableAmount());
-                        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
+                            accountBean = new WalletAccountBean(unspentAmount.getAmount(),unspentAmount.getAvaliableAmount());
+                            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                                    RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

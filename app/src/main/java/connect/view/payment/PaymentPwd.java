@@ -33,6 +33,7 @@ import connect.ui.activity.set.PaymentActivity;
 import connect.ui.activity.set.bean.PaySetBean;
 import connect.ui.adapter.ViewPagerAdapter;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
@@ -369,12 +370,14 @@ public class PaymentPwd implements View.OnClickListener{
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                    if(payPinVersion.getVersion().equals(paySetBean.getVersionPay()) ){
-                        decodePass(pass);
-                    }else{
-                        requestSetPayInfo(pass);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
+                        if(payPinVersion.getVersion().equals(paySetBean.getVersionPay()) ){
+                            decodePass(pass);
+                        }else{
+                            requestSetPayInfo(pass);
+                        }
+                        paySetBean.setVersionPay(payPinVersion.getVersion());
                     }
-                    paySetBean.setVersionPay(payPinVersion.getVersion());
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -400,9 +403,11 @@ public class PaymentPwd implements View.OnClickListener{
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.parseFrom(structData.getPlainData());
-                            paySetBean.setPayPin(paymentSetting.getPayPin());
-                            ParamManager.getInstance().putPaySet(paySetBean);
-                            decodePass(pass);
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(paymentSetting)){
+                                paySetBean.setPayPin(paymentSetting.getPayPin());
+                                ParamManager.getInstance().putPaySet(paySetBean);
+                                decodePass(pass);
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }
@@ -435,10 +440,12 @@ public class PaymentPwd implements View.OnClickListener{
                         Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                         Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                         Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                        paySetBean.setPayPin(encryPass);
-                        paySetBean.setVersionPay(payPinVersion.getVersion());
-                        ParamManager.getInstance().putPaySet(paySetBean);
-                        onTrueListener.onTrue();
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
+                            paySetBean.setPayPin(encryPass);
+                            paySetBean.setVersionPay(payPinVersion.getVersion());
+                            ParamManager.getInstance().putPaySet(paySetBean);
+                            onTrueListener.onTrue();
+                        }
                     } catch (InvalidProtocolBufferException e) {
                         e.printStackTrace();
                     }

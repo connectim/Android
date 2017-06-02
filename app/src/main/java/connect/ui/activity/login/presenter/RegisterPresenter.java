@@ -19,6 +19,7 @@ import connect.ui.base.BaseApplication;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -77,8 +78,10 @@ public class RegisterPresenter implements RegisterContract.Presenter{
                 }
                 try {
                     Connect.AvatarInfo userAvatar = Connect.AvatarInfo.parseFrom(response.getBody());
-                    headPath = userAvatar.getUrl();
-                    mView.showAvatar(headPath);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(userAvatar)){
+                        headPath = userAvatar.getUrl();
+                        mView.showAvatar(headPath);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

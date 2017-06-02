@@ -28,6 +28,7 @@ import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.NormalChat;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
+import connect.utils.ProtoBufUtil;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
@@ -301,16 +302,17 @@ public class TransferToActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
-                    friendEntity = new ContactEntity();
-                    friendEntity.setPub_key(sendUserInfo.getPubKey());
-                    friendEntity.setUsername(sendUserInfo.getUsername());
-                    friendEntity.setAddress(sendUserInfo.getAddress());
-                    friendEntity.setAvatar(sendUserInfo.getAvatar());
-                    friendEntity.setAddress(sendUserInfo.getAddress());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)){
+                        friendEntity = new ContactEntity();
+                        friendEntity.setPub_key(sendUserInfo.getPubKey());
+                        friendEntity.setUsername(sendUserInfo.getUsername());
+                        friendEntity.setAddress(sendUserInfo.getAddress());
+                        friendEntity.setAvatar(sendUserInfo.getAvatar());
 
-                    GlideUtil.loadAvater(roundimg, friendEntity.getAvatar());
-                    String username = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
-                    txt1.setText(getString(R.string.Wallet_Transfer_To_User, username));
+                        GlideUtil.loadAvater(roundimg, friendEntity.getAvatar());
+                        String username = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
+                        txt1.setText(getString(R.string.Wallet_Transfer_To_User, username));
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

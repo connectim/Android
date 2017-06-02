@@ -35,6 +35,7 @@ import connect.ui.activity.wallet.bean.RateBean;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
 import connect.ui.base.BaseFragment;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
@@ -181,9 +182,11 @@ public class WalletFragment extends BaseFragment {
                 try {
                     if (response.getCode() == 2000) {
                         Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                        ParamManager.getInstance().putWalletAmount(accountBean);
-                        amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
+                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
+                            ParamManager.getInstance().putWalletAmount(accountBean);
+                            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

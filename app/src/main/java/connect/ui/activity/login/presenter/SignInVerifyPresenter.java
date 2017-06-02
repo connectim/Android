@@ -23,6 +23,7 @@ import connect.ui.activity.set.LinkChangePhoneActivity;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
@@ -97,14 +98,16 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
                 ProgressUtil.getInstance().dismissProgress();
                 try {
                     Connect.UserInfoDetail userInfoDetail = Connect.UserInfoDetail.parseFrom(response.getBody());
-                    UserBean userBean = new UserBean();
-                    userBean.setPhone(countryCode + "-" + phone);
-                    userBean.setAvatar(userInfoDetail.getAvatar());
-                    userBean.setName(userInfoDetail.getUsername());
-                    userBean.setTalkKey(userInfoDetail.getEncryptionPri());
-                    userBean.setPassHint(userInfoDetail.getPasswordHint());
-                    userBean.setConnectId(userInfoDetail.getConnectId());
-                    mView.goinCodeLogin(userBean);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(userInfoDetail)){
+                        UserBean userBean = new UserBean();
+                        userBean.setPhone(countryCode + "-" + phone);
+                        userBean.setAvatar(userInfoDetail.getAvatar());
+                        userBean.setName(userInfoDetail.getUsername());
+                        userBean.setTalkKey(userInfoDetail.getEncryptionPri());
+                        userBean.setPassHint(userInfoDetail.getPasswordHint());
+                        userBean.setConnectId(userInfoDetail.getConnectId());
+                        mView.goinCodeLogin(userBean);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

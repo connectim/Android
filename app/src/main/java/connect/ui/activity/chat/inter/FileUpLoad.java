@@ -18,6 +18,7 @@ import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.ui.activity.chat.model.content.GroupChat;
 import connect.utils.FileUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -76,7 +77,9 @@ public abstract class FileUpLoad {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.FileData fileData = Connect.FileData.parseFrom(structData.getPlainData());
-                    fileResult.resultUpUrl(fileData);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(fileData)){
+                        fileResult.resultUpUrl(fileData);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

@@ -9,6 +9,7 @@ import java.util.List;
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.wallet.contract.PacketDetailContract;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -71,7 +72,9 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    mView.updataSendView(sendUserInfo);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)){
+                        mView.updataSendView(sendUserInfo);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

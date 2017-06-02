@@ -3,6 +3,7 @@ package connect.utils;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Xml;
+import android.widget.Toast;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.GeneratedMessageV3;
@@ -13,9 +14,14 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import connect.ui.activity.R;
 import connect.ui.base.BaseApplication;
+import connect.utils.cryption.SupportKeyUril;
+import connect.utils.log.LogManager;
+import protos.Connect;
 
 /**
  * Created by pujin on 2017/5/31.
@@ -23,8 +29,10 @@ import connect.ui.base.BaseApplication;
 
 public class ProtoBufUtil {
 
+    private String Tag = "ProtoBufUtil";
     private static ProtoBufUtil protoBufUtil;
     private Map<String, Map<String, Map>> protoBufMap = new HashMap<>();
+    private Map<String, Map<String, Map>> protoBufMap11 = new HashMap<>();
 
     public ProtoBufUtil() {
         try {
@@ -66,12 +74,13 @@ public class ProtoBufUtil {
                 case XmlPullParser.START_DOCUMENT:
                     break;
                 case XmlPullParser.START_TAG:
-                    nameTxt = pullParser.getAttributeValue("", "name");
-                    extTxt = pullParser.getAttributeValue("", "ext");
+                    extTxt = pullParser.getAttributeValue("", "type");
                     if (TextUtils.isEmpty(extTxt)) {
+                        nameTxt = pullParser.getName();
                         pbTxt = nameTxt;
                     } else {
-                        eventType = pullParser.next();
+                        nameTxt = pullParser.getAttributeValue("", "name");
+                        //eventType = pullParser.next();
                         contentTxt = pullParser.getText();
 
                         pbMap = protoBufMap.get(pbTxt);
@@ -82,7 +91,7 @@ public class ProtoBufUtil {
                         if (attrMap == null) {
                             attrMap = new HashMap();
                         }
-                        attrMap.put("EXT", extTxt);
+                        attrMap.put("TYPE", extTxt);
                         attrMap.put("CONTENT", contentTxt);
 
                         pbMap.put(nameTxt, attrMap);
@@ -95,6 +104,8 @@ public class ProtoBufUtil {
             eventType = pullParser.next();
         }
     }
+
+
 
     public boolean checkProtoBuf(GeneratedMessageV3 messageV3) {
         String nameTxt = messageV3.getClass().getSimpleName();
@@ -123,13 +134,30 @@ public class ProtoBufUtil {
             checkstate = fieldMap.containsKey(attrTxt);
             if (checkstate) {
                 Map<String, String> contentMap = attr.getValue();
-                String extTxt = contentMap.get("EXT");
+                String extTxt = contentMap.get("TYPE");
                 String content = contentMap.get("CONTENT");
 
-                String value = String.valueOf(fieldMap.get(attrTxt));
+                Object value = fieldMap.get(attrTxt);
                 switch (extTxt) {
                     case "reg":
-                        checkstate = RegularUtil.matches(value, content);
+                        checkstate = RegularUtil.matches(String.valueOf(value), content);
+                        break;
+                    case "bytes":
+                        byte[] byteValue = (byte[])value;
+                        if(TextUtils.isEmpty(content)){
+                            checkstate = byteValue.length > 0 ? true : false;
+                        }else{
+                            checkstate = byteValue.length == Integer.valueOf(content) ? true : false;
+                        }
+                        break;
+                    case "address":
+                        checkstate = SupportKeyUril.checkAddress(String.valueOf(value));
+                        break;
+                    case "list":
+                        List list = (List)value;
+                        checkstate = list.size() > 0 ? true : false;
+                        break;
+                    case "proto":
                         break;
                     case "string":
                         break;
@@ -137,10 +165,14 @@ public class ProtoBufUtil {
                         break;
                     case "float":
                         break;
-                    case "bool":
+                    default:
                         break;
                 }
             }
+        }
+        LogManager.getLogger().d(Tag, checkstate ? "YES" : "NO");
+        if(!checkstate){
+            Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_data_error,Toast.LENGTH_LONG).show();
         }
         return checkstate;
     }

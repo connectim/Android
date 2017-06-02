@@ -21,6 +21,7 @@ import connect.ui.activity.set.manager.PassManager;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
@@ -227,11 +228,13 @@ public class PaymentActivity extends BaseActivity {
                         Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                         Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                         Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                        paySetBean.setPayPin(encryPass);
-                        paySetBean.setVersionPay(payPinVersion.getVersion());
-                        ParamManager.getInstance().putPaySet(paySetBean);
-                        ToastEUtil.makeText(mActivity, R.string.Wallet_Set_Payment_Password_Successful).show();
-                        updataView();
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
+                            paySetBean.setPayPin(encryPass);
+                            paySetBean.setVersionPay(payPinVersion.getVersion());
+                            ParamManager.getInstance().putPaySet(paySetBean);
+                            ToastEUtil.makeText(mActivity, R.string.Wallet_Set_Payment_Password_Successful).show();
+                            updataView();
+                        }
                     } catch (InvalidProtocolBufferException e) {
                         e.printStackTrace();
                     }

@@ -46,6 +46,7 @@ import connect.ui.activity.set.bean.PaySetBean;
 import connect.ui.activity.set.bean.PrivateSetBean;
 import connect.ui.activity.wallet.bean.RateBean;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
+import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -257,11 +258,13 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, prikey, imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
-                    if (tokenResponse.getExpired() <= 400) {
-                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
-                    } else {
-                        serviceHandler.removeMessages(SALT_TIMEOUT);
-                        serviceHandler.sendEmptyMessageDelayed(SALT_TIMEOUT, tokenResponse.getExpired());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
+                        if (tokenResponse.getExpired() <= 400) {
+                            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
+                        } else {
+                            serviceHandler.removeMessages(SALT_TIMEOUT);
+                            serviceHandler.sendEmptyMessageDelayed(SALT_TIMEOUT, tokenResponse.getExpired());
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -288,12 +291,13 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, prikey, imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
+                        byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray(), 64);
+                        ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_SALT, StringUtil.bytesToHexString(salts));
+                        ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_EXPIRED, String.valueOf(tokenResponse.getExpired()));
 
-                    byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray(), 64);
-                    ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_SALT, StringUtil.bytesToHexString(salts));
-                    ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_EXPIRED, String.valueOf(tokenResponse.getExpired()));
-
-                    loginSuccessHttp();
+                        loginSuccessHttp();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -490,8 +494,10 @@ public class HttpsService extends Service {
                                 paySetBean = PaySetBean.initPaySet();
                             } else {
                                 Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.parseFrom(structData.getPlainData());
-                                paySetBean = new PaySetBean(paymentSetting);
-                                paySetBean.setAutoFee(false);
+                                if(ProtoBufUtil.getInstance().checkProtoBuf(paymentSetting)){
+                                    paySetBean = new PaySetBean(paymentSetting);
+                                    paySetBean.setAutoFee(false);
+                                }
                             }
                             ParamManager.getInstance().putPaySet(paySetBean);
                             getPayVersion(paySetBean);
@@ -518,8 +524,10 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                    paySetBean.setVersionPay(payPinVersion.getVersion());
-                    ParamManager.getInstance().putPaySet(paySetBean);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
+                        paySetBean.setVersionPay(payPinVersion.getVersion());
+                        ParamManager.getInstance().putPaySet(paySetBean);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -545,10 +553,12 @@ public class HttpsService extends Service {
                                 privateSetBean = PrivateSetBean.initSetBean();
                             } else {
                                 Connect.Privacy privacy = Connect.Privacy.parseFrom(structData.getPlainData());
-                                privateSetBean = new PrivateSetBean();
-                                privateSetBean.setPhoneFind(privacy.getPhoneNum());
-                                privateSetBean.setAddressFind(privacy.getAddress());
-                                privateSetBean.setRecommend(privacy.getRecommend());
+                                if(ProtoBufUtil.getInstance().checkProtoBuf(privacy)){
+                                    privateSetBean = new PrivateSetBean();
+                                    privateSetBean.setPhoneFind(privacy.getPhoneNum());
+                                    privateSetBean.setAddressFind(privacy.getAddress());
+                                    privateSetBean.setRecommend(privacy.getRecommend());
+                                }
                             }
                             ParamManager.getInstance().putPrivateSet(privateSetBean);
                         } catch (InvalidProtocolBufferException e) {
@@ -571,8 +581,10 @@ public class HttpsService extends Service {
                 try {
                     if (response.getCode() == 2000) {
                         Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                        ParamManager.getInstance().putWalletAmount(accountBean);
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
+                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
+                            ParamManager.getInstance().putWalletAmount(accountBean);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
