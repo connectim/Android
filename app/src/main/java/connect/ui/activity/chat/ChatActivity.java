@@ -25,7 +25,6 @@ import connect.db.green.bean.ConversionSettingEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.im.bean.MsgType;
-import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSend;
@@ -118,6 +117,7 @@ public class ChatActivity extends BaseChatActvity {
         ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
         long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? 0 : chatSetEntity.getSnap_time();
         roomSession.setBurntime(burntime);
+        updateBurnState(burntime == 0 ? 0 : 1);
 
         chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
         recyclerChat.setLayoutManager(linearLayoutManager);
