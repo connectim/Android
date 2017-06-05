@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 
 import com.google.protobuf.ByteString;
 
+import java.io.File;
+
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.MsgType;
@@ -41,16 +43,19 @@ public class PhotoUpload extends FileUpLoad {
             protected Void doInBackground(Void... params) {
                 try {
                     String filePath = bean.getContent();
-                    String comFist = BitmapUtil.resizeImage(filePath, BitmapUtil.bigWidth);
-                    String comSecond = BitmapUtil.resizeImage(comFist, BitmapUtil.smallWidth);
+
+                    File firstFile = BitmapUtil.getInstance().compress(filePath);
+                    File secondFile = BitmapUtil.getInstance().compress(firstFile.getAbsolutePath());
+                    String firstPath = firstFile.getAbsolutePath();
+                    String secondPath = secondFile.getAbsolutePath();
 
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inJustDecodeBounds = true;
+                    options.inSampleSize = 1;
                     BitmapFactory.decodeFile(filePath, options);
-
                     bean.setImageOriginWidth(options.outWidth);
                     bean.setImageOriginHeight(options.outHeight);
-                    bean.setExt1(FileUtil.fileSize(comSecond));
+                    bean.setExt1(FileUtil.fileSize(firstPath));
 
                     String pubkey = MemoryDataManager.getInstance().getPubKey();
                     String priKey = MemoryDataManager.getInstance().getPriKey();
@@ -59,11 +64,11 @@ public class PhotoUpload extends FileUpLoad {
                     Connect.RichMedia richMedia = null;
                     if (baseChat.roomType() == 2) {
                         richMedia = Connect.RichMedia.newBuilder().
-                                setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(comFist))).
-                                setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(comSecond))).build();
+                                setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(firstPath))).
+                                setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(secondPath))).build();
                     } else {
-                        Connect.GcmData firstGcmData = encodeAESGCMStructData(comSecond);
-                        Connect.GcmData secondGcmData = encodeAESGCMStructData(comFist);
+                        Connect.GcmData firstGcmData = encodeAESGCMStructData(firstPath);
+                        Connect.GcmData secondGcmData = encodeAESGCMStructData(secondPath);
                         richMedia = Connect.RichMedia.newBuilder().
                                 setThumbnail(firstGcmData.toByteString()).
                                 setEntity(secondGcmData.toByteString()).build();
@@ -71,6 +76,9 @@ public class PhotoUpload extends FileUpLoad {
 
                     gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT,priKey, richMedia.toByteString());
                     mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
+
+                    firstFile.delete();
+                    secondFile.delete();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

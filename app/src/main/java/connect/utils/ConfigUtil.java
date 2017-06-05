@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import connect.ui.base.BaseApplication;
-import connect.utils.log.LogManager;
 
 /**
  * Created by gtq on 2016/12/26.
@@ -67,14 +66,12 @@ public class ConfigUtil {
                     if (nameTxt.equals("APP_MODE")) {
                         if (contentTxt.equals("" + mode)) {
                             findMode = true;
-                            LogManager.getLogger().d(Tag, "APP_MODE find mode");
                         } else {
                             findMode = false;
                         }
                     }
 
                     if (findMode) {
-                        LogManager.getLogger().d(Tag, nameTxt + "-->" + contentTxt);
                         keyMaps.put(nameTxt, contentTxt);
                     }
                     break;

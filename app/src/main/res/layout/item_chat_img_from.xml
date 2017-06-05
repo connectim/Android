@@ -39,8 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                app:riv_corner_radius="@dimen/dp_10"/>
+                android:scaleType="centerCrop"/>
         </RelativeLayout>
     </LinearLayout>
 

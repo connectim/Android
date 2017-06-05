@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.io.File;
 import java.util.List;
 
 import connect.db.MemoryDataManager;
@@ -65,7 +66,8 @@ public class RegisterPresenter implements RegisterContract.Presenter{
     @Override
     public void requestUserHead(final String pathLocal){
         ProgressUtil.getInstance().showProgress(mView.getActivity());
-        String path = BitmapUtil.resizeImage(pathLocal,1080);
+        File file = BitmapUtil.getInstance().compress(pathLocal);
+        String path = file.getAbsolutePath();
         byte[] headByte = BitmapUtil.bmpToByteArray(BitmapFactory.decodeFile(path));
         FileUtil.deleteFile(path);
         HttpRequest.getInstance().post(UriUtil.AVATAR_V1_UP, headByte, new ResultCall<Connect.HttpNotSignResponse>() {
