@@ -155,6 +155,7 @@ public class ChatActivity extends BaseChatActvity {
         ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
         long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? 0 : chatSetEntity.getSnap_time();
         roomSession.setBurntime(burntime);
+        updateBurnState(burntime == 0 ? 0 : 1);
 
         chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
         recyclerChat.setLayoutManager(linearLayoutManager);
@@ -529,7 +530,7 @@ public class ChatActivity extends BaseChatActvity {
                 StringBuffer indexName = new StringBuffer();
                 indexName.append(name.charAt(0));
                 if (name.length() > 2) {
-                    for (int i = 1; i < name.length() - 1; i++) {
+                    for (int i = 1; i < name.length() - 1 && i < 5; i++) {
                         indexName.append("*");
                     }
                 }
@@ -538,7 +539,7 @@ public class ChatActivity extends BaseChatActvity {
                     toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
                 } else {
                     List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(baseChat.roomKey());
-                    toolbar.setTitle(indexName + String.format(Locale.ENGLISH,"(%d)", memEntities.size()));
+                    toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
                 }
                 break;
         }
