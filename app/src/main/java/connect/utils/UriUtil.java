@@ -125,8 +125,6 @@ public class UriUtil {
     public static String CONNEXT_V1_BLACKLIST_LIST = "/connect/v1/blacklist/list";
     /** sync friend */
     public static String CONNEXT_V1_USERS_PHONEBOOK = "/connect/v1/users/phonebook";
-    /** user search */
-    public static String CONNEXT_V1_USERS_SEARCH = "/connect/v1/users/search";
     /** People may know */
     public static String CONNEXT_V1_USERS_RECOMMEND = "/connect/v1/users/recommend";
     /** Get friends transfer record */

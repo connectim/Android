@@ -132,7 +132,9 @@ public class ProtoBufUtil {
         for (Map.Entry<String, Map> attr : attrMap.entrySet()) {
             String attrTxt = attr.getKey();
             checkstate = fieldMap.containsKey(attrTxt);
-            if (checkstate) {
+            if (!checkstate){
+                break;
+            } else{
                 Map<String, String> contentMap = attr.getValue();
                 String extTxt = contentMap.get("TYPE");
                 String content = contentMap.get("CONTENT");
@@ -143,19 +145,11 @@ public class ProtoBufUtil {
                         checkstate = RegularUtil.matches(String.valueOf(value), content);
                         break;
                     case "bytes":
-                        byte[] byteValue = (byte[])value;
-                        if(TextUtils.isEmpty(content)){
-                            checkstate = byteValue.length > 0 ? true : false;
-                        }else{
-                            checkstate = byteValue.length == Integer.valueOf(content) ? true : false;
-                        }
                         break;
                     case "address":
                         checkstate = SupportKeyUril.checkAddress(String.valueOf(value));
                         break;
                     case "list":
-                        List list = (List)value;
-                        checkstate = list.size() > 0 ? true : false;
                         break;
                     case "proto":
                         break;
@@ -172,7 +166,7 @@ public class ProtoBufUtil {
         }
         LogManager.getLogger().d(Tag, checkstate ? "YES" : "NO");
         if(!checkstate){
-            Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_data_error,Toast.LENGTH_LONG).show();
+            Toast.makeText(BaseApplication.getInstance(), nameTxt + "----" + R.string.ErrorCode_data_error,Toast.LENGTH_LONG).show();
         }
         return checkstate;
     }

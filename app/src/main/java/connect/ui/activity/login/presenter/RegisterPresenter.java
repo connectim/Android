@@ -66,9 +66,7 @@ public class RegisterPresenter implements RegisterContract.Presenter{
     @Override
     public void requestUserHead(final String pathLocal){
         ProgressUtil.getInstance().showProgress(mView.getActivity());
-        String path = BitmapUtil.resizeImage(pathLocal,1080);
-        byte[] headByte = BitmapUtil.bmpToByteArray(BitmapFactory.decodeFile(path));
-        FileUtil.deleteFile(path);
+        byte[] headByte = BitmapUtil.bmpToByteArray(BitmapUtil.getSmallBitmap(pathLocal,500,500),100);
         HttpRequest.getInstance().post(UriUtil.AVATAR_V1_UP, headByte, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
@@ -146,7 +144,11 @@ public class RegisterPresenter implements RegisterContract.Presenter{
 
                     @Override
                     public void onError(Connect.HttpResponse response) {
-                        Toast.makeText(mView.getActivity(),response.getMessage(),Toast.LENGTH_LONG).show();
+                        if (response.getCode() == 2101){
+                            Toast.makeText(mView.getActivity(),R.string.Login_User_avatar_is_illegal,Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(mView.getActivity(),response.getMessage(),Toast.LENGTH_LONG).show();
+                        }
                         ProgressUtil.getInstance().dismissProgress();
                     }
                 });

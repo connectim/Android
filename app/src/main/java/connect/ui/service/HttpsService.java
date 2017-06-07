@@ -504,10 +504,8 @@ public class HttpsService extends Service {
                                 paySetBean = PaySetBean.initPaySet();
                             } else {
                                 Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.parseFrom(structData.getPlainData());
-                                if(ProtoBufUtil.getInstance().checkProtoBuf(paymentSetting)){
-                                    paySetBean = new PaySetBean(paymentSetting);
-                                    paySetBean.setAutoFee(false);
-                                }
+                                paySetBean = new PaySetBean(paymentSetting);
+                                paySetBean.setAutoFee(false);
                             }
                             ParamManager.getInstance().putPaySet(paySetBean);
                             getPayVersion(paySetBean);
@@ -563,12 +561,10 @@ public class HttpsService extends Service {
                                 privateSetBean = PrivateSetBean.initSetBean();
                             } else {
                                 Connect.Privacy privacy = Connect.Privacy.parseFrom(structData.getPlainData());
-                                if(ProtoBufUtil.getInstance().checkProtoBuf(privacy)){
-                                    privateSetBean = new PrivateSetBean();
-                                    privateSetBean.setPhoneFind(privacy.getPhoneNum());
-                                    privateSetBean.setAddressFind(privacy.getAddress());
-                                    privateSetBean.setRecommend(privacy.getRecommend());
-                                }
+                                privateSetBean = new PrivateSetBean();
+                                privateSetBean.setPhoneFind(privacy.getPhoneNum());
+                                privateSetBean.setAddressFind(privacy.getAddress());
+                                privateSetBean.setRecommend(privacy.getRecommend());
                             }
                             ParamManager.getInstance().putPrivateSet(privateSetBean);
                         } catch (InvalidProtocolBufferException e) {

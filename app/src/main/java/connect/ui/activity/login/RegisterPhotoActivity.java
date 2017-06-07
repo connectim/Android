@@ -63,6 +63,7 @@ public class RegisterPhotoActivity extends BaseActivity {
     private File file;
     private String photo_path = "";
     public static final int REQUEST_CODE = 100;
+    private boolean safeToTakePicture = true;
 
     public static void startActivity(Activity activity) {
         ActivityUtil.next(activity, RegisterPhotoActivity.class, REQUEST_CODE);
@@ -135,7 +136,15 @@ public class RegisterPhotoActivity extends BaseActivity {
         takePhotoImg.setEnabled(false);
         if (mCamera == null)
             return;
-        mCamera.takePicture(null, null, mPictureCallback);
+        try {
+            if(safeToTakePicture){
+                mCamera.takePicture(null, null, mPictureCallback);
+                safeToTakePicture = false;
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.sele_photos_tv)
@@ -190,12 +199,16 @@ public class RegisterPhotoActivity extends BaseActivity {
             takePhotoImg.setEnabled(true);
             file = fileSavaManage.getPhotoFile(data);
             releasedCamera();
+            if (file == null) {
+                //no path to picture, return
+                safeToTakePicture = true;
+                return;
+            }
             Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
             /*Matrix matrix = new Matrix();
             matrix.postRotate(cameraManager.getCameraDisplayOrientation(mActivity, cameraManager.getCameraPosition()));
             matrix.postScale(1, cameraManager.getCameraPosition()==1 ? -1 : 1);
             Bitmap cropRotateScaled = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);*/
-
             int w = bitmap.getWidth();
             int retY = toolbarTop.getHeight();
             int h = w;
@@ -205,9 +218,10 @@ public class RegisterPhotoActivity extends BaseActivity {
             }
             Bitmap cropBitmap = Bitmap.createBitmap(bitmap, 0, retY, w, h, null, false);
             String cropPath = BitmapUtil.bitmapSavePath(cropBitmap, null,100);
-
             FileUtil.deleteFile(file.getPath());
             PreviewPhotoActivity.startActivity(mActivity, cropPath);
+
+            safeToTakePicture = true;
         }
     };
 

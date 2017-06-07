@@ -2,9 +2,7 @@
 <PBRule>
     <Transaction>
         <attr name='hash' type='string'></attr>
-        <attr name='tx_type' type='int'></attr>
         <attr name='balance' type='int'></attr>
-        <attr name='confirmations' type='int'></attr>
     </Transaction>
 
     <UsersInfo>
@@ -23,7 +21,7 @@
     <UserInfo>
         <attr name='username' type='string'></attr>
         <attr name='avatar' type='string'></attr>
-        <attr name='pub_key' type='string'></attr>
+        <attr name='pubKey' type='string'></attr>
         <attr name='address' type='address'></attr>
     </UserInfo>
 
@@ -44,11 +42,10 @@
         <attr name='source' type='int'></attr>
     </AddFriendRequest>
 
-    <Privacy>
-        <attr name='address' type='bool'></attr>
-        <attr name='phone_num' type='bool'></attr>
-        <attr name='recommend' type='bool'></attr>
-    </Privacy>
+    <PendingRedPackage>
+        <attr name='address' type='address'></attr>
+        <attr name='hashId' type='string'></attr>
+    </PendingRedPackage>
 
     <SyncRelationship>
         <attr name='version' type='string'></attr>
@@ -69,11 +66,11 @@
     </FriendBillsMessage>
 
     <FriendBill>
-        <attr name='created_at' type='int'></attr>
+        <attr name='createdAt' type='int'></attr>
         <attr name='amount' type='int'></attr>
         <attr name='status' type='int'></attr>
         <attr name='category' type='string'></attr>
-        <attr name='tx_id' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='txId' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
     </FriendBill>
 
     <AddressInfo>
@@ -86,8 +83,8 @@
     </Bill>
 
     <FriendRecords>
-        <attr name='self_address' type='address'></attr>
-        <attr name='friend_address' type='address'></attr>
+        <attr name='selfAddress' type='address'></attr>
+        <attr name='friendAddress' type='address'></attr>
         <attr name='pageSize' type='int'></attr>
         <attr name='pageIndex' type='int'></attr>
     </FriendRecords>
@@ -105,7 +102,7 @@
         <attr name='tips' type='string'></attr>
         <attr name='status' type='int'></attr>
         <attr name='records' type='proto'></attr>
-        <attr name='created_at' type='int'></attr>
+        <attr name='createdAt' type='int'></attr>
     </Crowdfunding>
 
     <CrowdfundingRecord>
@@ -176,8 +173,8 @@
     </GroupInfoBase>
 
     <GroupApplyMessage>
-        <attr name='apply_data' type='bytes'></attr>
-        <attr name='message_id' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='applyData' type='bytes'></attr>
+        <attr name='messageId' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
     </GroupApplyMessage>
 
     <GroupReviewed>
@@ -189,7 +186,7 @@
 
     <CreateGroupMessage>
         <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
-        <attr name='secret_key' type='string'></attr>
+        <attr name='secretKey' type='string'></attr>
     </CreateGroupMessage>
 
     <BillHashId>
@@ -197,15 +194,15 @@
     </BillHashId>
 
     <MessageData>
-        <attr name='receiver_address' type='address'></attr>
-        <attr name='msg_id' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
-        <attr name='cipher_data' type='proto'></attr>
+        <attr name='receiverAddress' type='address'></attr>
+        <attr name='msgId' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='cipherData' type='proto'></attr>
     </MessageData>
 
     <MessagePost>
-        <attr name='pub_key' type='string'></attr>
+        <attr name='pubKey' type='string'></attr>
         <attr name='sign' type='string'></attr>
-        <attr name='msg_data' type='proto'></attr>
+        <attr name='msgData' type='proto'></attr>
     </MessagePost>
 
     <ReceiveBill>
@@ -215,7 +212,7 @@
     </ReceiveBill>
 
     <LaunchCrowdfunding>
-        <attr name='group_hash' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='groupHash' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
         <attr name='size' type='int'></attr>
         <attr name='total' type='int'></attr>
         <attr name='tips' type='string'></attr>
@@ -287,9 +284,9 @@
     </GroupUrl>
 
     <PayCrowdfunding>
-        <attr name='hash_id' type='string'></attr>
+        <attr name='hashId' type='string'></attr>
         <attr name='amount' type='int'></attr>
-        <attr name='raw_tx' type='string'></attr>
+        <attr name='rawTx' type='string'></attr>
     </PayCrowdfunding>
 
     <Crowdfundings>
@@ -353,13 +350,13 @@
     </ReviewedResponse>
 
     <Announcement>
-        <attr name='created_at' type='float'></attr>
+        <attr name='createdAt' type='float'></attr>
         <attr name='title' type='string'></attr>
         <attr name='content' type='string'></attr>
         <attr name='url' type='string'></attr>
         <attr name='category' type='int'></attr>
         <attr name='desc' type='string'></attr>
-        <attr name='covers_url' type='string'></attr>
+        <attr name='coversUrl' type='string'></attr>
         <attr name='title' type='string'></attr>
     </Announcement>
 
@@ -370,13 +367,13 @@
 
     <IMTransferData>
         <attr name='sign' type='string'></attr>
-        <attr name='cipher_data' type='proto'></attr>
+        <attr name='cipherData' type='proto'></attr>
     </IMTransferData>
 
     <UserInfoDetail>
         <attr name='username' type='string'></attr>
         <attr name='avatar' type='string'></attr>
-        <attr name='encryption_pri' type='string'></attr>
+        <attr name='encryptionPri' type='string'></attr>
     </UserInfoDetail>
 
     <PhoneBook>
@@ -402,19 +399,16 @@
     </UserExistedToken>
 
     <GenerateTokenResponse>
-        <attr name='salt' type='bytes'></attr>
         <attr name='expired' type='int'></attr>
     </GenerateTokenResponse>
 
     <VersionResponse>
         <attr name='version' type='string'></attr>
-        <attr name='force' type='bool'></attr>
-        <attr name='upgrade_url' type='string'></attr>
+        <attr name='upgradeUrl' type='string'></attr>
     </VersionResponse>
 
     <PaymentSetting>
-        <attr name='pay_pin' type='string'></attr>
-        <attr name='no_secret_pay' type='bool'></attr>
+        <attr name='payPin' type='string'></attr>
         <attr name='fee' type='int'></attr>
     </PaymentSetting>
 
@@ -438,7 +432,7 @@
     </UnspentOrderResponse>
 
     <RedPackage>
-        <attr name='hash_id' type='string'></attr>
+        <attr name='hashId' type='string'></attr>
     </RedPackage>
 
     <RedPackageInfos>

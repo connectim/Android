@@ -64,6 +64,7 @@ public class VideoBtnView extends LinearLayout{
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
+        // SimpleOnGestureListener  +  时间 方式来处理 点击 长按
         if(action == MotionEvent.ACTION_UP && isLong){
             isLong = false;
             progressbar.setVisibility(GONE);

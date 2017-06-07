@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.hardware.Camera;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -102,21 +100,6 @@ public class CameraManager {
     }
 
     /**
-     * Set camera flash
-     * @param mCamera
-     */
-    public void setFlashParameters(Camera mCamera) {
-        Camera.Parameters mParameters = mCamera.getParameters();
-        if (isSupportedLight) {
-            String flashMode = isLighting ? Camera.Parameters.FLASH_MODE_OFF : Camera.Parameters.FLASH_MODE_TORCH;
-            mParameters.setFlashMode(flashMode);
-            mCamera.setParameters(mParameters);
-            isLighting = !isLighting;
-        }
-        //setParametersCamera(mCamera);
-    }
-
-    /**
      * Set the camera to camera (turn off the old camera, turn on the new camera)
      * @param mCamera
      */
@@ -126,6 +109,7 @@ public class CameraManager {
         }
         try {
             mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
             mCamera.release();
             cameraPosition = cameraPosition == 1 ? 0 : 1;
             Camera mNewCamera = getCameraInstance(cameraPosition);
@@ -155,62 +139,6 @@ public class CameraManager {
             e.printStackTrace();
         }
         return mCamera;
-    }
-
-    /**
-     * By comparison, the nearest size (if the same size is preferred) is obtained
-     * Resolve the preview image
-     * @param surfaceWidth Need to be compared to the original width
-     * @param surfaceHeight Need to be compared to the original height
-     * @param preSizeList Preview size list
-     * @return Get the closest size to the original width height
-     */
-    protected Camera.Size getCloselyPreSize(int surfaceWidth, int surfaceHeight, List<Camera.Size> preSizeList) {
-
-        int ReqTmpWidth;
-        int ReqTmpHeight;
-        // When the screen is perpendicular to the width of the need to replace the high value to ensure that the width is greater than the high
-        ReqTmpWidth = surfaceHeight;
-        ReqTmpHeight = surfaceWidth;
-        /*if (mIsPortrait) {
-            ReqTmpWidth = surfaceHeight;
-            ReqTmpHeight = surfaceWidth;
-        } else {
-             ReqTmpWidth = surfaceWidth;
-            ReqTmpHeight = surfaceHeight;
-        }*/
-
-        for(Camera.Size size : preSizeList){
-            /*if((size.width == ReqTmpWidth) && (size.height == ReqTmpHeight)){
-                return size;
-            }*/
-            if(size.height == ReqTmpHeight){
-                return size;
-            }
-        }
-
-        float reqRatio = ((float) ReqTmpWidth) / ReqTmpHeight;
-        float curRatio, deltaRatio;
-        float deltaRatioMin = Float.MAX_VALUE;
-        Camera.Size retSize = null;
-        for (Camera.Size size : preSizeList) {
-            curRatio = ((float) size.width) / size.height;
-            deltaRatio = Math.abs(reqRatio - curRatio);
-            if (deltaRatio < deltaRatioMin) {
-                deltaRatioMin = deltaRatio;
-                retSize = size;
-            }
-        }
-        return retSize;
-    }
-
-    protected Camera.Size getPictureSize(int surfaceWidth,int surfaceHeight, List<Camera.Size> preSizeList) {
-        for(Camera.Size size : preSizeList){
-            if(size.height == surfaceWidth && size.width == surfaceHeight){
-                return size;
-            }
-        }
-        return null;
     }
 
     public int getCameraRotation(int cameraId) {
@@ -250,24 +178,8 @@ public class CameraManager {
         camera.setDisplayOrientation(result);
     }
 
-    public boolean isLighting() {
-        return isLighting;
-    }
-
-    public void setLighting(boolean lighting) {
-        isLighting = lighting;
-    }
-
-    public boolean isSupportedLight() {
-        return isSupportedLight;
-    }
-
     public int getCameraPosition() {
         return cameraPosition;
-    }
-
-    public void setCameraPosition(int cameraPosition) {
-        this.cameraPosition = cameraPosition;
     }
 
 }

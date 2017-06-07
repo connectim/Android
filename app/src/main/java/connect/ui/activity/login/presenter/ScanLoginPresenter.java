@@ -1,6 +1,5 @@
 package connect.ui.activity.login.presenter;
 
-import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;

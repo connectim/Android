@@ -193,7 +193,7 @@ public class SearchServerActivity extends BaseActivity {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(text)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {

@@ -102,12 +102,10 @@ public class ModifyAvaterPresenter implements ModifyAvaterContract.Presenter{
         new AsyncTask<Void, Void, Connect.Avatar>() {
             @Override
             protected Connect.Avatar doInBackground(Void... params) {
-                String path = BitmapUtil.resizeImage(pathLocal,1080);
-                byte[] headByte = BitmapUtil.bmpToByteArray(BitmapFactory.decodeFile(path));
+                byte[] headByte = BitmapUtil.bmpToByteArray(BitmapUtil.getSmallBitmap(pathLocal,500,500),100);
                 Connect.Avatar avatar = Connect.Avatar.newBuilder()
                         .setFile(ByteString.copyFrom(headByte))
                         .build();
-                FileUtil.deleteFile(path);
                 FileUtil.deleteFile(pathLocal);
                 return avatar;
             }

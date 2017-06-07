@@ -64,7 +64,9 @@ public class BitmapUtil {
      * Image scaling (use Bitmap plus Matrix to zoom)
      */
     public static String resizeImage(String filePath, int w){
-        Bitmap BitmapOrg = BitmapFactory.decodeFile(filePath);
+        //Bitmap BitmapOrg = BitmapFactory.decodeFile(filePath);
+        Bitmap BitmapOrg = getSmallBitmap(filePath,720,1280);
+
         int width = BitmapOrg.getWidth();
         int height = BitmapOrg.getHeight();
         int newWidth = w;
@@ -108,10 +110,6 @@ public class BitmapUtil {
      * @param bmp
      * @return
      */
-    public static byte[] bmpToByteArray(final Bitmap bmp) {
-        return bmpToByteArray(bmp,100);
-    }
-
     public static byte[] bmpToByteArray(final Bitmap bmp,int quality) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, quality, output);

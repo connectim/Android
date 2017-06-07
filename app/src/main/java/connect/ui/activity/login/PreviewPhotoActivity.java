@@ -17,6 +17,7 @@ import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.FileUtil;
+import connect.utils.glide.GlideUtil;
 import connect.view.HightEqWidthImage;
 import connect.view.TopToolBar;
 
@@ -64,7 +65,7 @@ public class PreviewPhotoActivity extends BaseActivity {
         bundle = getIntent().getExtras();
         pathImag = bundle.getString("path");
 
-        previewImg.setImageBitmap(BitmapFactory.decodeFile(pathImag));
+        GlideUtil.loadAvater(previewImg,pathImag);
     }
 
     @OnClick(R.id.retake_rela)
