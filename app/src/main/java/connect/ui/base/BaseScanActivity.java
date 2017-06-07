@@ -208,7 +208,7 @@ public abstract class BaseScanActivity extends BaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bitmap scanBitmap = BitmapUtil.getSmallBitmap(photo_path,480,800);
+                Bitmap scanBitmap = BitmapUtil.getInstance().compress(photo_path, 480, 800);
                 String resultString = decodeQRImage(scanBitmap);
                 if (resultString != null) {
                     Message m = handler.obtainMessage();
@@ -242,7 +242,7 @@ public abstract class BaseScanActivity extends BaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bitmap scanBitmap = BitmapUtil.getSmallBitmap(photo_path,480,800);
+                Bitmap scanBitmap = BitmapUtil.getInstance().compress(photo_path,480,800);
                 String resultString = decodeQRImage(scanBitmap);
                 if (resultString != null) {
                     Message m = handler.obtainMessage();

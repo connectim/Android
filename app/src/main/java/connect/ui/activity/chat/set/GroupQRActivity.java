@@ -111,7 +111,7 @@ public class GroupQRActivity extends BaseActivity {
                                         }
                                     });
                         } else if (activity.getResources().getString(R.string.Link_Refresh_QR_Code).equals(list.get(position))) {
-                            BitmapUtil.bitmapSavePath(img1.getDrawingCache());
+                            BitmapUtil.getInstance().bitmapSavePath(img1.getDrawingCache());
                         } else if (getString(R.string.Link_Share).equals(list.get(position))) {//share group address
                             shareGroupUrl();
                         }

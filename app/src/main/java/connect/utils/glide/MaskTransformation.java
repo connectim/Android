@@ -24,6 +24,8 @@ package connect.utils.glide;
         import android.graphics.PorterDuff;
         import android.graphics.PorterDuffXfermode;
         import android.graphics.drawable.Drawable;
+        import android.os.Build;
+
         import com.bumptech.glide.Glide;
         import com.bumptech.glide.load.Transformation;
         import com.bumptech.glide.load.engine.Resource;
@@ -70,7 +72,7 @@ public class MaskTransformation implements Transformation<Bitmap> {
             result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         }
 
-        Drawable mask = BitmapUtil.getMaskDrawable(mContext, mMaskId);
+        Drawable mask = getMaskDrawable(mContext, mMaskId);
 
         Canvas canvas = new Canvas(result);
         mask.setBounds(0, 0, width, height);
@@ -82,5 +84,19 @@ public class MaskTransformation implements Transformation<Bitmap> {
     @Override public String getId() {
         return "MaskTransformation(maskId=" + mContext.getResources().getResourceEntryName(mMaskId)
                 + ")";
+    }
+
+    public Drawable getMaskDrawable(Context context, int maskId) {
+        Drawable drawable;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawable = context.getDrawable(maskId);
+        } else {
+            drawable = context.getResources().getDrawable(maskId);
+        }
+
+        if (drawable == null) {
+            throw new IllegalArgumentException("maskId is invalid");
+        }
+        return drawable;
     }
 }

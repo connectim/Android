@@ -58,9 +58,7 @@ public class MsgVideoHolder extends MsgChatHolder {
             videomsg.setOpenBurn(false);
         }
 
-        videomsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url);
-        videomsg.setLayoutParams(calculateSize((RelativeLayout.LayoutParams) videomsg.getLayoutParams(), bean.getImageOriginWidth(), bean.getImageOriginHeight()));
-
+        videomsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +88,7 @@ public class MsgVideoHolder extends MsgChatHolder {
                         public void successDown(byte[] bytes) {
                             videoProView.loadState(true, 0);
                             videomsg.setOpenBurn(false);
-                            videomsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), definBean.getUrl());
+                            videomsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), definBean.getUrl(),definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
 
                             FileUtil.byteArrToFilePath(bytes, localPath);
 
@@ -147,26 +145,6 @@ public class MsgVideoHolder extends MsgChatHolder {
             isDown = FileUtil.isExistFilePath(localPath);
         }
         return isDown;
-    }
-
-    private RelativeLayout.LayoutParams calculateSize(RelativeLayout.LayoutParams params, float width, float height) {
-        int maxDp = SystemUtil.dipToPx(160);
-        if (height != 0 && width != 0) {
-            double scale = (width * 1.00) / height;
-            if (width >= height) {
-                width = maxDp;
-                height = (int) (width / scale);
-            } else {
-                height = maxDp;
-                width = (int) (height * scale);
-            }
-        } else {
-            width = maxDp;
-            height = maxDp;
-        }
-        params.width = (int) width;
-        params.height = (int) height;
-        return params;
     }
 
     @Override

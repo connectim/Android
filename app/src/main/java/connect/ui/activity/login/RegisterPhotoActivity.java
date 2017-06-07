@@ -217,7 +217,8 @@ public class RegisterPhotoActivity extends BaseActivity {
                 retY = 0;
             }
             Bitmap cropBitmap = Bitmap.createBitmap(bitmap, 0, retY, w, h, null, false);
-            String cropPath = BitmapUtil.bitmapSavePath(cropBitmap, null,100);
+            File file = BitmapUtil.getInstance().bitmapSavePath(cropBitmap);
+            String cropPath = file.getAbsolutePath();
             FileUtil.deleteFile(file.getPath());
             PreviewPhotoActivity.startActivity(mActivity, cropPath);
 

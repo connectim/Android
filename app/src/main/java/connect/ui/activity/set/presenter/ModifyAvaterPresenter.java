@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import connect.db.MemoryDataManager;
@@ -86,7 +87,8 @@ public class ModifyAvaterPresenter implements ModifyAvaterContract.Presenter{
     }
 
     private void saveNotigy(Bitmap bmp){
-        pathDcim = BitmapUtil.bitmapSavePathDCIM(bmp);
+        File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bmp);
+        pathDcim = file.getAbsolutePath();
         try {
             MediaStore.Images.Media.insertImage(mView.getActivity().getContentResolver(), pathDcim, "", null);
             scanner.connect();
@@ -102,10 +104,13 @@ public class ModifyAvaterPresenter implements ModifyAvaterContract.Presenter{
         new AsyncTask<Void, Void, Connect.Avatar>() {
             @Override
             protected Connect.Avatar doInBackground(Void... params) {
-                byte[] headByte = BitmapUtil.bmpToByteArray(BitmapUtil.getSmallBitmap(pathLocal,500,500),100);
+                File file = BitmapUtil.getInstance().compress(pathLocal);
+                String path = file.getAbsolutePath();
+                byte[] headByte = BitmapUtil.bmpToByteArray(BitmapFactory.decodeFile(path),100);
                 Connect.Avatar avatar = Connect.Avatar.newBuilder()
                         .setFile(ByteString.copyFrom(headByte))
                         .build();
+                FileUtil.deleteFile(path);
                 FileUtil.deleteFile(pathLocal);
                 return avatar;
             }

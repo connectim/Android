@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
+import java.io.File;
+
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -38,7 +40,8 @@ public class VideoUpload extends FileUpLoad {
                 try {
                     String filePath = bean.getContent();
                     Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
-                    String comFist = BitmapUtil.bitmapSavePath(thumbBitmap);
+                    File thumbFile = BitmapUtil.getInstance().bitmapSavePath(thumbBitmap);
+                    String comFist = thumbFile.getAbsolutePath();
                     bean.setImageOriginWidth(thumbBitmap.getWidth());
                     bean.setImageOriginHeight(thumbBitmap.getHeight());
 
@@ -54,6 +57,8 @@ public class VideoUpload extends FileUpLoad {
                         firstGcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT,priKey, richMedia.toByteString());
                         mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(firstGcmData).build();
                     }
+
+                    thumbFile.delete();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
