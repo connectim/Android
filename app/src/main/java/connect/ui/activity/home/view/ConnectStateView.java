@@ -64,6 +64,11 @@ public class ConnectStateView extends RelativeLayout {
                 probar1.setVisibility(GONE);
                 txt1.setText(showTxt);
                 break;
+            case OFFLINE_PULL:
+                showTxt = getContext().getString(R.string.Chat_Loading);
+                probar1.setVisibility(VISIBLE);
+                txt1.setText(showTxt);
+                break;
         }
 
         LogManager.getLogger().d(Tag, showTxt);

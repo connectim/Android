@@ -71,10 +71,6 @@ public class CommandBean extends InterParse {
     public synchronized void msgParse() throws Exception {
         if (ackByte == 0x04) {
             receiveOffLineMsgs(byteBuffer);
-        } else if (ackByte == 0x07) {
-            HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
-        } else if (ackByte == 0x19) {
-            reloadUserCookie();
         } else {
             Connect.Command command = imTransferToCommand(byteBuffer);
             String msgid = command.getMsgId();
@@ -137,6 +133,9 @@ public class CommandBean extends InterParse {
                 case 0x18://get friend chatcookie
                     friencChatCookie(command.getDetail(), msgid);
                     break;
+                case 0x19:
+                    reloadUserCookie();
+                    break;
             }
         }
     }
@@ -148,6 +147,8 @@ public class CommandBean extends InterParse {
      * @throws Exception
      */
     private void receiveOffLineMsgs(ByteBuffer buffer) throws Exception {
+        ConnectState.getInstance().sendEvent(ConnectState.ConnectType.OFFLINE_PULL);
+
         Connect.StructData structData = imTransferToStructData(buffer);
         //GZIP
         byte[] unGzip = unGZip(structData.getPlainData().toByteArray());
@@ -200,6 +201,7 @@ public class CommandBean extends InterParse {
         if (offComplete) {
             Session.getInstance().setUpFailTime(MemoryDataManager.getInstance().getPubKey(), 0);
             uploadRandomCookie();
+            ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.CONNECT);
         }
     }
 
@@ -392,7 +394,7 @@ public class CommandBean extends InterParse {
         }
 
         if (isMySend) {//youself send add Friend request
-            if ((int) objs[1] == 1) {
+            if ((int) objs[1] == 1 || (int) objs[1] == 3) {
                 receiptUserSendAckMsg(msgid, MsgNoticeBean.NtEnum.MSG_SEND_FAIL, objs[1]);
             } else {
                 receiptUserSendAckMsg(msgid, MsgNoticeBean.NtEnum.MSG_SEND_SUCCESS);
@@ -416,6 +418,9 @@ public class CommandBean extends InterParse {
     private void receiverAcceptAddFriend(ByteString buffer, Object... objs) throws Exception {
         switch ((int) objs[1]) {
             case 1:
+                receiptUserSendAckMsg(objs[0], MsgNoticeBean.NtEnum.MSG_SEND_FAIL, objs[1]);
+                return;
+            case 4:
                 receiptUserSendAckMsg(objs[0], MsgNoticeBean.NtEnum.MSG_SEND_FAIL, objs[1]);
                 return;
         }
