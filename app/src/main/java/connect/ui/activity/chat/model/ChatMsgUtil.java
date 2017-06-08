@@ -12,11 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
-import connect.db.green.bean.ContactEntity;
-import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.MessageEntity;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
@@ -26,11 +22,6 @@ import connect.ui.activity.chat.bean.MsgDirect;
 import connect.ui.activity.chat.bean.MsgSender;
 import connect.ui.activity.chat.bean.RecExtBean;
 import connect.ui.activity.chat.bean.StickerCategory;
-import connect.ui.activity.chat.model.content.BaseChat;
-import connect.ui.activity.chat.model.content.FriendChat;
-import connect.ui.activity.chat.model.content.GroupChat;
-import connect.ui.activity.chat.model.content.NormalChat;
-import connect.ui.activity.chat.model.content.RobotChat;
 import connect.ui.activity.contact.bean.MsgSendBean;
 import connect.ui.activity.home.bean.MsgNoticeBean;
 import connect.ui.base.BaseApplication;
@@ -193,24 +184,5 @@ public class ChatMsgUtil {
             }
         }
         return mSpannableString;
-    }
-
-    public static NormalChat loadBaseChat(String pubkey) {
-        NormalChat normalChat = null;
-
-        if ((BaseApplication.getInstance().getString(R.string.app_name)).equals(pubkey)) {
-            normalChat = RobotChat.getInstance();
-        } else {
-            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
-            if (groupEntity != null) {
-                normalChat = new GroupChat(groupEntity);
-            } else {
-                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
-                if (friendEntity != null) {
-                    normalChat = new FriendChat(friendEntity);
-                }
-            }
-        }
-        return normalChat;
     }
 }

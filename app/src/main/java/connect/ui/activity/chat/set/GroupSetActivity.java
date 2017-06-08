@@ -33,6 +33,7 @@ import connect.ui.activity.contact.StrangerInfoActivity;
 import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.bean.SourceType;
 import connect.ui.activity.home.HomeActivity;
+import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.activity.set.ModifyInfoActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;

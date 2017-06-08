@@ -68,7 +68,7 @@ public class CommandBean extends InterParse {
     }
 
     @Override
-    public void msgParse() throws Exception {
+    public synchronized void msgParse() throws Exception {
         if (ackByte == 0x04) {
             receiveOffLineMsgs(byteBuffer);
         } else if (ackByte == 0x07) {
@@ -249,7 +249,12 @@ public class CommandBean extends InterParse {
             List<ContactEntity> friendInfoEntities = new ArrayList();
             List<Connect.FriendInfo> friendInfoList = friendShip.getFriendsList();
             for (Connect.FriendInfo friendInfo : friendInfoList) {
-                ContactEntity contactEntity = new ContactEntity();
+                String friendKey=friendInfo.getPubKey();
+                ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendKey);
+                if (contactEntity == null) {
+                    contactEntity = new ContactEntity();
+                    contactEntity.setPub_key(friendKey);
+                }
                 contactEntity.setUsername(friendInfo.getUsername());
                 contactEntity.setAvatar(friendInfo.getAvatar());
                 contactEntity.setPub_key(friendInfo.getPubKey());
@@ -280,8 +285,11 @@ public class CommandBean extends InterParse {
                 Connect.Group group = groupInfo.getGroup();
 
                 String groupKey = group.getIdentifier();
-                GroupEntity groupEntity = new GroupEntity();
-                groupEntity.setIdentifier(groupKey);
+                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                if (groupEntity == null) {
+                    groupEntity = new GroupEntity();
+                    groupEntity.setIdentifier(groupKey);
+                }
                 groupEntity.setVerify(group.getPublic() ? 1 : 0);
                 groupEntity.setName(group.getName());
                 groupEntity.setCommon(1);
@@ -304,7 +312,10 @@ public class CommandBean extends InterParse {
                 List<Connect.GroupMember> members = groupInfo.getMembersList();
                 List<GroupMemberEntity> memberEntities = new ArrayList<>();
                 for (Connect.GroupMember member : members) {
-                    GroupMemberEntity memberEntity = new GroupMemberEntity();
+                    GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, member.getAddress());
+                    if (memberEntity == null) {
+                        memberEntity = new GroupMemberEntity();
+                    }
                     memberEntity.setIdentifier(groupKey);
                     memberEntity.setPub_key(member.getPubKey());
                     memberEntity.setAddress(member.getAddress());
@@ -451,7 +462,7 @@ public class CommandBean extends InterParse {
      *
      * @param buffer
      */
-    private void updateGroupInfo(ByteString buffer, Object... objs) throws Exception {
+    private synchronized void updateGroupInfo(ByteString buffer, Object... objs) throws Exception {
         Connect.GroupChange groupChange = Connect.GroupChange.parseFrom(buffer);
 
         Context context = BaseApplication.getInstance().getBaseContext();
@@ -469,9 +480,6 @@ public class CommandBean extends InterParse {
 
                     FailMsgsManager.getInstance().insertReceiveMsg(group.getIdentifier(),TimeUtil.timestampToMsgid(), context.getString(R.string.Link_Join_Group));
                 } else {
-                    if (!TextUtils.isEmpty(group.getName())) {
-                        groupEntity.setName(group.getName());
-                    }
                     groupEntity.setSummary(TextUtils.isEmpty(group.getSummary()) ? "" : group.getSummary());
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                     ContactNotice.receiverGroup();

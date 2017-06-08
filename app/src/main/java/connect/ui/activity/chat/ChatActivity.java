@@ -203,7 +203,7 @@ public class ChatActivity extends BaseChatActvity {
                         titleName = titleName.substring(0, 8);
                         titleName += "...";
                     }
-                    toolbar.setTitle(titleName+String.format(Locale.ENGLISH,"(%d)",memEntities.size()));
+                    toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
                 }
                 break;
             case 1://have started
@@ -211,7 +211,7 @@ public class ChatActivity extends BaseChatActvity {
                 StringBuffer indexName = new StringBuffer();
                 indexName.append(name.charAt(0));
                 if (name.length() > 2) {
-                    for (int i = 1; i < name.length() - 1; i++) {
+                    for (int i = 1; (i < name.length() - 1) && (i < 8); i++) {
                         indexName.append("*");
                     }
                 }

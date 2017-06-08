@@ -137,6 +137,8 @@ public class ShakeHandBean extends InterParse {
         PushMessage.pushMessage(ServiceAck.CONNECT_SUCCESS,ByteBuffer.allocate(0));
         String version = ParamManager.getInstance().getString(ParamManager.COUNT_FRIENDLIST);
         if (TextUtils.isEmpty(version)) {
+            requestFriendsByVersion();
+
             int vrsion = SharePreferenceUser.getInstance().getIntValue(SharePreferenceUser.CONTACT_VERSION);
             if (vrsion == 0) {//the first time login
                 SharePreferenceUser.getInstance().putInt(SharePreferenceUser.CONTACT_VERSION, 1);
@@ -144,7 +146,6 @@ public class ShakeHandBean extends InterParse {
             }
         }
 
-        requestFriendsByVersion();
         connectLogin();
         pullOffLineMsg();
         checkCurVersion();

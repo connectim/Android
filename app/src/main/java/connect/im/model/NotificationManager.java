@@ -87,7 +87,7 @@ public class NotificationManager {
                 }
             }
 
-            NormalChat normalChat = ChatMsgUtil.loadBaseChat(pubkey);
+            NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
             if (normalChat != null) {
                 normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime(), isAt ? 1 : -1, true);
                 MsgFragmReceiver.refreshRoom();
