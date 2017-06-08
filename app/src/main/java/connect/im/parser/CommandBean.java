@@ -46,6 +46,8 @@ import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.activity.home.bean.MsgNoticeBean;
 import connect.ui.base.BaseApplication;
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;

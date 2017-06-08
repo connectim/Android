@@ -72,9 +72,18 @@ public class SocketService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        LogManager.getLogger().d(Tag, "onStartCommand");
         intent=new Intent(this,PushService.class);
         bindService(intent,localConnect,Service.BIND_IMPORTANT);
 
+        try {
+            if (pushBinder != null) {
+                LogManager.getLogger().d(Tag, "pushBinder != null");
+                pushBinder.connectMessage(ServiceAck.CONNECT_START.getAck(), new byte[0]);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -106,9 +115,11 @@ public class SocketService extends Service {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             LogManager.getLogger().d(Tag, "onServiceDisconnected");
-            Intent intent = new Intent(service, PushService.class);
-            service.startService(intent);
-            service.bindService(intent, localConnect, Service.BIND_IMPORTANT);
+            if (localConnect != null) {
+                Intent intent = new Intent(service, PushService.class);
+                service.startService(intent);
+                service.bindService(intent, localConnect, Service.BIND_IMPORTANT);
+            }
         }
     }
 
@@ -133,6 +144,8 @@ public class SocketService extends Service {
                     break;
                 case CONNCET_REFRESH:
                     ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
+                    break;
+                case EXIT_ACCOUNT:
                     break;
             }
         }
