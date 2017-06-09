@@ -318,10 +318,12 @@ public class ContactSelectActivity extends BaseActivity {
 
         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.UpLoadBackUp, grouppubkey, groupEcdh);
         String stringMems = "";
-        GroupMemberEntity memEntity = null;
         List<GroupMemberEntity> memEntities = new ArrayList<>();
         for (Connect.GroupMember member : groupInfo.getMembersList()) {
-            memEntity = new GroupMemberEntity();
+            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(grouppubkey, member.getAddress());
+            if (memEntity == null) {
+                memEntity = new GroupMemberEntity();
+            }
             memEntity.setIdentifier(grouppubkey);
             memEntity.setPub_key(member.getPubKey());
             memEntity.setAddress(member.getAddress());

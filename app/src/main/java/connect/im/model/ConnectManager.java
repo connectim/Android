@@ -229,6 +229,7 @@ public class ConnectManager {
     public void exitConnect() {
         cancelTimer();
         stopConnect();
+        reconHandler.removeMessages(TAG_CONNECT);
     }
 
     /**

@@ -53,7 +53,11 @@ public class ContactHelper extends BaseDao {
 
     public static ContactHelper getInstance() {
         if (contactHelper == null) {
-            contactHelper = new ContactHelper();
+            synchronized (ContactHelper.class) {
+                if (contactHelper == null) {
+                    contactHelper = new ContactHelper();
+                }
+            }
         }
         return contactHelper;
     }
@@ -200,7 +204,7 @@ public class ContactHelper extends BaseDao {
      * @return
      */
     public List<GroupMemberEntity> loadGroupMemEntity(String pukkey) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY WHERE M.IDENTIFIER = ? ORDER BY M.ROLE DESC;";
+        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY WHERE M.IDENTIFIER = ? GROUP BY M.IDENTIFIER ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{pukkey});
 
         GroupMemberEntity groupMemEntity = null;

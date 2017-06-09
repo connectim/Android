@@ -217,7 +217,7 @@ public class FailMsgsManager {
             Map.Entry<String, Object> entry = entries.next();
             Object object = entry.getValue();
 
-            NormalChat normalChat = ChatMsgUtil.loadBaseChat(pubkey);
+            NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
             if (normalChat != null) {
                 if (object instanceof String) {
                     MsgEntity noticeMsg = normalChat.noticeMsg((String) object);

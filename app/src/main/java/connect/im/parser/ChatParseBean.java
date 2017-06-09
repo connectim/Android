@@ -186,7 +186,7 @@ public class ChatParseBean extends InterParse {
     }
 
     protected void msgParseException(String pubkey) {
-        NormalChat normalChat = ChatMsgUtil.loadBaseChat(pubkey);
+        NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
         if (normalChat != null) {
             String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
             MsgEntity msgEntity = normalChat.noticeMsg(showTxt);

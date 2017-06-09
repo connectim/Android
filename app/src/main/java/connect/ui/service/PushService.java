@@ -45,11 +45,6 @@ public class PushService extends Service {
         context.startService(intent);
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
-    }
-
     class PushConnect implements ServiceConnection {
 
         @Override
@@ -62,9 +57,11 @@ public class PushService extends Service {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Intent intent = new Intent(service, SocketService.class);
-            service.startService(intent);
-            service.bindService(intent, pushConnect, Service.BIND_IMPORTANT);
+            if (pushConnect != null) {
+                Intent intent = new Intent(service, SocketService.class);
+                service.startService(intent);
+                service.bindService(intent, pushConnect, Service.BIND_IMPORTANT);
+            }
         }
     }
 
