@@ -316,7 +316,37 @@ public class HttpsService extends Service {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
 
-                    createLocalGroupInfo(groupInfo);
+                    Connect.Group group = groupInfo.getGroup();
+                    String pubkey = group.getIdentifier();
+
+                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+                    if (groupEntity == null) {
+                        groupEntity = new GroupEntity();
+                        groupEntity.setIdentifier(group.getIdentifier());
+                    }
+                    groupEntity.setName(group.getName());
+                    groupEntity.setVerify(groupInfo.getGroup().getReviewed()?1:0);
+                    groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
+                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
+
+                    List<GroupMemberEntity> memEntities = new ArrayList<>();
+                    for (Connect.GroupMember member : groupInfo.getMembersList()) {
+                        GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(pubkey, member.getAddress());
+                        if (memEntity == null) {
+                            memEntity = new GroupMemberEntity();
+                        }
+                        memEntity.setIdentifier(group.getIdentifier());
+                        memEntity.setPub_key(member.getPubKey());
+                        memEntity.setAddress(member.getAddress());
+                        memEntity.setAvatar(member.getAvatar());
+                        memEntity.setNick(member.getUsername());
+                        memEntity.setUsername(member.getUsername());
+                        memEntity.setRole(member.getRole());
+                        memEntities.add(memEntity);
+                    }
+                    ContactHelper.getInstance().inserGroupMemEntity(memEntities);
+                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, pubkey);
+                    ContactNotice.receiverGroup();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -327,42 +357,6 @@ public class HttpsService extends Service {
 
             }
         });
-    }
-
-    public void createLocalGroupInfo(Connect.GroupInfo groupInfo) {
-        final Connect.Group group = groupInfo.getGroup();
-        final String pubkey = group.getIdentifier();
-
-        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
-        if (groupEntity == null) {
-            groupEntity = new GroupEntity();
-        }
-        groupEntity.setIdentifier(group.getIdentifier());
-        groupEntity.setName(group.getName());
-        groupEntity.setVerify(groupInfo.getGroup().getReviewed()?1:0);
-        groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
-        ContactHelper.getInstance().inserGroupEntity(groupEntity);
-
-        List<GroupMemberEntity> memEntities = new ArrayList<>();
-        ArrayList<String> memberAvatar=new ArrayList<>();
-        for (Connect.GroupMember member : groupInfo.getMembersList()) {
-            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(pubkey, member.getAddress());
-            if (memEntity == null) {
-                memEntity = new GroupMemberEntity();
-            }
-            memEntity.setIdentifier(group.getIdentifier());
-            memEntity.setPub_key(member.getPubKey());
-            memEntity.setAddress(member.getAddress());
-            memEntity.setAvatar(member.getAvatar());
-            memEntity.setNick(member.getUsername());
-            memEntity.setUsername(member.getUsername());
-            memEntity.setRole(member.getRole());
-            memEntities.add(memEntity);
-            memberAvatar.add(member.getAvatar());
-        }
-        ContactHelper.getInstance().inserGroupMemEntity(memEntities);
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, pubkey);
-        ContactNotice.receiverGroup();
     }
 
     public void groupBackUp(String groupkey, String groupecdhkey) {

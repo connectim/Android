@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.google.protobuf.ByteString;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.TransactionHelper;

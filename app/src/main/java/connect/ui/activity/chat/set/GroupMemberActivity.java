@@ -12,7 +12,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;

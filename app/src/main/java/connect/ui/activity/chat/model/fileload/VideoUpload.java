@@ -3,6 +3,11 @@ package connect.ui.activity.chat.model.fileload;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.util.Log;
+
+import com.netcompss.ffmpeg4android.CommandValidationException;
+import com.netcompss.ffmpeg4android.GeneralUtils;
+import com.netcompss.loader.LoadJNI;
 
 import java.io.File;
 
@@ -14,6 +19,7 @@ import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.utils.BitmapUtil;
+import connect.utils.FileUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
@@ -39,6 +45,8 @@ public class VideoUpload extends FileUpLoad {
             protected Void doInBackground(Void... params) {
                 try {
                     String filePath = bean.getContent();
+                    filePath = videoCompress(filePath);
+
                     Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
                     File thumbFile = BitmapUtil.getInstance().bitmapSavePath(thumbBitmap);
                     String comFist = thumbFile.getAbsolutePath();
@@ -98,5 +106,28 @@ public class VideoUpload extends FileUpLoad {
                 uploadSuccess(index);
             }
         });
+    }
+
+    public String videoCompress(String filepath) {
+        LoadJNI vk = new LoadJNI();
+        try {
+            // complex command
+            //vk.run(complexCommand, workFolder, getApplicationContext());
+            File tempFile = FileUtil.newTempFile(FileUtil.FileType.VIDEO);
+            String commandStr = "ffmpeg -y -i " + filepath + " -strict experimental -s 160x120 -r 25 -vcodec mpeg4 -b 150k -ab 48000 -ac 2 -ar 22050 " + tempFile.getAbsolutePath();
+
+            vk.run(GeneralUtils.utilConvertToComplex(commandStr), tempFile.getParent(), context);
+
+            // running without command validation
+            //vk.run(complexCommand, workFolder, getApplicationContext(), false);
+
+            // copying vk.log (internal native log) to the videokit folder
+            //GeneralUtils.copyFileToFolder(vkLogPath, demoVideoFolder);
+            return tempFile.getAbsolutePath();
+        } catch (CommandValidationException e) {
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return filepath;
     }
 }
