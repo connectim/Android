@@ -178,6 +178,27 @@ public class FileUtil {
     }
 
     /**
+     * Get file
+     *
+     * @param data
+     * @param fileType
+     * @return
+     */
+    public static File byteArrayToFile(byte[] data,FileUtil.FileType fileType){
+        File imageFile = FileUtil.newTempFile(fileType);
+        if (null != imageFile) {
+            try {
+                FileOutputStream fos = new FileOutputStream(imageFile);
+                fos.write(data);
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imageFile;
+    }
+
+    /**
      *Get file byte array
      *
      * @param filePath

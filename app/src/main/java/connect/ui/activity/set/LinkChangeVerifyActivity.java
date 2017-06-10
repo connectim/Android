@@ -70,7 +70,7 @@ public class LinkChangeVerifyActivity extends BaseActivity implements SignInVeri
 
         String phone = bundle.getString("phone");
         String countryCode = bundle.getString("countrycode");
-        phoneTv.setText(countryCode + " " + phone);
+        phoneTv.setText("+" + countryCode + " " + phone);
         codeEt.addTextChangedListener(textWatcher);
         ToastEUtil.makeText(mActivity,R.string.Login_SMS_code_has_been_send).show();
 
@@ -124,20 +124,27 @@ public class LinkChangeVerifyActivity extends BaseActivity implements SignInVeri
     }
 
     @Override
-    public void changeTime(int time,Timer timer) {
+    public void changeBtnNext() {
         if (codeEt.getText().toString().length() == 6) {
             nextBtn.setText(R.string.Common_OK);
             nextBtn.setEnabled(true);
-        } else {
-            if (time > 0) {
-                nextBtn.setText(String.format(mActivity.getResources().getString(R.string.Login_Resend_Time),time));
-                nextBtn.setEnabled(false);
-            } else {
-                nextBtn.setText(R.string.Login_Resend);
-                nextBtn.setEnabled(true);
-                voiceTv.setVisibility(View.VISIBLE);
-                timer.cancel();
-            }
+        }
+    }
+
+    @Override
+    public void changeBtnTiming(long time) {
+        if (codeEt.getText().toString().length() != 6) {
+            nextBtn.setText(String.format(mActivity.getResources().getString(R.string.Login_Resend_Time),time));
+            nextBtn.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void changeBtnFinsh() {
+        if (codeEt.getText().toString().length() != 6) {
+            nextBtn.setText(R.string.Login_Resend);
+            nextBtn.setEnabled(true);
+            voiceTv.setVisibility(View.VISIBLE);
         }
     }
 
@@ -154,7 +161,7 @@ public class LinkChangeVerifyActivity extends BaseActivity implements SignInVeri
 
         @Override
         public void afterTextChanged(Editable s) {
-            presenter.showChangeText();
+            changeBtnNext();
         }
     };
 

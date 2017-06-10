@@ -59,6 +59,7 @@ public class PaymentActivity extends BaseActivity {
     private PaymentActivity mActivity;
     private UserBean userBean;
     private PaySetBean paySetBean;
+    private String payPass = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +113,7 @@ public class PaymentActivity extends BaseActivity {
         passManager.checkLoginPass(mActivity, userBean.getPassHint(), new PassManager.OnResultListence() {
             @Override
             public void success() {
+                payPass = "";
                 setPatpass();
             }
 
@@ -158,28 +160,21 @@ public class PaymentActivity extends BaseActivity {
     }
 
     private void setPatpass() {
-        DialogUtil.showPayEditView(mActivity, R.string.Set_Payment_Password, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
+        Integer title;
+        if(TextUtils.isEmpty(payPass)){
+            title = R.string.Set_Payment_Password;
+        }else {
+            title = R.string.Wallet_Confirm_PIN;
+        }
+        DialogUtil.showPayEditView(mActivity, title, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(String value) {
-                setPaypassAgain(value);
-            }
-
-            @Override
-            public void cancel() {
-
-            }
-        });
-    }
-
-    private void setPaypassAgain(final String pass) {
-        DialogUtil.showPayEditView(mActivity, R.string.Wallet_Confirm_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
-            @Override
-            public void confirm(String value) {
-                if (pass.equals(value)) {
-                    //String ecdh = SupportKeyUril.cdEncryPayPasswordKey(userBean.getPriKey());
+                if(TextUtils.isEmpty(payPass)){
+                    payPass = value;
+                    setPatpass();
+                }else if(payPass.equals(value)){
                     requestSetPay(value);
-
-                } else {
+                }else{
                     ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
                 }
             }

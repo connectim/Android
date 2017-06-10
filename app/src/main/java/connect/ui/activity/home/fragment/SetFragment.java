@@ -12,10 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,11 +31,9 @@ import connect.ui.base.BaseFragment;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.ProtoBufUtil;
 import connect.utils.glide.GlideUtil;
 import connect.view.TopToolBar;
 import connect.view.roundedimageview.RoundedImageView;
-import protos.Connect;
 
 /**
  * setting

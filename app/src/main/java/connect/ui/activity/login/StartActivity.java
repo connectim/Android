@@ -39,7 +39,6 @@ public class StartActivity extends BaseActivity implements StartContract.View{
     @Override
     public void initView() {
         mActivity = this;
-
         setPresenter(new StartPresenter(this));
         startPresenter.start();
     }
@@ -48,10 +47,6 @@ public class StartActivity extends BaseActivity implements StartContract.View{
     public void setPresenter(StartContract.Presenter presenter) {
         startPresenter = presenter;
     }
-
-    private boolean isHavePersion(){
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M&&
-                ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;}
 
     @Override
     public void setImage(String path) {

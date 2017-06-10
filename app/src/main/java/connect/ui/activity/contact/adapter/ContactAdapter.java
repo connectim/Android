@@ -134,7 +134,7 @@ public class ContactAdapter extends BaseAdapter {
         ContactBean currBean = mData.get(position);
         switch (type){
             case STATUS_REQUEST:
-                if(TextUtils.isEmpty(currBean.getAddress())){ // No friend requests
+                if(TextUtils.isEmpty(currBean.getAvatar())){ // No friend requests
                     holder.contentLayout.setBackground(BaseApplication.getInstance()
                             .getResources().getDrawable(R.drawable.selector_list_item_bg));
                     holder.avater.setImageResource(R.mipmap.contract_new_friend3x);
@@ -148,7 +148,7 @@ public class ContactAdapter extends BaseAdapter {
                     holder.name.setText(currBean.getName());
                     holder.tips.setText(currBean.getTips());
                     holder.count.setVisibility(View.VISIBLE);
-                    holder.count.setText(currBean.getCount());
+                    holder.count.setText(currBean.getCount() + "");
                 }
                 break;
             case STATUS_FRIEND:

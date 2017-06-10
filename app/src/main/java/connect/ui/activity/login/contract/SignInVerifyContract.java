@@ -22,11 +22,15 @@ public interface SignInVerifyContract {
 
         void setVoiceVisi();
 
-        void changeTime(int time,Timer timer);
-
         void goinCodeLogin(UserBean userBean);
 
         void goinRandomSend(String phone,String token);
+
+        void changeBtnNext();
+
+        void changeBtnTiming(long time);
+
+        void changeBtnFinsh();
     }
 
     interface Presenter extends BasePresenter {
@@ -35,10 +39,6 @@ public interface SignInVerifyContract {
         void requestVerifyCode();
 
         void reSendCode(int type);
-
-        void miniuteReplay();
-
-        void showChangeText();
 
         void requestBindMobile(String type);
     }
