@@ -4,6 +4,8 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
 
+import org.apache.mina.transport.socket.nio.NioSocketConnector;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
