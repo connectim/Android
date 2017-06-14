@@ -180,7 +180,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                             talker = new Talker(2, inflater.getContext().getString(R.string.app_name));
                             break;
                     }
-                    HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, talker);
+
+                    if (talker != null) {
+                        HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, talker);
+                    }
                 }
             }
         });

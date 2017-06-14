@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.bean.ConnectState;
+import connect.ui.base.BaseApplication;
 import connect.ui.service.bean.PushMessage;
 import connect.ui.service.bean.ServiceAck;
 import connect.utils.TimeUtil;
@@ -30,24 +31,31 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo.State wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-        NetworkInfo.State mobileState = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
-
-        if ((wifiState != null && NetworkInfo.State.CONNECTED == wifiState) ||
-                (mobileState != null && NetworkInfo.State.CONNECTED == mobileState)) {//Network connection is successful
-            LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Switch to the network environment");
-
-            if (isCanConnect()) {
-                if (TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART) {
-                    PushMessage.pushMessage(ServiceAck.STOP_CONNECT, ByteBuffer.allocate(0));//close socket
-                    PushMessage.pushMessage(ServiceAck.CONNECT_START, ByteBuffer.allocate(0));
-                    lastReceiveTime = TimeUtil.getCurrentTimeInLong();
-                }
+        try {
+            if (context == null) {
+                context = BaseApplication.getInstance().getBaseContext();
             }
-        } else {
-            LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Network disconnection");
-            ConnectState.getInstance().sendEvent(ConnectState.ConnectType.DISCONN);
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo.State wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+            NetworkInfo.State mobileState = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+
+            if ((wifiState != null && NetworkInfo.State.CONNECTED == wifiState) ||
+                    (mobileState != null && NetworkInfo.State.CONNECTED == mobileState)) {//Network connection is successful
+                LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Switch to the network environment");
+
+                if (isCanConnect()) {
+                    if (TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART) {
+                        PushMessage.pushMessage(ServiceAck.STOP_CONNECT, ByteBuffer.allocate(0));//close socket
+                        PushMessage.pushMessage(ServiceAck.CONNECT_START, ByteBuffer.allocate(0));
+                        lastReceiveTime = TimeUtil.getCurrentTimeInLong();
+                    }
+                }
+            } else {
+                LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Network disconnection");
+                ConnectState.getInstance().sendEvent(ConnectState.ConnectType.DISCONN);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -100,7 +100,7 @@ public abstract class BaseChatActvity extends BaseActivity {
         NotificationManager mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE) ;
         mNotificationManager.cancel(1001);
 
-        talker= (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
+        talker = (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
         roomSession = RoomSession.getInstance();
         roomSession.setRoomType(talker.getTalkType());
         roomSession.setRoomKey(talker.getTalkKey());

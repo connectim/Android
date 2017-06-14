@@ -194,15 +194,15 @@ public class ChatActivity extends BaseChatActvity {
         String titleName = "";
         switch (state) {
             case 0:// not start
+                titleName = baseChat.nickName();
+                if (titleName.length() > 15) {
+                    titleName = titleName.substring(0, 12);
+                    titleName += "...";
+                }
                 if (baseChat.roomType() == 0 || baseChat.roomType() == 2) {
-                    toolbar.setTitle(baseChat.nickName());
+                    toolbar.setTitle(titleName);
                 } else {
                     List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(baseChat.roomKey());
-                    titleName = baseChat.nickName();
-                    if (titleName.length() > 10) {
-                        titleName = titleName.substring(0, 8);
-                        titleName += "...";
-                    }
                     toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
                 }
                 break;
