@@ -17,7 +17,7 @@ import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.bean.PaySetBean;
-import connect.ui.activity.set.manager.PassManager;
+import connect.utils.LoginPassCheckUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -109,10 +109,9 @@ public class PaymentActivity extends BaseActivity {
 
     @OnClick(R.id.pas_ll)
     void goSetPassword(View view) {
-        PassManager passManager = new PassManager();
-        passManager.checkLoginPass(mActivity, userBean.getPassHint(), new PassManager.OnResultListence() {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity,new LoginPassCheckUtil.OnResultListence() {
             @Override
-            public void success() {
+            public void success(String priKey) {
                 payPass = "";
                 setPatpass();
             }
@@ -126,10 +125,9 @@ public class PaymentActivity extends BaseActivity {
 
     @OnClick(R.id.without_tb)
     void switchWtthout(View view) {
-        PassManager passManager = new PassManager();
-        passManager.checkLoginPass(mActivity, userBean.getPassHint(), new PassManager.OnResultListence() {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListence() {
             @Override
-            public void success() {
+            public void success(String priKey) {
                 if (withoutTb.isSelected()) {
                     paySetBean.setNoSecretPay(false);
                 } else {

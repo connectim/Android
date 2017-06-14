@@ -3,6 +3,7 @@ package connect.utils.transfer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
@@ -61,7 +62,11 @@ public class TransferUtil {
      */
     public static boolean ishaveDustWithAmount(long amount) {
         EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
-        return (amount * 1000 / (3 * 182)) < Double.valueOf(feeBean.getData()) * Math.pow(10, 8) / 10;
+        if(feeBean == null || TextUtils.isEmpty(feeBean.getData())){
+            return false;
+        }else{
+            return (amount * 1000 / (3 * 182)) < Double.valueOf(feeBean.getData()) * Math.pow(10, 8) / 10;
+        }
     }
 
     /**

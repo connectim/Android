@@ -191,7 +191,12 @@ public abstract class BaseScanActivity extends BaseActivity {
             @Override
             public void run() {
                 Bitmap scanBitmap = BitmapUtil.getInstance().compress(photo_path, 480, 800);
-                String resultString = decodeQRImage(scanBitmap);
+                String resultString;
+                if(scanBitmap != null){
+                    resultString = decodeQRImage(scanBitmap);
+                }else{
+                    resultString = null;
+                }
                 if (resultString != null) {
                     Message m = handler.obtainMessage();
                     m.what = PARSE_BARCODE_SUC;

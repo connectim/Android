@@ -1,7 +1,7 @@
 package connect.ui.activity.set;
 
 import android.app.Activity;
-import android.app.Dialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,20 +12,18 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.ui.activity.home.HomeActivity;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.base.BaseActivity;
-import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.LoginPassCheckUtil;
+import connect.utils.ProgressUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -56,7 +54,6 @@ public class PatterDrawActivity extends BaseActivity {
     public final static String TYPE_NEW = "new";
     public final static String TYPE_CLOSE = "close";
     private String type;
-    private Dialog dialogPass;
 
     public static void startActivity(Activity activity, String type, String patter) {
         Bundle bundle = new Bundle();
@@ -88,6 +85,7 @@ public class PatterDrawActivity extends BaseActivity {
         if(type.equals(TYPE_NEW)){
             idGestureLockViewGroup.setAnswer("","");
             idGestureLockViewGroup.setUnMatchExceedBoundary(1000);
+            userpassTv.setVisibility(View.GONE);
         }else {
             UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
             idGestureLockViewGroup.setAnswer(userBean.getPriKey(),userBean.getSalt());
@@ -110,34 +108,24 @@ public class PatterDrawActivity extends BaseActivity {
     }
 
     @OnClick(R.id.userpass_tv)
-    void userPass(View view){
-        dialogPass = DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Set_Enter_Login_Password),
-                mActivity.getResources().getString(R.string.Common_Cancel),
-                mActivity.getResources().getString(R.string.Common_OK),
-                mActivity.getString(R.string.Login_Password_Hint, SharedPreferenceUtil.getInstance().getUser().getPassHint()), "", "", true
-                , 32,new DialogUtil.OnItemClickListener() {
-                    @Override
-                    public void confirm(String value) {
-                        String priKey = DecryptionUtil.decodeTalkKey(SharedPreferenceUtil.getInstance().getUser().getTalkKey(), value);
-                        if(SupportKeyUril.checkPrikey(priKey)){
-                            if (type.equals(TYPE_CHANGE)) {
-                                type = TYPE_NEW;
-                                initView();
-                            } else if (type.equals(TYPE_CLOSE)) {
-                                ToastEUtil.makeText(mActivity,R.string.Set_Remove_Success).show();
-                                putSharedPre(priKey,"");
-                            }
-                        }else{
-                            ToastEUtil.makeText(mActivity,R.string.Login_Password_incorrect,ToastEUtil.TOAST_STATUS_FAILE).show();
-                            dialogPass.show();
-                        }
-                    }
+    void userPass(View view) {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListence() {
+            @Override
+            public void success(String priKey) {
+                if (type.equals(TYPE_CHANGE)) {
+                    type = TYPE_NEW;
+                    initView();
+                } else if (type.equals(TYPE_CLOSE)) {
+                    ToastEUtil.makeText(mActivity,R.string.Set_Remove_Success).show();
+                    putSharedPre(priKey,"");
+                }
+            }
 
-                    @Override
-                    public void cancel() {
+            @Override
+            public void error() {
 
-                    }
-                });
+            }
+        });
     }
 
     /**

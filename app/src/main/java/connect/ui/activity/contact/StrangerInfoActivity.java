@@ -185,6 +185,9 @@ public class StrangerInfoActivity extends BaseActivity {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    if(structData == null || structData.getPlainData() == null){
+                        return;
+                    }
                     sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)){
                         updataView();

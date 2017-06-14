@@ -1,12 +1,8 @@
 package connect.ui.activity.login;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -14,7 +10,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.ui.activity.R;
 import connect.ui.activity.home.HomeActivity;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.login.contract.StartContract;
 import connect.ui.activity.login.presenter.StartPresenter;
 import connect.ui.base.BaseActivity;

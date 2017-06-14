@@ -335,8 +335,8 @@ public class CameraTakeActivity extends BaseActivity {
 
     private void releasedCamera() {
         if (null != mCamera) {
-            mCamera.setPreviewCallback(null);
             mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
             mCamera.release();
             mCamera = null;
         }

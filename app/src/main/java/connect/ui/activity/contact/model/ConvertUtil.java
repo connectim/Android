@@ -75,10 +75,13 @@ public class ConvertUtil {
 
                     ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
                     if (friendEntity != null) {
+                        // Check whether as a friend
                         contactBean.setStatus(2);
                     } else if (ContactHelper.getInstance().loadFriendRequest(userInfo.getAddress()) != null) {
+                        // Check whether there have been a friend request
                         contactBean.setStatus(3);
                     } else {
+                        // Registered, but didn't add
                         contactBean.setStatus(1);
                     }
                     if(!TextUtils.isEmpty(bookUserInfo.getPhoneHash())){
@@ -93,6 +96,7 @@ public class ConvertUtil {
                         if (serverContactBean.getPhone().equals(phoneHmac)) {
                             isAdd = false;
                             serverContactBean.setName(contactBean.getName());
+                            break;
                         }
                     }
                     if(isAdd)
