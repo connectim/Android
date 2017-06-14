@@ -22,6 +22,7 @@ import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
+import connect.utils.ProtoBufUtil;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
@@ -166,9 +167,10 @@ public class TransferAddressActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.BillHashId billHashId = Connect.BillHashId.parseFrom(structData.getPlainData());
-
-                    ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
-                    requestPublicTx(billHashId.getHash(), samValue);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(billHashId)){
+                        ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
+                        requestPublicTx(billHashId.getHash(), samValue);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

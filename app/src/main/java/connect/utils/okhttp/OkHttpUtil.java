@@ -10,6 +10,7 @@ import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
+import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.base.BaseApplication;
 import connect.utils.cryption.EncryptionUtil;
@@ -114,6 +115,7 @@ public class OkHttpUtil {
     private Connect.IMRequest getIMRequest(String priKey, String pubKey, ByteString bytes) {
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
         if(TextUtils.isEmpty(index)){
+            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
             Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_Request_Error,Toast.LENGTH_LONG).show();
             return null;
         }

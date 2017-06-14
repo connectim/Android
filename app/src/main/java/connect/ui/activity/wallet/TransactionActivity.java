@@ -6,6 +6,7 @@ import android.widget.AdapterView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,6 +20,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.adapter.TransactionAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.OkHttpUtil;
@@ -95,14 +97,19 @@ public class TransactionActivity extends BaseActivity {
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     Connect.Transactions transactions = Connect.Transactions.parseFrom(response.getBody());
-                    LogManager.getLogger().i("======http========",transactions.toString());
                     List<Connect.Transaction> list = transactions.getTransactionsList();
-                    if(page > 1){
-                        ransactionAdapter.setNotifyData(list,false);
-                    }else{
-                        ransactionAdapter.setNotifyData(list,true);
+                    ArrayList<Connect.Transaction> listChecks = new ArrayList<>();
+                    for(Connect.Transaction transaction : list){
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(transaction)){
+                            listChecks.add(transaction);
+                        }
                     }
 
+                    if(page > 1){
+                        ransactionAdapter.setNotifyData(listChecks,false);
+                    }else{
+                        ransactionAdapter.setNotifyData(listChecks,true);
+                    }
                     listView.stopRefresh();
                     listView.stopLoadMore();
                     if(list.size() == PAGESIZE_MAX){

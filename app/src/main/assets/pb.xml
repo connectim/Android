@@ -1,15 +1,442 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PBRule>
-    <TestPB>
-        <attr name='name' ext='reg'>[0-9]{12}</attr>
-        <attr name='age' ext='string'></attr>
-        <attr name='phone' ext='int'></attr>
-        <attr name='money' ext='float'></attr>
-        <attr name='sex' ext='bool'></attr>
-    </TestPB>
+    <Transaction>
+        <attr name='hash' type='string'></attr>
+        <attr name='balance' type='int'></attr>
+    </Transaction>
+
+    <UsersInfo>
+        <attr name='users' type='list'></attr>
+    </UsersInfo>
+
+    <PhoneInfo>
+        <attr name='code' type='int'></attr>
+        <attr name='mobile' type='string'></attr>
+    </PhoneInfo>
+
+    <PhoneBookUsersInfo>
+        <attr name='users' type='list'></attr>
+    </PhoneBookUsersInfo>
+
+    <UserInfo>
+        <attr name='username' type='string'></attr>
+        <attr name='avatar' type='string'></attr>
+        <attr name='pubKey' type='string'></attr>
+        <attr name='address' type='address'></attr>
+    </UserInfo>
+
+    <SearchUser>
+        <attr name='criteria' type='string'></attr>
+    </SearchUser>
+
+    <GcmData>
+        <attr name='iv' type='bytes'></attr>
+        <attr name='aad' type='bytes'></attr>
+        <attr name='tag' type='bytes'></attr>
+        <attr name='ciphertext' type='bytes'></attr>
+    </GcmData>
+
+    <AddFriendRequest>
+        <attr name='address' type='address'></attr>
+        <attr name='tips' type='proto'></attr>
+        <attr name='source' type='int'></attr>
+    </AddFriendRequest>
+
+    <PendingRedPackage>
+        <attr name='address' type='address'></attr>
+        <attr name='hashId' type='string'></attr>
+    </PendingRedPackage>
+
+    <SyncRelationship>
+        <attr name='version' type='string'></attr>
+    </SyncRelationship>
+
+    <RemoveRelationship>
+        <attr name='address' type='address'></attr>
+    </RemoveRelationship>
+
+    <SettingFriendInfo>
+        <attr name='address' type='address'></attr>
+        <attr name='remark' type='string'></attr>
+        <attr name='common' type='bool'></attr>
+    </SettingFriendInfo>
+
+    <FriendBillsMessage>
+        <attr name='friendBills' type='list'></attr>
+    </FriendBillsMessage>
+
+    <FriendBill>
+        <attr name='createdAt' type='int'></attr>
+        <attr name='amount' type='int'></attr>
+        <attr name='status' type='int'></attr>
+        <attr name='category' type='string'></attr>
+        <attr name='txId' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+    </FriendBill>
+
+    <AddressInfo>
+        <attr name='address' type='address'></attr>
+    </AddressInfo>
+
+    <Bill>
+        <attr name='hash' type='string'></attr>
+        <attr name='receiver' type='string'></attr>
+    </Bill>
+
+    <FriendRecords>
+        <attr name='selfAddress' type='address'></attr>
+        <attr name='friendAddress' type='address'></attr>
+        <attr name='pageSize' type='int'></attr>
+        <attr name='pageIndex' type='int'></attr>
+    </FriendRecords>
+
+    <TagList>
+        <attr name='list' type='list'></attr>
+    </TagList>
+
+    <UserIdentifier>
+        <attr name='address' type='address'></attr>
+    </UserIdentifier>
+
+    <Crowdfunding>
+        <attr name='total' type='int'></attr>
+        <attr name='tips' type='string'></attr>
+        <attr name='status' type='int'></attr>
+        <attr name='records' type='proto'></attr>
+        <attr name='createdAt' type='int'></attr>
+    </Crowdfunding>
+
+    <CrowdfundingRecord>
+        <attr name='user' type='proto'></attr>
+    </CrowdfundingRecord>
+
+    <CreateGroup>
+        <attr name='name' type='reg'>^.{4,32}$</attr>
+        <attr name='users' type='list'></attr>
+    </CreateGroup>
+
+    <DelOrQuitGroupMember>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='address' type='address'></attr>
+    </DelOrQuitGroupMember>
+
+    <GroupId>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+    </GroupId>
+
+    <UpdateGroupMemberInfo>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='nick' type='string'></attr>
+    </UpdateGroupMemberInfo>
+
+    <UpdateGroupInfo>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='name' type='reg'>^.{4,32}$</attr>
+    </UpdateGroupInfo>
+
+    <HttpNotSignResponse>
+        <attr name='code' type='int'></attr>
+    </HttpNotSignResponse>
+
+    <GroupInfo>
+        <attr name='group' type='proto'></attr>
+        <attr name='members' type='list'></attr>
+    </GroupInfo>
+
+    <GroupSettingInfo>
+        <attr name='public' type='bool'></attr>
+        <attr name='avatar' type='string'></attr>
+        <attr name='mute' type='bool'></attr>
+    </GroupSettingInfo>
+
+    <GroupHash>
+        <attr name='hash' type='string'></attr>
+    </GroupHash>
+
+    <GroupAttorn>
+        <attr name='address' type='address'></attr>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+    </GroupAttorn>
+
+    <GroupSetting>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='summary' type='string'></attr>
+        <attr name='public' type='bool'></attr>
+        <attr name='reviewed' type='bool'></attr>
+    </GroupSetting>
+
+    <GroupInfoBase>
+        <attr name='avatar' type='string'></attr>
+        <attr name='name' type='reg'>^.{4,32}$</attr>
+        <attr name='count' type='int'></attr>
+        <attr name='hash' type='string'></attr>
+        <attr name='public' type='bool'></attr>
+    </GroupInfoBase>
+
+    <GroupApplyMessage>
+        <attr name='applyData' type='bytes'></attr>
+        <attr name='messageId' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+    </GroupApplyMessage>
+
+    <GroupReviewed>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='verificationCode' type='string'></attr>
+        <attr name='address' type='address'></attr>
+        <attr name='backup' type='string'></attr>
+    </GroupReviewed>
+
+    <CreateGroupMessage>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='secretKey' type='string'></attr>
+    </CreateGroupMessage>
+
+    <BillHashId>
+        <attr name='hash' type='string'></attr>
+    </BillHashId>
+
+    <MessageData>
+        <attr name='receiverAddress' type='address'></attr>
+        <attr name='msgId' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='cipherData' type='proto'></attr>
+    </MessageData>
+
+    <MessagePost>
+        <attr name='pubKey' type='string'></attr>
+        <attr name='sign' type='string'></attr>
+        <attr name='msgData' type='proto'></attr>
+    </MessagePost>
+
+    <ReceiveBill>
+        <attr name='sender' type='address'></attr>
+        <attr name='amount' type='int'></attr>
+        <attr name='tips' type='string'></attr>
+    </ReceiveBill>
+
+    <LaunchCrowdfunding>
+        <attr name='groupHash' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='size' type='int'></attr>
+        <attr name='total' type='int'></attr>
+        <attr name='tips' type='string'></attr>
+    </LaunchCrowdfunding>
+
+    <UserCrowdfundingInfo>
+        <attr name='pageSize' type='int'></attr>
+        <attr name='pageIndex' type='int'></attr>
+    </UserCrowdfundingInfo>
+
+    <GroupCollaborative>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='collaborative' type='string'></attr>
+    </GroupCollaborative>
+
+    <GroupInfoBaseShare>
+        <attr name='avatar' type='string'></attr>
+        <attr name='name' type='reg'>^.{4,32}$</attr>
+        <attr name='count' type='int'></attr>
+        <attr name='hash' type='string'></attr>
+        <attr name='public' type='bool'></attr>
+    </GroupInfoBaseShare>
+
+    <GroupInviteUser>
+        <attr name='addresses' type='list'></attr>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+    </GroupInviteUser>
+
+    <UpdateGroupMute>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='mute' type='string'></attr>
+    </UpdateGroupMute>
+
+    <RedPackageInfo>
+        <attr name='redpackage' type='proto'></attr>
+    </RedPackageInfo>
+
+    <GrabRedPackageResp>
+        <attr name='status' type='int'></attr>
+    </GrabRedPackageResp>
+
+    <RedPackageHash>
+        <attr name='id' type='string'></attr>
+    </RedPackageHash>
+
+    <ExternalBillingInfo>
+        <attr name='hash' type='string'></attr>
+    </ExternalBillingInfo>
+
+    <GroupInviteResponseList>
+        <attr name='list' type='list'></attr>
+    </GroupInviteResponseList>
+
+    <GroupInviteResponse>
+        <attr name='address' type='address'></attr>
+        <attr name='token' type='string'></attr>
+    </GroupInviteResponse>
+
+    <GroupToken>
+        <attr name='token' type='string'></attr>
+    </GroupToken>
+
+    <DownloadBackUpResp>
+        <attr name='backup' type='string'></attr>
+    </DownloadBackUpResp>
+
+    <GroupUrl>
+        <attr name='url' type='string'></attr>
+    </GroupUrl>
+
+    <PayCrowdfunding>
+        <attr name='hashId' type='string'></attr>
+        <attr name='amount' type='int'></attr>
+        <attr name='rawTx' type='string'></attr>
+    </PayCrowdfunding>
+
+    <Crowdfundings>
+        <attr name='list' type='list'></attr>
+    </Crowdfundings>
+
+    <Transactions>
+        <attr name='transactions' type='list'></attr>
+    </Transactions>
+
+    <PhoneBookUserInfo>
+        <attr name='user' type='proto'></attr>
+    </PhoneBookUserInfo>
+
+    <SystemRedPackage>
+        <attr name='hashId' type='string'></attr>
+        <attr name='tips' type='string'></attr>
+    </SystemRedPackage>
+
+    <SystemTransferPackage>
+        <attr name='amount' type='int'></attr>
+        <attr name='txid' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='tips' type='string'></attr>
+        <attr name='sender' type='string'></attr>
+    </SystemTransferPackage>
+
+    <SystemRedpackgeNotice>
+        <attr name='receiver' type='proto'></attr>
+        <attr name='hashid' type='string'></attr>
+    </SystemRedpackgeNotice>
+
+    <Reviewed>
+        <attr name='category' type='int'></attr>
+        <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='tips' type='string'></attr>
+        <attr name='userInfo' type='proto'></attr>
+        <attr name='verificationCode' type='string'></attr>
+        <attr name='source' type='int'></attr>
+        <attr name='name' type='string'></attr>
+    </Reviewed>
+
+    <Location>
+        <attr name='longitude' type='string'></attr>
+        <attr name='latitude' type='string'></attr>
+        <attr name='address' type='address'></attr>
+    </Location>
+
+    <AddressNotify>
+        <attr name='txId' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+        <attr name='amount' type='int'></attr>
+    </AddressNotify>
+
+    <RemoveGroup>
+        <attr name='name' type='reg'>^.{4,32}$</attr>
+        <attr name='groupId' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
+    </RemoveGroup>
+
+    <ReviewedResponse>
+        <attr name='name' type='string'></attr>
+        <attr name='success' type='bool'></attr>
+    </ReviewedResponse>
+
+    <Announcement>
+        <attr name='createdAt' type='float'></attr>
+        <attr name='title' type='string'></attr>
+        <attr name='content' type='string'></attr>
+        <attr name='url' type='string'></attr>
+        <attr name='category' type='int'></attr>
+        <attr name='desc' type='string'></attr>
+        <attr name='coversUrl' type='string'></attr>
+        <attr name='title' type='string'></attr>
+    </Announcement>
+
+    <AcceptFriendRequest>
+        <attr name='address' type='address'></attr>
+        <attr name='source' type='int'></attr>
+    </AcceptFriendRequest>
+
+    <IMTransferData>
+        <attr name='sign' type='string'></attr>
+        <attr name='cipherData' type='proto'></attr>
+    </IMTransferData>
+
+    <UserInfoDetail>
+        <attr name='username' type='string'></attr>
+        <attr name='avatar' type='string'></attr>
+        <attr name='encryptionPri' type='string'></attr>
+    </UserInfoDetail>
+
+    <PhoneBook>
+        <attr name='mobiles' type='list'></attr>
+    </PhoneBook>
 
     <HttpResponse>
-        <attr name='code' ext='int'></attr>
-        <attr name='message' ext='string'></attr>
+        <attr name='code' type='int'></attr>
     </HttpResponse>
+
+    <AvatarInfo>
+        <attr name='url' type='string'></attr>
+    </AvatarInfo>
+
+    <FileData>
+        <attr name='url' type='string'></attr>
+        <attr name='token' type='string'></attr>
+    </FileData>
+
+    <UserExistedToken>
+        <attr name='token' type='string'></attr>
+        <attr name='userInfo' type='proto'></attr>
+    </UserExistedToken>
+
+    <GenerateTokenResponse>
+        <attr name='expired' type='int'></attr>
+    </GenerateTokenResponse>
+
+    <VersionResponse>
+        <attr name='version' type='string'></attr>
+        <attr name='upgradeUrl' type='string'></attr>
+    </VersionResponse>
+
+    <PaymentSetting>
+        <attr name='payPin' type='string'></attr>
+        <attr name='fee' type='int'></attr>
+    </PaymentSetting>
+
+    <PayPinVersion>
+        <attr name='version' type='string'></attr>
+    </PayPinVersion>
+
+    <UnspentAmount>
+        <attr name='amount' type='int'></attr>
+        <attr name='avaliableAmount' type='int'></attr>
+    </UnspentAmount>
+
+    <UnspentOrderResponse>
+        <attr name='unspents' type='list'></attr>
+        <attr name='completed' type='bool'></attr>
+        <attr name='amount' type='int'></attr>
+        <attr name='package' type='bool'></attr>
+        <attr name='dust' type='bool'></attr>
+        <attr name='fee' type='int'></attr>
+        <attr name='unspentAmount' type='int'></attr>
+    </UnspentOrderResponse>
+
+    <RedPackage>
+        <attr name='hashId' type='string'></attr>
+    </RedPackage>
+
+    <RedPackageInfos>
+        <attr name='redPackageInfos' type='list'></attr>
+    </RedPackageInfos>
+
 </PBRule>

@@ -28,6 +28,7 @@ import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.contract.TransferFriendContract;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.system.SystemUtil;
 import connect.utils.TimeUtil;
@@ -156,7 +157,9 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
                                         Connect.MuiltSendBillResp muiltSendBillResp = Connect.MuiltSendBillResp.parseFrom(structData.getPlainData());
                                         List<Connect.Bill> bills = muiltSendBillResp.getBillsList();
                                         for (Connect.Bill bill : bills) {
-                                            transferToFriend(bill.getHash(), bill.getReceiver(),note);
+                                            if(ProtoBufUtil.getInstance().checkProtoBuf(bill)){
+                                                transferToFriend(bill.getHash(), bill.getReceiver(),note);
+                                            }
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();

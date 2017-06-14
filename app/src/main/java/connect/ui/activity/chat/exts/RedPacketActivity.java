@@ -25,6 +25,7 @@ import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgSend;
 import connect.ui.activity.wallet.PacketHistoryActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
+import connect.utils.ProtoBufUtil;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.ui.activity.set.PayFeeActivity;
@@ -186,7 +187,10 @@ public class RedPacketActivity extends BaseActivity {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            pendingRedPackage = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
+                                pendingRedPackage = pending;
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }
@@ -253,8 +257,9 @@ public class RedPacketActivity extends BaseActivity {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
-                            MsgSend.sendOuterMsg(MsgType.Lucky_Packet, redPackage.getHashId(), transferEditView.getNote());
-
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(redPackage)){
+                                MsgSend.sendOuterMsg(MsgType.Lucky_Packet, redPackage.getHashId(), transferEditView.getNote());
+                            }
                             if (redType == 0) {
                                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(5,friendEntity.getAvatar(),
                                         friendEntity.getUsername(),friendEntity.getAvatar()));

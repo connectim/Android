@@ -126,7 +126,6 @@ public class BitmapUtil {
      */
     public int[] getImageSize(String imagePath) {
         int[] res = new int[2];
-
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         options.inSampleSize = 1;
@@ -276,10 +275,6 @@ public class BitmapUtil {
      * @param bmp
      * @return
      */
-    public static byte[] bmpToByteArray(final Bitmap bmp) {
-        return bmpToByteArray(bmp,100);
-    }
-
     public static byte[] bmpToByteArray(final Bitmap bmp,int quality) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, quality, output);

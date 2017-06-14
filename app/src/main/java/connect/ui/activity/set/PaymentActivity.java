@@ -17,10 +17,11 @@ import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.bean.PaySetBean;
-import connect.ui.activity.set.manager.PassManager;
+import connect.utils.LoginPassCheckUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
@@ -58,6 +59,7 @@ public class PaymentActivity extends BaseActivity {
     private PaymentActivity mActivity;
     private UserBean userBean;
     private PaySetBean paySetBean;
+    private String payPass = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,10 +109,10 @@ public class PaymentActivity extends BaseActivity {
 
     @OnClick(R.id.pas_ll)
     void goSetPassword(View view) {
-        PassManager passManager = new PassManager();
-        passManager.checkLoginPass(mActivity, userBean.getPassHint(), new PassManager.OnResultListence() {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity,new LoginPassCheckUtil.OnResultListence() {
             @Override
-            public void success() {
+            public void success(String priKey) {
+                payPass = "";
                 setPatpass();
             }
 
@@ -123,10 +125,9 @@ public class PaymentActivity extends BaseActivity {
 
     @OnClick(R.id.without_tb)
     void switchWtthout(View view) {
-        PassManager passManager = new PassManager();
-        passManager.checkLoginPass(mActivity, userBean.getPassHint(), new PassManager.OnResultListence() {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListence() {
             @Override
-            public void success() {
+            public void success(String priKey) {
                 if (withoutTb.isSelected()) {
                     paySetBean.setNoSecretPay(false);
                 } else {
@@ -157,28 +158,21 @@ public class PaymentActivity extends BaseActivity {
     }
 
     private void setPatpass() {
-        DialogUtil.showPayEditView(mActivity, R.string.Set_Payment_Password, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
+        Integer title;
+        if(TextUtils.isEmpty(payPass)){
+            title = R.string.Set_Payment_Password;
+        }else {
+            title = R.string.Wallet_Confirm_PIN;
+        }
+        DialogUtil.showPayEditView(mActivity, title, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(String value) {
-                setPaypassAgain(value);
-            }
-
-            @Override
-            public void cancel() {
-
-            }
-        });
-    }
-
-    private void setPaypassAgain(final String pass) {
-        DialogUtil.showPayEditView(mActivity, R.string.Wallet_Confirm_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
-            @Override
-            public void confirm(String value) {
-                if (pass.equals(value)) {
-                    //String ecdh = SupportKeyUril.cdEncryPayPasswordKey(userBean.getPriKey());
+                if(TextUtils.isEmpty(payPass)){
+                    payPass = value;
+                    setPatpass();
+                }else if(payPass.equals(value)){
                     requestSetPay(value);
-
-                } else {
+                }else{
                     ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
                 }
             }
@@ -227,11 +221,13 @@ public class PaymentActivity extends BaseActivity {
                         Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                         Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                         Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                        paySetBean.setPayPin(encryPass);
-                        paySetBean.setVersionPay(payPinVersion.getVersion());
-                        ParamManager.getInstance().putPaySet(paySetBean);
-                        ToastEUtil.makeText(mActivity, R.string.Wallet_Set_Payment_Password_Successful).show();
-                        updataView();
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
+                            paySetBean.setPayPin(encryPass);
+                            paySetBean.setVersionPay(payPinVersion.getVersion());
+                            ParamManager.getInstance().putPaySet(paySetBean);
+                            ToastEUtil.makeText(mActivity, R.string.Wallet_Set_Payment_Password_Successful).show();
+                            updataView();
+                        }
                     } catch (InvalidProtocolBufferException e) {
                         e.printStackTrace();
                     }

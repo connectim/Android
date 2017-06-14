@@ -19,7 +19,7 @@
             android:contentDescription="@string/app_name"
             android:id="@+id/capture_mask_top"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="100dp"
             android:layout_alignParentTop="true"
             android:background="@color/color_161A21" />
 
@@ -29,10 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/capture_mask_top">
-            <!--<RelativeLayout
-                android:id="@+id/capture_crop_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>-->
             <connect.view.ScanBgView
                 android:id="@+id/capture_crop_view"
                 android:layout_width="@dimen/dp_250"
@@ -92,18 +88,21 @@
             android:background="@drawable/shape_stroke_00ffbf"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_below="@+id/move_up_img">
-            <ImageView
-                android:contentDescription="@string/app_name"
-                android:id="@+id/bottom_scan_img"
-                android:layout_marginTop="@dimen/dp_14"
-                android:layout_width="@dimen/dp_100"
-                android:layout_height="@dimen/dp_100"
-                android:layout_centerHorizontal="true"/>
+
             <TextView
                 style="@style/BaseTextStyle"
                 android:layout_below="@+id/bottom_scan_img"
                 android:text="@string/Set_My_QR_code"
                 android:layout_marginTop="@dimen/dp_5"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@+id/bottom_scan_img"
+                android:layout_marginTop="12dp"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_100"
+                android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true" />
         </RelativeLayout>
 

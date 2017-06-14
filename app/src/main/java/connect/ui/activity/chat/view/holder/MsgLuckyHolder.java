@@ -15,6 +15,7 @@ import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.TransferExt;
 import connect.ui.activity.wallet.PacketDetailActivity;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -91,6 +92,9 @@ public class MsgLuckyHolder extends MsgChatHolder {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GrabRedPackageResp packageResp = Connect.GrabRedPackageResp.parseFrom(structData.getPlainData());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(packageResp)){
+                        return;
+                    }
                     switch (packageResp.getStatus()) {
                         case 0://fail
                             playAnim=true;

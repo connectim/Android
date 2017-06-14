@@ -43,7 +43,6 @@ public class ClipImageLayout extends RelativeLayout {
 
     public void setImage(String path) {
         GlideUtil.loadAvater(mZoomImageView,path);
-        //mZoomImageView.setImageBitmap(BitmapFactory.decodeFile(path));
     }
 
     /**

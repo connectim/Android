@@ -7,8 +7,12 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -20,16 +24,15 @@ import connect.ui.activity.set.bean.PaySetBean;
 import connect.ui.activity.set.manager.EditInputFilterPrice;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.data.RateFormatUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.view.TopToolBar;
 import protos.Connect;
 
 /**
- *
  * Created by Administrator on 2016/12/2.
  */
 public class PayFeeActivity extends BaseActivity {
@@ -48,6 +51,10 @@ public class PayFeeActivity extends BaseActivity {
     TextView textView;
     @Bind(R.id.title_set_fee)
     TextView titleSetFee;
+    @Bind(R.id.right_save_lin)
+    LinearLayout rightSaveLin;
+    @Bind(R.id.miner_rela)
+    RelativeLayout minerRela;
 
     private PayFeeActivity mActivity;
     private PaySetBean paySetBean;
@@ -78,14 +85,23 @@ public class PayFeeActivity extends BaseActivity {
         InputFilter[] inputFilters = {new EditInputFilterPrice(Double.valueOf(0.01), 8)};
         feeEt.setFilters(inputFilters);
         feeEt.addTextChangedListener(textWatcher);
-        updataView();
+        updataView(false);
     }
 
-    private void updataView(){
-        if(paySetBean.isAutoFee()){
+    private void updataView(boolean showAni) {
+        if(showAni){
+            TranslateAnimation mHiddenAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF,
+                    -1.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                    Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                    0.0f);
+            mHiddenAction.setDuration(500);
+            titleSetFee.setAnimation(mHiddenAction);
+        }
+
+        if (paySetBean.isAutoFee()) {
             feeEt.setText(RateFormatUtil.longToDoubleBtc(paySetBean.getAutoMaxFee()));
             titleSetFee.setText(R.string.Wallet_Set_max_trasfer_fee);
-        }else{
+        } else {
             feeEt.setText(RateFormatUtil.longToDoubleBtc(paySetBean.getFee()));
             titleSetFee.setText(R.string.Wallet_Set_transaction_fee_specified);
         }
@@ -100,9 +116,9 @@ public class PayFeeActivity extends BaseActivity {
     void savaFee(View view) {
         long fee = RateFormatUtil.doubleToLongBtc(Double.valueOf(feeEt.getText().toString()));
         if (fee >= 50) {
-            if(paySetBean.isAutoFee()){
+            if (paySetBean.isAutoFee()) {
                 paySetBean.setAutoMaxFee(fee);
-            }else{
+            } else {
                 paySetBean.setFee(fee);
             }
             requestSetpay();
@@ -115,7 +131,7 @@ public class PayFeeActivity extends BaseActivity {
         autoSwitch.setSelected(!isAuto);
         paySetBean.setAutoFee(!isAuto);
         ParamManager.getInstance().putPaySet(paySetBean);
-        updataView();
+        updataView(true);
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
@@ -154,7 +170,7 @@ public class PayFeeActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SETTING, paymentSetting, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity,R.string.Login_Save_successful).show();
+                ToastEUtil.makeText(mActivity, R.string.Login_Save_successful).show();
                 ParamManager.getInstance().putPaySet(paySetBean);
                 ActivityUtil.goBack(mActivity);
             }

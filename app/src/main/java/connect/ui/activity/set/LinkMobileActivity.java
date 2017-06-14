@@ -69,10 +69,12 @@ public class LinkMobileActivity extends BaseActivity {
         if(TextUtils.isEmpty(userBean.getPhone())){//link
             hintTv.setText(R.string.Set_Not_connected_to_mobile_network);
             linkBtn.setText(R.string.Set_Add_mobile);
+            toolbarTop.setRightTextEnable(false);
             mobileTv.setText("");
         }else{//linked
             hintTv.setText(R.string.Set_Your_cell_phone_number);
             linkBtn.setText(R.string.Set_Change_Mobile);
+            toolbarTop.setRightTextEnable(true);
             toolbarTop.setRightImg(R.mipmap.menu_white);
             mobileTv.setText("+" + userBean.getPhone());
         }
@@ -124,6 +126,7 @@ public class LinkMobileActivity extends BaseActivity {
     }
 
     private void requestBindMobile(){
+        // TODO: 2017/6/14 0014  加密私钥扫描出来解绑，这时没发解绑，因为手机号码为****号
         ProgressUtil.getInstance().showProgress(mActivity);
         String[] phoneArray = userBean.getPhone().split("-");
         Connect.MobileVerify mobileVerify = Connect.MobileVerify.newBuilder()
@@ -133,7 +136,6 @@ public class LinkMobileActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_UNBIND_MOBILE, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                UserBean userBean =  SharedPreferenceUtil.getInstance().getUser();
                 userBean.setPhone("");
                 SharedPreferenceUtil.getInstance().putUser(userBean);
                 ProgressUtil.getInstance().dismissProgress();

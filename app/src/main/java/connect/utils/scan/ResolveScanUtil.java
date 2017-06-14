@@ -26,6 +26,7 @@ import connect.ui.activity.wallet.RequestActivity;
 import connect.ui.activity.wallet.TransferAddressActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -193,7 +194,7 @@ public class ResolveScanUtil {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(sendUserInfo != null && !TextUtils.isEmpty(sendUserInfo.getPubKey())){
+                    if(sendUserInfo != null && ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)){
                         onResultBack.call(ID_STRANGER);
                     }else{
                         onResultBack.call(ID_INEXISTENCE);

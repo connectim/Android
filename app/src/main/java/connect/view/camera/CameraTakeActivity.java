@@ -1,7 +1,6 @@
 package connect.view.camera;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -43,7 +42,7 @@ public class CameraTakeActivity extends BaseActivity {
     @Bind(R.id.change_img)
     ImageView changeImg;
     @Bind(R.id.video_btn)
-    VideoBtnView videoBtn;
+    VideoButtonView videoBtn;
     @Bind(R.id.close_img)
     ImageView closeImg;
     @Bind(R.id.retake_rela)
@@ -58,7 +57,6 @@ public class CameraTakeActivity extends BaseActivity {
     private CameraTakeActivity mActivity;
     SurfaceView surfaceView;
     private CameraManager cameraManager;
-    private FileSavaManage fileSavaManage;
     private RecorderManager recorderManager;
     private SurfaceHolder viewHolder;
     private Camera mCamera;
@@ -80,7 +78,7 @@ public class CameraTakeActivity extends BaseActivity {
     private Handler handler = new Handler();
 
     public static void startActivity(Activity activity, int requestCode) {
-        ActivityUtil.nextBottomToTop(activity, CameraTakeActivity.class, null,requestCode);
+        ActivityUtil.nextBottomToTop(activity, CameraTakeActivity.class, null, requestCode);
     }
 
     @Override
@@ -98,7 +96,6 @@ public class CameraTakeActivity extends BaseActivity {
     @Override
     public void initView() {
         cameraManager = new CameraManager();
-        fileSavaManage = new FileSavaManage();
         recorderManager = new RecorderManager();
         videoBtn.setEnabled(false);
 
@@ -129,10 +126,156 @@ public class CameraTakeActivity extends BaseActivity {
         }
     };
 
+    @OnClick(R.id.close_img)
+    void goBack(View view) {
+        ActivityUtil.goBackBottom(mActivity);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            ActivityUtil.goBackBottom(this);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @OnClick(R.id.change_img)
+    void setChange(View view) {
+        if (mCamera == null)
+            return;
+        Camera newCamera = cameraManager.setChangeParameters(mActivity, mCamera, viewHolder);
+        if (newCamera != null) {
+            mCamera = newCamera;
+        }
+    }
+
+    @OnClick(R.id.retake_rela)
+    void reTake(View view) {
+        switchView(false);
+        releasedPlay();
+        FileUtil.deleteFile(file.getAbsolutePath());
+        mCamera = cameraManager.initCamera(mActivity, viewHolder);
+    }
+
+    @OnClick(R.id.send_rela)
+    void sendFile(View view) {
+        Bundle bundle = new Bundle();
+        if (fileType == 0) {
+            bundle.putString("mediaType", MEDIA_TYPE_PHOTO);
+        } else {
+            bundle.putString("mediaType", MEDIA_TYPE_VEDIO);
+            bundle.putInt("length", videoLength / 1000);
+        }
+        if (file != null) {
+            bundle.putString("path", file.getPath());
+        }
+        ActivityUtil.goBackWithResult(mActivity, RESULT_OK, bundle, R.anim.activity_0_to_0, R.anim.dialog_bottom_dismiss);
+        ;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissiomUtilNew.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
+    }
+
+    private VideoButtonView.OnTouchStatusListence statusListence = new VideoButtonView.OnTouchStatusListence() {
+        @Override
+        public void clickView() {
+            if (mCamera != null)
+                mCamera.takePicture(null, null, mPictureCallback);
+        }
+
+        @Override
+        public void longClickView() {
+            if (mCamera == null)
+                return;
+            try {
+                file = FileUtil.newTempFile(FileUtil.FileType.VIDEO);
+                mediaRecorder = recorderManager.initMediaRecorder(mCamera, viewHolder, file, cameraManager.getCameraPosition());
+                mediaRecorder.start();
+
+                fileType = 1;
+                changeImg.setVisibility(View.GONE);
+                cameraDescribeTv.setVisibility(View.GONE);
+                timing();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void cancleLongClick() {
+            if (videoLength < MAX_LENGTH) {
+                stopRecorder();
+                initPlayVedio();
+            }
+        }
+    };
+
+    private void initPlayVedio() {
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
+        }
+
+        mediaPlayer.reset();
+        mediaPlayer = MediaPlayer.create(CameraTakeActivity.this, Uri.parse(file.getPath()));
+        if (mediaPlayer == null) {
+            reTake(new View(mActivity));
+            ToastUtil.getInstance().showToast("Shooting video error");
+            return;
+        }
+        switchView(true);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setDisplay(viewHolder);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.start();
+            }
+        });
+        try {
+            mediaPlayer.prepare();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.start();
+    }
+
+    /**
+     * Photo finish callback
+     */
+    private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            file = FileUtil.byteArrayToFile(data, FileUtil.FileType.IMG);
+            fileType = 0;
+            releasedCamera();
+            switchView(true);
+        }
+    };
+
+    private class SurfaceCallback implements SurfaceHolder.Callback {
+        @Override
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        }
+
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+            if (mCamera == null) {
+                mCamera = cameraManager.initCamera(mActivity, holder);
+            } else {
+                mCamera.startPreview();
+            }
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            releasedCamera();
+            stopRecorder();
+            releasedPlay();
+        }
     }
 
     private void switchView(boolean isFinish) {
@@ -164,161 +307,6 @@ public class CameraTakeActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.close_img)
-    void goBack(View view) {
-        ActivityUtil.goBackBottom(mActivity);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            ActivityUtil.goBackBottom(this);
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @OnClick(R.id.change_img)
-    void setChange(View view) {
-        if(mCamera == null)
-            return;
-        Camera newCamera = cameraManager.setChangeParameters(mActivity, mCamera, viewHolder);
-        if (newCamera != null) {
-            mCamera = newCamera;
-        }
-    }
-
-    @OnClick(R.id.retake_rela)
-    void reTake(View view) {
-        takeRedo();
-    }
-
-    private void takeRedo() {
-        switchView(false);
-        releasedPlay();
-        fileSavaManage.deleFile(file);
-        mCamera = cameraManager.initCamera(mActivity,viewHolder);
-    }
-
-    @OnClick(R.id.send_rela)
-    void sendFile(View view) {
-        Bundle bundle = new Bundle();
-        if (fileType == 0) {
-            bundle.putString("mediaType", MEDIA_TYPE_PHOTO);
-        } else {
-            bundle.putString("mediaType", MEDIA_TYPE_VEDIO);
-            bundle.putInt("length", videoLength / 1000);
-        }
-        if (file != null) {
-            bundle.putString("path", file.getPath());
-        }
-        ActivityUtil.goBackWithResult(mActivity, RESULT_OK,bundle,R.anim.activity_0_to_0,R.anim.dialog_bottom_dismiss);;
-    }
-
-    private VideoBtnView.OnTouchStatusListence statusListence = new VideoBtnView.OnTouchStatusListence() {
-        @Override
-        public void clickView() {
-            if (mCamera != null)
-                mCamera.takePicture(null, null, mPictureCallback);
-        }
-
-
-        @Override
-        public void longClickView() {
-            if (mCamera == null)
-                return;
-            try {
-                file = FileUtil.newTempFile(FileUtil.FileType.VIDEO);
-                mediaRecorder = recorderManager.initMediaRecorder(mCamera, viewHolder, file, cameraManager.getCameraPosition());
-                mediaRecorder.start();
-
-                fileType = 1;
-                changeImg.setVisibility(View.GONE);
-                cameraDescribeTv.setVisibility(View.GONE);
-                timing();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void cancleLongClick() {
-            stopRecorder();
-            switchView(true);
-            initPlayVedio();
-        }
-    };
-
-    private void initPlayVedio() {
-        if (mediaPlayer == null) {
-            mediaPlayer = new MediaPlayer();
-        }
-
-        mediaPlayer.reset();
-        mediaPlayer = MediaPlayer.create(CameraTakeActivity.this, Uri.parse(file.getPath()));
-        if (mediaPlayer == null) {
-            takeRedo();
-            ToastUtil.getInstance().showToast("Shooting video error");
-            return;
-        }
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setDisplay(viewHolder);
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.start();
-            }
-        });
-        try {
-            mediaPlayer.prepare();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.start();
-    }
-
-    /**
-     * Photo finish callback
-     */
-    private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            file = fileSavaManage.getPhotoFile(data);
-            /*Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
-            Matrix matrix = new Matrix();
-            matrix.postRotate(cameraManager.getCameraDisplayOrientation(mActivity, cameraManager.getCameraPosition()));
-            matrix.postScale(1, cameraManager.getCameraPosition()==1 ? -1 : 1);
-            Bitmap cropRotateScaled = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            String path = BitmapUtil.bitmapSavePath(cropRotateScaled,100);
-            file = new File(path);*/
-            fileType = 0;
-            releasedCamera();
-            switchView(true);
-        }
-    };
-
-    private class SurfaceCallback implements SurfaceHolder.Callback {
-        @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        }
-
-        @Override
-        public void surfaceCreated(SurfaceHolder holder) {
-            if (mCamera == null) {
-                mCamera = cameraManager.initCamera(mActivity,holder);
-            } else {
-                mCamera.startPreview();
-            }
-        }
-
-        @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            releasedCamera();
-            stopRecorder();
-            releasedPlay();
-        }
-    }
-
     private void timing() {
         videoLength = 0;
         runnable = new Runnable() {
@@ -327,7 +315,6 @@ public class CameraTakeActivity extends BaseActivity {
                 videoLength += 50;
                 if (videoLength > MAX_LENGTH) {
                     stopRecorder();
-                    switchView(true);
                     initPlayVedio();
                 } else {
                     videoBtn.setPeogressCricle(Float.valueOf(videoLength) / 1000);
@@ -348,8 +335,8 @@ public class CameraTakeActivity extends BaseActivity {
 
     private void releasedCamera() {
         if (null != mCamera) {
-            mCamera.setPreviewCallback(null);
             mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
             mCamera.release();
             mCamera = null;
         }

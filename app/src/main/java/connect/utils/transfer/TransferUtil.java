@@ -3,6 +3,7 @@ package connect.utils.transfer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
@@ -18,6 +19,7 @@ import connect.ui.activity.set.bean.PaySetBean;
 import connect.ui.activity.wallet.bean.SignRawBean;
 import connect.ui.activity.wallet.bean.TranAddressBean;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
@@ -60,7 +62,11 @@ public class TransferUtil {
      */
     public static boolean ishaveDustWithAmount(long amount) {
         EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
-        return (amount * 1000 / (3 * 182)) < Double.valueOf(feeBean.getData()) * Math.pow(10, 8) / 10;
+        if(feeBean == null || TextUtils.isEmpty(feeBean.getData())){
+            return false;
+        }else{
+            return (amount * 1000 / (3 * 182)) < Double.valueOf(feeBean.getData()) * Math.pow(10, 8) / 10;
+        }
     }
 
     /**
@@ -146,7 +152,9 @@ public class TransferUtil {
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     Connect.UnspentOrderResponse orderResponse = Connect.UnspentOrderResponse.parseFrom(response.getBody());
-                    checkUnspend(orderResponse);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(orderResponse)){
+                        checkUnspend(orderResponse);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

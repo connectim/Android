@@ -2,10 +2,8 @@ package connect.ui.base;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,8 +12,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 
 import com.google.zxing.BinaryBitmap;
@@ -28,14 +24,12 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Hashtable;
 
 import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
-import connect.utils.PhotoUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastUtil;
 import connect.utils.log.LogManager;
@@ -82,15 +76,6 @@ public abstract class BaseScanActivity extends BaseActivity {
     }
 
     public abstract void scanCall(String value);
-
-    public void setLineAnimation(View view){
-        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT,
-                0.9f);
-        animation.setDuration(4500);
-        animation.setRepeatCount(-1);
-        animation.setRepeatMode(Animation.RESTART);
-        view.startAnimation(animation);
-    }
 
     public Handler getHandler() {
         return handler;
@@ -196,9 +181,6 @@ public abstract class BaseScanActivity extends BaseActivity {
     public void handleDecode(Result rawResult, Bundle bundle) {
         inactivityTimer.onActivity();
         beepManager.playBeepSoundAndVibrate();
-        /*bundle.putInt("width", mCropRect.width());
-        bundle.putInt("height", mCropRect.height());
-        bundle.putString("result", rawResult.getText());*/
         scanCall(rawResult.getText());
     }
 
@@ -209,41 +191,12 @@ public abstract class BaseScanActivity extends BaseActivity {
             @Override
             public void run() {
                 Bitmap scanBitmap = BitmapUtil.getInstance().compress(photo_path, 480, 800);
-                String resultString = decodeQRImage(scanBitmap);
-                if (resultString != null) {
-                    Message m = handler.obtainMessage();
-                    m.what = PARSE_BARCODE_SUC;
-                    m.obj = resultString;
-                    handler.sendMessage(m);
-                } else {
-                    ProgressUtil.getInstance().dismissProgress();
-                    ToastUtil.getInstance().showToast("Scan failed!");
+                String resultString;
+                if(scanBitmap != null){
+                    resultString = decodeQRImage(scanBitmap);
+                }else{
+                    resultString = null;
                 }
-            }
-        }).start();
-    }
-
-    public void getAblamString(Intent data, final Handler handler){
-        /*Cursor cursor = getContentResolver().query(data.getData(),null,null,null,null);
-        if(cursor.moveToFirst()){
-            photo_path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-        }
-        cursor.close();*/
-        Uri uri;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            String url = PhotoUtil.getPath(this,data.getData());
-            uri = Uri.fromFile(new File(url));
-        }else{
-            uri = data.getData();
-        }
-        photo_path = uri.getPath();
-
-        ProgressUtil.getInstance().showProgress(this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap scanBitmap = BitmapUtil.getInstance().compress(photo_path,480,800);
-                String resultString = decodeQRImage(scanBitmap);
                 if (resultString != null) {
                     Message m = handler.obtainMessage();
                     m.what = PARSE_BARCODE_SUC;
@@ -265,7 +218,8 @@ public abstract class BaseScanActivity extends BaseActivity {
     public String decodeQRImage(Bitmap bitmap) {
         String value = null;
         Hashtable<DecodeHintType, String> hints = new Hashtable<>();
-        hints.put(DecodeHintType.CHARACTER_SET, "utf-8"); // Encoding of two-dimensional code content
+        // Encoding of two-dimensional code content
+        hints.put(DecodeHintType.CHARACTER_SET, "utf-8");
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int[] pixels = new int[width * height];

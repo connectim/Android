@@ -38,6 +38,7 @@ import connect.ui.activity.set.ModifyInfoActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
@@ -170,28 +171,29 @@ public class GroupSetActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupSettingInfo settingInfo = Connect.GroupSettingInfo.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(settingInfo)){
+                        setEntity.setDisturb(settingInfo.getMute() ? 1 : 0);
+                        ConversionSettingHelper.getInstance().insertSetEntity(setEntity);
+                        boolean notice = Integer.valueOf(1).equals(setEntity.getDisturb());
+                        seSwitchLayout(findViewById(R.id.mute), getResources().getString(R.string.Chat_Mute_Notification), notice);
 
-                    setEntity.setDisturb(settingInfo.getMute() ? 1 : 0);
-                    ConversionSettingHelper.getInstance().insertSetEntity(setEntity);
-                    boolean notice = Integer.valueOf(1).equals(setEntity.getDisturb());
-                    seSwitchLayout(findViewById(R.id.mute), getResources().getString(R.string.Chat_Mute_Notification), notice);
+                        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(value);
+                        if (groupEntity != null) {
+                            groupEntity.setVerify(settingInfo.getPublic()?1:0);
+                            groupEntity.setAvatar(settingInfo.getAvatar());
+                            ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                        }
 
-                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(value);
-                    if (groupEntity != null) {
-                        groupEntity.setVerify(settingInfo.getPublic()?1:0);
-                        groupEntity.setAvatar(settingInfo.getAvatar());
-                        ContactHelper.getInstance().inserGroupEntity(groupEntity);
-                    }
-
-                    if (settingInfo.getPublic()) {
-                        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
-                        if (myMember == null || myMember.getRole() == 0) {
-                            findViewById(R.id.groupset_groupname).setEnabled(false);
+                        if (settingInfo.getPublic()) {
+                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
+                            if (myMember == null || myMember.getRole() == 0) {
+                                findViewById(R.id.groupset_groupname).setEnabled(false);
+                            } else {
+                                findViewById(R.id.groupset_groupname).setEnabled(true);
+                            }
                         } else {
                             findViewById(R.id.groupset_groupname).setEnabled(true);
                         }
-                    } else {
-                        findViewById(R.id.groupset_groupname).setEnabled(true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

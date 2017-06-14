@@ -10,6 +10,7 @@ import connect.db.SharePreferenceUser;
 import connect.ui.activity.R;
 import connect.ui.activity.wallet.bean.AddressBean;
 import connect.ui.activity.wallet.contract.AddressBookContract;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
@@ -52,7 +53,14 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.AddressBook addressBook = Connect.AddressBook.parseFrom(structData.getPlainData());
                             List<Connect.AddressBook.AddressInfo> list = addressBook.getAddressInfoList();
-                            listAddress = switchList(list);
+
+                            ArrayList<Connect.AddressBook.AddressInfo> listCheck = new ArrayList<>();
+                            for(Connect.AddressBook.AddressInfo addressInfo : list){
+                                if(ProtoBufUtil.getInstance().checkProtoBuf(addressInfo)){
+                                    listCheck.add(addressInfo);
+                                }
+                            }
+                            listAddress = switchList(listCheck);
                             mView.updataView(listAddress);
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();

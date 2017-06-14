@@ -112,7 +112,7 @@ public class ModifyAvaterActivity extends BaseActivity implements ModifyAvaterCo
     @Override
     public void requestAvaFninish(String path) {
         ToastEUtil.makeText(mActivity,R.string.Set_Set_Avatar_success).show();
-        GlideUtil.loadAvater(avatarImg,path);
+        GlideUtil.loadAvater(avatarImg,path + "?size=400");
     }
 
     @Override

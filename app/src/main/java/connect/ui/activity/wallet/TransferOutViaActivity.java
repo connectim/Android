@@ -18,6 +18,7 @@ import connect.ui.activity.R;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.SendOutBean;
 import connect.ui.activity.wallet.bean.TransferBean;
+import connect.utils.ProtoBufUtil;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
@@ -153,21 +154,23 @@ public class TransferOutViaActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData());
 
-                    final SendOutBean sendOutBean = new SendOutBean();
-                    sendOutBean.setType(PacketSendActivity.OUT_VIA);
-                    sendOutBean.setUrl(billingInfo.getUrl());
-                    sendOutBean.setDeadline(billingInfo.getDeadline());
-                    sendOutBean.setHashId(billingInfo.getHash());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)){
+                        final SendOutBean sendOutBean = new SendOutBean();
+                        sendOutBean.setType(PacketSendActivity.OUT_VIA);
+                        sendOutBean.setUrl(billingInfo.getUrl());
+                        sendOutBean.setDeadline(billingInfo.getDeadline());
+                        sendOutBean.setHashId(billingInfo.getHash());
 
-                    ParamManager.getInstance().putLatelyTransfer(new TransferBean(2,
-                            getResources().getString(R.string.Wallet_Transfer)));
-                    paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
-                        @Override
-                        public void onComplete() {
-                            PacketSendActivity.startActivity(mActivity, sendOutBean);
-                            finish();
-                        }
-                    });
+                        ParamManager.getInstance().putLatelyTransfer(new TransferBean(2,
+                                getResources().getString(R.string.Wallet_Transfer)));
+                        paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
+                            @Override
+                            public void onComplete() {
+                                PacketSendActivity.startActivity(mActivity, sendOutBean);
+                                finish();
+                            }
+                        });
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
                     e.printStackTrace();
@@ -190,7 +193,10 @@ public class TransferOutViaActivity extends BaseActivity {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            pendingRedPackage = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
+                                pendingRedPackage = pending;
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }

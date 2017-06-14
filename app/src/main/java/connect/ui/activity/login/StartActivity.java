@@ -1,12 +1,8 @@
 package connect.ui.activity.login;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -14,7 +10,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.ui.activity.R;
 import connect.ui.activity.home.HomeActivity;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.login.contract.StartContract;
 import connect.ui.activity.login.presenter.StartPresenter;
 import connect.ui.base.BaseActivity;
@@ -39,7 +34,6 @@ public class StartActivity extends BaseActivity implements StartContract.View{
     @Override
     public void initView() {
         mActivity = this;
-
         setPresenter(new StartPresenter(this));
         startPresenter.start();
     }
@@ -48,10 +42,6 @@ public class StartActivity extends BaseActivity implements StartContract.View{
     public void setPresenter(StartContract.Presenter presenter) {
         startPresenter = presenter;
     }
-
-    private boolean isHavePersion(){
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M&&
-                ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;}
 
     @Override
     public void setImage(String path) {
