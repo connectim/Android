@@ -88,7 +88,6 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_ADDRESS_BOOK_ADD, addressInfo, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                ToastUtil.getInstance().showToast(response.getCode() + response.getMessage());
                 listAddress.add(0,new AddressBean("",address));
                 ToastEUtil.makeText(mView.getActivity(), R.string.Link_Add_Successful);
                 mView.updataView(listAddress);
