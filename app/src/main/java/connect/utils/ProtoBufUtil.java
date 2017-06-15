@@ -80,7 +80,7 @@ public class ProtoBufUtil {
                         pbTxt = nameTxt;
                     } else {
                         nameTxt = pullParser.getAttributeValue("", "name");
-                        //eventType = pullParser.next();
+                        eventType = pullParser.next();
                         contentTxt = pullParser.getText();
 
                         pbMap = protoBufMap.get(pbTxt);
