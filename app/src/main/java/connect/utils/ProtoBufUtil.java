@@ -32,7 +32,6 @@ public class ProtoBufUtil {
     private String Tag = "ProtoBufUtil";
     private static ProtoBufUtil protoBufUtil;
     private Map<String, Map<String, Map>> protoBufMap = new HashMap<>();
-    private Map<String, Map<String, Map>> protoBufMap11 = new HashMap<>();
 
     public ProtoBufUtil() {
         try {
@@ -80,7 +79,7 @@ public class ProtoBufUtil {
                         pbTxt = nameTxt;
                     } else {
                         nameTxt = pullParser.getAttributeValue("", "name");
-                        //eventType = pullParser.next();
+                        eventType = pullParser.next();
                         contentTxt = pullParser.getText();
 
                         pbMap = protoBufMap.get(pbTxt);
