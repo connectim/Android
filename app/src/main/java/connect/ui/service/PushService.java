@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 import connect.im.IMessage;
@@ -49,10 +50,13 @@ public class PushService extends Service {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            localBinder = IMessage.Stub.asInterface(service);
-
-            connectManager.setiMessage(localBinder);
-            connectManager.connectServer();
+            try {
+                localBinder = IMessage.Stub.asInterface(service);
+                connectManager.setiMessage(localBinder);
+                localBinder.connectMessage(ServiceAck.SERVER_ADDRESS.getAck(), new byte[0]);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -69,6 +73,7 @@ public class PushService extends Service {
 
         @Override
         public void connectMessage(int type, byte[] message) throws RemoteException {
+            ByteBuffer byteBuffer;
             ServiceAck serviceAck=ServiceAck.valueOf(type);
 
             switch (serviceAck) {
@@ -77,7 +82,7 @@ public class PushService extends Service {
                     bindService(intent, pushConnect, Service.BIND_IMPORTANT);
                     break;
                 case MESSAGE:
-                    ByteBuffer byteBuffer = ByteBuffer.wrap(message);
+                    byteBuffer = ByteBuffer.wrap(message);
                     connectManager.sendToBytes(byteBuffer);
                     break;
                 case CONNECT_START:
@@ -88,9 +93,23 @@ public class PushService extends Service {
                     break;
                 case EXIT_ACCOUNT:
                     connectManager.exitConnect();
+                    localBinder.connectMessage(ServiceAck.EXIT_ACCOUNT.getAck(), new byte[0]);
+                    unbindService(pushConnect);
+                    pushConnect = null;
+                    stopSelf();
                     break;
                 case STOP_CONNECT:
                     connectManager.stopConnect();
+                    break;
+                case SERVER_ADDRESS:
+                    try {
+                        byteBuffer = ByteBuffer.wrap(message);
+                        String address = new String(byteBuffer.array(), "utf-8");
+                        connectManager.setServerAddress(address);
+                        connectManager.connectServer();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
         }
@@ -99,6 +118,5 @@ public class PushService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbindService(pushConnect);
     }
 }

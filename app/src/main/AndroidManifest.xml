@@ -405,6 +405,7 @@
 
         <service
             android:name="connect.ui.service.PushService"
+            android:process=".push"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.connect.push"/>

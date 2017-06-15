@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 import connect.db.MemoryDataManager;
@@ -30,6 +31,7 @@ import connect.im.parser.CommandBean;
 import connect.im.parser.ShakeHandBean;
 import connect.ui.service.bean.PushMessage;
 import connect.ui.service.bean.ServiceAck;
+import connect.utils.ConfigUtil;
 import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 
@@ -128,6 +130,7 @@ public class SocketService extends Service {
         @Override
         public void connectMessage(int type, byte[] message) throws RemoteException {
             LogManager.getLogger().d(Tag, type + "");
+            ByteBuffer byteBuffer;
             ServiceAck serviceAck = ServiceAck.valueOf(type);
             switch (serviceAck) {
                 case HAND_SHAKE:
@@ -135,7 +138,7 @@ public class SocketService extends Service {
                     shakeHandBean.firstLoginShake();
                     break;
                 case MESSAGE:
-                    ByteBuffer byteBuffer = ByteBuffer.wrap(message);
+                    byteBuffer = ByteBuffer.wrap(message);
                     MsgByteManager.getInstance().putByteMsg(byteBuffer);
                     break;
                 case HEART_BEAT:
@@ -146,6 +149,18 @@ public class SocketService extends Service {
                     ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
                     break;
                 case EXIT_ACCOUNT:
+                    unbindService(localConnect);
+                    localConnect = null;
+                    stopSelf();
+                    break;
+                case SERVER_ADDRESS:
+                    try {
+                        String address = ConfigUtil.getInstance().socketAddress();
+                        byteBuffer = ByteBuffer.wrap(address.getBytes("utf-8"));
+                        PushMessage.pushMessage(ServiceAck.SERVER_ADDRESS, byteBuffer);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
         }
@@ -174,7 +189,6 @@ public class SocketService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbindService(localConnect);
         EventBus.getDefault().unregister(this);
     }
 }

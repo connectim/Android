@@ -3,6 +3,7 @@ package connect.ui.activity.chat;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -191,9 +192,15 @@ public abstract class BaseChatActvity extends BaseActivity {
                 List<String> paths = (List<String>) objects[0];
                 for (String str : paths) {
                     bean = (MsgEntity) baseChat.photoMsg(str, FileUtil.fileSize(str));
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    options.inSampleSize = 1;
+                    BitmapFactory.decodeFile(str, options);
                     contentBean = bean.getMsgDefinBean();
-                    adapterInsetItem(bean);
+                    contentBean.setImageOriginWidth(options.outWidth);
+                    contentBean.setImageOriginHeight(options.outHeight);
 
+                    adapterInsetItem(bean);
                     upLoad = new PhotoUpload(activity, baseChat, contentBean, new FileUpLoad.FileUpListener() {
                         @Override
                         public void upSuccess(String msgid) {
