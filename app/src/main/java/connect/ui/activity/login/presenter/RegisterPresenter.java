@@ -150,7 +150,9 @@ public class RegisterPresenter implements RegisterContract.Presenter{
                     public void onError(Connect.HttpResponse response) {
                         if (response.getCode() == 2101){
                             Toast.makeText(mView.getActivity(),R.string.Login_User_avatar_is_illegal,Toast.LENGTH_LONG).show();
-                        }else{
+                        }else if(response.getCode() == 2102){
+                            Toast.makeText(mView.getActivity(),R.string.ErrorCode_DecodeRawTransaction_error,Toast.LENGTH_LONG).show();
+                        }else {
                             Toast.makeText(mView.getActivity(),response.getMessage(),Toast.LENGTH_LONG).show();
                         }
                         ProgressUtil.getInstance().dismissProgress();

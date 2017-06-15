@@ -193,6 +193,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 ChatActivity.startActivity(activity, (Talker) (objects[0]));
                 break;
         }
+
     }
 
 
