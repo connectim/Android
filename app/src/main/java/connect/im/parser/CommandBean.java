@@ -797,6 +797,8 @@ public class CommandBean extends InterParse {
                 break;
             case 2://It is to receive
                 break;
+            case 3://Red packets suspended
+                break;
         }
 
         if ((int) objs[1] > 0) {
