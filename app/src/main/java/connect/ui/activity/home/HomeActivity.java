@@ -172,7 +172,7 @@ public class HomeActivity extends BaseFragmentActivity {
 
         switch (action.getType()) {
             case DELAY_EXIT://Timeout logged out
-                mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 5000);
+                mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 1000);
                 break;
             case EXIT:
                 mHandler.removeMessages(TIMEOUT_DELAYEXIT);

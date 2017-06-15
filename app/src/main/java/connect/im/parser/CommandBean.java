@@ -103,7 +103,7 @@ public class CommandBean extends InterParse {
                 case 0x06://bind servicetoken
                     break;
                 case 0x07://login out success
-                    HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
+                    //HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
                     break;
                 case 0x08://receive add friend request
                     receiverAddFriendRequest(command.getDetail(), msgid, command.getErrNo());
