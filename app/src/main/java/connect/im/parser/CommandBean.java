@@ -487,6 +487,7 @@ public class CommandBean extends InterParse {
 
                     FailMsgsManager.getInstance().insertReceiveMsg(group.getIdentifier(),TimeUtil.timestampToMsgid(), context.getString(R.string.Link_Join_Group));
                 } else {
+                    groupEntity.setName(TextUtils.isEmpty(group.getName()) ? "" : group.getName());
                     groupEntity.setSummary(TextUtils.isEmpty(group.getSummary()) ? "" : group.getSummary());
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                     ContactNotice.receiverGroup();

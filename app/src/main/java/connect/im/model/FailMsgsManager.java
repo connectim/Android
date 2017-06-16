@@ -165,7 +165,7 @@ public class FailMsgsManager {
     }
 
     /** Chat messages failure time */
-    private final long MSGTIME_CHAT = 10 * 1000;
+    private final long MSGTIME_CHAT = 20 * 1000;
     /** Other messages sent failure time */
     private final long MSGTIME_OTHER = 1000;
 
