@@ -148,6 +148,9 @@ public class ResolveUrlUtil {
                         case 2:
                             ToastUtil.getInstance().showToast(R.string.Wallet_You_already_open_this_luckypacket);
                             break;
+                        case 3:
+                            ToastUtil.getInstance().showToast(R.string.Chat_system_luckypackage_have_been_frozen);
+                            break;
                     }
                 }else if(msgSendBean.getType() == MsgSendBean.SendType.TypeOutTransfer){
                     switch (errorNum){

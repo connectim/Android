@@ -23,6 +23,8 @@ public class TransferError {
     public void showError(int code, String massage){
         switch (code){
             case 2015:
+            case 2400:
+                Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_xn_mempool_conflict,Toast.LENGTH_LONG).show();
                 Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_xn_mempool_conflict,Toast.LENGTH_LONG).show();
                 break;
             case 2616:
