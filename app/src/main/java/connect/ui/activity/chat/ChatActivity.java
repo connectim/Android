@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -262,13 +263,17 @@ public class ChatActivity extends BaseChatActvity {
             List<ImageInfo> imageInfos = (List<ImageInfo>) data.getSerializableExtra("list");
             if (imageInfos != null && imageInfos.size() > 0) {
                 for (ImageInfo info : imageInfos) {
-                    if (info.getFileType() == 0) {
-                        List<String> paths = new ArrayList<>();
-                        paths.add(info.getImageFile().getAbsolutePath());
-                        MsgSend.sendOuterMsg(MsgType.Photo, paths);
-                    } else {
-                        int length = (int) (info.getImageFile().getVideoLength() / 1000);
-                        MsgSend.sendOuterMsg(MsgType.Video, info.getImageFile().getAbsolutePath(), length);
+                    String filePath = info.getImageFile().getAbsolutePath();
+                    File tempFile = new File(filePath);
+                    if (tempFile.exists() && tempFile.length() > 0) {
+                        if (info.getFileType() == 0) {
+                            List<String> paths = new ArrayList<>();
+                            paths.add(info.getImageFile().getAbsolutePath());
+                            MsgSend.sendOuterMsg(MsgType.Photo, paths);
+                        } else {
+                            int length = (int) (info.getImageFile().getVideoLength() / 1000);
+                            MsgSend.sendOuterMsg(MsgType.Video, info.getImageFile().getAbsolutePath(), length);
+                        }
                     }
                 }
             }
