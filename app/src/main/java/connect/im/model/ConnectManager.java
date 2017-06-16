@@ -25,6 +25,7 @@ import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.IMessage;
 import connect.ui.service.bean.ServiceAck;
+import connect.utils.ConfigUtil;
 import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
@@ -39,6 +40,9 @@ public class ConnectManager {
     private Selector selector;
     private SocketChannel socketChannel;
     private IMessage iMessage;
+
+    private String serverAddress;
+    private int serverPort = 19090;
 
     private static ConnectManager connectManager;
 
@@ -171,15 +175,18 @@ public class ConnectManager {
             stopConnect();
         }
 
-        String address = "sandbox.connect.im";
-        int port = 19090;
         try {
+            if (TextUtils.isEmpty(serverAddress)) {
+                iMessage.connectMessage(ServiceAck.SERVER_ADDRESS.getAck(), new byte[0]);
+                return;
+            }
+
             iMessage.connectMessage(ServiceAck.CONNCET_REFRESH.getAck(), new byte[0]);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
 
-        Thread connectThread = new Thread(new ConnectRunnable(address, port));
+        Thread connectThread = new Thread(new ConnectRunnable(serverAddress, serverPort));
         connectThread.start();
     }
 
@@ -363,5 +370,13 @@ public class ConnectManager {
 
     public void setiMessage(IMessage iMessage) {
         this.iMessage = iMessage;
+    }
+
+    public String getServerAddress() {
+        return serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 }

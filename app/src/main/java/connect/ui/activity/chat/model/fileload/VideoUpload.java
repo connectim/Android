@@ -45,9 +45,9 @@ public class VideoUpload extends FileUpLoad {
             protected Void doInBackground(Void... params) {
                 try {
                     String filePath = bean.getContent();
-                    filePath = videoCompress(filePath);
-
                     Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
+
+                    filePath = videoCompress(filePath);
                     File thumbFile = BitmapUtil.getInstance().bitmapSavePath(thumbBitmap);
                     String comFist = thumbFile.getAbsolutePath();
                     bean.setImageOriginWidth(thumbBitmap.getWidth());

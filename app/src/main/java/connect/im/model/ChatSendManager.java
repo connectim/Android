@@ -131,6 +131,12 @@ public class ChatSendManager {
         @Override
         public synchronized void run() {
             try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            try {
                 ByteBuffer byteBuffer = null;
                 if (transfer) { // transferData,Encapsulating server checksum data
                     String priKey = MemoryDataManager.getInstance().getPriKey();

@@ -16,7 +16,8 @@ public enum ServiceAck {
     HEART_BEAT(6),
     EXIT_ACCOUNT(7),
     STOP_CONNECT(8),
-    CONNCET_REFRESH(9);
+    CONNCET_REFRESH(9),
+    SERVER_ADDRESS(10);
 
     int ack;
     ServiceAck(int ack){
