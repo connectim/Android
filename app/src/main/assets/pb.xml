@@ -143,9 +143,7 @@
     </GroupInfo>
 
     <GroupSettingInfo>
-        <attr name='public' type='bool'></attr>
         <attr name='avatar' type='string'></attr>
-        <attr name='mute' type='bool'></attr>
     </GroupSettingInfo>
 
     <GroupHash>
@@ -225,7 +223,6 @@
 
     <GroupCollaborative>
         <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>
-        <attr name='collaborative' type='string'></attr>
     </GroupCollaborative>
 
     <GroupInfoBaseShare>

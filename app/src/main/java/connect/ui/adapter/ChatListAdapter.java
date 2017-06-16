@@ -28,6 +28,7 @@ import connect.db.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.Talker;
 import connect.ui.activity.home.bean.HomeAction;
+import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.activity.home.bean.RoomAttrBean;
 import connect.ui.activity.home.view.ShowTextView;
 import connect.utils.FileUtil;
@@ -220,6 +221,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     index.badgeTxt.setBadgeCount(select ? 1 : 0, unRead);
                     int disturb = select ? 1 : 0;
                     ConversionSettingHelper.getInstance().updateDisturb(roomAttrBeanList.get(position).getRoomid(), disturb);
+                    MsgFragmReceiver.refreshRoom();
                 }
             }
         });

@@ -131,9 +131,10 @@ public class ProtoBufUtil {
         for (Map.Entry<String, Map> attr : attrMap.entrySet()) {
             String attrTxt = attr.getKey();
             checkstate = fieldMap.containsKey(attrTxt);
-            if (!checkstate){
-                break;
-            } else{
+            if (!checkstate) {
+                checkstate = true;
+                continue;
+            } else {
                 Map<String, String> contentMap = attr.getValue();
                 String extTxt = contentMap.get("TYPE");
                 String content = contentMap.get("CONTENT");
@@ -160,6 +161,9 @@ public class ProtoBufUtil {
                         break;
                     default:
                         break;
+                }
+                if (!checkstate) {
+                    break;
                 }
             }
         }
