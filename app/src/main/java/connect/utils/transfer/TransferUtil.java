@@ -155,6 +155,13 @@ public class TransferUtil {
                     if(ProtoBufUtil.getInstance().checkProtoBuf(orderResponse)){
                         checkUnspend(orderResponse);
                     }
+                    /*<attr name='unspents' type='list'></attr>
+                    <attr name='completed' type='bool'></attr>
+                    <attr name='amount' type='int'></attr>
+                    <attr name='package' type='bool'></attr>
+                    <attr name='dust' type='bool'></attr>
+                    <attr name='fee' type='int'></attr>
+                    <attr name='unspentAmount' type='int'></attr>*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

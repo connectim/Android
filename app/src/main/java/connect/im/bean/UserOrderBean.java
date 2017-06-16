@@ -143,7 +143,10 @@ public class UserOrderBean extends InterParse {
 
         String msgid = TimeUtil.timestampToMsgid();
         if (objects.length == 2) {
-            FailMsgsManager.getInstance().insertFailMsg("", msgid, null, null, objects[1]);
+            FailMsgsManager.getInstance().insertFailMsg("", msgid, SocketACK.OUTER_REDPACKET,
+                    Connect.Command.newBuilder().setMsgId(msgid).
+                            setDetail(billingToken.toByteString()).build().toByteString(),
+                    objects[1]);
         }
         commandToIMTransfer(msgid, SocketACK.OUTER_REDPACKET, billingToken.toByteString());
     }

@@ -165,7 +165,7 @@ public class ProtoBufUtil {
         }
         LogManager.getLogger().d(Tag, checkstate ? "YES" : "NO");
         if(!checkstate){
-            Toast.makeText(BaseApplication.getInstance(), nameTxt + "----" + R.string.ErrorCode_data_error,Toast.LENGTH_LONG).show();
+            ToastUtil.getInstance().showToast(nameTxt + "----" + R.string.ErrorCode_data_error);
         }
         return checkstate;
     }
