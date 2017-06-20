@@ -27,6 +27,8 @@ import android.os.Message;
 
 import connect.ui.activity.R;
 import connect.ui.base.BaseScanActivity;
+
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
@@ -34,20 +36,30 @@ import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class DecodeHandler extends Handler {
 
 	private final BaseScanActivity activity;
-	private final MultiFormatReader multiFormatReader;
+	private final QRCodeReader mQrCodeReader;
 	private boolean running = true;
+	private final Map<DecodeHintType, Object> mHintsa;
 
 	public DecodeHandler(BaseScanActivity activity, Map<DecodeHintType, Object> hints) {
-		multiFormatReader = new MultiFormatReader();
+		/*multiFormatReader = new MultiFormatReader();
 		multiFormatReader.setHints(hints);
+		this.activity = activity;*/
+
 		this.activity = activity;
+		mQrCodeReader = new QRCodeReader();
+		mHintsa = new Hashtable<>();
+		mHintsa.put(DecodeHintType.CHARACTER_SET, "utf-8");
+		mHintsa.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+		mHintsa.put(DecodeHintType.POSSIBLE_FORMATS, BarcodeFormat.QR_CODE);
 	}
 
 	@Override
@@ -98,11 +110,12 @@ public class DecodeHandler extends Handler {
 		if (source != null) {
 			BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 			try {
-				rawResult = multiFormatReader.decodeWithState(bitmap);
+				rawResult = mQrCodeReader.decode(bitmap,mHintsa);
+				// rawResult = multiFormatReader.decodeWithState(bitmap);
 			} catch (ReaderException re) {
 				// continue
 			} finally {
-				multiFormatReader.reset();
+				mQrCodeReader.reset();
 			}
 		}
 
@@ -122,7 +135,6 @@ public class DecodeHandler extends Handler {
 				message.sendToTarget();
 			}
 		}
-
 	}
 
 	private static void bundleThumbnail(PlanarYUVLuminanceSource source, Bundle bundle) {
@@ -152,8 +164,11 @@ public class DecodeHandler extends Handler {
 		if (rect == null) {
 			return null;
 		}
+		// Returns the whole image data directly, and not focus frame size calculation
+		return new PlanarYUVLuminanceSource(data, width, height, 0, 0, width, height, false);
+
 		// Go ahead and assume it's YUV rather than die.
-		return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top, rect.width(), rect.height(), false);
+		//return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top, rect.width(), rect.height(), false);
 	}
 
 }

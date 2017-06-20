@@ -76,6 +76,7 @@ public class CameraTakeActivity extends BaseActivity {
     private int videoLength = 0;
     private Runnable runnable;
     private Handler handler = new Handler();
+    private boolean isTakePicture = true;
 
     public static void startActivity(Activity activity, int requestCode) {
         ActivityUtil.nextBottomToTop(activity, CameraTakeActivity.class, null, requestCode);
@@ -171,7 +172,6 @@ public class CameraTakeActivity extends BaseActivity {
             bundle.putString("path", file.getPath());
         }
         ActivityUtil.goBackWithResult(mActivity, RESULT_OK, bundle, R.anim.activity_0_to_0, R.anim.dialog_bottom_dismiss);
-        ;
     }
 
     @Override
@@ -183,8 +183,10 @@ public class CameraTakeActivity extends BaseActivity {
     private VideoButtonView.OnTouchStatusListence statusListence = new VideoButtonView.OnTouchStatusListence() {
         @Override
         public void clickView() {
-            if (mCamera != null)
+            if (mCamera != null && isTakePicture){
+                isTakePicture = false;
                 mCamera.takePicture(null, null, mPictureCallback);
+            }
         }
 
         @Override
@@ -249,6 +251,7 @@ public class CameraTakeActivity extends BaseActivity {
     private Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
+            isTakePicture = true;
             file = FileUtil.byteArrayToFile(data, FileUtil.FileType.IMG);
             fileType = 0;
             releasedCamera();
