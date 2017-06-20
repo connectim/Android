@@ -27,11 +27,11 @@ public class BaseApplication extends Application{
         super.onCreate();
         mApplication = this;
 
-        /*UnCeHandler catchExcep = new UnCeHandler(this);
+        UnCeHandler catchExcep = new UnCeHandler(this);
         Thread.setDefaultUncaughtExceptionHandler(catchExcep);
         CrashReport.initCrashReport(getApplicationContext(),
                 ConfigUtil.getInstance().appMode() ?
-                        "9b63c64ee1" : "cf78e82d4f", true);*/
+                        "9b63c64ee1" : "cf78e82d4f", true);
     }
 
     @Override

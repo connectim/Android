@@ -27,8 +27,7 @@ public interface Logger {
     /**
      *  debug true :print log， false :close log
      */
-    //boolean debugEnade = !ConfigUtil.getInstance().appMode();
-    boolean debugEnade = true;
+    boolean debugEnade = !ConfigUtil.getInstance().appMode();
 
     /**
      * Send a {@link android.util.Log#VERBOSE} log message.

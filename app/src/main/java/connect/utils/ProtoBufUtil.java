@@ -151,6 +151,9 @@ public class ProtoBufUtil {
                         break;
                     case "list":
                         break;
+
+
+
                     case "proto":
                         break;
                     case "string":
@@ -168,9 +171,6 @@ public class ProtoBufUtil {
             }
         }
         LogManager.getLogger().d(Tag, checkstate ? "YES" : "NO");
-        if(!checkstate){
-            ToastUtil.getInstance().showToast(nameTxt + "----" + R.string.ErrorCode_data_error);
-        }
         return checkstate;
     }
 }
