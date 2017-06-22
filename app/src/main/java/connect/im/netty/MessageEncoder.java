@@ -13,7 +13,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
  * Created by Administrator on 2017/6/21.
  */
 
-public class MessageEncoder extends MessageToByteEncoder<MBufferBean>{
+public class MessageEncoder extends MessageToByteEncoder<BufferBean>{
 
     /** version number */
     private static final byte MSG_VERSION = 0x01;
@@ -23,7 +23,7 @@ public class MessageEncoder extends MessageToByteEncoder<MBufferBean>{
     private static final int MSG_HEADER_LENGTH = 13;
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, MBufferBean msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, BufferBean msg, ByteBuf out) throws Exception {
         byte[] ackarr=msg.getAck();
         byte[] msgdata=msg.getMessage();
         byte[] randomBytes = SecureRandom.getSeed(4);

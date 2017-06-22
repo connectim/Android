@@ -129,7 +129,7 @@ public class ChatSendManager {
         }
 
         @Override
-        public synchronized void run() {
+        public void run() {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -138,22 +138,20 @@ public class ChatSendManager {
 
             try {
                 ByteBuffer byteBuffer = null;
-                if (transfer) { //transferData,Encapsulating server checksum data
+                if (transfer) { // transferData,Encapsulating server checksum data
                     String priKey = MemoryDataManager.getInstance().getPriKey();
                     Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE,
                             Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), bytes);
                     String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
                     Connect.IMTransferData transferData = Connect.IMTransferData.newBuilder().
                             setSign(signHash).setCipherData(gcmData).build();
-                    //byteBuffer = protoToByteBuffer(ack.getOrder(), transferData.toByteArray());
-                    PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(), ByteBuffer.wrap(transferData.toByteArray()));
+
+                    byteBuffer = ByteBuffer.wrap(transferData.toByteArray());
+                    PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(), byteBuffer);
                 } else {
-                    //byteBuffer = protoToByteBuffer(ack.getOrder(), bytes.toByteArray());
-
-                    PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(), ByteBuffer.wrap(bytes.toByteArray()));
+                    byteBuffer = ByteBuffer.wrap(bytes.toByteArray());
+                    PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(), byteBuffer);
                 }
-
-                //PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(),byteBuffer);
             } catch (Exception e) {
                 e.printStackTrace();
                 String errInfo = e.getMessage();

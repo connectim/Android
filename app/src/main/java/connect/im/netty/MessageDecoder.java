@@ -64,7 +64,7 @@ public class MessageDecoder extends ByteToMessageDecoder{
         byte[] msgdata = new byte[length];//message
         in.readBytes(msgdata);
 
-        MBufferBean bufferBean=new MBufferBean();
+        BufferBean bufferBean=new BufferBean();
         bufferBean.setAck(ackArr);
         bufferBean.setMessage(msgdata);
         out.add(bufferBean);

@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
 import org.greenrobot.eventbus.EventBus;
@@ -19,19 +20,18 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.im.IMessage;
 import connect.im.bean.ConnectState;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
 import connect.im.bean.UserCookie;
 import connect.im.model.ChatSendManager;
-import connect.im.model.MsgByteManager;
 import connect.im.model.MsgRecManager;
 import connect.im.parser.CommandBean;
 import connect.im.parser.ShakeHandBean;
 import connect.ui.service.bean.PushMessage;
 import connect.ui.service.bean.ServiceAck;
+import connect.ui.service.bean.ServiceInfoBean;
 import connect.utils.ConfigUtil;
 import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
@@ -42,7 +42,7 @@ import connect.utils.log.LogManager;
  */
 public class SocketService extends Service {
 
-    private String Tag="SocketService";
+    private String Tag = "SocketService";
 
     private SocketService service;
     private IMessage pushBinder;
@@ -52,12 +52,12 @@ public class SocketService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        service=this;
+        service = this;
         if (localBinder == null) {
             localBinder = new LocalBinder();
         }
-        if(localConnect==null){
-            localConnect=new LocalConnect();
+        if (localConnect == null) {
+            localConnect = new LocalConnect();
         }
         EventBus.getDefault().register(this);
     }
@@ -98,6 +98,7 @@ public class SocketService extends Service {
             pushBinder.connectMessage(pushMessage.getServiceAck().getAck(), pushMessage.getbAck(), byteBuffer.array());
         } catch (RemoteException e) {
             e.printStackTrace();
+            LogManager.getLogger().d(Tag,e.getMessage());
         }
     }
 
@@ -140,9 +141,7 @@ public class SocketService extends Service {
                     break;
                 case MESSAGE:
                     byteBuffer = ByteBuffer.wrap(message);
-                    //MsgByteManager.getInstance().putByteMsg(byteBuffer);
-
-                    MsgRecManager.getInstance().sendMessage(ByteBuffer.wrap(ack),ByteBuffer.wrap(message));
+                    MsgRecManager.getInstance().sendMessage(ByteBuffer.wrap(ack),byteBuffer);
                     break;
                 case HEART_BEAT:
                     ChatSendManager.getInstance().sendToMsg(SocketACK.HEART_BREAK, ByteString.copyFrom(new byte[0]));
@@ -159,7 +158,12 @@ public class SocketService extends Service {
                 case SERVER_ADDRESS:
                     try {
                         String address = ConfigUtil.getInstance().socketAddress();
-                        byteBuffer = ByteBuffer.wrap(address.getBytes("utf-8"));
+                        int port = ConfigUtil.getInstance().socketPort();
+
+                        ServiceInfoBean serviceInfoBean = new ServiceInfoBean(address, port);
+                        String serviceInfo = new Gson().toJson(serviceInfoBean);
+
+                        byteBuffer = ByteBuffer.wrap(serviceInfo.getBytes("utf-8"));
                         PushMessage.pushMessage(ServiceAck.SERVER_ADDRESS, new byte[0], byteBuffer);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -172,7 +176,7 @@ public class SocketService extends Service {
     /**
      * check cookie expire time
      */
-    public synchronized void checkUserCookie() {
+    public void checkUserCookie() {
         boolean checkExpire = false;
         UserCookie userCookie = Session.getInstance().getUserCookie(MemoryDataManager.getInstance().getPubKey());
         if (userCookie != null) {
