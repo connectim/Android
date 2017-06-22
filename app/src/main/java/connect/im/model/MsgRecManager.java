@@ -57,8 +57,8 @@ public class MsgRecManager {
     }
 
     private synchronized void receiveMsgDeal(ByteBuffer ack, ByteBuffer body) throws Exception {
-        byte type = ack.get(1);
-        byte ext = ack.get(6);
+        byte type = ack.get(0);
+        byte ext = ack.get(1);
 
         LogManager.getLogger().i(Tag, "receive order: [" + type + "][" + ext + "]");
         InterParse interParse = null;
@@ -121,7 +121,7 @@ public class MsgRecManager {
         public synchronized boolean isKeyAvaliable() {
             boolean isAvailable = MemoryDataManager.getInstance().isAvailableKey();
             if (!isAvailable) {
-                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, ByteBuffer.allocate(0));//close socket
+                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT,new byte[0], ByteBuffer.allocate(0));//close socket
                 if (SystemUtil.isRunBackGround()) {// run in front
                     Context context = BaseApplication.getInstance().getBaseContext();
                     Intent intent = new Intent(context, StartActivity.class);

@@ -134,7 +134,7 @@ public class ShakeHandBean extends InterParse {
     private void connectSuccess() {
         ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.CONNECT);
 
-        PushMessage.pushMessage(ServiceAck.CONNECT_SUCCESS,ByteBuffer.allocate(0));
+        PushMessage.pushMessage(ServiceAck.CONNECT_SUCCESS,new byte[0],ByteBuffer.allocate(0));
         String version = ParamManager.getInstance().getString(ParamManager.COUNT_FRIENDLIST);
         if (TextUtils.isEmpty(version)) {
             requestFriendsByVersion();

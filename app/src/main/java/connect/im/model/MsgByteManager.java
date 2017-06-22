@@ -126,7 +126,7 @@ public class MsgByteManager {
                             headcheck.put(front);
                             headcheck.put(StringUtil.MSG_HEADER_EXI);
                             if (!checkMsgHeader(headcheck.array())) {
-                                PushMessage.pushMessage(ServiceAck.STOP_CONNECT,ByteBuffer.allocate(0));
+                                PushMessage.pushMessage(ServiceAck.STOP_CONNECT,new byte[0],ByteBuffer.allocate(0));
                                 return;
                             }
 

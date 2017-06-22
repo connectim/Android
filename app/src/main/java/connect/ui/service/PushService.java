@@ -53,7 +53,7 @@ public class PushService extends Service {
             try {
                 localBinder = IMessage.Stub.asInterface(service);
                 connectManager.setiMessage(localBinder);
-                localBinder.connectMessage(ServiceAck.SERVER_ADDRESS.getAck(), new byte[0]);
+                localBinder.connectMessage(ServiceAck.SERVER_ADDRESS.getAck(), new byte[0],new byte[0]);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -72,7 +72,7 @@ public class PushService extends Service {
     class PushBinder extends IMessage.Stub {
 
         @Override
-        public void connectMessage(int type, byte[] message) throws RemoteException {
+        public void connectMessage(int type, byte[] ack,byte[] message) throws RemoteException {
             ByteBuffer byteBuffer;
             ServiceAck serviceAck=ServiceAck.valueOf(type);
 
@@ -83,7 +83,7 @@ public class PushService extends Service {
                     break;
                 case MESSAGE:
                     byteBuffer = ByteBuffer.wrap(message);
-                    connectManager.sendToBytes(byteBuffer);
+                    connectManager.sendMessage(ack,byteBuffer.array());
                     break;
                 case CONNECT_START:
                     connectManager.connectServer();
@@ -92,14 +92,14 @@ public class PushService extends Service {
                     connectManager.connectSuccess();
                     break;
                 case EXIT_ACCOUNT:
-                    connectManager.exitConnect();
-                    localBinder.connectMessage(ServiceAck.EXIT_ACCOUNT.getAck(), new byte[0]);
+                    //connectManager.exitConnect();
+                    localBinder.connectMessage(ServiceAck.EXIT_ACCOUNT.getAck(),new byte[0], new byte[0]);
                     unbindService(pushConnect);
                     pushConnect = null;
                     stopSelf();
                     break;
                 case STOP_CONNECT:
-                    connectManager.stopConnect();
+                    //connectManager.stopConnect();
                     break;
                 case SERVER_ADDRESS:
                     try {

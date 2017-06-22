@@ -45,8 +45,8 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
 
                 if (isCanConnect()) {
                     if (TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART) {
-                        PushMessage.pushMessage(ServiceAck.STOP_CONNECT, ByteBuffer.allocate(0));//close socket
-                        PushMessage.pushMessage(ServiceAck.CONNECT_START, ByteBuffer.allocate(0));
+                        PushMessage.pushMessage(ServiceAck.STOP_CONNECT, new byte[0],ByteBuffer.allocate(0));//close socket
+                        PushMessage.pushMessage(ServiceAck.CONNECT_START, new byte[0],ByteBuffer.allocate(0));
                         lastReceiveTime = TimeUtil.getCurrentTimeInLong();
                     }
                 }

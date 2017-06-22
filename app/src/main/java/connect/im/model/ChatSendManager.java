@@ -138,19 +138,22 @@ public class ChatSendManager {
 
             try {
                 ByteBuffer byteBuffer = null;
-                if (transfer) { // transferData,Encapsulating server checksum data
+                if (transfer) { //transferData,Encapsulating server checksum data
                     String priKey = MemoryDataManager.getInstance().getPriKey();
                     Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE,
                             Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), bytes);
                     String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
                     Connect.IMTransferData transferData = Connect.IMTransferData.newBuilder().
                             setSign(signHash).setCipherData(gcmData).build();
-                    byteBuffer = protoToByteBuffer(ack.getOrder(), transferData.toByteArray());
+                    //byteBuffer = protoToByteBuffer(ack.getOrder(), transferData.toByteArray());
+                    PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(), ByteBuffer.wrap(transferData.toByteArray()));
                 } else {
-                    byteBuffer = protoToByteBuffer(ack.getOrder(), bytes.toByteArray());
+                    //byteBuffer = protoToByteBuffer(ack.getOrder(), bytes.toByteArray());
+
+                    PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(), ByteBuffer.wrap(bytes.toByteArray()));
                 }
 
-                PushMessage.pushMessage(ServiceAck.MESSAGE, byteBuffer);
+                //PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(),byteBuffer);
             } catch (Exception e) {
                 e.printStackTrace();
                 String errInfo = e.getMessage();

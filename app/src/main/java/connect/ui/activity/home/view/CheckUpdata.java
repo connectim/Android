@@ -12,12 +12,11 @@ import connect.ui.service.UpdataService;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
-import connect.utils.permission.PermissiomUtilNew;
-import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.system.SystemDataUtil;
 import protos.Connect;
 
 /**

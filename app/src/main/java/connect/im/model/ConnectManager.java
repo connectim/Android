@@ -4,16 +4,9 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
 
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
-
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
@@ -22,10 +15,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.im.IMessage;
+import connect.im.netty.ConnectClient;
+import connect.im.netty.MBufferBean;
 import connect.ui.service.bean.ServiceAck;
-import connect.utils.ConfigUtil;
 import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
@@ -37,8 +30,8 @@ public class ConnectManager {
 
     private String Tag = "ConnectManager";
     private boolean selectorRun = true;
-    private Selector selector;
-    private SocketChannel socketChannel;
+    //private Selector selector;
+    //private SocketChannel socketChannel;
     private IMessage iMessage;
 
     private String serverAddress;
@@ -57,6 +50,11 @@ public class ConnectManager {
         return connectManager;
     }
 
+
+    public ConnectManager(){
+        connectClient=new ConnectClient();
+    }
+
     /**
      * connect service runnable
      */
@@ -73,69 +71,69 @@ public class ConnectManager {
 
         @Override
         public void run() {
-            try {
-                socketChannel = SocketChannel.open();
-                socketChannel.configureBlocking(false);
-                selector = Selector.open();
-
-                if (socketChannel.connect(new InetSocketAddress(host, port))) {
-                    socketChannel.register(selector, SelectionKey.OP_READ);
-
-                    iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),new byte[0]);
-                } else {
-                    socketChannel.register(selector, SelectionKey.OP_CONNECT);
-                }
-
-                while (selectorRun && selector != null) {
-                    selector.select();
-                    Set<SelectionKey> setKeys = selector.selectedKeys();
-                    if (setKeys == null) continue;
-
-                    Iterator<SelectionKey> selectionKeys = selector.selectedKeys().iterator();
-                    SelectionKey selectionKey = null;
-                    while (selectionKeys.hasNext()) {
-                        selectionKey = selectionKeys.next();
-                        selectionKeys.remove();
-
-                        if (selectionKey.isConnectable()) {
-                            if (socketChannel.finishConnect()) {
-                                selectionKey.interestOps(SelectionKey.OP_READ);
-
-                                iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),new byte[0]);
-                            } else {//An error occurred; unregister the channel.
-                                selectionKey.cancel();
-                                reconDelay();
-                            }
-                        } else if (selectionKey.isReadable()) {
-                            socketChannel = (SocketChannel) selectionKey.channel();
-                            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-                            int byteLength = socketChannel.read(byteBuffer);
-                            if (byteLength < 0) {//Channel has been disconnected
-                                LogManager.getLogger().d(Tag, "channel disconnect");
-                                socketChannel.close();
-                                cancelTimer();
-                                reconDelay();
-                            } else if (byteLength == 0) {
-                                LogManager.getLogger().d(Tag, "empty message");
-                            } else {//Will receive the message in the queue
-                                LogManager.getLogger().d(Tag, "receive new message");
-                                lastReceiverTime = TimeUtil.getCurrentTimeInLong();
-
-                                byteBuffer.flip();
-                                byte[] byteArr = new byte[byteBuffer.limit()];
-                                byteBuffer.get(byteArr);
-                                iMessage.connectMessage(ServiceAck.MESSAGE.getAck(), byteArr);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                LogManager.getLogger().d(Tag, "error message :" + e.getMessage());
-                reconDelay();
-            } finally {
-                stopConnect();
-            }
+//            try {
+//                socketChannel = SocketChannel.open();
+//                socketChannel.configureBlocking(false);
+//                selector = Selector.open();
+//
+//                if (socketChannel.connect(new InetSocketAddress(host, port))) {
+//                    socketChannel.register(selector, SelectionKey.OP_READ);
+//
+//                    iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),new byte[0],new byte[0]);
+//                } else {
+//                    socketChannel.register(selector, SelectionKey.OP_CONNECT);
+//                }
+//
+//                while (selectorRun && selector != null) {
+//                    selector.select();
+//                    Set<SelectionKey> setKeys = selector.selectedKeys();
+//                    if (setKeys == null) continue;
+//
+//                    Iterator<SelectionKey> selectionKeys = selector.selectedKeys().iterator();
+//                    SelectionKey selectionKey = null;
+//                    while (selectionKeys.hasNext()) {
+//                        selectionKey = selectionKeys.next();
+//                        selectionKeys.remove();
+//
+//                        if (selectionKey.isConnectable()) {
+//                            if (socketChannel.finishConnect()) {
+//                                selectionKey.interestOps(SelectionKey.OP_READ);
+//
+//                                iMessage.connectMessage(ServiceAck.HAND_SHAKE.getAck(),new byte[0],new byte[0]);
+//                            } else {//An error occurred; unregister the channel.
+//                                selectionKey.cancel();
+//                                reconDelay();
+//                            }
+//                        } else if (selectionKey.isReadable()) {
+//                            socketChannel = (SocketChannel) selectionKey.channel();
+//                            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+//                            int byteLength = socketChannel.read(byteBuffer);
+//                            if (byteLength < 0) {//Channel has been disconnected
+//                                LogManager.getLogger().d(Tag, "channel disconnect");
+//                                socketChannel.close();
+//                                cancelTimer();
+//                                reconDelay();
+//                            } else if (byteLength == 0) {
+//                                LogManager.getLogger().d(Tag, "empty message");
+//                            } else {//Will receive the message in the queue
+//                                LogManager.getLogger().d(Tag, "receive new message");
+//                                lastReceiverTime = TimeUtil.getCurrentTimeInLong();
+//
+//                                byteBuffer.flip();
+//                                byte[] byteArr = new byte[byteBuffer.limit()];
+//                                byteBuffer.get(byteArr);
+//                                iMessage.connectMessage(ServiceAck.MESSAGE.getAck(),new byte[0], byteArr);
+//                            }
+//                        }
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                LogManager.getLogger().d(Tag, "error message :" + e.getMessage());
+//                reconDelay();
+//            } finally {
+//                stopConnect();
+//            }
         }
     }
 
@@ -152,17 +150,18 @@ public class ConnectManager {
      * @return
      */
     public synchronized boolean avaliableChannel() {
-        try {
-            if (socketChannel == null || selector == null) return false;
-            if (socketChannel.isConnected() && socketChannel.isOpen()
-                    && selector.isOpen()) {
-                LogManager.getLogger().d(Tag, "SOCKET connect normal");
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+//        try {
+//            if (socketChannel == null || selector == null) return false;
+//            if (socketChannel.isConnected() && socketChannel.isOpen()
+//                    && selector.isOpen()) {
+//                LogManager.getLogger().d(Tag, "SOCKET connect normal");
+//                return true;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+        return true;
     }
 
     public void connectServer() {
@@ -171,28 +170,45 @@ public class ConnectManager {
         if (!reliNet) {
             return;
         }
-        if (avaliableChannel()) {
-            stopConnect();
-        }
+//        if (avaliableChannel()) {
+//            stopConnect();
+//        }
 
         try {
             if (TextUtils.isEmpty(serverAddress)) {
-                iMessage.connectMessage(ServiceAck.SERVER_ADDRESS.getAck(), new byte[0]);
+                iMessage.connectMessage(ServiceAck.SERVER_ADDRESS.getAck(),new byte[0], new byte[0]);
                 return;
             }
 
-            iMessage.connectMessage(ServiceAck.CONNCET_REFRESH.getAck(), new byte[0]);
+            iMessage.connectMessage(ServiceAck.CONNCET_REFRESH.getAck(),new byte[0], new byte[0]);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
 
-        Thread connectThread = new Thread(new ConnectRunnable(serverAddress, serverPort));
-        connectThread.start();
+//        Thread connectThread = new Thread(new ConnectRunnable(serverAddress, serverPort));
+//        connectThread.start();
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                connectClient.connect(serverAddress, serverPort);
+            }
+        }.start();
+    }
+
+    private ConnectClient connectClient;
+
+    public void sendMessage(byte[] ack, byte[] message) {
+        MBufferBean bufferBean = new MBufferBean();
+        bufferBean.setAck(ack);
+        bufferBean.setMessage(message);
+        connectClient.writeBytes(bufferBean);
     }
 
     public synchronized void sendToBytes(ByteBuffer byteBuffer) {
-        WriteRunnable writeRunnable = new WriteRunnable(byteBuffer);
-        threadPoolExecutor.execute(writeRunnable);
+//        WriteRunnable writeRunnable = new WriteRunnable(byteBuffer);
+//        threadPoolExecutor.execute(writeRunnable);
     }
 
     private static final int coreSize = 3;
@@ -246,29 +262,29 @@ public class ConnectManager {
      */
     public void stopConnect() {
         LogManager.getLogger().d(Tag, "connectServer stopConnect()...close service");
-        selectorRun = false;
-        if (selector != null) {
-            try {
-                selector.close();
-                selector = null;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (socketChannel != null) {
-            try {
-                if (socketChannel.socket() != null) {
-                    socketChannel.socket().shutdownInput();
-                    socketChannel.socket().shutdownOutput();
-                }
-
-                socketChannel.close();
-                socketChannel = null;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//        selectorRun = false;
+//        if (selector != null) {
+//            try {
+//                selector.close();
+//                selector = null;
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        if (socketChannel != null) {
+//            try {
+//                if (socketChannel.socket() != null) {
+//                    socketChannel.socket().shutdownInput();
+//                    socketChannel.socket().shutdownOutput();
+//                }
+//
+//                socketChannel.close();
+//                socketChannel = null;
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     /**
@@ -276,8 +292,8 @@ public class ConnectManager {
      */
     public void connectSuccess() {
         reconHandler.removeMessages(TAG_CONNECT);
-        resetFibonacci();
-        launHeartBit();
+//        resetFibonacci();
+//        launHeartBit();
     }
 
     /** Heart rate */
@@ -304,7 +320,7 @@ public class ConnectManager {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            connectServer();
+            //connectServer();
         }
     };
 
@@ -335,7 +351,7 @@ public class ConnectManager {
                 long curtime = TimeUtil.getCurrentTimeInLong();
                 if (curtime < lastReceiverTime + HEART_FREQUENCY * 2) {
                     try {
-                        iMessage.connectMessage(ServiceAck.HEART_BEAT.getAck(),new byte[0]);
+                        iMessage.connectMessage(ServiceAck.HEART_BEAT.getAck(),new byte[0],new byte[0]);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -361,7 +377,7 @@ public class ConnectManager {
     }
 
     public SocketChannel getSocketChannel() {
-        return socketChannel;
+        return null;
     }
 
     public boolean isCanConnect() {
@@ -370,6 +386,7 @@ public class ConnectManager {
 
     public void setiMessage(IMessage iMessage) {
         this.iMessage = iMessage;
+        connectClient.setiMessage(iMessage);
     }
 
     public String getServerAddress() {

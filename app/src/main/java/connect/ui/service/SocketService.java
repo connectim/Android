@@ -27,6 +27,7 @@ import connect.im.bean.SocketACK;
 import connect.im.bean.UserCookie;
 import connect.im.model.ChatSendManager;
 import connect.im.model.MsgByteManager;
+import connect.im.model.MsgRecManager;
 import connect.im.parser.CommandBean;
 import connect.im.parser.ShakeHandBean;
 import connect.ui.service.bean.PushMessage;
@@ -81,7 +82,7 @@ public class SocketService extends Service {
         try {
             if (pushBinder != null) {
                 LogManager.getLogger().d(Tag, "pushBinder != null");
-                pushBinder.connectMessage(ServiceAck.CONNECT_START.getAck(), new byte[0]);
+                pushBinder.connectMessage(ServiceAck.CONNECT_START.getAck(),new byte[0], new byte[0]);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -94,7 +95,7 @@ public class SocketService extends Service {
         LogManager.getLogger().d(Tag, "send ack:" + pushMessage.getServiceAck().getAck());
         ByteBuffer byteBuffer = pushMessage.getByteBuffer();
         try {
-            pushBinder.connectMessage(pushMessage.getServiceAck().getAck(), byteBuffer.array());
+            pushBinder.connectMessage(pushMessage.getServiceAck().getAck(), pushMessage.getbAck(), byteBuffer.array());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -111,7 +112,7 @@ public class SocketService extends Service {
         public void onServiceConnected(ComponentName name, IBinder service) {
             LogManager.getLogger().d(Tag, "onServiceConnected");
             pushBinder = IMessage.Stub.asInterface(service);
-            PushMessage.pushMessage(ServiceAck.BIND_SUCCESS, ByteBuffer.allocate(0));
+            PushMessage.pushMessage(ServiceAck.BIND_SUCCESS, new byte[0],ByteBuffer.allocate(0));
         }
 
         @Override
@@ -128,7 +129,7 @@ public class SocketService extends Service {
     class LocalBinder extends IMessage.Stub {
 
         @Override
-        public void connectMessage(int type, byte[] message) throws RemoteException {
+        public void connectMessage(int type,byte[] ack, byte[] message) throws RemoteException {
             LogManager.getLogger().d(Tag, type + "");
             ByteBuffer byteBuffer;
             ServiceAck serviceAck = ServiceAck.valueOf(type);
@@ -139,7 +140,9 @@ public class SocketService extends Service {
                     break;
                 case MESSAGE:
                     byteBuffer = ByteBuffer.wrap(message);
-                    MsgByteManager.getInstance().putByteMsg(byteBuffer);
+                    //MsgByteManager.getInstance().putByteMsg(byteBuffer);
+
+                    MsgRecManager.getInstance().sendMessage(ByteBuffer.wrap(ack),ByteBuffer.wrap(message));
                     break;
                 case HEART_BEAT:
                     ChatSendManager.getInstance().sendToMsg(SocketACK.HEART_BREAK, ByteString.copyFrom(new byte[0]));
@@ -157,7 +160,7 @@ public class SocketService extends Service {
                     try {
                         String address = ConfigUtil.getInstance().socketAddress();
                         byteBuffer = ByteBuffer.wrap(address.getBytes("utf-8"));
-                        PushMessage.pushMessage(ServiceAck.SERVER_ADDRESS, byteBuffer);
+                        PushMessage.pushMessage(ServiceAck.SERVER_ADDRESS, new byte[0], byteBuffer);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }

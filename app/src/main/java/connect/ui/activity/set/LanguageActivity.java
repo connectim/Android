@@ -84,7 +84,7 @@ public class LanguageActivity extends BaseActivity {
     void save(View view) {
         String code = adapter.getSeleCurrency();
         if (!TextUtils.isEmpty(code)) {
-            PushMessage.pushMessage(ServiceAck.STOP_CONNECT, ByteBuffer.allocate(0));
+            PushMessage.pushMessage(ServiceAck.STOP_CONNECT,new byte[0], ByteBuffer.allocate(0));
             changeLanguage(code);
         }
     }
