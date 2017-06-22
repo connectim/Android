@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import connect.ui.base.BasePresenter;
 import connect.ui.base.BaseView;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 
 /**
  * Created by Administrator on 2017/4/14 0014.
@@ -29,7 +29,7 @@ public interface RendomSendContract {
     }
 
     interface Presenter extends BasePresenter {
-        PermissiomUtilNew.ResultCallBack getPermissomCallBack();
+        PermissionUtil.ResultCallBack getPermissomCallBack();
 
         void releaseResource();
     }

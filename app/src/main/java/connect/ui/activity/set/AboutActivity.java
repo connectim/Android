@@ -21,7 +21,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
@@ -98,7 +98,7 @@ public class AboutActivity extends BaseActivity {
                         public void confirm(String value) {
                             if(!TextUtils.isEmpty(versionResponse.getUpgradeUrl())){
                                 downLoadPath = versionResponse.getUpgradeUrl();
-                                PermissiomUtilNew.getInstance().requestPermissom(mActivity,new String[]{PermissiomUtilNew.PERMISSIM_STORAGE},permissomCallBack);
+                                PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_STORAGE},permissomCallBack);
                             }
                         }
 
@@ -110,7 +110,7 @@ public class AboutActivity extends BaseActivity {
         }
     }
 
-    private PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
                 @Override
                 public void granted(String[] permissions) {
                     Intent intent = new Intent(mActivity, UpdataService.class);
@@ -126,7 +126,7 @@ public class AboutActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissiomUtilNew.getInstance().onRequestPermissionsResult
+        PermissionUtil.getInstance().onRequestPermissionsResult
                 (mActivity,requestCode,permissions,grantResults,permissomCallBack);
     }
 

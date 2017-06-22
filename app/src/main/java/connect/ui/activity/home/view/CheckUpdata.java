@@ -12,9 +12,8 @@ import connect.ui.service.UpdataService;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
@@ -72,7 +71,7 @@ public class CheckUpdata {
                     public void confirm(String value) {
                         if (!TextUtils.isEmpty(versionResponse.getUpgradeUrl())) {
                             downLoadpath = versionResponse.getUpgradeUrl();
-                            PermissiomUtilNew.getInstance().requestPermissom(activity, new String[]{PermissiomUtilNew.PERMISSIM_STORAGE}, permissomCallBack);
+                            PermissionUtil.getInstance().requestPermissom(activity, new String[]{PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
                         }
                     }
 
@@ -88,7 +87,7 @@ public class CheckUpdata {
 
     }
 
-    public PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack(){
+    public PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
             Intent intent = new Intent(activity, UpdataService.class);

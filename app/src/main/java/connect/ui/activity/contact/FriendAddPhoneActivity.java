@@ -11,16 +11,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.contact.adapter.AddPhoneAdapter;
 import connect.ui.activity.contact.bean.SourceType;
 import connect.ui.activity.contact.contract.FriendAddContract;
 import connect.ui.activity.contact.presenter.FriendAddPresenter;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemUtil;
 import connect.ui.activity.contact.bean.PhoneContactBean;
 import connect.view.SideBar;
@@ -71,7 +69,7 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
         adapter.setOnSeleListence(onSeleListence);
         listView.setAdapter(adapter);
         siderbar.setOnTouchingLetterChangedListener(letterChangedListener);
-        PermissiomUtilNew.getInstance().requestPermissom(mActivity,new String[]{PermissiomUtilNew.PERMISSIM_CONTACTS},permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_CONTACTS},permissomCallBack);
     }
 
     @Override
@@ -86,7 +84,7 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
 
     @OnClick(R.id.right_text)
     void goinvite(View view) {
-        PermissiomUtilNew.getInstance().requestPermissom(mActivity,new String[]{PermissiomUtilNew.PERMISSIM_SMS},permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_SMS},permissomCallBack);
     }
 
     @Override
@@ -110,13 +108,13 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
         }
     };
 
-    private PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
             if(permissions != null && permissions.length > 0){
-                if(permissions[0].equals(PermissiomUtilNew.PERMISSIM_CONTACTS)){
+                if(permissions[0].equals(PermissionUtil.PERMISSIM_CONTACTS)){
                     presenter.requestContact();
-                }else if(permissions[0].equals(PermissiomUtilNew.PERMISSIM_SMS)){
+                }else if(permissions[0].equals(PermissionUtil.PERMISSIM_SMS)){
                     String numbers = "";
                     List<PhoneContactBean> seleList = adapter.getSeleList();
                     for(PhoneContactBean contactBean : seleList){
@@ -136,7 +134,7 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissiomUtilNew.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissomCallBack);
     }
 
     private AddPhoneAdapter.OnSeleListence onSeleListence = new AddPhoneAdapter.OnSeleListence() {

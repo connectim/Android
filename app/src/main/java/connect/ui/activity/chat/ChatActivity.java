@@ -47,7 +47,7 @@ import connect.utils.FileUtil;
 import connect.utils.MediaUtil;
 import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.view.TopToolBar;
 import connect.view.album.entity.ImageInfo;
 import connect.view.album.ui.activity.PhotoAlbumActivity;
@@ -135,8 +135,8 @@ public class ChatActivity extends BaseChatActvity {
         scrollHelper.attachToRecycleView(recyclerChat);
         loadChatInfor();
 
-        PermissiomUtilNew.getInstance().requestPermissom(activity,
-                new String[]{PermissiomUtilNew.PERMISSIM_RECORD_AUDIO,PermissiomUtilNew.PERMISSIM_STORAGE},
+        PermissionUtil.getInstance().requestPermissom(activity,
+                new String[]{PermissionUtil.PERMISSIM_RECORD_AUDIO, PermissionUtil.PERMISSIM_STORAGE},
                 permissomCallBack);
     }
 
@@ -359,7 +359,7 @@ public class ChatActivity extends BaseChatActvity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissiomUtilNew.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,permissomCallBack);
     }
 
     @Override

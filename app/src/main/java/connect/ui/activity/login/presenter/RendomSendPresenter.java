@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import connect.ui.activity.login.contract.RendomSendContract;
 import connect.utils.FileUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.StringUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.wallet.jni.AllNativeMethod;
@@ -42,16 +42,16 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
     }
 
     private void chechPeission(){
-        PermissiomUtilNew.getInstance().requestPermissom(mView.getActivity(),new String[]{PermissiomUtilNew.PERMISSIM_RECORD_AUDIO,
-                PermissiomUtilNew.PERMISSIM_STORAGE},permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mView.getActivity(),new String[]{PermissionUtil.PERMISSIM_RECORD_AUDIO,
+                PermissionUtil.PERMISSIM_STORAGE},permissomCallBack);
     }
 
     @Override
-    public PermissiomUtilNew.ResultCallBack getPermissomCallBack() {
+    public PermissionUtil.ResultCallBack getPermissomCallBack() {
         return permissomCallBack;
     }
 
-    private PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
             startRecorder();

@@ -30,7 +30,7 @@ import connect.ui.activity.R;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.FileUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.ToastUtil;
 
 /**
@@ -100,11 +100,11 @@ public class CameraTakeActivity extends BaseActivity {
         recorderManager = new RecorderManager();
         videoBtn.setEnabled(false);
 
-        PermissiomUtilNew.getInstance().requestPermissom(mActivity, new String[]{PermissiomUtilNew.PERMISSIM_CAMERA,
-                PermissiomUtilNew.PERMISSIM_RECORD_AUDIO, PermissiomUtilNew.PERMISSIM_STORAGE}, permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_CAMERA,
+                PermissionUtil.PERMISSIM_RECORD_AUDIO, PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
     }
 
-    private PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack() {
+    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack() {
         @Override
         public void granted(String[] permissions) {
             surfaceView = new SurfaceView(mActivity);
@@ -177,7 +177,7 @@ public class CameraTakeActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissiomUtilNew.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
     }
 
     private VideoButtonView.OnTouchStatusListence statusListence = new VideoButtonView.OnTouchStatusListence() {

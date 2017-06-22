@@ -21,9 +21,9 @@ import connect.utils.DialogUtil;
  * Created by Administrator on 2017/3/21.
  */
 
-public class PermissiomUtilNew {
+public class PermissionUtil {
 
-    private static PermissiomUtilNew instance;
+    private static PermissionUtil instance;
     public static final int PERMISSIONS_REQUEST_CODE = 10;
     private final String PACKAGE_URL_SCHEME = "package:";
     private final String NOT_ALLOW = "NOT_ALLOW";
@@ -42,9 +42,9 @@ public class PermissiomUtilNew {
     /** Mobile status rights group */
     public static final String PERMISSIM_PHONE = Manifest.permission.READ_PHONE_STATE;
 
-    public static PermissiomUtilNew getInstance() {
+    public static PermissionUtil getInstance() {
         if (instance == null) {
-            instance = new PermissiomUtilNew();
+            instance = new PermissionUtil();
         }
         return instance;
     }

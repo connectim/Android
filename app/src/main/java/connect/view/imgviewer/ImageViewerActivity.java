@@ -9,6 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import connect.ui.activity.R;
+import connect.ui.activity.contact.SearchActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.glide.GlideUtil;

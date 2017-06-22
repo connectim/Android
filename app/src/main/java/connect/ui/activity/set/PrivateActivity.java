@@ -20,10 +20,9 @@ import connect.ui.activity.R;
 import connect.ui.activity.set.bean.PrivateSetBean;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.StringUtil;
 import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -95,7 +94,7 @@ public class PrivateActivity extends BaseActivity {
 
     @OnClick(R.id.contactsupdate_img)
     void updateContact(View view) {
-        PermissiomUtilNew.getInstance().requestPermissom(mActivity,new String[]{PermissiomUtilNew.PERMISSIM_CONTACTS},permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_CONTACTS},permissomCallBack);
     }
 
     @OnClick(R.id.black_list_ll)
@@ -127,7 +126,7 @@ public class PrivateActivity extends BaseActivity {
         requestPrivate();
     }
 
-    private PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
             requestContact();
@@ -141,7 +140,7 @@ public class PrivateActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissiomUtilNew.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissomCallBack);
     }
 
     private void requestPrivate() {

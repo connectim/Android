@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
@@ -25,7 +24,7 @@ import connect.ui.activity.login.contract.LoginPhoneContract;
 import connect.ui.activity.login.presenter.LoginPhonePresenter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.data.PhoneDataUtil;
 import connect.utils.StringUtil;
 
@@ -98,7 +97,7 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
         }
     };
 
-    private PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
             ActivityUtil.next(mActivity, ScanLoginActivity.class);
@@ -123,7 +122,7 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissiomUtilNew.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissomCallBack);
     }
 
     @Override
@@ -157,7 +156,7 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
 
     @Override
     public void scanPermission() {
-        PermissiomUtilNew.getInstance().requestPermissom(mActivity,new String[]{PermissiomUtilNew.PERMISSIM_CAMERA}, permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_CAMERA}, permissomCallBack);
     }
 
     @Override

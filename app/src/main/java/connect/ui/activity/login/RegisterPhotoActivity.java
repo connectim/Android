@@ -24,7 +24,7 @@ import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.view.TopToolBar;
 import connect.view.album.entity.ImageInfo;
@@ -91,11 +91,11 @@ public class RegisterPhotoActivity extends BaseActivity {
         layoutParams.addRule(RelativeLayout.BELOW, R.id.toolbar_top);
         surfaceRela.setLayoutParams(layoutParams);
 
-        PermissiomUtilNew.getInstance().requestPermissom(mActivity, new String[]{PermissiomUtilNew.PERMISSIM_CAMERA,
-                PermissiomUtilNew.PERMISSIM_STORAGE}, permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_CAMERA,
+                PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
     }
 
-    private PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack() {
+    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack() {
         @Override
         public void granted(String[] permissions) {
             surfaceView = new SurfaceView(mActivity);
@@ -119,7 +119,7 @@ public class RegisterPhotoActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissiomUtilNew.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
     }
 
     @OnClick(R.id.left_img)

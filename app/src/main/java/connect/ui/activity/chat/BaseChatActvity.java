@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 
@@ -28,6 +29,7 @@ import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.ConversionEntity;
 import connect.im.bean.MsgType;
 import connect.im.bean.UserOrderBean;
+import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.BurnNotice;
 import connect.ui.activity.chat.bean.ExtBean;
 import connect.ui.activity.chat.bean.GatherBean;
@@ -62,11 +64,13 @@ import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.view.DialogView;
 import connect.view.RecycleViewScrollHelper;
 import connect.view.album.ui.activity.PhotoAlbumActivity;
 import connect.view.camera.CameraTakeActivity;
+import connect.view.imagewatcher.ImageWatcher;
+import connect.view.imagewatcher.ImageWatcherUtil;
 import connect.view.imgviewer.ImageViewerActivity;
 
 /**
@@ -89,6 +93,7 @@ public abstract class BaseChatActvity extends BaseActivity {
     protected RecycleViewScrollHelper scrollHelper;
     protected InputPanel inputPanel = null;
     protected LinearLayoutManager linearLayoutManager;
+    protected ImageWatcher vImageWatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +165,11 @@ public abstract class BaseChatActvity extends BaseActivity {
             }
             ConversionHelper.getInstance().updateRoomEntity(roomEntity);
         }
+
+        vImageWatcher = ImageWatcher.Helper.with(this)
+                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(this))
+                .setErrorImageRes(R.mipmap.img_default)
+                .create();
     }
 
     /**
@@ -318,7 +328,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 chatAdapter.removeItem((MsgEntity) objects[0]);
                 break;
             case RECENT_ALBUM://Picture taken recently
-                PermissiomUtilNew.getInstance().requestPermissom(activity,new String[]{PermissiomUtilNew.PERMISSIM_STORAGE},permissomCallBack);
+                PermissionUtil.getInstance().requestPermissom(activity,new String[]{PermissionUtil.PERMISSIM_STORAGE},permissomCallBack);
                 break;
             case OPEN_ALBUM://Open the photo album
                 PhotoAlbumActivity.startActivity(activity, PhotoAlbumActivity.OPEN_ALBUM_CODE);
@@ -542,13 +552,13 @@ public abstract class BaseChatActvity extends BaseActivity {
     }
 
     protected boolean isOpenRecord = false;
-    protected PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack(){
+    protected PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
             if(permissions != null || permissions.length > 0){
-                if(permissions[0].equals(PermissiomUtilNew.PERMISSIM_RECORD_AUDIO)){
+                if(permissions[0].equals(PermissionUtil.PERMISSIM_RECORD_AUDIO)){
                     isOpenRecord = true;
-                }else if(permissions[0].equals(PermissiomUtilNew.PERMISSIM_STORAGE)){
+                }else if(permissions[0].equals(PermissionUtil.PERMISSIM_STORAGE)){
                     DialogView dialogView = new DialogView();
                     dialogView.showPhotoPick(activity);
                 }
@@ -558,7 +568,7 @@ public abstract class BaseChatActvity extends BaseActivity {
         @Override
         public void deny(String[] permissions) {
             if(permissions != null || permissions.length > 0){
-                if(permissions[0].equals(PermissiomUtilNew.PERMISSIM_RECORD_AUDIO)){
+                if(permissions[0].equals(PermissionUtil.PERMISSIM_RECORD_AUDIO)){
                     isOpenRecord = false;
                 }
             }

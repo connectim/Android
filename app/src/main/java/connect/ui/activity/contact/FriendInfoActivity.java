@@ -3,6 +3,7 @@ package connect.ui.activity.contact;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,6 +18,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -42,6 +44,8 @@ import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.view.TopToolBar;
+import connect.view.imagewatcher.ImageWatcher;
+import connect.view.imagewatcher.ImageWatcherUtil;
 import connect.view.imgviewer.ImageViewerActivity;
 import connect.view.roundedimageview.RoundedImageView;
 
@@ -85,6 +89,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     private FriendInfoActivity mActivity;
     private FriendInfoContract.Presenter presenter;
     private ContactEntity friendEntity;
+    private ImageWatcher vImageWatcher;
 
     public static void startActivity(Activity activity, String pubKey) {
         Bundle bundle = new Bundle();
@@ -98,6 +103,11 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         setContentView(R.layout.activity_contact_friend_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+
+        vImageWatcher = ImageWatcher.Helper.with(this)
+                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(this))
+                .setErrorImageRes(R.mipmap.img_default)
+                .create();
     }
 
     @Override
@@ -173,9 +183,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.avater_rimg)
     void goimage(View view) {
-        ArrayList<String> imgs = new ArrayList<>();
-        imgs.add(friendEntity.getAvatar() + "?size=400");
-        ImageViewerActivity.startActivity(mActivity, imgs.get(0), imgs);
+        vImageWatcher.showSingle((ImageView) view, avaterRimg, friendEntity.getAvatar() + "?size=400");
     }
 
     @OnClick(R.id.id_lin)

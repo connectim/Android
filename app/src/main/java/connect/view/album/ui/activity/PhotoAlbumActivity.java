@@ -29,7 +29,7 @@ import connect.ui.activity.R;
 import connect.ui.base.BaseFragmentActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.glide.GlideUtil;
 import connect.view.album.entity.AlbumFolderInfo;
 import connect.view.album.entity.ImageInfo;
@@ -106,10 +106,10 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
             e.printStackTrace();
         }
 
-        PermissiomUtilNew.getInstance().requestPermissom(activity,new String[]{PermissiomUtilNew.PERMISSIM_STORAGE},permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(activity,new String[]{PermissionUtil.PERMISSIM_STORAGE},permissomCallBack);
     }
 
-    private PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
             scanPhotoAlbum();
@@ -163,7 +163,7 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissiomUtilNew.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,permissomCallBack);
     }
 
     public void sendImgInfos() {

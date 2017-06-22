@@ -88,25 +88,29 @@ public class PayEditView extends RelativeLayout {
                             imageViews[i].setImageResource(R.drawable.shape_ring_6d6e75);
                         }
                     }
-
                 }
-
             }
         });
 
+        // Monitoring software disc delete button
         editText.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_DEL
                         && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (onKeyDelete()) return true;
-                    return true;
+                    return onKeyDelete();
+                    /*if (onKeyDelete()) return true;
+                        return true;*/
                 }
                 return false;
             }
         });
     }
 
+    /**
+     * When press the delete button, remove the string in the StringBuffer
+     * @return
+     */
     public boolean onKeyDelete() {
         int count = stringBuffer.length();
         if (count == 0) {

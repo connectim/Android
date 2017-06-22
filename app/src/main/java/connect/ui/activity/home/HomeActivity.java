@@ -58,7 +58,7 @@ import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.log.LogManager;
-import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.view.MaterialBadgeTextView;
 
@@ -352,7 +352,7 @@ public class HomeActivity extends BaseFragmentActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissiomUtilNew.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,checkUpdata.permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,checkUpdata.permissomCallBack);
     }
 
     @Override

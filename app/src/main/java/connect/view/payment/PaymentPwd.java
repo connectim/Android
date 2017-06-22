@@ -2,7 +2,6 @@ package connect.view.payment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -22,27 +21,22 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.ArrayList;
 
-import javax.crypto.spec.DESedeKeySpec;
-
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.PaymentActivity;
 import connect.ui.activity.set.bean.PaySetBean;
 import connect.ui.adapter.ViewPagerAdapter;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
-import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.system.SystemDataUtil;
 import connect.view.ControlScrollViewPager;
 import connect.view.MdStyleProgress;
 import protos.Connect;
@@ -75,6 +69,7 @@ public class PaymentPwd implements View.OnClickListener{
     private String passFrist = "";
     private PayEditView payEdit;
     private TextView titleTv;
+    private Handler handler;
 
     /**
      * show pay the password box
@@ -326,29 +321,32 @@ public class PaymentPwd implements View.OnClickListener{
 
     public void closeStatusDialog(final MdStyleProgress.Status status, final OnAnimationListener onAnimationListener) {
         //Sleep 2s Loading
-        Handler handler = new Handler(Looper.getMainLooper()){
+        handler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message msg) {
-                if(status == MdStyleProgress.Status.LoadSuccess){
-                    statusChange(3);
-                    progressBar.setStatus(status);
-                    progressBar.startAnima();
-                }else if(status == MdStyleProgress.Status.LoadFail){
-                    statusChange(4);
-                    progressBar.setStatus(status);
-                    progressBar.failAnima();
-                }
-                Handler handler = new Handler(Looper.getMainLooper()){
-                    @Override
-                    public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case 1:
+                        if(status == MdStyleProgress.Status.LoadSuccess){
+                            statusChange(3);
+                            progressBar.setStatus(status);
+                            progressBar.startAnima();
+                        }else if(status == MdStyleProgress.Status.LoadFail){
+                            statusChange(4);
+                            progressBar.setStatus(status);
+                            progressBar.failAnima();
+                        }
+                        break;
+                    case 2:
                         dialog.dismiss();
                         if(onAnimationListener != null){
                             onAnimationListener.onComplete();
                         }
-                    }
-                };
+                        break;
+                    default:
+                        break;
+                }
                 //Sleep 1.3s (Successful failure time)
-                handler.sendEmptyMessageDelayed(1,1300);
+                handler.sendEmptyMessageDelayed(2,1300);
             }
         };
         //Sleep 1s (Circle time)
