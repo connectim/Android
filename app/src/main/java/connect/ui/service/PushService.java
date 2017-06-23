@@ -223,7 +223,7 @@ public class PushService extends Service {
 
                             @Override
                             protected void initChannel(SocketChannel ch) throws Exception {
-                                ch.pipeline().addLast(new IdleStateHandler(30, 30, 45, TimeUnit.SECONDS));
+                                ch.pipeline().addLast(new IdleStateHandler(10, 10, 10, TimeUnit.SECONDS));
                                 ch.pipeline().addLast(new MessageEncoder());
                                 ch.pipeline().addLast(new MessageDecoder());
                                 ch.pipeline().addLast(handlerAdapter);
@@ -233,14 +233,6 @@ public class PushService extends Service {
                 ChannelFuture future = bootstrap.connect(socketAddress, socketPort);
                 try {
                     future.sync();
-                    future.addListener(new ChannelFutureListener() {
-                        @Override
-                        public void operationComplete(ChannelFuture future) throws Exception {
-                            if (future.isSuccess()) {
-                                localBinder.connectMessage(ServiceAck.HAND_SHAKE.getAck(), new byte[0], new byte[0]);
-                            }
-                        }
-                    });
 
                     channel = future.channel();
                     channel.closeFuture().sync();
@@ -310,6 +302,13 @@ public class PushService extends Service {
                 } else if (event.state() == IdleState.ALL_IDLE) {
                 }
             }
+        }
+
+        @Override
+        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+            super.channelActive(ctx);
+            LogManager.getLogger().d(Tag, "channelActive() == ");
+            localBinder.connectMessage(ServiceAck.HAND_SHAKE.getAck(), new byte[0], new byte[0]);
         }
 
         /**

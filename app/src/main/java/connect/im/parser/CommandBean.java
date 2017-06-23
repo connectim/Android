@@ -266,6 +266,7 @@ public class CommandBean extends InterParse {
                 contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
                 contactEntity.setSource(friendInfo.getSource());
                 contactEntity.setRemark(friendInfo.getRemark());
+
                 friendInfoEntities.add(contactEntity);
             }
 
@@ -278,6 +279,7 @@ public class CommandBean extends InterParse {
                 connectEntity.setUsername(connect);
                 connectEntity.setAddress(connect);
                 connectEntity.setSource(-1);
+
                 friendInfoEntities.add(connectEntity);
             }
             ContactHelper.getInstance().insertContacts(friendInfoEntities);
@@ -289,28 +291,31 @@ public class CommandBean extends InterParse {
                 Connect.Group group = groupInfo.getGroup();
 
                 String groupKey = group.getIdentifier();
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                if (groupEntity == null) {
-                    groupEntity = new GroupEntity();
-                    groupEntity.setIdentifier(groupKey);
-                }
-                groupEntity.setVerify(group.getPublic() ? 1 : 0);
-                groupEntity.setName(group.getName());
-                groupEntity.setCommon(1);
-                groupEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
-
                 String[] collaboratives = groupInfo.getEcdh().split("/");
                 if (collaboratives.length < 2) {//Download failed
-                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, groupKey);
+                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
                 } else {// Download successful
-                    String randPubkey = collaboratives[0];
-                    byte[] ecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), randPubkey);
-                    Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
-                    byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, gcmData);
-                    String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
-                    LogManager.getLogger().d(Tag, "Retrieve the backup group ECDH :" + groupEcdh);
-                    groupEntity.setEcdh_key(groupEcdh);
-                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                    if (groupEntity == null) {
+                        String randPubkey = collaboratives[0];
+                        byte[] ecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), randPubkey);
+                        Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
+                        byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, gcmData);
+                        String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
+
+                        groupEntity = new GroupEntity();
+                        groupEntity.setIdentifier(groupKey);
+                        groupEntity.setVerify(group.getPublic() ? 1 : 0);
+                        String groupname = group.getName();
+                        if (TextUtils.isEmpty(groupname)) {
+                            groupname = "groupname1";
+                        }
+                        groupEntity.setName(groupname);
+                        groupEntity.setCommon(1);
+                        groupEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
+                        groupEntity.setEcdh_key(groupEcdh);
+                        ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                    }
                 }
 
                 List<Connect.GroupMember> members = groupInfo.getMembersList();
@@ -319,16 +324,17 @@ public class CommandBean extends InterParse {
                     GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, member.getAddress());
                     if (memberEntity == null) {
                         memberEntity = new GroupMemberEntity();
+                        memberEntity.setIdentifier(groupKey);
+                        memberEntity.setPub_key(member.getPubKey());
+                        memberEntity.setAddress(member.getAddress());
+                        memberEntity.setAvatar(member.getAvatar());
+                        memberEntity.setUsername(member.getUsername());
+                        memberEntity.setNick(member.getNick());
+                        memberEntity.setRole(member.getRole());
+                        memberEntity.setUsername(member.getUsername());
+
+                        memberEntities.add(memberEntity);
                     }
-                    memberEntity.setIdentifier(groupKey);
-                    memberEntity.setPub_key(member.getPubKey());
-                    memberEntity.setAddress(member.getAddress());
-                    memberEntity.setAvatar(member.getAvatar());
-                    memberEntity.setUsername(member.getUsername());
-                    memberEntity.setNick(member.getNick());
-                    memberEntity.setRole(member.getRole());
-                    memberEntity.setUsername(member.getUsername());
-                    memberEntities.add(memberEntity);
                 }
                 ContactHelper.getInstance().inserGroupMemEntity(memberEntities);
             }
@@ -469,31 +475,39 @@ public class CommandBean extends InterParse {
      *
      * @param buffer
      */
-    private synchronized void updateGroupInfo(ByteString buffer, Object... objs) throws Exception {
+    private void updateGroupInfo(ByteString buffer, Object... objs) throws Exception {
         Connect.GroupChange groupChange = Connect.GroupChange.parseFrom(buffer);
 
         Context context = BaseApplication.getInstance().getBaseContext();
-        String groupKey = groupChange.getIdentifier();
-        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-
+        String groupKey = "";
         String noticeStr = "";
+
+        GroupEntity groupEntity = null;
         NormalChat normalChat = null;
         List<GroupMemberEntity> groupMemEntities = null;
         switch (groupChange.getChangeType()) {
             case 0://Group of information change
                 Connect.Group group = Connect.Group.parseFrom(groupChange.getDetail());
-                if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
-                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, group.getIdentifier());
+                groupKey = group.getIdentifier();
+                groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                if (groupEntity == null || TextUtils.isEmpty(group.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
+                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
 
-                    FailMsgsManager.getInstance().insertReceiveMsg(group.getIdentifier(),TimeUtil.timestampToMsgid(), context.getString(R.string.Link_Join_Group));
+                    FailMsgsManager.getInstance().insertReceiveMsg(group.getIdentifier(), TimeUtil.timestampToMsgid(), context.getString(R.string.Link_Join_Group));
                 } else {
-                    groupEntity.setName(TextUtils.isEmpty(group.getName()) ? "" : group.getName());
-                    groupEntity.setSummary(TextUtils.isEmpty(group.getSummary()) ? "" : group.getSummary());
+                    String groupname = group.getName();
+                    if (TextUtils.isEmpty(groupname)) {
+                        groupname = "groupname2";
+                    }
+                    groupEntity.setName(groupname);
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                     ContactNotice.receiverGroup();
                 }
                 break;
             case 1://Add members
+                groupKey = groupChange.getIdentifier();
+                groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+
                 Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(groupChange.getDetail());
                 List<Connect.UserInfo> userInfos = usersInfo.getUsersList();
                 List<GroupMemberEntity> memEntities = new ArrayList<>();
@@ -502,58 +516,61 @@ public class CommandBean extends InterParse {
                     if (groupMemEntity == null) {
                         groupMemEntity = new GroupMemberEntity();
                         groupMemEntity.setIdentifier(groupKey);
-                    }
+                        groupMemEntity.setPub_key(info.getPubKey());
+                        groupMemEntity.setUsername(info.getUsername());
+                        groupMemEntity.setNick(info.getUsername());
+                        groupMemEntity.setAvatar(info.getAvatar());
+                        groupMemEntity.setAddress(info.getAddress());
+                        groupMemEntity.setRole(0);
 
-                    groupMemEntity.setPub_key(info.getPubKey());
-                    groupMemEntity.setUsername(info.getUsername());
-                    groupMemEntity.setNick(info.getUsername());
-                    groupMemEntity.setAvatar(info.getAvatar());
-                    groupMemEntity.setAddress(info.getAddress());
-                    groupMemEntity.setRole(0);
-                    memEntities.add(groupMemEntity);
+                        memEntities.add(groupMemEntity);
+                    }
                 }
 
                 if (groupEntity == null) {//The request of details
                     HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
                 } else {
                     ContactHelper.getInstance().inserGroupMemEntity(memEntities);
+
                     normalChat = new GroupChat(groupEntity);
-                }
+                    for (GroupMemberEntity memEntity : memEntities) {
+                        String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
+                        if (groupChange.hasInviteBy()) {
+                            String invitorname = memEntity.getAddress().equals(MemoryDataManager.getInstance().getAddress()) ?
+                                    context.getString(R.string.Chat_You) : memberName;
+                            noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, groupChange.getInviteBy().getUsername(), invitorname);
+                        } else {
+                            noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
+                        }
 
-                for (GroupMemberEntity memEntity : memEntities) {
-                    String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
-                    if (groupChange.hasInviteBy()) {
-                        String invitorname = memEntity.getAddress().equals(MemoryDataManager.getInstance().getAddress()) ?
-                                context.getString(R.string.Chat_You) : memberName;
-                        noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, groupChange.getInviteBy().getUsername(), invitorname);
-                    } else {
-                        noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
-                    }
+                        if (normalChat == null) {
+                            FailMsgsManager.getInstance().insertReceiveMsg(groupKey, TimeUtil.timestampToMsgid(), noticeStr);
+                        } else {
+                            MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
+                            MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
 
-                    if (normalChat == null) {
-                        FailMsgsManager.getInstance().insertReceiveMsg(groupKey, TimeUtil.timestampToMsgid(), noticeStr);
-                    } else {
-                        MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
-                        MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
-
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,groupKey,msgEntity);
-                        normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+                            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
+                            normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
+                        }
                     }
                 }
                 break;
             case 2://Remove the group members
+                groupKey = groupChange.getIdentifier();
                 Connect.QuitGroupUserAddress quitGroup = Connect.QuitGroupUserAddress.parseFrom(groupChange.getDetail());
                 for (String address : quitGroup.getAddressesList()) {
-                    ContactHelper.getInstance().removeMemberEntity(groupChange.getIdentifier(), address);
+                    ContactHelper.getInstance().removeMemberEntity(groupKey, address);
                 }
                 break;
             case 3://Group of personal information changes
+                groupKey = groupChange.getIdentifier();
                 Connect.ChangeGroupNick groupNick = Connect.ChangeGroupNick.parseFrom(groupChange.getDetail());
-                GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(groupChange.getIdentifier(), groupNick.getAddress());
+                GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, groupNick.getAddress());
                 memEntity.setNick(groupNick.getNick());
                 ContactHelper.getInstance().inserGroupMemEntity(memEntity);
                 break;
             case 4://Group change
+                groupKey = groupChange.getIdentifier();
                 Connect.GroupAttorn groupAttorn = Connect.GroupAttorn.parseFrom(groupChange.getDetail());
                 groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
                 if (groupMemEntities == null) {
@@ -587,9 +604,20 @@ public class CommandBean extends InterParse {
                 break;
             case 5://Group set the switch
                 Connect.GroupSetting groupSetting = Connect.GroupSetting.parseFrom(groupChange.getDetail());
-                groupEntity = ContactHelper.getInstance().loadGroupEntity(groupSetting.getIdentifier());
-                if (groupEntity != null) {
+
+                groupKey = groupSetting.getIdentifier();
+                groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                if (groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
+                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
+                } else {
+                    groupEntity.setSummary(groupSetting.getSummary());
                     groupEntity.setVerify(groupSetting.getPublic() ? 1 : 0);
+
+                    String groupname = groupEntity.getName();
+                    if (TextUtils.isEmpty(groupname)) {
+                        groupname = "groupname3";
+                    }
+                    groupEntity.setName(groupname);
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                 }
                 break;

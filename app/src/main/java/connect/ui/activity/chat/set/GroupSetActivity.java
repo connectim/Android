@@ -158,7 +158,7 @@ public class GroupSetActivity extends BaseActivity {
         //other
         setOtherLayout(findViewById(R.id.clear), R.mipmap.message_clear_history2x, getResources().getString(R.string.Link_Clear_Chat_History));
         setOtherLayout(findViewById(R.id.delete), R.mipmap.message_group_leave2x, getResources().getString(R.string.Link_Delete_and_Leave));
-        syncGroupInfo(groupEntity.getIdentifier());
+        syncGroupInfo(groupKey);
     }
 
     protected void syncGroupInfo(final String value) {
@@ -176,13 +176,6 @@ public class GroupSetActivity extends BaseActivity {
                         ConversionSettingHelper.getInstance().insertSetEntity(setEntity);
                         boolean notice = Integer.valueOf(1).equals(setEntity.getDisturb());
                         seSwitchLayout(findViewById(R.id.mute), getResources().getString(R.string.Chat_Mute_Notification), notice);
-
-                        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(value);
-                        if (groupEntity != null) {
-                            groupEntity.setVerify(settingInfo.getPublic()?1:0);
-                            groupEntity.setAvatar(settingInfo.getAvatar());
-                            ContactHelper.getInstance().inserGroupEntity(groupEntity);
-                        }
 
                         if (settingInfo.getPublic()) {
                             GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
@@ -391,8 +384,17 @@ public class GroupSetActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 int common = ischeck ? 1 : 0;
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                groupEntity.setCommon(common);
-                ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
+                    groupEntity.setCommon(common);
+
+                    String groupName = groupEntity.getName();
+                    if (TextUtils.isEmpty(groupName)) {
+                        groupName = "groupname8";
+                    }
+                    groupEntity.setName(groupName);
+
+                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                }
 
                 ContactNotice.receiverGroup();
             }

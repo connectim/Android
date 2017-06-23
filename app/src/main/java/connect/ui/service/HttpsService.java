@@ -105,10 +105,8 @@ public class HttpsService extends Service {
         LogManager.getLogger().d(Tag, "***  onStartCommand start  ***");
 
         initSoundPool();
-        if (HttpRequest.isConnectNet()) {
-            SocketService.startService(service);
-            PushService.startService(service);
-        }
+        SocketService.startService(service);
+        PushService.startService(service);
 
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
         if (TextUtils.isEmpty(index)) {
@@ -329,28 +327,33 @@ public class HttpsService extends Service {
                         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
                         if (groupEntity == null) {
                             groupEntity = new GroupEntity();
-                            groupEntity.setIdentifier(group.getIdentifier());
+                            groupEntity.setIdentifier(pubkey);
+                            String groupname = group.getName();
+                            if (TextUtils.isEmpty(groupname)) {
+                                groupname = "groupname9";
+                            }
+                            groupEntity.setName(groupname);
+                            groupEntity.setVerify(groupInfo.getGroup().getReviewed() ? 1 : 0);
+                            groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
+                            ContactHelper.getInstance().inserGroupEntity(groupEntity);
                         }
-                        groupEntity.setName(group.getName());
-                        groupEntity.setVerify(groupInfo.getGroup().getReviewed() ? 1 : 0);
-                        groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
-                        ContactHelper.getInstance().inserGroupEntity(groupEntity);
 
                         List<GroupMemberEntity> memEntities = new ArrayList<>();
                         for (Connect.GroupMember member : groupInfo.getMembersList()) {
                             GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(pubkey, member.getAddress());
                             if (memEntity == null) {
                                 memEntity = new GroupMemberEntity();
+                                memEntity.setIdentifier(pubkey);
+                                memEntity.setPub_key(member.getPubKey());
+                                memEntity.setAddress(member.getAddress());
+                                memEntity.setAvatar(member.getAvatar());
+                                memEntity.setNick(member.getUsername());
+                                memEntity.setUsername(member.getUsername());
+                                memEntity.setRole(member.getRole());
+                                memEntities.add(memEntity);
                             }
-                            memEntity.setIdentifier(group.getIdentifier());
-                            memEntity.setPub_key(member.getPubKey());
-                            memEntity.setAddress(member.getAddress());
-                            memEntity.setAvatar(member.getAvatar());
-                            memEntity.setNick(member.getUsername());
-                            memEntity.setUsername(member.getUsername());
-                            memEntity.setRole(member.getRole());
-                            memEntities.add(memEntity);
                         }
+
                         ContactHelper.getInstance().inserGroupMemEntity(memEntities);
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, pubkey);
                         ContactNotice.receiverGroup();
@@ -450,6 +453,7 @@ public class HttpsService extends Service {
                     if(!ProtoBufUtil.getInstance().checkProtoBuf(backUpResp)){
                         return;
                     }
+
                     String[] infos = backUpResp.getBackup().split("/");
                     if (infos.length >= 2) {
                         byte[] ecdHkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
@@ -473,16 +477,19 @@ public class HttpsService extends Service {
         });
     }
 
-    public synchronized void downGroupBackUpSuccess(String groupkey, String ecdhkey) {
+    public void downGroupBackUpSuccess(String groupkey, String ecdhkey) {
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupkey);
-        if (groupEntity == null) {
-            groupEntity = new GroupEntity();
-        }
-        groupEntity.setIdentifier(groupkey);
-        groupEntity.setEcdh_key(ecdhkey);
-        ContactHelper.getInstance().inserGroupEntity(groupEntity);
+        if (groupEntity != null) {
+            groupEntity.setEcdh_key(ecdhkey);
 
-        FailMsgsManager.getInstance().receiveFailMsgs(groupkey);
+            String groupname = groupEntity.getName();
+            if (TextUtils.isEmpty(groupname)) {
+                groupname = "groupname10";
+            }
+            groupEntity.setName(groupname);
+            ContactHelper.getInstance().inserGroupEntity(groupEntity);
+            FailMsgsManager.getInstance().receiveFailMsgs(groupkey);
+        }
     }
 
     public void requestSetPayInfo() {
