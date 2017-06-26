@@ -57,6 +57,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissiomUtilNew;
 import connect.utils.scan.ResolveUrlUtil;
@@ -90,7 +91,7 @@ public class HomeActivity extends BaseFragmentActivity {
     @Bind(R.id.contact_badgetv)
     MaterialBadgeTextView contactBadgetv;
 
-    private String Tag = "HomeActivity";
+    private String Tag = "Tag_HomeActivity";
     private HomeActivity activity;
 
     private ConversationFragment chatListFragment;
@@ -118,13 +119,13 @@ public class HomeActivity extends BaseFragmentActivity {
         activity = this;
         setDefaultFragment();
 
-        new AsyncTask<Void,Void,Void>(){
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        SharePreferenceUser.initSharePreferrnce(userBean.getPubKey());
+        HttpsService.startService(activity);
+
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                SharePreferenceUser.initSharePreferrnce(userBean.getPubKey());
-                LogManager.getLogger().d(Tag, "*** userBean.getPubKey() :" + userBean.getPubKey());
-
                 Session.getInstance().clearUserCookie();
                 DaoManager.getInstance().closeDataBase();
                 DaoManager.getInstance().switchDataBase();
@@ -138,11 +139,9 @@ public class HomeActivity extends BaseFragmentActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                LogManager.getLogger().d(Tag, "onPostExecute");
+
                 ConnectState.getInstance().sendEvent(ConnectState.ConnectType.CONNECT);
-                EmoManager.getInstance();
-
-                HttpsService.startService(activity);
-
                 requestAppUpdata();
                 checkWebOpen();
             }

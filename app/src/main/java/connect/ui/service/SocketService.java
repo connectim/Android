@@ -91,7 +91,7 @@ public class SocketService extends Service {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public synchronized void onEventMainThread(PushMessage pushMessage) {
+    public void onEventMainThread(PushMessage pushMessage) {
         LogManager.getLogger().d(Tag, "send ack:" + pushMessage.getServiceAck().getAck());
         ByteBuffer byteBuffer = pushMessage.getByteBuffer();
         try {
@@ -112,6 +112,8 @@ public class SocketService extends Service {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             LogManager.getLogger().d(Tag, "onServiceConnected");
+            LogManager.getLogger().d("tag_PushService", "SocketService :onServiceConnected;"+TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
+
             pushBinder = IMessage.Stub.asInterface(service);
             PushMessage.pushMessage(ServiceAck.BIND_SUCCESS, new byte[0],ByteBuffer.allocate(0));
         }
@@ -136,6 +138,7 @@ public class SocketService extends Service {
             ServiceAck serviceAck = ServiceAck.valueOf(type);
             switch (serviceAck) {
                 case HAND_SHAKE:
+                    LogManager.getLogger().d("tag_PushService","SocketService HAND_SHAKE:"+TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
                     ShakeHandBean shakeHandBean = new ShakeHandBean((byte) 0x00, null);
                     shakeHandBean.firstLoginShake();
                     break;

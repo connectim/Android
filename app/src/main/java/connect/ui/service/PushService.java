@@ -29,7 +29,6 @@ import connect.utils.okhttp.HttpRequest;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
@@ -45,7 +44,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class PushService extends Service {
 
-    private String Tag = "PushService";
+    private String Tag = "tag_PushService";
     private PushService service;
     private IMessage localBinder;
     private PushBinder pushBinder;
@@ -78,6 +77,7 @@ public class PushService extends Service {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             try {
+                LogManager.getLogger().d(Tag, "onServiceConnected"+TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
                 localBinder = IMessage.Stub.asInterface(service);
                 localBinder.connectMessage(ServiceAck.SERVER_ADDRESS.getAck(), new byte[0], new byte[0]);
             } catch (RemoteException e) {
@@ -109,6 +109,7 @@ public class PushService extends Service {
 
             switch (serviceAck) {
                 case BIND_SUCCESS:
+                    LogManager.getLogger().d(Tag, "connectMessage :BIND_SUCCESS;"+TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
                     Intent intent = new Intent(service, SocketService.class);
                     bindService(intent, pushConnect, Service.BIND_IMPORTANT);
                     break;
@@ -211,6 +212,7 @@ public class PushService extends Service {
             return;
         }
 
+        LogManager.getLogger().d(Tag,"connectService:"+TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -222,12 +224,11 @@ public class PushService extends Service {
                         .channel(NioSocketChannel.class)
                         .option(ChannelOption.TCP_NODELAY, true)
                         .option(ChannelOption.SO_KEEPALIVE, true)
-                        .option(ChannelOption.SO_TIMEOUT, 5000)
                         .handler(new ChannelInitializer<SocketChannel>() {
 
                             @Override
                             protected void initChannel(SocketChannel ch) throws Exception {
-                                ch.pipeline().addLast(new IdleStateHandler(10, 10, 10, TimeUnit.SECONDS));
+                                ch.pipeline().addLast(new IdleStateHandler(5, 5, 0, TimeUnit.SECONDS));
                                 ch.pipeline().addLast(new MessageEncoder());
                                 ch.pipeline().addLast(new MessageDecoder());
                                 ch.pipeline().addLast(handlerAdapter);
@@ -240,6 +241,7 @@ public class PushService extends Service {
 
                     channel = future.channel();
                     channel.closeFuture().sync();
+                    LogManager.getLogger().d(Tag,"Thread:"+TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
                 } catch (Exception e) {
                     e.printStackTrace();
                     LogManager.getLogger().d(Tag, "connectService() Exception ==> " + e.getMessage());
@@ -263,6 +265,7 @@ public class PushService extends Service {
             LogManager.getLogger().d(Tag, "writeBytes() channel ==> is null?");
             reconDelay();
         } else {
+            LogManager.getLogger().d(Tag,"writeBytes:"+TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
             channel.writeAndFlush(bufferBean);
         }
     }
