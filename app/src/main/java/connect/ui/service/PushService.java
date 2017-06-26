@@ -61,7 +61,11 @@ public class PushService extends Service {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            if (pushConnect != null) {
+            if (service == null) {
+                service = PushService.this;
+            }
+
+            if (pushConnect == null) {
                 Intent intent = new Intent(service, SocketService.class);
                 service.startService(intent);
                 service.bindService(intent, pushConnect, Service.BIND_IMPORTANT);

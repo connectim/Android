@@ -259,11 +259,11 @@ public class ContactFragment extends BaseFragment {
 
         String bottomTxt = "";
         if(friendSize > 0 && groupSize == 0){
-            bottomTxt = getString(R.string.Link_contact_count,friendSize,"","");
+            bottomTxt = mActivity.getString(R.string.Link_contact_count,friendSize,"","");
         }else if(friendSize == 0 && groupSize > 0){
-            bottomTxt = getString(R.string.Link_group_count,groupSize);
+            bottomTxt = mActivity.getString(R.string.Link_group_count,groupSize);
         }else if(friendSize > 0 && groupSize > 0){
-            bottomTxt = String.format(getString(R.string.Link_contact_count_group_count), friendSize, groupSize);
+            bottomTxt = String.format(mActivity.getString(R.string.Link_contact_count_group_count), friendSize, groupSize);
         }
         adapter.setDataNotify(finalList,bottomTxt);
     }

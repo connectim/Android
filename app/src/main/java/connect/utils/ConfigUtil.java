@@ -105,6 +105,7 @@ public class ConfigUtil {
     private String SHARE_CARD_ADDRESS = "SHARE_CARD_ADDRESS";
     private String SHARE_PAY_ADDRESS = "SHARE_PAY_ADDRESS";
     private String CRASH_TAGS = "CRASH_TAGS";
+    private String CRASH_APPID= "CRASH_APPID";
 
     /**
      * app version
@@ -183,6 +184,10 @@ public class ConfigUtil {
      */
     public String getCrashTags() {
         return keyMaps.get(CRASH_TAGS);
+    }
+
+    public String getCrashAPPID(){
+        return keyMaps.get(CRASH_APPID);
     }
 
     public enum ModeEnum {
