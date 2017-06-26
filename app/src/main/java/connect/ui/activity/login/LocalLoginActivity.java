@@ -79,7 +79,9 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
         if(list != null && list.get(0) != null){
             userBean = list.get(0);
             nicknameTv.setText(userBean.getName());
-            passwordhintTv.setText(getString(R.string.Login_Password_Hint,userBean.getPassHint()));
+            if (!TextUtils.isEmpty(userBean.getPassHint())) {
+                passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+            }
             GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
         }
         setPresenter(new LocalLoginPresenter(this));

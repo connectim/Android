@@ -5,5 +5,5 @@ package connect.im;
 
 interface IMessage {
 
-    void connectMessage(int type,inout byte[] message);
+    void connectMessage(int type,inout byte[] ack,inout byte[] message);
 }

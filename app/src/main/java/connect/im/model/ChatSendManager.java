@@ -129,13 +129,7 @@ public class ChatSendManager {
         }
 
         @Override
-        public synchronized void run() {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+        public void run() {
             try {
                 ByteBuffer byteBuffer = null;
                 if (transfer) { // transferData,Encapsulating server checksum data
@@ -145,12 +139,13 @@ public class ChatSendManager {
                     String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
                     Connect.IMTransferData transferData = Connect.IMTransferData.newBuilder().
                             setSign(signHash).setCipherData(gcmData).build();
-                    byteBuffer = protoToByteBuffer(ack.getOrder(), transferData.toByteArray());
-                } else {
-                    byteBuffer = protoToByteBuffer(ack.getOrder(), bytes.toByteArray());
-                }
 
-                PushMessage.pushMessage(ServiceAck.MESSAGE, byteBuffer);
+                    byteBuffer = ByteBuffer.wrap(transferData.toByteArray());
+                    PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(), byteBuffer);
+                } else {
+                    byteBuffer = ByteBuffer.wrap(bytes.toByteArray());
+                    PushMessage.pushMessage(ServiceAck.MESSAGE, ack.getOrder(), byteBuffer);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 String errInfo = e.getMessage();

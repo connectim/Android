@@ -163,10 +163,8 @@
     </GroupSetting>
 
     <GroupInfoBase>
-        <attr name='avatar' type='string'></attr>
         <attr name='name' type='reg'>^.{4,32}$</attr>
         <attr name='count' type='int'></attr>
-        <attr name='hash' type='string'></attr>
         <attr name='public' type='bool'></attr>
     </GroupInfoBase>
 
@@ -400,8 +398,8 @@
     </GenerateTokenResponse>
 
     <VersionResponse>
-        <attr name='version' type='string'></attr>
-        <attr name='upgradeUrl' type='string'></attr>
+        <attr name='version' type='reg'>.+</attr>
+        <attr name='upgradeUrl' type='reg'>.+</attr>
     </VersionResponse>
 
     <PaymentSetting>

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.text.TextUtils;
@@ -537,9 +539,26 @@ public abstract class BaseChatActvity extends BaseActivity {
         MessageHelper.getInstance().insertToMsg(bean.getMsgDefinBean());
         adapterInsetItem(bean);
         if (needSend) {
-            baseChat.sendPushMsg(bean);
+            Message message = new Message();
+            message.what = TAG_SEND;
+            message.obj = bean;
+            sHandler.sendMessageDelayed(message, 250);
         }
     }
+
+    private int TAG_SEND = 150;
+    private Handler sHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 150:
+                    baseChat.sendPushMsg(msg.obj);
+                    break;
+            }
+        }
+    };
 
     protected boolean isOpenRecord = false;
     protected PermissiomUtilNew.ResultCallBack permissomCallBack = new PermissiomUtilNew.ResultCallBack(){

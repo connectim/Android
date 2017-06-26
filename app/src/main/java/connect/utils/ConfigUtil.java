@@ -23,7 +23,7 @@ public class ConfigUtil {
     private Map<String, String> keyMaps = null;
 
     public ConfigUtil() {
-        initConfig(ModeEnum.RELEASE);
+        initConfig(ModeEnum.SANDBOX);
     }
 
     /**

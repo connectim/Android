@@ -309,6 +309,9 @@ public class ContactSelectActivity extends BaseActivity {
         ConversionHelper.getInstance().insertRoomEntity(roomEntity);
 
         final GroupEntity groupEntity = new GroupEntity();
+        if (TextUtils.isEmpty(groupname)) {
+            groupname = "groupname4";
+        }
         groupEntity.setName(groupname);
         groupEntity.setIdentifier(grouppubkey);
         groupEntity.setEcdh_key(groupEcdh);

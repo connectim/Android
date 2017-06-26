@@ -30,8 +30,8 @@ public class GroupMyNameActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
-    @Bind(R.id.edittxt1)
-    EditText edittxt1;
+    @Bind(R.id.edittxt2)
+    EditText edittxt2;
     @Bind(R.id.txt1)
     TextView txt1;
 
@@ -72,9 +72,9 @@ public class GroupMyNameActivity extends BaseActivity {
         groupKey = getIntent().getStringExtra(GROUP_KEY);
         groupMemEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
         if (null != groupMemEntity) {
-            edittxt1.setText(TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick());
+            edittxt2.setText(TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick());
         }
-        edittxt1.addTextChangedListener(new TextWatcher() {
+        edittxt2.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -95,7 +95,7 @@ public class GroupMyNameActivity extends BaseActivity {
                     toolbar.setRightListence(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            updateMyName();
+                            updateMyName(edittxt2.getText().toString());
                         }
                     });
                 }
@@ -103,13 +103,13 @@ public class GroupMyNameActivity extends BaseActivity {
         });
     }
 
-    private void updateMyName() {
+    private void updateMyName(final String myname) {
         Connect.UpdateGroupMemberInfo memberInfo = Connect.UpdateGroupMemberInfo.newBuilder()
-                .setNick(edittxt1.getText().toString()).setIdentifier(groupKey).build();
+                .setNick(myname).setIdentifier(groupKey).build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_MEMUPDATE, memberInfo, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                groupMemEntity.setUsername(edittxt1.getText().toString());
+                groupMemEntity.setUsername(myname);
                 ContactHelper.getInstance().inserGroupMemEntity(groupMemEntity);
                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.GROUP_UPDATEMYNAME);
                 GroupSetActivity.startActivity(activity,groupKey);

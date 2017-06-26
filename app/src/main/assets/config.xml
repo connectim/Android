@@ -3,8 +3,8 @@
     <property>
         <APP_MODE>test</APP_MODE>
         <HTTP_MODE>false</HTTP_MODE>
-        <SERVER_ADDRESS>https://sandbox.connect.im</SERVER_ADDRESS>
-        <SOCKET_ADDRESS>sandbox.connect.im</SOCKET_ADDRESS>
+        <SERVER_ADDRESS>http://182.150.44.226:10086</SERVER_ADDRESS>
+        <SOCKET_ADDRESS>182.150.44.226</SOCKET_ADDRESS>
         <SOCKET_PORT>19090</SOCKET_PORT>
         <SHARE_CARD_ADDRESS>http://cd.snowball.io:5502/share/v1/contact/</SHARE_CARD_ADDRESS>
         <SHARE_PAY_ADDRESS>http://cd.snowball.io:5502/share/v1/pay</SHARE_PAY_ADDRESS>

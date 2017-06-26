@@ -5,23 +5,51 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.os.RemoteException;
+
+import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 
 import connect.im.IMessage;
-import connect.im.model.ConnectManager;
+import connect.im.netty.BufferBean;
+import connect.im.netty.MessageDecoder;
+import connect.im.netty.MessageEncoder;
 import connect.ui.service.bean.ServiceAck;
+import connect.ui.service.bean.ServiceInfoBean;
+import connect.utils.TimeUtil;
+import connect.utils.log.LogManager;
+import connect.utils.okhttp.HttpRequest;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 
 public class PushService extends Service {
 
+    private String Tag = "PushService";
     private PushService service;
     private IMessage localBinder;
     private PushBinder pushBinder;
     private PushConnect pushConnect;
-    private ConnectManager connectManager;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -31,8 +59,7 @@ public class PushService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        service=this;
-        connectManager = ConnectManager.getInstance();
+        service = this;
         if (pushBinder == null) {
             pushBinder = new PushBinder();
         }
@@ -52,8 +79,7 @@ public class PushService extends Service {
         public void onServiceConnected(ComponentName name, IBinder service) {
             try {
                 localBinder = IMessage.Stub.asInterface(service);
-                connectManager.setiMessage(localBinder);
-                localBinder.connectMessage(ServiceAck.SERVER_ADDRESS.getAck(), new byte[0]);
+                localBinder.connectMessage(ServiceAck.SERVER_ADDRESS.getAck(), new byte[0], new byte[0]);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -76,9 +102,10 @@ public class PushService extends Service {
     class PushBinder extends IMessage.Stub {
 
         @Override
-        public void connectMessage(int type, byte[] message) throws RemoteException {
+        public void connectMessage(int type, byte[] ack, byte[] message) throws RemoteException {
             ByteBuffer byteBuffer;
-            ServiceAck serviceAck=ServiceAck.valueOf(type);
+            BufferBean bufferBean;
+            ServiceAck serviceAck = ServiceAck.valueOf(type);
 
             switch (serviceAck) {
                 case BIND_SUCCESS:
@@ -86,31 +113,32 @@ public class PushService extends Service {
                     bindService(intent, pushConnect, Service.BIND_IMPORTANT);
                     break;
                 case MESSAGE:
-                    byteBuffer = ByteBuffer.wrap(message);
-                    connectManager.sendToBytes(byteBuffer);
+                    bufferBean = new BufferBean(ack, message);
+                    writeBytes(bufferBean);
                     break;
                 case CONNECT_START:
-                    connectManager.connectServer();
+                    connectService();
                     break;
                 case CONNECT_SUCCESS:
-                    connectManager.connectSuccess();
+                    connectSuccess();
                     break;
                 case EXIT_ACCOUNT:
-                    connectManager.exitConnect();
-                    localBinder.connectMessage(ServiceAck.EXIT_ACCOUNT.getAck(), new byte[0]);
+                    stopConnect();
+                    localBinder.connectMessage(ServiceAck.EXIT_ACCOUNT.getAck(), new byte[0], new byte[0]);
                     unbindService(pushConnect);
                     pushConnect = null;
                     stopSelf();
                     break;
-                case STOP_CONNECT:
-                    connectManager.stopConnect();
-                    break;
                 case SERVER_ADDRESS:
                     try {
                         byteBuffer = ByteBuffer.wrap(message);
-                        String address = new String(byteBuffer.array(), "utf-8");
-                        connectManager.setServerAddress(address);
-                        connectManager.connectServer();
+                        String serviceInfo = new String(byteBuffer.array(), "utf-8");
+                        ServiceInfoBean serviceInfoBean = new Gson().fromJson(serviceInfo, ServiceInfoBean.class);
+
+                        socketAddress = serviceInfoBean.getServiceAddress();
+                        socketPort = serviceInfoBean.getPort();
+                        canReConnect = true;
+                        connectService();
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -122,5 +150,191 @@ public class PushService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    /** tag */
+    private final int TAG_CONNECT = 100;
+    /** The message exchange Even the Fibonacci sequence */
+    private long[] reconFibonacci = new long[]{1000, 1000};
+
+    private Handler reconHandler = new Handler(Looper.myLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case TAG_CONNECT:
+                    connectService();
+                    break;
+            }
+        }
+    };
+
+    public void resetFibonacci() {
+        reconFibonacci[0] = 1000;
+        reconFibonacci[1] = 1000;
+    }
+
+
+    /**
+     * connect success
+     */
+    public void connectSuccess() {
+        canReConnect = true;
+        resetFibonacci();
+        reconHandler.removeMessages(TAG_CONNECT);
+    }
+
+    public void reconDelay() {
+        LogManager.getLogger().d(Tag, "connectServer reconDelay()...");
+        if (canReConnect && !reconHandler.hasMessages(TAG_CONNECT)) {
+            long count = reconFibonacci[0] + reconFibonacci[1];
+            reconFibonacci[0] = reconFibonacci[1];
+            reconFibonacci[1] = count;
+
+            LogManager.getLogger().d(Tag, "connectServer reconDelay()..." + count / 1000 + "s reconnect");
+            Message msg = Message.obtain(reconHandler, TAG_CONNECT);
+            reconHandler.sendMessageDelayed(msg, count);
+        }
+    }
+
+
+    private boolean canReConnect = true;
+    private String socketAddress;
+    private int socketPort;
+    private EventLoopGroup loopGroup;
+    private Channel channel;
+    private Bootstrap bootstrap;
+    private ConnectHandlerAdapter handlerAdapter;
+
+    public void connectService() {
+        if (!HttpRequest.isConnectNet()) {
+            return;
+        }
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                loopGroup = new NioEventLoopGroup();
+                handlerAdapter = new ConnectHandlerAdapter();
+                bootstrap = new Bootstrap();
+                bootstrap.group(loopGroup)
+                        .channel(NioSocketChannel.class)
+                        .option(ChannelOption.TCP_NODELAY, true)
+                        .option(ChannelOption.SO_KEEPALIVE, true)
+                        .option(ChannelOption.SO_TIMEOUT, 5000)
+                        .handler(new ChannelInitializer<SocketChannel>() {
+
+                            @Override
+                            protected void initChannel(SocketChannel ch) throws Exception {
+                                ch.pipeline().addLast(new IdleStateHandler(10, 10, 10, TimeUnit.SECONDS));
+                                ch.pipeline().addLast(new MessageEncoder());
+                                ch.pipeline().addLast(new MessageDecoder());
+                                ch.pipeline().addLast(handlerAdapter);
+                            }
+                        });
+
+                ChannelFuture future = bootstrap.connect(socketAddress, socketPort);
+                try {
+                    future.sync();
+
+                    channel = future.channel();
+                    channel.closeFuture().sync();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LogManager.getLogger().d(Tag, "connectService() Exception ==> " + e.getMessage());
+                    reconDelay();
+                } finally {
+                    loopGroup.shutdownGracefully();
+                }
+            }
+        };
+        thread.start();
+    }
+
+    public void stopConnect() {
+        LogManager.getLogger().d(Tag, "stopConnect() ==> ");
+        canReConnect = false;
+        loopGroup.shutdownGracefully();
+    }
+
+    public void writeBytes(BufferBean bufferBean) {
+        if (channel == null || !channel.isActive() || !channel.isWritable()) {
+            LogManager.getLogger().d(Tag, "writeBytes() channel ==> is null?");
+            reconDelay();
+        } else {
+            channel.writeAndFlush(bufferBean);
+        }
+    }
+
+    /** Recently received a message of time */
+    private long lastReceiverTime;
+    /** Heart rate */
+    private final long HEART_FREQUENCY = 30 * 1000;
+
+    @ChannelHandler.Sharable
+    class ConnectHandlerAdapter extends ChannelHandlerAdapter {
+
+        @Override
+        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+            super.channelRead(ctx, msg);
+            lastReceiverTime = TimeUtil.getCurrentTimeInLong();
+            BufferBean bufferBean = (BufferBean) msg;
+            localBinder.connectMessage(ServiceAck.MESSAGE.getAck(), bufferBean.getAck(), bufferBean.getMessage());
+        }
+
+        @Override
+        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+            super.userEventTriggered(ctx, evt);
+            if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
+                IdleStateEvent event = (IdleStateEvent) evt;
+                if (event.state() == IdleState.READER_IDLE) {
+                    long curtime = TimeUtil.getCurrentTimeInLong();
+                    if (curtime < lastReceiverTime + HEART_FREQUENCY * 2) {
+                        LogManager.getLogger().d(Tag, "userEventTriggered() ==> send heartbeat");
+                        try {
+                            localBinder.connectMessage(ServiceAck.HEART_BEAT.getAck(), new byte[0], new byte[0]);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    } else {//connect timeout
+                        LogManager.getLogger().d(Tag, "userEventTriggered() ==> connect timeout");
+                        reconDelay();
+                    }
+                } else if (event.state() == IdleState.WRITER_IDLE) {
+
+                } else if (event.state() == IdleState.ALL_IDLE) {
+                }
+            }
+        }
+
+        @Override
+        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+            super.channelActive(ctx);
+            LogManager.getLogger().d(Tag, "channelActive() == ");
+            localBinder.connectMessage(ServiceAck.HAND_SHAKE.getAck(), new byte[0], new byte[0]);
+        }
+
+        /**
+         * When the TCP connection is broken, it will be called back
+         *
+         * @param ctx
+         * @throws Exception
+         */
+        @Override
+        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            super.channelInactive(ctx);
+            ctx.close();
+            LogManager.getLogger().d(Tag, "channelInactive() ==> connection is broken");
+            reconDelay();
+        }
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            super.exceptionCaught(ctx, cause);
+            ctx.close();
+            LogManager.getLogger().d(Tag, "exceptionCaught() ==");
+            reconDelay();
+        }
     }
 }

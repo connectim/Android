@@ -180,7 +180,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
                 //close socket
                 MemoryDataManager.getInstance().clearMap();
-                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, ByteBuffer.allocate(0));
+                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, new byte[0],ByteBuffer.allocate(0));
                 SharePreferenceUser.unLinkSharePreferrnce();
                 DaoManager.getInstance().closeDataBase();
                 HttpsService.stopServer(activity);

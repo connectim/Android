@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +25,7 @@ import connect.ui.service.bean.PushMessage;
 import connect.ui.service.bean.ServiceAck;
 import connect.utils.log.LogManager;
 import connect.utils.system.SystemUtil;
+import io.netty.util.concurrent.SingleThreadEventExecutor;
 
 /**
  * Created by gtq on 2016/11/30.
@@ -44,21 +46,20 @@ public class MsgRecManager {
         return receiverManager;
     }
 
-    private static final int coreSize = 3;
-    private static final int maxSize = 6;
-    private static final int aliveSize = 1;
+    /**
+     * The task is performed only with a unique worker thread,
+     * ensuring that all tasks are executed in the specified order (FIFO, LIFO, priority)
+     */
+    private static ExecutorService threadPoolExecutor = Executors.newSingleThreadExecutor();
 
-    private static BlockingQueue<Runnable> linkedBlockingQueue = new LinkedBlockingQueue<>();
-    private static ExecutorService threadPoolExecutor = new ThreadPoolExecutor(coreSize, maxSize, aliveSize, TimeUnit.DAYS, linkedBlockingQueue);
-
-    public synchronized void sendMessage(ByteBuffer ack, ByteBuffer body) {
+    public void sendMessage(ByteBuffer ack, ByteBuffer body) {
         ReceiveRun receiveRun = new ReceiveRun(ack, body);
         threadPoolExecutor.execute(receiveRun);
     }
 
-    private synchronized void receiveMsgDeal(ByteBuffer ack, ByteBuffer body) throws Exception {
-        byte type = ack.get(1);
-        byte ext = ack.get(6);
+    private void receiveMsgDeal(ByteBuffer ack, ByteBuffer body) throws Exception {
+        byte type = ack.get(0);
+        byte ext = ack.get(1);
 
         LogManager.getLogger().i(Tag, "receive order: [" + type + "][" + ext + "]");
         InterParse interParse = null;
@@ -110,7 +111,7 @@ public class MsgRecManager {
                 if (TextUtils.isEmpty(errInfo)) {
                     errInfo = "";
                 }
-                LogManager.getLogger().d(Tag, "exception order info: [" + ack.get(1) + "][" + ack.get(6) + "]" + errInfo);
+                LogManager.getLogger().d(Tag, "exception order info: [" + ack.get(0) + "][" + ack.get(1) + "]" + errInfo);
             }
         }
 
@@ -121,7 +122,7 @@ public class MsgRecManager {
         public synchronized boolean isKeyAvaliable() {
             boolean isAvailable = MemoryDataManager.getInstance().isAvailableKey();
             if (!isAvailable) {
-                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, ByteBuffer.allocate(0));//close socket
+                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT,new byte[0], ByteBuffer.allocate(0));//close socket
                 if (SystemUtil.isRunBackGround()) {// run in front
                     Context context = BaseApplication.getInstance().getBaseContext();
                     Intent intent = new Intent(context, StartActivity.class);
