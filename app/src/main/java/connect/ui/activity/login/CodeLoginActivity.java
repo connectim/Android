@@ -89,7 +89,9 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
         nicknameEt.setText(userBean.getName());
         GlideUtil.loadAvater(userheadImg, userBean.getAvatar());
         if (TextUtils.isEmpty(token)) {
-            passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+            if (!TextUtils.isEmpty(userBean.getPassHint())) {
+                passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+            }
             passwordeditTv.setVisibility(View.GONE);
             passwordEt.setHint(R.string.Login_Password);
         } else {

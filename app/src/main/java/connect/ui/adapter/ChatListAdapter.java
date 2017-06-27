@@ -28,16 +28,21 @@ import connect.db.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.Talker;
 import connect.ui.activity.home.bean.HomeAction;
+import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.activity.home.bean.RoomAttrBean;
 import connect.ui.activity.home.view.ShowTextView;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
+import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import connect.utils.system.SystemDataUtil;
 import connect.view.MaterialBadgeTextView;
 import connect.view.SideScrollView;
 import connect.view.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 import static connect.view.SideScrollView.SideScrollListener;
 
@@ -222,6 +227,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     int disturb = select ? 1 : 0;
                     ConversionSettingHelper.getInstance().updateDisturb(roomAttrBeanList.get(position).getRoomid(), disturb);
                     MsgFragmReceiver.refreshRoom();
+                    if (roomAttrBeanList.get(position).getRoomtype() == 1) {
+                        String roomid = roomAttrBeanList.get(position).getRoomid();
+                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupNotificaton, roomid, disturb);
+                    }
                 }
             }
         });

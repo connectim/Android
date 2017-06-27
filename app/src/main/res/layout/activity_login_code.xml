@@ -75,8 +75,7 @@
         android:layout_marginRight="@dimen/dp_20">
         <TextView
             android:id="@id/passwordhint_tv"
-            style="@style/BaseTextStyle.14"
-            android:text="@string/Login_Password_Hint"/>
+            style="@style/BaseTextStyle.14"/>
         <TextView
             android:id="@id/passwordedit_tv"
             style="@style/BaseTextStyle"

@@ -32,8 +32,10 @@ import java.util.List;
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
+import connect.db.green.DaoHelper.ConversionSettingHelper;
 import connect.db.green.DaoHelper.ParamHelper;
 import connect.db.green.DaoHelper.ParamManager;
+import connect.db.green.bean.ConversionSettingEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.im.model.FailMsgsManager;
@@ -202,6 +204,9 @@ public class HttpsService extends Service {
                 break;
             case SYSTEM_VIBRATION:
                 SystemUtil.noticeVibrate(service);
+                break;
+            case GroupNotificaton:
+                updateGroupMute((String) objects[0], (Integer) objects[1]);
                 break;
         }
     }
@@ -659,6 +664,24 @@ public class HttpsService extends Service {
 
                     }
                 });
+    }
+
+    private void updateGroupMute(final String groupkey, final int state) {
+        Connect.UpdateGroupMute groupMute = Connect.UpdateGroupMute.newBuilder()
+                .setIdentifier(groupkey)
+                .setMute(state == 1).build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_MUTE, groupMute, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                ConversionSettingEntity setEntity = ConversionSettingHelper.getInstance().loadSetEntity(groupkey);
+                setEntity.setDisturb(state);
+                ConversionSettingHelper.getInstance().insertSetEntity(setEntity);
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+            }
+        });
     }
 
     @Override

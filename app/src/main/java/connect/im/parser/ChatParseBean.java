@@ -180,6 +180,9 @@ public class ChatParseBean extends InterParse {
                 break;
             default:
                 MessageHelper.getInstance().insertFromMsg(pubkey, definBean);
+
+                NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
+                normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime(), -1, true, false);
                 break;
         }
         broadMsg(pubkey, roomtype, definBean);

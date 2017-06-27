@@ -359,7 +359,7 @@
     <string name="Link_contact_count">%1$d位联系人%2$s%3$s</string>
     <string name="Link_contact_count_group_count">%1$d位联系人,%2$d个群组</string>
     <string name="Link_enter_the_group">%s加入群聊</string>
-    <string name="Link_group_count">,%d个群组</string>
+    <string name="Link_group_count">%d个群组</string>
     <string name="Link_have_joined_the_group">你已经加入这个群组</string>
     <string name="Link_invite_encrypted_chat_with_APP_Download">%s 邀请您使用Connect开始加密聊天，Connect是一个开源的P2P加密聊天APP。下载地址: https://connect.im</string>
     <string name="Link_invite_you_to_start_encrypted_chat_with_Connect">%s邀请你使用Connect加密聊天</string>

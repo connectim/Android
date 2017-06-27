@@ -84,6 +84,10 @@ public abstract class BaseChat<T> implements Serializable {
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at, boolean newmsg) {
+        updateRoomMsg(draft,showText,msgtime,at,newmsg,true);
+    }
+
+    public void updateRoomMsg(String draft, String showText, long msgtime, int at, boolean newmsg,boolean broad) {
         if (TextUtils.isEmpty(roomKey())) {
             return;
         }
@@ -97,8 +101,12 @@ public abstract class BaseChat<T> implements Serializable {
         roomEntity.setName(nickName());
         roomEntity.setAvatar(headImg());
         roomEntity.setType(roomType());
-        roomEntity.setContent(showText);
-        roomEntity.setLast_time(msgtime);
+        if (!TextUtils.isEmpty(showText)) {
+            roomEntity.setContent(showText);
+        }
+        if (msgtime != 0) {
+            roomEntity.setLast_time(msgtime);
+        }
         roomEntity.setStranger(isStranger ? 1 : 0);
 
         int unread = (null == roomEntity.getUnread_count()) ? 0 : roomEntity.getUnread_count();
@@ -111,7 +119,9 @@ public abstract class BaseChat<T> implements Serializable {
         }
 
         ConversionHelper.getInstance().insertRoomEntity(roomEntity);
-        MsgFragmReceiver.refreshRoom();
+        if (broad) {
+            MsgFragmReceiver.refreshRoom();
+        }
     }
 
     public abstract void sendPushMsg(T bean);

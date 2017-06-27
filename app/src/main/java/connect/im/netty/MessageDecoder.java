@@ -26,20 +26,18 @@ public class MessageDecoder extends ByteToMessageDecoder{
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        in.markReaderIndex();
+
         //message header
         if (in.readableBytes() < MSG_HEADER_LENGTH) {
+            in.resetReaderIndex();
             return;
         }
         //big data
-        if (in.readableBytes() > 10240) {
+        if (in.readableBytes() > 40960) {
             in.skipBytes(in.readableBytes());
-        }
-        //header
-        if (in.readableBytes() < MSG_HEADER_LENGTH) {
             return;
         }
-
-        in.markReaderIndex();
 
         byte[] ackArr = new byte[2];
         in.readByte();//version
@@ -51,15 +49,13 @@ public class MessageDecoder extends ByteToMessageDecoder{
         byte[] ext = new byte[2];//ext: 2 bit
         in.readBytes(ext);
 
-        if(in.readableBytes()<length){
+        if (in.readableBytes() < length) {
             in.resetReaderIndex();
             return;
         }
-        if(assembleHeader(ackArr[0],length,ackArr[1],randoms,ext)){
-            in.resetReaderIndex();
+        if (assembleHeader(ackArr[0], length, ackArr[1], randoms, ext)) {
             return;
         }
-
 
         byte[] msgdata = new byte[length];//message
         in.readBytes(msgdata);

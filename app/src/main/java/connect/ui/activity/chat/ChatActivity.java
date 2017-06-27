@@ -342,18 +342,20 @@ public class ChatActivity extends BaseChatActvity {
 
     @Override
     public void saveRoomInfo() {
-        String showtxt = "";
-        long sendtime = 0;
         String draft = inputPanel.getDraft();
-
         if (chatAdapter.getMsgEntities().size() != 0) {
             MsgEntity lastmsg = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
             if (lastmsg != null) {
-                showtxt = lastmsg.getMsgDefinBean().showContentTxt(talker.getTalkType());
-                sendtime = lastmsg.getMsgDefinBean().getSendtime();
+                String showtxt = "";
+                long sendtime = 0;
+
+                if (lastmsg.getMsgDefinBean().getType() != -500) {
+                    showtxt = lastmsg.getMsgDefinBean().showContentTxt(talker.getTalkType());
+                    sendtime = lastmsg.getMsgDefinBean().getSendtime();
+                }
+                baseChat.updateRoomMsg(draft, showtxt, sendtime, 0);
             }
         }
-        baseChat.updateRoomMsg(draft, showtxt, sendtime, 0);
     }
 
     @Override

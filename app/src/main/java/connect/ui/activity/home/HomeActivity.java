@@ -37,7 +37,6 @@ import connect.im.bean.Session;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.ChatActivity;
 import connect.ui.activity.chat.bean.Talker;
-import connect.ui.activity.chat.model.EmoManager;
 import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.bean.MsgSendBean;
 import connect.ui.activity.home.bean.HomeAction;
@@ -57,7 +56,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissiomUtilNew;
 import connect.utils.scan.ResolveUrlUtil;
@@ -192,7 +190,6 @@ public class HomeActivity extends BaseFragmentActivity {
                 ChatActivity.startActivity(activity, (Talker) (objects[0]));
                 break;
         }
-
     }
 
 

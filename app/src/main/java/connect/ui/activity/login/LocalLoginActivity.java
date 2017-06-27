@@ -146,7 +146,9 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
             Bundle bundle = data.getExtras();
             userBean = (UserBean)bundle.getSerializable("bean");
             nicknameTv.setText(userBean.getName());
-            passwordhintTv.setText(getString(R.string.Login_Password_Hint,userBean.getPassHint()));
+            if (!TextUtils.isEmpty(userBean.getPassHint())) {
+                passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+            }
             GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
         }else{
             if(requestCode == SELE_USER_CODE){
@@ -156,7 +158,9 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
                 }else {
                     userBean = list.get(0);
                     nicknameTv.setText(userBean.getName());
-                    passwordhintTv.setText(getString(R.string.Login_Password_Hint,userBean.getPassHint()));
+                    if (!TextUtils.isEmpty(userBean.getPassHint())) {
+                        passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+                    }
                     GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
                 }
             }
