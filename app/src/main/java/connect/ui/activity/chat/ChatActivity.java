@@ -41,7 +41,7 @@ import connect.ui.activity.chat.model.fileload.PhotoUpload;
 import connect.ui.activity.chat.set.GroupSetActivity;
 import connect.ui.activity.chat.set.SingleSetActivity;
 import connect.ui.activity.chat.view.ExBottomLayout;
-import connect.ui.adapter.ChatAdapter;
+import connect.ui.activity.chat.adapter.ChatAdapter;
 import connect.utils.ActivityUtil;
 import connect.utils.FileUtil;
 import connect.utils.MediaUtil;

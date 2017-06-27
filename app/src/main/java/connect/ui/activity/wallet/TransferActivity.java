@@ -1,6 +1,7 @@
 package connect.ui.activity.wallet;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -16,10 +17,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.db.green.DaoHelper.TransactionHelper;
+import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.TransactionEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.exts.RedPacketActivity;
 import connect.ui.activity.chat.exts.TransferToActivity;
+import connect.ui.activity.common.selefriend.SeleUsersActivity;
 import connect.ui.activity.wallet.adapter.LatelyTransferAdapter;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.base.BaseActivity;
@@ -80,7 +83,7 @@ public class TransferActivity extends BaseActivity {
 
     @OnClick(R.id.transfer_friend_tv)
     void goFriend(View view) {
-        TransferFriendSeleActivity.startActivity(mActivity, 0, TransferFriendSeleActivity.SOURCE_FRIEND, "");
+        SeleUsersActivity.startActivity(mActivity, SeleUsersActivity.SOURCE_FRIEND, "",null);
     }
 
     @OnClick(R.id.transfer_address_tv)
@@ -91,6 +94,15 @@ public class TransferActivity extends BaseActivity {
     @OnClick(R.id.transfer_outVia_tv)
     void goOutVia(View view) {
         TransferOutViaActivity.startActivity(mActivity);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == SeleUsersActivity.CODE_REQUEST && resultCode == RESULT_OK){
+            ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
+            TransferFriendActivity.startActivity(mActivity, friendList,"");
+        }
     }
 
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {

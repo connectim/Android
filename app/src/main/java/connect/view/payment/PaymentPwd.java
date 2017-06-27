@@ -26,7 +26,7 @@ import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.ui.activity.set.PaymentActivity;
 import connect.ui.activity.set.bean.PaySetBean;
-import connect.ui.adapter.ViewPagerAdapter;
+import connect.ui.activity.common.adapter.ViewPagerAdapter;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;

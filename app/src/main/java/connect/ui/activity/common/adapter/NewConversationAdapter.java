@@ -1,4 +1,4 @@
-package connect.ui.activity.contact.adapter;
+package connect.ui.activity.common.adapter;
 
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -24,7 +24,7 @@ import connect.view.roundedimageview.RoundedImageView;
  * Created by Administrator on 2017/2/20.
  */
 
-public class ShareCardContactAdapter extends BaseAdapter {
+public class NewConversationAdapter extends BaseAdapter {
 
     private ArrayList<ContactBean> listData = new ArrayList<>();
     private int startPosition;

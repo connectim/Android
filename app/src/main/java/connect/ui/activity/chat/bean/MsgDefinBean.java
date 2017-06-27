@@ -1,9 +1,7 @@
 package connect.ui.activity.chat.bean;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.ui.activity.locmap.bean.GeoAddressBean;
 import connect.ui.base.BaseApplication;
 
 import java.io.Serializable;

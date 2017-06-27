@@ -23,7 +23,6 @@ import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.NormalChat;
 import connect.ui.activity.wallet.TransferActivity;
-import connect.ui.activity.wallet.TransferFriendSeleActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.contract.TransferFriendContract;
 import connect.ui.base.BaseApplication;
@@ -174,9 +173,9 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
                                         if (activity.getClass().getName().equals(TransferActivity.class.getName())) {
                                             activity.finish();
                                         }
-                                        if (activity.getClass().getName().equals(TransferFriendSeleActivity.class.getName())) {
+                                        /*if (activity.getClass().getName().equals(TransferFriendSeleActivity.class.getName())) {
                                             activity.finish();
-                                        }
+                                        }*/
                                     }
                                     ActivityUtil.goBack(mView.getActivity());
                                 }

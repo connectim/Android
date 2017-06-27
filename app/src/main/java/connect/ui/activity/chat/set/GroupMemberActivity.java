@@ -17,7 +17,7 @@ import connect.db.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.model.GroupComPara;
 import connect.ui.activity.home.view.LineDecoration;
-import connect.ui.adapter.GroupMemberAdapter;
+import connect.ui.activity.chat.adapter.GroupMemberAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.view.SideBar;

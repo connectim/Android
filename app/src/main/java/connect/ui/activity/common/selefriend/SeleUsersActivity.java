@@ -1,4 +1,4 @@
-package connect.ui.activity.wallet;
+package connect.ui.activity.common.selefriend;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,16 +17,15 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.model.FriendCompara;
+import connect.ui.activity.common.adapter.MulContactAdapter;
 import connect.ui.activity.home.view.LineDecoration;
-import connect.ui.activity.login.bean.UserBean;
+import connect.ui.activity.wallet.TransferFriendActivity;
 import connect.ui.activity.wallet.bean.FriendSeleBean;
-import connect.ui.adapter.MulContactAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.view.SideBar;
@@ -36,7 +35,7 @@ import connect.view.TopToolBar;
  * Choose friends to transfer
  * Created by Administrator on 2016/12/22.
  */
-public class TransferFriendSeleActivity extends BaseActivity {
+public class SeleUsersActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -53,19 +52,22 @@ public class TransferFriendSeleActivity extends BaseActivity {
     private int topPosi;
     private LinearLayoutManager linearLayoutManager;
     private MulContactAdapter adapter;
-    private TransferFriendSeleActivity activity;
-    private int code;
+    private SeleUsersActivity activity;
     public static final String SOURCE_FRIEND = "source_friend";
-    public static final String SOURCE_GROUP = "source_group";
+    public static final String SOURCE_GROUP = "source_group_transfer";
+    private ArrayList<ContactEntity> seledFriend;
+    public static final int CODE_REQUEST = 120;
     private String source;
     private String groupKey;
 
-    public static void startActivity(Activity activity, int code, String source, String pubKey) {
+    public static void startActivity(Activity activity, String source, String pubKey,ArrayList<ContactEntity> list) {
         Bundle bundle = new Bundle();
-        bundle.putInt("code", code);
         bundle.putString("source", source);
         bundle.putString("pubKey", pubKey);
-        ActivityUtil.next(activity, TransferFriendSeleActivity.class, bundle, code);
+        if(list != null){
+            bundle.putSerializable("list", list);
+        }
+        ActivityUtil.next(activity, SeleUsersActivity.class, bundle, CODE_REQUEST);
     }
 
     @Override
@@ -84,25 +86,34 @@ public class TransferFriendSeleActivity extends BaseActivity {
         toolbarTop.setRightText(R.string.Wallet_Transfer);
         toolbarTop.setRightTextColor(R.color.color_00c400);
         toolbarTop.setRightTextEnable(false);
+
         Bundle bundle = getIntent().getExtras();
-        code = bundle.getInt("code");
         source = bundle.getString("source");
         groupKey = bundle.getString("pubKey", "");
+        seledFriend = (ArrayList<ContactEntity>) bundle.getSerializable("list");
 
-        List<ContactEntity> friendEntities;
+        List<ContactEntity> friendEntities = null;
         if (source.equals(SOURCE_FRIEND)) {
             toolbarTop.setTitle(null, R.string.Wallet_Select_friends);
             friendEntities = ContactHelper.getInstance().loadFriend();
             txt1.setVisibility(View.GONE);
-        } else {
+            if(seledFriend != null && seledFriend.size() > 0){
+                toolbarTop.setRightText(getString(R.string.Wallet_transfer_man, seledFriend.size()));
+                toolbarTop.setRightTextColor(R.color.color_00c400);
+            }
+        }else if (source.equals(SOURCE_GROUP)){
             toolbarTop.setTitle(null, R.string.Chat_Choose_Members);
             friendEntities = loadGropMember();
             txt1.setText(getString(R.string.Chat_Group_Members, friendEntities.size()));
+            if(seledFriend != null && seledFriend.size() > 0){
+                toolbarTop.setRightText(getString(R.string.Wallet_transfer_man, seledFriend.size()));
+                toolbarTop.setRightTextColor(R.color.color_00c400);
+            }
         }
-        Collections.sort(friendEntities, friendCompara);
 
+        Collections.sort(friendEntities, friendCompara);
         linearLayoutManager = new LinearLayoutManager(activity);
-        adapter = new MulContactAdapter(activity, new ArrayList<String>(), friendEntities);
+        adapter = new MulContactAdapter(activity, new ArrayList<String>(), friendEntities,seledFriend);
         adapter.setOnSeleFriendListence(new MulContactAdapter.OnSeleFriendListence() {
             @Override
             public void seleFriend(List<ContactEntity> list) {
@@ -111,8 +122,6 @@ public class TransferFriendSeleActivity extends BaseActivity {
                     toolbarTop.setRightTextColor(R.color.color_68656f);
                     toolbarTop.setRightTextEnable(false);
                 } else {
-                    toolbarTop.setRightText(getString(R.string.Wallet_transfer_man, list.size()));
-                    Long.valueOf(list.size());
                     toolbarTop.setRightText(getString(R.string.Wallet_transfer_man, list.size()));
                     toolbarTop.setRightTextColor(R.color.color_00c400);
                     toolbarTop.setRightTextEnable(true);
@@ -158,15 +167,9 @@ public class TransferFriendSeleActivity extends BaseActivity {
 
     @OnClick(R.id.right_lin)
     void goFinish(View view) {
-        if (code == 0) {
-            TransferFriendActivity.startActivity(activity, adapter.getSelectEntities());
-        } else {
-            Intent intent = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("list", new FriendSeleBean(adapter.getSelectEntities()));
-            intent.putExtras(bundle);
-            setResult(RESULT_OK, intent);
-        }
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("list", adapter.getSelectEntities());
+        ActivityUtil.goBackWithResult(activity,RESULT_OK,bundle);
     }
 
     private void moveToPosition(int posi) {

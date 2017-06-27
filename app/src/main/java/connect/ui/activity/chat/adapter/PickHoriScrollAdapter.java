@@ -1,4 +1,4 @@
-package connect.ui.adapter;
+package connect.ui.activity.chat.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -2,6 +2,7 @@ package connect.ui.activity.chat;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -9,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.widget.ImageView;
 
 import com.google.gson.Gson;
 
@@ -54,12 +54,13 @@ import connect.ui.activity.chat.model.fileload.PhotoUpload;
 import connect.ui.activity.chat.model.fileload.VideoUpload;
 import connect.ui.activity.chat.model.fileload.VoiceUpload;
 import connect.ui.activity.chat.set.ContactCardActivity;
+import connect.ui.activity.common.selefriend.SeleUsersActivity;
 import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.home.HomeActivity;
-import connect.ui.activity.locmap.GoogleMapActivity;
-import connect.ui.activity.locmap.bean.GeoAddressBean;
-import connect.ui.activity.wallet.TransferFriendSeleActivity;
-import connect.ui.adapter.ChatAdapter;
+import connect.ui.activity.chat.exts.GoogleMapActivity;
+import connect.ui.activity.chat.bean.GeoAddressBean;
+import connect.ui.activity.chat.adapter.ChatAdapter;
+import connect.ui.activity.wallet.TransferFriendActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
@@ -71,7 +72,7 @@ import connect.view.album.ui.activity.PhotoAlbumActivity;
 import connect.view.camera.CameraTakeActivity;
 import connect.view.imagewatcher.ImageWatcher;
 import connect.view.imagewatcher.ImageWatcherUtil;
-import connect.view.imgviewer.ImageViewerActivity;
+import connect.view.imagewatcher.ImageViewerActivity;
 
 /**
  * Created by pujin on 2017/1/19.
@@ -344,7 +345,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 if (baseChat.roomType() == 0) {
                     TransferToActivity.startActivity(activity, baseChat.address());
                 } else if (RoomSession.getInstance().getRoomType() == 1) {
-                    TransferFriendSeleActivity.startActivity(activity, 0, TransferFriendSeleActivity.SOURCE_GROUP, baseChat.roomKey());
+                    SeleUsersActivity.startActivity(activity, SeleUsersActivity.SOURCE_GROUP, baseChat.roomKey(),null);
                 }
                 break;
             case REDPACKET:
@@ -575,6 +576,14 @@ public abstract class BaseChatActvity extends BaseActivity {
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == SeleUsersActivity.CODE_REQUEST){
+            ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
+            TransferFriendActivity.startActivity(activity, friendList,baseChat.roomKey());
+        }
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

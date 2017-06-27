@@ -17,7 +17,7 @@ import connect.ui.activity.chat.exts.VideoPlayerActivity;
 import connect.ui.activity.chat.inter.FileDownLoad;
 import connect.ui.activity.chat.view.BubbleImg;
 import connect.ui.activity.chat.view.DVideoProView;
-import connect.ui.activity.common.ConversationActivity;
+import connect.ui.activity.common.selefriend.ConversationActivity;
 import connect.ui.activity.common.bean.ConverType;
 import connect.utils.FileUtil;
 import connect.utils.system.SystemUtil;

@@ -1,4 +1,4 @@
-package connect.view.imgviewer;
+package connect.view.imagewatcher;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,20 +8,18 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import connect.ui.activity.R;
-import connect.ui.activity.contact.SearchActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.glide.GlideUtil;
 import connect.view.album.ui.widget.HackyViewPager;
 import connect.view.photoview.PhotoView;
 import connect.view.photoview.PhotoViewAttacher;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Image viewer

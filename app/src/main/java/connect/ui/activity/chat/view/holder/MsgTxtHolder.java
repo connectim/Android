@@ -8,7 +8,7 @@ import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.view.EmoTextView;
-import connect.ui.activity.common.ConversationActivity;
+import connect.ui.activity.common.selefriend.ConversationActivity;
 import connect.ui.activity.common.bean.ConverType;
 
 /**

@@ -7,4 +7,5 @@ package connect.ui.activity.common.bean;
 public enum ConverType {
     URL,
     TRANSPOND,
+    CAED,
 }

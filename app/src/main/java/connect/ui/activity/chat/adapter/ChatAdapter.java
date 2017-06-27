@@ -1,4 +1,4 @@
-package connect.ui.adapter;
+package connect.ui.activity.chat.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,7 +28,7 @@ import connect.utils.TimeUtil;
  *
  * Created by gtq on 2016/11/23.
  */
-public class ChatAdapter extends BaseChatAdapter {
+public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     private LayoutInflater inflater;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;

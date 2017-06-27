@@ -1,4 +1,4 @@
-package connect.ui.adapter;
+package connect.ui.activity.chat.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

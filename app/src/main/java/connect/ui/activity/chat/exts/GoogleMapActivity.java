@@ -1,4 +1,4 @@
-package connect.ui.activity.locmap;
+package connect.ui.activity.chat.exts;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgSend;
-import connect.ui.activity.locmap.bean.GeoAddressBean;
+import connect.ui.activity.chat.bean.GeoAddressBean;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.FileUtil;

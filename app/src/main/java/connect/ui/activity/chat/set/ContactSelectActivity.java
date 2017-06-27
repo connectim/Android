@@ -7,8 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.google.protobuf.ByteString;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +14,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -35,8 +32,7 @@ import connect.ui.activity.chat.model.FriendCompara;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.GroupChat;
 import connect.ui.activity.home.bean.HttpRecBean;
-import connect.ui.activity.login.bean.UserBean;
-import connect.ui.adapter.MulContactAdapter;
+import connect.ui.activity.common.adapter.MulContactAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
@@ -150,11 +146,11 @@ public class ContactSelectActivity extends BaseActivity {
         } else {//Invite friends to join in the group
             memEntities = ContactHelper.getInstance().loadGroupMemEntity(roomKey);
             for (GroupMemberEntity memEntity : memEntities) {
-                oldMembers.add(memEntity.getIdentifier());
+                oldMembers.add(memEntity.getPub_key());
             }
         }
 
-        adapter = new MulContactAdapter(activity, oldMembers, friendEntities);
+        adapter = new MulContactAdapter(activity, oldMembers, friendEntities,null);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(adapter);
         recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {

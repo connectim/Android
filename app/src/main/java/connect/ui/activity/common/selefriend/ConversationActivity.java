@@ -1,4 +1,4 @@
-package connect.ui.activity.common;
+package connect.ui.activity.common.selefriend;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,9 +17,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.green.DaoHelper.ConversionHelper;
+import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.common.bean.ConverType;
-import connect.ui.activity.contact.adapter.ShareCardAdapter;
+import connect.ui.activity.common.adapter.ConversationAdapter;
 import connect.ui.activity.home.bean.RoomAttrBean;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
@@ -40,13 +41,13 @@ public class ConversationActivity extends BaseActivity {
     @Bind(R.id.list_view)
     ListView listView;
 
-    private static final int CODE_REQUEST = 512;
+    public static final int CODE_REQUEST = 512;
 
     private ConversationActivity activity;
     private ConverType converType;
     private Serializable serializables;
 
-    private ShareCardAdapter shareCardAdapter;
+    private ConversationAdapter conversationAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +87,13 @@ public class ConversationActivity extends BaseActivity {
             case TRANSPOND://transpond
                 toolbar.setTitle(getString(R.string.Chat_Message_retweet));
                 break;
+            case CAED:
+                toolbar.setTitle(getString(R.string.Chat_Share_contact));
+                break;
         }
 
-        shareCardAdapter = new ShareCardAdapter();
-        listView.setAdapter(shareCardAdapter);
+        conversationAdapter = new ConversationAdapter();
+        listView.setAdapter(conversationAdapter);
         listView.setOnItemClickListener(itemClickListener);
         loadConverChats();
     }
@@ -107,7 +111,7 @@ public class ConversationActivity extends BaseActivity {
             @Override
             protected void onPostExecute(List<RoomAttrBean> roomAttrBeen) {
                 super.onPostExecute(roomAttrBeen);
-                shareCardAdapter.setDataNotify(roomAttrBeen);
+                conversationAdapter.setDataNotify(roomAttrBeen);
             }
         }.execute();
     }
@@ -125,6 +129,13 @@ public class ConversationActivity extends BaseActivity {
                     break;
                 case TRANSPOND:
                     message = getString(R.string.Link_Send_to, roomAttrBean.getName());
+                    break;
+                case CAED:
+                    Object[] objects = (Object[]) serializables;
+                    ContactEntity contactEntity  = (ContactEntity)objects[0];
+                    message = getString(R.string.Chat_Share_contact_to, contactEntity.getUsername(), roomAttrBean.getName());
+                    break;
+                default:
                     break;
             }
 
@@ -147,7 +158,7 @@ public class ConversationActivity extends BaseActivity {
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.create_chat_lin:
-                NewConversationActivity.startActivity(activity, converType);
+                NewConversationActivity.startActivity(activity, converType,serializables);
                 break;
         }
     }
@@ -160,6 +171,11 @@ public class ConversationActivity extends BaseActivity {
         }
     }
 
+    /**
+     *
+     * @param type 0:friend 1:group
+     * @param pubkey
+     */
     public void backActivity(int type, String pubkey) {
         Bundle bundle = new Bundle();
         bundle.putInt("type", type);

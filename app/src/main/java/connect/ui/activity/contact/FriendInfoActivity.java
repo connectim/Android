@@ -3,6 +3,7 @@ package connect.ui.activity.contact;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -25,12 +26,20 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
+import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.bean.ContactEntity;
+import connect.db.green.bean.GroupEntity;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.ChatActivity;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.Talker;
 import connect.ui.activity.chat.exts.TransferToActivity;
+import connect.ui.activity.chat.model.content.BaseChat;
+import connect.ui.activity.chat.model.content.FriendChat;
+import connect.ui.activity.chat.model.content.GroupChat;
+import connect.ui.activity.common.bean.ConverType;
+import connect.ui.activity.common.selefriend.ConversationActivity;
 import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.bean.MsgSendBean;
 import connect.ui.activity.contact.bean.SourceType;
@@ -39,6 +48,7 @@ import connect.ui.activity.contact.presenter.FriendInfoPresenter;
 import connect.ui.activity.home.bean.MsgNoticeBean;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.base.BaseActivity;
+import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
@@ -46,7 +56,6 @@ import connect.utils.glide.GlideUtil;
 import connect.view.TopToolBar;
 import connect.view.imagewatcher.ImageWatcher;
 import connect.view.imagewatcher.ImageWatcherUtil;
-import connect.view.imgviewer.ImageViewerActivity;
 import connect.view.roundedimageview.RoundedImageView;
 
 /**
@@ -205,7 +214,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.contact_img)
     void goSendContact(View view) {
-        ShareCardActivity.startActivity(mActivity, friendEntity);
+        ConversationActivity.startActivity(mActivity, ConverType.CAED,friendEntity);
     }
 
     @OnClick(R.id.set_alias_rela)
@@ -279,6 +288,28 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         friendEntity.setBlocked(block);
         ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
         ContactNotice.receiverFriend();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ConversationActivity.CODE_REQUEST && requestCode == ConversationActivity.CODE_REQUEST){
+            int type = data.getIntExtra("type", 0);
+            String pubkey = data.getStringExtra("object");
+
+            BaseChat baseChat = null;
+            if (type == 0) {
+                ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubkey);
+                baseChat = new FriendChat(acceptFriend);
+            } else if (type == 1) {
+                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+                baseChat = new GroupChat(groupEntity);
+            }
+            MsgEntity msgEntity = (MsgEntity) baseChat.cardMsg(friendEntity);
+            baseChat.sendPushMsg(msgEntity);
+            MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+            baseChat.updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgEntity.getMsgDefinBean().getSendtime());
+        }
     }
 
     @Override

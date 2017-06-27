@@ -24,7 +24,7 @@ import connect.ui.activity.chat.bean.MsgDirect;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.RecExtBean;
 import connect.ui.activity.chat.view.BubbleImg;
-import connect.ui.activity.common.ConversationActivity;
+import connect.ui.activity.common.selefriend.ConversationActivity;
 import connect.ui.activity.common.bean.ConverType;
 import connect.ui.base.BaseApplication;
 import connect.utils.FileUtil;

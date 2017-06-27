@@ -1,4 +1,4 @@
-package connect.ui.adapter;
+package connect.ui.activity.home.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.DaoHelper.ConversionSettingHelper;

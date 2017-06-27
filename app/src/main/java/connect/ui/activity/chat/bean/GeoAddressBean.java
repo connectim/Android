@@ -1,4 +1,4 @@
-package connect.ui.activity.locmap.bean;
+package connect.ui.activity.chat.bean;
 
 /**
  * map bean

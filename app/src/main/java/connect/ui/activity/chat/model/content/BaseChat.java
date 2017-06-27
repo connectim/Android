@@ -20,7 +20,7 @@ import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.WebsiteExt1Bean;
 import connect.ui.activity.home.bean.MsgFragmReceiver;
-import connect.ui.activity.locmap.bean.GeoAddressBean;
+import connect.ui.activity.chat.bean.GeoAddressBean;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;

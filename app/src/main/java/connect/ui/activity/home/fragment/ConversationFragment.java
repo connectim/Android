@@ -25,7 +25,7 @@ import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.activity.home.bean.RoomAttrBean;
 import connect.ui.activity.home.view.ConnectStateView;
 import connect.ui.activity.home.view.LineDecoration;
-import connect.ui.adapter.ChatListAdapter;
+import connect.ui.activity.home.adapter.ChatListAdapter;
 import connect.ui.base.BaseFragment;
 import connect.utils.log.LogManager;
 /**

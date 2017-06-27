@@ -39,7 +39,7 @@ import connect.ui.activity.chat.bean.WebsiteExt1Bean;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.GroupChat;
-import connect.ui.activity.common.ConversationActivity;
+import connect.ui.activity.common.selefriend.ConversationActivity;
 import connect.ui.activity.common.bean.ConverType;
 import connect.ui.activity.home.bean.MsgNoticeBean;
 import connect.ui.base.BaseActivity;
@@ -57,8 +57,6 @@ public class OuterWebsiteActivity extends BaseActivity {
     WebView webView;
     @Bind(R.id.myProgressBar)
     ProgressBar myProgressBar;
-
-    private static final int CODE_REQUEST = 512;
 
     private OuterWebsiteActivity activity;
     private String inUrl;
@@ -276,7 +274,7 @@ public class OuterWebsiteActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CODE_REQUEST && resultCode == CODE_REQUEST) {
+        if (requestCode == ConversationActivity.CODE_REQUEST && resultCode == ConversationActivity.CODE_REQUEST) {
             int type = data.getIntExtra("type", 0);
             String pubkey = data.getStringExtra("object");
 

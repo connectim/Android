@@ -9,8 +9,8 @@ import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.view.BubbleImg;
-import connect.ui.activity.locmap.GoogleMapActivity;
-import connect.ui.activity.locmap.bean.GeoAddressBean;
+import connect.ui.activity.chat.exts.GoogleMapActivity;
+import connect.ui.activity.chat.bean.GeoAddressBean;
 
 /**
  * Created by gtq on 2016/11/23.

@@ -1,7 +1,6 @@
-package connect.ui.activity.common;
+package connect.ui.activity.common.selefriend;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.common.bean.ConverType;
-import connect.ui.activity.contact.adapter.ShareCardContactAdapter;
+import connect.ui.activity.common.adapter.NewConversationAdapter;
 import connect.ui.activity.contact.model.ContactListManage;
 import connect.ui.activity.home.bean.ContactBean;
 import connect.ui.base.BaseActivity;
@@ -44,9 +44,10 @@ public class NewConversationActivity extends BaseActivity {
     private NewConversationActivity activity;
     private List<ContactBean> groupList;
     private HashMap<String, List<ContactBean>> friendMap;
-    private ShareCardContactAdapter adapter;
+    private NewConversationAdapter adapter;
 
     private ConverType converType;
+    private Serializable serializable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +57,12 @@ public class NewConversationActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, ConverType converType) {
+    public static void startActivity(Activity activity, ConverType converType,Serializable serializable) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("converType", converType);
+        if (serializable != null) {
+            bundle.putSerializable("Serializable", serializable);
+        }
         ActivityUtil.next(activity, NewConversationActivity.class, bundle, CODE_REQUEST);
     }
 
@@ -75,6 +79,7 @@ public class NewConversationActivity extends BaseActivity {
         });
 
         converType= (ConverType) getIntent().getSerializableExtra("converType");
+        serializable = getIntent().getSerializableExtra("Serializable");
 
         String title = "";
         switch (converType) {
@@ -84,10 +89,15 @@ public class NewConversationActivity extends BaseActivity {
             case TRANSPOND:
                 title = getString(R.string.Chat_Message_retweet);
                 break;
+            case CAED:
+                title = getString(R.string.Chat_Share_contact);
+                break;
+            default:
+                break;
         }
         toolbar.setTitle(title);
 
-        adapter = new ShareCardContactAdapter();
+        adapter = new NewConversationAdapter();
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(itemClickListener);
         siderbar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
@@ -115,6 +125,13 @@ public class NewConversationActivity extends BaseActivity {
                     break;
                 case TRANSPOND:
                     message = getString(R.string.Link_Send_to, roomAttrBean.getName());
+                    break;
+                case CAED:
+                    Object[] objects = (Object[]) serializable;
+                    ContactEntity contactEntity  = (ContactEntity)objects[0];
+                    message = getString(R.string.Chat_Share_contact_to, contactEntity.getUsername(), roomAttrBean.getName());
+                    break;
+                default:
                     break;
             }
 

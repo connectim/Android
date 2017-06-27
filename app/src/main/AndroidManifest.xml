@@ -279,12 +279,6 @@
             android:name=".contact.RecommendActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".contact.ShareCardActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".contact.ShareCardContactActivity"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".contact.FriendRecordActivity"
             android:screenOrientation="portrait"/>
         <activity
@@ -328,6 +322,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
+            android:name=".common.selefriend.SeleUsersActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
             android:name=".chat.exts.RedPacketActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
@@ -336,7 +334,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="connect.view.imgviewer.ImageViewerActivity"
+            android:name="connect.view.imagewatcher.ImageViewerActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".chat.exts.VideoPlayerActivity"
@@ -388,15 +386,15 @@
         </activity>
         <activity android:name=".chat.exts.OuterWebsiteActivity">
         </activity>
-        <activity android:name=".common.FriendSelectActivity">
+        <activity android:name=".common.selefriend.FriendSelectActivity">
         </activity>
-        <activity android:name=".common.ConversationActivity">
+        <activity android:name=".common.selefriend.ConversationActivity">
         </activity>
-        <activity android:name=".common.NewConversationActivity">
+        <activity android:name=".common.selefriend.NewConversationActivity">
         </activity>
         <activity android:name=".chat.exts.GroupAtActivity">
         </activity>
-        <activity android:name=".locmap.GoogleMapActivity">
+        <activity android:name=".chat.exts.GoogleMapActivity">
         </activity>
         <activity android:name="connect.view.album.ui.activity.PhotoAlbumActivity">
         </activity>

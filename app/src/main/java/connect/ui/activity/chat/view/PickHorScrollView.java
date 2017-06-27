@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
-import connect.ui.adapter.PickHoriScrollAdapter;
+import connect.ui.activity.chat.adapter.PickHoriScrollAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

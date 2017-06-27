@@ -21,10 +21,9 @@ import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgSend;
 import connect.ui.activity.chat.bean.RecExtBean;
 import connect.ui.activity.chat.view.PickHorScrollView;
-import connect.ui.adapter.PickHoriScrollAdapter;
+import connect.ui.activity.chat.adapter.PickHoriScrollAdapter;
 import connect.ui.base.BaseApplication;
 import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 
 /**
  * Recent pictures

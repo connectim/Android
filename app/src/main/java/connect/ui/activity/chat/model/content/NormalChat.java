@@ -13,7 +13,7 @@ import connect.ui.activity.chat.bean.GroupExt1Bean;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.TransferExt;
 import connect.ui.activity.chat.bean.WebsiteExt1Bean;
-import connect.ui.activity.locmap.bean.GeoAddressBean;
+import connect.ui.activity.chat.bean.GeoAddressBean;
 import connect.ui.base.BaseApplication;
 
 /**

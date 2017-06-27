@@ -19,6 +19,7 @@ import butterknife.OnClick;
 import connect.db.MemoryDataManager;
 import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
+import connect.ui.activity.common.selefriend.SeleUsersActivity;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.adapter.FriendGridAdapter;
 import connect.ui.activity.wallet.bean.FriendSeleBean;
@@ -59,10 +60,12 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
     private final int BACK_CODE = 102;
     private final int BACK_DEL_CODE = 103;
     private PaymentPwd paymentPwd;
+    private String pubGroup;
 
-    public static void startActivity(Activity activity, List<ContactEntity> list) {
+    public static void startActivity(Activity activity, List<ContactEntity> list,String pubGroup) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("list", new FriendSeleBean(list));
+        bundle.putString("pubGroup",pubGroup);
         ActivityUtil.next(activity, TransferFriendActivity.class, bundle);
     }
 
@@ -89,6 +92,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         setPresenter(new TransferFriendPresenter(this));
 
         Bundle bundle = getIntent().getExtras();
+        pubGroup = bundle.getString("pubGroup","");
         FriendSeleBean friendSeleBean = (FriendSeleBean) bundle.getSerializable("list");
         List<ContactEntity> list = friendSeleBean.getList();
         presenter.setListData(list);
@@ -118,7 +122,13 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
 
     @Override
     public void addTranferFriend() {
-        ActivityUtil.goBack(mActivity);
+        ArrayList<ContactEntity> list = new ArrayList<ContactEntity>();
+        list.addAll(presenter.getListFriend());
+        if(TextUtils.isEmpty(pubGroup)){
+            SeleUsersActivity.startActivity(mActivity, SeleUsersActivity.SOURCE_FRIEND, "",list);
+        }else{
+            SeleUsersActivity.startActivity(mActivity, SeleUsersActivity.SOURCE_GROUP, pubGroup,list);
+        }
     }
 
     @Override
@@ -186,6 +196,13 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                 presenter.horizontal_layout(listView);
                 friendGridAdapter.setNotifyData(list);
                 numberTv.setText(getString(R.string.Wallet_transfer_man, list.size()));
+                presenter.checkBtnEnable();
+            }else if(requestCode == SeleUsersActivity.CODE_REQUEST){
+                ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
+                presenter.setListData(friendList);
+                presenter.horizontal_layout(listView);
+                friendGridAdapter.setNotifyData(friendList);
+                numberTv.setText(getString(R.string.Wallet_transfer_man, friendList.size()));
                 presenter.checkBtnEnable();
             }
         }

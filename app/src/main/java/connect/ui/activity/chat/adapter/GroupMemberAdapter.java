@@ -1,4 +1,4 @@
-package connect.ui.adapter;
+package connect.ui.activity.chat.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.GroupMemberEntity;
@@ -23,7 +22,6 @@ import connect.ui.activity.contact.bean.SourceType;
 import connect.ui.activity.set.ModifyInfoActivity;
 import connect.utils.PinyinUtil;
 import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;

@@ -18,7 +18,7 @@ import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgSend;
 import connect.ui.activity.chat.bean.RoomSession;
 import connect.ui.activity.chat.model.FriendCompara;
-import connect.ui.adapter.ContactCardAdapter;
+import connect.ui.activity.chat.adapter.ContactCardAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.view.SideBar;

@@ -1,4 +1,4 @@
-package connect.ui.activity.contact.adapter;
+package connect.ui.activity.common.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +21,7 @@ import connect.view.roundedimageview.RoundedImageView;
  * Created by Administrator on 2017/2/20.
  */
 
-public class ShareCardAdapter extends BaseAdapter {
+public class ConversationAdapter extends BaseAdapter {
 
     private List<RoomAttrBean> roomList = new ArrayList<>();
 
