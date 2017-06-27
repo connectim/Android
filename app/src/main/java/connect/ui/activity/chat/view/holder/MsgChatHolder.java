@@ -1,8 +1,10 @@
 package connect.ui.activity.chat.view.holder;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -52,8 +54,10 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
     protected RelativeLayout contentLayout;
     protected MsgSender sender;
 
+    private PromptViewHelper pvHelper = null;
     protected PromptViewHelper.OnPromptClickListener promptClickListener = null;
 
+    @TargetApi(Build.VERSION_CODES.M)
     public MsgChatHolder(View itemView) {
         super(itemView);
         headImg = (ChatHeadImg) itemView.findViewById(R.id.roundimg_head);
@@ -99,7 +103,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         }
 
         final String[] strings = longPressPrompt();
-        final PromptViewHelper pvHelper = new PromptViewHelper(context);
+        pvHelper = new PromptViewHelper(context);
         pvHelper.setPromptViewManager(new ChatPromptViewManager(context, strings));
         pvHelper.addPrompt(longClickView());
         pvHelper.setOnItemClickListener(promptClickListener);

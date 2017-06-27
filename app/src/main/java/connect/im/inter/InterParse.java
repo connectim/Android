@@ -52,7 +52,7 @@ public abstract class InterParse {
      * @return
      * @throws Exception
      */
-    protected Connect.StructData imTransferToStructData(ByteBuffer buffer) throws Exception {
+    protected synchronized Connect.StructData imTransferToStructData(ByteBuffer buffer) throws Exception {
         Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(buffer.array());
         if (!SupportKeyUril.verifySign(imTransferData.getSign(), imTransferData.getCipherData().toByteArray())) {
             throw new Exception("Validation fails");

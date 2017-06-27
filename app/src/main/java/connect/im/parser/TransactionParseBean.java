@@ -48,7 +48,7 @@ public class TransactionParseBean extends InterParse{
      * @throws Exception
      */
     @Override
-    public void msgParse() throws Exception {
+    public synchronized void msgParse() throws Exception {
         int category = noticeMessage.getCategory();
         ByteString byteString = noticeMessage.getBody();
         switch (category) {

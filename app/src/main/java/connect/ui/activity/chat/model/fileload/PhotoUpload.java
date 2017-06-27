@@ -77,8 +77,8 @@ public class PhotoUpload extends FileUpLoad {
                     gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT,priKey, richMedia.toByteString());
                     mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
 
-                    firstFile.delete();
-                    secondFile.delete();
+//                    firstFile.delete();
+//                    secondFile.delete();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

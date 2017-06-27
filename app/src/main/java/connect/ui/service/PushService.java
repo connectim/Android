@@ -21,6 +21,7 @@ import connect.im.IMessage;
 import connect.im.netty.BufferBean;
 import connect.im.netty.MessageDecoder;
 import connect.im.netty.MessageEncoder;
+import connect.im.netty.NettySession;
 import connect.ui.service.bean.ServiceAck;
 import connect.ui.service.bean.ServiceInfoBean;
 import connect.utils.TimeUtil;
@@ -29,6 +30,7 @@ import connect.utils.okhttp.HttpRequest;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
@@ -198,14 +200,9 @@ public class PushService extends Service {
         }
     }
 
-
     private boolean canReConnect = true;
     private String socketAddress;
     private int socketPort;
-    private EventLoopGroup loopGroup;
-    private Channel channel;
-    private Bootstrap bootstrap;
-    private ConnectHandlerAdapter handlerAdapter;
 
     public void connectService() {
         if (!HttpRequest.isConnectNet()) {
@@ -217,37 +214,49 @@ public class PushService extends Service {
             @Override
             public void run() {
                 super.run();
-                loopGroup = new NioEventLoopGroup();
-                handlerAdapter = new ConnectHandlerAdapter();
-                bootstrap = new Bootstrap();
-                bootstrap.group(loopGroup)
-                        .channel(NioSocketChannel.class)
-                        .option(ChannelOption.TCP_NODELAY, true)
-                        .option(ChannelOption.SO_KEEPALIVE, true)
-                        .handler(new ChannelInitializer<SocketChannel>() {
+                EventLoopGroup loopGroup = new NioEventLoopGroup();
+                Bootstrap bootstrap = new Bootstrap();
+                bootstrap.channel(NioSocketChannel.class);
+                bootstrap.option(ChannelOption.SO_BACKLOG, 128);
+                bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+                bootstrap.option(ChannelOption.TCP_NODELAY, true);//TCP协议
+                bootstrap.group(loopGroup);//java.lang.OutOfMemoryError: Could not allocate JNI Env 重新创建前 要先关掉 closeSession();
+                bootstrap.handler(new ChannelInitializer<SocketChannel>() {
 
-                            @Override
-                            protected void initChannel(SocketChannel ch) throws Exception {
-                                ch.pipeline().addLast(new IdleStateHandler(5, 5, 0, TimeUnit.SECONDS));
-                                ch.pipeline().addLast(new MessageEncoder());
-                                ch.pipeline().addLast(new MessageDecoder());
-                                ch.pipeline().addLast(handlerAdapter);
-                            }
-                        });
+                    @Override
+                    protected void initChannel(SocketChannel ch) throws Exception {
+                        ch.pipeline().addLast(new IdleStateHandler(5, 5, 0, TimeUnit.SECONDS));
+                        ch.pipeline().addLast(new MessageEncoder());
+                        ch.pipeline().addLast(new MessageDecoder());
+                        ch.pipeline().addLast(new ConnectHandlerAdapter());
+                    }
+                });
 
                 ChannelFuture future = bootstrap.connect(socketAddress, socketPort);
                 try {
+                    future.addListener(new ChannelFutureListener() {
+                        @Override
+                        public void operationComplete(ChannelFuture future) throws Exception {
+                            if(!future.isSuccess()){
+                                reconDelay();
+                            }
+                        }
+                    });
                     future.sync();
-
-                    channel = future.channel();
-                    channel.closeFuture().sync();
                     LogManager.getLogger().d(Tag,"Thread:"+TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
+
+                    SocketChannel channel = (SocketChannel) future.channel();
+                    NettySession nettySession = NettySession.getInstance();
+                    nettySession.setLoopGroup(loopGroup);
+                    nettySession.setChannel(channel);
+
+                    channel.closeFuture().sync();
                 } catch (Exception e) {
                     e.printStackTrace();
                     LogManager.getLogger().d(Tag, "connectService() Exception ==> " + e.getMessage());
                     reconDelay();
                 } finally {
-                    loopGroup.shutdownGracefully();
+                    NettySession.getInstance().shutDown();
                 }
             }
         };
@@ -257,23 +266,24 @@ public class PushService extends Service {
     public void stopConnect() {
         LogManager.getLogger().d(Tag, "stopConnect() ==> ");
         canReConnect = false;
-        loopGroup.shutdownGracefully();
+
+        NettySession.getInstance().shutDown();
     }
 
     public void writeBytes(BufferBean bufferBean) {
-        if (channel == null || !channel.isActive() || !channel.isWritable()) {
+        if (!NettySession.getInstance().isWriteAble()) {
             LogManager.getLogger().d(Tag, "writeBytes() channel ==> is null?");
             reconDelay();
         } else {
-            LogManager.getLogger().d(Tag,"writeBytes:"+TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
-            channel.writeAndFlush(bufferBean);
+            LogManager.getLogger().d(Tag, "writeBytes:" + TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
+            NettySession.getInstance().getChannel().writeAndFlush(bufferBean);
         }
     }
 
     /** Recently received a message of time */
     private long lastReceiverTime;
     /** Heart rate */
-    private final long HEART_FREQUENCY = 30 * 1000;
+    private final long HEART_FREQUENCY = 20 * 1000;
 
     @ChannelHandler.Sharable
     class ConnectHandlerAdapter extends ChannelHandlerAdapter {
@@ -291,22 +301,21 @@ public class PushService extends Service {
             super.userEventTriggered(ctx, evt);
             if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
                 IdleStateEvent event = (IdleStateEvent) evt;
-                if (event.state() == IdleState.READER_IDLE) {
+                if (event.state() == IdleState.READER_IDLE || event.state() == IdleState.WRITER_IDLE ||
+                        event.state() == IdleState.ALL_IDLE) {
                     long curtime = TimeUtil.getCurrentTimeInLong();
-                    if (curtime < lastReceiverTime + HEART_FREQUENCY * 2) {
+                    if (curtime < lastReceiverTime + HEART_FREQUENCY) {
                         LogManager.getLogger().d(Tag, "userEventTriggered() ==> send heartbeat");
                         try {
                             localBinder.connectMessage(ServiceAck.HEART_BEAT.getAck(), new byte[0], new byte[0]);
                         } catch (RemoteException e) {
                             e.printStackTrace();
+                            reconDelay();
                         }
                     } else {//connect timeout
                         LogManager.getLogger().d(Tag, "userEventTriggered() ==> connect timeout");
                         reconDelay();
                     }
-                } else if (event.state() == IdleState.WRITER_IDLE) {
-
-                } else if (event.state() == IdleState.ALL_IDLE) {
                 }
             }
         }

@@ -148,6 +148,8 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
             nicknameTv.setText(userBean.getName());
             if (!TextUtils.isEmpty(userBean.getPassHint())) {
                 passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+            }else{
+                passwordhintTv.setText("");
             }
             GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
         }else{
@@ -160,6 +162,8 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
                     nicknameTv.setText(userBean.getName());
                     if (!TextUtils.isEmpty(userBean.getPassHint())) {
                         passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+                    }else{
+                        passwordhintTv.setText("");
                     }
                     GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
                 }

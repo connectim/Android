@@ -99,9 +99,6 @@
 
     <Crowdfunding>
         <attr name='total' type='int'></attr>
-        <attr name='tips' type='string'></attr>
-        <attr name='status' type='int'></attr>
-        <attr name='records' type='proto'></attr>
         <attr name='createdAt' type='int'></attr>
     </Crowdfunding>
 

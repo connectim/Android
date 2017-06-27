@@ -99,7 +99,7 @@ public class MsgStateView extends RelativeLayout {
 
         switch (bean.getExtType()) {
             case MSGSTATEVIEW:
-                String msgid = (String) objects[0];
+                 String msgid = (String) objects[0];
                 int state = (int) objects[1];
                 if (chatBean.getMsgDefinBean().getMessage_id().equals(msgid)) {
                     updateMsgState(state);

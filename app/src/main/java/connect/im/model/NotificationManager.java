@@ -71,7 +71,6 @@ public class NotificationManager {
             super.handleMessage(msg);
             TIME_SENDNOTIFY = TimeUtil.getCurrentTimeInLong();
 
-            boolean isAt = false;
             Bundle bundle=msg.getData();
             int type = bundle.getInt("TYPE");
             String pubkey = bundle.getString("KEY");
@@ -81,21 +80,17 @@ public class NotificationManager {
             if (definBean.getType() == 1 && !TextUtils.isEmpty(definBean.getExt1())) {
                 List<String> addressList = new Gson().fromJson(definBean.getExt1(), new TypeToken<List<String>>() {
                 }.getType());
+                boolean isAt = false;
                 String myAddress = MemoryDataManager.getInstance().getAddress();
                 if (addressList.contains(myAddress)) { // at me
                     isAt = true;
                 }
+                showNotification(pubkey, type, isAt ?
+                        BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me) :
+                        definBean.showContentTxt(type)
+                );
             }
-
-            NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
-            if (normalChat != null) {
-                normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime(), isAt ? 1 : -1, true);
-            }
-
-            showNotification(pubkey, type, isAt ?
-                    BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me) :
-                    definBean.showContentTxt(type)
-            );
+            MsgFragmReceiver.refreshRoom();
         }
     };
 

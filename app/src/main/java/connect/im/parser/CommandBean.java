@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.ParamHelper;
@@ -46,14 +45,11 @@ import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.activity.home.bean.MsgNoticeBean;
 import connect.ui.base.BaseApplication;
-import connect.ui.service.bean.PushMessage;
-import connect.ui.service.bean.ServiceAck;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.log.LogManager;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 

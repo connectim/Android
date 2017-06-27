@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -369,5 +371,11 @@ public class ChatActivity extends BaseChatActvity {
         super.onStop();
         inputPanel.hideBottomPanel();
         MediaUtil.getInstance().freeMediaPlayerResource();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -54,7 +54,7 @@ public class ChatParseBean extends InterParse {
     }
 
     @Override
-    public void msgParse() throws Exception {
+    public synchronized void msgParse() throws Exception {
         switch (ackByte) {
             case 0x01://private chat
             case 0x02://burn chat

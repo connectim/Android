@@ -81,10 +81,7 @@ public class ChatMsgUtil {
                 }
             }
         } else {
-            boolean chatAcyRun = ActivityUtil.isRunChatActivity(ChatActivity.class.getName());
-            if (chatAcyRun) {
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MSGSTATE, roomkey, msgid, state);
-            }
+            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MSGSTATE, roomkey, msgid, state);
         }
     }
 

@@ -72,7 +72,7 @@ public class MsgParseBean extends InterParse {
     }
 
     @Override
-    public void msgParse() throws Exception {
+    public synchronized void msgParse() throws Exception {
         switch (ackByte) {
             case 0x00://robot message
                 robotMsg();
