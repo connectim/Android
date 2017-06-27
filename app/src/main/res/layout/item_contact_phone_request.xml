@@ -59,7 +59,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
 
-        <connect.view.roundedimageview.RoundedImageView
+        <connect.widget.roundedimageview.RoundedImageView
             android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"

@@ -31,7 +31,7 @@
                 android:layout_centerInParent="true"
                 android:src="@drawable/selector_message"/>
 
-            <connect.view.MaterialBadgeTextView
+            <connect.widget.MaterialBadgeTextView
                 android:id="@id/badgetv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:layout_centerInParent="true"
                 android:src="@drawable/selector_contact"/>
 
-            <connect.view.MaterialBadgeTextView
+            <connect.widget.MaterialBadgeTextView
                 android:id="@id/contact_badgetv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

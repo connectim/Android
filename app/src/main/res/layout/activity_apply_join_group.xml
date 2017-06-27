@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="connect.ui.activity.chat.exts.ApplyJoinGroupActivity">
+    tools:context="connect.activity.chat.exts.ApplyJoinGroupActivity">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -21,7 +21,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <connect.view.roundedimageview.RoundedImageView
+        <connect.widget.roundedimageview.RoundedImageView
             android:id="@id/roundimg"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"

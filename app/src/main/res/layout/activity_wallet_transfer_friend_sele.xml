@@ -21,7 +21,7 @@
         android:layout_below="@id/txt1"
         android:layout_marginTop="@dimen/dp_3"/>
 
-    <connect.view.SideBar
+    <connect.widget.SideBar
         android:id="@id/siderbar"
         android:layout_width="25dp"
         android:layout_height="match_parent"
@@ -30,7 +30,7 @@
         android:layout_marginBottom="@dimen/dp_100"
         android:layout_marginTop="@dimen/dp_100"/>
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/dp_10"
     android:paddingBottom="@dimen/dp_10">
 
-    <connect.view.roundedimageview.RoundedImageView
+    <connect.widget.roundedimageview.RoundedImageView
         android:id="@+id/avater_rimg"
         android:layout_width="@dimen/dp_44"
         android:layout_height="@dimen/dp_44"

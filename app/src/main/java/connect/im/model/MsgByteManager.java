@@ -6,8 +6,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import connect.ui.service.bean.PushMessage;
-import connect.ui.service.bean.ServiceAck;
+import connect.service.bean.PushMessage;
+import connect.service.bean.ServiceAck;
 import connect.utils.StringUtil;
 import connect.utils.log.LogManager;
 

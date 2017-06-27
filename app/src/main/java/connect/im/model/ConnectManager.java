@@ -4,8 +4,6 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
 
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -21,11 +19,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
+import connect.database.MemoryDataManager;
 import connect.im.IMessage;
-import connect.ui.service.bean.ServiceAck;
-import connect.utils.ConfigUtil;
+import connect.service.bean.ServiceAck;
 import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;

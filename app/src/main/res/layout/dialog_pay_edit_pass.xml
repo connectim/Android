@@ -19,7 +19,7 @@
             android:indeterminateTint="@color/color_007aff"
             android:indeterminateTintMode="src_atop"
             android:visibility="gone"/>-->
-        <connect.view.MdStyleProgress
+        <connect.widget.MdStyleProgress
             android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:padding="5dp"
             android:visibility="gone"/>
 
-        <connect.view.payment.PayEditView
+        <connect.widget.payment.PayEditView
             android:id="@+id/pay_edit"
             android:layout_width="@dimen/dp_250"
             android:layout_height="@dimen/dp_30"
@@ -53,7 +53,7 @@
             android:text=""/>
     </RelativeLayout>
 
-    <connect.view.payment.VirtualKeyboardView
+    <connect.widget.payment.VirtualKeyboardView
         android:id="@+id/virtualKeyboardView"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"

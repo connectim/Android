@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     android:background="@color/color_bg_activity"
     android:orientation="vertical"
-    tools:context="connect.ui.activity.chat.set.GroupManageActivity">
+    tools:context="connect.activity.chat.set.GroupManageActivity">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

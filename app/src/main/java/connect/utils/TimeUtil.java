@@ -3,7 +3,7 @@ package connect.utils;
 import android.content.Context;
 
 import connect.ui.activity.R;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

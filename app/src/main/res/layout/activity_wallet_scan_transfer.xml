@@ -23,7 +23,7 @@
             android:layout_alignParentTop="true"
             android:background="@color/color_161A21" />
 
-        <connect.view.ScanBgView
+        <connect.widget.ScanBgView
             android:id="@+id/capture_crop_view"
             android:layout_width="@dimen/dp_250"
             android:layout_height="@dimen/dp_250"

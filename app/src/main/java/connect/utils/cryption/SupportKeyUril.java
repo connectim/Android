@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -14,11 +13,10 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.ParamManager;
+import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.im.bean.Session;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 import connect.utils.StringUtil;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;

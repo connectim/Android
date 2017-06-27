@@ -1,4 +1,4 @@
-package connect.db.green.bean;
+package connect.database.green.bean;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

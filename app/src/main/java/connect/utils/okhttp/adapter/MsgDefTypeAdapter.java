@@ -1,8 +1,8 @@
 package connect.utils.okhttp.adapter;
 
-import connect.ui.activity.chat.bean.MsgDefinBean;
-import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.bean.GeoAddressBean;
+import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.bean.MsgSender;
+import connect.activity.chat.bean.GeoAddressBean;
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

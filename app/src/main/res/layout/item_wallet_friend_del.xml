@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<connect.view.SideScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<connect.widget.SideScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
-                <connect.view.roundedimageview.RoundedImageView
+                <connect.widget.roundedimageview.RoundedImageView
                     android:id="@+id/avater_rimg"
                     android:layout_width="@dimen/dp_38"
                     android:layout_height="@dimen/dp_38"
@@ -58,4 +58,4 @@
         </RelativeLayout>
 
     </RelativeLayout>
-</connect.view.SideScrollView>
+</connect.widget.SideScrollView>

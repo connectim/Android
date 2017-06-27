@@ -1,8 +1,7 @@
 package connect.utils.data;
 
-import connect.ui.activity.login.bean.CountryBean;
+import connect.activity.login.bean.CountryBean;
 import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
