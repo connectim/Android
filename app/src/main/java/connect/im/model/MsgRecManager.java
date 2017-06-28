@@ -54,7 +54,7 @@ public class MsgRecManager {
 
     public void sendMessage(ByteBuffer ack, ByteBuffer body) {
         ReceiveRun receiveRun = new ReceiveRun(ack, body);
-        threadPoolExecutor.execute(receiveRun);
+        threadPoolExecutor.submit(receiveRun);
     }
 
     private void receiveMsgDeal(ByteBuffer ack, ByteBuffer body) throws Exception {
@@ -75,7 +75,7 @@ public class MsgRecManager {
                 interParse = new CommandBean(ext, body);
                 break;
             case 0x05://chat order
-                interParse = new MsgParseBean(ext, body, 1);
+                interParse = new MsgParseBean(ext, body);
                 break;
             case 0x06://Be offline
                 interParse = new ExceptionBean(ext, body);

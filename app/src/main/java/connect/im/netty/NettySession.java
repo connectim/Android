@@ -25,10 +25,6 @@ public class NettySession {
     private EventLoopGroup loopGroup;
     private Channel channel;
 
-    public EventLoopGroup getLoopGroup() {
-        return loopGroup;
-    }
-
     public void setLoopGroup(EventLoopGroup loopGroup) {
         this.loopGroup = loopGroup;
     }
@@ -44,7 +40,7 @@ public class NettySession {
 
     public boolean isWriteAble() {
         boolean able = true;
-        if (channel == null || !channel.isActive() || !channel.isWritable()) {
+        if (channel == null || !channel.isOpen() || !channel.isActive() || !channel.isWritable()) {
             able = false;
         }
         return able;
@@ -53,6 +49,7 @@ public class NettySession {
     public void shutDown() {
         if (loopGroup != null) {
             loopGroup.shutdownGracefully();
+            loopGroup = null;
         }
     }
 }

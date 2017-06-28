@@ -67,12 +67,9 @@ public class ChatParseBean extends InterParse {
                 groupChat(messagePost);
                 break;
         }
-
-        String msgid = messagePost.getMsgData().getMsgId();
-        sendBackAck(msgid);
     }
 
-    public void singleChat(Connect.MessagePost msgpost) {
+    public synchronized void singleChat(Connect.MessagePost msgpost) {
         String friendPubKey = msgpost.getPubKey();
         String priKey = null;
         String pubkey = null;
@@ -126,7 +123,7 @@ public class ChatParseBean extends InterParse {
      *
      * @param msgpost
      */
-    protected void groupChat(Connect.MessagePost msgpost) {
+    protected synchronized void groupChat(Connect.MessagePost msgpost) {
         String pubkey = msgpost.getMsgData().getReceiverAddress();
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
         Connect.GcmData gcmData = msgpost.getMsgData().getCipherData();

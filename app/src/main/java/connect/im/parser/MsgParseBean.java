@@ -53,10 +53,11 @@ public class MsgParseBean extends InterParse {
     /**
      * Parsing the source 0:offline message 1:online message
      */
-    private int ext = 0;
+    private int ext = 1;
 
     public MsgParseBean(byte ackByte, ByteBuffer byteBuffer) {
         super(ackByte, byteBuffer);
+        this.ext = 1;
     }
 
     public MsgParseBean(byte ackByte, ByteBuffer byteBuffer, int ext) {
@@ -96,7 +97,11 @@ public class MsgParseBean extends InterParse {
      */
     private void robotMsg()throws Exception{
         Connect.MSMessage msMessage = Connect.MSMessage.parseFrom(byteBuffer.array());
-        backOnLineAck(5, msMessage.getMsgId());
+        if (ext == 0) {
+            backOffLineAck(5, msMessage.getMsgId());
+        } else {
+            backOnLineAck(5, msMessage.getMsgId());
+        }
 
         String robotname = BaseApplication.getInstance().getString(R.string.app_name);
         MsgEntity msgEntity = robotMsgDeal(msMessage);
@@ -114,7 +119,11 @@ public class MsgParseBean extends InterParse {
      */
     private void unavailableMsg()throws Exception{
         Connect.RejectMessage rejectMessage = Connect.RejectMessage.parseFrom(byteBuffer.array());
-        backOnLineAck(5, rejectMessage.getMsgId());
+        if (ext == 0) {
+            backOffLineAck(5, rejectMessage.getMsgId());
+        } else {
+            backOnLineAck(5, rejectMessage.getMsgId());
+        }
 
         String msgid = rejectMessage.getMsgId();
         String recAddress = rejectMessage.getReceiverAddress();
@@ -156,7 +165,11 @@ public class MsgParseBean extends InterParse {
      */
     private void noticeMsg() throws Exception {
         Connect.NoticeMessage noticeMessage = Connect.NoticeMessage.parseFrom(byteBuffer.array());
-        sendBackAck(noticeMessage.getMsgId());
+        if (ext == 0) {
+            backOffLineAck(5, noticeMessage.getMsgId());
+        } else {
+            backOnLineAck(5, noticeMessage.getMsgId());
+        }
 
         TransactionParseBean parseBean = new TransactionParseBean(noticeMessage);
         parseBean.msgParse();
@@ -166,10 +179,16 @@ public class MsgParseBean extends InterParse {
      * chat message
      * @throws Exception
      */
-    private void chatMsg() throws Exception {
+    private synchronized void chatMsg() throws Exception {
         Connect.MessagePost messagePost = Connect.MessagePost.parseFrom(byteBuffer.array());
         if (!SupportKeyUril.verifySign(messagePost.getSign(), messagePost.toByteArray())) {
             throw new Exception("Validation fails");
+        }
+        Connect.MessageData messageData = messagePost.getMsgData();
+        if (ext == 0) {
+            backOffLineAck(5, messageData.getMsgId());
+        } else {
+            backOnLineAck(5, messageData.getMsgId());
         }
 
         ChatParseBean parseBean = new ChatParseBean(ackByte, messagePost);

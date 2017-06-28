@@ -2,8 +2,6 @@ package com.green;
 
 import org.greenrobot.greendao.generator.DaoGenerator;
 import org.greenrobot.greendao.generator.Entity;
-import org.greenrobot.greendao.generator.Index;
-import org.greenrobot.greendao.generator.PropertyType;
 import org.greenrobot.greendao.generator.Schema;
 
 public class GreenDb {
@@ -115,7 +113,7 @@ public class GreenDb {
         Entity entity = schema.addEntity("GroupEntity");
         entity.addLongProperty("_id").primaryKey().autoincrement();
         entity.addStringProperty("identifier").notNull().unique();
-        entity.addStringProperty("name");
+        entity.addStringProperty("name").notNull();
         entity.addStringProperty("ecdh_key");
         entity.addIntProperty("common");
         entity.addIntProperty("verify");//Group validation

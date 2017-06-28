@@ -70,7 +70,7 @@ public abstract class InterParse {
      * @return
      * @throws Exception
      */
-    protected Connect.Command imTransferToCommand(ByteBuffer buffer) throws Exception {
+    protected synchronized Connect.Command imTransferToCommand(ByteBuffer buffer) throws Exception {
         Connect.StructData structData = imTransferToStructData(buffer);
         return Connect.Command.parseFrom(structData.getPlainData());
     }

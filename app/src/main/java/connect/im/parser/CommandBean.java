@@ -187,7 +187,7 @@ public class CommandBean extends InterParse {
                         }
                         break;
                     case 0x05://Offline notification
-                        InterParse interParse = new MsgParseBean((byte) extension, ByteBuffer.wrap(msgDetail.getData().toByteArray()));
+                        InterParse interParse = new MsgParseBean((byte) extension, ByteBuffer.wrap(msgDetail.getData().toByteArray()),0);
                         interParse.msgParse();
                         break;
                 }
