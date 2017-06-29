@@ -62,7 +62,7 @@ public class ModifyPassActivity extends BaseActivity implements ModifyPassContra
         toolbarTop.setRightTextEnable(false);
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        setPresenter(new ModifyPassPresenter(this));
+        new ModifyPassPresenter(this).start();
 
         passwordhintEt.setText(userBean.getPassHint());
         passwordEt.addTextChangedListener(presenter.getPassTextChange());

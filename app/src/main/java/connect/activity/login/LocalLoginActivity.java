@@ -82,18 +82,23 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
             passwordhintTv.setText(getString(R.string.Login_Password_Hint,userBean.getPassHint()));
             GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
         }
-        setPresenter(new LocalLoginPresenter(this));
+        new LocalLoginPresenter(this).start();
     }
 
-    @Override
-    public Activity getActivity() {
-        return mActivity;
-    }
-
-    @Override
-    public void setPresenter(LocalLoginContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
+    private TextWatcher textWatcher = new TextWatcher(){
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void afterTextChanged(Editable s) {
+            if(!TextUtils.isEmpty(passwordEt.getText().toString()) && !TextUtils.isEmpty(nicknameTv.getText().toString())){
+                nextBtn.setEnabled(true);
+            }else{
+                nextBtn.setEnabled(false);
+            }
+        }
+    };
 
     @OnClick(R.id.left_img)
     void goBack(View view) {
@@ -115,27 +120,6 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
     void seleLocalAccount(View view){
         LoginSeleUserActivity.startActivity(mActivity,userBean,SELE_USER_CODE);
     }
-
-    private TextWatcher textWatcher = new TextWatcher(){
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if(!TextUtils.isEmpty(passwordEt.getText().toString()) && !TextUtils.isEmpty(nicknameTv.getText().toString())){
-                nextBtn.setEnabled(true);
-            }else{
-                nextBtn.setEnabled(false);
-            }
-        }
-    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -159,6 +143,16 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
                 }
             }
         }
+    }
+
+    @Override
+    public void setPresenter(LocalLoginContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return mActivity;
     }
 
     @Override

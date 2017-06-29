@@ -1,7 +1,7 @@
 package connect.activity.wallet.contract;
 
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
 import protos.Connect;
 
 /**

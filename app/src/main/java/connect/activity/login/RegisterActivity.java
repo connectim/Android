@@ -28,6 +28,7 @@ import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
+import connect.widget.takepicture.TakePictureActivity;
 
 /**
  * The new user registration
@@ -90,13 +91,19 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         userBean = (UserBean)bundle.getSerializable("user");
         token = bundle.getString("token","");
 
-        setPresenter(new RegisterPresenter(this));
+        new RegisterPresenter(this).start();
     }
 
-    @Override
-    public void setPresenter(RegisterContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
+    private TextWatcher textWatcher = new TextWatcher(){
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void afterTextChanged(Editable s) {
+            presenter.editChange(userpasswordEt.getText().toString(), nicnameEt.getText().toString().trim());
+        }
+    };
 
     @OnClick(R.id.left_img)
     void goBack(View view) {
@@ -122,7 +129,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
 
     @OnClick(R.id.userhead_img)
     void seleAvater(View view){
-        RegisterPhotoActivity.startActivity(mActivity);
+        TakePictureActivity.startActivity(mActivity);
     }
 
     @OnClick(R.id.next_btn)
@@ -153,7 +160,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && requestCode == RegisterPhotoActivity.REQUEST_CODE){
+        if(resultCode == Activity.RESULT_OK && requestCode == TakePictureActivity.REQUEST_CODE){
             String pathLocal = data.getExtras().getString("path");
             if(!TextUtils.isEmpty(pathLocal)){
                 presenter.requestUserHead(pathLocal);
@@ -161,6 +168,11 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
                 ToastEUtil.makeText(mActivity,R.string.Login_Avatar_upload_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         }
+    }
+
+    @Override
+    public void setPresenter(RegisterContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -192,22 +204,5 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         }
         mActivity.finish();
     }
-
-    private TextWatcher textWatcher = new TextWatcher(){
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            presenter.editChange(userpasswordEt.getText().toString(), nicnameEt.getText().toString().trim());
-        }
-    };
 
 }

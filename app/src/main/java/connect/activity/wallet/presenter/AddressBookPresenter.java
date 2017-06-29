@@ -150,4 +150,5 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
         }
         return list;
     }
+
 }

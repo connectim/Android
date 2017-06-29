@@ -5,8 +5,8 @@ import android.app.Activity;
 import java.util.ArrayList;
 
 import connect.activity.wallet.bean.AddressBean;
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
 
 /**
  * Created by Administrator on 2017/4/18 0018.

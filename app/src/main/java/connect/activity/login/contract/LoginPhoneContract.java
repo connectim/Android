@@ -1,9 +1,10 @@
 package connect.activity.login.contract;
 
 import android.app.Activity;
+import android.text.TextWatcher;
 
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
 
 /**
  * Created by Administrator on 2017/4/14 0014.
@@ -33,5 +34,7 @@ public interface LoginPhoneContract {
         void showMore();
 
         void request(String mobile);
+
+        TextWatcher getPhoneTextWatcher();
     }
 }

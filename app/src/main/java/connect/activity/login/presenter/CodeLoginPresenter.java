@@ -34,6 +34,7 @@ public class CodeLoginPresenter implements CodeLoginContract.Presenter{
 
     public CodeLoginPresenter(CodeLoginContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override
@@ -132,4 +133,5 @@ public class CodeLoginPresenter implements CodeLoginContract.Presenter{
         MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
         mView.goinHome(userBean.isBack());
     }
+
 }

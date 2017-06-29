@@ -3,7 +3,9 @@ package connect.activity.login.presenter;
 import android.app.Activity;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.widget.Toast;
 
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -43,6 +45,7 @@ public class RegisterPresenter implements RegisterContract.Presenter{
 
     public RegisterPresenter(RegisterContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override

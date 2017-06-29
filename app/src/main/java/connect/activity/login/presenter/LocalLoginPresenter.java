@@ -27,6 +27,7 @@ public class LocalLoginPresenter implements LocalLoginContract.Presenter {
 
     public LocalLoginPresenter(LocalLoginContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override

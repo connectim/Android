@@ -1,4 +1,4 @@
-package connect.activity.login;
+package connect.activity.home;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.login.StartActivity;
 import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
@@ -18,12 +19,12 @@ import connect.widget.DBUpgradeView;
 import connect.widget.TopToolBar;
 
 /**
- * database upgrdde
- * Created by pujin on 2017/4/18.
+ * Created by Administrator on 2017/6/29 0029.
  */
+
 public class DBUpdateActivity extends BaseActivity {
 
-    private String Tag="DBUpdateActivity";
+    private String Tag = "DBUpdateActivity";
     private DBUpdateActivity activity;
 
     @Bind(R.id.toolbar_top)
@@ -85,4 +86,5 @@ public class DBUpdateActivity extends BaseActivity {
             }
         });
     }
+
 }

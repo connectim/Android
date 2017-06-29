@@ -83,7 +83,7 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
         Bundle bundle = getIntent().getExtras();
         userBean = (UserBean) bundle.getSerializable("user");
         token = bundle.getString("token", "");
-        setPresenter(new CodeLoginPresenter(this));
+        new CodeLoginPresenter(this).start();
 
         passwordEt.addTextChangedListener(textWatcher);
         nicknameEt.setText(userBean.getName());
@@ -98,15 +98,16 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
         }
     }
 
-    @Override
-    public Activity getActivity() {
-        return mActivity;
-    }
-
-    @Override
-    public void setPresenter(CodeLoginContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void afterTextChanged(Editable s) {
+            presenter.passEditChange(passwordEt.getText().toString(), nicknameEt.getText().toString());
+        }
+    };
 
     @OnClick(R.id.left_img)
     void goBack(View view) {
@@ -158,6 +159,16 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
     }
 
     @Override
+    public void setPresenter(CodeLoginContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return mActivity;
+    }
+
+    @Override
     public void setNextBtnEnable(boolean isEnable) {
         nextBtn.setEnabled(isEnable);
     }
@@ -176,21 +187,4 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
         }
         mActivity.finish();
     }
-
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            presenter.passEditChange(passwordEt.getText().toString(), nicknameEt.getText().toString());
-        }
-    };
 }

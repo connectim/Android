@@ -4,8 +4,8 @@ import android.app.Activity;
 
 import java.util.List;
 
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
 import connect.activity.contact.bean.PhoneContactBean;
 
 /**

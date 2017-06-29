@@ -81,18 +81,7 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
         myProgressBar.setLineWidth(4);
         startImg.setEnabled(false);
 
-        setPresenter(new RendomSendPresenter(this));
-        presenter.start();
-    }
-
-    @Override
-    public Activity getActivity() {
-        return mActivity;
-    }
-
-    @Override
-    public void setPresenter(RendomSendContract.Presenter presenter) {
-        this.presenter = presenter;
+        new RendomSendPresenter(this).start();
     }
 
     @OnClick(R.id.left_img)
@@ -112,13 +101,23 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
         hashMap.put("priKey", prikey);
         hashMap.put("pubKey", pubKey);
         hashMap.put("address", address);
-        finishSuccess(hashMap);
+        presenter.finishSuccess(hashMap);
     }
 
     @OnClick(R.id.start_img)
     void startRe(View view) {
         startImg.setEnabled(false);
         presenter.start();
+    }
+
+    @Override
+    public void setPresenter(RendomSendContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return mActivity;
     }
 
     @Override
@@ -141,14 +140,13 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
                 break;
             case 3:
                 statusTv.setText(R.string.Login_Generated_Successful);
+                startImg.setImageResource(R.mipmap.generated_success2x);
                 break;
             case 4:
                 presenter.releaseResource();
                 startImg.setEnabled(true);
                 statusTv.setText("");
                 myProgressBar.setEndAngle(0);
-                /*if (hashMap != null)
-                    hashMap.clear();*/
                 ToastEUtil.makeText(mActivity, R.string.Login_Generated_Failure, ToastEUtil.TOAST_STATUS_FAILE).show();
                 errorMax --;
                 if(errorMax <= 0){
@@ -177,27 +175,11 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
     }
 
     @Override
-    public void finishSuccess(final HashMap<String, String> hashMap) {
-        if (hashMap != null && hashMap.size() == 3) {
-            changeViewStatus(3);
-            startImg.setImageResource(R.mipmap.generated_success2x);
-            Handler handler = new Handler(Looper.getMainLooper()) {
-                @Override
-                public void handleMessage(Message msg) {
-                    Bundle bundle = getIntent().getExtras();
-                    UserBean userBean = new UserBean();
-                    userBean.setPhone(bundle.getString("phone", ""));
-                    userBean.setPriKey(hashMap.get("priKey"));
-                    userBean.setPubKey(hashMap.get("pubKey"));
-                    userBean.setAddress(hashMap.get("address"));
-                    RegisterActivity.startActivity(mActivity, userBean, bundle.getString("token", ""));
-                    finish();
-                }
-            };
-            handler.sendEmptyMessageDelayed(1, 1000);
-        } else {
-            changeViewStatus(4);
-        }
+    public void goinRegister(UserBean userBean) {
+        Bundle bundle = getIntent().getExtras();
+        userBean.setPhone(bundle.getString("phone", ""));
+        RegisterActivity.startActivity(mActivity, userBean, bundle.getString("token", ""));
+        finish();
     }
 
     @Override

@@ -1,7 +1,12 @@
 package connect.activity.login.presenter;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +36,39 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter{
     public LoginPhonePresenter(LoginPhoneContract.View mView,CountryBean countryBean) {
         this.mView = mView;
         this.countryBean = countryBean;
+        mView.setPresenter(this);
     }
 
     @Override
     public void start() {
 
+    }
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void afterTextChanged(Editable s) {
+            try {
+                PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+                Phonenumber.PhoneNumber swissNumberProto = phoneUtil.parse(s.toString(), countryBean.getCountryCode());
+                if(phoneUtil.isValidNumberForRegion(swissNumberProto, countryBean.getCountryCode())){
+                    mView.setBtnEnabled(true);
+                }else{
+                    mView.setBtnEnabled(false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                mView.setBtnEnabled(false);
+            }
+        }
+    };
+
+    @Override
+    public TextWatcher getPhoneTextWatcher() {
+        return textWatcher;
     }
 
     @Override

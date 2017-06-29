@@ -50,6 +50,7 @@ public class StartPresenter implements StartContract.Presenter{
 
     public StartPresenter(StartContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override

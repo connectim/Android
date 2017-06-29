@@ -1,18 +1,15 @@
-package connect.activity.login;
+package connect.widget.takepicture;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
-import connect.activity.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.FileUtil;
 import connect.utils.glide.GlideUtil;
@@ -20,10 +17,10 @@ import connect.widget.HightEqWidthImage;
 import connect.widget.TopToolBar;
 
 /**
- * Created by Administrator on 2017/2/20.
+ * Created by Administrator on 2017/6/28 0028.
  */
 
-public class PreviewPhotoActivity extends BaseActivity {
+public class PreviewPictureActivity extends BaseActivity{
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -37,19 +34,20 @@ public class PreviewPhotoActivity extends BaseActivity {
     RelativeLayout phoneBottomLin;
 
     private Bundle bundle;
-    private PreviewPhotoActivity mActivity;
+    private PreviewPictureActivity mActivity;
     private String pathImag;
+    public static final int REQUEST_CODE = 101;
 
     public static void startActivity(Activity activity,String path) {
         Bundle bundle = new Bundle();
         bundle.putString("path",path);
-        ActivityUtil.next(activity, PreviewPhotoActivity.class, bundle);
+        ActivityUtil.next(activity, PreviewPictureActivity.class, bundle,REQUEST_CODE);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_preview_photo);
+        setContentView(R.layout.activity_take_picture_preview);
         ButterKnife.bind(this);
         initView();
     }
@@ -74,15 +72,9 @@ public class PreviewPhotoActivity extends BaseActivity {
 
     @OnClick(R.id.send_rela)
     void send(View view){
-        List<Activity> list = BaseApplication.getInstance().getActivityList();
-        for (Activity activity : list) {
-            if (activity.getClass().getName().equals(RegisterPhotoActivity.class.getName())){
-                Bundle bundle = new Bundle();
-                bundle.putString("path", pathImag);
-                ActivityUtil.goBackWithResult(activity,RESULT_OK,bundle);
-            }
-        }
-        finish();
+        Bundle bundle = new Bundle();
+        bundle.putString("path", pathImag);
+        ActivityUtil.goBackWithResult(mActivity,RESULT_OK,bundle);
     }
 
 }

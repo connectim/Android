@@ -65,37 +65,24 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
         if(countryBean != null){
             countryTv.setText("+ " + countryBean.getCode());
         }
-        setPresenter(new LoginPhonePresenter(this,countryBean));
-        phoneEt.addTextChangedListener(textWatcher);
+        new LoginPhonePresenter(this,countryBean).start();
+        phoneEt.addTextChangedListener(presenter.getPhoneTextWatcher());
     }
 
-    private TextWatcher  textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    @OnClick(R.id.country_rela)
+    void countryCodeClick(View view) {
+        ActivityUtil.next(mActivity, CountryCodeActivity.class, COUNTRY_CODE);
+    }
 
-        }
+    @OnClick(R.id.backup_local_tv)
+    void otherLoginClick(View view) {
+        presenter.showMore();
+    }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            try {
-                PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-                Phonenumber.PhoneNumber swissNumberProto = phoneUtil.parse(s.toString(), countryBean.getCountryCode());
-                if(phoneUtil.isValidNumberForRegion(swissNumberProto, countryBean.getCountryCode())){
-                    setBtnEnabled(true);
-                }else{
-                    setBtnEnabled(false);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                setBtnEnabled(false);
-            }
-        }
-    };
+    @OnClick(R.id.next_btn)
+    public void nextBtn(View view) {
+        presenter.request(StringUtil.filterNumber(countryTv.getText().toString()) + "-" + phoneEt.getText().toString());
+    }
 
     private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
         @Override
@@ -108,16 +95,6 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
 
         }
     };
-
-    @OnClick(R.id.country_rela)
-    void countryCodeClick(View view) {
-        ActivityUtil.next(mActivity, CountryCodeActivity.class, COUNTRY_CODE);
-    }
-
-    @OnClick(R.id.backup_local_tv)
-    void otherLoginClick(View view) {
-        presenter.showMore();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -132,11 +109,6 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
             countryBean = (CountryBean) data.getExtras().getSerializable("country");
             countryTv.setText("+ " + countryBean.getCode());
         }
-    }
-
-    @OnClick(R.id.next_btn)
-    void nextBtn(View view) {
-        presenter.request(StringUtil.filterNumber(countryTv.getText().toString()) + "-" + phoneEt.getText().toString());
     }
 
     @Override

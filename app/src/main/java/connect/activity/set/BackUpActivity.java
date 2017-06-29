@@ -63,19 +63,8 @@ public class BackUpActivity extends BaseActivity implements BackUpContract.View{
         toolbarTop.setTitle(null, R.string.Set_Export_Private_Key);
         toolbarTop.setRightImg(R.mipmap.menu_white);
         userBean = SharedPreferenceUtil.getInstance().getUser();
-        setPresenter(new BackUpPresenter(this));
+        new BackUpPresenter(this).start();
         switchPriKey(1);
-    }
-
-    @Override
-    public void setPresenter(BackUpContract.Presenter presenter) {
-        this.presenter = presenter;
-        presenter.start();
-    }
-
-    @Override
-    public Activity getActivity() {
-        return mActivity;
     }
 
     @OnClick(R.id.left_img)
@@ -108,6 +97,16 @@ public class BackUpActivity extends BaseActivity implements BackUpContract.View{
                 }
             }
         });
+    }
+
+    @Override
+    public void setPresenter(BackUpContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return mActivity;
     }
 
     /**

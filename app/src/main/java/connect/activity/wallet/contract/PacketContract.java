@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.text.TextWatcher;
 
 import connect.activity.wallet.bean.SendOutBean;
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
 import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
 import protos.Connect;

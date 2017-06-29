@@ -8,6 +8,7 @@ import org.greenrobot.greendao.database.Database;
 
 import java.io.File;
 
+import connect.activity.home.DBUpdateActivity;
 import connect.database.green.DaoHelper.mergin.MigrationHelper;
 import connect.database.green.bean.ContactEntityDao;
 import connect.database.green.bean.ConversionEntityDao;
@@ -21,7 +22,6 @@ import connect.database.green.bean.ParamEntityDao;
 import connect.database.green.bean.RecommandFriendEntityDao;
 import connect.database.green.bean.TransactionEntityDao;
 import connect.utils.log.LogManager;
-import connect.activity.login.DBUpdateActivity;
 import connect.activity.base.BaseApplication;
 
 public class MigrateOpenHelper extends DaoMaster.OpenHelper {

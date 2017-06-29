@@ -115,7 +115,7 @@ public class GreenDb {
         Entity entity = schema.addEntity("GroupEntity");
         entity.addLongProperty("_id").primaryKey().autoincrement();
         entity.addStringProperty("identifier").notNull().unique();
-        entity.addStringProperty("name");
+        entity.addStringProperty("name").notNull();
         entity.addStringProperty("ecdh_key");
         entity.addIntProperty("common");
         entity.addIntProperty("verify");//Group validation

@@ -25,6 +25,7 @@ public class ModifyNamePresenter implements ModifyNameContract.Presenter{
     public ModifyNamePresenter(ModifyNameContract.View mView,String type) {
         this.mView = mView;
         this.type = type;
+        mView.setPresenter(this);
     }
 
     @Override
@@ -113,4 +114,5 @@ public class ModifyNamePresenter implements ModifyNameContract.Presenter{
                     }
                 });
     }
+
 }

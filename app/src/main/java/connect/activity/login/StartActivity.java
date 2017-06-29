@@ -21,7 +21,7 @@ public class StartActivity extends BaseActivity implements StartContract.View{
     ImageView startImg;
 
     private StartActivity mActivity;
-    private StartContract.Presenter startPresenter;
+    private StartContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +34,12 @@ public class StartActivity extends BaseActivity implements StartContract.View{
     @Override
     public void initView() {
         mActivity = this;
-        setPresenter(new StartPresenter(this));
-        startPresenter.start();
+        new StartPresenter(this).start();
     }
 
     @Override
     public void setPresenter(StartContract.Presenter presenter) {
-        startPresenter = presenter;
+        this.presenter = presenter;
     }
 
     @Override
@@ -76,4 +75,5 @@ public class StartActivity extends BaseActivity implements StartContract.View{
     public Activity getActivity() {
         return mActivity;
     }
+
 }

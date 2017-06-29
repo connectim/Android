@@ -94,9 +94,6 @@
             android:name="connect.activity.login.ScanLoginActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.RegisterPhotoActivity"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name="connect.activity.login.CodeLoginActivity"
             android:screenOrientation="portrait"/>
         <activity
@@ -109,7 +106,10 @@
             android:name="connect.widget.camera.CameraTakeActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.PreviewPhotoActivity"
+            android:name="connect.widget.takepicture.TakePictureActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.widget.takepicture.PreviewPictureActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.login.ExportPriActivity"
@@ -382,8 +382,6 @@
         <activity android:name="connect.activity.chat.exts.ApplyJoinGroupActivity">
         </activity>
         <activity android:name="connect.activity.chat.exts.OuterWebsiteActivity">
-        </activity>
-        <activity android:name="connect.activity.common.selefriend.FriendSelectActivity">
         </activity>
         <activity android:name="connect.activity.common.selefriend.ConversationActivity">
         </activity>

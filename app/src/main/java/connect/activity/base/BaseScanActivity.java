@@ -12,6 +12,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 
 import com.google.zxing.BinaryBitmap;
@@ -73,6 +75,15 @@ public abstract class BaseScanActivity extends BaseActivity {
         this.scanPreview = scanPreview;
         this.scanCropView = scanCropView;
         this.scanContainer = scanContainer;
+    }
+
+    protected void showBackgroupAni(View view){
+        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        animation.setDuration(1500);
+        animation.setRepeatCount(-1);
+        animation.setRepeatMode(Animation.RESTART);
+        view.startAnimation(animation);
     }
 
     public abstract void scanCall(String value);

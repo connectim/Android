@@ -4,8 +4,9 @@ import android.app.Activity;
 
 import java.util.HashMap;
 
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
+import connect.activity.login.bean.UserBean;
 import connect.utils.permission.PermissionUtil;
 
 /**
@@ -23,12 +24,14 @@ public interface RendomSendContract {
 
         void changeViewStatus(int status);
 
-        void finishSuccess(HashMap<String, String> hashMap);
-
         void setProgressBar(float value);
+
+        void goinRegister(UserBean userBean);
     }
 
     interface Presenter extends BasePresenter {
+        void finishSuccess(HashMap<String, String> hashMap);
+
         PermissionUtil.ResultCallBack getPermissomCallBack();
 
         void releaseResource();

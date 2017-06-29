@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
-import connect.activity.login.RegisterPhotoActivity;
 import connect.activity.set.contract.ModifyAvaterContract;
 import connect.activity.set.presenter.ModifyAvaterPresenter;
 import connect.activity.base.BaseActivity;
@@ -27,6 +26,7 @@ import connect.widget.TopToolBar;
 import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.ui.activity.PhotoAlbumActivity;
 import connect.widget.clip.ClipImageActivity;
+import connect.widget.takepicture.TakePictureActivity;
 
 /**
  * modify avatar
@@ -88,7 +88,7 @@ public class ModifyAvaterActivity extends BaseActivity implements ModifyAvaterCo
             public void confirm(AdapterView<?> parent, View view, int position) {
                 switch (position) {
                     case 0://take photo
-                        RegisterPhotoActivity.startActivity(mActivity);
+                        TakePictureActivity.startActivity(mActivity);
                         break;
                     case 1://album
                         PhotoAlbumActivity.startActivity(mActivity,PhotoAlbumActivity.OPEN_ALBUM_CODE,1);
@@ -126,7 +126,7 @@ public class ModifyAvaterActivity extends BaseActivity implements ModifyAvaterCo
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case RegisterPhotoActivity.REQUEST_CODE:
+                case TakePictureActivity.REQUEST_CODE:
                 case ClipImageActivity.REQUEST_CODE:
                     String photo_path = data.getExtras().getString("path");
                     presenter.requestAvater(photo_path);

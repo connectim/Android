@@ -40,6 +40,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
         this.mView = mView;
         this.countryCode = Integer.valueOf(countryCode);
         this.phone = phone;
+        mView.setPresenter(this);
     }
 
     @Override

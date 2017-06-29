@@ -66,13 +66,12 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
         Bundle bundle = getIntent().getExtras();
         String phone = bundle.getString("phone");
         String countryCode = bundle.getString("countrycode");
-        setPresenter(new SignInVerifyPresenter(this,countryCode,phone));
+        new SignInVerifyPresenter(this,countryCode,phone).start();
 
         phoneTv.setText("+" + countryCode + " " + phone);
         codeEt.addTextChangedListener(presenter.getEditChange());
         codeEt.requestFocus();
         ToastEUtil.makeText(mActivity,R.string.Login_SMS_code_has_been_send).show();
-        presenter.start();
     }
 
     @OnClick(R.id.left_img)
@@ -151,24 +150,5 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
             voiceTv.setVisibility(View.VISIBLE);
         }
     }
-
-    /*@Override
-    public void changeTime(int time,Timer timer) {
-        if (codeEt.getText().toString().length() == 6) {
-            nextBtn.setText(R.string.Login_Next);
-            nextBtn.setEnabled(true);
-        } else {
-            if (time > 0) {
-                nextBtn.setText(String.format(mActivity.getResources().getString(R.string.Login_Resend_Time), time));
-                nextBtn.setEnabled(false);
-            } else {
-                nextBtn.setText(R.string.Login_Resend);
-                nextBtn.setEnabled(true);
-                textView3.setText(R.string.Set_Did_not_receive_the_verification_code);
-                voiceTv.setVisibility(View.VISIBLE);
-                timer.cancel();
-            }
-        }
-    }*/
 
 }

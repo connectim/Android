@@ -4,8 +4,8 @@ import android.app.Activity;
 
 import connect.database.green.bean.ContactEntity;
 import connect.activity.home.bean.MsgNoticeBean;
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
 
 /**
  * Created by Administrator on 2017/4/19 0019.

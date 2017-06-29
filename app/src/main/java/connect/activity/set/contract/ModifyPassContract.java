@@ -2,8 +2,8 @@ package connect.activity.set.contract;
 
 import android.app.Activity;
 import android.text.TextWatcher;
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
 
 /**
  * Created by Administrator on 2017/4/17 0017.

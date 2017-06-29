@@ -35,6 +35,7 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter{
 
     public ScanLoginPresenter(ScanLoginContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override

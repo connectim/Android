@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import java.util.ArrayList;
 
 import connect.database.green.bean.FriendRequestEntity;
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
 
 /**
  * Created by Administrator on 2017/4/19 0019.

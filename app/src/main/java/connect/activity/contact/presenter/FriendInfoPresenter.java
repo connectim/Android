@@ -136,4 +136,5 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             }
         });
     }
+
 }

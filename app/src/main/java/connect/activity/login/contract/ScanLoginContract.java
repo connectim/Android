@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.os.Handler;
 
 import connect.activity.login.bean.UserBean;
-import connect.activity.base.BasePresenter;
-import connect.activity.base.BaseView;
+import connect.activity.base.contract.BasePresenter;
+import connect.activity.base.contract.BaseView;
 
 /**
  * Created by Administrator on 2017/4/14 0014.

@@ -27,6 +27,7 @@ public class ModifyPassPresenter implements ModifyPassContract.Presenter{
 
     public ModifyPassPresenter(ModifyPassContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override
@@ -42,15 +43,9 @@ public class ModifyPassPresenter implements ModifyPassContract.Presenter{
 
     private TextWatcher passWatcherNew = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
         public void afterTextChanged(Editable s) {
             String pass = s.toString();
@@ -98,4 +93,5 @@ public class ModifyPassPresenter implements ModifyPassContract.Presenter{
             }
         }.execute();
     }
+
 }

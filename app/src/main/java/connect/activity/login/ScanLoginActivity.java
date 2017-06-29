@@ -61,22 +61,8 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
     public void initView() {
         mActivity = this;
         setViewFind(capturePreview, captureCropView, captureContainer);
-
-        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-        animation.setDuration(1500);
-        animation.setRepeatCount(-1);
-        animation.setRepeatMode(Animation.RESTART);
-        captureScanLine.startAnimation(animation);
-        //setLineAnimation(captureScanLine);
-
-        setPresenter(new ScanLoginPresenter(this));
-        presenter.start();
-    }
-
-    @Override
-    public void setPresenter(ScanLoginContract.Presenter presenter) {
-        this.presenter = presenter;
+        showBackgroupAni(captureScanLine);
+        new ScanLoginPresenter(this).start();
     }
 
     @Override
@@ -103,6 +89,11 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
                 getAblamString(strings.get(0).getImageFile().getAbsolutePath(),presenter.getHandle());
             }
         }
+    }
+
+    @Override
+    public void setPresenter(ScanLoginContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override

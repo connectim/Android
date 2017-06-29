@@ -64,13 +64,12 @@ public class ModifyNameActivity extends BaseActivity implements ModifyNameContra
 
         Bundle bundle = getIntent().getExtras();
         type = bundle.getString("type");
-        setPresenter(new ModifyNamePresenter(this,type));
+        new ModifyNamePresenter(this,type).start();
     }
 
     @Override
     public void setPresenter(ModifyNameContract.Presenter presenter) {
         this.presenter = presenter;
-        presenter.start();
     }
 
     @Override
@@ -86,15 +85,9 @@ public class ModifyNameActivity extends BaseActivity implements ModifyNameContra
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
         public void afterTextChanged(Editable s) {
             String inputStr = s.toString().trim();

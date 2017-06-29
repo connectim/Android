@@ -2,12 +2,17 @@ package connect.activity.login.presenter;
 
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import connect.activity.login.RegisterActivity;
+import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RendomSendContract;
 import connect.utils.FileUtil;
 import connect.utils.permission.PermissionUtil;
@@ -34,6 +39,7 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
 
     public RendomSendPresenter(RendomSendContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override
@@ -96,7 +102,7 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
             public void run() {
                 videoLength += rateTime;
                 if (videoLength > MAX_LENGTH) {
-                    mView.finishSuccess(hashMap);
+                    finishSuccess(hashMap);
                 } else {
                     mView.setProgressBar(videoLength * ((float) 360 / MAX_LENGTH));
                     handler.postDelayed(this, rateTime);
@@ -119,6 +125,26 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
         handler.postDelayed(runnable, rateTime);
     }
 
+    @Override
+    public void finishSuccess(final HashMap<String, String> hashMap) {
+        if (hashMap != null && hashMap.size() == 3) {
+            mView.changeViewStatus(3);
+            Handler handler = new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(Message msg) {
+                    UserBean userBean = new UserBean();
+                    userBean.setPriKey(hashMap.get("priKey"));
+                    userBean.setPubKey(hashMap.get("pubKey"));
+                    userBean.setAddress(hashMap.get("address"));
+                    mView.goinRegister(userBean);
+                }
+            };
+            handler.sendEmptyMessageDelayed(1, 1000);
+        } else {
+            mView.changeViewStatus(4);
+        }
+    }
+
     private void startCdPri() {
         if (!checkVoice()) {
             mView.changeViewStatus(4);
@@ -133,7 +159,6 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
                     iMediaRecorder.release();
                     iMediaRecorder = null;
                 }
-
                 ArrayList arrayList = new ArrayList<String>();
                 String strForBmp = StringUtil.bytesToHexString(FileUtil.filePathToByteArray(file.getPath()));
                 String random = SupportKeyUril.createrPriKeyRandom(strForBmp);

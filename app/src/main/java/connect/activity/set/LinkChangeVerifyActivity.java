@@ -72,14 +72,19 @@ public class LinkChangeVerifyActivity extends BaseActivity implements SignInVeri
         codeEt.addTextChangedListener(textWatcher);
         ToastEUtil.makeText(mActivity,R.string.Login_SMS_code_has_been_send).show();
 
-        setPresenter(new SignInVerifyPresenter(this,countryCode,phone));
+        new SignInVerifyPresenter(this,countryCode,phone).start();
     }
 
-    @Override
-    public void setPresenter(SignInVerifyContract.Presenter presenter) {
-        this.presenter = presenter;
-        presenter.start();
-    }
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void afterTextChanged(Editable s) {
+            changeBtnNext();
+        }
+    };
 
     @OnClick(R.id.right_lin)
     void close(View view){
@@ -94,6 +99,11 @@ public class LinkChangeVerifyActivity extends BaseActivity implements SignInVeri
         } else {
             presenter.reSendCode(1);
         }
+    }
+
+    @Override
+    public void setPresenter(SignInVerifyContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -145,22 +155,5 @@ public class LinkChangeVerifyActivity extends BaseActivity implements SignInVeri
             voiceTv.setVisibility(View.VISIBLE);
         }
     }
-
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            changeBtnNext();
-        }
-    };
 
 }

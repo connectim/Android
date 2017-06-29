@@ -38,6 +38,7 @@ public class BackUpPresenter implements BackUpContract.Presenter {
 
     public BackUpPresenter(BackUpContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override
@@ -78,10 +79,6 @@ public class BackUpPresenter implements BackUpContract.Presenter {
         textPaint.setColor(mView.getActivity().getResources().getColor(R.color.color_767a82));
         textPaint.setTextSize(30);
         textPaint.setAntiAlias(true);
-        /*String text = getString(R.string.Set_Private_key_backup);
-        canvas.drawText(getString(R.string.Set_Private_key_backup),
-                width/2-15*text.length(),
-                height/2 + SystemUtil.dipToPx(20),textPaint);*/
         int paddingLeft = SystemUtil.dipToPx(30);
         canvas.drawText(mView.getActivity().getString(R.string.Set_Name), paddingLeft, startH,textPaint);
         canvas.drawText(userBean.getName(), paddingLeft, startH + 40,textPaint);
@@ -125,4 +122,5 @@ public class BackUpPresenter implements BackUpContract.Presenter {
         String content = Base64.encodeToString(byteArray, Base64.DEFAULT);
         return scanHead + content.replace("\n","");
     }
+
 }
