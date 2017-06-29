@@ -6,7 +6,10 @@ import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import connect.im.bean.Session;
 import connect.utils.StringUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -59,8 +62,8 @@ public class MessageDecoder extends ByteToMessageDecoder{
             in.readBytes(msgdata);
 
             /*if (ackArr[0] == (byte) 5 && ackArr[1] == (byte) 1) {
-                ByteString aa = ByteString.copyFrom(msgdata,0,msgdata.length);
-                Connect.MessagePost messagePost = Connect.MessagePost.parseFrom(aa);
+                Connect.StructData imTransferToStructData = imTransferToStructData(ByteBuffer.wrap(msgdata));
+                Connect.MessagePost messagePost = Connect.MessagePost.parseFrom(imTransferToStructData.getPlainData());
                 Connect.MessageData messageData = messagePost.getMsgData();
                 String id = messageData.getMsgId();
             }*/
@@ -70,6 +73,24 @@ public class MessageDecoder extends ByteToMessageDecoder{
             bufferBean.setMessage(msgdata);
             out.add(bufferBean);
         }
+    }
+
+    /**
+     * IMTransferData To StructData
+     *
+     * @param buffer
+     * @return
+     * @throws Exception
+     */
+    protected synchronized Connect.StructData imTransferToStructData(ByteBuffer buffer) throws Exception {
+        Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(buffer.array());
+        if (!SupportKeyUril.verifySign(imTransferData.getSign(), imTransferData.getCipherData().toByteArray())) {
+            throw new Exception("Validation fails");
+        }
+
+        byte[] bytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,
+                Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), imTransferData.getCipherData());
+        return Connect.StructData.parseFrom(bytes);
     }
 
 

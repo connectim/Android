@@ -56,8 +56,7 @@ public class MsgParseBean extends InterParse {
     private int ext = 1;
 
     public MsgParseBean(byte ackByte, ByteBuffer byteBuffer) {
-        super(ackByte, byteBuffer);
-        this.ext = 1;
+        this(ackByte,byteBuffer,1);
     }
 
     public MsgParseBean(byte ackByte, ByteBuffer byteBuffer, int ext) {

@@ -28,9 +28,11 @@ public class MessageEncoder extends MessageToByteEncoder<BufferBean>{
         byte[] msgdata=msg.getMessage();
         byte[] randomBytes = SecureRandom.getSeed(4);
 
+        int length = msgdata.length;
+
         ByteBuffer header = ByteBuffer.allocate(MSG_HEADER_LENGTH);
         header.put(ackarr[0]);
-        byte[] lengthArr = ByteBuffer.allocate(MSG_BODY_LENGTH).putInt(msgdata.length).array();
+        byte[] lengthArr = ByteBuffer.allocate(MSG_BODY_LENGTH).putInt(length).array();
         header.put(lengthArr);
         header.put(ackarr[1]);
         header.put(randomBytes);
@@ -38,7 +40,7 @@ public class MessageEncoder extends MessageToByteEncoder<BufferBean>{
 
         try {
             byte[] ext = StringUtil.byteTomd5(header.array());
-            byte[] message = new byte[MSG_HEADER_LENGTH + msgdata.length];
+            byte[] message = new byte[MSG_HEADER_LENGTH + length];
 
             ByteBuffer buffer = ByteBuffer.wrap(message);
             buffer.put(MSG_VERSION);
