@@ -1,5 +1,7 @@
 package connect.im.netty;
 
+import com.google.protobuf.ByteString;
+
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -8,6 +10,7 @@ import connect.utils.StringUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import protos.Connect;
 
 /**
  * Created by Administrator on 2017/6/21.
@@ -51,18 +54,22 @@ public class MessageDecoder extends ByteToMessageDecoder{
             in.resetReaderIndex();
             return;
         }
-        if (!assembleHeader(ackArr[0], length, ackArr[1], randoms, ext)) {
-            in.clear();
-            return;
+        if (assembleHeader(ackArr[0], length, ackArr[1], randoms, ext)) {
+            byte[] msgdata = new byte[length];//message
+            in.readBytes(msgdata);
+
+            /*if (ackArr[0] == (byte) 5 && ackArr[1] == (byte) 1) {
+                ByteString aa = ByteString.copyFrom(msgdata,0,msgdata.length);
+                Connect.MessagePost messagePost = Connect.MessagePost.parseFrom(aa);
+                Connect.MessageData messageData = messagePost.getMsgData();
+                String id = messageData.getMsgId();
+            }*/
+
+            BufferBean bufferBean = new BufferBean();
+            bufferBean.setAck(ackArr);
+            bufferBean.setMessage(msgdata);
+            out.add(bufferBean);
         }
-
-        byte[] msgdata = new byte[length];//message
-        in.readBytes(msgdata);
-
-        BufferBean bufferBean=new BufferBean();
-        bufferBean.setAck(ackArr);
-        bufferBean.setMessage(msgdata);
-        out.add(bufferBean);
     }
 
 
