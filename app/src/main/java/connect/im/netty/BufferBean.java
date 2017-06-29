@@ -1,10 +1,12 @@
 package connect.im.netty;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2017/6/21.
  */
 
-public class BufferBean {
+public class BufferBean implements Serializable {
 
     private byte[] ack;
     private byte[] message;

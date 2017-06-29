@@ -235,7 +235,7 @@ public class PushService extends Service {
 
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new IdleStateHandler(20, 20, 0, TimeUnit.SECONDS));
+                    ch.pipeline().addLast(new IdleStateHandler(10, 10, 0, TimeUnit.SECONDS));
                     ch.pipeline().addLast(new MessageEncoder());
                     ch.pipeline().addLast(new MessageDecoder());
                     ch.pipeline().addLast(new ConnectHandlerAdapter());
@@ -317,8 +317,8 @@ public class PushService extends Service {
                 if (event.state() == IdleState.READER_IDLE || event.state() == IdleState.WRITER_IDLE ||
                         event.state() == IdleState.ALL_IDLE) {
                     long curtime = TimeUtil.getCurrentTimeInLong();
-                    if (curtime < lastReceiverTime + 2 * HEART_FREQUENCY) {
-                        LogManager.getLogger().d(Tag, "userEventTriggered() ==> send heartbeat");
+                    if (curtime < lastReceiverTime + HEART_FREQUENCY) {
+                        LogManager.getLogger().d(Tag, "userEventTriggered() ==> " + (curtime - lastReceiverTime));
                         try {
                             localBinder.connectMessage(ServiceAck.HEART_BEAT.getAck(), new byte[0], new byte[0]);
                         } catch (RemoteException e) {
@@ -326,7 +326,7 @@ public class PushService extends Service {
                             reconDelay();
                         }
                     } else {//connect timeout
-                        LogManager.getLogger().d(Tag, "userEventTriggered() ==> connect timeout");
+                        LogManager.getLogger().d(Tag, "userEventTriggered() ==> connect timeout" + (curtime - lastReceiverTime));
                         reconDelay();
                     }
                 }

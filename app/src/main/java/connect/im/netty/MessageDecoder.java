@@ -26,18 +26,16 @@ public class MessageDecoder extends ByteToMessageDecoder{
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        in.markReaderIndex();
-
         //message header
         if (in.readableBytes() < MSG_HEADER_LENGTH) {
-            in.resetReaderIndex();
             return;
         }
         //big data
         if (in.readableBytes() > 40960) {
-            in.skipBytes(in.readableBytes());
             return;
         }
+
+        in.markReaderIndex();
 
         byte[] ackArr = new byte[2];
         in.readByte();//version
@@ -53,7 +51,8 @@ public class MessageDecoder extends ByteToMessageDecoder{
             in.resetReaderIndex();
             return;
         }
-        if (assembleHeader(ackArr[0], length, ackArr[1], randoms, ext)) {
+        if (!assembleHeader(ackArr[0], length, ackArr[1], randoms, ext)) {
+            in.clear();
             return;
         }
 
@@ -70,14 +69,14 @@ public class MessageDecoder extends ByteToMessageDecoder{
     public boolean assembleHeader(byte ack1, int length, byte ack2, byte[] randoms, byte[] ext) {
         ByteBuffer header = ByteBuffer.allocate(MSG_HEADER_LENGTH);
         header.put(ack1);
-        header.put(ByteBuffer.allocate(MSG_BODY_LENGTH).putInt(length));
+        header.put(ByteBuffer.allocate(MSG_BODY_LENGTH).putInt(length).array());
         header.put(ack2);
         header.put(randoms);
         header.put(StringUtil.MSG_HEADER_EXI);
 
         try {
             byte[] nExt = StringUtil.byteTomd5(header.array());
-            if (ext[0] == nExt[11] && ext[1] == nExt[12]) {
+            if (ext[0] == nExt[0] && ext[1] == nExt[1]) {
                 return true;
             }
         } catch (NoSuchAlgorithmException e) {

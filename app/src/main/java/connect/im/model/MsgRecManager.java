@@ -46,45 +46,11 @@ public class MsgRecManager {
         return receiverManager;
     }
 
-    /**
-     * The task is performed only with a unique worker thread,
-     * ensuring that all tasks are executed in the specified order (FIFO, LIFO, priority)
-     */
-    private static ExecutorService threadPoolExecutor = Executors.newSingleThreadExecutor();
+    private static ExecutorService threadPoolExecutor = Executors.newCachedThreadPool();
 
     public void sendMessage(ByteBuffer ack, ByteBuffer body) {
         ReceiveRun receiveRun = new ReceiveRun(ack, body);
         threadPoolExecutor.submit(receiveRun);
-    }
-
-    private void receiveMsgDeal(ByteBuffer ack, ByteBuffer body) throws Exception {
-        byte type = ack.get(0);
-        byte ext = ack.get(1);
-
-        LogManager.getLogger().i(Tag, "receive order: [" + type + "][" + ext + "]");
-        InterParse interParse = null;
-
-        switch (type) {
-            case 0x01:
-                interParse = new ShakeHandBean(ext, body);
-                break;
-            case 0x03:
-                interParse = new ReceiptBean(ext, body);
-                break;
-            case 0x04://command order
-                interParse = new CommandBean(ext, body);
-                break;
-            case 0x05://chat order
-                interParse = new MsgParseBean(ext, body);
-                break;
-            case 0x06://Be offline
-                interParse = new ExceptionBean(ext, body);
-                break;
-        }
-
-        if (interParse != null) {
-            interParse.msgParse();
-        }
     }
 
     private class ReceiveRun implements Runnable {
@@ -98,13 +64,39 @@ public class MsgRecManager {
         }
 
         @Override
-        public void run() {
+        public synchronized void run() {
             if (!isKeyAvaliable()) {
                 return;
             }
 
             try {
-                receiveMsgDeal(ack, body);
+                byte type = ack.get(0);
+                byte ext = ack.get(1);
+
+                LogManager.getLogger().i(Tag, "receive order: [" + type + "][" + ext + "]");
+                InterParse interParse = null;
+
+                switch (type) {
+                    case 0x01:
+                        interParse = new ShakeHandBean(ext, body);
+                        break;
+                    case 0x03:
+                        interParse = new ReceiptBean(ext, body);
+                        break;
+                    case 0x04://command order
+                        interParse = new CommandBean(ext, body);
+                        break;
+                    case 0x05://chat order
+                        interParse = new MsgParseBean(ext, body);
+                        break;
+                    case 0x06://Be offline
+                        interParse = new ExceptionBean(ext, body);
+                        break;
+                }
+
+                if (interParse != null) {
+                    interParse.msgParse();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 String errInfo = e.getMessage();
