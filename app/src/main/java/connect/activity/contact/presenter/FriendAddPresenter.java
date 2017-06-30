@@ -46,6 +46,7 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
 
     public FriendAddPresenter(FriendAddContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override

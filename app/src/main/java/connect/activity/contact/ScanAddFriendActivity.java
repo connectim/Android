@@ -52,17 +52,14 @@ public class ScanAddFriendActivity extends BaseScanActivity {
     RelativeLayout captureContainer;
     @Bind(R.id.right_img)
     ImageView rightImg;
-
     @Bind(R.id.scan_img)
     ImageView scanImg;
     @Bind(R.id.address_tv)
     TextView addressTv;
     @Bind(R.id.scan_rela)
     RelativeLayout scanRela;
-
     @Bind(R.id.content_rela)
     RelativeLayout contentRela;
-
     @Bind(R.id.bottom_capture_img)
     TextView bottomCaptureImg;
     @Bind(R.id.bottom_scan_img)
@@ -101,28 +98,9 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         resolveScanUtil = new ResolveScanUtil(mActivity);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(MsgNoticeBean notice) {
-        new ResolveUrlUtil(mActivity).showMsgTip(notice,ResolveUrlUtil.TYPE_OPEN_SCAN, true);
-    }
-
-    @Override
-    public void scanCall(String value) {
-        resolveScanUtil.analysisUrl(value);
-    }
-
     @OnClick(R.id.right_img)
     void goBack(View view) {
         ActivityUtil.goBackBottom(mActivity);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK){
-            ActivityUtil.goBackBottom(this);
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @OnClick(R.id.bottom_capture_img)
@@ -208,6 +186,25 @@ public class ScanAddFriendActivity extends BaseScanActivity {
     @OnClick(R.id.photos_tv)
     void goSeleAlbm(View view){
         PhotoAlbumActivity.startActivity(mActivity,PhotoAlbumActivity.OPEN_ALBUM_CODE,1);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(MsgNoticeBean notice) {
+        new ResolveUrlUtil(mActivity).showMsgTip(notice,ResolveUrlUtil.TYPE_OPEN_SCAN, true);
+    }
+
+    @Override
+    public void scanCall(String value) {
+        resolveScanUtil.analysisUrl(value);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            ActivityUtil.goBackBottom(this);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

@@ -73,6 +73,17 @@ public class FriendSetAliasActivity extends BaseActivity {
         ActivityUtil.goBack(mActivity);
     }
 
+    @OnClick(R.id.save_tv)
+    void goSave(View view) {
+        friendEntity.setRemark(nicknameEt.getText().toString());
+        MsgSendBean msgSendBean = new MsgSendBean();
+        msgSendBean.setType(MsgSendBean.SendType.TypeFriendRemark);
+        boolean common = friendEntity.getCommon() != null && friendEntity.getCommon() == 1;
+
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.setFriend(friendEntity.getAddress(), friendEntity.getRemark(), common, msgSendBean);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MsgNoticeBean notice) {
         Object[] objs = null;
@@ -94,17 +105,6 @@ public class FriendSetAliasActivity extends BaseActivity {
                 ToastUtil.getInstance().showToast(errorCode + "");
                 break;
         }
-    }
-
-    @OnClick(R.id.save_tv)
-    void goSave(View view) {
-        friendEntity.setRemark(nicknameEt.getText().toString());
-        MsgSendBean msgSendBean = new MsgSendBean();
-        msgSendBean.setType(MsgSendBean.SendType.TypeFriendRemark);
-        boolean common = friendEntity.getCommon() != null && friendEntity.getCommon() == 1;
-
-        UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.setFriend(friendEntity.getAddress(), friendEntity.getRemark(), common, msgSendBean);
     }
 
     @Override

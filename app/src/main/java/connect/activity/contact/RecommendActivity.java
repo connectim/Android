@@ -78,11 +78,6 @@ public class RecommendActivity extends BaseActivity {
         });
     }
 
-    @OnClick(R.id.left_img)
-    void goBack(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
     private RecommendAdapter.OnAddListence onAddListence = new RecommendAdapter.OnAddListence(){
         @Override
         public void add(int position, RecommandFriendEntity entity) {
@@ -108,6 +103,10 @@ public class RecommendActivity extends BaseActivity {
         }
     };
 
+    @OnClick(R.id.left_img)
+    void goBack(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
 
     private void queryRecommend(){
         new AsyncTask<Void,Void,List<RecommandFriendEntity>>(){

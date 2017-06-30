@@ -1,11 +1,20 @@
 package connect.activity.contact.presenter;
 
+import android.content.Intent;
+
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.model.content.BaseChat;
+import connect.activity.chat.model.content.FriendChat;
+import connect.activity.chat.model.content.GroupChat;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
+import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
+import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
@@ -20,6 +29,8 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.widget.imagewatcher.ImageWatcher;
+import connect.widget.imagewatcher.ImageWatcherUtil;
 import protos.Connect;
 
 /**
@@ -29,14 +40,43 @@ import protos.Connect;
 public class FriendInfoPresenter implements FriendInfoContract.Presenter {
 
     private FriendInfoContract.View mView;
+    private ImageWatcher vImageWatcher;
 
     public FriendInfoPresenter(FriendInfoContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
+    }
+
+    @Override
+    public ImageWatcher getImageWatcher() {
+        return vImageWatcher;
     }
 
     @Override
     public void start() {
+        vImageWatcher = ImageWatcher.Helper.with(mView.getActivity())
+                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(mView.getActivity()))
+                .setErrorImageRes(R.mipmap.img_default)
+                .create();
+    }
 
+    @Override
+    public void shareFriendCard(Intent data, ContactEntity friendEntity) {
+        int type = data.getIntExtra("type", 0);
+        String pubkey = data.getStringExtra("object");
+
+        BaseChat baseChat = null;
+        if (type == 0) {
+            ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubkey);
+            baseChat = new FriendChat(acceptFriend);
+        } else if (type == 1) {
+            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+            baseChat = new GroupChat(groupEntity);
+        }
+        MsgEntity msgEntity = (MsgEntity) baseChat.cardMsg(friendEntity);
+        baseChat.sendPushMsg(msgEntity);
+        MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+        baseChat.updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgEntity.getMsgDefinBean().getSendtime());
     }
 
     @Override

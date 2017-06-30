@@ -133,16 +133,6 @@ public class SearchServerActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.left_img)
-    void goBack(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.del_tv)
-    void delEdit(View view) {
-        searchEdit.setText("");
-    }
-
     private View.OnKeyListener keyListener = new View.OnKeyListener(){
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -158,15 +148,9 @@ public class SearchServerActivity extends BaseActivity {
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
         public void afterTextChanged(Editable s) {
             if(TextUtils.isEmpty(s.toString())){
@@ -176,6 +160,16 @@ public class SearchServerActivity extends BaseActivity {
             }
         }
     };
+
+    @OnClick(R.id.left_img)
+    void goBack(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick(R.id.del_tv)
+    void delEdit(View view) {
+        searchEdit.setText("");
+    }
 
     private void search() {
         String searchContext = searchEdit.getText().toString().trim();

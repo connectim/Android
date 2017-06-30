@@ -94,7 +94,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     private FriendInfoActivity mActivity;
     private FriendInfoContract.Presenter presenter;
     private ContactEntity friendEntity;
-    private ImageWatcher vImageWatcher;
 
     public static void startActivity(Activity activity, String pubKey) {
         Bundle bundle = new Bundle();
@@ -108,11 +107,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         setContentView(R.layout.activity_contact_friend_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-
-        vImageWatcher = ImageWatcher.Helper.with(this)
-                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(this))
-                .setErrorImageRes(R.mipmap.img_default)
-                .create();
+        new FriendInfoPresenter(this).start();
     }
 
     @Override
@@ -127,7 +122,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Profile);
-        setPresenter(new FriendInfoPresenter(this));
 
         Bundle bundle = getIntent().getExtras();
         String pubKey = bundle.getString("pubKey");
@@ -165,22 +159,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         }
     }
 
-    @Override
-    public void setPresenter(FriendInfoContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public Activity getActivity() {
-        return mActivity;
-    }
-
-    @Override
-    public void updataView(ContactEntity friendEntity) {
-        this.friendEntity = friendEntity;
-        bindDataView();
-    }
-
     @OnClick(R.id.left_img)
     void goBack(View view) {
         ActivityUtil.goBack(mActivity);
@@ -188,7 +166,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.avater_rimg)
     void goimage(View view) {
-        vImageWatcher.showSingle((ImageView) view, avaterRimg, friendEntity.getAvatar() + "?size=400");
+        presenter.getImageWatcher().showSingle((ImageView) view, avaterRimg, friendEntity.getAvatar() + "?size=400");
     }
 
     @OnClick(R.id.id_lin)
@@ -271,6 +249,30 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ConversationActivity.CODE_REQUEST && requestCode == ConversationActivity.CODE_REQUEST){
+            presenter.shareFriendCard(data,friendEntity);
+        }
+    }
+
+    @Override
+    public void setPresenter(FriendInfoContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return mActivity;
+    }
+
+    @Override
+    public void updataView(ContactEntity friendEntity) {
+        this.friendEntity = friendEntity;
+        bindDataView();
+    }
+
+    @Override
     public void setCommon(boolean isCommon) {
         friendEntity.setCommon(isCommon ? 1 : 0);
         addFavoritesTb.setSelected(isCommon);
@@ -284,28 +286,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         friendEntity.setBlocked(block);
         ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
         ContactNotice.receiverFriend();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == ConversationActivity.CODE_REQUEST && requestCode == ConversationActivity.CODE_REQUEST){
-            int type = data.getIntExtra("type", 0);
-            String pubkey = data.getStringExtra("object");
-
-            BaseChat baseChat = null;
-            if (type == 0) {
-                ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubkey);
-                baseChat = new FriendChat(acceptFriend);
-            } else if (type == 1) {
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
-                baseChat = new GroupChat(groupEntity);
-            }
-            MsgEntity msgEntity = (MsgEntity) baseChat.cardMsg(friendEntity);
-            baseChat.sendPushMsg(msgEntity);
-            MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-            baseChat.updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgEntity.getMsgDefinBean().getSendtime());
-        }
     }
 
     @Override

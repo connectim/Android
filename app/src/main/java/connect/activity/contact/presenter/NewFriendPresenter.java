@@ -40,6 +40,7 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
 
     public NewFriendPresenter(NewFriendContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override
@@ -64,38 +65,6 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
                 mView.itemClick(tag);
             }
         });
-    }
-
-    @Override
-    public void requestRecommendUser() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_RECOMMEND, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            if(structData != null){
-                                Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
-                                ArrayList<Connect.UserInfo> list = new ArrayList<>();
-                                for(Connect.UserInfo userInfo : usersInfo.getUsersList()){
-                                    if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
-                                        list.add(userInfo);
-                                    }
-                                }
-                                ContactHelper.getInstance().inserRecommendEntity(list);
-                            }
-                            queryFriend();
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
-                });
     }
 
     @Override
@@ -132,6 +101,38 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
                 queryFriend();
             }
         }.execute();
+    }
+
+    @Override
+    public void requestRecommendUser() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_RECOMMEND, ByteString.copyFrom(new byte[]{}),
+                new ResultCall<Connect.HttpResponse>() {
+                    @Override
+                    public void onResponse(Connect.HttpResponse response) {
+                        try {
+                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            if(structData != null){
+                                Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
+                                ArrayList<Connect.UserInfo> list = new ArrayList<>();
+                                for(Connect.UserInfo userInfo : usersInfo.getUsersList()){
+                                    if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                                        list.add(userInfo);
+                                    }
+                                }
+                                ContactHelper.getInstance().inserRecommendEntity(list);
+                            }
+                            queryFriend();
+                        } catch (InvalidProtocolBufferException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Connect.HttpResponse response) {
+
+                    }
+                });
     }
 
     @Override

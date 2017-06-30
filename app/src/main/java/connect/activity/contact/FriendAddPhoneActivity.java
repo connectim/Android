@@ -63,39 +63,13 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
         toolbar.setRightText(R.string.Link_Invite);
         toolbar.setRightTextColor(R.color.color_00c400);
         toolbar.setRightTextEnable(false);
-        setPresenter(new FriendAddPresenter(this));
+        new FriendAddPresenter(this).start();
 
         adapter = new AddPhoneAdapter();
         adapter.setOnSeleListence(onSeleListence);
         listView.setAdapter(adapter);
         siderbar.setOnTouchingLetterChangedListener(letterChangedListener);
         PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_CONTACTS},permissomCallBack);
-    }
-
-    @Override
-    public void setPresenter(FriendAddContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @OnClick(R.id.left_img)
-    void goback(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.right_text)
-    void goinvite(View view) {
-        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_SMS},permissomCallBack);
-    }
-
-    @Override
-    public Activity getActivity() {
-        return mActivity;
-    }
-
-    @Override
-    public void updataView(int size, List<PhoneContactBean> list) {
-        adapter.setServerSize(size);
-        adapter.setDataNotify(list);
     }
 
     SideBar.OnTouchingLetterChangedListener letterChangedListener = new SideBar.OnTouchingLetterChangedListener() {
@@ -131,6 +105,16 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
         }
     };
 
+    @OnClick(R.id.left_img)
+    void goback(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick(R.id.right_text)
+    void goinvite(View view) {
+        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_SMS},permissomCallBack);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
@@ -154,5 +138,21 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
             StrangerInfoActivity.startActivity(mActivity, contactBean.getAddress(), SourceType.CONTACT);
         }
     };
+
+    @Override
+    public void setPresenter(FriendAddContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return mActivity;
+    }
+
+    @Override
+    public void updataView(int size, List<PhoneContactBean> list) {
+        adapter.setServerSize(size);
+        adapter.setDataNotify(list);
+    }
 
 }

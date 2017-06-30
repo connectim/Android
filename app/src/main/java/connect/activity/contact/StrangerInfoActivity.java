@@ -81,6 +81,7 @@ public class StrangerInfoActivity extends BaseActivity {
 
     @Override
     protected void onStart() {
+        // TODO: 2017/6/30 0030 为什么会加在 onStart里面
         super.onStart();
         Bundle bundle = getIntent().getExtras();
         address = bundle.getString("address");
@@ -107,39 +108,6 @@ public class StrangerInfoActivity extends BaseActivity {
     @OnClick(R.id.left_img)
     void goback(View view) {
         ActivityUtil.goBack(mActivity);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(MsgNoticeBean notice) {
-        Object[] objs = null;
-        if (notice.object != null) {
-            objs = (Object[]) notice.object;
-        }
-
-        switch (notice.ntEnum) {
-            case MSG_SEND_SUCCESS:
-                MsgSendBean msgSendBean = (MsgSendBean) objs[0];
-                if (msgSendBean.getType() == MsgSendBean.SendType.TypeSendFriendQuest) {
-                    FriendRequestEntity requestEntity = new FriendRequestEntity();
-                    requestEntity.setAvatar(sendUserInfo.getAvatar());
-                    requestEntity.setUsername(sendUserInfo.getUsername());
-                    requestEntity.setPub_key(sendUserInfo.getPubKey());
-                    requestEntity.setSource(sourceType.getType());
-                    requestEntity.setAddress(sendUserInfo.getAddress());
-                    requestEntity.setTips(msgSendBean.getTips());
-                    requestEntity.setStatus(3);
-                    requestEntity.setRead(1);
-                    ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
-                    ContactHelper.getInstance().updataRecommendFriend(requestEntity.getPub_key());
-
-                    ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
-                    ActivityUtil.goBack(mActivity);
-                }
-                break;
-            case MSG_SEND_FAIL:
-                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
-                break;
-        }
     }
 
     @OnClick(R.id.addFriend_btn)
@@ -170,6 +138,38 @@ public class StrangerInfoActivity extends BaseActivity {
     void goTransfer(View view) {
         if(sendUserInfo != null){
             TransferToActivity.startActivity(mActivity, sendUserInfo.getAddress());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(MsgNoticeBean notice) {
+        Object[] objs = null;
+        if (notice.object != null) {
+            objs = (Object[]) notice.object;
+        }
+        switch (notice.ntEnum) {
+            case MSG_SEND_SUCCESS:
+                MsgSendBean msgSendBean = (MsgSendBean) objs[0];
+                if (msgSendBean.getType() == MsgSendBean.SendType.TypeSendFriendQuest) {
+                    FriendRequestEntity requestEntity = new FriendRequestEntity();
+                    requestEntity.setAvatar(sendUserInfo.getAvatar());
+                    requestEntity.setUsername(sendUserInfo.getUsername());
+                    requestEntity.setPub_key(sendUserInfo.getPubKey());
+                    requestEntity.setSource(sourceType.getType());
+                    requestEntity.setAddress(sendUserInfo.getAddress());
+                    requestEntity.setTips(msgSendBean.getTips());
+                    requestEntity.setStatus(3);
+                    requestEntity.setRead(1);
+                    ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
+                    ContactHelper.getInstance().updataRecommendFriend(requestEntity.getPub_key());
+
+                    ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
+                    ActivityUtil.goBack(mActivity);
+                }
+                break;
+            case MSG_SEND_FAIL:
+                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
+                break;
         }
     }
 

@@ -53,7 +53,6 @@ public class SearchActivity extends BaseActivity {
     @Override
     public void initView() {
         mActivity = this;
-
         searchEdit.addTextChangedListener(textWatcher);
         adapter = new SearchAdapter();
         listView.setAdapter(adapter);
@@ -61,37 +60,11 @@ public class SearchActivity extends BaseActivity {
         SystemUtil.showKeyBoard(mActivity,searchEdit);
     }
 
-    @OnClick(R.id.cancel_tv)
-    void goBack(View view) {
-        ActivityUtil.goBackWithResult(mActivity, 0,null,android.R.anim.fade_in,android.R.anim.fade_out);
-        //ActivityUtil.goBackBottom(mActivity);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            ActivityUtil.goBackBottom(this);
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @OnClick(R.id.del_tv)
-    void delEdit(View view) {
-        searchEdit.setText("");
-    }
-
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
         public void afterTextChanged(Editable s) {
             if (TextUtils.isEmpty(s.toString())) {
@@ -128,10 +101,28 @@ public class SearchActivity extends BaseActivity {
         }
     };
 
+    @OnClick(R.id.cancel_tv)
+    void goBack(View view) {
+        ActivityUtil.goBackWithResult(mActivity, 0,null,android.R.anim.fade_in,android.R.anim.fade_out);
+    }
+
+    @OnClick(R.id.del_tv)
+    void delEdit(View view) {
+        searchEdit.setText("");
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            ActivityUtil.goBackBottom(this);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         overridePendingTransition(R.anim.activity_0_to_0, R.anim.dialog_bottom_dismiss);
     }
-
 }
