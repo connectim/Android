@@ -121,6 +121,13 @@ public class FailMsgsManager {
         sendFailMap.remove(msgid);
     }
 
+    public void removeAllFailMsg(){
+        if (sendFailMap == null) {
+            sendFailMap = new HashMap<>();
+        }
+        sendFailMap.clear();
+    }
+
     /**
      * After the success of the reconnection Send all the failure message
      */

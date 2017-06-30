@@ -66,7 +66,8 @@ public class GroupManageActivity extends BaseActivity {
             return;
         }
 
-        seSwitchLayout(findViewById(R.id.groupset_sureinvite), getString(R.string.Link_Whether_Public), 1 == groupEntity.getVerify());
+        boolean verify = (groupEntity.getVerify() != null) && (1 == groupEntity.getVerify());
+        seSwitchLayout(findViewById(R.id.groupset_sureinvite), getString(R.string.Link_Whether_Public), verify);
         groupManage(findViewById(R.id.groupset_introdue), getString(R.string.Link_Group_Introduction));
         groupManage(findViewById(R.id.groupset_transferto), getString(R.string.Link_Ownership_Transfer));
     }

@@ -56,12 +56,8 @@ public class MsgParseBean extends InterParse {
     private int ext = 1;
 
     public MsgParseBean(byte ackByte, ByteBuffer byteBuffer) {
-        this(ackByte,byteBuffer,1);
-    }
-
-    public MsgParseBean(byte ackByte, ByteBuffer byteBuffer, int ext) {
         super(ackByte, byteBuffer);
-        this.ext = ext;
+        ext = 1;
 
         try {
             Connect.StructData structData = imTransferToStructData(byteBuffer);
@@ -69,6 +65,11 @@ public class MsgParseBean extends InterParse {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public MsgParseBean(byte ackByte, ByteBuffer byteBuffer, int ext) {
+        super(ackByte, byteBuffer);
+        this.ext = ext;
     }
 
     @Override
@@ -180,10 +181,8 @@ public class MsgParseBean extends InterParse {
      */
     private synchronized void chatMsg() throws Exception {
         Connect.MessagePost messagePost = Connect.MessagePost.parseFrom(byteBuffer.array());
-        if (!SupportKeyUril.verifySign(messagePost.getSign(), messagePost.toByteArray())) {
-            throw new Exception("Validation fails");
-        }
         Connect.MessageData messageData = messagePost.getMsgData();
+
         if (ext == 0) {
             backOffLineAck(5, messageData.getMsgId());
         } else {

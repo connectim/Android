@@ -50,6 +50,7 @@ import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.log.LogManager;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
@@ -160,6 +161,8 @@ public class CommandBean extends InterParse {
             List<Connect.OfflineMsg> msgList = offlineMsgs.getOfflineMsgsList();
 
             for (Connect.OfflineMsg offlineMsg : msgList) {
+                LogManager.getLogger().d(Tag, "msgList:" + msgList.size());
+
                 Connect.ProducerMsgDetail msgDetail = offlineMsg.getBody();
                 int extension = msgDetail.getExt();
                 backOffLineAck(msgDetail.getType(), offlineMsg.getMsgId());

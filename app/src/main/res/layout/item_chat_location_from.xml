@@ -59,11 +59,4 @@
                 android:textSize="@dimen/sp_10"/>
         </RelativeLayout>
     </LinearLayout>
-
-    <connect.ui.activity.chat.view.BurnProBar
-        android:id="@id/burnprogressbar"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_5"/>
 </LinearLayout>

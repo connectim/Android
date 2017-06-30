@@ -1,6 +1,8 @@
 package connect.ui.activity.home;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -172,6 +174,9 @@ public class HomeActivity extends BaseFragmentActivity {
                 mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 1000);
                 break;
             case EXIT:
+                NotificationManager mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE) ;
+                mNotificationManager.cancel(1001);
+
                 mHandler.removeMessages(TIMEOUT_DELAYEXIT);
                 //Remove the local login information
                 SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);

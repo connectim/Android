@@ -15,6 +15,7 @@ import connect.ui.activity.R;
 import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ToastUtil;
 import connect.view.TopToolBar;
 
 /**
@@ -94,5 +95,6 @@ public class GeneralActivity extends BaseActivity {
         MessageHelper.getInstance().clearChatMsgs();
 
         MsgFragmReceiver.refreshRoom();
+        ToastUtil.getInstance().showToast(getResources().getString(R.string.Link_Delete_Successful));
     }
 }

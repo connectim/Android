@@ -128,6 +128,9 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         switch (notice.ntEnum) {
             case MSG_SEND_SUCCESS:
                 MsgSendBean sendBean = (MsgSendBean) objs[0];
+                if (sendBean == null || sendBean.getType() == null) {
+                    return;
+                }
                 if(sendBean.getType() == MsgSendBean.SendType.TypeAcceptFriendQuest){
                     presenter.updataFriendRequest(ContactHelper.getInstance().loadFriendRequest(sendBean.getAddress()));
                 }else if(sendBean.getType() == MsgSendBean.SendType.TypeRecommendNoInterested){

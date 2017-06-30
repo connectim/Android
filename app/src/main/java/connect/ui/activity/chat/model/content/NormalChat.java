@@ -127,6 +127,8 @@ public abstract class NormalChat extends BaseChat {
         MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Location);
         chatBean.getMsgDefinBean().setContent(address);
         chatBean.getMsgDefinBean().setLocationExt(location);
+        chatBean.getMsgDefinBean().setImageOriginWidth(location.getImageOriginWidth());
+        chatBean.getMsgDefinBean().setImageOriginHeight(location.getImageOriginHeight());
         return chatBean;
     }
 

@@ -251,6 +251,7 @@ public abstract class BaseChatActvity extends BaseActivity {
             case Self_destruct_Notice:
                 long time = (long) objects[0];
                 RoomSession.getInstance().setBurntime(time);
+                ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
 
                 bean = (MsgEntity) baseChat.destructMsg((Long) objects[0]);
                 sendNormalMsg(true,bean);
@@ -439,6 +440,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                             time = Long.parseLong(msgbean.getContent());
                             if (time != RoomSession.getInstance().getBurntime()) {
                                 RoomSession.getInstance().setBurntime(time);
+                                ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
                                 BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
                                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
                             }

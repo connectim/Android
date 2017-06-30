@@ -251,12 +251,15 @@ public class ApplyJoinGroupActivity extends BaseActivity {
     }
 
     protected void applyJoinDialog() {
+        final String sayHelloStr =getResources().getString(R.string.Link_Hello_I_am,SharedPreferenceUtil.getInstance().getUser().getName()+
+                ","+getResources().getString(R.string.Link_apply_to_join_group));
+
         DialogUtil.showEditView(activity, getResources().getString(R.string.Link_apply_to_join_group), getString(R.string.Common_Cancel), getString(R.string.Chat_Complete),
-                "", "", "", false, -1,new DialogUtil.OnItemClickListener() {
+                "", sayHelloStr, "", false, -1,new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         if (TextUtils.isEmpty(value)) {
-                            value = getResources().getString(R.string.Link_apply_to_join_group);
+                            value = sayHelloStr;
                         }
 
                         if (applyType == EApplyGroup.GROUPKEY) {

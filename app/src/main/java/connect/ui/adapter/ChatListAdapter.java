@@ -207,6 +207,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
 
                 roomAttrBeanList.remove(roomAttr);
                 notifyItemRemoved(position);
+
+                MsgFragmReceiver.refreshRoom();
             }
         });
         holder.bottomNotify.setTag(holder.itemView);

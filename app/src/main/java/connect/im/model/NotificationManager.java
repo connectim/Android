@@ -77,19 +77,21 @@ public class NotificationManager {
             MsgEntity msgEntity = (MsgEntity) bundle.getSerializable("CONTENT");
             MsgDefinBean definBean=msgEntity.getMsgDefinBean();
 
+            boolean isAt = false;
             if (definBean.getType() == 1 && !TextUtils.isEmpty(definBean.getExt1())) {
                 List<String> addressList = new Gson().fromJson(definBean.getExt1(), new TypeToken<List<String>>() {
                 }.getType());
-                boolean isAt = false;
+
                 String myAddress = MemoryDataManager.getInstance().getAddress();
                 if (addressList.contains(myAddress)) { // at me
                     isAt = true;
                 }
-                showNotification(pubkey, type, isAt ?
-                        BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me) :
-                        definBean.showContentTxt(type)
-                );
             }
+            showNotification(pubkey, type, isAt ?
+                    BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me) :
+                    definBean.showContentTxt(type)
+            );
+
             MsgFragmReceiver.refreshRoom();
         }
     };

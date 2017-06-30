@@ -182,7 +182,7 @@ public class GreenDb {
     protected void conversionSettingInfo() {
         Entity entity = schema.addEntity("ConversionSettingEntity");
         entity.addLongProperty("_id").primaryKey().autoincrement();
-        entity.addStringProperty("identifier");
+        entity.addStringProperty("identifier").unique();
         entity.addLongProperty("snap_time");
         entity.addIntProperty("disturb");//The message disturb 0:close 1:open
         entity.implementsSerializable();

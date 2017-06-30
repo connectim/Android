@@ -112,10 +112,11 @@ public class BlackListActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_REMOVE, userIdentifier, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                    ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
+                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
+                if (null != friendEntity) {
                     friendEntity.setBlocked(false);
-
-                ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
+                    ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
+                }
                 adapter.removeDataNotify(position);
             }
 

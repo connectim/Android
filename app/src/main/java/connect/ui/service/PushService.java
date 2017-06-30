@@ -13,6 +13,7 @@ import android.os.RemoteException;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import connect.im.IMessage;
+import connect.im.model.FailMsgsManager;
 import connect.im.netty.BufferBean;
 import connect.im.netty.MessageDecoder;
 import connect.im.netty.MessageEncoder;
@@ -30,6 +32,7 @@ import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -118,7 +121,18 @@ public class PushService extends Service {
                     break;
                 case MESSAGE:
                     bufferBean = new BufferBean(ack, message);
-                    writeBytes(bufferBean);
+                    if (!NettySession.getInstance().isWriteAble()) {
+                        reconDelay();
+                    } else {
+                        NettySession.getInstance().getChannel().writeAndFlush(bufferBean).addListener(new ChannelFutureListener() {
+                            @Override
+                            public void operationComplete(ChannelFuture future) throws Exception {
+                                if (!future.isSuccess()) {
+                                    reconDelay();
+                                }
+                            }
+                        });
+                    }
                     break;
                 case CONNECT_START:
                     connectService();
@@ -193,6 +207,11 @@ public class PushService extends Service {
     public void reconDelay() {
         LogManager.getLogger().d(Tag, "connectServer reconDelay()...");
         if (canReConnect && !reconHandler.hasMessages(TAG_CONNECT)) {
+            if (reconFibonacci[0] + reconFibonacci[1] > 34000) {//10 time repeat
+                resetFibonacci();
+                FailMsgsManager.getInstance().removeAllFailMsg();
+            }
+
             long count = reconFibonacci[0] + reconFibonacci[1];
             reconFibonacci[0] = reconFibonacci[1];
             reconFibonacci[1] = count;
@@ -203,18 +222,17 @@ public class PushService extends Service {
         }
     }
 
-
     private ConnectRunable connectRunable;
     private static ExecutorService threadPoolExecutor = Executors.newSingleThreadExecutor();
-    private boolean canReConnect = true;
+
+    private static boolean canReConnect = true;
     private String socketAddress;
     private int socketPort;
 
     public void connectService() {
         LogManager.getLogger().d(Tag, "connectService:" + TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
-        if (connectRunable != null) {
-            connectRunable.stopRun();
-        }
+        NettySession.getInstance().shutDown();
+
         connectRunable = new ConnectRunable();
         threadPoolExecutor.submit(connectRunable);
     }
@@ -226,11 +244,12 @@ public class PushService extends Service {
             EventLoopGroup loopGroup = new NioEventLoopGroup();
 
             Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(loopGroup);//java.lang.OutOfMemoryError: Could not allocate JNI Env
             bootstrap.channel(NioSocketChannel.class);
-            bootstrap.option(ChannelOption.SO_BACKLOG, 128);
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
             bootstrap.option(ChannelOption.TCP_NODELAY, true);//TCP协议
-            bootstrap.group(loopGroup);//java.lang.OutOfMemoryError: Could not allocate JNI Env
+            bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000);
+
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
 
                 @Override
@@ -247,56 +266,40 @@ public class PushService extends Service {
                 future.addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
-                        if (!future.isSuccess()) {
+                        if (future.isSuccess()) {
+                            localBinder.connectMessage(ServiceAck.HAND_SHAKE.getAck(), new byte[0], new byte[0]);
+                        } else if (!future.isSuccess()) {
                             reconDelay();
                         }
                     }
-                });
-                future.sync();
-                LogManager.getLogger().d(Tag, "Thread:" + TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
+                }).sync();
 
-                SocketChannel channel = (SocketChannel) future.channel();
-                NettySession nettySession = NettySession.getInstance();
-                nettySession.setLoopGroup(loopGroup);
-                nettySession.setChannel(channel);
+                Channel channel = future.channel();
+                NettySession.getInstance().setLoopGroup(loopGroup);
+                NettySession.getInstance().setChannel(channel);
 
                 channel.closeFuture().sync();
             } catch (Exception e) {
                 e.printStackTrace();
                 LogManager.getLogger().d(Tag, "connectService() Exception ==> " + e.getMessage());
                 reconDelay();
-            } finally {
+            }finally {
                 NettySession.getInstance().shutDown();
                 reconDelay();
             }
-        }
-
-        public void stopRun(){
-            NettySession.getInstance().shutDown();
         }
     }
 
     public void stopConnect() {
         LogManager.getLogger().d(Tag, "stopConnect() ==> ");
         canReConnect = false;
-
         NettySession.getInstance().shutDown();
     }
 
-    public void writeBytes(BufferBean bufferBean) {
-        if (!NettySession.getInstance().isWriteAble()) {
-            LogManager.getLogger().d(Tag, "writeBytes() channel ==> is null?");
-            reconDelay();
-        } else {
-            LogManager.getLogger().d(Tag, "writeBytes:" + TimeUtil.getCurrentTimeInString(TimeUtil.DATE_FORMAT_SECOND));
-            NettySession.getInstance().getChannel().writeAndFlush(bufferBean);
-        }
-    }
-
     /** Recently received a message of time */
-    private long lastReceiverTime;
+    private static long lastReceiverTime;
     /** Heart rate */
-    private final long HEART_FREQUENCY = 20 * 1000;
+    private final static long HEART_FREQUENCY = 20 * 1000;
 
     @ChannelHandler.Sharable
     class ConnectHandlerAdapter extends ChannelHandlerAdapter {
@@ -326,6 +329,7 @@ public class PushService extends Service {
                             reconDelay();
                         }
                     } else {//connect timeout
+                        ctx.close();
                         LogManager.getLogger().d(Tag, "userEventTriggered() ==> connect timeout" + (curtime - lastReceiverTime));
                         reconDelay();
                     }
@@ -337,7 +341,7 @@ public class PushService extends Service {
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             super.channelActive(ctx);
             LogManager.getLogger().d(Tag, "channelActive() == ");
-            localBinder.connectMessage(ServiceAck.HAND_SHAKE.getAck(), new byte[0], new byte[0]);
+            //localBinder.connectMessage(ServiceAck.HAND_SHAKE.getAck(), new byte[0], new byte[0]);
         }
 
         /**
