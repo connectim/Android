@@ -1,4 +1,4 @@
-package connect.ui.activity.model;
+package connect.activity.model;
 
 import android.support.test.espresso.IdlingResource;
 

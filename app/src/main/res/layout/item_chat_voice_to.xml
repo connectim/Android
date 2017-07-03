@@ -13,13 +13,13 @@
         android:layout_marginRight="@dimen/dp_5"
         android:orientation="horizontal">
 
-        <connect.ui.activity.chat.view.MsgStateView
+        <connect.activity.chat.view.MsgStateView
             android:id="@id/msgstateview"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_gravity="center"/>
 
-        <connect.ui.activity.chat.view.BurnProBar
+        <connect.activity.chat.view.BurnProBar
             android:id="@id/burnprogressbar"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"/>
@@ -32,13 +32,13 @@
         android:background="@mipmap/message_box_green_right2x"
         android:gravity="center">
 
-        <connect.ui.activity.chat.view.VoiceImg
+        <connect.activity.chat.view.VoiceImg
             android:id="@id/voicemsg"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_40"/>
     </RelativeLayout>
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"

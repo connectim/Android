@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_20"/>
-        <connect.view.GuidePointView
+        <connect.widget.GuidePointView
             android:id="@+id/point_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

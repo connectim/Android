@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <connect.view.HightEqWidthRounderImage
+    <connect.widget.HightEqWidthRounderImage
         android:id="@+id/avater_rimg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

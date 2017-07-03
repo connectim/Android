@@ -5,7 +5,7 @@
                 android:background="@color/color_f1f1f1"
                 android:orientation="vertical">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -17,7 +17,7 @@
         android:layout_below="@id/toolbar_top"
         android:layout_marginTop="@dimen/dp_3"/>
 
-    <connect.view.SideBar
+    <connect.widget.SideBar
         android:id="@id/siderbar"
         android:layout_width="25dp"
         android:layout_height="match_parent"

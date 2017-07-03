@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

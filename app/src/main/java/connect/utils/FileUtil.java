@@ -13,8 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.RoomSession;
-import connect.ui.base.BaseApplication;
+import connect.activity.chat.bean.RoomSession;
+import connect.activity.base.BaseApplication;
 
 /**
  * Created by Administrator on 2016/8/26.

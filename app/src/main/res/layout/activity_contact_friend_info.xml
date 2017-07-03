@@ -6,7 +6,7 @@
               android:background="@color/color_f1f1f1"
               android:orientation="vertical">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -35,7 +35,7 @@
                     android:gravity="right"
                     android:textColor="@color/color_858998"/>
 
-                <connect.view.roundedimageview.RoundedImageView
+                <connect.widget.roundedimageview.RoundedImageView
                     android:id="@+id/avater_rimg"
                     android:layout_width="@dimen/dp_60"
                     android:layout_height="@dimen/dp_60"

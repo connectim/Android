@@ -13,7 +13,7 @@
         android:background="@drawable/shape_20px_e6f6f6f6"
         android:orientation="vertical">
 
-        <connect.ui.activity.chat.view.PickHorScrollView
+        <connect.activity.chat.view.PickHorScrollView
             android:id="@id/scrollview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"></LinearLayout>
-        </connect.ui.activity.chat.view.PickHorScrollView>
+        </connect.activity.chat.view.PickHorScrollView>
 
         <View
             android:layout_width="match_parent"

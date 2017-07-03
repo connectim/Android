@@ -3,23 +3,23 @@ package connect.im.bean;
 import java.util.HashMap;
 import java.util.Map;
 
-import connect.ui.activity.chat.view.row.MsgSysAdRow;
-import connect.ui.activity.chat.view.row.MsgBaseRow;
-import connect.ui.activity.chat.view.row.MsgCardRow;
-import connect.ui.activity.chat.view.row.MsgDestructRow;
-import connect.ui.activity.chat.view.row.MsgEmotionRow;
-import connect.ui.activity.chat.view.row.MsgGroupReviewRow;
-import connect.ui.activity.chat.view.row.MsgImgRow;
-import connect.ui.activity.chat.view.row.MsgInviteGroupRow;
-import connect.ui.activity.chat.view.row.MsgLocationRow;
-import connect.ui.activity.chat.view.row.MsgNoticeRow;
-import connect.ui.activity.chat.view.row.MsgPayRow;
-import connect.ui.activity.chat.view.row.MsgTransfer;
-import connect.ui.activity.chat.view.row.MsgTxtRow;
-import connect.ui.activity.chat.view.row.MsgVideoRow;
-import connect.ui.activity.chat.view.row.MsgVoiceRow;
-import connect.ui.activity.chat.view.row.MsgWebsiteRow;
-import connect.ui.activity.chat.view.row.MsgluckRow;
+import connect.activity.chat.view.row.MsgSysAdRow;
+import connect.activity.chat.view.row.MsgBaseRow;
+import connect.activity.chat.view.row.MsgCardRow;
+import connect.activity.chat.view.row.MsgDestructRow;
+import connect.activity.chat.view.row.MsgEmotionRow;
+import connect.activity.chat.view.row.MsgGroupReviewRow;
+import connect.activity.chat.view.row.MsgImgRow;
+import connect.activity.chat.view.row.MsgInviteGroupRow;
+import connect.activity.chat.view.row.MsgLocationRow;
+import connect.activity.chat.view.row.MsgNoticeRow;
+import connect.activity.chat.view.row.MsgPayRow;
+import connect.activity.chat.view.row.MsgTransfer;
+import connect.activity.chat.view.row.MsgTxtRow;
+import connect.activity.chat.view.row.MsgVideoRow;
+import connect.activity.chat.view.row.MsgVoiceRow;
+import connect.activity.chat.view.row.MsgWebsiteRow;
+import connect.activity.chat.view.row.MsgluckRow;
 
 /**
  * chat mesage type

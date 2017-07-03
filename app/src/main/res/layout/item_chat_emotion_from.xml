@@ -6,7 +6,7 @@
               android:layout_below="@id/showtime"
               android:orientation="horizontal">
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
@@ -35,7 +35,7 @@
             android:paddingRight="@dimen/dp_5"
             android:paddingTop="@dimen/dp_2">
 
-            <connect.view.GifView
+            <connect.widget.GifView
                 android:id="@id/emotionmsg"
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_60"
@@ -44,7 +44,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <connect.ui.activity.chat.view.BurnProBar
+    <connect.activity.chat.view.BurnProBar
         android:id="@id/burnprogressbar"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"

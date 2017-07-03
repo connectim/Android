@@ -4,9 +4,7 @@ import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.concurrent.BlockingQueue;
@@ -14,12 +12,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
+import connect.database.MemoryDataManager;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
-import connect.ui.service.bean.PushMessage;
-import connect.ui.service.bean.ServiceAck;
+import connect.service.bean.PushMessage;
+import connect.service.bean.ServiceAck;
 import connect.utils.StringUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;

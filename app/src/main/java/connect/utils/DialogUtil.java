@@ -23,12 +23,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import connect.ui.activity.R;
-import connect.ui.activity.chat.model.more.MorePagerAdapter;
-import connect.ui.activity.login.adapter.DialogBottomAdapter;
+import connect.activity.chat.model.more.MorePagerAdapter;
+import connect.activity.login.adapter.DialogBottomAdapter;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
-import connect.view.FrameAnimationDrawable;
-import connect.view.payment.PayEditView;
+import connect.widget.FrameAnimationDrawable;
+import connect.widget.payment.PayEditView;
 
 import java.util.ArrayList;
 import java.util.Timer;

@@ -1,15 +1,11 @@
 package connect.utils;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import connect.db.SharedPreferenceUtil;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.utils.DialogUtil;
-import connect.utils.ProgressUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 
