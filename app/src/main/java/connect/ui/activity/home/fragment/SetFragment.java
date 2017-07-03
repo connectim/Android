@@ -1,9 +1,11 @@
 package connect.ui.activity.home.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +14,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.protobuf.ByteString;
+import org.xmlpull.v1.XmlPullParser;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.SharedPreferenceUtil;
-import connect.im.bean.SocketACK;
 import connect.im.bean.UserOrderBean;
-import connect.im.model.ChatSendManager;
 import connect.ui.activity.R;
 import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.login.bean.UserBean;
@@ -31,15 +35,17 @@ import connect.ui.activity.set.ModifyInfoActivity;
 import connect.ui.activity.set.PrivateActivity;
 import connect.ui.activity.set.SafetyActivity;
 import connect.ui.activity.set.SupportActivity;
+import connect.ui.base.BaseApplication;
 import connect.ui.base.BaseFragment;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.TimeUtil;
 import connect.utils.glide.GlideUtil;
+import connect.utils.log.LogManager;
+import connect.utils.log.Logger;
+import connect.utils.log.LoggerDefault;
 import connect.view.TopToolBar;
 import connect.view.roundedimageview.RoundedImageView;
-import protos.Connect;
 
 /**
  * setting
@@ -72,6 +78,7 @@ public class SetFragment extends BaseFragment {
     @Bind(R.id.address_scan_img)
     ImageView addressScanImg;
 
+    private String Tag = "SetFragment";
     private FragmentActivity mActivity;
     private UserBean userBean;
 

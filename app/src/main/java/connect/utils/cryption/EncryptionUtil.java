@@ -9,7 +9,6 @@ import protos.Connect;
 
 /**
  * Encryption related methods
- * Created by gtq on 2016/11/30.
  */
 public class EncryptionUtil {
 
@@ -34,9 +33,6 @@ public class EncryptionUtil {
         return AllNativeMethod.cdGetPubKeyFromPrivKey(key);
     }
 
-    /*********************************************************************************************************
-     *                                        STRUCT DATA
-     *******************************************************************************************************/
     /**
      * Data encapsulation into StructData
      *
@@ -52,23 +48,14 @@ public class EncryptionUtil {
         return structData;
     }
 
-    /******************************************  The default extension type  ***************************************************/
-
-    public static Connect.GcmData encodeAESGCMStructData(String prikey, ByteString bytes) {
-        return encodeAESGCMStructData(prikey, ConfigUtil.getInstance().serverPubkey(), bytes);
-    }
-
-    public static Connect.GcmData encodeAESGCMStructData(String prikey, String ServerPubkey, ByteString bytes) {
-        byte[] ecdhKey = SupportKeyUril.rawECDHkey(prikey, ServerPubkey);
-        return encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, ecdhKey, bytes);
-    }
-
-    public static Connect.GcmData encodeAESGCMStructData(byte[] ecdhbytes, ByteString bytes) {
-        return encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, ecdhbytes, bytes);
-    }
-
-    /******************************************  Specify the extension type  ***************************************************/
-
+    /**
+     * Take struct encryption
+     *
+     * @param exts
+     * @param prikey
+     * @param bytes
+     * @return
+     */
     public static Connect.GcmData encodeAESGCMStructData(SupportKeyUril.EcdhExts exts, String prikey, ByteString bytes) {
         return encodeAESGCMStructData(exts, prikey, ConfigUtil.getInstance().serverPubkey(), bytes);
     }
@@ -85,21 +72,16 @@ public class EncryptionUtil {
         Connect.StructData structData = transStructData(bytes);
         return encodeAESGCM(exts, ecdhbytes, structData.toByteArray());
     }
-    /*********************************************************************************************************
-     *                                        GCM DATA
-     *******************************************************************************************************/
 
-    /******************************************  No extension type  ***************************************************/
-    public static Connect.GcmData encodeAESGCM(String prikey, String ServerPubkey, byte[] encodes) {
-        byte[] ecdhKey = SupportKeyUril.rawECDHkey(prikey, ServerPubkey);
-        return encodeAESGCM(ecdhKey, encodes);
-    }
-
-    public static Connect.GcmData encodeAESGCM(byte[] ecdhKey, byte[] encodes) {
-        return encodeAESGCM(SupportKeyUril.EcdhExts.SALT, ecdhKey, encodes);
-    }
-
-    /****************************************** Specify the extension type ***************************************************/
+    /**
+     * Take byteArray encryption
+     *
+     * @param exts
+     * @param prikey
+     * @param ServerPubkey
+     * @param encodes
+     * @return
+     */
     public static Connect.GcmData encodeAESGCM(SupportKeyUril.EcdhExts exts, String prikey, String ServerPubkey, byte[] encodes) {
         byte[] ecdhKey = SupportKeyUril.rawECDHkey(prikey, ServerPubkey);
         return encodeAESGCM(exts, ecdhKey, encodes);

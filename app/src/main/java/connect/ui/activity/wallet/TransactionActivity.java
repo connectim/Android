@@ -6,18 +6,21 @@ import android.widget.AdapterView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.adapter.TransactionAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.OkHttpUtil;
@@ -36,8 +39,8 @@ public class TransactionActivity extends BaseActivity {
     TopToolBar toolbarTop;
     @Bind(R.id.list_view)
     XListView listView;
+
     private TransactionActivity mActivity;
-    private UserBean userBean;
     private final int PAGESIZE_MAX = 10;
     private int page = 1;
     private TransactionAdapter ransactionAdapter;
@@ -57,7 +60,6 @@ public class TransactionActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Wallet_Transactions);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         ransactionAdapter = new TransactionAdapter();
         listView.setAdapter(ransactionAdapter);
         listView.setXListViewListener(new XListView.IXListViewListener() {
@@ -89,20 +91,25 @@ public class TransactionActivity extends BaseActivity {
     }
 
     public void requsetTransaction(){
-        String url = String.format(Locale.ENGLISH,UriUtil.BLOCKCHAIN_ADDRESS_TX,userBean.getAddress(),page,PAGESIZE_MAX);
+        String url = String.format(Locale.ENGLISH,UriUtil.BLOCKCHAIN_ADDRESS_TX, MemoryDataManager.getInstance().getAddress(),page,PAGESIZE_MAX);
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     Connect.Transactions transactions = Connect.Transactions.parseFrom(response.getBody());
-                    LogManager.getLogger().i("======http========",transactions.toString());
                     List<Connect.Transaction> list = transactions.getTransactionsList();
-                    if(page > 1){
-                        ransactionAdapter.setNotifyData(list,false);
-                    }else{
-                        ransactionAdapter.setNotifyData(list,true);
+                    ArrayList<Connect.Transaction> listChecks = new ArrayList<>();
+                    for(Connect.Transaction transaction : list){
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(transaction)){
+                            listChecks.add(transaction);
+                        }
                     }
 
+                    if(page > 1){
+                        ransactionAdapter.setNotifyData(listChecks,false);
+                    }else{
+                        ransactionAdapter.setNotifyData(listChecks,true);
+                    }
                     listView.stopRefresh();
                     listView.stopLoadMore();
                     if(list.size() == PAGESIZE_MAX){

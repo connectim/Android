@@ -37,7 +37,8 @@
             android:id="@id/videomsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="fitXY"/>
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"/>
 
         <connect.ui.activity.chat.view.DVideoProView
             android:id="@id/videoproview"

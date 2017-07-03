@@ -1,8 +1,10 @@
 package connect.view.prompt;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,7 @@ public class PromptViewHelper {
         });
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private void createPrompt(final View srcView) {
         final View promptView = promptViewManager.getPromptView();
         if (popupWindow == null)
@@ -78,6 +81,12 @@ public class PromptViewHelper {
         location[1] = srcViewLocation[1] - promptView.getHeight();
 
         popupWindow.showAtLocation(srcView, Gravity.NO_GRAVITY, location[0], location[1]);
+    }
+
+    public void dissmissPopupwindow() {
+        if (popupWindow != null) {
+            popupWindow.dismiss();
+        }
     }
 
     public static abstract class PromptViewManager {

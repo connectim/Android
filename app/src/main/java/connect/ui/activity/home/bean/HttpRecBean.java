@@ -23,6 +23,7 @@ public class HttpRecBean implements Serializable {
         DownGroupBackUp,//get backup by group
         SOUNDPOOL,//system voice
         SYSTEM_VIBRATION,//system vibrate
+        GroupNotificaton,//Mute Notification
     }
 
     public HttpRecType httpRecType;

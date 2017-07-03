@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 
 import java.io.UnsupportedEncodingException;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
@@ -30,7 +31,7 @@ public class UserOrderBean extends InterParse {
      * @return
      */
     public void requestAddFriend(Object... objects) {
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
         Connect.GcmData gcmData = null;
         try {
             gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, priKey, (String) objects[1], ((String) objects[2]).getBytes("utf-8"));
@@ -142,7 +143,10 @@ public class UserOrderBean extends InterParse {
 
         String msgid = TimeUtil.timestampToMsgid();
         if (objects.length == 2) {
-            FailMsgsManager.getInstance().insertFailMsg("", msgid, null, null, objects[1]);
+            FailMsgsManager.getInstance().insertFailMsg("", msgid, SocketACK.OUTER_REDPACKET,
+                    Connect.Command.newBuilder().setMsgId(msgid).
+                            setDetail(billingToken.toByteString()).build().toByteString(),
+                    objects[1]);
         }
         commandToIMTransfer(msgid, SocketACK.OUTER_REDPACKET, billingToken.toByteString());
     }

@@ -12,8 +12,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
 import connect.ui.activity.R;
-import connect.utils.system.SystemUtil;
 import connect.utils.log.LogManager;
+import connect.utils.system.SystemUtil;
 
 /**
  * Created by gtq on 2016/12/15.
@@ -80,7 +80,7 @@ public class DiffuseView extends ImageView {
         }
 
         animator = ValueAnimator.ofFloat(widthFloat, width);
-        animator.setDuration(700);
+        animator.setDuration(320);
         animator.setInterpolator(new LinearInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

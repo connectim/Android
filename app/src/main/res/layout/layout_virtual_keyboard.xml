@@ -17,6 +17,7 @@
         android:background="#bdbdbd"
         android:horizontalSpacing="1px"
         android:numColumns="3"
-        android:verticalSpacing="1px" />
+        android:verticalSpacing="1px"
+        android:listSelector="@null"/>
 
 </LinearLayout>

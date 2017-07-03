@@ -96,10 +96,6 @@ public class MessageHelper extends BaseDao {
         messageEntityDao.insertOrReplace(msgEntity);
     }
 
-    public void insertMsg(List<MessageEntity> msgEntities) {
-        messageEntityDao.insertOrReplaceInTx(msgEntities);
-    }
-
     public void insertFromMsg(String roomid, MsgDefinBean bean) {
         insertMsg(roomid, bean, 1);
     }
@@ -107,7 +103,6 @@ public class MessageHelper extends BaseDao {
     public void insertToMsg(MsgDefinBean bean) {
         insertMsg(bean.getPublicKey(), bean, 1);
     }
-
 
     public void insertMsg(String roomid, MsgDefinBean bean, int sendstate) {
         String content = new Gson().toJson(bean);

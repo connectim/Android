@@ -11,7 +11,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.List;
 
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -29,6 +28,7 @@ import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.contract.TransferFriendContract;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.system.SystemUtil;
 import connect.utils.TimeUtil;
@@ -36,9 +36,10 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.transfer.TransferError;
 import connect.view.MdStyleProgress;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -148,7 +149,7 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            final Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                            final Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
                                 @Override
                                 public void onComplete() {
@@ -156,7 +157,9 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
                                         Connect.MuiltSendBillResp muiltSendBillResp = Connect.MuiltSendBillResp.parseFrom(structData.getPlainData());
                                         List<Connect.Bill> bills = muiltSendBillResp.getBillsList();
                                         for (Connect.Bill bill : bills) {
-                                            transferToFriend(bill.getHash(), bill.getReceiver(),note);
+                                            if(ProtoBufUtil.getInstance().checkProtoBuf(bill)){
+                                                transferToFriend(bill.getHash(), bill.getReceiver(),note);
+                                            }
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -186,6 +189,7 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
                     @Override
                     public void onError(Connect.HttpResponse response) {
                         paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                        TransferError.getInstance().showError(response.getCode(),response.getMessage());
                     }
                 });
     }

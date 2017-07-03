@@ -12,7 +12,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.db.SharedPreferenceUtil;
+import connect.db.MemoryDataManager;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.db.green.DaoHelper.TransactionHelper;
@@ -20,9 +20,10 @@ import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.ContainerBean;
 import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
-import connect.ui.activity.wallet.support.TransaUtil;
+import connect.utils.ProtoBufUtil;
+import connect.utils.transfer.TransferError;
+import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
@@ -131,19 +132,21 @@ public class GatherDetailSingleActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.BILLING_INFO, hashId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
                         throw new Exception("Validation fails");
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     billDetail = Connect.Bill.parseFrom(structData.getPlainData());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(billDetail)){
+                        return;
+                    }
 
                     String username = "";
                     ContactEntity entity = null;
-                    if (SharedPreferenceUtil.getInstance().getAddress().equals(billDetail.getReceiver())) {//I started gathering
+                    if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {//I started gathering
                         entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getSender());
                         username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
                         txt1.setText(String.format(getString(R.string.Wallet_has_requested_to_payment), username));
@@ -165,7 +168,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
                     String amout = RateFormatUtil.longToDoubleBtc(billDetail.getAmount());
                     txt3.setText(getResources().getString(R.string.Set_BTC_symbol) + amout);
 
-                    if (SharedPreferenceUtil.getInstance().getAddress().equals(billDetail.getReceiver())) {
+                    if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {
                         txt4.setVisibility(View.INVISIBLE);
                     } else {
                         txt4.setVisibility(View.VISIBLE);
@@ -174,7 +177,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
                     state = billDetail.getStatus();
                     if (state == 0) {//Did not pay
-                        if (SharedPreferenceUtil.getInstance().getAddress().equals(billDetail.getReceiver())) {
+                        if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {
                             btn.setText(getResources().getString(R.string.Wallet_Waitting_for_pay));
                             btn.setBackgroundResource(R.drawable.shape_stroke_red);
                             btn.setTag(0);
@@ -206,16 +209,18 @@ public class GatherDetailSingleActivity extends BaseActivity {
     }
 
     private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, SharedPreferenceUtil.getInstance().getUser().getAddress());
+        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     if (response.getCode() == 2000) {
                         Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                        txt4.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
-                                RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
+                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
+                            txt4.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
+                                    RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -232,9 +237,9 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
     protected void requestGatherPayment() {
         WalletAccountBean accountBean = ParamManager.getInstance().getWalletAmount();
-        new TransaUtil().getOutputTran(activity, SharedPreferenceUtil.getInstance().getAddress(), false,
+        new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), false,
                 billDetail.getSender(),accountBean.getAvaAmount(), billDetail.getAmount(),
-                new TransaUtil.OnResultCall() {
+                new TransferUtil.OnResultCall() {
             @Override
             public void result(String inputString, String outputString) {
                 checkPayPassword(inputString, outputString);
@@ -248,13 +253,8 @@ public class GatherDetailSingleActivity extends BaseActivity {
             paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
                 @Override
                 public void onTrue() {
-                    String samValue = new TransaUtil().getSignRawTrans(SharedPreferenceUtil.getInstance().getPriKey(), inputString, outputString);
+                    String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     requestPublicTx(samValue);
-                }
-
-                @Override
-                public void onFalse() {
-
                 }
             });
         }
@@ -274,7 +274,6 @@ public class GatherDetailSingleActivity extends BaseActivity {
                     String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
                     String noticeContent = getString(R.string.Chat_paid_the_bill_to, activity.getString(R.string.Chat_You), contactName);
                     RecExtBean.sendRecExtMsg(RecExtBean.ExtType.NOTICE, noticeContent);
-                    ChatMsgUtil.insertNoticeMsg(entity.getPub_key(), noticeContent);
                 }
 
                 TransactionHelper.getInstance().updateTransEntity(billDetail.getHash(), msgId, 1);
@@ -285,6 +284,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpResponse response) {
                 paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                TransferError.getInstance().showError(response.getCode(),response.getMessage());
             }
         });
     }

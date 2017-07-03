@@ -15,7 +15,7 @@ public class RecorderManager {
     private int widthSize = 1280;
     private int heightSize = 720;
 
-    public MediaRecorder initMediaRecorder(Camera mCamera, SurfaceHolder viewHolder, File file,int frontCamera) {
+    public MediaRecorder initMediaRecorder(Camera mCamera, SurfaceHolder viewHolder, File file, int frontCamera) {
 
         mCamera.stopPreview();
         MediaRecorder mediaRecorder = new MediaRecorder();
@@ -34,7 +34,6 @@ public class RecorderManager {
             mediaRecorder.setOutputFile(file.getPath());
             mediaRecorder.setMaxDuration(30000);
             mediaRecorder.setVideoSize(widthSize, heightSize);
-            mediaRecorder.setVideoFrameRate(24);
             mediaRecorder.setVideoEncodingBitRate(1024 * 1024);
             mediaRecorder.setPreviewDisplay(viewHolder.getSurface());
             // prepare

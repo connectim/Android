@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -18,6 +20,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.BlockchainActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -99,7 +102,7 @@ public class FriendRecordActivity extends BaseActivity {
 
     private void requestRecord() {
         Connect.FriendRecords friendRecords = Connect.FriendRecords.newBuilder()
-                .setSelfAddress(SharedPreferenceUtil.getInstance().getAddress())
+                .setSelfAddress(MemoryDataManager.getInstance().getAddress())
                 .setFriendAddress(friendEntity.getAddress())
                 .setPageSize(MAX_RECOMMEND_COUNT)
                 .setPageIndex(page)
@@ -109,11 +112,16 @@ public class FriendRecordActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(),
-                            imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.FriendBillsMessage friendBillsMessage = Connect.FriendBillsMessage.parseFrom(structData.getPlainData());
-                    List<Connect.FriendBill> listBill = friendBillsMessage.getFriendBillsList();
-                    if (listBill.size() >= MAX_RECOMMEND_COUNT) {
+                    ArrayList<Connect.FriendBill> listBill = new ArrayList<>();
+                    for(Connect.FriendBill friendBill : friendBillsMessage.getFriendBillsList()){
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(friendBill)){
+                            listBill.add(friendBill);
+                        }
+                    }
+
+                    if (friendBillsMessage.getFriendBillsList().size() >= MAX_RECOMMEND_COUNT) {
                         listView.setPullLoadEnable(true);
                     } else {
                         listView.setPullLoadEnable(false);

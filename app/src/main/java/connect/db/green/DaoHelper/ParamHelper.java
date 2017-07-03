@@ -24,7 +24,11 @@ public class ParamHelper extends BaseDao {
 
     public static ParamHelper getInstance() {
         if (paramHelper == null) {
-            paramHelper = new ParamHelper();
+            synchronized (ParamHelper.class) {
+                if (paramHelper == null) {
+                    paramHelper = new ParamHelper();
+                }
+            }
         }
         return paramHelper;
     }
@@ -79,7 +83,7 @@ public class ParamHelper extends BaseDao {
     public ParamEntity likeParamEntityDESC(String key) {
         QueryBuilder<ParamEntity> queryBuilder = paramEntityDao.queryBuilder();
         queryBuilder.where(ParamEntityDao.Properties.Key.like("%" + key + "%")).
-                orderDesc(ParamEntityDao.Properties._id).orderDesc(ParamEntityDao.Properties._id).limit(1).build();
+                orderDesc(ParamEntityDao.Properties._id).limit(1).build();
         List<ParamEntity> paramEntities = queryBuilder.list();
         return paramEntities == null || paramEntities.size() == 0 ? null : paramEntities.get(0);
     }
@@ -119,6 +123,12 @@ public class ParamHelper extends BaseDao {
     public void deleteParamEntity(String key) {
         QueryBuilder<ParamEntity> qb = paramEntityDao.queryBuilder();
         DeleteQuery<ParamEntity> bd = qb.where(ParamEntityDao.Properties.Key.eq(key)).buildDelete();
+        bd.executeDeleteWithoutDetachingEntities();
+    }
+
+    public void deleteLikeParamEntity(String key){
+        QueryBuilder<ParamEntity> qb = paramEntityDao.queryBuilder();
+        DeleteQuery<ParamEntity> bd = qb.where(ParamEntityDao.Properties.Key.like("%" + key + "%")).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }
 }

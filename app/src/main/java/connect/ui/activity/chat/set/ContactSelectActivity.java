@@ -15,6 +15,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -38,6 +39,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.adapter.MulContactAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -197,11 +199,7 @@ public class ContactSelectActivity extends BaseActivity {
 
                                 createNewGroup();
                             } else {
-                                if (groupEntity.getVerify() == null || 0==groupEntity.getVerify()) {//Closed group  validation
-                                    inviteToGroup();
-                                } else {//Open group validation
-                                    sendGroupToFriend();
-                                }
+                                sendGroupToFriend();
                             }
                         }
                     });
@@ -234,8 +232,7 @@ public class ContactSelectActivity extends BaseActivity {
     }
 
     protected void createNewGroup() {
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        String groupname = String.format(getString(R.string.Link_user_friends), userBean.getName());
+        String groupname = String.format(getString(R.string.Link_user_friends), MemoryDataManager.getInstance().getName());
 
         String ranprikey = EncryptionUtil.randomPriKey();
         String randpubkey = EncryptionUtil.randomPubKey(ranprikey);
@@ -248,10 +245,10 @@ public class ContactSelectActivity extends BaseActivity {
         List<Connect.AddGroupUserInfo> groupUserInfos = new ArrayList<>();
 
         for (ContactEntity entity : selectEntities) {
-            byte[] memberecdhkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), entity.getPub_key());
+            byte[] memberecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), entity.getPub_key());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
-            String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
+            String pubkey = MemoryDataManager.getInstance().getPubKey();
             String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
             String backup = String.format("%1$s/%2$s", pubkey, groupHex);
 
@@ -273,17 +270,18 @@ public class ContactSelectActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CREATE_GROUP, createGroup, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
                         throw new Exception("Validation fails");
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
-                    loadGroupDb(groupname, groupInfo);
-                    newGroupBroadCast(groupInfo);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)){
+                        loadGroupDb(groupname, groupInfo);
+                        newGroupBroadCast(groupInfo);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -311,6 +309,9 @@ public class ContactSelectActivity extends BaseActivity {
         ConversionHelper.getInstance().insertRoomEntity(roomEntity);
 
         final GroupEntity groupEntity = new GroupEntity();
+        if (TextUtils.isEmpty(groupname)) {
+            groupname = "groupname4";
+        }
         groupEntity.setName(groupname);
         groupEntity.setIdentifier(grouppubkey);
         groupEntity.setEcdh_key(groupEcdh);
@@ -319,10 +320,12 @@ public class ContactSelectActivity extends BaseActivity {
 
         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.UpLoadBackUp, grouppubkey, groupEcdh);
         String stringMems = "";
-        GroupMemberEntity memEntity = null;
         List<GroupMemberEntity> memEntities = new ArrayList<>();
         for (Connect.GroupMember member : groupInfo.getMembersList()) {
-            memEntity = new GroupMemberEntity();
+            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(grouppubkey, member.getAddress());
+            if (memEntity == null) {
+                memEntity = new GroupMemberEntity();
+            }
             memEntity.setIdentifier(grouppubkey);
             memEntity.setPub_key(member.getPubKey());
             memEntity.setAddress(member.getAddress());
@@ -357,7 +360,7 @@ public class ContactSelectActivity extends BaseActivity {
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.newBuilder().setSecretKey(groupEcdh)
                 .setIdentifier(groupInfo.getGroup().getIdentifier()).build();
 
-        String prikey = SharedPreferenceUtil.getInstance().getPriKey();
+        String prikey = MemoryDataManager.getInstance().getPriKey();
         for (Connect.GroupMember member : groupInfo.getMembersList()) {
             byte[] groupecdhkey = SupportKeyUril.rawECDHkey(prikey, member.getPubKey());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, groupecdhkey, groupMessage.toByteString());
@@ -384,17 +387,18 @@ public class ContactSelectActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_INVITE_TOKEN, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
                         throw new Exception("Validation fails");
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInviteResponseList responseList = Connect.GroupInviteResponseList.parseFrom(structData.getPlainData());
                     for (Connect.GroupInviteResponse res : responseList.getListList()) {
-                        sendFriendInvite(res.getAddress(), res.getToken());
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(res)){
+                            sendFriendInvite(res.getAddress(), res.getToken());
+                        }
                     }
 
                     ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
@@ -432,60 +436,12 @@ public class ContactSelectActivity extends BaseActivity {
         friendChat.updateRoomMsg(null, "[" + getString(R.string.Link_Join_Group) + "]", msgEntity.getMsgDefinBean().getSendtime());
     }
 
-    protected void inviteToGroup() {
-        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomKey);
-        Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder().
-                setSecretKey(groupEntity.getEcdh_key()).build();
-
-        List<Connect.AddGroupUserInfo> addUsers = new ArrayList<>();
-        for (ContactEntity entity : selectEntities) {
-            byte[] memberecdhkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), entity.getPub_key());
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, memberecdhkey, createGroupMessage.toByteArray());
-
-            String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
-            String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
-            String backup = String.format("%1$s/%2$s", pubkey, groupHex);
-
-            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, groupEntity.getEcdh_key(), ByteString.copyFrom(backup.getBytes()));
-            backup = StringUtil.bytesToHexString(gcmData.toByteArray());
-
-            Connect.AddGroupUserInfo addGroupUserInfo = Connect.AddGroupUserInfo.newBuilder()
-                    .setAddress(entity.getAddress())
-                    .setBackup(backup).build();
-            addUsers.add(addGroupUserInfo);
-        }
-
-        inviteMemRequest(addUsers);
-    }
-
-    protected void inviteMemRequest(List<Connect.AddGroupUserInfo> members) {
-        Connect.AddUserToGroup addUserToGroup = Connect.AddUserToGroup.newBuilder()
-                .setIdentifier(roomKey).addAllUsers(members).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_ADDUSER, addUserToGroup, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                broadInviteMember();
-                ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
-                    @Override
-                    public void animFinish() {
-                        GroupSetActivity.startActivity(activity, roomKey);
-                    }
-                }).show();
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
-        });
-    }
-
     protected void broadInviteMember() {
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomKey);
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.newBuilder().setSecretKey(groupEntity.getEcdh_key())
                 .setIdentifier(groupEntity.getIdentifier()).build();
 
-        String prikey = SharedPreferenceUtil.getInstance().getPriKey();
+        String prikey = MemoryDataManager.getInstance().getPriKey();
         for (GroupMemberEntity member : memEntities) {
             byte[] groupecdhkey = SupportKeyUril.rawECDHkey(prikey, member.getPub_key());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, groupecdhkey, groupMessage.toByteString());

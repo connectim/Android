@@ -7,7 +7,7 @@ import connect.ui.activity.wallet.bean.SendOutBean;
 import connect.ui.base.BasePresenter;
 import connect.ui.base.BaseView;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**

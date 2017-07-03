@@ -6,8 +6,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.wallet.contract.PacketDetailContract;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -43,7 +45,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     redPackageInfo = Connect.RedPackageInfo.parseFrom(structData.getPlainData());
                     requestUserInfo();
                     getRedStatus();
@@ -68,9 +70,11 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    mView.updataSendView(sendUserInfo);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)){
+                        mView.updataSendView(sendUserInfo);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -84,45 +88,42 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
     }
 
     private void getRedStatus() {
-        int status = 0;
         List<Connect.GradRedPackageHistroy> list = redPackageInfo.getGradHistoryList();
         Connect.RedPackage redPackage = redPackageInfo.getRedpackage();
-        String address = SharedPreferenceUtil.getInstance().getAddress();
-
-        if (redPackage.getDeadline() < 0) {
-            if (redPackage.getSendAddress().equals(address)) {
-                if (TextUtils.isEmpty(redPackage.getTxid())) {
-                    status = 1;
-                } else {
-                    status = 2;
-                }
-            } else {
-                status = 3;
-            }
-        } else {
-            if (redPackage.getRemainSize() == redPackage.getSize()) {
-                status = 4;
-            }
-
-            if (redPackage.getRemainSize() == 0 &&
-                    !redPackage.getSendAddress().equals(address)) {//Good luck next time
-                status = 5;
-            }
-        }
-
+        String address = MemoryDataManager.getInstance().getAddress();
+        int status;
         boolean isHava = false;
         long openMoney = 0;
+        long bestAmount = 0;
         for (Connect.GradRedPackageHistroy histroy : list) {
             if (histroy.getUserinfo().getAddress().equals(address)) {
                 isHava = true;
                 openMoney = histroy.getAmount();
             }
+            if(bestAmount == 0 || bestAmount <= histroy.getAmount()){
+                bestAmount = histroy.getAmount();
+            }
         }
 
-        if (isHava && !TextUtils.isEmpty(redPackage.getTxid())) {//Lucky packet transfering to your wallet
-            status = 6;
+        // Check whether to receive a red envelope
+        if(isHava){
+            if(TextUtils.isEmpty(redPackage.getTxid())){ // check Txid
+                status = 6;
+            }else{
+                status = 4;
+            }
+        }else{
+            if(redPackage.getRemainSize() == 0){ // Check whether the red envelope is to get out
+                status = 5;
+            }else if(redPackage.getDeadline() > 0){ // Check whether the timeout
+                status = 2;
+            }else if(redPackage.getSendAddress().equals(address)){ // Check for a red envelope sender
+                status = 1;
+            }else{
+                status = 3;
+            }
         }
-        mView.updataView(status,openMoney,redPackageInfo);
+        mView.updataView(status, openMoney, bestAmount, redPackageInfo);
     }
 
 }

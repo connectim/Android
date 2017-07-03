@@ -22,6 +22,9 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.ArrayList;
 
+import javax.crypto.spec.DESedeKeySpec;
+
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -30,6 +33,7 @@ import connect.ui.activity.set.PaymentActivity;
 import connect.ui.activity.set.bean.PaySetBean;
 import connect.ui.adapter.ViewPagerAdapter;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
@@ -47,7 +51,7 @@ import protos.Connect;
  * Pay components
  * Created by Administrator on 2016/12/23.
  */
-public class PaymentPwd {
+public class PaymentPwd implements View.OnClickListener{
 
     private ControlScrollViewPager viewPager;
 
@@ -87,12 +91,7 @@ public class PaymentPwd {
 
         viewPager = (ControlScrollViewPager) view.findViewById(R.id.view_pager);
         closeImg = (ImageView) view.findViewById(R.id.close_img);
-        closeImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
+        closeImg.setOnClickListener(this);
         initViewPage();
 
         Window mWindow = dialog.getWindow();
@@ -105,7 +104,7 @@ public class PaymentPwd {
 
         titleTv = (TextView)view.findViewById(R.id.title_tv);
 
-        if(paySetBean.getNoSecretPay()){
+        if(paySetBean != null && paySetBean.getNoSecretPay()){
             statusChange(5);
             onTrueListener.onTrue();
         }
@@ -138,12 +137,7 @@ public class PaymentPwd {
 
     private void initSetPay(View view) {
         TextView retryTv = (TextView) view.findViewById(R.id.retry_tv);
-        retryTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewPager.setCurrentItem(0);
-            }
-        });
+        retryTv.setOnClickListener(this);
     }
 
     private void initEditPay(View view) {
@@ -164,19 +158,25 @@ public class PaymentPwd {
     private void initPassForget(View view) {
         TextView forgetTv = (TextView) view.findViewById(R.id.forget_tv);
         TextView retryTv = (TextView) view.findViewById(R.id.retry_tv);
-        retryTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewPager.setCurrentItem(0);
-            }
-        });
+        retryTv.setOnClickListener(this);
+        forgetTv.setOnClickListener(this);
+    }
 
-        forgetTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.close_img:
+                dialog.cancel();
+                break;
+            case R.id.retry_tv:
+                viewPager.setCurrentItem(0);
+                break;
+            case R.id.forget_tv:
                 ActivityUtil.next(activity, PaymentActivity.class);
-            }
-        });
+                break;
+            default:
+                break;
+        }
     }
 
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -261,8 +261,8 @@ public class PaymentPwd {
     private void decodePass(String pass){
         if(!TextUtils.isEmpty(paySetBean.getPayPin())){
             try {
-                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                byte[] ecdh  = SupportKeyUril.rawECDHkey(userBean.getPriKey(),userBean.getPubKey());
+                byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),
+                        MemoryDataManager.getInstance().getPubKey());
                 byte[] valueByte = StringUtil.hexStringToBytes(paySetBean.getPayPin());
                 byte[] passByte = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,ecdh,Connect.GcmData.parseFrom(valueByte));
                 String payPass = new String(passByte,"UTF-8");
@@ -363,20 +363,21 @@ public class PaymentPwd {
         Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.newBuilder()
                 .setVersion(paySetBean.getVersionPay())
                 .build();
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_VERSION, payPinVersion, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                    if(payPinVersion.getVersion().equals(paySetBean.getVersionPay()) ){
-                        decodePass(pass);
-                    }else{
-                        requestSetPayInfo(pass);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
+                        if(payPinVersion.getVersion().equals(paySetBean.getVersionPay()) ){
+                            decodePass(pass);
+                        }else{
+                            requestSetPayInfo(pass);
+                        }
+                        paySetBean.setVersionPay(payPinVersion.getVersion());
                     }
-                    paySetBean.setVersionPay(payPinVersion.getVersion());
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -394,18 +395,19 @@ public class PaymentPwd {
      * @param pass
      */
     public void requestSetPayInfo(final String pass) {
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SUNC, ByteString.copyFrom(SupportKeyUril.createrBinaryRandom()),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.parseFrom(structData.getPlainData());
-                            paySetBean.setPayPin(paymentSetting.getPayPin());
-                            ParamManager.getInstance().putPaySet(paySetBean);
-                            decodePass(pass);
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(paymentSetting)){
+                                paySetBean.setPayPin(paymentSetting.getPayPin());
+                                ParamManager.getInstance().putPaySet(paySetBean);
+                                decodePass(pass);
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }
@@ -423,8 +425,7 @@ public class PaymentPwd {
      * @param pass
      */
     private void requestSetPay(String pass){
-        final UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        byte[] ecdh  = SupportKeyUril.rawECDHkey(userBean.getPriKey(),userBean.getPubKey());
+        byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),MemoryDataManager.getInstance().getPubKey());
         try {
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, ecdh, pass.getBytes("UTF-8"));
             byte[] gcmDataByte = gcmData.toByteArray();
@@ -437,12 +438,14 @@ public class PaymentPwd {
                 public void onResponse(Connect.HttpResponse response) {
                     try {
                         Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                         Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                        paySetBean.setPayPin(encryPass);
-                        paySetBean.setVersionPay(payPinVersion.getVersion());
-                        ParamManager.getInstance().putPaySet(paySetBean);
-                        onTrueListener.onTrue();
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
+                            paySetBean.setPayPin(encryPass);
+                            paySetBean.setVersionPay(payPinVersion.getVersion());
+                            ParamManager.getInstance().putPaySet(paySetBean);
+                            onTrueListener.onTrue();
+                        }
                     } catch (InvalidProtocolBufferException e) {
                         e.printStackTrace();
                     }
@@ -461,8 +464,6 @@ public class PaymentPwd {
     public interface OnTrueListener {
 
         void onTrue();
-
-        void onFalse();
 
     }
 

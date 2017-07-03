@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -19,6 +20,7 @@ import connect.ui.activity.contact.model.ConvertUtil;
 import connect.ui.activity.contact.model.PhoneListComparatorSort;
 import connect.ui.activity.set.bean.PrivateSetBean;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
@@ -144,10 +146,16 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     usersInfo = Connect.PhoneBookUsersInfo.parseFrom(structData.getPlainData());
+                    ArrayList<Connect.PhoneBookUserInfo> listCheck = new ArrayList<>();
+                    for(Connect.PhoneBookUserInfo userInfo : usersInfo.getUsersList()){
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                            listCheck.add(userInfo);
+                        }
+                    }
                     ConvertUtil convertUtil = new ConvertUtil();
-                    convertUtil.convertUserInfo(localList, usersInfo, handler);
+                    convertUtil.convertUserInfo(localList, listCheck, handler);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

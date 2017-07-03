@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.home.HomeActivity;
@@ -62,14 +63,14 @@ public class LocalLoginPresenter implements LocalLoginContract.Presenter {
     }
 
     private void saveUserBean(UserBean userBean){
-        SharedPreferenceUtil.getInstance().updataUser(userBean);
+        SharedPreferenceUtil.getInstance().putUser(userBean);
         List<Activity> list = BaseApplication.getInstance().getActivityList();
         for (Activity activity1 : list) {
             if (!activity1.getClass().getName().equals(mView.getActivity().getClass().getName())){
                 activity1.finish();
             }
         }
-        SharedPreferenceUtil.getInstance().initPutMapStr(userBean.getPriKey(),userBean.getPubKey(),userBean.getAddress(),userBean.getAvatar());
+        MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
         mView.complete(userBean.isBack());
     }
 

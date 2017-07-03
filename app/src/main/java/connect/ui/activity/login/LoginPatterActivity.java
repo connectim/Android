@@ -1,7 +1,6 @@
 package connect.ui.activity.login;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,10 +13,13 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.home.HomeActivity;
 import connect.ui.activity.login.bean.UserBean;
+import connect.ui.activity.set.BackUpActivity;
+import connect.utils.LoginPassCheckUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -44,13 +46,9 @@ public class LoginPatterActivity extends BaseActivity {
     TextView hintTv;
 
     private LoginPatterActivity mActivity;
-    private UserBean userBean;
-    private Dialog dialogPass;
 
-    public static void startActivity(Activity activity, UserBean userBean) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("user", userBean);
-        ActivityUtil.next(activity, LoginPatterActivity.class, bundle);
+    public static void startActivity(Activity activity) {
+        ActivityUtil.next(activity, LoginPatterActivity.class);
     }
 
     @Override
@@ -65,9 +63,8 @@ public class LoginPatterActivity extends BaseActivity {
     public void initView() {
         mActivity = this;
         toolbarTop.setTitleImg(R.mipmap.logo_black_middle);
-        Bundle bundle = getIntent().getExtras();
-        userBean = (UserBean) bundle.getSerializable("user");
 
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         idGestureLockViewGroup.setAnswer(userBean.getPriKey(),userBean.getSalt());
         idGestureLockViewGroup.setOnGestureLockViewListener(new GestureLockViewGroup.OnGestureLockViewListener() {
             @Override
@@ -99,47 +96,21 @@ public class LoginPatterActivity extends BaseActivity {
 
     @OnClick(R.id.password_tv)
     void goBack(View view) {
-        dialogPass = DialogUtil.showEditView(mActivity,mActivity.getResources().getString(R.string.Set_Enter_Login_Password),
-                mActivity.getResources().getString(R.string.Common_Cancel),
-                mActivity.getResources().getString(R.string.Common_OK),
-                mActivity.getString(R.string.Login_Password_Hint,userBean.getPassHint()),"","",
-                true,32,new DialogUtil.OnItemClickListener(){
-                    @Override
-                    public void confirm(String value) {
-                        checkPass(value);
-                    }
-                    @Override
-                    public void cancel() {
-
-                    }
-                });
-    }
-
-    private void checkPass(final String pass){
-        ProgressUtil.getInstance().showProgress(mActivity);
-        new AsyncTask<Void,Void,String>(){
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListence() {
             @Override
-            protected String doInBackground(Void... params) {
-                String priKey = DecryptionUtil.decodeTalkKey(userBean.getTalkKey(), pass);
-                return priKey;
+            public void success(String priKey) {
+                goinHome(priKey);
             }
 
             @Override
-            protected void onPostExecute(String b) {
-                super.onPostExecute(b);
-                ProgressUtil.getInstance().dismissProgress();
-                if(SupportKeyUril.checkPrikey(b)){
-                    goinHome(b);
-                }else{
-                    ToastEUtil.makeText(mActivity,R.string.Login_Password_incorrect,ToastEUtil.TOAST_STATUS_FAILE).show();
-                    dialogPass.show();
-                }
+            public void error() {
+
             }
-        }.execute();
+        });
     }
 
     private void goinHome(String priKey){
-        SharedPreferenceUtil.getInstance().initPutMapStr(priKey,userBean.getPubKey(),userBean.getAddress(),userBean.getAvatar());
+        MemoryDataManager.getInstance().putPriKey(priKey);
         HomeActivity.startActivity(mActivity);
         mActivity.finish();
     }

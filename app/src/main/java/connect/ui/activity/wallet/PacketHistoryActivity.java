@@ -12,12 +12,14 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.adapter.RedHistoryAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -40,9 +42,7 @@ public class PacketHistoryActivity extends BaseActivity {
     private PacketHistoryActivity mActivity;
     private final int PAGESIZE_MAX = 10;
     private int page = 1;
-    private UserBean userBean;
     private RedHistoryAdapter redHistoryAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +62,6 @@ public class PacketHistoryActivity extends BaseActivity {
         toolbarTop.setRedStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Chat_History);
-
-        userBean = SharedPreferenceUtil.getInstance().getUser();
 
         redHistoryAdapter = new RedHistoryAdapter();
         listView.setAdapter(redHistoryAdapter);
@@ -106,21 +104,23 @@ public class PacketHistoryActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(),imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.RedPackageInfos redPackageInfos = Connect.RedPackageInfos.parseFrom(structData.getPlainData());
-                    List<Connect.RedPackageInfo> list = redPackageInfos.getRedPackageInfosList();
-                    if(page > 1){
-                        redHistoryAdapter.setNotifyData(list,false);
-                    }else{
-                        redHistoryAdapter.setNotifyData(list,true);
-                    }
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(redPackageInfos)){
+                        List<Connect.RedPackageInfo> list = redPackageInfos.getRedPackageInfosList();
+                        if(page > 1){
+                            redHistoryAdapter.setNotifyData(list,false);
+                        }else{
+                            redHistoryAdapter.setNotifyData(list,true);
+                        }
 
-                    listView.stopRefresh();
-                    listView.stopLoadMore();
-                    if(list.size() == PAGESIZE_MAX){
-                        listView.setPullLoadEnable(true);
-                    }else{
-                        listView.setPullLoadEnable(false);
+                        listView.stopRefresh();
+                        listView.stopLoadMore();
+                        if(list.size() == PAGESIZE_MAX){
+                            listView.setPullLoadEnable(true);
+                        }else{
+                            listView.setPullLoadEnable(false);
+                        }
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

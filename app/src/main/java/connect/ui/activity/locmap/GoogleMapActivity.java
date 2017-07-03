@@ -198,7 +198,7 @@ public class GoogleMapActivity extends BaseActivity {
                 File file = FileUtil.newContactFile(FileUtil.FileType.IMG);
                 FileOutputStream fos = new FileOutputStream(file);
                 bitmap = Bitmap.createBitmap(bitmap, 0, SystemDataUtil.getScreenHeight() / 2 - 200, bitmap.getWidth(), SystemUtil.dipToPx(200));
-                boolean b = bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
                 try {
                     fos.flush();
                     fos.close();
@@ -206,7 +206,8 @@ public class GoogleMapActivity extends BaseActivity {
                     e.printStackTrace();
                 }
 
-                GeoAddressBean addressBean = new GeoAddressBean(latitude, lontitude, info, file.getAbsolutePath());
+                GeoAddressBean addressBean = new GeoAddressBean(latitude, lontitude, info,
+                        file.getAbsolutePath(), bitmap.getWidth(), bitmap.getHeight());
                 MsgSend.sendOuterMsg(MsgType.Location, addressBean);
                 ActivityUtil.goBack(activity);
             } catch (Exception e) {

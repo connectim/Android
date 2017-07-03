@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ParamHelper;
@@ -67,7 +68,10 @@ public class FriendChat extends NormalChat {
         msgDefinBean.setMessage_id(TimeUtil.timestampToMsgid());
         msgDefinBean.setPublicKey(contactEntity.getPub_key());
         msgDefinBean.setUser_id(address());
-        msgDefinBean.setSenderInfoExt(new MsgSender(userBean.getPubKey(), userBean.getName(), userBean.getAddress(), userBean.getAvatar()));
+        msgDefinBean.setSenderInfoExt(new MsgSender(MemoryDataManager.getInstance().getPubKey(),
+                MemoryDataManager.getInstance().getName(),
+                MemoryDataManager.getInstance().getAddress(),
+                MemoryDataManager.getInstance().getAvatar()));
 
         long burntime = RoomSession.getInstance().getBurntime();
         if (burntime > 0) {
@@ -99,7 +103,7 @@ public class FriendChat extends NormalChat {
 
         switch (encryType) {
             case NORMAL:
-                priKey = SharedPreferenceUtil.getInstance().getPriKey();
+                priKey = MemoryDataManager.getInstance().getPriKey();
                 friendKey = definBean.getPublicKey();
                 ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
                 break;
@@ -181,30 +185,33 @@ public class FriendChat extends NormalChat {
     }
 
     private void loadUserCookie() {
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
+        userCookie = Session.getInstance().getUserCookie(pubkey);
         if (userCookie == null) {
-            String pubKey = SharedPreferenceUtil.getInstance().getPubKey();
-            userCookie = Session.getInstance().getUserCookie(pubKey);
-
-            if (userCookie == null) {
-                encryType = EncryType.NORMAL;
+            String cookieKey = "COOKIE:" + pubkey;
+            ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+            if (paramEntity != null) {
+                userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
             }
+        }
+
+        if (userCookie == null) {
+            encryType = EncryType.NORMAL;
         }
     }
 
     public void loadFriendCookie(String pubkey) {
+        friendCookie = Session.getInstance().getUserCookie(pubkey);
         if (friendCookie == null) {
-            friendCookie = Session.getInstance().getUserCookie(pubkey);
-            if (friendCookie == null) {
-                String cookieFriend = "COOKIE:" + pubkey;
-                ParamEntity friendEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieFriend);
-                if (friendEntity != null) {
-                    friendCookie = new Gson().fromJson(friendEntity.getValue(), UserCookie.class);
-                }
+            String cookieFriend = "COOKIE:" + pubkey;
+            ParamEntity friendEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieFriend);
+            if (friendEntity != null) {
+                friendCookie = new Gson().fromJson(friendEntity.getValue(), UserCookie.class);
             }
+        }
 
-            if (friendCookie == null) {
-                encryType = EncryType.NORMAL;
-            }
+        if (friendCookie == null) {
+            encryType = EncryType.NORMAL;
         }
     }
 }

@@ -13,7 +13,11 @@ public class RoomSession {
 
     public static RoomSession getInstance() {
         if (roomSession == null) {
-            roomSession = new RoomSession();
+            synchronized (RoomSession.class) {
+                if (roomSession == null) {
+                    roomSession = new RoomSession();
+                }
+            }
         }
         return roomSession;
     }

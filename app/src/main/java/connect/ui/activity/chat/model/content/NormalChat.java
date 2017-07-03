@@ -2,9 +2,11 @@ package connect.ui.activity.chat.model.content;
 
 import com.google.gson.Gson;
 
-import connect.db.SharedPreferenceUtil;
+import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
+import connect.db.green.bean.GroupEntity;
 import connect.im.bean.MsgType;
+import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.CardExt1Bean;
 import connect.ui.activity.chat.bean.GatherBean;
 import connect.ui.activity.chat.bean.GroupExt1Bean;
@@ -12,7 +14,7 @@ import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.TransferExt;
 import connect.ui.activity.chat.bean.WebsiteExt1Bean;
 import connect.ui.activity.locmap.bean.GeoAddressBean;
-import connect.ui.activity.login.bean.UserBean;
+import connect.ui.base.BaseApplication;
 
 /**
  * public methods to extract
@@ -20,7 +22,24 @@ import connect.ui.activity.login.bean.UserBean;
  */
 public abstract class NormalChat extends BaseChat {
 
-    protected UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+    public static NormalChat loadBaseChat(String pubkey) {
+        NormalChat normalChat = null;
+
+        if ((BaseApplication.getInstance().getString(R.string.app_name)).equals(pubkey)) {
+            normalChat = RobotChat.getInstance();
+        } else {
+            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+            if (groupEntity != null) {
+                normalChat = new GroupChat(groupEntity);
+            } else {
+                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
+                if (friendEntity != null) {
+                    normalChat = new FriendChat(friendEntity);
+                }
+            }
+        }
+        return normalChat;
+    }
 
     @Override
     public void updateRoomMsg(String draft, String showText, long msgtime) {
@@ -108,6 +127,8 @@ public abstract class NormalChat extends BaseChat {
         MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Location);
         chatBean.getMsgDefinBean().setContent(address);
         chatBean.getMsgDefinBean().setLocationExt(location);
+        chatBean.getMsgDefinBean().setImageOriginWidth(location.getImageOriginWidth());
+        chatBean.getMsgDefinBean().setImageOriginHeight(location.getImageOriginHeight());
         return chatBean;
     }
 

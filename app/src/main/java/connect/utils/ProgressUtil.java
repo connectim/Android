@@ -39,7 +39,11 @@ public class ProgressUtil {
 
     public void showProgress(Context mContext,int idRes){
         if(dialog != null){
-            dialog.dismiss();
+            try {
+                dialog.dismiss();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         dialog = new Dialog(mContext, R.style.Dialog);
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -54,7 +58,11 @@ public class ProgressUtil {
 
     public void dismissProgress(){
         if(dialog != null){
-            dialog.dismiss();
+            try {
+                dialog.dismiss();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }

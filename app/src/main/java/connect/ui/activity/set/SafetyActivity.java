@@ -10,7 +10,7 @@ import android.widget.TextView;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
-import connect.ui.activity.set.manager.PassManager;
+import connect.utils.LoginPassCheckUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.view.TopToolBar;
@@ -96,10 +96,9 @@ public class SafetyActivity extends BaseActivity {
 
     @OnClick(R.id.password_ll)
     void goPassword(View view){
-        PassManager passManager = new PassManager();
-        passManager.checkLoginPass(mActivity, userBean.getPassHint(), new PassManager.OnResultListence() {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListence() {
             @Override
-            public void success() {
+            public void success(String priKey) {
                 ActivityUtil.next(mActivity,ModifyPassActivity.class);
             }
 
@@ -122,10 +121,9 @@ public class SafetyActivity extends BaseActivity {
 
     @OnClick(R.id.pritkey_backup_ll)
     void goBackUp(View view){
-        PassManager passManager = new PassManager();
-        passManager.checkLoginPass(mActivity, userBean.getPassHint(), new PassManager.OnResultListence() {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListence() {
             @Override
-            public void success() {
+            public void success(String priKey) {
                 ActivityUtil.next(mActivity,BackUpActivity.class);
             }
 

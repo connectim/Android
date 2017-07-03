@@ -10,13 +10,13 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import connect.ui.activity.R;
 import connect.ui.service.UpdataService;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
-import connect.utils.permission.PermissiomUtilNew;
-import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.system.SystemDataUtil;
 import protos.Connect;
 
 /**
@@ -45,7 +45,7 @@ public class CheckUpdata {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                     Connect.VersionResponse versionResponse = Connect.VersionResponse.parseFrom(structData.getPlainData());
-                    if (!TextUtils.isEmpty(versionResponse.getVersion())
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(versionResponse)
                             && StringUtil.VersionComparison(versionResponse.getVersion(), SystemDataUtil.getVersionName(activity)) == 1) {
                         showUpdataDialog(versionResponse);
                     }

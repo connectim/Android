@@ -9,6 +9,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.ui.activity.chat.model.EmoManager;
 import connect.ui.service.HttpsService;
 import connect.ui.service.SocketService;
 import connect.utils.ConfigUtil;
@@ -27,11 +28,10 @@ public class BaseApplication extends Application{
         super.onCreate();
         mApplication = this;
 
+        EmoManager.getInstance();
         UnCeHandler catchExcep = new UnCeHandler(this);
         Thread.setDefaultUncaughtExceptionHandler(catchExcep);
-        CrashReport.initCrashReport(getApplicationContext(),
-                ConfigUtil.getInstance().appMode() ?
-                        "9b63c64ee1" : "cf78e82d4f", true);
+        CrashReport.initCrashReport(this, ConfigUtil.getInstance().getCrashAPPID(), true);
     }
 
     @Override

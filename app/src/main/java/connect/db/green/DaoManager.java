@@ -8,6 +8,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharePreferenceUser;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -68,10 +69,10 @@ public class DaoManager {
             String oldSecret = SharePreferenceUser.getInstance().getStringValue("db_secret");
             String password = !TextUtils.isEmpty(oldSecret) ? OldDbPwd(oldSecret) : newDbPwd();
 
-            UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+            String pubKey = MemoryDataManager.getInstance().getPubKey();
             String DB_NAME = "bitmain.db";
-            if (userBean != null) {
-                DB_NAME = "connect_" + userBean.getPubKey() + ".db";
+            if (!TextUtils.isEmpty(pubKey)) {
+                DB_NAME = "connect_" + pubKey + ".db";
             }
 
             Context context = BaseApplication.getInstance().getBaseContext();
@@ -100,13 +101,13 @@ public class DaoManager {
 
     public String OldDbPwd(String oldSecret) {
         String salt = SharePreferenceUser.getInstance().getStringValue(SharePreferenceUser.DB_SALT);
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
         return SupportKeyUril.decodePri(oldSecret, salt, priKey);
     }
 
     public String newDbPwd() {
         String pubKeyTemp = SharePreferenceUser.getInstance().getStringValue(SharePreferenceUser.DB_PUBKEY);
-        String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+        String priKey = MemoryDataManager.getInstance().getPriKey();
         if (TextUtils.isEmpty(priKey)) {
             BaseApplication.getInstance().finishActivity();
         }

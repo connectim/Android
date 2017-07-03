@@ -47,7 +47,11 @@ public class ParamManager {
 
     public static ParamManager getInstance() {
         if (patamManager == null) {
-            patamManager = new ParamManager();
+            synchronized (ParamManager.class) {
+                if (patamManager == null) {
+                    patamManager = new ParamManager();
+                }
+            }
         }
         return patamManager;
     }

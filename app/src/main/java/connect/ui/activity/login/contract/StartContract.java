@@ -19,7 +19,7 @@ public interface StartContract {
 
         void goinLoginForPhone();
 
-        void goinLoginPatter(UserBean userB);
+        void goinLoginPatter();
 
         void goinHome();
 

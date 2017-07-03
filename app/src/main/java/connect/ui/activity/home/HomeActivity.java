@@ -1,6 +1,8 @@
 package connect.ui.activity.home;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +10,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,42 +22,45 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharePreferenceUser;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoManager;
 import connect.db.green.bean.FriendRequestEntity;
 import connect.im.bean.ConnectState;
-import connect.im.model.ConnectManager;
+import connect.im.bean.Session;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.ChatActivity;
 import connect.ui.activity.chat.bean.Talker;
-import connect.ui.activity.chat.model.EmoManager;
 import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.bean.MsgSendBean;
 import connect.ui.activity.home.bean.HomeAction;
 import connect.ui.activity.home.bean.MsgNoticeBean;
-import connect.ui.activity.home.fragment.ChatListFragment;
 import connect.ui.activity.home.fragment.ContactFragment;
+import connect.ui.activity.home.fragment.ConversationFragment;
 import connect.ui.activity.home.fragment.SetFragment;
 import connect.ui.activity.home.fragment.WalletFragment;
 import connect.ui.activity.home.view.CheckUpdata;
 import connect.ui.activity.login.LoginForPhoneActivity;
 import connect.ui.activity.login.bean.UserBean;
-import connect.ui.activity.wallet.support.ScanUrlAnalysisUtil;
 import connect.ui.base.BaseFragmentActivity;
 import connect.ui.service.HttpsService;
+import connect.ui.service.bean.PushMessage;
+import connect.ui.service.bean.ServiceAck;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissiomUtilNew;
+import connect.utils.scan.ResolveUrlUtil;
 import connect.view.MaterialBadgeTextView;
 
 /**
@@ -85,15 +91,19 @@ public class HomeActivity extends BaseFragmentActivity {
     @Bind(R.id.contact_badgetv)
     MaterialBadgeTextView contactBadgetv;
 
-    private String Tag = "HomeActivity";
+    private String Tag = "Tag_HomeActivity";
     private HomeActivity activity;
 
-    private ChatListFragment chatListFragment;
+    private ConversationFragment chatListFragment;
     private ContactFragment contactFragment;
     private SetFragment setFragment;
     private WalletFragment walletFragment;
-    private ScanUrlAnalysisUtil analysisUtil;
+    private ResolveUrlUtil resolveUrlUtil;
     private CheckUpdata checkUpdata;
+
+    public static void startActivity(Activity activity) {
+        ActivityUtil.next(activity, HomeActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,27 +114,24 @@ public class HomeActivity extends BaseFragmentActivity {
         EventBus.getDefault().register(this);
     }
 
-    public static void startActivity(Activity activity) {
-        ActivityUtil.next(activity, HomeActivity.class);
-    }
-
     @Override
     public void initView() {
         activity = this;
         setDefaultFragment();
 
-        new AsyncTask<Void,Void,Void>(){
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        SharePreferenceUser.initSharePreferrnce(userBean.getPubKey());
+        HttpsService.startService(activity);
+
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                SharePreferenceUser.initSharePreferrnce(userBean.getPubKey());
-                LogManager.getLogger().d(Tag, "*** userBean.getPubKey() :" + userBean.getPubKey());
-
+                Session.getInstance().clearUserCookie();
                 DaoManager.getInstance().closeDataBase();
                 DaoManager.getInstance().switchDataBase();
                 FileUtil.getExternalStorePath();
 
-                CrashReport.putUserData(activity, "userAddress", SharedPreferenceUtil.getInstance().getAddress());
+                CrashReport.putUserData(activity, "userAddress", MemoryDataManager.getInstance().getAddress());
                 CrashReport.setUserSceneTag(activity, Integer.valueOf(ConfigUtil.getInstance().getCrashTags()));
                 return null;
             }
@@ -132,11 +139,9 @@ public class HomeActivity extends BaseFragmentActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                LogManager.getLogger().d(Tag, "onPostExecute");
+
                 ConnectState.getInstance().sendEvent(ConnectState.ConnectType.CONNECT);
-                EmoManager.getInstance();
-
-                HttpsService.startService(activity);
-
                 requestAppUpdata();
                 checkWebOpen();
             }
@@ -166,16 +171,19 @@ public class HomeActivity extends BaseFragmentActivity {
 
         switch (action.getType()) {
             case DELAY_EXIT://Timeout logged out
-                mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 5000);
+                mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 1000);
                 break;
             case EXIT:
+                NotificationManager mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE) ;
+                mNotificationManager.cancel(1001);
+
                 mHandler.removeMessages(TIMEOUT_DELAYEXIT);
                 //Remove the local login information
                 SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
                 //close socket
-                ConnectManager.getInstance().exitConnect();
+                MemoryDataManager.getInstance().clearMap();
+                PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, new byte[0],ByteBuffer.allocate(0));
                 SharePreferenceUser.unLinkSharePreferrnce();
-                SharedPreferenceUtil.getInstance().clearMap();
                 DaoManager.getInstance().closeDataBase();
                 HttpsService.stopServer(activity);
 
@@ -197,11 +205,11 @@ public class HomeActivity extends BaseFragmentActivity {
             objs = (Object[]) notice.object;
         }
         if(objs[0] instanceof MsgSendBean){
-            analysisUtil.showMsgTip(notice,"web");
+            resolveUrlUtil.showMsgTip(notice,ResolveUrlUtil.TYPE_OPEN_WEB,false);
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ContactNotice notice) {
         if (notice.getNotice() == ContactNotice.ConNotice.RecAddFriend) {
             updataRequest();
@@ -257,7 +265,7 @@ public class HomeActivity extends BaseFragmentActivity {
     }
 
     public void setDefaultFragment() {
-        chatListFragment = ChatListFragment.startFragment();
+        chatListFragment = ConversationFragment.startFragment();
         contactFragment = ContactFragment.startFragment();
         walletFragment = WalletFragment.startFragment();
         setFragment = SetFragment.startFragment();
@@ -330,8 +338,11 @@ public class HomeActivity extends BaseFragmentActivity {
     }
 
     private void checkWebOpen() {
-        analysisUtil = new ScanUrlAnalysisUtil(activity);
-        analysisUtil.checkWebOpen();
+        resolveUrlUtil = new ResolveUrlUtil(activity);
+        String value = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.WEB_OPEN_APP);
+        if (!TextUtils.isEmpty(value)) {
+            resolveUrlUtil.checkAppOpen(value);
+        }
     }
 
     private void requestAppUpdata() {

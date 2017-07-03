@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ParamManager;
@@ -36,6 +37,7 @@ import connect.ui.activity.contact.StrangerInfoActivity;
 import connect.ui.activity.contact.bean.SourceType;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -213,11 +215,13 @@ public class HandleJoinGroupActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PUBLIC_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
-                    infoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)){
+                        infoBase = groupInfoBase;
+                    }
                     showGroupInfo();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -234,10 +238,10 @@ public class HandleJoinGroupActivity extends BaseActivity {
     protected void handleAgressJoin() {
         Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
                 .setSecretKey(groupEntity.getEcdh_key()).build();
-        byte[] memberecdhkey = SupportKeyUril.rawECDHkey(SharedPreferenceUtil.getInstance().getPriKey(), ext1Bean.getPub_key());
+        byte[] memberecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), ext1Bean.getPub_key());
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
-        String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
         String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
         String backup = String.format("%1$s/%2$s", pubkey, groupHex);
 

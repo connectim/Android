@@ -48,7 +48,7 @@ public class GroupEntityDao extends AbstractDao<GroupEntity, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"GROUP_ENTITY\" (" + //
                 "\"_ID\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
                 "\"IDENTIFIER\" TEXT NOT NULL UNIQUE ," + // 1: identifier
-                "\"NAME\" TEXT," + // 2: name
+                "\"NAME\" TEXT NOT NULL ," + // 2: name
                 "\"ECDH_KEY\" TEXT," + // 3: ecdh_key
                 "\"COMMON\" INTEGER," + // 4: common
                 "\"VERIFY\" INTEGER," + // 5: verify

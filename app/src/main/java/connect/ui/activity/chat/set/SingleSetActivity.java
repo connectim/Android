@@ -15,6 +15,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -211,7 +212,7 @@ public class SingleSetActivity extends BaseActivity {
             String address = (String) v.getTag();
             if (TextUtils.isEmpty(address)) {
                 ContactSelectActivity.startCreateGroupActivity(activity, roomKey);
-            } else if (SharedPreferenceUtil.getInstance().getAddress().equals(address)) {
+            } else if (MemoryDataManager.getInstance().getAddress().equals(address)) {
                 ModifyInfoActivity.startActivity(activity);
             } else {
                 ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);

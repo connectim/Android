@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLength="15"
+            android:maxLength="20"
             android:textColor="@color/color_161A21"
             android:textSize="@dimen/sp_17"
             android:textStyle="bold"/>

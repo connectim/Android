@@ -16,6 +16,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -32,10 +33,12 @@ import connect.ui.activity.contact.StrangerInfoActivity;
 import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.bean.SourceType;
 import connect.ui.activity.home.HomeActivity;
+import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.activity.set.ModifyInfoActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
@@ -130,7 +133,7 @@ public class GroupSetActivity extends BaseActivity {
         relativelayout1.setOnClickListener(contactClick);
 
         groupVerify(findViewById(R.id.groupset_groupname), R.mipmap.message_groupchat_name2x, getString(R.string.Link_Group_Name), groupEntity.getName());
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
         if (myMember == null) {
             findViewById(R.id.groupset_myname).setVisibility(View.GONE);
         } else {
@@ -155,7 +158,7 @@ public class GroupSetActivity extends BaseActivity {
         //other
         setOtherLayout(findViewById(R.id.clear), R.mipmap.message_clear_history2x, getResources().getString(R.string.Link_Clear_Chat_History));
         setOtherLayout(findViewById(R.id.delete), R.mipmap.message_group_leave2x, getResources().getString(R.string.Link_Delete_and_Leave));
-        syncGroupInfo(groupEntity.getIdentifier());
+        syncGroupInfo(groupKey);
     }
 
     protected void syncGroupInfo(final String value) {
@@ -164,33 +167,26 @@ public class GroupSetActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_SETTING_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupSettingInfo settingInfo = Connect.GroupSettingInfo.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(settingInfo)){
+                        setEntity.setDisturb(settingInfo.getMute() ? 1 : 0);
+                        ConversionSettingHelper.getInstance().insertSetEntity(setEntity);
+                        boolean notice = Integer.valueOf(1).equals(setEntity.getDisturb());
+                        seSwitchLayout(findViewById(R.id.mute), getResources().getString(R.string.Chat_Mute_Notification), notice);
 
-                    setEntity.setDisturb(settingInfo.getMute() ? 1 : 0);
-                    ConversionSettingHelper.getInstance().insertSetEntity(setEntity);
-                    boolean notice = Integer.valueOf(1).equals(setEntity.getDisturb());
-                    seSwitchLayout(findViewById(R.id.mute), getResources().getString(R.string.Chat_Mute_Notification), notice);
-
-                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(value);
-                    if (groupEntity != null) {
-                        groupEntity.setVerify(settingInfo.getPublic()?1:0);
-                        groupEntity.setAvatar(settingInfo.getAvatar());
-                        ContactHelper.getInstance().inserGroupEntity(groupEntity);
-                    }
-
-                    if (settingInfo.getPublic()) {
-                        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, SharedPreferenceUtil.getInstance().getAddress());
-                        if (myMember == null || myMember.getRole() == 0) {
-                            findViewById(R.id.groupset_groupname).setEnabled(false);
+                        if (settingInfo.getPublic()) {
+                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
+                            if (myMember == null || myMember.getRole() == 0) {
+                                findViewById(R.id.groupset_groupname).setEnabled(false);
+                            } else {
+                                findViewById(R.id.groupset_groupname).setEnabled(true);
+                            }
                         } else {
                             findViewById(R.id.groupset_groupname).setEnabled(true);
                         }
-                    } else {
-                        findViewById(R.id.groupset_groupname).setEnabled(true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -388,8 +384,17 @@ public class GroupSetActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 int common = ischeck ? 1 : 0;
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                groupEntity.setCommon(common);
-                ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
+                    groupEntity.setCommon(common);
+
+                    String groupName = groupEntity.getName();
+                    if (TextUtils.isEmpty(groupName)) {
+                        groupName = "groupname8";
+                    }
+                    groupEntity.setName(groupName);
+
+                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                }
 
                 ContactNotice.receiverGroup();
             }
@@ -410,7 +415,7 @@ public class GroupSetActivity extends BaseActivity {
             } else if (TAG_MEMBER.equals(address)) {
                 GroupMemberActivity.startActivity(activity, groupKey);
             } else {
-                if (SharedPreferenceUtil.getInstance().getAddress().equals(address)) {
+                if (MemoryDataManager.getInstance().getAddress().equals(address)) {
                     ModifyInfoActivity.startActivity(activity);
                 } else {
                     ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);
