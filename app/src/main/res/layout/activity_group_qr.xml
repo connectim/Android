@@ -6,7 +6,7 @@
     android:background="@color/color_black"
     android:orientation="vertical">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -28,7 +28,7 @@
             android:layout_marginTop="@dimen/dp_18"
             android:orientation="horizontal">
 
-            <connect.view.roundedimageview.RoundedImageView
+            <connect.widget.roundedimageview.RoundedImageView
                 android:id="@+id/roundimg1"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"

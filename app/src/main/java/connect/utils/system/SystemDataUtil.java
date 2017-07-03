@@ -22,8 +22,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import connect.ui.activity.contact.bean.PhoneContactBean;
-import connect.ui.base.BaseApplication;
+import connect.activity.contact.bean.PhoneContactBean;
+import connect.activity.base.BaseApplication;
 import connect.utils.GlobalLanguageUtil;
 import connect.utils.log.LogManager;
 import connect.wallet.jni.AllNativeMethod;

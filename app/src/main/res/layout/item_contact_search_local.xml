@@ -23,7 +23,7 @@
         android:paddingBottom="@dimen/dp_10"
         android:paddingLeft="@dimen/dp_15"
         android:background="@drawable/selector_list_item_bg">
-        <connect.view.roundedimageview.RoundedImageView
+        <connect.widget.roundedimageview.RoundedImageView
             android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"

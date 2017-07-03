@@ -4,8 +4,8 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
-import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.base.BaseApplication;
+import connect.activity.chat.bean.RecExtBean;
+import connect.activity.base.BaseApplication;
 
 /**
  * media play

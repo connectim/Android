@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 

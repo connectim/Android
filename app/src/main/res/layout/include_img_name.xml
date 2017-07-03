@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <connect.view.roundedimageview.RoundedImageView
+        <connect.widget.roundedimageview.RoundedImageView
             android:id="@id/roundimg"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"

@@ -6,7 +6,7 @@
               android:background="@color/color_f0f0f6"
               android:orientation="vertical">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -22,7 +22,7 @@
         android:paddingRight="@dimen/dp_15"
         android:paddingTop="20dp">
 
-        <connect.view.roundedimageview.RoundedImageView
+        <connect.widget.roundedimageview.RoundedImageView
             android:id="@+id/ivAvatar"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"

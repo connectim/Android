@@ -16,7 +16,7 @@
             android:layout_height="@dimen/dp_70"
             android:layout_centerVertical="true">
 
-            <connect.view.roundedimageview.RoundedImageView
+            <connect.widget.roundedimageview.RoundedImageView
                 android:id="@id/roundimg_head"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"
@@ -26,7 +26,7 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:scaleType="centerCrop"/>
 
-            <connect.view.MaterialBadgeTextView
+            <connect.widget.MaterialBadgeTextView
                 android:id="@id/badgetv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"/>
 
-            <connect.ui.activity.home.view.ShowTextView
+            <connect.activity.home.view.ShowTextView
                 android:id="@id/directTxtView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

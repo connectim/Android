@@ -5,7 +5,7 @@
     android:paddingTop="@dimen/dp_4"
     >
 
-    <connect.view.SideScrollView
+    <connect.widget.SideScrollView
         android:id="@+id/side_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
         </RelativeLayout>
 
     </RelativeLayout>
-    </connect.view.SideScrollView>
+    </connect.widget.SideScrollView>
 
 
     <RelativeLayout

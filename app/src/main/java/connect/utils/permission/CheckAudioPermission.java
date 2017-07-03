@@ -36,7 +36,7 @@ public class CheckAudioPermission {
                     channelConfig, audioFormat, bufferSizeInBytes);
             // Prevent certain mobile collapse, such as lenovo
             audioRecord.startRecording();
-        }catch (IllegalStateException e){
+        }catch (Exception e){
             e.printStackTrace();
         }
         /**

@@ -5,9 +5,9 @@
               android:layout_height="match_parent"
               android:background="@color/color_bg_activity"
               android:orientation="vertical"
-              tools:context="connect.ui.activity.chat.exts.TransferDetailActivity">
+              tools:context="connect.activity.chat.exts.TransferDetailActivity">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -34,7 +34,7 @@
             android:orientation="vertical"
             android:paddingRight="@dimen/dp_10">
 
-            <connect.view.roundedimageview.RoundedImageView
+            <connect.widget.roundedimageview.RoundedImageView
                 android:id="@id/roundimg1"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"
@@ -62,7 +62,7 @@
             android:orientation="vertical"
             android:paddingLeft="@dimen/dp_10">
 
-            <connect.view.roundedimageview.RoundedImageView
+            <connect.widget.roundedimageview.RoundedImageView
                 android:id="@id/roundimg2"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"
