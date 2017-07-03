@@ -15,8 +15,10 @@ import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -25,6 +27,7 @@ import connect.ui.base.BaseApplication;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -65,7 +68,7 @@ public class ModifyAvaterPresenter implements ModifyAvaterContract.Presenter{
 
     @Override
     public void saveImageToGallery() {
-        String path = SharedPreferenceUtil.getInstance().getAvatar();
+        String path = MemoryDataManager.getInstance().getAvatar();
         if (!TextUtils.isEmpty(path)) {
             Glide.with(BaseApplication.getInstance())
                     .load(path + "?size=500")
@@ -84,7 +87,8 @@ public class ModifyAvaterPresenter implements ModifyAvaterContract.Presenter{
     }
 
     private void saveNotigy(Bitmap bmp){
-        pathDcim = BitmapUtil.bitmapSavePathDCIM(bmp);
+        File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bmp);
+        pathDcim = file.getAbsolutePath();
         try {
             MediaStore.Images.Media.insertImage(mView.getActivity().getContentResolver(), pathDcim, "", null);
             scanner.connect();
@@ -100,8 +104,9 @@ public class ModifyAvaterPresenter implements ModifyAvaterContract.Presenter{
         new AsyncTask<Void, Void, Connect.Avatar>() {
             @Override
             protected Connect.Avatar doInBackground(Void... params) {
-                String path = BitmapUtil.resizeImage(pathLocal,1080);
-                byte[] headByte = BitmapUtil.bmpToByteArray(BitmapFactory.decodeFile(path));
+                File file = BitmapUtil.getInstance().compress(pathLocal);
+                String path = file.getAbsolutePath();
+                byte[] headByte = BitmapUtil.bmpToByteArray(BitmapFactory.decodeFile(path),100);
                 Connect.Avatar avatar = Connect.Avatar.newBuilder()
                         .setFile(ByteString.copyFrom(headByte))
                         .build();
@@ -119,15 +124,15 @@ public class ModifyAvaterPresenter implements ModifyAvaterContract.Presenter{
                         ProgressUtil.getInstance().dismissProgress();
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(
-                                    SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.AvatarInfo userAvatar = Connect.AvatarInfo.parseFrom(structData.getPlainData());
-                            UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
-                            userBean.setAvatar(userAvatar.getUrl());
-                            SharedPreferenceUtil.getInstance().updataUser(userBean);
-                            SharedPreferenceUtil.getInstance().putMapStr(SharedPreferenceUtil.PUB_AVATAR,userAvatar.getUrl());
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(userAvatar)){
+                                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                                userBean.setAvatar(userAvatar.getUrl());
+                                SharedPreferenceUtil.getInstance().putUser(userBean);
 
-                            mView.requestAvaFninish(userAvatar.getUrl());
+                                mView.requestAvaFninish(userAvatar.getUrl());
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.GroupEntity;
@@ -23,6 +24,7 @@ import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -85,7 +87,7 @@ public class GroupQRActivity extends BaseActivity {
         toolbar.setRightListence(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
                 final ArrayList<String> list = new ArrayList<>();
                 if (myMember.getRole() == 1) {
                     list.add(activity.getResources().getString(R.string.Link_Refresh_QR_Code));
@@ -109,7 +111,7 @@ public class GroupQRActivity extends BaseActivity {
                                         }
                                     });
                         } else if (activity.getResources().getString(R.string.Link_Refresh_QR_Code).equals(list.get(position))) {
-                            BitmapUtil.bitmapSavePath(img1.getDrawingCache());
+                            BitmapUtil.getInstance().bitmapSavePath(img1.getDrawingCache());
                         } else if (getString(R.string.Link_Share).equals(list.get(position))) {//share group address
                             shareGroupUrl();
                         }
@@ -139,21 +141,21 @@ public class GroupQRActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(url, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupHash groupHash = Connect.GroupHash.parseFrom(structData.getPlainData());
-
-                    String hash = groupHash.getHash();
-                    if (TextUtils.isEmpty(hash)) {
-                        toolbar.setRightImg(null);
-                        txt3.setVisibility(View.VISIBLE);
-                    } else {
-                        txt3.setVisibility(View.GONE);
-                        CreateScan createScan = new CreateScan();
-                        Bitmap bitmap = createScan.generateQRCode(hash, getResources().getColor(R.color.color_white));
-                        img1.setImageBitmap(bitmap);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupHash)){
+                        String hash = groupHash.getHash();
+                        if (TextUtils.isEmpty(hash)) {
+                            toolbar.setRightImg(null);
+                            txt3.setVisibility(View.VISIBLE);
+                        } else {
+                            txt3.setVisibility(View.GONE);
+                            CreateScan createScan = new CreateScan();
+                            Bitmap bitmap = createScan.generateQRCode(hash, getResources().getColor(R.color.color_white));
+                            img1.setImageBitmap(bitmap);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -175,12 +177,11 @@ public class GroupQRActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_SHARE, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupUrl groupUrl = Connect.GroupUrl.parseFrom(structData.getPlainData());
-                    if(TextUtils.isEmpty(groupUrl.getUrl())){
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(groupUrl)){
                         ToastEUtil.makeText(activity,R.string.Link_Share_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
                         return;
                     }

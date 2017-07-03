@@ -12,6 +12,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.RegisterPhotoActivity;
@@ -63,7 +64,7 @@ public class ModifyAvaterActivity extends BaseActivity implements ModifyAvaterCo
         toolbarTop.setTitle(null, R.string.Chat_Photo);
         toolbarTop.setRightImg(R.mipmap.menu_white);
         setPresenter(new ModifyAvaterPresenter(this));
-        GlideUtil.loadAvater(avatarImg,  SharedPreferenceUtil.getInstance().getAvatar() + "?size=400");
+        GlideUtil.loadAvater(avatarImg,  MemoryDataManager.getInstance().getAvatar() + "?size=400");
     }
 
     @Override
@@ -111,7 +112,7 @@ public class ModifyAvaterActivity extends BaseActivity implements ModifyAvaterCo
     @Override
     public void requestAvaFninish(String path) {
         ToastEUtil.makeText(mActivity,R.string.Set_Set_Avatar_success).show();
-        GlideUtil.loadAvater(avatarImg,path);
+        GlideUtil.loadAvater(avatarImg,path + "?size=400");
     }
 
     @Override

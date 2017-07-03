@@ -167,6 +167,6 @@ public class ConversationActivity extends BaseActivity {
         if (serializables != null) {
             bundle.putSerializable("Serializable", serializables);
         }
-        ActivityUtil.goBackWithResult(activity,CODE_REQUEST,bundle);
+        ActivityUtil.goBackWithResult(activity, CODE_REQUEST, bundle);
     }
 }

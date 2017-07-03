@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -27,17 +28,21 @@ import connect.db.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.Talker;
 import connect.ui.activity.home.bean.HomeAction;
+import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.activity.home.bean.RoomAttrBean;
 import connect.ui.activity.home.view.ShowTextView;
 import connect.utils.FileUtil;
-import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.TimeUtil;
+import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
+import connect.utils.system.SystemDataUtil;
 import connect.view.MaterialBadgeTextView;
 import connect.view.SideScrollView;
 import connect.view.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 import static connect.view.SideScrollView.SideScrollListener;
 
@@ -79,7 +84,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
 
     @Override
     public void onBindViewHolder(ListChatHolder holder, final int position) {
-        RoomAttrBean roomAttr = roomAttrBeanList.get(position);
+        final RoomAttrBean roomAttr = roomAttrBeanList.get(position);
         holder.directTxt.showText(roomAttr.getAt(),roomAttr.getDraft(), TextUtils.isEmpty(roomAttr.getContent()) ? "" : roomAttr.getContent());
         try {
             long sendtime = roomAttr.getTimestamp();
@@ -125,7 +130,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             holder.bottomNotify.setVisibility(View.VISIBLE);
         }
 
-        if (0 == roomAttr.getStranger() || SharedPreferenceUtil.getInstance().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
+        if (0 == roomAttr.getStranger() || MemoryDataManager.getInstance().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
             holder.stangerTxt.setVisibility(View.GONE);
         } else {
             holder.stangerTxt.setVisibility(View.VISIBLE);
@@ -160,11 +165,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     closeMenu(scrollView);
                     closeMenu();
                 } else {
-                    if (roomAttrBeanList.size() <= position) {
-                        return;
-                    }
                     closeMenu();
-                    RoomAttrBean roomAttr = roomAttrBeanList.get(position);
                     Talker talker = null;
                     switch (roomAttr.getRoomtype()) {
                         case 0:
@@ -185,7 +186,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                             talker = new Talker(2, inflater.getContext().getString(R.string.app_name));
                             break;
                     }
-                    HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, talker);
+
+                    if (talker != null) {
+                        HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, talker);
+                    }
                 }
             }
         });
@@ -195,14 +199,16 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             public void onClick(View v) {
                 SideScrollView scrollView = (SideScrollView) v.getTag();
                 scrollView.closeMenu();
-                RoomAttrBean roomAttr = roomAttrBeanList.get(position);
-                removeData(position);
 
                 String roomid = roomAttr.getRoomid();
                 ConversionHelper.getInstance().deleteRoom(roomid);
                 MessageHelper.getInstance().deleteRoomMsg(roomid);
                 FileUtil.deleteContactFile(roomid);
-                MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+
+                roomAttrBeanList.remove(roomAttr);
+                notifyItemRemoved(position);
+
+                MsgFragmReceiver.refreshRoom();
             }
         });
         holder.bottomNotify.setTag(holder.itemView);
@@ -222,6 +228,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     index.badgeTxt.setBadgeCount(select ? 1 : 0, unRead);
                     int disturb = select ? 1 : 0;
                     ConversionSettingHelper.getInstance().updateDisturb(roomAttrBeanList.get(position).getRoomid(), disturb);
+                    MsgFragmReceiver.refreshRoom();
+                    if (roomAttrBeanList.get(position).getRoomtype() == 1) {
+                        String roomid = roomAttrBeanList.get(position).getRoomid();
+                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupNotificaton, roomid, disturb);
+                    }
                 }
             }
         });
@@ -231,7 +242,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         int firstItemPosition = layoutManager.findFirstVisibleItemPosition();
         if (position - firstItemPosition >= 0) {
-//            View view = recyclerView.getChildAt(position - firstItemPosition + 1);
             View view = recyclerView.getChildAt(position - firstItemPosition);
             if (null != recyclerView.getChildViewHolder(view)) {
                 return (ListChatHolder) recyclerView.getChildViewHolder(view);
@@ -281,11 +291,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             badgeTxt = (MaterialBadgeTextView) contentLayout.findViewById(R.id.badgetv);
             ((SideScrollView) itemView).setSideScrollListener(sideScrollListener);
         }
-    }
-
-    public void removeData(int position) {
-        roomAttrBeanList.remove(position);
-        notifyItemRemoved(position);
     }
 
     public void closeMenu(SideScrollView scrollView) {

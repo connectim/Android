@@ -15,7 +15,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.db.SharedPreferenceUtil;
+import connect.db.MemoryDataManager;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.db.green.bean.ContactEntity;
@@ -23,12 +23,12 @@ import connect.db.green.bean.GroupEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgSend;
-import connect.ui.activity.login.bean.UserBean;
-import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.PacketHistoryActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
-import connect.ui.activity.wallet.support.TransaUtil;
-import connect.ui.activity.wallet.support.TransferError;
+import connect.utils.ProtoBufUtil;
+import connect.utils.transfer.TransferError;
+import connect.utils.transfer.TransferUtil;
+import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -42,7 +42,7 @@ import connect.view.MdStyleProgress;
 import connect.view.TopToolBar;
 import connect.view.payment.PaymentPwd;
 import connect.view.roundedimageview.RoundedImageView;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -75,8 +75,7 @@ public class RedPacketActivity extends BaseActivity {
     private int redType;
     /** packet address */
     private String redKey;
-    private TransaUtil transaUtil;
-    private UserBean userBean;
+    private TransferUtil transaUtil;
     private ContactEntity friendEntity;
     private GroupEntity groupEntity;
     private Connect.PendingRedPackage pendingRedPackage = null;
@@ -117,8 +116,7 @@ public class RedPacketActivity extends BaseActivity {
             }
         });
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
-        transaUtil = new TransaUtil();
+        transaUtil = new TransferUtil();
 
         redType = getIntent().getIntExtra(RED_TYPE, 0);
         redKey = getIntent().getStringExtra(RED_KEY);
@@ -129,11 +127,11 @@ public class RedPacketActivity extends BaseActivity {
 
             friendEntity = ContactHelper.getInstance().loadFriendEntity(redKey);
             if (friendEntity == null) {
-                if (SharedPreferenceUtil.getInstance().getPubKey().equals(redKey)) {
+                if (MemoryDataManager.getInstance().getPubKey().equals(redKey)) {
                     friendEntity = new ContactEntity();
-                    friendEntity.setAvatar(userBean.getAvatar());
-                    friendEntity.setUsername(userBean.getName());
-                    friendEntity.setAddress(userBean.getAddress());
+                    friendEntity.setAvatar(MemoryDataManager.getInstance().getAvatar());
+                    friendEntity.setUsername(MemoryDataManager.getInstance().getName());
+                    friendEntity.setAddress(MemoryDataManager.getInstance().getAddress());
                 } else {
                     ActivityUtil.goBack(activity);
                     return;
@@ -188,8 +186,11 @@ public class RedPacketActivity extends BaseActivity {
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
-                            pendingRedPackage = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
+                                pendingRedPackage = pending;
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }
@@ -204,9 +205,9 @@ public class RedPacketActivity extends BaseActivity {
 
     private void checkWalletMoney() {
         final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        new TransaUtil().getOutputTran(activity, userBean.getAddress(), true,
+        new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), true,
                 pendingRedPackage.getAddress(),transferEditView.getAvaAmount(), amount,
-                new TransaUtil.OnResultCall() {
+                new TransferUtil.OnResultCall() {
             @Override
             public void result(String inputString, String outputString) {
                 checkPayPassword(amount, inputString, outputString);
@@ -220,13 +221,8 @@ public class RedPacketActivity extends BaseActivity {
             paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
                 @Override
                 public void onTrue() {
-                    String samValue = transaUtil.getSignRawTrans(userBean.getPriKey(), inputString, outputString);
+                    String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     sendPacket(amount, samValue);
-                }
-
-                @Override
-                public void onFalse() {
-
                 }
             });
         }
@@ -259,10 +255,11 @@ public class RedPacketActivity extends BaseActivity {
                     public void onComplete() {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
-                            MsgSend.sendOuterMsg(MsgType.Lucky_Packet, redPackage.getHashId(), transferEditView.getNote());
-
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(redPackage)){
+                                MsgSend.sendOuterMsg(MsgType.Lucky_Packet, redPackage.getHashId(), transferEditView.getNote());
+                            }
                             if (redType == 0) {
                                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(5,friendEntity.getAvatar(),
                                         friendEntity.getUsername(),friendEntity.getAvatar()));

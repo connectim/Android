@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -52,7 +53,6 @@ public class RequestActivity extends BaseActivity {
     TextView setAmountTv;
 
     private RequestActivity mActivity;
-    private UserBean userBean;
     public static String TRANSFER_SCAN_HEAD = "bitcoin:";
     public static String TRANSFER_AMOUNT_HEAD = "amount=";
     private EditInputFilterPrice bitEditFilter = new EditInputFilterPrice(Double.valueOf(999),8);
@@ -78,15 +78,14 @@ public class RequestActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Wallet_Receipt);
         toolbarTop.setRightImg(R.mipmap.wallet_share_payment2x);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
-        scanHead = TRANSFER_SCAN_HEAD + userBean.getAddress() + "?" +TRANSFER_AMOUNT_HEAD;
+        scanHead = TRANSFER_SCAN_HEAD + MemoryDataManager.getInstance().getAddress() + "?" +TRANSFER_AMOUNT_HEAD;
 
-        addressTv.setText(userBean.getAddress());
+        addressTv.setText(MemoryDataManager.getInstance().getAddress());
         InputFilter[] inputFiltersBtc = {bitEditFilter};
         amountEt.setFilters(inputFiltersBtc);
         amountEt.addTextChangedListener(textWatcher);
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(TRANSFER_SCAN_HEAD + userBean.getAddress());
+        Bitmap bitmap = createScan.generateQRCode(TRANSFER_SCAN_HEAD + MemoryDataManager.getInstance().getAddress());
         scanImg.setImageBitmap(bitmap);
     }
 
@@ -98,13 +97,13 @@ public class RequestActivity extends BaseActivity {
     @OnClick(R.id.address_lin)
     void goCopy(View view) {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        cm.setText(userBean.getAddress());
+        cm.setText(MemoryDataManager.getInstance().getAddress());
         ToastEUtil.makeText(mActivity,R.string.Set_Copied).show();
     }
 
     @OnClick(R.id.right_lin)
     void goshare(View view) {
-        String url = shareUrl + userBean.getAddress();
+        String url = shareUrl + MemoryDataManager.getInstance().getAddress();
         if(!TextUtils.isEmpty(amountEt.getText().toString())){
             url = url + "&amount=" + amountEt.getText().toString();
         }
@@ -144,7 +143,7 @@ public class RequestActivity extends BaseActivity {
         public void afterTextChanged(Editable s) {
             String scanUrl;
             if(TextUtils.isEmpty(s.toString())){
-                scanUrl = TRANSFER_SCAN_HEAD + userBean.getAddress();
+                scanUrl = TRANSFER_SCAN_HEAD + MemoryDataManager.getInstance().getAddress();
             }else{
                 scanUrl = scanHead + s.toString();
             }

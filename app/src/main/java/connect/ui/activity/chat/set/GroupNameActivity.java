@@ -96,7 +96,7 @@ public class GroupNameActivity extends BaseActivity {
                     toolbar.setRightListence(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            updateGroupName();
+                            updateGroupName(groupKey);
                         }
                     });
                 }
@@ -104,8 +104,8 @@ public class GroupNameActivity extends BaseActivity {
         });
     }
 
-    protected void updateGroupName() {
-        Connect.UpdateGroupInfo groupInfo = Connect.UpdateGroupInfo.newBuilder()
+    protected void updateGroupName(final String groupKey) {
+        final Connect.UpdateGroupInfo groupInfo = Connect.UpdateGroupInfo.newBuilder()
                 .setName(edittxt1.getText().toString()).setIdentifier(groupEntity.getIdentifier()).build();
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_UPDATE, groupInfo, new ResultCall<Connect.HttpResponse>() {
@@ -113,15 +113,18 @@ public class GroupNameActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 String groupName = edittxt1.getText().toString();
-                if (TextUtils.isEmpty(groupName)) {
-                    return;
-                }
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                groupEntity.setName(groupName);
-                ContactHelper.getInstance().inserGroupEntity(groupEntity);
 
-                ContactNotice.receiverGroup();
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.GROUP_UPDATENAME, groupName);
+                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                if (!(groupEntity == null || TextUtils.isEmpty(groupName) || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
+                    if (TextUtils.isEmpty(groupName)) {
+                        groupName = "groupname7";
+                    }
+                    groupEntity.setName(groupName);
+                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
+
+                    ContactNotice.receiverGroup();
+                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.GROUP_UPDATENAME, groupName);
+                }
                 GroupSetActivity.startActivity(activity,groupKey);
             }
 

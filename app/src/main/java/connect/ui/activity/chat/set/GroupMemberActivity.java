@@ -11,7 +11,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.db.SharedPreferenceUtil;
+import connect.db.MemoryDataManager;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
@@ -82,7 +82,7 @@ public class GroupMemberActivity extends BaseActivity {
         });
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
 
         layoutManager = new LinearLayoutManager(activity);
         recordview.setLayoutManager(layoutManager);

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ParamHelper;
@@ -67,7 +68,10 @@ public class FriendChat extends NormalChat {
         msgDefinBean.setMessage_id(TimeUtil.timestampToMsgid());
         msgDefinBean.setPublicKey(contactEntity.getPub_key());
         msgDefinBean.setUser_id(address());
-        msgDefinBean.setSenderInfoExt(new MsgSender(userBean.getPubKey(), userBean.getName(), userBean.getAddress(), userBean.getAvatar()));
+        msgDefinBean.setSenderInfoExt(new MsgSender(MemoryDataManager.getInstance().getPubKey(),
+                MemoryDataManager.getInstance().getName(),
+                MemoryDataManager.getInstance().getAddress(),
+                MemoryDataManager.getInstance().getAvatar()));
 
         long burntime = RoomSession.getInstance().getBurntime();
         if (burntime > 0) {
@@ -99,7 +103,7 @@ public class FriendChat extends NormalChat {
 
         switch (encryType) {
             case NORMAL:
-                priKey = SharedPreferenceUtil.getInstance().getPriKey();
+                priKey = MemoryDataManager.getInstance().getPriKey();
                 friendKey = definBean.getPublicKey();
                 ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
                 break;
@@ -181,7 +185,7 @@ public class FriendChat extends NormalChat {
     }
 
     private void loadUserCookie() {
-        String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
         userCookie = Session.getInstance().getUserCookie(pubkey);
         if (userCookie == null) {
             String cookieKey = "COOKIE:" + pubkey;

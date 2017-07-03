@@ -14,6 +14,7 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.im.bean.Session;
@@ -65,7 +66,7 @@ public class SupportKeyUril {
      * @return
      */
     public static String getPubKeyFromPriKey() {
-        String prikey = SharedPreferenceUtil.getInstance().getPriKey();
+        String prikey = MemoryDataManager.getInstance().getPriKey();
         return AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
     }
 
@@ -115,6 +116,9 @@ public class SupportKeyUril {
      */
     public static String hmacSHA512(String data, String key) {
         String result = "";
+        if(TextUtils.isEmpty(data) || TextUtils.isEmpty(key)){
+            return result;
+        }
         byte[] bytesKey = key.getBytes();
         final SecretKeySpec secretKey = new SecretKeySpec(bytesKey, "HmacSHA512");
         try {
@@ -123,9 +127,7 @@ public class SupportKeyUril {
             final byte[] macData = mac.doFinal(data.getBytes());
             result = StringUtil.bytesToHexString(macData);
             //result = new String(, "ISO-8859-1");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -135,6 +137,9 @@ public class SupportKeyUril {
      * def whether the private key
      */
     public static boolean checkPrikey(String prikey) {
+        if(TextUtils.isEmpty(prikey)){
+            return false;
+        }
         return AllNativeMethod.checkPrivateKeyJ(prikey) > -1;
     }
 
@@ -142,6 +147,9 @@ public class SupportKeyUril {
      * def  whether the bitcoin address
      */
     public static boolean checkAddress(String address) {
+        if(TextUtils.isEmpty(address)){
+            return false;
+        }
         return AllNativeMethod.checkAddressJ(address) > -1;
     }
 
@@ -157,7 +165,7 @@ public class SupportKeyUril {
     }
 
     public static String localHashKey() {
-        String key = AllNativeMethod.cdGetHash256(SharedPreferenceUtil.getInstance().getPriKey());
+        String key = AllNativeMethod.cdGetHash256(MemoryDataManager.getInstance().getPriKey());
         key = AllNativeMethod.cdGetHash256(key);
         return key;
     }

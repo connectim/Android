@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
@@ -53,7 +54,6 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
     private NewFriendActivity mActivity;
     private NewFriendContract.Presenter presenter;
     private NewRequestAdapter requestAdapter;
-    private UserBean userBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +77,6 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_New_friend);
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         setPresenter(new NewFriendPresenter(this));
 
         presenter.initGrid(recycler);
@@ -112,7 +111,8 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
             case 2://share
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, ConfigUtil.getInstance().shareCardAddress() + "?address=" + userBean.getAddress());
+                shareIntent.putExtra(Intent.EXTRA_TEXT, ConfigUtil.getInstance().shareCardAddress()
+                        + "?address=" + MemoryDataManager.getInstance().getAddress());
                 shareIntent.setType("text/plain");
                 startActivity(Intent.createChooser(shareIntent, "share to"));
                 break;
@@ -128,6 +128,9 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         switch (notice.ntEnum) {
             case MSG_SEND_SUCCESS:
                 MsgSendBean sendBean = (MsgSendBean) objs[0];
+                if (sendBean == null || sendBean.getType() == null) {
+                    return;
+                }
                 if(sendBean.getType() == MsgSendBean.SendType.TypeAcceptFriendQuest){
                     presenter.updataFriendRequest(ContactHelper.getInstance().loadFriendRequest(sendBean.getAddress()));
                 }else if(sendBean.getType() == MsgSendBean.SendType.TypeRecommendNoInterested){

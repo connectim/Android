@@ -7,22 +7,21 @@ import android.text.TextWatcher;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.PacketSendActivity;
 import connect.ui.activity.wallet.bean.SendOutBean;
 import connect.ui.activity.wallet.bean.TransferBean;
 import connect.ui.activity.wallet.contract.PacketContract;
-import connect.ui.activity.wallet.support.TransferError;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.transfer.TransferError;
 import connect.view.MdStyleProgress;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -65,9 +64,11 @@ public class PacketPresenter implements PacketContract.Presenter{
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(),
-                                    imResponse.getCipherData());
-                            pendingRedPackage = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
+                                pendingRedPackage = pending;
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }
@@ -99,8 +100,7 @@ public class PacketPresenter implements PacketContract.Presenter{
                     public void onComplete() {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(
-                                    SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
 
                             SendOutBean sendOutBean = new SendOutBean();

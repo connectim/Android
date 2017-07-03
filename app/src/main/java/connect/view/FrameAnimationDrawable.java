@@ -13,7 +13,9 @@ import connect.utils.BitmapUtil;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +94,7 @@ public class FrameAnimationDrawable {
                                 for (int i = 0; i < parser.getAttributeCount(); i++) {
                                     if (parser.getAttributeName(i).equals("drawable")) {
                                         int resId = Integer.parseInt(parser.getAttributeValue(i).substring(1));
-                                        bytes = BitmapUtil.InputStreamToByte(context.getResources().openRawResource(resId));
+                                        bytes = InputStreamToByte(context.getResources().openRawResource(resId));
                                     } else if (parser.getAttributeName(i).equals("duration")) {
                                         duration = parser.getAttributeIntValue(i, 1000);
                                     }
@@ -123,6 +125,17 @@ public class FrameAnimationDrawable {
                 });
             }
         }).run();
+    }
+
+    public static byte[] InputStreamToByte(InputStream is) throws IOException {
+        ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
+        int ch;
+        while ((ch = is.read()) != -1) {
+            bytestream.write(ch);
+        }
+        byte imgdata[] = bytestream.toByteArray();
+        bytestream.close();
+        return imgdata;
     }
 
     public static void loadRaw(final int resourceId, final Context context, final OnDrawableLoadedListener onDrawableLoadedListener) {

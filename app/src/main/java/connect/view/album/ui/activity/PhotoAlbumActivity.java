@@ -138,8 +138,12 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
         public void refreshAlbumData(AlbumViewData albumData) {
             if (albumData != null) {
                 mAlbumFolderInfoList = albumData.getAlbumFolderInfoList();
-                albumFolderInfo = mAlbumFolderInfoList.get(0);
-                switchAlbumFolder(albumFolderInfo);
+                if (mAlbumFolderInfoList.size() == 0) {
+                    gridListInfos();
+                } else {
+                    albumFolderInfo = mAlbumFolderInfoList.get(0);
+                    switchAlbumFolder(albumFolderInfo);
+                }
             }
         }
 

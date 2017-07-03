@@ -4,14 +4,11 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.google.protobuf.ByteString;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.nio.ByteBuffer;
-import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionSettingHelper;
@@ -24,9 +21,9 @@ import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgEntity;
+import connect.ui.activity.chat.bean.RecExtBean;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.NormalChat;
@@ -57,7 +54,7 @@ public class ChatParseBean extends InterParse {
     }
 
     @Override
-    public void msgParse() throws Exception {
+    public synchronized void msgParse() throws Exception {
         switch (ackByte) {
             case 0x01://private chat
             case 0x02://burn chat
@@ -70,12 +67,9 @@ public class ChatParseBean extends InterParse {
                 groupChat(messagePost);
                 break;
         }
-
-        String msgid = messagePost.getMsgData().getMsgId();
-        sendBackAck(msgid);
     }
 
-    public void singleChat(Connect.MessagePost msgpost) {
+    public synchronized void singleChat(Connect.MessagePost msgpost) {
         String friendPubKey = msgpost.getPubKey();
         String priKey = null;
         String pubkey = null;
@@ -90,10 +84,10 @@ public class ChatParseBean extends InterParse {
 
         SupportKeyUril.EcdhExts ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
         if (TextUtils.isEmpty(messageData.getChatPubKey())) {//old protocol
-            priKey = SharedPreferenceUtil.getInstance().getPriKey();
+            priKey = MemoryDataManager.getInstance().getPriKey();
             pubkey = friendPubKey;
         } else if (null == messageData.getVer() || messageData.getVer().size() == 0) {//half random
-            priKey = SharedPreferenceUtil.getInstance().getPriKey();
+            priKey = MemoryDataManager.getInstance().getPriKey();
 
             ByteString fromSalt = messageData.getSalt();
             pubkey = messageData.getChatPubKey();
@@ -105,12 +99,7 @@ public class ChatParseBean extends InterParse {
 
             ParamEntity toSaltEntity = ParamHelper.getInstance().likeParamEntity(StringUtil.bytesToHexString(toSalt.toByteArray()));
             if (toSaltEntity == null) {
-                String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
-                NormalChat normalChat = new FriendChat(friendEntity);
-                MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
-                normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime());
-                MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(),msgEntity.getMsgDefinBean());
-                MsgChatReceiver.sendChatReceiver(normalChat.roomKey(), msgEntity);
+                msgParseException(friendPubKey);
                 return;
             }
 
@@ -125,12 +114,7 @@ public class ChatParseBean extends InterParse {
         if (contents.length > 10) {
             parseToGsonMsg(msgpost.getPubKey(), 0, contents);
         } else {
-            String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
-            NormalChat normalChat = new FriendChat(friendEntity);
-            MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
-            normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime());
-            MsgChatReceiver.sendChatReceiver(normalChat.roomKey(), msgEntity);
-            MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(),msgEntity.getMsgDefinBean());
+            msgParseException(friendPubKey);
         }
     }
 
@@ -139,7 +123,7 @@ public class ChatParseBean extends InterParse {
      *
      * @param msgpost
      */
-    protected void groupChat(Connect.MessagePost msgpost) {
+    protected synchronized void groupChat(Connect.MessagePost msgpost) {
         String pubkey = msgpost.getMsgData().getReceiverAddress();
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
         Connect.GcmData gcmData = msgpost.getMsgData().getCipherData();
@@ -165,7 +149,7 @@ public class ChatParseBean extends InterParse {
      */
     protected void inviteJoinGroup(Connect.MessagePost msgpost) throws Exception {
         Connect.GcmData gcmData = msgpost.getMsgData().getCipherData();
-        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, SharedPreferenceUtil.getInstance().getPriKey(),
+        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, MemoryDataManager.getInstance().getPriKey(),
                 msgpost.getPubKey(), gcmData);
 
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData());
@@ -193,36 +177,34 @@ public class ChatParseBean extends InterParse {
                 break;
             default:
                 MessageHelper.getInstance().insertFromMsg(pubkey, definBean);
-                ChatMsgUtil.updateRoomInfo(pubkey, roomtype, definBean.getSendtime(), definBean);
+
+                NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
+                normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime(), -1, true, false);
                 break;
         }
         broadMsg(pubkey, roomtype, definBean);
+    }
+
+    protected void msgParseException(String pubkey) {
+        NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
+        if (normalChat != null) {
+            String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
+            MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
+            normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+            MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
+            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgEntity);
+        }
     }
 
     /**
      * broad message
      */
     protected void broadMsg(String pubkey, int type, MsgDefinBean definBean) {
-        MsgEntity chatBean = new MsgEntity();
-        chatBean.setMsgDefinBean(definBean);
-        chatBean.setSendstate(0);
-        chatBean.setPubkey(pubkey);
-
-        MsgChatReceiver msgChatReceiver = new MsgChatReceiver(chatBean);
-        msgChatReceiver.setPubKey(pubkey);
-        EventBus.getDefault().post(msgChatReceiver);
-
-        boolean isAt = false;
-        if (definBean.getType() == 1 && !TextUtils.isEmpty(definBean.getExt1())) {
-            List<String> addressList = new Gson().fromJson(definBean.getExt1(), new TypeToken<List<String>>() {
-            }.getType());
-            String myAddress = SharedPreferenceUtil.getInstance().getAddress();
-            if (addressList.contains(myAddress)) {//at me
-                isAt = true;
-            }
-        }
-
-        pushNoticeMsg(pubkey, type, isAt ? BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me) :
-                ChatMsgUtil.showContentTxt(type, definBean));
+        MsgEntity msgEntity = new MsgEntity();
+        msgEntity.setMsgDefinBean(definBean);
+        msgEntity.setSendstate(0);
+        msgEntity.setPubkey(pubkey);
+        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
+        pushNoticeMsg(pubkey, type, msgEntity);
     }
 }

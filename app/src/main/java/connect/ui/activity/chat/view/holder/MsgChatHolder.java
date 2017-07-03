@@ -1,13 +1,16 @@
 package connect.ui.activity.chat.view.holder;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
@@ -51,8 +54,10 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
     protected RelativeLayout contentLayout;
     protected MsgSender sender;
 
+    private PromptViewHelper pvHelper = null;
     protected PromptViewHelper.OnPromptClickListener promptClickListener = null;
 
+    @TargetApi(Build.VERSION_CODES.M)
     public MsgChatHolder(View itemView) {
         super(itemView);
         headImg = (ChatHeadImg) itemView.findViewById(R.id.roundimg_head);
@@ -98,7 +103,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         }
 
         final String[] strings = longPressPrompt();
-        final PromptViewHelper pvHelper = new PromptViewHelper(context);
+        pvHelper = new PromptViewHelper(context);
         pvHelper.setPromptViewManager(new ChatPromptViewManager(context, strings));
         pvHelper.addPrompt(longClickView());
         pvHelper.setOnItemClickListener(promptClickListener);
@@ -143,7 +148,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 if (direct == MsgDirect.From && RoomSession.getInstance().getRoomType() == 0) {
                     GlideUtil.loadAvater(headImg, RoomSession.getInstance().getFriendAvatar());
                 } else if (direct == MsgDirect.To) {
-                    GlideUtil.loadAvater(headImg, SharedPreferenceUtil.getInstance().getAvatar());
+                    GlideUtil.loadAvater(headImg, MemoryDataManager.getInstance().getAvatar());
                 } else if (sender != null) {
                     GlideUtil.loadAvater(headImg, sender.avatar);
                 }
@@ -176,7 +181,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                         memberTxt.setVisibility(View.GONE);
                     }
                 } else {
-                    String imgpath = SharedPreferenceUtil.getInstance().getAvatar();
+                    String imgpath = MemoryDataManager.getInstance().getAvatar();
                     GlideUtil.loadAvater(headImg, imgpath);
                 }
                 break;

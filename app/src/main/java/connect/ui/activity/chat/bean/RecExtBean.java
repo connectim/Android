@@ -39,6 +39,7 @@ public class RecExtBean {
         GROUP_REMOVE,//dissolution group
         UNARRIVE_UPDATE,//update friend Cookie
         UNARRIVE_HALF,//half random
+        MESSAGE_RECEIVE,//receive push message
     }
 
     private ExtType extType;

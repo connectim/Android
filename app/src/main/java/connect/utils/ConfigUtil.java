@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import connect.ui.base.BaseApplication;
-import connect.utils.log.LogManager;
 
 /**
  * Created by gtq on 2016/12/26.
@@ -24,7 +23,7 @@ public class ConfigUtil {
     private Map<String, String> keyMaps = null;
 
     public ConfigUtil() {
-        initConfig(ModeEnum.RELEASE);
+        initConfig(ModeEnum.SANDBOX);
     }
 
     /**
@@ -67,14 +66,12 @@ public class ConfigUtil {
                     if (nameTxt.equals("APP_MODE")) {
                         if (contentTxt.equals("" + mode)) {
                             findMode = true;
-                            LogManager.getLogger().d(Tag, "APP_MODE find mode");
                         } else {
                             findMode = false;
                         }
                     }
 
                     if (findMode) {
-                        LogManager.getLogger().d(Tag, nameTxt + "-->" + contentTxt);
                         keyMaps.put(nameTxt, contentTxt);
                     }
                     break;
@@ -108,6 +105,7 @@ public class ConfigUtil {
     private String SHARE_CARD_ADDRESS = "SHARE_CARD_ADDRESS";
     private String SHARE_PAY_ADDRESS = "SHARE_PAY_ADDRESS";
     private String CRASH_TAGS = "CRASH_TAGS";
+    private String CRASH_APPID= "CRASH_APPID";
 
     /**
      * app version
@@ -186,6 +184,10 @@ public class ConfigUtil {
      */
     public String getCrashTags() {
         return keyMaps.get(CRASH_TAGS);
+    }
+
+    public String getCrashAPPID(){
+        return keyMaps.get(CRASH_APPID);
     }
 
     public enum ModeEnum {

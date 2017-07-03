@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
+import java.io.File;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -23,7 +25,6 @@ import connect.view.TopToolBar;
 
 /**
  * Picture cut
- * Created by Administrator on 2017/3/17.
  */
 
 public class ClipImageActivity extends BaseActivity {
@@ -72,7 +73,8 @@ public class ClipImageActivity extends BaseActivity {
     void clip(View view) {
         if(isHavePersion()){
             Bitmap bitmap = idClipImageLayout.clip();
-            String path = BitmapUtil.bitmapSavePath(bitmap);
+            File file = BitmapUtil.getInstance().saveImage(null, bitmap, 100);
+            String path = file.getAbsolutePath();
 
             if(!TextUtils.isEmpty(path)){
                 Bundle bundle = new Bundle();

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_23"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/sp_11"
+        android:textColor="@color/color_161A21"
+        android:paddingLeft="@dimen/dp_15"
+        android:drawablePadding="@dimen/dp_3"
+        android:drawableLeft="@mipmap/contract_add_new_friends_small3x"
+        android:text="@string/Link_New_Friends" />
+
+    <RelativeLayout
+        android:id="@+id/new_friend_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_list_item_bg"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_20"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10">
+        <connect.view.roundedimageview.RoundedImageView
+            android:id="@+id/avatar_img"
+            android:scaleType="fitXY"
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"/>
+
+        <TextView
+            android:id="@+id/name_tv"
+            style="@style/BaseTextStyle.16"
+            android:layout_toRightOf="@+id/avatar_img"
+            android:textStyle="bold"
+            android:text=""
+            android:layout_marginLeft="@dimen/dp_22"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/tips_tv"
+            style="@style/BaseTextStyle.14"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/new_friend_name"
+            android:layout_toLeftOf="@+id/count_tv"
+            android:lines="1"
+            android:ellipsize="end"
+            android:text=""
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"/>
+        <TextView
+            android:id="@+id/count_tv"
+            style="@style/BaseTextStyle.14"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:gravity="center"
+            android:textColor="@color/color_ffffff"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_red_point"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,8 +1,6 @@
 package connect.ui.activity.login;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -12,36 +10,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.home.HomeActivity;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.login.contract.CodeLoginContract;
 import connect.ui.activity.login.presenter.CodeLoginPresenter;
-import connect.ui.activity.login.presenter.RegisterPresenter;
 import connect.ui.activity.set.PatternActivity;
 import connect.ui.base.BaseActivity;
-import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.RegularUtil;
-import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.view.TopToolBar;
 import connect.view.roundedimageview.RoundedImageView;
-import connect.wallet.jni.AllNativeMethod;
-import protos.Connect;
 
 /**
  * Login phone number verification
@@ -104,7 +89,9 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
         nicknameEt.setText(userBean.getName());
         GlideUtil.loadAvater(userheadImg, userBean.getAvatar());
         if (TextUtils.isEmpty(token)) {
-            passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+            if (!TextUtils.isEmpty(userBean.getPassHint())) {
+                passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+            }
             passwordeditTv.setVisibility(View.GONE);
             passwordEt.setHint(R.string.Login_Password);
         } else {

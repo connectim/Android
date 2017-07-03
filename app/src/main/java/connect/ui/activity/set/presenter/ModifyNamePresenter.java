@@ -80,9 +80,9 @@ public class ModifyNamePresenter implements ModifyNameContract.Presenter{
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_SETTING_USERINFO, avatar, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
+                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                 userBean.setName(value);
-                SharedPreferenceUtil.getInstance().updataUser(userBean);
+                SharedPreferenceUtil.getInstance().putUser(userBean);
                 mView.setFinish();
             }
 
@@ -103,9 +103,9 @@ public class ModifyNamePresenter implements ModifyNameContract.Presenter{
                 new ResultCall<Connect.HttpNotSignResponse>() {
                     @Override
                     public void onResponse(Connect.HttpNotSignResponse response) {
-                        UserBean userBean = new Gson().fromJson(SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.USER_INFO), UserBean.class);
+                        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                         userBean.setConnectId(value);
-                        SharedPreferenceUtil.getInstance().updataUser(userBean);
+                        SharedPreferenceUtil.getInstance().putUser(userBean);
                         mView.setFinish();
                     }
 

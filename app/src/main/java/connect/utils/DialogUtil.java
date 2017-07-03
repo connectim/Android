@@ -137,7 +137,9 @@ public class DialogUtil {
             edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         titleTv.setText(title);
-        if (!TextUtils.isEmpty(message)) {
+        if (TextUtils.isEmpty(message)) {
+            messageTv.setVisibility(View.GONE);
+        }else{
             messageTv.setText(message);
             messageTv.setVisibility(View.VISIBLE);
         }

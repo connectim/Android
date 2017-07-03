@@ -98,7 +98,7 @@ public class BurnProBar extends View {
     public void onEventMainThread(BurnNotice notice) {
         Object[] objects = (Object[]) notice.getObjs();
         if (notice.getBurnType() == BurnNotice.BurnType.BURN_READ) {
-            if (objects[0].equals(entity.getMsgDefinBean().getMessage_id())) {
+            if (entity != null && objects[0].equals(entity.getMsgDefinBean().getMessage_id())) {
                 startBurnRead();
             }
         }

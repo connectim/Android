@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
@@ -36,7 +37,7 @@ public class ConvertUtil {
         requestEntity.setPub_key(receiver.getSender().getPubKey());
         requestEntity.setStatus(1);
         requestEntity.setRead(0);
-        byte[] tipsByte = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,SharedPreferenceUtil.getInstance().getUser().getPriKey(),
+        byte[] tipsByte = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, MemoryDataManager.getInstance().getPriKey(),
                 receiver.getSender().getPubKey(),receiver.getTips());
         String rusult = "";
         try {
@@ -52,10 +53,10 @@ public class ConvertUtil {
      * Query whether registered users to add
      *
      * @param localList
-     * @param bookUsersInfo
+     * @param listUserInfo
      * @param handler
      */
-    public void convertUserInfo(final List<PhoneContactBean> localList, final Connect.PhoneBookUsersInfo bookUsersInfo, final Handler handler) {
+    public void convertUserInfo(final List<PhoneContactBean> localList, final ArrayList<Connect.PhoneBookUserInfo> listUserInfo, final Handler handler) {
         new AsyncTask<Void, Void, HashMap<String,List<PhoneContactBean>>>() {
             @Override
             protected HashMap<String,List<PhoneContactBean>> doInBackground(Void... params) {
@@ -63,7 +64,7 @@ public class ConvertUtil {
                 ArrayList<PhoneContactBean> arrayList = new ArrayList<>();
                 ArrayList<PhoneContactBean> local = new ArrayList<>();
 
-                for (Connect.PhoneBookUserInfo bookUserInfo : bookUsersInfo.getUsersList()) {
+                for (Connect.PhoneBookUserInfo bookUserInfo : listUserInfo) {
                     Connect.UserInfo userInfo = bookUserInfo.getUser();
                     PhoneContactBean contactBean = new PhoneContactBean();
                     contactBean.setNickName(userInfo.getUsername());
@@ -74,10 +75,13 @@ public class ConvertUtil {
 
                     ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
                     if (friendEntity != null) {
+                        // Check whether as a friend
                         contactBean.setStatus(2);
                     } else if (ContactHelper.getInstance().loadFriendRequest(userInfo.getAddress()) != null) {
+                        // Check whether there have been a friend request
                         contactBean.setStatus(3);
                     } else {
+                        // Registered, but didn't add
                         contactBean.setStatus(1);
                     }
                     if(!TextUtils.isEmpty(bookUserInfo.getPhoneHash())){
@@ -92,6 +96,7 @@ public class ConvertUtil {
                         if (serverContactBean.getPhone().equals(phoneHmac)) {
                             isAdd = false;
                             serverContactBean.setName(contactBean.getName());
+                            break;
                         }
                     }
                     if(isAdd)

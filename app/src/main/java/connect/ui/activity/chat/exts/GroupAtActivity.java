@@ -11,6 +11,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.GroupMemberEntity;
@@ -76,7 +77,7 @@ public class GroupAtActivity extends BaseActivity {
 
         groupKey = getIntent().getStringExtra("GROUP_KEY");
         linearLayoutManager = new LinearLayoutManager(activity);
-        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey, SharedPreferenceUtil.getInstance().getAddress());
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey, MemoryDataManager.getInstance().getAddress());
         Collections.sort(groupMemEntities, compara);
 
         adapter = new GroupMemberSelectAdapter(activity, groupMemEntities);

@@ -13,16 +13,16 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import connect.db.SharedPreferenceUtil;
+import connect.db.MemoryDataManager;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.GatherBean;
 import connect.ui.activity.chat.bean.MsgSend;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
@@ -34,7 +34,7 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.view.TopToolBar;
 import connect.view.roundedimageview.RoundedImageView;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -147,12 +147,11 @@ public class GatherActivity extends BaseActivity {
 
             friendEntity = ContactHelper.getInstance().loadFriendEntity(gatherKey);
             if (friendEntity == null) {
-                if (SharedPreferenceUtil.getInstance().getPubKey().equals(gatherKey)) {
-                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                if (MemoryDataManager.getInstance().getPubKey().equals(gatherKey)) {
                     friendEntity = new ContactEntity();
-                    friendEntity.setAvatar(userBean.getAvatar());
-                    friendEntity.setUsername(userBean.getName());
-                    friendEntity.setAddress(userBean.getAddress());
+                    friendEntity.setAvatar(MemoryDataManager.getInstance().getAvatar());
+                    friendEntity.setUsername(MemoryDataManager.getInstance().getName());
+                    friendEntity.setAddress(MemoryDataManager.getInstance().getAddress());
                 } else {
                     ActivityUtil.goBack(activity);
                     return;
@@ -214,22 +213,21 @@ public class GatherActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.BILLING_RECIVE, receiveBill, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
                         throw new Exception("Validation fails");
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.BillHashId hashId = Connect.BillHashId.parseFrom(structData.getPlainData());
 
-                    ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
-
-                    GatherBean gatherBean = new GatherBean(hashId.getHash(), amout, 1, false, transferEditView.getNote());
-                    MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
-
-                    ActivityUtil.goBack(activity);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(hashId)){
+                        ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
+                        GatherBean gatherBean = new GatherBean(hashId.getHash(), amout, 1, false, transferEditView.getNote());
+                        MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+                        ActivityUtil.goBack(activity);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -254,7 +252,6 @@ public class GatherActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CROWDFUN_LAUNCH, crowdfunding, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = SharedPreferenceUtil.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     //check sign
@@ -262,14 +259,14 @@ public class GatherActivity extends BaseActivity {
                         throw new Exception("Validation fails");
                     }
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.Crowdfunding funding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
-
-                    int size = Integer.parseInt(edit.getText().toString());
-                    GatherBean gatherBean = new GatherBean(funding.getHashId(), amout / size, size, true, transferEditView.getNote());
-                    MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
-
-                    ActivityUtil.goBack(activity);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(funding)){
+                        int size = Integer.parseInt(edit.getText().toString());
+                        GatherBean gatherBean = new GatherBean(funding.getHashId(), amout / size, size, true, transferEditView.getNote());
+                        MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+                        ActivityUtil.goBack(activity);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

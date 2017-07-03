@@ -33,7 +33,7 @@ public class MsgLocationHolder extends MsgChatHolder {
         String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
 
         textView.setText(geoAddres.getAddress());
-        imgmsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url);
+        imgmsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

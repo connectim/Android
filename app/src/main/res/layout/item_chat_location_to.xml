@@ -19,10 +19,6 @@
             android:layout_height="@dimen/dp_20"
             android:layout_gravity="center"/>
 
-        <connect.ui.activity.chat.view.BurnProBar
-            android:id="@id/burnprogressbar"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -48,7 +44,7 @@
             android:layout_alignBottom="@id/imgmsg"
             android:layout_alignLeft="@id/imgmsg"
             android:layout_alignRight="@id/imgmsg"
-            android:layout_marginRight="@dimen/dp_6"
+            android:layout_marginRight="@dimen/dp_9"
             android:background="@drawable/shape_bg_locbottom"
             android:gravity="left"
             android:paddingTop="@dimen/dp_2"

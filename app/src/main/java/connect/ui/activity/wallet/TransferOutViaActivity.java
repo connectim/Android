@@ -12,15 +12,15 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.db.SharedPreferenceUtil;
+import connect.db.MemoryDataManager;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.SendOutBean;
 import connect.ui.activity.wallet.bean.TransferBean;
-import connect.ui.activity.wallet.support.TransaUtil;
-import connect.ui.activity.wallet.support.TransferError;
+import connect.utils.ProtoBufUtil;
+import connect.utils.transfer.TransferError;
+import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -31,7 +31,7 @@ import connect.utils.okhttp.ResultCall;
 import connect.view.MdStyleProgress;
 import connect.view.TopToolBar;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -48,9 +48,8 @@ public class TransferOutViaActivity extends BaseActivity {
     Button okBtn;
 
     private TransferOutViaActivity mActivity;
-    private UserBean userBean;
     private Connect.PendingRedPackage pendingRedPackage;
-    private TransaUtil transaUtil;
+    private TransferUtil transaUtil;
     private PaymentPwd paymentPwd;
 
     public static void startActivity(Activity activity) {
@@ -78,10 +77,9 @@ public class TransferOutViaActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Wallet_Transfer);
         toolbarTop.setRightText(R.string.Chat_History);
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         transferEditView.setEditListener(onEditListener);
         getPaddingInfo();
-        transaUtil = new TransaUtil();
+        transaUtil = new TransferUtil();
         paymentPwd = new PaymentPwd();
     }
 
@@ -98,8 +96,11 @@ public class TransferOutViaActivity extends BaseActivity {
     @OnClick(R.id.ok_btn)
     void goTransferOut(View view) {
         final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        transaUtil.getOutputTran(mActivity, userBean.getAddress(), true, pendingRedPackage.getAddress(),
-                transferEditView.getAvaAmount(),amount, new TransaUtil.OnResultCall(){
+        if(null == pendingRedPackage){
+            return;
+        }
+        transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), true, pendingRedPackage.getAddress(),
+                transferEditView.getAvaAmount(),amount, new TransferUtil.OnResultCall(){
             @Override
             public void result(String inputString, String outputString) {
                 checkPayPassword(amount, inputString, outputString);
@@ -129,13 +130,8 @@ public class TransferOutViaActivity extends BaseActivity {
             paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
                 @Override
                 public void onTrue() {
-                    String samValue = transaUtil.getSignRawTrans(userBean.getPriKey(), inputString, outputString);
+                    String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     sendExternal(amount, samValue);
-                }
-
-                @Override
-                public void onFalse() {
-
                 }
             });
         }
@@ -155,24 +151,26 @@ public class TransferOutViaActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData());
 
-                    final SendOutBean sendOutBean = new SendOutBean();
-                    sendOutBean.setType(PacketSendActivity.OUT_VIA);
-                    sendOutBean.setUrl(billingInfo.getUrl());
-                    sendOutBean.setDeadline(billingInfo.getDeadline());
-                    sendOutBean.setHashId(billingInfo.getHash());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)){
+                        final SendOutBean sendOutBean = new SendOutBean();
+                        sendOutBean.setType(PacketSendActivity.OUT_VIA);
+                        sendOutBean.setUrl(billingInfo.getUrl());
+                        sendOutBean.setDeadline(billingInfo.getDeadline());
+                        sendOutBean.setHashId(billingInfo.getHash());
 
-                    ParamManager.getInstance().putLatelyTransfer(new TransferBean(2,
-                            getResources().getString(R.string.Wallet_Transfer)));
-                    paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
-                        @Override
-                        public void onComplete() {
-                            PacketSendActivity.startActivity(mActivity, sendOutBean, userBean);
-                            finish();
-                        }
-                    });
+                        ParamManager.getInstance().putLatelyTransfer(new TransferBean(2,
+                                getResources().getString(R.string.Wallet_Transfer)));
+                        paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
+                            @Override
+                            public void onComplete() {
+                                PacketSendActivity.startActivity(mActivity, sendOutBean);
+                                finish();
+                            }
+                        });
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
                     e.printStackTrace();
@@ -194,8 +192,11 @@ public class TransferOutViaActivity extends BaseActivity {
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
-                            pendingRedPackage = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
+                                pendingRedPackage = pending;
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }

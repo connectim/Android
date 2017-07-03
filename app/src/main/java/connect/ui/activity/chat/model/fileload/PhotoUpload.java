@@ -6,12 +6,13 @@ import android.os.AsyncTask;
 
 import com.google.protobuf.ByteString;
 
+import java.io.File;
+
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.MessageHelper;
 import connect.im.bean.MsgType;
-import connect.im.model.ChatSendManager;
 import connect.ui.activity.chat.bean.MsgDefinBean;
-import connect.ui.activity.chat.bean.RoomSession;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.content.BaseChat;
 import connect.utils.BitmapUtil;
@@ -42,36 +43,42 @@ public class PhotoUpload extends FileUpLoad {
             protected Void doInBackground(Void... params) {
                 try {
                     String filePath = bean.getContent();
-                    String comFist = BitmapUtil.resizeImage(filePath, BitmapUtil.bigWidth);
-                    String comSecond = BitmapUtil.resizeImage(comFist, BitmapUtil.smallWidth);
+
+                    File firstFile = BitmapUtil.getInstance().compress(filePath);
+                    File secondFile = BitmapUtil.getInstance().compress(firstFile.getAbsolutePath());
+                    String firstPath = firstFile.getAbsolutePath();
+                    String secondPath = secondFile.getAbsolutePath();
 
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inJustDecodeBounds = true;
+                    options.inSampleSize = 1;
                     BitmapFactory.decodeFile(filePath, options);
-
                     bean.setImageOriginWidth(options.outWidth);
                     bean.setImageOriginHeight(options.outHeight);
-                    bean.setExt1(FileUtil.fileSize(comSecond));
-                    MessageHelper.getInstance().insertToMsg(bean);
+                    bean.setExt1(FileUtil.fileSize(firstPath));
 
-                    String pubkey = SharedPreferenceUtil.getInstance().getPubKey();
-                    String priKey = SharedPreferenceUtil.getInstance().getPriKey();
+                    String pubkey = MemoryDataManager.getInstance().getPubKey();
+                    String priKey = MemoryDataManager.getInstance().getPriKey();
+
                     Connect.GcmData gcmData = null;
                     Connect.RichMedia richMedia = null;
                     if (baseChat.roomType() == 2) {
                         richMedia = Connect.RichMedia.newBuilder().
-                                setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(comFist))).
-                                setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(comSecond))).build();
+                                setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(firstPath))).
+                                setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(secondPath))).build();
                     } else {
-                        Connect.GcmData firstGcmData = encodeAESGCMStructData(comSecond);
-                        Connect.GcmData secondGcmData = encodeAESGCMStructData(comFist);
+                        Connect.GcmData firstGcmData = encodeAESGCMStructData(firstPath);
+                        Connect.GcmData secondGcmData = encodeAESGCMStructData(secondPath);
                         richMedia = Connect.RichMedia.newBuilder().
                                 setThumbnail(firstGcmData.toByteString()).
                                 setEntity(secondGcmData.toByteString()).build();
                     }
 
-                    gcmData = EncryptionUtil.encodeAESGCMStructData(priKey, richMedia.toByteString());
+                    gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT,priKey, richMedia.toByteString());
                     mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
+
+//                    firstFile.delete();
+//                    secondFile.delete();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -81,6 +88,16 @@ public class PhotoUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                if (MsgType.toMsgType(bean.getType()) == MsgType.Photo) {
+                    msgEntity = (MsgEntity) baseChat.photoMsg(bean.getContent(), bean.getExt1());
+                } else if (MsgType.toMsgType(bean.getType()) == MsgType.Location) {
+                    msgEntity = (MsgEntity) baseChat.locationMsg(bean.getContent(), bean.getLocationExt());
+                }
+                msgEntity.getMsgDefinBean().setMessage_id(bean.getMessage_id());
+                msgEntity.getMsgDefinBean().setImageOriginWidth(bean.getImageOriginWidth());
+                msgEntity.getMsgDefinBean().setImageOriginHeight(bean.getImageOriginHeight());
+                localEncryptionSuccess(msgEntity);
+
                 fileUp();
             }
         }.execute();
@@ -88,9 +105,6 @@ public class PhotoUpload extends FileUpLoad {
 
     @Override
     public void fileUp() {
-        if (mediaFile == null) {
-            return;
-        }
         resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
@@ -98,10 +112,16 @@ public class PhotoUpload extends FileUpLoad {
                 String url = getUrl(mediaFile.getUrl(), mediaFile.getToken());
 
                 if (MsgType.toMsgType(bean.getType()) == MsgType.Photo) {
-                    fileUpListener.upSuccess(bean.getMessage_id(), content, url, bean.getExt1(), bean.getImageOriginWidth(), bean.getImageOriginHeight());
+                    msgEntity = (MsgEntity) baseChat.photoMsg(content, bean.getExt1());
+                    msgEntity.getMsgDefinBean().setUrl(url);
                 } else if (MsgType.toMsgType(bean.getType()) == MsgType.Location) {
-                    fileUpListener.upSuccess(bean.getMessage_id(), content, bean.getLocationExt(), bean.getImageOriginWidth(), bean.getImageOriginHeight());
+                    msgEntity = (MsgEntity) baseChat.locationMsg(content, bean.getLocationExt());
                 }
+                msgEntity.getMsgDefinBean().setMessage_id(bean.getMessage_id());
+                msgEntity.getMsgDefinBean().setImageOriginWidth(bean.getImageOriginWidth());
+                msgEntity.getMsgDefinBean().setImageOriginHeight(bean.getImageOriginHeight());
+
+                uploadSuccess(msgEntity);
             }
         });
     }

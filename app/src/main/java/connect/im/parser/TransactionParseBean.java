@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 
-import connect.db.SharedPreferenceUtil;
+import connect.db.MemoryDataManager;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.TransactionHelper;
@@ -16,11 +16,10 @@ import connect.db.green.bean.TransactionEntity;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
+import connect.ui.activity.chat.bean.RecExtBean;
 import connect.ui.activity.chat.bean.Talker;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.GroupChat;
 import connect.ui.activity.chat.model.content.NormalChat;
@@ -49,7 +48,7 @@ public class TransactionParseBean extends InterParse{
      * @throws Exception
      */
     @Override
-    public void msgParse() throws Exception {
+    public synchronized void msgParse() throws Exception {
         int category = noticeMessage.getCategory();
         ByteString byteString = noticeMessage.getBody();
         switch (category) {
@@ -99,8 +98,9 @@ public class TransactionParseBean extends InterParse{
         MsgSender msgSender = new MsgSender(stranger.getPub_key(), stranger.getUsername(), stranger.getAddress(), stranger.getAvatar());
         msgEntity.getMsgDefinBean().setSenderInfoExt(msgSender);
         MessageHelper.getInstance().insertFromMsg(senderPubkey, msgEntity.getMsgDefinBean());
-        MsgChatReceiver.sendChatReceiver(normalChat.roomKey(), msgEntity);
-        ChatMsgUtil.updateRoomInfo(senderPubkey, 0, TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
+        normalChat.updateRoomMsg(null,  msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+
+        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,normalChat.roomKey(),msgEntity);
     }
 
     /**
@@ -138,7 +138,7 @@ public class TransactionParseBean extends InterParse{
 
         String receiverAddress = notice.getReceiver();
         String receiverName = "";
-        if (SharedPreferenceUtil.getInstance().getAddress().equals(receiverAddress)) {
+        if (MemoryDataManager.getInstance().getAddress().equals(receiverAddress)) {
             receiverName = context.getString(R.string.Chat_You);
         } else {
             if (isFriendNotice) {
@@ -156,10 +156,10 @@ public class TransactionParseBean extends InterParse{
 
         MsgEntity msgEntity = normalChat.noticeMsg(content);
         MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-        MsgChatReceiver.sendChatReceiver(normalChat.roomKey(), msgEntity);
-        ChatMsgUtil.updateRoomInfo(normalChat.roomKey(), normalChat.roomType(), TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
-    }
+        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,normalChat.roomKey(),msgEntity);
 
+        normalChat.updateRoomMsg(null,msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()),msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+    }
 
     private void singleBillPaymentNotice(Connect.BillNotice billNotice) {
         String hashId = billNotice.getHashId();
@@ -169,6 +169,7 @@ public class TransactionParseBean extends InterParse{
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(billNotice.getSender());
         String showName = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
         String content = context.getResources().getString(R.string.Chat_paid_the_bill_to, showName, context.getString(R.string.Chat_You));
+
         if (friendEntity == null) {
             requestFriendsByVersion();
             FailMsgsManager.getInstance().insertReceiveMsg(billNotice.getSender(), TimeUtil.timestampToMsgid(), content);
@@ -177,8 +178,9 @@ public class TransactionParseBean extends InterParse{
             NormalChat normalChat = new FriendChat(friendEntity);
             MsgEntity msgEntity = normalChat.noticeMsg(content);
             MessageHelper.getInstance().insertFromMsg(pubkey, msgEntity.getMsgDefinBean());
-            MsgChatReceiver.sendChatReceiver(pubkey, msgEntity);
-            ChatMsgUtil.updateRoomInfo(pubkey, 0, TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
+            normalChat.updateRoomMsg(null,  msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+
+            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
         }
     }
 
@@ -198,7 +200,7 @@ public class TransactionParseBean extends InterParse{
         }
 
         String senderName = "";
-        if (SharedPreferenceUtil.getInstance().getAddress().equals(crowdfundingNotice.getSender())) {
+        if (MemoryDataManager.getInstance().getAddress().equals(crowdfundingNotice.getSender())) {
             senderName = context.getString(R.string.Chat_You);
         } else {
             GroupMemberEntity senderEntity = ContactHelper.getInstance().loadGroupMemByAds(groupid, crowdfundingNotice.getReceiver());
@@ -222,15 +224,17 @@ public class TransactionParseBean extends InterParse{
             if (!TextUtils.isEmpty(content)) {
                 MsgEntity msgEntity = normalChat.noticeMsg(content);
                 MessageHelper.getInstance().insertFromMsg(groupid, msgEntity.getMsgDefinBean());
-                MsgChatReceiver.sendChatReceiver(groupid, msgEntity);
-                ChatMsgUtil.updateRoomInfo(groupid, 1, TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
+                normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+
+                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,groupid,msgEntity);
             }
 
             if (transEntity.getPay_count() == transEntity.getCrowd_count()) {
                 MsgEntity msgEntity = normalChat.noticeMsg(context.getString(R.string.Chat_Founded_complete));
                 MessageHelper.getInstance().insertFromMsg(groupid, msgEntity.getMsgDefinBean());
-                MsgChatReceiver.sendChatReceiver(groupid, msgEntity);
-                ChatMsgUtil.updateRoomInfo(groupid, 1, TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
+                normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+
+                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupid, msgEntity);
             }
         }
     }
@@ -241,13 +245,13 @@ public class TransactionParseBean extends InterParse{
     private void outerTransfer(Connect.TransferNotice notice) {
         ContactEntity friendEntity = null;
         Connect.UserInfo userInfo = notice.getReceiver();
-        if (SharedPreferenceUtil.getInstance().getPubKey().equals(userInfo.getPubKey())) {
+        if (MemoryDataManager.getInstance().getPubKey().equals(userInfo.getPubKey())) {
             userInfo = notice.getSender();
-        } else if (SharedPreferenceUtil.getInstance().getPubKey().equals(notice.getSender().getPubKey())) {
+        } else if (MemoryDataManager.getInstance().getPubKey().equals(notice.getSender().getPubKey())) {
             userInfo = notice.getReceiver();
         }
 
-        if (SharedPreferenceUtil.getInstance().getPubKey().equals(userInfo.getPubKey())) {
+        if (MemoryDataManager.getInstance().getPubKey().equals(userInfo.getPubKey())) {
             return;
         }
 
@@ -264,8 +268,8 @@ public class TransactionParseBean extends InterParse{
         MsgEntity msgEntity = normalChat.transferMsg(notice.getHashId(), notice.getAmount(), notice.getTips(), 1);
         msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAddress(), friendEntity.getAvatar()));
         MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
-        String showTxt = ChatMsgUtil.showContentTxt(0, msgEntity.getMsgDefinBean());
-        normalChat.updateRoomMsg("", showTxt, TimeUtil.getCurrentTimeInLong());
+        String showTxt = msgEntity.getMsgDefinBean().showContentTxt(0);
+        normalChat.updateRoomMsg(null, showTxt, TimeUtil.getCurrentTimeInLong(),-1,true);
         HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
     }
 }

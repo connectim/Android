@@ -7,11 +7,13 @@ import android.widget.ListView;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
@@ -20,6 +22,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.adapter.BlackAdapter;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -38,7 +41,6 @@ public class BlackListActivity extends BaseActivity {
     ListView listView;
 
     private BlackListActivity mActivity;
-    private UserBean userBean;
     private BlackAdapter adapter;
 
     @Override
@@ -56,7 +58,6 @@ public class BlackListActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Link_Black_List);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         adapter = new BlackAdapter();
         adapter.setOnItemChildListence(childClickListence);
         listView.setAdapter(adapter);
@@ -82,10 +83,16 @@ public class BlackListActivity extends BaseActivity {
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(userBean.getPriKey(), imResponse.getCipherData());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
                             List<Connect.UserInfo> list = usersInfo.getUsersList();
-                            adapter.setDataNotify(list);
+                            ArrayList<Connect.UserInfo> listCheck = new ArrayList<>();
+                            for(Connect.UserInfo userInfo : list){
+                                if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                                    listCheck.add(userInfo);
+                                }
+                            }
+                            adapter.setDataNotify(listCheck);
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }
@@ -105,10 +112,11 @@ public class BlackListActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_REMOVE, userIdentifier, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                    ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
+                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
+                if (null != friendEntity) {
                     friendEntity.setBlocked(false);
-
-                ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
+                    ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
+                }
                 adapter.removeDataNotify(position);
             }
 

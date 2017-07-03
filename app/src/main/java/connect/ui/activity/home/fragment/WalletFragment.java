@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -34,6 +35,7 @@ import connect.ui.activity.wallet.bean.RateBean;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
 import connect.ui.base.BaseFragment;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
@@ -173,16 +175,18 @@ public class WalletFragment extends BaseFragment {
     }
 
     private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, SharedPreferenceUtil.getInstance().getUser().getAddress());
+        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     if (response.getCode() == 2000) {
                         Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                        ParamManager.getInstance().putWalletAmount(accountBean);
-                        amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
+                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
+                            ParamManager.getInstance().putWalletAmount(accountBean);
+                            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

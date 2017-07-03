@@ -2,6 +2,7 @@ package connect.ui.activity.contact.presenter;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
@@ -14,6 +15,7 @@ import connect.ui.activity.contact.contract.FriendInfoContract;
 import connect.ui.activity.home.bean.MsgFragmReceiver;
 import connect.ui.activity.home.bean.MsgNoticeBean;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
@@ -85,8 +87,11 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SharedPreferenceUtil.getInstance().getPriKey(), imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                        return;
+                    }
                     if (friendEntity.getAvatar().equals(userInfo.getAvatar()) && friendEntity.getUsername().equals(userInfo.getUsername())) {
                         return;
                     }
@@ -96,7 +101,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     ContactHelper.getInstance().insertContact(friendEntity);
                     ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
                     if (roomEntity != null) {
-                        MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+                        MsgFragmReceiver.refreshRoom();
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

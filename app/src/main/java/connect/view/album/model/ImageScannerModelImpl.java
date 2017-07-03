@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import connect.ui.activity.R;
+import connect.utils.FileUtil;
 import connect.view.album.entity.AlbumFolderInfo;
 import connect.view.album.entity.ExFile;
 import connect.view.album.entity.ImageInfo;
@@ -81,6 +82,9 @@ public class ImageScannerModelImpl implements ImageScannerModel {
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String imagePath = cursor.getString(1);
             ExFile albumFolder = new ExFile(imagePath, 0);
+            if(albumFolder.length() < 1024 * 5){
+                continue;
+            }
 
             //picture directory is already loaded into the list
             String albumPath = albumFolder.getParentFile().getName();
@@ -114,7 +118,7 @@ public class ImageScannerModelImpl implements ImageScannerModel {
             ExFile albumFolder = new ExFile(imagePath, 0);
             albumFolder.setVideoLength(cursor.getLong(2));
             long size = cursor.getLong(3);
-            if (size > 1024 * 1024 * 10) {
+            if (size > 1024 * 1024 * 10 || size < 1024 * 100) {
                 continue;
             }
 

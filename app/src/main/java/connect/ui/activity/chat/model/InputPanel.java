@@ -74,7 +74,7 @@ public class InputPanel {
         inputVoice.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if( !((ChatActivity)context).isOpenRecord){
+                if( !((ChatActivity)context).isOpenRecord()){
                     return true;
                 }
 

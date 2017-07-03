@@ -47,10 +47,8 @@ public class MsgImgHolder extends MsgChatHolder {
         MsgDefinBean bean = entity.getMsgDefinBean();
         String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
 
-        if (!TextUtils.isEmpty(definBean.getExt())) {
-            imgmsg.setOpenBurn(true);
-        }
-        imgmsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url);
+        imgmsg.setOpenBurn(TextUtils.isEmpty(definBean.getExt())?false:true);
+        imgmsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
 
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
