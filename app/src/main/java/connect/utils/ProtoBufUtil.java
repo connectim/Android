@@ -133,30 +133,35 @@ public class ProtoBufUtil {
                 String content = contentMap.get("CONTENT");
 
                 Object value = fieldMap.get(attrTxt);
-                switch (extTxt) {
-                    case "reg":
-                        checkstate = RegularUtil.matches(String.valueOf(value), content);
-                        break;
-                    case "bytes":
-                        break;
-                    case "address":
-                        checkstate = SupportKeyUril.checkAddress(String.valueOf(value));
-                        break;
-                    case "list":
-                        break;
-                    case "proto":
-                        break;
-                    case "string":
-                        break;
-                    case "int":
-                        break;
-                    case "float":
-                        break;
-                    default:
-                        break;
-                }
-                if (!checkstate) {
+                if (value == null) {
+                    checkstate = false;
                     break;
+                } else {
+                    switch (extTxt) {
+                        case "reg":
+                            checkstate = RegularUtil.matches(String.valueOf(value), content);
+                            break;
+                        case "bytes":
+                            break;
+                        case "address":
+                            checkstate = SupportKeyUril.checkAddress(String.valueOf(value));
+                            break;
+                        case "list":
+                            break;
+                        case "proto":
+                            break;
+                        case "string":
+                            break;
+                        case "int":
+                            break;
+                        case "float":
+                            break;
+                        default:
+                            break;
+                    }
+                    if (!checkstate) {
+                        break;
+                    }
                 }
             }
         }

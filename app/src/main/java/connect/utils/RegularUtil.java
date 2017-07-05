@@ -46,7 +46,7 @@ public class RegularUtil {
     /** group avatar */
     public static final String GROUP_AVATAR = "%1$s/avatar/v1/group/%2$s.jpg";
     /** password */
-    public static final String PASSWORD = "^(?!^(\\d+|[a-zA-Z]+|[~!\\@#$%^&*\\/\\.,;:\\-_?]+)$)^[\\w~!\\@#$%\\^&*\\/\\.,;:\\-_?]{8,32}$";
+    public static final String PASSWORD = "^(?!^(\\d+|[a-zA-Z]+|[`~!@#\\$%\\^&*\\(\\)\\-_=\\+\\\\\\|\\[\\]\\{\\}:;\\\"\\',.<>\\/\\?]+)$)^[\\w`~!@#\\$%\\^&*\\(\\)\\-_=\\+\\\\\\|\\[\\]\\{\\}:;\\\"\\',.<>\\/\\?]{8,32}$";
     /** expression */
     public static final String VERIFYCATION_EMOTION = "\\[([\\u4e00-\\u9fa5]|[a-zA-Z]|[0-9])+\\]";
 
