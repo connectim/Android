@@ -44,6 +44,7 @@ import connect.ui.activity.chat.bean.WebsiteExt1Bean;
 import connect.ui.activity.chat.exts.GatherActivity;
 import connect.ui.activity.chat.exts.RedPacketActivity;
 import connect.ui.activity.chat.exts.TransferToActivity;
+import connect.ui.activity.chat.inter.BaseListener;
 import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.InputPanel;
 import connect.ui.activity.chat.model.content.BaseChat;
@@ -308,8 +309,10 @@ public abstract class BaseChatActvity extends BaseActivity {
     public synchronized void onEventMainThread(RecExtBean bean) {
         MsgEntity msgEntity = null;
 
-        Object[] objects = null;
-        if (bean.getObj() != null) {
+        final Object[] objects;
+        if (bean.getObj() == null) {
+            objects = null;
+        } else {
             objects = (Object[]) bean.getObj();
         }
 
@@ -362,8 +365,17 @@ public abstract class BaseChatActvity extends BaseActivity {
                 reSendFailMsg((MsgEntity) objects[0]);
                 break;
             case IMGVIEWER://Image viewer
-                ArrayList<String> imgs = chatAdapter.showImgMsgs();
-                ImageViewerActivity.startActivity(activity, (String) objects[0], imgs);
+                chatAdapter.showImgMsgs(new BaseListener<ArrayList<String>>() {
+                    @Override
+                    public void Success(ArrayList<String> strings) {
+                        ImageViewerActivity.startActivity(activity, (String) objects[0], strings);
+                    }
+
+                    @Override
+                    public void fail(Object... objects) {
+
+                    }
+                });
                 break;
             case NOTICE://notice message
                 adapterInsetItem((MsgEntity) baseChat.noticeMsg((String) objects[0]));

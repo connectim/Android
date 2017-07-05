@@ -163,7 +163,7 @@ public class ChatActivity extends BaseChatActvity {
                     entities.add(0, encryEntity);
                 }
 
-                chatAdapter.setDatas(entities);
+                chatAdapter.insertItems(entities);
             }
         }.execute();
     }
@@ -185,7 +185,7 @@ public class ChatActivity extends BaseChatActvity {
                     View firstChild = recyclerChat.getChildAt(0);
                     int top = firstChild.getTop();
 
-                    chatAdapter.insertMoreItems(msgEntities);
+                    chatAdapter.insertItems(msgEntities);
                     scrollHelper.scrollToPosition(msgEntities.size(), top);//Some errors, top - SystemUtil.dipToPx(48)
                 }
             }
