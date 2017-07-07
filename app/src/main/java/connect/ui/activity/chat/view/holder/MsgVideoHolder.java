@@ -58,7 +58,7 @@ public class MsgVideoHolder extends MsgChatHolder {
             videomsg.setOpenBurn(false);
         }
 
-        videomsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
+        videomsg.loadUri(direct,entity.getRoomType(), entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,12 +83,12 @@ public class MsgVideoHolder extends MsgChatHolder {
                         }
                     }
                 } else {
-                    FileDownLoad.getInstance().downChatFile(url, entity.getPubkey(), new FileDownLoad.IFileDownLoad() {
+                    FileDownLoad.getInstance().downChatFile(entity.getRoomType(),url, entity.getPubkey(), new FileDownLoad.IFileDownLoad() {
                         @Override
                         public void successDown(byte[] bytes) {
                             videoProView.loadState(true, 0);
                             videomsg.setOpenBurn(false);
-                            videomsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), definBean.getUrl(),definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
+                            videomsg.loadUri(direct, entity.getRoomType(),entity.getPubkey(), bean.getMessage_id(), definBean.getUrl(),definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
 
                             FileUtil.byteArrToFilePath(bytes, localPath);
 
@@ -164,7 +164,7 @@ public class MsgVideoHolder extends MsgChatHolder {
         } else if (FileUtil.isExistFilePath(localPath)) {
             ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND,String.valueOf(bean.getType()), localPath,bean.getSize());
         } else {
-            FileDownLoad.getInstance().downChatFile(url, baseEntity.getPubkey(), new FileDownLoad.IFileDownLoad() {
+            FileDownLoad.getInstance().downChatFile(baseEntity.getRoomType(),url, baseEntity.getPubkey(), new FileDownLoad.IFileDownLoad() {
                 @Override
                 public void successDown(byte[] bytes) {
                     videoProView.loadState(true, 0);

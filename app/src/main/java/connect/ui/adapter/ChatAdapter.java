@@ -2,6 +2,9 @@ package connect.ui.adapter;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +13,6 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -104,31 +106,92 @@ public class ChatAdapter extends BaseChatAdapter {
         holder.buildRowData(holder, msgEntities.get(position));
     }
 
-    public void insertItem(MsgEntity t) {
-        int posi = msgEntities.size();
-        msgEntities.add(posi, t);
-        notifyItemInserted(posi);
+    private Handler itemsUpdateHandler = new Handler(Looper.myLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
+                BaseListener listener = (BaseListener) msg.obj;
+                listener.Success(0);
+            } else {
+                Message message = new Message();
+                message.what = 50;
+                message.obj = msg.obj;
+                itemsUpdateHandler.sendMessageDelayed(message, 100);
+            }
+        }
+    };
 
-        msgEntityMap.put(t.getMsgid(), t);
+    public void insertItem(final MsgEntity t) {
+        BaseListener listener = new BaseListener() {
+            @Override
+            public void Success(Object ts) {
+                int posi = msgEntities.size();
+                msgEntities.add(posi, t);
+                notifyItemInserted(posi);
+
+                msgEntityMap.put(t.getMsgid(), t);
+            }
+
+            @Override
+            public void fail(Object... objects) {
+
+            }
+        };
+
+        Message message = new Message();
+        message.what = 50;
+        message.obj = listener;
+        itemsUpdateHandler.sendMessage(message);
     }
 
-    public void insertItems(List<MsgEntity> entities) {
-        msgEntities.addAll(0, entities);
-        notifyDataSetChanged();
+    public void insertItems(final List<MsgEntity> entities) {
+        BaseListener listener = new BaseListener() {
+            @Override
+            public void Success(Object ts) {
+                msgEntities.addAll(0, entities);
+                notifyDataSetChanged();
 
-        for (MsgEntity entity : entities) {
-            msgEntityMap.put(entity.getMsgid(), entity);
-        }
+                for (MsgEntity entity : entities) {
+                    msgEntityMap.put(entity.getMsgid(), entity);
+                }
+            }
+
+            @Override
+            public void fail(Object... objects) {
+
+            }
+        };
+
+        Message message = new Message();
+        message.what = 50;
+        message.obj = listener;
+        itemsUpdateHandler.sendMessage(message);
     }
 
-    public void removeItem(MsgEntity t) {
-        int posi = msgEntities.lastIndexOf(t);
-        if (posi >= 0) {
-            msgEntities.remove(posi);
-            notifyItemRemoved(posi);
+    public void removeItem(final MsgEntity t) {
+        BaseListener listener=new BaseListener() {
+            @Override
+            public void Success(Object ts) {
+                int posi = msgEntities.lastIndexOf(t);
+                if (posi >= 0) {
+                    msgEntities.remove(posi);
+                    notifyItemRemoved(posi);
 
-            msgEntityMap.remove(t.getMsgid());
-        }
+                    msgEntityMap.remove(t.getMsgid());
+                }
+            }
+
+            @Override
+            public void fail(Object... objects) {
+
+            }
+        };
+
+        Message message = new Message();
+        message.what = 50;
+        message.obj = listener;
+        itemsUpdateHandler.sendMessage(message);
     }
 
     public void updateItemSendState(String msgid, int state) {

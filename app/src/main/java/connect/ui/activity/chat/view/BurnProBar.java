@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -69,17 +70,34 @@ public class BurnProBar extends View {
         invalidate();
     }
 
-    public void initBurnMsg(MsgEntity entity) {
-        setValue(ROUND_DIRECT);
+    public void initBurnMsg(MsgDirect direct,MsgEntity entity) {
         this.entity = entity;
-        cancelTimer();
-
         MsgDefinBean definBean = entity.getMsgDefinBean();
-        extBean = new Gson().fromJson(definBean.getExt(), ExtBean.class);
-        long burnstart = entity.getBurnstarttime();
+        if (TextUtils.isEmpty(definBean.getExt())) {
+            extBean = new Gson().fromJson(definBean.getExt(), ExtBean.class);
+        }
 
-        if (burnstart > 0) {
-            startBurnRead();
+        if (TextUtils.isEmpty(entity.getMsgDefinBean().getExt())) {
+            setVisibility(View.GONE);
+        } else {
+            if (direct == MsgDirect.From || entity.getSendstate() == 1) {
+                setVisibility(View.VISIBLE);
+
+                if (direct == MsgDirect.From && (entity.getMsgDefinBean().getType() == 1 || entity.getMsgDefinBean().getType() == 5)) {
+                    entity.setBurnstarttime(TimeUtil.getCurrentTimeInLong());
+                    startBurnRead();
+                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, entity.getMsgDefinBean().getMessage_id(), direct);
+                }
+                setValue(ROUND_DIRECT);
+                cancelTimer();
+
+                long burnstart = entity.getBurnstarttime();
+                if (burnstart > 0) {
+                    startBurnRead();
+                }
+            } else {
+               setVisibility(View.GONE);
+            }
         }
     }
 
@@ -87,7 +105,7 @@ public class BurnProBar extends View {
         long burnstart = entity.getBurnstarttime();
         MsgDirect direct = ChatMsgUtil.parseMsgDirect(entity.getMsgDefinBean());
 
-        if (burnstart > 0 || direct == MsgDirect.From) {
+        if (extBean != null && (burnstart > 0 || direct == MsgDirect.From)) {
             long remainTime = extBean.getLuck_delete() - (TimeUtil.getCurrentTimeInLong() - burnstart);
             burnTimer = new BurnCountTimer(remainTime, 500);
             burnTimer.start();

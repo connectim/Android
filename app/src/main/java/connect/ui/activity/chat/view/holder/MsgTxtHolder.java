@@ -37,11 +37,6 @@ public class MsgTxtHolder extends MsgChatHolder {
     }
 
     @Override
-    public View longClickView() {
-        return txtmsg;
-    }
-
-    @Override
     public void transPondTo() {
         ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(definBean.getType()), definBean.getContent());
     }

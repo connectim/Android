@@ -21,6 +21,7 @@ public class ExBottomLayout extends RelativeLayout{
     private View moreView;
     private View emojiView;
 
+    private MorePanel morePanel;
     private EmojiPanel emojiPanel;
 
     public ExBottomLayout(Context context) {
@@ -33,11 +34,6 @@ public class ExBottomLayout extends RelativeLayout{
         initView();
     }
 
-    public ExBottomLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initView();
-    }
-
     public void initView() {
         Context context = getContext();
         moreView = View.inflate(context, R.layout.layout_more, null);
@@ -45,14 +41,14 @@ public class ExBottomLayout extends RelativeLayout{
 
         LinearLayout.LayoutParams moreLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SystemUtil.dipToPx(180));
         moreView.setLayoutParams(moreLayoutParams);
-        MorePanel morePanel = new MorePanel();
-        morePanel.init(moreView);
+        morePanel = new MorePanel();
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SystemUtil.dipToPx(180));
         emojiView.setLayoutParams(layoutParams);
         emojiPanel = new EmojiPanel();
-        emojiPanel.init(emojiView);
 
+        morePanel.setView(moreView);
+        emojiPanel.init(emojiView);
         addView(moreView);
         addView(emojiView);
     }
@@ -94,5 +90,9 @@ public class ExBottomLayout extends RelativeLayout{
 
     public EmojiPanel getEmojiPanel() {
         return emojiPanel;
+    }
+
+    public MorePanel getMorePanel() {
+        return morePanel;
     }
 }

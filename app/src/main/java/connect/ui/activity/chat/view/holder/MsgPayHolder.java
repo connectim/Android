@@ -88,15 +88,15 @@ public class MsgPayHolder extends MsgChatHolder {
             }
         });
 
-        String hashid = entity.getMsgDefinBean().getContent();
-        TransactionEntity indexEntity = TransactionHelper.getInstance().loadTransEntity(hashid);
-        if (indexEntity == null) {
-            String messageid = entity.getMsgid();
-            if (!gatherBean.getIsCrowdfundRceipt()) {
-                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0);
-            } else {
-                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0, gatherBean.getTotalMember());
-            }
-        }
+//        String hashid = entity.getMsgDefinBean().getContent();
+//        TransactionEntity indexEntity = TransactionHelper.getInstance().loadTransEntity(hashid);
+//        if (indexEntity == null) {
+//            String messageid = entity.getMsgid();
+//            if (!gatherBean.getIsCrowdfundRceipt()) {
+//                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0);
+//            } else {
+//                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0, gatherBean.getTotalMember());
+//            }
+//        }
     }
 }

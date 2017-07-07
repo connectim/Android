@@ -33,7 +33,7 @@ public class AudioUtil {
      * record voice
      */
     public void prepareAudio() {
-        File dir = FileUtil.newContactFile(FileUtil.FileType.VOICE);
+        File dir = FileUtil.newTempFile(FileUtil.FileType.VOICE);
         if (dir == null) {
             return;
         }
@@ -130,7 +130,7 @@ public class AudioUtil {
      * @return
      */
     protected String generateAudioName() {
-        File file = FileUtil.newContactFile(FileUtil.FileType.VOICE);
+        File file = FileUtil.newTempFile(FileUtil.FileType.VOICE);
         return file.getAbsolutePath();
     }
 

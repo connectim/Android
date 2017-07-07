@@ -164,11 +164,16 @@ public class GroupChat extends NormalChat {
         return memEntityMap.get(memberkey);
     }
 
+    private Map<String, String> membersMap = new HashMap<>();
+
     public String nickName(String pubkey) {
-        String memberName = "";
-        GroupMemberEntity groupMemEntity = loadGroupMember(pubkey);
-        if (groupMemEntity != null) {
-            memberName = TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick();
+        String memberName = membersMap.get(pubkey);
+        if (TextUtils.isEmpty(memberName)) {
+            GroupMemberEntity groupMemEntity = loadGroupMember(pubkey);
+            if (groupMemEntity != null) {
+                memberName = TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick();
+                membersMap.put(pubkey, memberName);
+            }
         }
         return memberName;
     }
