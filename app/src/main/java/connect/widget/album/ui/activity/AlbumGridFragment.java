@@ -21,9 +21,6 @@ import connect.widget.album.entity.ImageInfo;
  * All pictures show photo albums
  */
 public class AlbumGridFragment extends BaseFragment implements View.OnClickListener{
-
-    private static AlbumGridFragment albumGridFragment;
-
     private PhotoAlbumActivity activity;
     private GridView gridView;
     private AlbumGridAdp albumGridAdp;
@@ -60,13 +57,6 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
         preTxt.setOnClickListener(this);
 
         return rootView;
-    }
-
-    public static AlbumGridFragment newInstance() {
-        if (albumGridFragment == null) {
-            albumGridFragment = new AlbumGridFragment();
-        }
-        return albumGridFragment;
     }
 
     private AlbumGridAdp.AlbumGridListener albumGridListener = new AlbumGridAdp.AlbumGridListener() {
@@ -142,4 +132,5 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
                 break;
         }
     }
+
 }

@@ -19,5 +19,11 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
         BaseApplication.getInstance().getActivityList().add(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BaseApplication.getInstance().getActivityList().remove(this);
+    }
+
     public abstract void initView();
 }

@@ -206,7 +206,7 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
             fragmentTransaction.hide(galleryFragment);
         }
         if (gridFragment == null) {
-            gridFragment = AlbumGridFragment.newInstance();
+            gridFragment = new AlbumGridFragment();
             fragmentTransaction.add(R.id.framelayout, gridFragment);
         } else {
             gridFragment.setData();
@@ -228,7 +228,7 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
             fragmentTransaction.hide(gridFragment);
         }
         if (galleryFragment == null) {
-            galleryFragment = AlbumGalleryFragment.newInstance();
+            galleryFragment = new AlbumGalleryFragment();
             fragmentTransaction.add(R.id.framelayout, galleryFragment);
         } else {
             fragmentTransaction.show(galleryFragment);
@@ -347,4 +347,5 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
     public int getMaxSelect() {
         return maxSelect;
     }
+
 }

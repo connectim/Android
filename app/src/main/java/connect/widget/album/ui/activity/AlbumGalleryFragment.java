@@ -23,9 +23,6 @@ import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.ui.widget.HackyViewPager;
 
 public class AlbumGalleryFragment extends Fragment implements View.OnClickListener{
-
-    private static AlbumGalleryFragment galleryFragment;
-
     private PhotoAlbumActivity activity;
     private HackyViewPager viewPager;
     private ImageView videoImg;
@@ -93,13 +90,6 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
             }
         });
         return rootView;
-    }
-
-    public static AlbumGalleryFragment newInstance() {
-        if (galleryFragment == null) {
-            galleryFragment = new AlbumGalleryFragment();
-        }
-        return galleryFragment;
     }
 
     public void initImgInfos(){
