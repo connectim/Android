@@ -2,19 +2,11 @@ package connect.ui.activity.login.presenter;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-
-import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.login.bean.UserBean;
@@ -22,7 +14,9 @@ import connect.ui.activity.login.contract.SignInVerifyContract;
 import connect.ui.activity.set.LinkChangePhoneActivity;
 import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
+import connect.utils.ExCountDownTimer;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
@@ -37,9 +31,6 @@ import protos.Connect;
 public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
 
     private SignInVerifyContract.View mView;
-    private Timer timer;
-    private TimerTask timerTask;
-    private int times;
     private final int CODE_PHONE_ABSENT = 2404;
     private String phone;
     private int countryCode;
@@ -53,7 +44,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
 
     @Override
     public void start() {
-        miniuteReplay();
+        countdownTime();
     }
 
     public TextWatcher textWatcher = new TextWatcher() {
@@ -72,7 +63,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
             if (s.toString().length() == 6) {
                 requestVerifyCode();
             }
-            mView.changeTime(times,timer);
+            mView.changeBtnNext();
         }
     };
 
@@ -97,14 +88,16 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
                 ProgressUtil.getInstance().dismissProgress();
                 try {
                     Connect.UserInfoDetail userInfoDetail = Connect.UserInfoDetail.parseFrom(response.getBody());
-                    UserBean userBean = new UserBean();
-                    userBean.setPhone(countryCode + "-" + phone);
-                    userBean.setAvatar(userInfoDetail.getAvatar());
-                    userBean.setName(userInfoDetail.getUsername());
-                    userBean.setTalkKey(userInfoDetail.getEncryptionPri());
-                    userBean.setPassHint(userInfoDetail.getPasswordHint());
-                    userBean.setConnectId(userInfoDetail.getConnectId());
-                    mView.goinCodeLogin(userBean);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(userInfoDetail)){
+                        UserBean userBean = new UserBean();
+                        userBean.setPhone(countryCode + "-" + phone);
+                        userBean.setAvatar(userInfoDetail.getAvatar());
+                        userBean.setName(userInfoDetail.getUsername());
+                        userBean.setTalkKey(userInfoDetail.getEncryptionPri());
+                        userBean.setPassHint(userInfoDetail.getPasswordHint());
+                        userBean.setConnectId(userInfoDetail.getConnectId());
+                        mView.goinCodeLogin(userBean);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -147,7 +140,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 ToastEUtil.makeText(mView.getActivity(),R.string.Login_SMS_code_has_been_send).show();
-                miniuteReplay();
+                countdownTime();
             }
 
             @Override
@@ -161,42 +154,24 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
         });
     }
 
-    public void miniuteReplay() {
-        mView.setVoiceVisi();
-        timer = new Timer();
-        timerTask = new TimerTask() {
-            int i = 120;
+    private void countdownTime(){
+        ExCountDownTimer exCountDownTimer = new ExCountDownTimer(120*1000,1000){
             @Override
-            public void run() {
-                Message msg = new Message();
-                msg.what = 200;
-                if (i <= 0) {
-                    msg.arg1 = -1;
-                } else {
-                    i--;
-                    msg.arg1 = i;
-                }
-                mHandler.sendMessage(msg);
+            public void onTick(long millisUntilFinished, int percent) {
+                mView.changeBtnTiming(millisUntilFinished/1000);
+            }
+
+            @Override
+            public void onPause() {
+
+            }
+
+            @Override
+            public void onFinish() {
+                mView.changeBtnFinsh();
             }
         };
-        timer.schedule(timerTask, 100, 1000);
-    }
-
-    Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (200 == msg.what) {
-                times = msg.arg1;
-                mView.changeTime(times,timer);
-                return;
-            }
-        }
-    };
-
-    @Override
-    public void showChangeText() {
-        mView.changeTime(times,timer);
+        exCountDownTimer.start();
     }
 
     @Override

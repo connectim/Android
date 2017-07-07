@@ -1,8 +1,7 @@
 package connect.im.parser;
 
 import com.google.gson.Gson;
-
-import org.greenrobot.eventbus.EventBus;
+import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -20,6 +19,7 @@ import connect.db.green.bean.ParamEntity;
 import connect.im.bean.MsgType;
 import connect.im.bean.Session;
 import connect.im.bean.UserCookie;
+import connect.im.bean.UserOrderBean;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
@@ -27,12 +27,10 @@ import connect.ui.activity.chat.bean.AdBean;
 import connect.ui.activity.chat.bean.ApplyGroupBean;
 import connect.ui.activity.chat.bean.CardExt1Bean;
 import connect.ui.activity.chat.bean.GroupReviewBean;
-import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
 import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.GroupChat;
 import connect.ui.activity.chat.model.content.NormalChat;
@@ -40,8 +38,8 @@ import connect.ui.activity.chat.model.content.RobotChat;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.base.BaseApplication;
 import connect.utils.StringUtil;
-import connect.utils.TimeUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
 /**
@@ -55,15 +53,11 @@ public class MsgParseBean extends InterParse {
     /**
      * Parsing the source 0:offline message 1:online message
      */
-    private int ext = 0;
+    private int ext = 1;
 
     public MsgParseBean(byte ackByte, ByteBuffer byteBuffer) {
         super(ackByte, byteBuffer);
-    }
-
-    public MsgParseBean(byte ackByte, ByteBuffer byteBuffer, int ext) {
-        super(ackByte, byteBuffer);
-        this.ext = ext;
+        ext = 1;
 
         try {
             Connect.StructData structData = imTransferToStructData(byteBuffer);
@@ -73,8 +67,13 @@ public class MsgParseBean extends InterParse {
         }
     }
 
+    public MsgParseBean(byte ackByte, ByteBuffer byteBuffer, int ext) {
+        super(ackByte, byteBuffer);
+        this.ext = ext;
+    }
+
     @Override
-    public void msgParse() throws Exception {
+    public synchronized void msgParse() throws Exception {
         switch (ackByte) {
             case 0x00://robot message
                 robotMsg();
@@ -98,21 +97,21 @@ public class MsgParseBean extends InterParse {
      */
     private void robotMsg()throws Exception{
         Connect.MSMessage msMessage = Connect.MSMessage.parseFrom(byteBuffer.array());
-        backOnLineAck(5, msMessage.getMsgId());
+        if (ext == 0) {
+            backOffLineAck(5, msMessage.getMsgId());
+        } else {
+            backOnLineAck(5, msMessage.getMsgId());
+        }
 
-        MsgEntity robotMsg = robotMsgDeal(msMessage);
-        MessageHelper.getInstance().insertFromMsg(BaseApplication.getInstance().getString(R.string.app_name), robotMsg.getMsgDefinBean());
-
-        MsgDefinBean definBean = robotMsg.getMsgDefinBean();
+        String robotname = BaseApplication.getInstance().getString(R.string.app_name);
+        MsgEntity msgEntity = robotMsgDeal(msMessage);
+        MessageHelper.getInstance().insertFromMsg(robotname, msgEntity.getMsgDefinBean());
+        MsgDefinBean definBean = msgEntity.getMsgDefinBean();
         MsgEntity roMsgEntity = RobotChat.getInstance().createBaseChat(MsgType.toMsgType(definBean.getType()));
         roMsgEntity.setMsgDefinBean(definBean);
 
-        String robotname = BaseApplication.getInstance().getString(R.string.app_name);
-        ChatMsgUtil.updateRoomInfo(robotname, 2, TimeUtil.getCurrentTimeInLong(), definBean);
-        pushNoticeMsg(robotname, 2, ChatMsgUtil.showContentTxt(2, definBean));
-
-        MsgChatReceiver receiver = new MsgChatReceiver(roMsgEntity);
-        EventBus.getDefault().post(receiver);
+        RobotChat.getInstance().updateRoomMsg(null, definBean.showContentTxt(2), definBean.getSendtime(),-1,true);
+        pushNoticeMsg(robotname, 2, msgEntity);
     }
 
     /**
@@ -120,7 +119,11 @@ public class MsgParseBean extends InterParse {
      */
     private void unavailableMsg()throws Exception{
         Connect.RejectMessage rejectMessage = Connect.RejectMessage.parseFrom(byteBuffer.array());
-        backOnLineAck(5, rejectMessage.getMsgId());
+        if (ext == 0) {
+            backOffLineAck(5, rejectMessage.getMsgId());
+        } else {
+            backOnLineAck(5, rejectMessage.getMsgId());
+        }
 
         String msgid = rejectMessage.getMsgId();
         String recAddress = rejectMessage.getReceiverAddress();
@@ -150,6 +153,9 @@ public class MsgParseBean extends InterParse {
             case 8://The other cookies expire, single side
                 halfRandom(msgid, recAddress);
                 break;
+            case 9://upload cookie expire
+                reloadUserCookie(msgid, recAddress);
+                break;
         }
         receiptMsg(msgid, 3);
     }
@@ -159,7 +165,11 @@ public class MsgParseBean extends InterParse {
      */
     private void noticeMsg() throws Exception {
         Connect.NoticeMessage noticeMessage = Connect.NoticeMessage.parseFrom(byteBuffer.array());
-        sendBackAck(noticeMessage.getMsgId());
+        if (ext == 0) {
+            backOffLineAck(5, noticeMessage.getMsgId());
+        } else {
+            backOnLineAck(5, noticeMessage.getMsgId());
+        }
 
         TransactionParseBean parseBean = new TransactionParseBean(noticeMessage);
         parseBean.msgParse();
@@ -169,10 +179,14 @@ public class MsgParseBean extends InterParse {
      * chat message
      * @throws Exception
      */
-    private void chatMsg() throws Exception {
+    private synchronized void chatMsg() throws Exception {
         Connect.MessagePost messagePost = Connect.MessagePost.parseFrom(byteBuffer.array());
-        if (!SupportKeyUril.verifySign(messagePost.getSign(), messagePost.toByteArray())) {
-            throw new Exception("Validation fails");
+        Connect.MessageData messageData = messagePost.getMsgData();
+
+        if (ext == 0) {
+            backOffLineAck(5, messageData.getMsgId());
+        } else {
+            backOnLineAck(5, messageData.getMsgId());
         }
 
         ChatParseBean parseBean = new ChatParseBean(ackByte, messagePost);
@@ -281,7 +295,6 @@ public class MsgParseBean extends InterParse {
                 break;
         }
 
-
         entity.setSendstate(1);
         entity.setReadstate(0);
         if (entity.getMsgDefinBean().getSenderInfoExt() == null) {
@@ -303,8 +316,8 @@ public class MsgParseBean extends InterParse {
             NormalChat normalChat = new FriendChat(friendEntity);
             MsgEntity msgEntity = normalChat.strangerNotice();
 
-            MsgChatReceiver.sendChatReceiver(pubkey, msgEntity);
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
         }
     }
 
@@ -319,8 +332,8 @@ public class MsgParseBean extends InterParse {
             NormalChat normalChat = new FriendChat(friendEntity);
             MsgEntity msgEntity = normalChat.blackFriendNotice();
 
-            MsgChatReceiver.sendChatReceiver(pubkey, msgEntity);
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgEntity);
         }
     }
 
@@ -335,8 +348,8 @@ public class MsgParseBean extends InterParse {
             NormalChat normalChat = new GroupChat(groupEntity);
             MsgEntity msgEntity = normalChat.notMemberNotice();
 
-            MsgChatReceiver.sendChatReceiver(groupkey, msgEntity);
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupkey, msgEntity);
         }
     }
 
@@ -411,5 +424,12 @@ public class MsgParseBean extends InterParse {
             MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
             friendChat.sendPushMsg(baseEntity);
         }
+    }
+
+    private void reloadUserCookie(String msgid, String address) throws Exception {
+        FailMsgsManager.getInstance().insertFailMsg(address, msgid);
+
+        CommandBean commandBean = new CommandBean((byte) 0x00, null);
+        commandBean.reloadUserCookie();
     }
 }

@@ -2,13 +2,16 @@ package connect.utils;
 
 import android.content.Context;
 
+import connect.ui.activity.Manifest;
 import connect.ui.activity.R;
 import connect.ui.base.BaseApplication;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -155,4 +158,25 @@ public class TimeUtil {
         return timeCount;
     }
 
+    private static Map<String, String> burnTimeMap=new HashMap<>();
+
+    /**
+     * Burn after reading time
+     *
+     * @param time
+     * @return
+     */
+    public static String parseBurnTime(String time) {
+        if (burnTimeMap == null || burnTimeMap.isEmpty()) {
+            burnTimeMap = new HashMap<>();
+
+            Context context = BaseApplication.getInstance().getBaseContext();
+            int[] destimes = context.getResources().getIntArray(R.array.destruct_timer_long);
+            String[] strtimes = context.getResources().getStringArray(R.array.destruct_timer);
+            for (int i = 0; i < destimes.length; i++) {
+                burnTimeMap.put(String.valueOf(destimes[i]), strtimes[i]);
+            }
+        }
+        return burnTimeMap.get(time);
+    }
 }

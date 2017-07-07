@@ -13,10 +13,14 @@ android {
         applicationId "connect.im"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 9
-        versionName "0.0.9"
+        versionCode 12
+        versionName "0.1.2"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'x86', 'armeabi', 'armeabi-v7a'
+        }
     }
 
 //    productFlavors {
@@ -53,6 +57,14 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            java.srcDirs = ['src/main/java', 'src/main/java-gen']
+            jni.srcDirs = []
+        }
+    }
+
     buildTypes {
         debug {
             shrinkResources false
@@ -67,13 +79,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-        }
-    }
-
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-            java.srcDirs = ['src/main/java', 'src/main/java-gen']
         }
     }
 
@@ -106,6 +111,7 @@ def releaseTime() {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(path: ':ffmpeg4android_lib')
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.jakewharton:butterknife:7.0.1'
@@ -122,10 +128,16 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
-
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'com.squareup.okhttp3:okhttp:3.3.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+    }
+    compile 'io.netty:netty-all:5.0.0.Alpha2'
 }
 
 apply plugin: 'com.google.gms.google-services'

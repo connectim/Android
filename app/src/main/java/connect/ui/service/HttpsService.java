@@ -32,8 +32,10 @@ import java.util.List;
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
+import connect.db.green.DaoHelper.ConversionSettingHelper;
 import connect.db.green.DaoHelper.ParamHelper;
 import connect.db.green.DaoHelper.ParamManager;
+import connect.db.green.bean.ConversionSettingEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.im.model.FailMsgsManager;
@@ -46,6 +48,7 @@ import connect.ui.activity.set.bean.PaySetBean;
 import connect.ui.activity.set.bean.PrivateSetBean;
 import connect.ui.activity.wallet.bean.RateBean;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
+import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -104,9 +107,8 @@ public class HttpsService extends Service {
         LogManager.getLogger().d(Tag, "***  onStartCommand start  ***");
 
         initSoundPool();
-        if (HttpRequest.isConnectNet()) {
-            SocketService.startService(service);
-        }
+        SocketService.startService(service);
+        PushService.startService(service);
 
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
         if (TextUtils.isEmpty(index)) {
@@ -148,8 +150,11 @@ public class HttpsService extends Service {
         HttpsService.sendEstimatefee();
 
         if (ParamHelper.getInstance().loadParamEntity(ParamManager.COUNTRY_RATE) == null) {
-            RateBean rateBean = RateDataUtil.getInstance().getRate(SystemDataUtil.getCountryCode());
-            ParamManager.getInstance().putCountryRate(rateBean);
+            String countryCode = SystemDataUtil.getCountryCode();
+            if(!TextUtils.isEmpty(countryCode)){
+                RateBean rateBean = RateDataUtil.getInstance().getRate(countryCode);
+                ParamManager.getInstance().putCountryRate(rateBean);
+            }
         }
 
         HttpsService.sendBlackList();
@@ -199,6 +204,9 @@ public class HttpsService extends Service {
                 break;
             case SYSTEM_VIBRATION:
                 SystemUtil.noticeVibrate(service);
+                break;
+            case GroupNotificaton:
+                updateGroupMute((String) objects[0], (Integer) objects[1]);
                 break;
         }
     }
@@ -256,11 +264,13 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, prikey, imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
-                    if (tokenResponse.getExpired() <= 400) {
-                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
-                    } else {
-                        serviceHandler.removeMessages(SALT_TIMEOUT);
-                        serviceHandler.sendEmptyMessageDelayed(SALT_TIMEOUT, tokenResponse.getExpired());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
+                        if (tokenResponse.getExpired() <= 400) {
+                            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
+                        } else {
+                            serviceHandler.removeMessages(SALT_TIMEOUT);
+                            serviceHandler.sendEmptyMessageDelayed(SALT_TIMEOUT, tokenResponse.getExpired());
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -287,12 +297,13 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, prikey, imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
+                        byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray(), 64);
+                        ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_SALT, StringUtil.bytesToHexString(salts));
+                        ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_EXPIRED, String.valueOf(tokenResponse.getExpired()));
 
-                    byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray(), 64);
-                    ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_SALT, StringUtil.bytesToHexString(salts));
-                    ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_EXPIRED, String.valueOf(tokenResponse.getExpired()));
-
-                    loginSuccessHttp();
+                        loginSuccessHttp();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -314,8 +325,44 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
+                        Connect.Group group = groupInfo.getGroup();
+                        String pubkey = group.getIdentifier();
 
-                    createLocalGroupInfo(groupInfo);
+                        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+                        if (groupEntity == null) {
+                            groupEntity = new GroupEntity();
+                            groupEntity.setIdentifier(pubkey);
+                            String groupname = group.getName();
+                            if (TextUtils.isEmpty(groupname)) {
+                                groupname = "groupname9";
+                            }
+                            groupEntity.setName(groupname);
+                            groupEntity.setVerify(groupInfo.getGroup().getReviewed() ? 1 : 0);
+                            groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
+                            ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                        }
+
+                        List<GroupMemberEntity> memEntities = new ArrayList<>();
+                        for (Connect.GroupMember member : groupInfo.getMembersList()) {
+                            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(pubkey, member.getAddress());
+                            if (memEntity == null) {
+                                memEntity = new GroupMemberEntity();
+                                memEntity.setIdentifier(pubkey);
+                                memEntity.setPub_key(member.getPubKey());
+                                memEntity.setAddress(member.getAddress());
+                                memEntity.setAvatar(member.getAvatar());
+                                memEntity.setNick(member.getUsername());
+                                memEntity.setUsername(member.getUsername());
+                                memEntity.setRole(member.getRole());
+                                memEntities.add(memEntity);
+                            }
+                        }
+
+                        ContactHelper.getInstance().inserGroupMemEntity(memEntities);
+                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, pubkey);
+                        ContactNotice.receiverGroup();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -326,42 +373,6 @@ public class HttpsService extends Service {
 
             }
         });
-    }
-
-    public void createLocalGroupInfo(Connect.GroupInfo groupInfo) {
-        final Connect.Group group = groupInfo.getGroup();
-        final String pubkey = group.getIdentifier();
-
-        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
-        if (groupEntity == null) {
-            groupEntity = new GroupEntity();
-        }
-        groupEntity.setIdentifier(group.getIdentifier());
-        groupEntity.setName(group.getName());
-        groupEntity.setVerify(groupInfo.getGroup().getReviewed()?1:0);
-        groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
-        ContactHelper.getInstance().inserGroupEntity(groupEntity);
-
-        List<GroupMemberEntity> memEntities = new ArrayList<>();
-        ArrayList<String> memberAvatar=new ArrayList<>();
-        for (Connect.GroupMember member : groupInfo.getMembersList()) {
-            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(pubkey, member.getAddress());
-            if (memEntity == null) {
-                memEntity = new GroupMemberEntity();
-            }
-            memEntity.setIdentifier(group.getIdentifier());
-            memEntity.setPub_key(member.getPubKey());
-            memEntity.setAddress(member.getAddress());
-            memEntity.setAvatar(member.getAvatar());
-            memEntity.setNick(member.getUsername());
-            memEntity.setUsername(member.getUsername());
-            memEntity.setRole(member.getRole());
-            memEntities.add(memEntity);
-            memberAvatar.add(member.getAvatar());
-        }
-        ContactHelper.getInstance().inserGroupMemEntity(memEntities);
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, pubkey);
-        ContactNotice.receiverGroup();
     }
 
     public void groupBackUp(String groupkey, String groupecdhkey) {
@@ -404,6 +415,9 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupCollaborative groupCollaborative = Connect.GroupCollaborative.parseFrom(structData.getPlainData().toByteArray());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(groupCollaborative)){
+                        return;
+                    }
                     String[] infos = groupCollaborative.getCollaborative().split("/");
                     if (infos.length < 2) {
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownGroupBackUp, pubkey);
@@ -441,6 +455,10 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.DownloadBackUpResp backUpResp = Connect.DownloadBackUpResp.parseFrom(structData.getPlainData().toByteArray());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(backUpResp)){
+                        return;
+                    }
+
                     String[] infos = backUpResp.getBackup().split("/");
                     if (infos.length >= 2) {
                         byte[] ecdHkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
@@ -464,16 +482,19 @@ public class HttpsService extends Service {
         });
     }
 
-    public synchronized void downGroupBackUpSuccess(String groupkey, String ecdhkey) {
+    public void downGroupBackUpSuccess(String groupkey, String ecdhkey) {
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupkey);
-        if (groupEntity == null) {
-            groupEntity = new GroupEntity();
-        }
-        groupEntity.setIdentifier(groupkey);
-        groupEntity.setEcdh_key(ecdhkey);
-        ContactHelper.getInstance().inserGroupEntity(groupEntity);
+        if (groupEntity != null) {
+            groupEntity.setEcdh_key(ecdhkey);
 
-        FailMsgsManager.getInstance().receiveFailMsgs(groupkey);
+            String groupname = groupEntity.getName();
+            if (TextUtils.isEmpty(groupname)) {
+                groupname = "groupname10";
+            }
+            groupEntity.setName(groupname);
+            ContactHelper.getInstance().inserGroupEntity(groupEntity);
+            FailMsgsManager.getInstance().receiveFailMsgs(groupkey);
+        }
     }
 
     public void requestSetPayInfo() {
@@ -517,8 +538,10 @@ public class HttpsService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                    paySetBean.setVersionPay(payPinVersion.getVersion());
-                    ParamManager.getInstance().putPaySet(paySetBean);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
+                        paySetBean.setVersionPay(payPinVersion.getVersion());
+                        ParamManager.getInstance().putPaySet(paySetBean);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -570,8 +593,10 @@ public class HttpsService extends Service {
                 try {
                     if (response.getCode() == 2000) {
                         Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                        ParamManager.getInstance().putWalletAmount(accountBean);
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
+                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
+                            ParamManager.getInstance().putWalletAmount(accountBean);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -639,6 +664,24 @@ public class HttpsService extends Service {
 
                     }
                 });
+    }
+
+    private void updateGroupMute(final String groupkey, final int state) {
+        Connect.UpdateGroupMute groupMute = Connect.UpdateGroupMute.newBuilder()
+                .setIdentifier(groupkey)
+                .setMute(state == 1).build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_MUTE, groupMute, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                ConversionSettingEntity setEntity = ConversionSettingHelper.getInstance().loadSetEntity(groupkey);
+                setEntity.setDisturb(state);
+                ConversionSettingHelper.getInstance().insertSetEntity(setEntity);
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+            }
+        });
     }
 
     @Override

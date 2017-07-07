@@ -185,30 +185,33 @@ public class FriendChat extends NormalChat {
     }
 
     private void loadUserCookie() {
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
+        userCookie = Session.getInstance().getUserCookie(pubkey);
         if (userCookie == null) {
-            String pubKey = MemoryDataManager.getInstance().getPubKey();
-            userCookie = Session.getInstance().getUserCookie(pubKey);
-
-            if (userCookie == null) {
-                encryType = EncryType.NORMAL;
+            String cookieKey = "COOKIE:" + pubkey;
+            ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+            if (paramEntity != null) {
+                userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
             }
+        }
+
+        if (userCookie == null) {
+            encryType = EncryType.NORMAL;
         }
     }
 
     public void loadFriendCookie(String pubkey) {
+        friendCookie = Session.getInstance().getUserCookie(pubkey);
         if (friendCookie == null) {
-            friendCookie = Session.getInstance().getUserCookie(pubkey);
-            if (friendCookie == null) {
-                String cookieFriend = "COOKIE:" + pubkey;
-                ParamEntity friendEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieFriend);
-                if (friendEntity != null) {
-                    friendCookie = new Gson().fromJson(friendEntity.getValue(), UserCookie.class);
-                }
+            String cookieFriend = "COOKIE:" + pubkey;
+            ParamEntity friendEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieFriend);
+            if (friendEntity != null) {
+                friendCookie = new Gson().fromJson(friendEntity.getValue(), UserCookie.class);
             }
+        }
 
-            if (friendCookie == null) {
-                encryType = EncryType.NORMAL;
-            }
+        if (friendCookie == null) {
+            encryType = EncryType.NORMAL;
         }
     }
 }

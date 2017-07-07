@@ -3,6 +3,7 @@ package connect.ui.activity.contact.model;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -52,10 +53,10 @@ public class ConvertUtil {
      * Query whether registered users to add
      *
      * @param localList
-     * @param bookUsersInfo
+     * @param listUserInfo
      * @param handler
      */
-    public void convertUserInfo(final List<PhoneContactBean> localList, final Connect.PhoneBookUsersInfo bookUsersInfo, final Handler handler) {
+    public void convertUserInfo(final List<PhoneContactBean> localList, final ArrayList<Connect.PhoneBookUserInfo> listUserInfo, final Handler handler) {
         new AsyncTask<Void, Void, HashMap<String,List<PhoneContactBean>>>() {
             @Override
             protected HashMap<String,List<PhoneContactBean>> doInBackground(Void... params) {
@@ -63,7 +64,7 @@ public class ConvertUtil {
                 ArrayList<PhoneContactBean> arrayList = new ArrayList<>();
                 ArrayList<PhoneContactBean> local = new ArrayList<>();
 
-                for (Connect.PhoneBookUserInfo bookUserInfo : bookUsersInfo.getUsersList()) {
+                for (Connect.PhoneBookUserInfo bookUserInfo : listUserInfo) {
                     Connect.UserInfo userInfo = bookUserInfo.getUser();
                     PhoneContactBean contactBean = new PhoneContactBean();
                     contactBean.setNickName(userInfo.getUsername());
@@ -74,13 +75,18 @@ public class ConvertUtil {
 
                     ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
                     if (friendEntity != null) {
+                        // Check whether as a friend
                         contactBean.setStatus(2);
                     } else if (ContactHelper.getInstance().loadFriendRequest(userInfo.getAddress()) != null) {
+                        // Check whether there have been a friend request
                         contactBean.setStatus(3);
                     } else {
+                        // Registered, but didn't add
                         contactBean.setStatus(1);
                     }
-                    arrayList.add(contactBean);
+                    if(!TextUtils.isEmpty(bookUserInfo.getPhoneHash())){
+                        arrayList.add(contactBean);
+                    }
                 }
 
                 for (PhoneContactBean contactBean : localList) {

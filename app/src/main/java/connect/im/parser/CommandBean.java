@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.ParamHelper;
@@ -25,18 +24,17 @@ import connect.db.green.bean.FriendRequestEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
 import connect.db.green.bean.ParamEntity;
+import connect.im.bean.ConnectState;
 import connect.im.bean.Session;
 import connect.im.bean.UserCookie;
 import connect.im.bean.UserOrderBean;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.MsgChatReceiver;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
 import connect.ui.activity.chat.bean.RecExtBean;
 import connect.ui.activity.chat.bean.Talker;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.model.content.FriendChat;
 import connect.ui.activity.chat.model.content.GroupChat;
 import connect.ui.activity.chat.model.content.NormalChat;
@@ -69,11 +67,9 @@ public class CommandBean extends InterParse {
     }
 
     @Override
-    public void msgParse() throws Exception {
+    public synchronized void msgParse() throws Exception {
         if (ackByte == 0x04) {
             receiveOffLineMsgs(byteBuffer);
-        } else if (ackByte == 0x07) {
-            HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
         } else {
             Connect.Command command = imTransferToCommand(byteBuffer);
             String msgid = command.getMsgId();
@@ -104,7 +100,7 @@ public class CommandBean extends InterParse {
                 case 0x06://bind servicetoken
                     break;
                 case 0x07://login out success
-                    HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
+                    //HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
                     break;
                 case 0x08://receive add friend request
                     receiverAddFriendRequest(command.getDetail(), msgid, command.getErrNo());
@@ -136,8 +132,8 @@ public class CommandBean extends InterParse {
                 case 0x18://get friend chatcookie
                     friencChatCookie(command.getDetail(), msgid);
                     break;
-                case 0x19://repeat apply group
-                    applyGroupRepeatInfo(command.getDetail(), msgid, command.getErrNo());
+                case 0x19:
+                    reloadUserCookie();
                     break;
             }
         }
@@ -150,6 +146,8 @@ public class CommandBean extends InterParse {
      * @throws Exception
      */
     private void receiveOffLineMsgs(ByteBuffer buffer) throws Exception {
+        ConnectState.getInstance().sendEvent(ConnectState.ConnectType.OFFLINE_PULL);
+
         Connect.StructData structData = imTransferToStructData(buffer);
         //GZIP
         byte[] unGzip = unGZip(structData.getPlainData().toByteArray());
@@ -163,6 +161,8 @@ public class CommandBean extends InterParse {
             List<Connect.OfflineMsg> msgList = offlineMsgs.getOfflineMsgsList();
 
             for (Connect.OfflineMsg offlineMsg : msgList) {
+                LogManager.getLogger().d(Tag, "msgList:" + msgList.size());
+
                 Connect.ProducerMsgDetail msgDetail = offlineMsg.getBody();
                 int extension = msgDetail.getExt();
                 backOffLineAck(msgDetail.getType(), offlineMsg.getMsgId());
@@ -190,7 +190,7 @@ public class CommandBean extends InterParse {
                         }
                         break;
                     case 0x05://Offline notification
-                        InterParse interParse = new MsgParseBean((byte) extension, ByteBuffer.wrap(msgDetail.getData().toByteArray()));
+                        InterParse interParse = new MsgParseBean((byte) extension, ByteBuffer.wrap(msgDetail.getData().toByteArray()),0);
                         interParse.msgParse();
                         break;
                 }
@@ -202,6 +202,7 @@ public class CommandBean extends InterParse {
         if (offComplete) {
             Session.getInstance().setUpFailTime(MemoryDataManager.getInstance().getPubKey(), 0);
             uploadRandomCookie();
+            ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.CONNECT);
         }
     }
 
@@ -235,7 +236,8 @@ public class CommandBean extends InterParse {
 
     /**
      * Sync contacts list
-     *20,465.61
+     * 20,465.61
+     *
      * @param buffer
      * @throws Exception
      */
@@ -250,7 +252,12 @@ public class CommandBean extends InterParse {
             List<ContactEntity> friendInfoEntities = new ArrayList();
             List<Connect.FriendInfo> friendInfoList = friendShip.getFriendsList();
             for (Connect.FriendInfo friendInfo : friendInfoList) {
-                ContactEntity contactEntity = new ContactEntity();
+                String friendKey=friendInfo.getPubKey();
+                ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendKey);
+                if (contactEntity == null) {
+                    contactEntity = new ContactEntity();
+                    contactEntity.setPub_key(friendKey);
+                }
                 contactEntity.setUsername(friendInfo.getUsername());
                 contactEntity.setAvatar(friendInfo.getAvatar());
                 contactEntity.setPub_key(friendInfo.getPubKey());
@@ -258,6 +265,7 @@ public class CommandBean extends InterParse {
                 contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
                 contactEntity.setSource(friendInfo.getSource());
                 contactEntity.setRemark(friendInfo.getRemark());
+
                 friendInfoEntities.add(contactEntity);
             }
 
@@ -270,6 +278,7 @@ public class CommandBean extends InterParse {
                 connectEntity.setUsername(connect);
                 connectEntity.setAddress(connect);
                 connectEntity.setSource(-1);
+
                 friendInfoEntities.add(connectEntity);
             }
             ContactHelper.getInstance().insertContacts(friendInfoEntities);
@@ -281,40 +290,50 @@ public class CommandBean extends InterParse {
                 Connect.Group group = groupInfo.getGroup();
 
                 String groupKey = group.getIdentifier();
-                GroupEntity groupEntity = new GroupEntity();
-                groupEntity.setIdentifier(groupKey);
-                groupEntity.setVerify(group.getPublic() ? 1 : 0);
-                groupEntity.setName(group.getName());
-                groupEntity.setCommon(1);
-                groupEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
-
                 String[] collaboratives = groupInfo.getEcdh().split("/");
                 if (collaboratives.length < 2) {//Download failed
-                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, groupKey);
+                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
                 } else {// Download successful
-                    String randPubkey = collaboratives[0];
-                    byte[] ecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), randPubkey);
-                    Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
-                    byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, gcmData);
-                    String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
-                    LogManager.getLogger().d(Tag, "Retrieve the backup group ECDH :" + groupEcdh);
-                    groupEntity.setEcdh_key(groupEcdh);
-                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                    if (groupEntity == null) {
+                        String randPubkey = collaboratives[0];
+                        byte[] ecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), randPubkey);
+                        Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
+                        byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, gcmData);
+                        String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
+
+                        groupEntity = new GroupEntity();
+                        groupEntity.setIdentifier(groupKey);
+                        groupEntity.setVerify(group.getPublic() ? 1 : 0);
+                        String groupname = group.getName();
+                        if (TextUtils.isEmpty(groupname)) {
+                            groupname = "groupname1";
+                        }
+                        groupEntity.setName(groupname);
+                        groupEntity.setCommon(1);
+                        groupEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
+                        groupEntity.setEcdh_key(groupEcdh);
+                        ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                    }
                 }
 
                 List<Connect.GroupMember> members = groupInfo.getMembersList();
                 List<GroupMemberEntity> memberEntities = new ArrayList<>();
                 for (Connect.GroupMember member : members) {
-                    GroupMemberEntity memberEntity = new GroupMemberEntity();
-                    memberEntity.setIdentifier(groupKey);
-                    memberEntity.setPub_key(member.getPubKey());
-                    memberEntity.setAddress(member.getAddress());
-                    memberEntity.setAvatar(member.getAvatar());
-                    memberEntity.setUsername(member.getUsername());
-                    memberEntity.setNick(member.getNick());
-                    memberEntity.setRole(member.getRole());
-                    memberEntity.setUsername(member.getUsername());
-                    memberEntities.add(memberEntity);
+                    GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, member.getAddress());
+                    if (memberEntity == null) {
+                        memberEntity = new GroupMemberEntity();
+                        memberEntity.setIdentifier(groupKey);
+                        memberEntity.setPub_key(member.getPubKey());
+                        memberEntity.setAddress(member.getAddress());
+                        memberEntity.setAvatar(member.getAvatar());
+                        memberEntity.setUsername(member.getUsername());
+                        memberEntity.setNick(member.getNick());
+                        memberEntity.setRole(member.getRole());
+                        memberEntity.setUsername(member.getUsername());
+
+                        memberEntities.add(memberEntity);
+                    }
                 }
                 ContactHelper.getInstance().inserGroupMemEntity(memberEntities);
             }
@@ -351,10 +370,8 @@ public class CommandBean extends InterParse {
                             MsgEntity msgEntity = normalChat.txtMsg(content);
                             msgEntity.getMsgDefinBean().setSenderInfoExt(msgSender);
                             MessageHelper.getInstance().insertFromMsg(entity.getPub_key(), msgEntity.getMsgDefinBean());
-
-                            ChatMsgUtil.updateRoomInfo(entity.getPub_key(), 0, TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
+                            normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
                         }
-
                         FailMsgsManager.getInstance().receiveFailMsgs(pubKey);
                         break;
                 }
@@ -384,7 +401,7 @@ public class CommandBean extends InterParse {
         }
 
         if (isMySend) {//youself send add Friend request
-            if ((int) objs[1] == 1) {
+            if ((int) objs[1] == 1 || (int) objs[1] == 3) {
                 receiptUserSendAckMsg(msgid, MsgNoticeBean.NtEnum.MSG_SEND_FAIL, objs[1]);
             } else {
                 receiptUserSendAckMsg(msgid, MsgNoticeBean.NtEnum.MSG_SEND_SUCCESS);
@@ -408,6 +425,9 @@ public class CommandBean extends InterParse {
     private void receiverAcceptAddFriend(ByteString buffer, Object... objs) throws Exception {
         switch ((int) objs[1]) {
             case 1:
+                receiptUserSendAckMsg(objs[0], MsgNoticeBean.NtEnum.MSG_SEND_FAIL, objs[1]);
+                return;
+            case 4:
                 receiptUserSendAckMsg(objs[0], MsgNoticeBean.NtEnum.MSG_SEND_FAIL, objs[1]);
                 return;
         }
@@ -458,29 +478,35 @@ public class CommandBean extends InterParse {
         Connect.GroupChange groupChange = Connect.GroupChange.parseFrom(buffer);
 
         Context context = BaseApplication.getInstance().getBaseContext();
-        String groupKey = groupChange.getIdentifier();
-        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-
+        String groupKey = "";
         String noticeStr = "";
+
+        GroupEntity groupEntity = null;
         NormalChat normalChat = null;
         List<GroupMemberEntity> groupMemEntities = null;
         switch (groupChange.getChangeType()) {
             case 0://Group of information change
                 Connect.Group group = Connect.Group.parseFrom(groupChange.getDetail());
-                if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
-                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, group.getIdentifier());
+                groupKey = group.getIdentifier();
+                groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                if (groupEntity == null || TextUtils.isEmpty(group.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
+                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
 
-                    FailMsgsManager.getInstance().insertReceiveMsg(group.getIdentifier(),TimeUtil.timestampToMsgid(), context.getString(R.string.Link_Join_Group));
+                    FailMsgsManager.getInstance().insertReceiveMsg(group.getIdentifier(), TimeUtil.timestampToMsgid(), context.getString(R.string.Link_Join_Group));
                 } else {
-                    if (!TextUtils.isEmpty(group.getName())) {
-                        groupEntity.setName(group.getName());
+                    String groupname = group.getName();
+                    if (TextUtils.isEmpty(groupname)) {
+                        groupname = "groupname2";
                     }
-                    groupEntity.setSummary(TextUtils.isEmpty(group.getSummary()) ? "" : group.getSummary());
+                    groupEntity.setName(groupname);
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                     ContactNotice.receiverGroup();
                 }
                 break;
             case 1://Add members
+                groupKey = groupChange.getIdentifier();
+                groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+
                 Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(groupChange.getDetail());
                 List<Connect.UserInfo> userInfos = usersInfo.getUsersList();
                 List<GroupMemberEntity> memEntities = new ArrayList<>();
@@ -489,57 +515,61 @@ public class CommandBean extends InterParse {
                     if (groupMemEntity == null) {
                         groupMemEntity = new GroupMemberEntity();
                         groupMemEntity.setIdentifier(groupKey);
-                    }
+                        groupMemEntity.setPub_key(info.getPubKey());
+                        groupMemEntity.setUsername(info.getUsername());
+                        groupMemEntity.setNick(info.getUsername());
+                        groupMemEntity.setAvatar(info.getAvatar());
+                        groupMemEntity.setAddress(info.getAddress());
+                        groupMemEntity.setRole(0);
 
-                    groupMemEntity.setPub_key(info.getPubKey());
-                    groupMemEntity.setUsername(info.getUsername());
-                    groupMemEntity.setNick(info.getUsername());
-                    groupMemEntity.setAvatar(info.getAvatar());
-                    groupMemEntity.setAddress(info.getAddress());
-                    groupMemEntity.setRole(0);
-                    memEntities.add(groupMemEntity);
+                        memEntities.add(groupMemEntity);
+                    }
                 }
 
                 if (groupEntity == null) {//The request of details
                     HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
                 } else {
                     ContactHelper.getInstance().inserGroupMemEntity(memEntities);
+
                     normalChat = new GroupChat(groupEntity);
-                }
+                    for (GroupMemberEntity memEntity : memEntities) {
+                        String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
+                        if (groupChange.hasInviteBy()) {
+                            String invitorname = memEntity.getAddress().equals(MemoryDataManager.getInstance().getAddress()) ?
+                                    context.getString(R.string.Chat_You) : memberName;
+                            noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, groupChange.getInviteBy().getUsername(), invitorname);
+                        } else {
+                            noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
+                        }
 
-                for (GroupMemberEntity memEntity : memEntities) {
-                    String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
-                    if (groupChange.hasInviteBy()) {
-                        String invitorname = memEntity.getAddress().equals(MemoryDataManager.getInstance().getAddress()) ?
-                                context.getString(R.string.Chat_You) : memberName;
-                        noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, groupChange.getInviteBy().getUsername(), invitorname);
-                    } else {
-                        noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
-                    }
+                        if (normalChat == null) {
+                            FailMsgsManager.getInstance().insertReceiveMsg(groupKey, TimeUtil.timestampToMsgid(), noticeStr);
+                        } else {
+                            MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
+                            MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
 
-                    if (normalChat == null) {
-                        FailMsgsManager.getInstance().insertReceiveMsg(groupKey,TimeUtil.timestampToMsgid(), noticeStr);
-                    } else {
-                        MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
-                        MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
-                        MsgChatReceiver.sendChatReceiver(groupKey, msgEntity);
-                        ChatMsgUtil.updateRoomInfo(groupKey, 1, TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
+                            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
+                            normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
+                        }
                     }
                 }
                 break;
             case 2://Remove the group members
+                groupKey = groupChange.getIdentifier();
                 Connect.QuitGroupUserAddress quitGroup = Connect.QuitGroupUserAddress.parseFrom(groupChange.getDetail());
                 for (String address : quitGroup.getAddressesList()) {
-                    ContactHelper.getInstance().removeMemberEntity(groupChange.getIdentifier(), address);
+                    ContactHelper.getInstance().removeMemberEntity(groupKey, address);
                 }
                 break;
             case 3://Group of personal information changes
+                groupKey = groupChange.getIdentifier();
                 Connect.ChangeGroupNick groupNick = Connect.ChangeGroupNick.parseFrom(groupChange.getDetail());
-                GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(groupChange.getIdentifier(), groupNick.getAddress());
+                GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, groupNick.getAddress());
                 memEntity.setNick(groupNick.getNick());
                 ContactHelper.getInstance().inserGroupMemEntity(memEntity);
                 break;
             case 4://Group change
+                groupKey = groupChange.getIdentifier();
                 Connect.GroupAttorn groupAttorn = Connect.GroupAttorn.parseFrom(groupChange.getDetail());
                 groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
                 if (groupMemEntities == null) {
@@ -565,16 +595,28 @@ public class CommandBean extends InterParse {
                         normalChat = new GroupChat(groupEntity);
                         MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
                         MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
-                        MsgChatReceiver.sendChatReceiver(groupKey, msgEntity);
-                        ChatMsgUtil.updateRoomInfo(groupKey, 1, TimeUtil.getCurrentTimeInLong(), msgEntity.getMsgDefinBean());
+
+                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,groupKey,msgEntity);
+                        normalChat.updateRoomMsg(null,msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()),msgEntity.getMsgDefinBean().getSendtime(),-1,true);
                     }
                 }
                 break;
             case 5://Group set the switch
                 Connect.GroupSetting groupSetting = Connect.GroupSetting.parseFrom(groupChange.getDetail());
-                groupEntity = ContactHelper.getInstance().loadGroupEntity(groupSetting.getIdentifier());
-                if (groupEntity != null) {
+
+                groupKey = groupSetting.getIdentifier();
+                groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                if (groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
+                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
+                } else {
+                    groupEntity.setSummary(groupSetting.getSummary());
                     groupEntity.setVerify(groupSetting.getPublic() ? 1 : 0);
+
+                    String groupname = groupEntity.getName();
+                    if (TextUtils.isEmpty(groupname)) {
+                        groupname = "groupname3";
+                    }
+                    groupEntity.setName(groupname);
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                 }
                 break;
@@ -604,6 +646,7 @@ public class CommandBean extends InterParse {
         String pubKey = MemoryDataManager.getInstance().getPubKey();
         switch (errNum) {
             case 0://Save the generated temporary cookies
+                ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.CONNECT);
                 Session.getInstance().setUpFailTime(pubKey, 0);
                 UserCookie userCookie = Session.getInstance().getUserCookie(pubKey);
 
@@ -611,7 +654,12 @@ public class CommandBean extends InterParse {
                 entity.setKey("COOKIE:" + pubKey + StringUtil.bytesToHexString(userCookie.getSalt()));
                 entity.setValue(new Gson().toJson(userCookie));
                 ParamHelper.getInstance().insertOrReplaceParamEntity(entity);
-                LogManager.getLogger().d(Tag, "The user save COOKIE:" + entity.getKey());
+
+                try {
+                    FailMsgsManager.getInstance().sendExpireMsg();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case 2:
             case 3:
@@ -633,57 +681,28 @@ public class CommandBean extends InterParse {
      * Upload a local public key
      */
     private void uploadRandomCookie() {
-        String cookieKey = "COOKIE:" + MemoryDataManager.getInstance().getPubKey();
-
         long curTime = TimeUtil.getCurrentTimeSecond();
-        ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
         boolean needUpload = true;//If you want to generate a temporary session cookies
-        UserCookie userCookie = null;
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
 
-        if (paramEntity == null) {
-            needUpload = true;
-        } else {
-            userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+        UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
+        if (userCookie == null) {
+            String cookieKey = "COOKIE:" + pubkey;
+            ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+            if (paramEntity != null) {
+                userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+            }
+        }
+
+        if (userCookie != null) {
             if (curTime < userCookie.getExpiredTime()) {
                 needUpload = false;
-                LogManager.getLogger().d(Tag, "user local SALT:" + StringUtil.bytesToHexString(userCookie.getSalt()));
-            } else {
-                needUpload = true;
             }
         }
 
         if (needUpload) {
-            String priKey = MemoryDataManager.getInstance().getPriKey();
-            //Generate temporary private key and Salt
-            String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
-            String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
-            byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
-
-            LogManager.getLogger().d(Tag, "user create salt:" + StringUtil.bytesToHexString(randomSalt));
-
-            long expiredTime = curTime + 24 * 60 * 60;
-            Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
-                    setChatPubKey(randomPubKey).
-                    setSalt(ByteString.copyFrom(randomSalt)).
-                    setExpired(expiredTime).build();
-
-            String signInfo = SupportKeyUril.signHash(priKey, chatInfo.toByteArray());
-            Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder().
-                    setSign(signInfo).
-                    setData(chatInfo).build();
-
-            UserOrderBean userOrderBean = new UserOrderBean();
-            userOrderBean.uploadRandomCookie(cookie);
-
-            //save random prikey and salt
-            userCookie = new UserCookie();
-            userCookie.setPriKey(randomPriKey);
-            userCookie.setPubKey(randomPubKey);
-            userCookie.setSalt(randomSalt);
-            userCookie.setExpiredTime(expiredTime);
+            reloadUserCookie();
         }
-
-        Session.getInstance().setUserCookie(MemoryDataManager.getInstance().getPubKey(), userCookie);
     }
 
     /**
@@ -695,18 +714,16 @@ public class CommandBean extends InterParse {
     private void friencChatCookie(ByteString buffer, String msgid) throws Exception {
         Connect.ChatCookie cookie = Connect.ChatCookie.parseFrom(buffer);
         Connect.ChatCookieData cookieData = cookie.getData();
-
         if (TextUtils.isEmpty(cookieData.getChatPubKey())) {//friend use old protocal
             return;
         }
 
         byte[] friendSalt = cookieData.getSalt().toByteArray();
-
-        //Access to local cookies
         Map<String, Object> failMap = FailMsgsManager.getInstance().getFailMap(msgid);
         if (failMap == null) {
             return;
         }
+
         String pubkey = (String) failMap.get("EXT");
         String cookiePubKey = "COOKIE:" + pubkey;
         List<ParamEntity> paramEntities = ParamHelper.getInstance().likeParamEntities(cookiePubKey);
@@ -739,17 +756,6 @@ public class CommandBean extends InterParse {
 
         Session.getInstance().setUserCookie(pubkey, friendCookie);
         RecExtBean.sendRecExtMsg(RecExtBean.ExtType.UNARRIVE_UPDATE, pubkey);
-    }
-
-    /**
-     * Repeat application group
-     *
-     * @param buffer
-     * @throws Exception
-     */
-    private void applyGroupRepeatInfo(ByteString buffer, Object... objs) throws Exception {
-        Connect.GroupApplyChange applyChange = Connect.GroupApplyChange.parseFrom(buffer);
-        ParamManager.getInstance().updateGroupApply(applyChange.getVerificationCode(), applyChange.getTips(), applyChange.getSource(), -1, (String) objs[0]);
     }
 
     /**
@@ -793,7 +799,7 @@ public class CommandBean extends InterParse {
                             BaseApplication.getInstance().getString(R.string.app_name),
                             RobotChat.getInstance().address(), RobotChat.getInstance().headImg()));
                     MessageHelper.getInstance().insertFromMsg(BaseApplication.getInstance().getString(R.string.app_name), msgEntity.getMsgDefinBean());
-                    ChatMsgUtil.updateRoomInfo(BaseApplication.getInstance().getString(R.string.app_name), 2, msgEntity.getMsgDefinBean().getSendtime(), msgEntity.getMsgDefinBean());
+                    RobotChat.getInstance().updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(2), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
                     HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(2, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
                 } else {
                     Connect.UserInfo userInfo = packageInfo.getSender();
@@ -811,13 +817,15 @@ public class CommandBean extends InterParse {
                     MsgEntity msgEntity = normalChat.luckPacketMsg(packageInfo.getHashId(), packageInfo.getTips(), 1);
                     msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAddress(), friendEntity.getAvatar()));
                     MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
-                    ChatMsgUtil.updateRoomInfo(normalChat.roomKey(), 0, msgEntity.getMsgDefinBean().getSendtime(), msgEntity.getMsgDefinBean());
+                    normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
                     HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
                 }
                 break;
             case 1:
                 break;
             case 2://It is to receive
+                break;
+            case 3://Red packets suspended
                 break;
         }
 
@@ -826,5 +834,65 @@ public class CommandBean extends InterParse {
         } else {
             receiptUserSendAckMsg(objs[0], MsgNoticeBean.NtEnum.MSG_SEND_SUCCESS);
         }
+    }
+
+    public void reloadUserCookie() {
+        long curTime = TimeUtil.getCurrentTimeSecond();
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
+
+        boolean reGenerate = true;
+        UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
+        if (userCookie == null) {
+            String cookieKey = "COOKIE:" + pubkey;
+            ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+            if (paramEntity != null) {
+                userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+            }
+        }
+
+        if (userCookie != null) {
+            if (curTime < userCookie.getExpiredTime()) {
+                reGenerate = false;
+            }
+        }
+
+        String priKey = MemoryDataManager.getInstance().getPriKey();
+        String randomPriKey = null;
+        String randomPubKey = null;
+        byte[] randomSalt = null;
+        long expiredTime = 0;
+
+        if (reGenerate) {
+            priKey = MemoryDataManager.getInstance().getPriKey();
+            randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+            randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+            randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
+            expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
+        } else {
+            randomPriKey = userCookie.getPriKey();
+            randomPubKey = userCookie.getPubKey();
+            randomSalt = userCookie.getSalt();
+            expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
+        }
+
+        Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
+                setChatPubKey(randomPubKey).
+                setSalt(ByteString.copyFrom(randomSalt)).
+                setExpired(expiredTime).build();
+
+        String signInfo = SupportKeyUril.signHash(priKey, chatInfo.toByteArray());
+        Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder().
+                setSign(signInfo).
+                setData(chatInfo).build();
+
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.uploadRandomCookie(cookie);
+
+        userCookie = new UserCookie();
+        userCookie.setPriKey(randomPriKey);
+        userCookie.setPubKey(randomPubKey);
+        userCookie.setSalt(randomSalt);
+        userCookie.setExpiredTime(expiredTime);
+        Session.getInstance().setUserCookie(MemoryDataManager.getInstance().getPubKey(), userCookie);
     }
 }

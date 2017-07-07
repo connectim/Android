@@ -18,12 +18,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
+import connect.utils.ProtoBufUtil;
+import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
@@ -38,7 +38,7 @@ import connect.utils.okhttp.ResultCall;
 import connect.view.MdStyleProgress;
 import connect.view.TopToolBar;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -151,11 +151,6 @@ public class TransferAddressActivity extends BaseActivity {
                 String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                 requestBillingSend(amount, samValue);
             }
-
-            @Override
-            public void onFalse() {
-
-            }
         });
     }
 
@@ -172,9 +167,10 @@ public class TransferAddressActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.BillHashId billHashId = Connect.BillHashId.parseFrom(structData.getPlainData());
-
-                    ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
-                    requestPublicTx(billHashId.getHash(), samValue);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(billHashId)){
+                        ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
+                        requestPublicTx(billHashId.getHash(), samValue);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -183,6 +179,7 @@ public class TransferAddressActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpResponse response) {
                 paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                TransferError.getInstance().showError(response.getCode(),response.getMessage());
             }
         });
     }

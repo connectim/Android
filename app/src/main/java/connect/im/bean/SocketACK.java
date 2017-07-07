@@ -28,6 +28,7 @@ public enum SocketACK {
     UPLOAD_APPINFO(new byte[]{0x04, 0x16}),//Report the device version information
     UPLOAD_CHATCOOKIE(new byte[]{0x04, 0x17}),//Upload session Cookie
     DOWNLOAD_FRIENDCOOKIE(new byte[]{0x04, 0x18}),//Get friends cookies
+    DIFFERENT_DEVICE(new byte[]{0x04,0x19}),//different devive login in
 
     ROBOT_CHAT(new byte[]{0x05, 0x00}),//Robot news
     SINGLE_CHAT(new byte[]{0x05, 0x01}),//The private chat

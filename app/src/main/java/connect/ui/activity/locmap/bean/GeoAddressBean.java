@@ -9,15 +9,19 @@ public class GeoAddressBean {
     private double locationLongitude;
     private String address;
     private String path;
+    private float imageOriginWidth;
+    private float imageOriginHeight;
 
     public GeoAddressBean() {
     }
 
-    public GeoAddressBean(double lat, double lon, String address, String path) {
-        this.locationLatitude = lat;
-        this.locationLongitude = lon;
+    public GeoAddressBean(double locationLatitude, double locationLongitude, String address, String path, float imageOriginWidth, float imageOriginHeight) {
+        this.locationLatitude = locationLatitude;
+        this.locationLongitude = locationLongitude;
         this.address = address;
         this.path = path;
+        this.imageOriginWidth = imageOriginWidth;
+        this.imageOriginHeight = imageOriginHeight;
     }
 
     public double getLocationLatitude() {
@@ -44,15 +48,19 @@ public class GeoAddressBean {
         this.path = path;
     }
 
-    public class GeoLocation{
-        double locationLatitude;
-        double locationLongitude;
-        String address;
+    public float getImageOriginWidth() {
+        return imageOriginWidth;
+    }
 
-        public GeoLocation(double locationLatitude, double locationLongitude, String address) {
-            this.locationLatitude = locationLatitude;
-            this.locationLongitude = locationLongitude;
-            this.address = address;
-        }
+    public void setImageOriginWidth(float imageOriginWidth) {
+        this.imageOriginWidth = imageOriginWidth;
+    }
+
+    public float getImageOriginHeight() {
+        return imageOriginHeight;
+    }
+
+    public void setImageOriginHeight(float imageOriginHeight) {
+        this.imageOriginHeight = imageOriginHeight;
     }
 }

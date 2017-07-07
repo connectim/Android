@@ -1,6 +1,7 @@
 package connect.ui.activity.chat.view.holder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
@@ -13,16 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.bean.RoomSession;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.contact.StrangerInfoActivity;
 import connect.ui.activity.contact.bean.SourceType;
 import connect.ui.activity.wallet.PacketDetailActivity;
+import connect.ui.base.BaseApplication;
+import connect.utils.TimeUtil;
 
 /**
  * Created by gtq on 2016/12/19.
@@ -75,15 +75,18 @@ public class MsgNoticeHolder extends MsgBaseHolder {
             case 11://open/close burn
                 String name = "";
                 String content = "";
-                if (entity.getMsgDefinBean().getPublicKey().equals(RoomSession.getInstance().getRoomKey())) {
-                    name = context.getResources().getString(R.string.Chat_You);
+                String myPubkey=MemoryDataManager.getInstance().getPubKey();
+                if (entity.getMsgDefinBean().getPublicKey().equals(myPubkey)) {
+                    MsgSender msgSender = entity.getMsgDefinBean().getSenderInfoExt();
+                    name = msgSender.username;
                 } else {
-                    name = RoomSession.getInstance().getRoomName();
+                    name = context.getResources().getString(R.string.Chat_You);
                 }
+
                 if (TextUtils.isEmpty(definBean.getContent()) || "0".equals(definBean.getContent())) {
                     content = context.getResources().getString(R.string.Chat_disable_the_self_descruct, name);
                 } else {
-                    content = context.getResources().getString(R.string.Chat_set_the_self_destruct_timer_to, name, ChatMsgUtil.parseBurnTime(definBean.getContent()));
+                    content = context.getResources().getString(R.string.Chat_set_the_self_destruct_timer_to, name, TimeUtil.parseBurnTime(definBean.getContent()));
                 }
                 notice.setText(content);
                 break;

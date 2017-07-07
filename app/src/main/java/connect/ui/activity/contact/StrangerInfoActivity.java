@@ -29,6 +29,7 @@ import connect.ui.activity.login.bean.UserBean;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -184,8 +185,13 @@ public class StrangerInfoActivity extends BaseActivity {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    if(structData == null || structData.getPlainData() == null){
+                        return;
+                    }
                     sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    updataView();
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)){
+                        updataView();
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

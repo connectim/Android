@@ -20,6 +20,7 @@ import connect.ui.activity.chat.exts.OuterWebsiteActivity;
 import connect.ui.activity.chat.exts.TransferToActivity;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.PacketDetailActivity;
+import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -127,13 +128,15 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
-                            if (redPackage.getRemainSize() == 0) {//lucky packet is brought out
-                                String hashid = redPackage.getHashId();
-                                int type = redPackage.getSystem() ? 1 : 0;
-                                PacketDetailActivity.startActivity((Activity) context, hashid, type);
-                            } else {
-                                UserOrderBean userOrderBean = new UserOrderBean();
-                                userOrderBean.outerRedPacket(token);
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(redPackage)){
+                                if (redPackage.getRemainSize() == 0) {//lucky packet is brought out
+                                    String hashid = redPackage.getHashId();
+                                    int type = redPackage.getSystem() ? 1 : 0;
+                                    PacketDetailActivity.startActivity((Activity) context, hashid, type);
+                                } else {
+                                    UserOrderBean userOrderBean = new UserOrderBean();
+                                    userOrderBean.outerRedPacket(token);
+                                }
                             }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();

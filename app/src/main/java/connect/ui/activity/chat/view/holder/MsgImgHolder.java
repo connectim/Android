@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -18,7 +17,6 @@ import java.io.File;
 
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgDirect;
 import connect.ui.activity.chat.bean.MsgEntity;
@@ -28,7 +26,6 @@ import connect.ui.activity.common.ConversationActivity;
 import connect.ui.activity.common.bean.ConverType;
 import connect.ui.base.BaseApplication;
 import connect.utils.FileUtil;
-import connect.utils.system.SystemUtil;
 
 /**
  * Created by gtq on 2016/11/23.
@@ -47,11 +44,8 @@ public class MsgImgHolder extends MsgChatHolder {
         MsgDefinBean bean = entity.getMsgDefinBean();
         String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
 
-        if (!TextUtils.isEmpty(definBean.getExt())) {
-            imgmsg.setOpenBurn(true);
-        }
-        imgmsg.setLayoutParams(calculateSize((RelativeLayout.LayoutParams) imgmsg.getLayoutParams(), bean.getImageOriginWidth(), bean.getImageOriginHeight()));
-        imgmsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url);
+        imgmsg.setOpenBurn(TextUtils.isEmpty(definBean.getExt())?false:true);
+        imgmsg.loadUri(direct, entity.getRoomType(),entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
 
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,26 +63,6 @@ public class MsgImgHolder extends MsgChatHolder {
                 }
             }
         });
-    }
-
-    private RelativeLayout.LayoutParams calculateSize(RelativeLayout.LayoutParams params, float width, float height) {
-        int maxDp = SystemUtil.dipToPx(160);
-        if (height != 0 && width != 0) {
-            double scale = (width * 1.00) / height;
-            if (width >= height) {
-                width = maxDp;
-                height = (int) (width / scale);
-            } else {
-                height = maxDp;
-                width = (int) (height * scale);
-            }
-        } else {
-            width = maxDp;
-            height = maxDp;
-        }
-        params.width = (int) width;
-        params.height = (int) height;
-        return params;
     }
 
     @Override

@@ -99,7 +99,7 @@ public class GroupIntroduceActivity extends BaseActivity {
                     toolbar.setRightListence(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            groupSetting(groupEntity, edit.getText().toString());
+                            groupSetting(groupKey, edit.getText().toString());
                         }
                     });
                 }
@@ -107,18 +107,26 @@ public class GroupIntroduceActivity extends BaseActivity {
         });
     }
 
-    protected void groupSetting(final GroupEntity groupEntity, final String summary) {
+    protected void groupSetting(final String groupKey, final String summary) {
         Connect.GroupSetting setting = Connect.GroupSetting.newBuilder()
-                .setIdentifier(groupEntity.getIdentifier())
+                .setIdentifier(groupKey)
                 .setSummary(summary)
                 .setPublic(true).build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_SETTING, setting, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                groupEntity.setSummary(summary);
-                ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
+                    groupEntity.setSummary(summary);
 
-                GroupManageActivity.startActivity(activity,groupKey);
+                    String groupname = groupEntity.getName();
+                    if (TextUtils.isEmpty(groupname)) {
+                        groupname = "groupname5";
+                    }
+                    groupEntity.setName(groupname);
+                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                }
+                GroupManageActivity.startActivity(activity, groupKey);
             }
 
             @Override

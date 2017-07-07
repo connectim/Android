@@ -72,7 +72,7 @@
                 android:src="@mipmap/send_photo3x"/>
         </RelativeLayout>
 
-        <connect.view.camera.VideoBtnView
+        <connect.view.camera.VideoButtonView
             android:id="@+id/video_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

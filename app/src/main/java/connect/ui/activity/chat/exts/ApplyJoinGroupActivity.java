@@ -2,6 +2,8 @@ package connect.ui.activity.chat.exts;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -13,10 +15,17 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.MemoryDataManager;
 import connect.db.SharedPreferenceUtil;
+import connect.db.green.DaoHelper.ContactHelper;
+import connect.db.green.bean.GroupEntity;
 import connect.ui.activity.R;
+import connect.ui.activity.chat.ChatActivity;
+import connect.ui.activity.chat.bean.Talker;
+import connect.ui.activity.home.bean.HttpRecBean;
 import connect.ui.base.BaseActivity;
+import connect.ui.service.HttpsService;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -130,8 +139,11 @@ public class ApplyJoinGroupActivity extends BaseActivity {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    infoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
-                    requestBaseInfoSucces();
+                    Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)){
+                        infoBase = groupInfoBase;
+                        requestBaseInfoSucces();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -157,16 +169,19 @@ public class ApplyJoinGroupActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupInfoBaseShare baseShare = Connect.GroupInfoBaseShare.parseFrom(structData.getPlainData());
-                    groupKey[0] = baseShare.getIdentifier();
-                    infoBase = Connect.GroupInfoBase.newBuilder()
-                            .setAvatar(baseShare.getAvatar())
-                            .setHash(baseShare.getHash())
-                            .setCount(baseShare.getCount())
-                            .setName(baseShare.getName())
-                            .setPublic(baseShare.getPublic())
-                            .setSummary(baseShare.getSummary()).build();
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(baseShare)){
+                        groupKey[0] = baseShare.getIdentifier();
+                        infoBase = Connect.GroupInfoBase.newBuilder()
+                                .setAvatar(baseShare.getAvatar())
+                                .setHash(baseShare.getHash())
+                                .setCount(baseShare.getCount())
+                                .setName(baseShare.getName())
+                                .setPublic(baseShare.getPublic())
+                                .setJoined(baseShare.getJoined())
+                                .setSummary(baseShare.getSummary()).build();
 
-                    requestBaseInfoSucces();
+                        requestBaseInfoSucces();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -193,8 +208,11 @@ public class ApplyJoinGroupActivity extends BaseActivity {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    infoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
-                    requestBaseInfoSucces();
+                    Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)){
+                        infoBase = groupInfoBase;
+                        requestBaseInfoSucces();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -217,6 +235,11 @@ public class ApplyJoinGroupActivity extends BaseActivity {
 
             String profile = TextUtils.isEmpty(infoBase.getSummary()) ? getString(R.string.Link_Group_brief) : infoBase.getSummary();
             txt3.setText(profile);
+
+            boolean isJoin = infoBase.getJoined();
+            if (isJoin) {
+                handler.sendEmptyMessageDelayed(120, 500);
+            }
         } else {
             requestBaseInfoFail();
         }
@@ -228,12 +251,15 @@ public class ApplyJoinGroupActivity extends BaseActivity {
     }
 
     protected void applyJoinDialog() {
+        final String sayHelloStr =getResources().getString(R.string.Link_Hello_I_am,SharedPreferenceUtil.getInstance().getUser().getName()+
+                ","+getResources().getString(R.string.Link_apply_to_join_group));
+
         DialogUtil.showEditView(activity, getResources().getString(R.string.Link_apply_to_join_group), getString(R.string.Common_Cancel), getString(R.string.Chat_Complete),
-                "", "", "", false, -1,new DialogUtil.OnItemClickListener() {
+                "", sayHelloStr, "", false, -1,new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         if (TextUtils.isEmpty(value)) {
-                            value = getResources().getString(R.string.Link_apply_to_join_group);
+                            value = sayHelloStr;
                         }
 
                         if (applyType == EApplyGroup.GROUPKEY) {
@@ -304,4 +330,23 @@ public class ApplyJoinGroupActivity extends BaseActivity {
             }
         });
     }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 120:
+                    String gKey = groupKey[0];
+                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(gKey);
+                    if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
+                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, gKey);
+                    } else {
+                        Talker talker = new Talker(groupEntity);
+                        ChatActivity.startActivity(activity, talker);
+                    }
+                    break;
+            }
+        }
+    };
 }

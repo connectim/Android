@@ -19,6 +19,8 @@ public class MsgLocationHolder extends MsgChatHolder {
     private BubbleImg imgmsg;
     private TextView textView;
 
+    private GeoAddressBean geoAddres;
+
     public MsgLocationHolder(View itemView) {
         super(itemView);
         imgmsg = (BubbleImg) itemView.findViewById(R.id.imgmsg);
@@ -29,11 +31,11 @@ public class MsgLocationHolder extends MsgChatHolder {
     public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean bean = entity.getMsgDefinBean();
-        final GeoAddressBean geoAddres = bean.getLocationExt();
+        geoAddres = bean.getLocationExt();
         String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
 
         textView.setText(geoAddres.getAddress());
-        imgmsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url);
+        imgmsg.loadUri(direct,entity.getRoomType(), entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -16,13 +16,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ConversionHelper;
+import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.bean.ContactEntity;
 import connect.db.green.bean.GroupEntity;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.model.ChatOuterHelper;
+import connect.ui.activity.chat.bean.MsgEntity;
+import connect.ui.activity.chat.model.content.BaseChat;
+import connect.ui.activity.chat.model.content.FriendChat;
+import connect.ui.activity.chat.model.content.GroupChat;
 import connect.ui.activity.contact.adapter.ShareCardAdapter;
 import connect.ui.activity.home.bean.RoomAttrBean;
 import connect.ui.base.BaseActivity;
+import connect.ui.base.BaseApplication;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.view.TopToolBar;
@@ -94,13 +99,19 @@ public class ShareCardActivity extends BaseActivity {
                     "", "", false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {
-                            if(roomAttrBean.getRoomtype() == 0){
+                            BaseChat baseChat = null;
+                            if (roomAttrBean.getRoomtype() == 0) {
                                 ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(roomAttrBean.getRoomid());
-                                ChatOuterHelper.sendCardTo(0,friendEntity,acceptFriend);
-                            }else if(roomAttrBean.getRoomtype() == 1){
+                                baseChat = new FriendChat(acceptFriend);
+                            } else if (roomAttrBean.getRoomtype() == 1) {
                                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomAttrBean.getRoomid());
-                                ChatOuterHelper.sendCardTo(1,friendEntity,groupEntity);
+                                baseChat = new GroupChat(groupEntity);
                             }
+                            MsgEntity msgEntity = (MsgEntity) baseChat.cardMsg(friendEntity);
+                            baseChat.sendPushMsg(msgEntity);
+                            MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+                            baseChat.updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgEntity.getMsgDefinBean().getSendtime());
+
                             ActivityUtil.goBack(mActivity);
                         }
 

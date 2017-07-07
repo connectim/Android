@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import butterknife.Bind;
@@ -130,7 +131,8 @@ public class ExportPriActivity extends BaseActivity {
     }
 
     public void saveImageToGallery(Bitmap bmp) {
-        pathDcim = BitmapUtil.bitmapSavePathDCIM(bmp);
+        File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bmp);
+        pathDcim = file.getAbsolutePath();
         try {
             MediaStore.Images.Media.insertImage(getContentResolver(), pathDcim, "", null);
             scanner.connect();

@@ -1,5 +1,6 @@
 package connect.ui.activity.set;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -7,6 +8,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -44,18 +49,31 @@ public class LinkMobileActivity extends BaseActivity {
 
     private LinkMobileActivity mActivity;
     private UserBean userBean;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_link);
         ButterKnife.bind(this);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
     protected void onStart() {
-        super.onStart();
+        super.onStart();// ATTENTION: This was auto-generated to implement the App Indexing API.
+// See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
         initView();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
     @Override
@@ -66,31 +84,33 @@ public class LinkMobileActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_Link_Mobile);
 
         userBean = SharedPreferenceUtil.getInstance().getUser();
-        if(TextUtils.isEmpty(userBean.getPhone())){//link
+        if (TextUtils.isEmpty(userBean.getPhone())) {//link
             hintTv.setText(R.string.Set_Not_connected_to_mobile_network);
             linkBtn.setText(R.string.Set_Add_mobile);
+            toolbarTop.setRightTextEnable(false);
             mobileTv.setText("");
-        }else{//linked
+        } else {//linked
             hintTv.setText(R.string.Set_Your_cell_phone_number);
             linkBtn.setText(R.string.Set_Change_Mobile);
+            toolbarTop.setRightTextEnable(true);
             toolbarTop.setRightImg(R.mipmap.menu_white);
             mobileTv.setText("+" + userBean.getPhone());
         }
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view){
+    void goback(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
     @OnClick(R.id.right_lin)
-    void rightMore(View view){
+    void rightMore(View view) {
         ArrayList list = new ArrayList<>();
         list.add(mActivity.getResources().getString(R.string.Set_Unlink));
-        DialogUtil.showBottomListView(mActivity,list,new DialogUtil.DialogListItemClickListener(){
+        DialogUtil.showBottomListView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
             @Override
             public void confirm(AdapterView<?> parent, View view, int position) {
-                switch (position){
+                switch (position) {
                     case 0:
                         unLinkPhone();
                         break;
@@ -102,11 +122,11 @@ public class LinkMobileActivity extends BaseActivity {
     }
 
     @OnClick(R.id.link_btn)
-    void linkBtn(View view){
-        LinkChangePhoneActivity.startActivity(mActivity,LinkChangePhoneActivity.LINK_TYPE);
+    void linkBtn(View view) {
+        LinkChangePhoneActivity.startActivity(mActivity, LinkChangePhoneActivity.LINK_TYPE);
     }
 
-    private void unLinkPhone(){
+    private void unLinkPhone() {
         DialogUtil.showAlertTextView(mActivity,
                 mActivity.getResources().getString(R.string.Set_Unlink_your_mobile_phone),
                 mActivity.getResources().getString(R.string.Set_unlink_Connect_not_find_friend_your_backup_deleted),
@@ -123,9 +143,17 @@ public class LinkMobileActivity extends BaseActivity {
                 });
     }
 
-    private void requestBindMobile(){
+    private void requestBindMobile() {
         ProgressUtil.getInstance().showProgress(mActivity);
-        String[] phoneArray = userBean.getPhone().split("-");
+        String[] phoneArray;
+        if (userBean.getPhone().contains("-")) {
+            phoneArray = userBean.getPhone().split("-");
+        } else if (userBean.getPhone().contains("**")) {
+            phoneArray = userBean.getPhone().split("\\*\\*");
+        } else {
+            ProgressUtil.getInstance().dismissProgress();
+            return;
+        }
         Connect.MobileVerify mobileVerify = Connect.MobileVerify.newBuilder()
                 .setCountryCode(Integer.valueOf(phoneArray[0]))
                 .setNumber(phoneArray[1])
@@ -133,7 +161,6 @@ public class LinkMobileActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_UNBIND_MOBILE, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                UserBean userBean =  SharedPreferenceUtil.getInstance().getUser();
                 userBean.setPhone("");
                 SharedPreferenceUtil.getInstance().putUser(userBean);
                 ProgressUtil.getInstance().dismissProgress();
@@ -147,4 +174,29 @@ public class LinkMobileActivity extends BaseActivity {
         });
     }
 
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("LinkMobile Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
 }

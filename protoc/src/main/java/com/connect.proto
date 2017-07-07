@@ -388,6 +388,7 @@ string name =3;
 int32 count =4;
 string hash =5;
 bool   public=6;
+bool   joined=7;
 }
 message GroupInfoBaseShare {
 string avatar=1;
@@ -398,6 +399,7 @@ string hash =5;
 bool   public=6;
 string username = 7;
 string identifier = 8;
+bool   joined=9;
 }
 message GroupInfo {
 Group group=1;
@@ -570,12 +572,14 @@ message CommandDetail {
 int32 cmd_type=1;
 Command cmd=2;
 }
+
 message DeviceInfo {
-string deviceId=1;
-string deviceName=2;
-string locale = 3;
-int32 cv = 4;
-string uuid=5;
+    string deviceId = 1;
+    string deviceName = 2;
+    string locale = 3;
+    int32 cv = 4;
+    string uuid = 5;
+    ChatCookieData chatCookieData = 6;
 }
 
 message QuitMessage {

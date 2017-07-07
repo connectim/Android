@@ -28,11 +28,14 @@ import connect.ui.activity.login.bean.StartImagesBean;
 import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.login.contract.StartContract;
 import connect.ui.base.BaseApplication;
+import connect.utils.RegularUtil;
+import connect.utils.scan.ResolveUrlUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.glide.OnDownloadTarget;
 import connect.utils.okhttp.HttpRequest;
+import connect.utils.system.SystemUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -61,20 +64,13 @@ public class StartPresenter implements StartContract.Presenter{
         String path = getImagePath();
         mView.setImage(path);
 
-        saveImage(mView.getActivity());
-        goInActivity(mView.getActivity());
-    }
-
-    private void saveImage(Activity activity){
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             requestImages();
-        }
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        } else {
+        }else if (ContextCompat.checkSelfPermission(mView.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
             requestImages();
         }
+        goInActivity(mView.getActivity());
     }
 
     private String getImagePath(){
@@ -156,11 +152,7 @@ public class StartPresenter implements StartContract.Presenter{
     }
 
     private void saveImagesData(StartImagesBean images) {
-        Context context = BaseApplication.getInstance().getBaseContext();
-        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        boolean isWifiConn = networkInfo.isConnected();
-        if(!isWifiConn){
+        if(!SystemUtil.isOpenWifi()){
             return;
         }
         this.imagesBean = images;
@@ -200,8 +192,8 @@ public class StartPresenter implements StartContract.Presenter{
     private void openFromWeb(Activity activity){
         Intent i_getvalue = activity.getIntent();
         String action = i_getvalue.getAction();
-        if(Intent.ACTION_VIEW.equals(action)){
-            Uri uri = i_getvalue.getData();
+        Uri uri = i_getvalue.getData();
+        if(Intent.ACTION_VIEW.equals(action) && RegularUtil.matches(uri.toString(), ResolveUrlUtil.Web_Url)){
             SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.WEB_OPEN_APP,uri.toString());
         }
     }

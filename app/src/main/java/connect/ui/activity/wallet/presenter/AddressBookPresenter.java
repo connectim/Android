@@ -6,12 +6,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.db.MemoryDataManager;
 import connect.db.SharePreferenceUser;
-import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.ui.activity.wallet.bean.AddressBean;
 import connect.ui.activity.wallet.contract.AddressBookContract;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
@@ -54,7 +53,14 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.AddressBook addressBook = Connect.AddressBook.parseFrom(structData.getPlainData());
                             List<Connect.AddressBook.AddressInfo> list = addressBook.getAddressInfoList();
-                            listAddress = switchList(list);
+
+                            ArrayList<Connect.AddressBook.AddressInfo> listCheck = new ArrayList<>();
+                            for(Connect.AddressBook.AddressInfo addressInfo : list){
+                                if(ProtoBufUtil.getInstance().checkProtoBuf(addressInfo)){
+                                    listCheck.add(addressInfo);
+                                }
+                            }
+                            listAddress = switchList(listCheck);
                             mView.updataView(listAddress);
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
@@ -70,6 +76,9 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
 
     @Override
     public void requestAddAddress(final String address) {
+        if(null == listAddress){
+            return;
+        }
         if(listAddress.contains(address)){
             ToastEUtil.makeText(mView.getActivity(),R.string.Chat_Address_already_exists).show();
         }
@@ -79,7 +88,6 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_ADDRESS_BOOK_ADD, addressInfo, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                ToastUtil.getInstance().showToast(response.getCode() + response.getMessage());
                 listAddress.add(0,new AddressBean("",address));
                 ToastEUtil.makeText(mView.getActivity(), R.string.Link_Add_Successful);
                 mView.updataView(listAddress);

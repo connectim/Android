@@ -61,6 +61,18 @@ public class MsgVoiceHolder extends MsgChatHolder {
 
                 if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(url)) {
                     voiceImg.startPlay(url);
+
+                    if (entity instanceof MsgEntity) {
+                        if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
+                            voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
+                                @Override
+                                public void playFinish(String msgid, String filepath) {
+                                    MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
+                                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
+                                }
+                            });
+                        }
+                    }
                 } else {
                     entity.setReadstate(1);
                     if (view1 != null) {
@@ -89,7 +101,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                         }
                     } else {
                         voiceImg.downLoading();
-                        FileDownLoad.getInstance().downChatFile(url, entity.getPubkey(), new FileDownLoad.IFileDownLoad() {
+                        FileDownLoad.getInstance().downChatFile(entity.getRoomType(),url, entity.getPubkey(), new FileDownLoad.IFileDownLoad() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 loadImg.setVisibility(View.GONE);

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import connect.ui.activity.R;
@@ -88,7 +89,8 @@ public class BackUpPresenter implements BackUpContract.Presenter {
         canvas.drawText(userBean.getAddress(), paddingLeft, startH + 140,textPaint);
         canvas.drawText(mView.getActivity().getString(R.string.app_name_im), width*3/4 - SystemUtil.dipToPx(10), height - 80,textPaint);
 
-        pathDcim = BitmapUtil.bitmapSavePathDCIM(bitmap);
+        File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bitmap);
+        pathDcim = file.getAbsolutePath();
         try {
             MediaStore.Images.Media.insertImage(mView.getActivity().getContentResolver(), pathDcim, "", null);
             scanner.connect();

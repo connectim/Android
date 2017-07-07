@@ -22,6 +22,7 @@ import connect.ui.activity.chat.bean.ContainerBean;
 import connect.ui.activity.wallet.BlockchainActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastUtil;
@@ -125,6 +126,9 @@ public class TransferDetailActivity extends BaseActivity {
                             }
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
+                            if(!ProtoBufUtil.getInstance().checkProtoBuf(bill)){
+                                return;
+                            }
 
                             loadSenderInfo(bill.getSender());
                             loadReceiverInfo(bill.getReceiver());
@@ -253,14 +257,15 @@ public class TransferDetailActivity extends BaseActivity {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                                String avatar=userInfo.getAvatar();
+                                String name=userInfo.getUsername();
 
-                            String avatar=userInfo.getAvatar();
-                            String name=userInfo.getUsername();
-
-                            if (direct == 0) {
-                                showSenderInfo(avatar, name);
-                            } else if (direct == 1) {
-                                showReceiverInfo(avatar, name);
+                                if (direct == 0) {
+                                    showSenderInfo(avatar, name);
+                                } else if (direct == 1) {
+                                    showReceiverInfo(avatar, name);
+                                }
                             }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();

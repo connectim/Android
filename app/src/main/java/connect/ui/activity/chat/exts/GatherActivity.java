@@ -14,16 +14,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.GatherBean;
 import connect.ui.activity.chat.bean.MsgSend;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
@@ -35,7 +34,7 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.view.TopToolBar;
 import connect.view.roundedimageview.RoundedImageView;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -223,12 +222,12 @@ public class GatherActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.BillHashId hashId = Connect.BillHashId.parseFrom(structData.getPlainData());
 
-                    ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
-
-                    GatherBean gatherBean = new GatherBean(hashId.getHash(), amout, 1, false, transferEditView.getNote());
-                    MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
-
-                    ActivityUtil.goBack(activity);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(hashId)){
+                        ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
+                        GatherBean gatherBean = new GatherBean(hashId.getHash(), amout, 1, false, transferEditView.getNote());
+                        MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+                        ActivityUtil.goBack(activity);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -262,12 +261,12 @@ public class GatherActivity extends BaseActivity {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.Crowdfunding funding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
-
-                    int size = Integer.parseInt(edit.getText().toString());
-                    GatherBean gatherBean = new GatherBean(funding.getHashId(), amout / size, size, true, transferEditView.getNote());
-                    MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
-
-                    ActivityUtil.goBack(activity);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(funding)){
+                        int size = Integer.parseInt(edit.getText().toString());
+                        GatherBean gatherBean = new GatherBean(funding.getHashId(), amout / size, size, true, transferEditView.getNote());
+                        MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+                        ActivityUtil.goBack(activity);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

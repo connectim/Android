@@ -15,6 +15,7 @@ import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.TransferExt;
 import connect.ui.activity.wallet.PacketDetailActivity;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -30,6 +31,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
 
     /** check is group lucky packet */
     private boolean systemPacket = false;
+    private TransferExt transferExt;
 
     public MsgLuckyHolder(View itemView) {
         super(itemView);
@@ -47,7 +49,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
         });
 
         if (entity.getReadstate() == 0) {//do not click
-            TransferExt transferExt = new Gson().fromJson(entity.getMsgDefinBean().getExt1(), TransferExt.class);
+            transferExt = new Gson().fromJson(entity.getMsgDefinBean().getExt1(), TransferExt.class);
             if (transferExt != null && transferExt.getType() == 1) {//outer lucky packet
                 contentLayout.performClick();
             }
@@ -91,6 +93,9 @@ public class MsgLuckyHolder extends MsgChatHolder {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GrabRedPackageResp packageResp = Connect.GrabRedPackageResp.parseFrom(structData.getPlainData());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(packageResp)){
+                        return;
+                    }
                     switch (packageResp.getStatus()) {
                         case 0://fail
                             playAnim=true;

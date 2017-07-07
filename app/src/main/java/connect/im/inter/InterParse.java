@@ -15,6 +15,7 @@ import connect.im.bean.SocketACK;
 import connect.im.model.ChatSendManager;
 import connect.im.model.FailMsgsManager;
 import connect.im.model.NotificationManager;
+import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.home.bean.MsgNoticeBean;
 import connect.utils.TimeUtil;
@@ -51,7 +52,7 @@ public abstract class InterParse {
      * @return
      * @throws Exception
      */
-    protected Connect.StructData imTransferToStructData(ByteBuffer buffer) throws Exception {
+    protected synchronized Connect.StructData imTransferToStructData(ByteBuffer buffer) throws Exception {
         Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(buffer.array());
         if (!SupportKeyUril.verifySign(imTransferData.getSign(), imTransferData.getCipherData().toByteArray())) {
             throw new Exception("Validation fails");
@@ -69,7 +70,7 @@ public abstract class InterParse {
      * @return
      * @throws Exception
      */
-    protected Connect.Command imTransferToCommand(ByteBuffer buffer) throws Exception {
+    protected synchronized Connect.Command imTransferToCommand(ByteBuffer buffer) throws Exception {
         Connect.StructData structData = imTransferToStructData(buffer);
         return Connect.Command.parseFrom(structData.getPlainData());
     }
@@ -156,8 +157,8 @@ public abstract class InterParse {
         FailMsgsManager.getInstance().removeFailMap(msgid);
     }
 
-    protected void pushNoticeMsg(String pubkey,int type,String content) {
-        NotificationManager.getInstance().pushNoticeMsg(pubkey,type,content);
+    protected void pushNoticeMsg(String pubkey,int type,MsgEntity msgEntity) {
+        NotificationManager.getInstance().pushNoticeMsg(pubkey,type,msgEntity);
     }
 
     protected void commandToIMTransfer(String msgid, SocketACK ack, ByteString byteString) {

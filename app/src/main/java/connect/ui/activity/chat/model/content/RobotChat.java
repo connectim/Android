@@ -2,6 +2,7 @@ package connect.ui.activity.chat.model.content;
 
 import com.google.gson.Gson;
 
+import connect.db.MemoryDataManager;
 import connect.im.bean.MsgType;
 import connect.im.bean.SocketACK;
 import connect.im.model.ChatSendManager;
@@ -94,11 +95,15 @@ public class RobotChat extends NormalChat {
         msgDefinBean.setSendtime(TimeUtil.getCurrentTimeInLong());
         msgDefinBean.setMessage_id(TimeUtil.timestampToMsgid());
         msgDefinBean.setPublicKey(BaseApplication.getInstance().getString(R.string.app_name));
+        msgDefinBean.setSenderInfoExt(new MsgSender(MemoryDataManager.getInstance().getPubKey(),
+                MemoryDataManager.getInstance().getName(),
+                MemoryDataManager.getInstance().getAddress(),
+                MemoryDataManager.getInstance().getAvatar()));
 
         MsgEntity robotMsg = new MsgEntity();
         robotMsg.setMsgDefinBean(msgDefinBean);
         robotMsg.setPubkey(BaseApplication.getInstance().getString(R.string.app_name));
-        robotMsg.setSendstate(0);
+        robotMsg.setSendstate(1);//default send success
         return robotMsg;
     }
 

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.bean.GroupEntity;
 import connect.db.green.bean.GroupMemberEntity;
@@ -25,7 +24,6 @@ import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.log.LogManager;
 import protos.Connect;
 
 /**
@@ -114,7 +112,6 @@ public class GroupChat extends NormalChat {
     @Override
     public String headImg() {
         if (groupEntity == null) return "";
-        LogManager.getLogger().d(Tag, "headImg() :" + groupEntity.getAvatar());
         return groupEntity.getAvatar();
     }
 
@@ -167,11 +164,16 @@ public class GroupChat extends NormalChat {
         return memEntityMap.get(memberkey);
     }
 
+    private Map<String, String> membersMap = new HashMap<>();
+
     public String nickName(String pubkey) {
-        String memberName = "";
-        GroupMemberEntity groupMemEntity = loadGroupMember(pubkey);
-        if (groupMemEntity != null) {
-            memberName = TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick();
+        String memberName = membersMap.get(pubkey);
+        if (TextUtils.isEmpty(memberName)) {
+            GroupMemberEntity groupMemEntity = loadGroupMember(pubkey);
+            if (groupMemEntity != null) {
+                memberName = TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick();
+                membersMap.put(pubkey, memberName);
+            }
         }
         return memberName;
     }

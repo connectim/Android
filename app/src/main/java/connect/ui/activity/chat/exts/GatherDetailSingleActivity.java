@@ -20,8 +20,9 @@ import connect.db.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.ContainerBean;
 import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.wallet.bean.WalletAccountBean;
+import connect.utils.ProtoBufUtil;
+import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.ui.base.BaseActivity;
 import connect.ui.base.BaseApplication;
@@ -139,6 +140,9 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     billDetail = Connect.Bill.parseFrom(structData.getPlainData());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(billDetail)){
+                        return;
+                    }
 
                     String username = "";
                     ContactEntity entity = null;
@@ -212,9 +216,11 @@ public class GatherDetailSingleActivity extends BaseActivity {
                 try {
                     if (response.getCode() == 2000) {
                         Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                        txt4.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
-                                RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
+                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
+                            txt4.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
+                                    RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -250,11 +256,6 @@ public class GatherDetailSingleActivity extends BaseActivity {
                     String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     requestPublicTx(samValue);
                 }
-
-                @Override
-                public void onFalse() {
-
-                }
             });
         }
     }
@@ -273,7 +274,6 @@ public class GatherDetailSingleActivity extends BaseActivity {
                     String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
                     String noticeContent = getString(R.string.Chat_paid_the_bill_to, activity.getString(R.string.Chat_You), contactName);
                     RecExtBean.sendRecExtMsg(RecExtBean.ExtType.NOTICE, noticeContent);
-                    ChatMsgUtil.insertNoticeMsg(entity.getPub_key(), noticeContent);
                 }
 
                 TransactionHelper.getInstance().updateTransEntity(billDetail.getHash(), msgId, 1);
@@ -284,6 +284,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpResponse response) {
                 paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                TransferError.getInstance().showError(response.getCode(),response.getMessage());
             }
         });
     }

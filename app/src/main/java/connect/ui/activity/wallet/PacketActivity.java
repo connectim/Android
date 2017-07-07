@@ -12,9 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.activity.wallet.bean.SendOutBean;
 import connect.ui.activity.wallet.contract.PacketContract;
@@ -25,7 +23,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.view.TopToolBar;
 import connect.view.payment.PaymentPwd;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 
 /**
  * lucky packet
@@ -154,11 +152,6 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
                 public void onTrue() {
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     presenter.sendPacket(amount, samValue,transferEditView.getNote(),paymentPwd);
-                }
-
-                @Override
-                public void onFalse() {
-
                 }
             });
         }

@@ -2,6 +2,7 @@ package connect.ui.activity.chat.set;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -65,7 +66,8 @@ public class GroupManageActivity extends BaseActivity {
             return;
         }
 
-        seSwitchLayout(findViewById(R.id.groupset_sureinvite), getString(R.string.Link_Whether_Public), 1 == groupEntity.getVerify());
+        boolean verify = (groupEntity.getVerify() != null) && (1 == groupEntity.getVerify());
+        seSwitchLayout(findViewById(R.id.groupset_sureinvite), getString(R.string.Link_Whether_Public), verify);
         groupManage(findViewById(R.id.groupset_introdue), getString(R.string.Link_Group_Introduction));
         groupManage(findViewById(R.id.groupset_transferto), getString(R.string.Link_Ownership_Transfer));
     }
@@ -81,7 +83,7 @@ public class GroupManageActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 v.setSelected(!v.isSelected());
-                groupSetting(groupEntity,v.isSelected());
+                groupSetting(groupKey,v.isSelected());
             }
         });
     }
@@ -111,15 +113,25 @@ public class GroupManageActivity extends BaseActivity {
         });
     }
 
-    protected void groupSetting(final GroupEntity groupEntity, final boolean verify) {
+    protected void groupSetting(final String groupKey, final boolean verify) {
         Connect.GroupSetting setting = Connect.GroupSetting.newBuilder()
-                .setIdentifier(groupEntity.getIdentifier())
+                .setIdentifier(groupKey)
                 .setPublic(verify).build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_SETTING, setting, new ResultCall<Connect.HttpResponse>() {
+
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                groupEntity.setVerify(verify ? 1 : 0);
-                ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
+                    groupEntity.setVerify(verify ? 1 : 0);
+
+                    String groupName = groupEntity.getName();
+                    if (TextUtils.isEmpty(groupName)) {
+                        groupName = "groupname6";
+                    }
+                    groupEntity.setName(groupName);
+                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                }
             }
 
             @Override

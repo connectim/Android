@@ -78,12 +78,8 @@ public class FileUtil {
      * Create contact's file
      * @param type
      */
-    public static File newContactFile(FileType type) {
-        String index = randomFileName();
-        index = index + type.getFileType();
-
-        String contactkey = RoomSession.getInstance().getRoomKey();
-        index = TextUtils.isEmpty(contactkey) ? index : contactkey + "/" + index;
+    public static File newContactFile(String pubkey, FileType type) {
+        String index = pubkey + File.separator + randomFileName() + type.getFileType();
         return createNewFile(index);
     }
 
@@ -175,6 +171,27 @@ public class FileUtil {
     public static String subExtentsion(String filename) {
         int dot = filename.lastIndexOf('.');
         return filename.substring(0, dot);
+    }
+
+    /**
+     * Get file
+     *
+     * @param data
+     * @param fileType
+     * @return
+     */
+    public static File byteArrayToFile(byte[] data,FileUtil.FileType fileType){
+        File imageFile = FileUtil.newTempFile(fileType);
+        if (null != imageFile) {
+            try {
+                FileOutputStream fos = new FileOutputStream(imageFile);
+                fos.write(data);
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imageFile;
     }
 
     /**

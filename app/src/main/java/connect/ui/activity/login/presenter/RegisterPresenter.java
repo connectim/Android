@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.io.File;
 import java.util.List;
 
 import connect.db.MemoryDataManager;
@@ -18,6 +20,7 @@ import connect.ui.base.BaseApplication;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -64,8 +67,9 @@ public class RegisterPresenter implements RegisterContract.Presenter{
     @Override
     public void requestUserHead(final String pathLocal){
         ProgressUtil.getInstance().showProgress(mView.getActivity());
-        String path = BitmapUtil.resizeImage(pathLocal,1080);
-        byte[] headByte = BitmapUtil.bmpToByteArray(BitmapFactory.decodeFile(path));
+        File file = BitmapUtil.getInstance().compress(pathLocal);
+        String path = file.getAbsolutePath();
+        byte[] headByte = BitmapUtil.bmpToByteArray(BitmapFactory.decodeFile(path),100);
         FileUtil.deleteFile(path);
         HttpRequest.getInstance().post(UriUtil.AVATAR_V1_UP, headByte, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
@@ -76,8 +80,10 @@ public class RegisterPresenter implements RegisterContract.Presenter{
                 }
                 try {
                     Connect.AvatarInfo userAvatar = Connect.AvatarInfo.parseFrom(response.getBody());
-                    headPath = userAvatar.getUrl();
-                    mView.showAvatar(headPath);
+                    if(ProtoBufUtil.getInstance().checkProtoBuf(userAvatar)){
+                        headPath = userAvatar.getUrl();
+                        mView.showAvatar(headPath);
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -142,6 +148,13 @@ public class RegisterPresenter implements RegisterContract.Presenter{
 
                     @Override
                     public void onError(Connect.HttpResponse response) {
+                        if (response.getCode() == 2101){
+                            Toast.makeText(mView.getActivity(),R.string.Login_User_avatar_is_illegal,Toast.LENGTH_LONG).show();
+                        }else if(response.getCode() == 2102){
+                            Toast.makeText(mView.getActivity(),R.string.ErrorCode_DecodeRawTransaction_error,Toast.LENGTH_LONG).show();
+                        }else {
+                            Toast.makeText(mView.getActivity(),response.getMessage(),Toast.LENGTH_LONG).show();
+                        }
                         ProgressUtil.getInstance().dismissProgress();
                     }
                 });

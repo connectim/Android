@@ -32,6 +32,7 @@ public class ConnectState extends BaseEvent {
         REFRESH_ING,
         REFRESH_SUCCESS,
         CONNECT,
+        OFFLINE_PULL,
     }
 
     private ConnectType type;

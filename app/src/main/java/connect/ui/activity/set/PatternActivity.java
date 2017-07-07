@@ -8,8 +8,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.google.gson.Gson;
-
 import java.util.List;
 
 import butterknife.Bind;
@@ -26,7 +24,6 @@ import connect.view.TopToolBar;
 
 /**
  * Closed, open, change the gesture
- * Created by Administrator on 2016/12/3.
  */
 public class PatternActivity extends BaseActivity {
 

@@ -16,7 +16,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ContactHelper;
 import connect.db.green.DaoHelper.ParamManager;
 import connect.db.green.bean.ContactEntity;
@@ -24,10 +23,12 @@ import connect.db.green.bean.GroupEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.ui.activity.chat.bean.MsgSend;
-import connect.ui.activity.login.bean.UserBean;
 import connect.ui.activity.wallet.PacketHistoryActivity;
 import connect.ui.activity.wallet.bean.TransferBean;
+import connect.utils.ProtoBufUtil;
+import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
+import connect.ui.activity.set.PayFeeActivity;
 import connect.ui.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -41,7 +42,7 @@ import connect.view.MdStyleProgress;
 import connect.view.TopToolBar;
 import connect.view.payment.PaymentPwd;
 import connect.view.roundedimageview.RoundedImageView;
-import connect.view.transferEdit.TransferEditView;
+import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -173,7 +174,7 @@ public class RedPacketActivity extends BaseActivity {
 
             @Override
             public void setFee() {
-
+                PayFeeActivity.startActivity(activity);
             }
         });
     }
@@ -186,7 +187,10 @@ public class RedPacketActivity extends BaseActivity {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            pendingRedPackage = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
+                                pendingRedPackage = pending;
+                            }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }
@@ -219,11 +223,6 @@ public class RedPacketActivity extends BaseActivity {
                 public void onTrue() {
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     sendPacket(amount, samValue);
-                }
-
-                @Override
-                public void onFalse() {
-
                 }
             });
         }
@@ -258,8 +257,9 @@ public class RedPacketActivity extends BaseActivity {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
-                            MsgSend.sendOuterMsg(MsgType.Lucky_Packet, redPackage.getHashId(), transferEditView.getNote());
-
+                            if(ProtoBufUtil.getInstance().checkProtoBuf(redPackage)){
+                                MsgSend.sendOuterMsg(MsgType.Lucky_Packet, redPackage.getHashId(), transferEditView.getNote());
+                            }
                             if (redType == 0) {
                                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(5,friendEntity.getAvatar(),
                                         friendEntity.getUsername(),friendEntity.getAvatar()));
@@ -281,6 +281,7 @@ public class RedPacketActivity extends BaseActivity {
                     ToastEUtil.makeText(activity, activity.getString(R.string.Wallet_error_lucky_packet_amount_too_small, 0.00005), 2).show();
                 }else {
                     paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                    TransferError.getInstance().showError(response.getCode(),response.getMessage());
                 }
             }
         });

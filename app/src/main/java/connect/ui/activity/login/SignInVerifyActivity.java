@@ -131,6 +131,32 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
     }
 
     @Override
+    public void changeBtnNext() {
+        if (codeEt.getText().toString().length() == 6) {
+            nextBtn.setText(R.string.Login_Next);
+            nextBtn.setEnabled(true);
+        }
+    }
+
+    @Override
+    public void changeBtnTiming(long time) {
+        if (codeEt.getText().toString().length() != 6) {
+            nextBtn.setText(String.format(mActivity.getResources().getString(R.string.Login_Resend_Time), time));
+            nextBtn.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void changeBtnFinsh() {
+        if (codeEt.getText().toString().length() != 6) {
+            nextBtn.setText(R.string.Login_Resend);
+            nextBtn.setEnabled(true);
+            textView3.setText(R.string.Set_Did_not_receive_the_verification_code);
+            voiceTv.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /*@Override
     public void changeTime(int time,Timer timer) {
         if (codeEt.getText().toString().length() == 6) {
             nextBtn.setText(R.string.Login_Next);
@@ -147,6 +173,6 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
                 timer.cancel();
             }
         }
-    }
+    }*/
 
 }

@@ -20,6 +20,7 @@ import connect.ui.activity.contact.model.ConvertUtil;
 import connect.ui.activity.contact.model.PhoneListComparatorSort;
 import connect.ui.activity.set.bean.PrivateSetBean;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
@@ -147,8 +148,14 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     usersInfo = Connect.PhoneBookUsersInfo.parseFrom(structData.getPlainData());
+                    ArrayList<Connect.PhoneBookUserInfo> listCheck = new ArrayList<>();
+                    for(Connect.PhoneBookUserInfo userInfo : usersInfo.getUsersList()){
+                        if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                            listCheck.add(userInfo);
+                        }
+                    }
                     ConvertUtil convertUtil = new ConvertUtil();
-                    convertUtil.convertUserInfo(localList, usersInfo, handler);
+                    convertUtil.convertUserInfo(localList, listCheck, handler);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

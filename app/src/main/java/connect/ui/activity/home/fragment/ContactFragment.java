@@ -36,6 +36,7 @@ import connect.ui.activity.contact.adapter.ContactAdapter;
 import connect.ui.activity.contact.bean.ContactNotice;
 import connect.ui.activity.contact.model.ContactListManage;
 import connect.ui.activity.home.HomeActivity;
+import connect.ui.activity.home.bean.ContactBean;
 import connect.ui.base.BaseFragment;
 import connect.utils.ActivityUtil;
 import connect.view.SideBar;
@@ -57,9 +58,9 @@ public class ContactFragment extends BaseFragment {
     private FragmentActivity mActivity;
     private ContactAdapter adapter;
     private ContactListManage contactManage;
-    private List<ContactEntity> listRequest;
-    private List<ContactEntity> groupList;
-    private HashMap<String, List<ContactEntity>> friendMap;
+    private List<ContactBean> listRequest;
+    private List<ContactBean> groupList;
+    private HashMap<String, List<ContactBean>> friendMap;
 
     @Nullable
     @Override
@@ -108,7 +109,7 @@ public class ContactFragment extends BaseFragment {
             public void onTouchingLetterChanged(String s) {
                 int position = adapter.getPositionForSection(s.charAt(0));
                 if(position >= 0){
-                    listView.setSelection(position + 1);
+                    listView.setSelection(position);
                 }
             }
         });
@@ -141,34 +142,45 @@ public class ContactFragment extends BaseFragment {
         ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class,null,-1);
     }
 
-
-    private ContactAdapter.OnItemChildListence onSideMenuListence
-            = new ContactAdapter.OnItemChildListence(){
+    private ContactAdapter.OnItemChildListence onSideMenuListence = new ContactAdapter.OnItemChildListence(){
         @Override
-        public void itemClick(int position, ContactEntity entity) {
-            if (position == 0) {
-                ((HomeActivity)mActivity).setFragmentDot(1,0);
-                ActivityUtil.next(mActivity, NewFriendActivity.class);
-            } else if (entity.getSource() != null && entity.getSource() == -1) {
-                ChatActivity.startActivity(mActivity, new Talker(2, "Connect"));
-            } else if (TextUtils.isEmpty(entity.getAddress())) {
-                GroupEntity groupEntity = new GroupEntity();
-                groupEntity.setIdentifier(entity.getPub_key());
-                groupEntity.setAvatar(entity.getAvatar());
-                String userName = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
-                groupEntity.setName(userName);
-                ChatActivity.startActivity(mActivity, new Talker(groupEntity));
-            } else {
-                FriendInfoActivity.startActivity(mActivity, entity.getPub_key());
+        public void itemClick(int position, ContactBean entity) {
+            switch (entity.getStatus()){
+                case 1:
+                    ((HomeActivity)mActivity).setFragmentDot(1,0);
+                    ActivityUtil.next(mActivity, NewFriendActivity.class);
+                    break;
+                case 6:
+                    ChatActivity.startActivity(mActivity, new Talker(2, "Connect"));
+                    break;
+                case 2:
+                    GroupEntity groupEntity = new GroupEntity();
+                    groupEntity.setIdentifier(entity.getPub_key());
+                    groupEntity.setAvatar(entity.getAvatar());
+                    groupEntity.setName(entity.getName());
+                    ChatActivity.startActivity(mActivity, new Talker(groupEntity));
+                    break;
+                case 3:
+                case 4:
+                    FriendInfoActivity.startActivity(mActivity, entity.getPub_key());
+                    break;
+                default:
+                    break;
             }
         }
 
         @Override
-        public void setFriend(int position, ContactEntity entity) {
-            if(TextUtils.isEmpty(entity.getAddress())){
-                GroupSetActivity.startActivity(mActivity,entity.getPub_key());
-            }else{
-                FriendSetAliasActivity.startActivity(mActivity,entity);
+        public void setFriend(int position, ContactBean entity) {
+            switch (entity.getStatus()){
+                case 2:
+                    GroupSetActivity.startActivity(mActivity,entity.getPub_key());
+                    break;
+                case 3:
+                case 4:
+                    FriendSetAliasActivity.startActivity(mActivity,entity.getPub_key());
+                    break;
+                default:
+                    break;
             }
         }
     };
@@ -178,7 +190,7 @@ public class ContactFragment extends BaseFragment {
             @Override
             protected Void doInBackground(Void... params) {
                 listRequest = contactManage.getContactRequest();
-                groupList = contactManage.getGroupList();
+                groupList = contactManage.getGroupData();
                 friendMap = contactManage.getFriendList();
                 return null;
             }
@@ -209,9 +221,7 @@ public class ContactFragment extends BaseFragment {
         new AsyncTask<Void,Void,Void>(){
             @Override
             protected Void doInBackground(Void... params) {
-                //listRequest = contactManage.getContactRequest();
-                groupList = contactManage.getGroupList();
-                //friendMap = contactManage.getFriendList();
+                groupList = contactManage.getGroupData();
                 return null;
             }
             @Override
@@ -238,7 +248,7 @@ public class ContactFragment extends BaseFragment {
     }
 
     private void bindData(){
-        ArrayList<ContactEntity> finalList = new ArrayList<>();
+        ArrayList<ContactBean> finalList = new ArrayList<>();
         int friendSize = friendMap.get("friend").size() + friendMap.get("favorite").size();
         int groupSize = groupList.size();
         finalList.addAll(listRequest);
@@ -249,11 +259,11 @@ public class ContactFragment extends BaseFragment {
 
         String bottomTxt = "";
         if(friendSize > 0 && groupSize == 0){
-            bottomTxt = getString(R.string.Link_contact_count,friendSize,"","");
+            bottomTxt = mActivity.getString(R.string.Link_contact_count,friendSize,"","");
         }else if(friendSize == 0 && groupSize > 0){
-            bottomTxt = getString(R.string.Link_group_count,groupSize);
+            bottomTxt = mActivity.getString(R.string.Link_group_count,groupSize);
         }else if(friendSize > 0 && groupSize > 0){
-            bottomTxt = String.format(getString(R.string.Link_contact_count_group_count), friendSize, groupSize);
+            bottomTxt = String.format(mActivity.getString(R.string.Link_contact_count_group_count), friendSize, groupSize);
         }
         adapter.setDataNotify(finalList,bottomTxt);
     }
