@@ -246,6 +246,9 @@
             android:name="connect.activity.wallet.TransferFriendDelActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name="connect.widget.random.RandomVoiceActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name="connect.activity.contact.NewFriendActivity"
             android:screenOrientation="portrait"/>
         <activity

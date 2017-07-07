@@ -25,6 +25,7 @@ public class SharePreferenceUser {
     public static final String CONTACT_VERSION = "CONTACT_VERSION";
     public static final String DB_PUBKEY = "db_pubkey";
     public static final String DB_SALT = "db_salt";
+    public static final String BASE_SEED = "base_seed";
 
     private static SharePreferenceUser sharePreUtil;
     private static SharedPreferences sharePre;

@@ -1,5 +1,6 @@
 package connect.activity.home.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -15,12 +16,16 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.set.bean.PaySetBean;
+import connect.activity.walletnew.repository.CurrencyType;
 import connect.database.MemoryDataManager;
+import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.activity.home.bean.WalletMenuBean;
@@ -34,13 +39,19 @@ import connect.activity.wallet.bean.RateBean;
 import connect.activity.wallet.bean.WalletAccountBean;
 import connect.activity.base.BaseFragment;
 import connect.utils.ActivityUtil;
+import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
+import connect.utils.StringUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
+import connect.widget.random.RandomVoiceActivity;
+import connect.widget.random.RandomVoiceContract;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -73,14 +84,14 @@ public class WalletFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
         ButterKnife.bind(this, view);
+        mActivity = getActivity();
+        initView();
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mActivity = getActivity();
-        initView();
         rateBean = ParamManager.getInstance().getCountryRate();
         accountBean = ParamManager.getInstance().getWalletAmount();
         if(accountBean == null)
@@ -107,6 +118,31 @@ public class WalletFragment extends BaseFragment {
         walletMenuAdapter.setOnItemClickListence(onClickListener);
         walletMenuRecycler.setLayoutManager(new GridLayoutManager(mActivity, 3));
         walletMenuRecycler.setAdapter(walletMenuAdapter);
+
+        PaySetBean paySetBean = ParamManager.getInstance().getPaySet();
+        // 拉取钱包备份信息
+        // 如果没有并且用户钱包已经有钱了，则做老用户钱包的信息上传
+        // 如果有则直接同步信息并显示
+        if(paySetBean != null && !TextUtils.isEmpty(paySetBean.getPayPin())){
+            // 老用户
+
+        }else{
+            DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
+                    "你还没有钱包",
+                    "", "立即创建", true, new DialogUtil.OnItemClickListener() {
+                        @Override
+                        public void confirm(String value) {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("type", CurrencyType.BTC);
+                            RandomVoiceActivity.startActivity(mActivity,bundle);
+                        }
+
+                        @Override
+                        public void cancel() {
+
+                        }
+                    });
+        }
     }
 
     @OnClick(R.id.right_lin)
@@ -151,6 +187,15 @@ public class WalletFragment extends BaseFragment {
             }
         }
     };
+
+    public void createCurrency(Bundle bundle){
+        String baseSend = bundle.getString("random");
+        CurrencyType type = (CurrencyType)bundle.getSerializable("type");
+        String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
+        String currencySeend = SupportKeyUril.xor(baseSend, salt, 64);
+
+        // 生成Master Address并上传到服务器
+    }
 
     private void requestRate() {
         if(rateBean == null || TextUtils.isEmpty(rateBean.getUrl()))

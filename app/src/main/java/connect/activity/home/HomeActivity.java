@@ -3,6 +3,7 @@ package connect.activity.home;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -62,6 +63,7 @@ import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.MaterialBadgeTextView;
+import connect.widget.random.RandomVoiceActivity;
 
 /**
  * Created by gtq on 2016/11/19.
@@ -354,6 +356,21 @@ public class HomeActivity extends BaseFragmentActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
         PermissionUtil.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,checkUpdata.permissomCallBack);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+                switch (requestCode){
+                    case RandomVoiceActivity.REQUEST_CODE:
+                        walletFragment.createCurrency(data.getExtras());
+                        break;
+                    default:
+                        break;
+                }
+        }
+
     }
 
     @Override
