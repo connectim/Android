@@ -2,7 +2,7 @@ package connect.db.green;
 
 import android.database.Cursor;
 
-import connect.db.green.bean.DaoSession;
+import connect.db.green.dao.DaoSession;
 
 /**
  * Created by gtq on 2016/11/22.

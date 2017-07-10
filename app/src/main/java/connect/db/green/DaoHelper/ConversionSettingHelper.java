@@ -6,7 +6,7 @@ import java.util.List;
 
 import connect.db.green.BaseDao;
 import connect.db.green.bean.ConversionSettingEntity;
-import connect.db.green.bean.ConversionSettingEntityDao;
+import connect.db.green.dao.ConversionSettingEntityDao;
 
 /**
  * Created by gtq on 2016/12/13.

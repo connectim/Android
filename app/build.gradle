@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'org.greenrobot.greendao'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -109,6 +110,12 @@ def releaseTime() {
     return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
 }
 
+greendao {
+    schemaVersion 5
+    daoPackage 'connect.db.green.dao'
+    targetGenDir 'src/main/java'
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(path: ':ffmpeg4android_lib')
@@ -117,8 +124,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.android.support:recyclerview-v7:23.4.0'
-    compile 'org.greenrobot:greendao:3.2.0'
-    compile 'net.zetetic:android-database-sqlcipher:3.5.4'
+    compile 'org.greenrobot:greendao:3.2.2'
+    compile 'net.zetetic:android-database-sqlcipher:3.5.6'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.tencent.bugly:crashreport:latest.release'
     compile 'com.googlecode.libphonenumber:libphonenumber:8.3.2'

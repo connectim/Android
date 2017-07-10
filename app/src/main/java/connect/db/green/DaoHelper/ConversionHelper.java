@@ -10,7 +10,7 @@ import java.util.List;
 
 import connect.db.green.BaseDao;
 import connect.db.green.bean.ConversionEntity;
-import connect.db.green.bean.ConversionEntityDao;
+import connect.db.green.dao.ConversionEntityDao;
 import connect.ui.activity.home.bean.RoomAttrBean;
 
 /**

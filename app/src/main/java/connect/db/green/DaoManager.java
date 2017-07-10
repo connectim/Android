@@ -10,7 +10,6 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 import connect.db.MemoryDataManager;
 import connect.db.SharePreferenceUser;
-import connect.db.SharedPreferenceUtil;
 import connect.db.green.DaoHelper.ConversionHelper;
 import connect.db.green.DaoHelper.ConversionSettingHelper;
 import connect.db.green.DaoHelper.ContactHelper;
@@ -18,9 +17,8 @@ import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.DaoHelper.MigrateOpenHelper;
 import connect.db.green.DaoHelper.ParamHelper;
 import connect.db.green.DaoHelper.TransactionHelper;
-import connect.db.green.bean.DaoMaster;
-import connect.db.green.bean.DaoSession;
-import connect.ui.activity.login.bean.UserBean;
+import connect.db.green.dao.DaoMaster;
+import connect.db.green.dao.DaoSession;
 import connect.ui.base.BaseApplication;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
@@ -41,8 +39,8 @@ public class DaoManager {
      * 2--->0.0.4
      * 3--->0.0.8
      * 4--->0.0.9
+     * 5--->0.1.2
      */
-    public static final int SCHEMA_VERSION = 4;
     private volatile static DaoManager mDaoManager;
     private static DaoMaster.DevOpenHelper mHelper;
     private static DaoMaster mDaoMaster;

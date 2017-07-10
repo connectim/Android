@@ -12,7 +12,6 @@ repositories {
 }
 
 dependencies {
-    compile 'org.freemarker:freemarker:2.3.23'
     testCompile 'junit:junit:4.12'
 }
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 import connect.db.green.BaseDao;
 import connect.db.green.bean.TransactionEntity;
-import connect.db.green.bean.TransactionEntityDao;
+import connect.db.green.dao.TransactionEntityDao;
 
 /**
  * Created by pujin on 2017/1/13.

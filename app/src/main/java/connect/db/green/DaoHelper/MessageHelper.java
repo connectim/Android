@@ -12,7 +12,7 @@ import java.util.List;
 
 import connect.db.green.BaseDao;
 import connect.db.green.bean.MessageEntity;
-import connect.db.green.bean.MessageEntityDao;
+import connect.db.green.dao.MessageEntityDao;
 import connect.ui.activity.chat.bean.MessageExtEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.utils.StringUtil;
