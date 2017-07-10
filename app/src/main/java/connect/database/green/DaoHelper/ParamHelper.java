@@ -2,7 +2,7 @@ package connect.database.green.DaoHelper;
 
 import connect.database.green.BaseDao;
 import connect.database.green.bean.ParamEntity;
-import connect.database.green.bean.ParamEntityDao;
+import connect.database.green.dao.ParamEntityDao;
 
 import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;

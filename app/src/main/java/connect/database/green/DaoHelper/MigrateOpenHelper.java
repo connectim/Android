@@ -10,17 +10,17 @@ import java.io.File;
 
 import connect.activity.home.DBUpdateActivity;
 import connect.database.green.DaoHelper.mergin.MigrationHelper;
-import connect.database.green.bean.ContactEntityDao;
-import connect.database.green.bean.ConversionEntityDao;
-import connect.database.green.bean.ConversionSettingEntityDao;
-import connect.database.green.bean.DaoMaster;
-import connect.database.green.bean.FriendRequestEntityDao;
-import connect.database.green.bean.GroupEntityDao;
-import connect.database.green.bean.GroupMemberEntityDao;
-import connect.database.green.bean.MessageEntityDao;
-import connect.database.green.bean.ParamEntityDao;
-import connect.database.green.bean.RecommandFriendEntityDao;
-import connect.database.green.bean.TransactionEntityDao;
+import connect.database.green.dao.ContactEntityDao;
+import connect.database.green.dao.ConversionEntityDao;
+import connect.database.green.dao.ConversionSettingEntityDao;
+import connect.database.green.dao.DaoMaster;
+import connect.database.green.dao.FriendRequestEntityDao;
+import connect.database.green.dao.GroupEntityDao;
+import connect.database.green.dao.GroupMemberEntityDao;
+import connect.database.green.dao.MessageEntityDao;
+import connect.database.green.dao.ParamEntityDao;
+import connect.database.green.dao.RecommandFriendEntityDao;
+import connect.database.green.dao.TransactionEntityDao;
 import connect.utils.log.LogManager;
 import connect.activity.base.BaseApplication;
 

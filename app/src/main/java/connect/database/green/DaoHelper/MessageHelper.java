@@ -12,9 +12,9 @@ import java.util.List;
 
 import connect.database.green.BaseDao;
 import connect.database.green.bean.MessageEntity;
-import connect.database.green.bean.MessageEntityDao;
 import connect.activity.chat.bean.MessageExtEntity;
 import connect.activity.chat.bean.MsgDefinBean;
+import connect.database.green.dao.MessageEntityDao;
 import connect.utils.StringUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;

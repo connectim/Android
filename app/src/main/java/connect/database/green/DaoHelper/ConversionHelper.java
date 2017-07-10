@@ -10,8 +10,8 @@ import java.util.List;
 
 import connect.database.green.BaseDao;
 import connect.database.green.bean.ConversionEntity;
-import connect.database.green.bean.ConversionEntityDao;
 import connect.activity.home.bean.RoomAttrBean;
+import connect.database.green.dao.ConversionEntityDao;
 
 /**
  * Created by gtq on 2016/12/1.
