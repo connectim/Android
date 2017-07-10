@@ -109,6 +109,11 @@ public class PaymentActivity extends BaseActivity {
 
     @OnClick(R.id.pas_ll)
     void goSetPassword(View view) {
+        // 判断是否创建了钱包，没有创建的话直接返回
+        /*if(){
+
+        }*/
+
         LoginPassCheckUtil.getInstance().checkLoginPass(mActivity,new LoginPassCheckUtil.OnResultListence() {
             @Override
             public void success(String priKey) {
@@ -206,6 +211,11 @@ public class PaymentActivity extends BaseActivity {
     }
 
     private void requestSetPay(String pass){
+        // 获取数据库里币种对应的seed依次加密，并上传到服务器并更新到本地
+        String encodeStr = SupportKeyUril.encodePri("aaaa","salt",pass,17);
+
+
+
         byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),userBean.getPubKey());
         try {
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, ecdh, pass.getBytes("UTF-8"));
