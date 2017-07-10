@@ -5,7 +5,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import java.util.List;
 import connect.database.green.BaseDao;
 import connect.database.green.bean.ConversionSettingEntity;
-import connect.database.green.bean.ConversionSettingEntityDao;
+import connect.database.green.dao.ConversionSettingEntityDao;
 
 /**
  * Created by gtq on 2016/12/13.
