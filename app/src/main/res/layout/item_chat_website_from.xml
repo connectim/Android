@@ -6,7 +6,7 @@
               android:layout_below="@id/showtime"
               android:orientation="horizontal">
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
@@ -64,7 +64,7 @@
                     android:textColor="@color/color_858998"
                     android:textSize="@dimen/sp_10"/>
 
-                <connect.view.roundedimageview.RoundedImageView
+                <connect.widget.roundedimageview.RoundedImageView
                     android:id="@id/roundimg1"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
@@ -75,7 +75,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <connect.ui.activity.chat.view.BurnProBar
+    <connect.activity.chat.view.BurnProBar
         android:id="@id/burnprogressbar"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"

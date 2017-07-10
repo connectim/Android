@@ -16,12 +16,12 @@
             android:background="@mipmap/luckbag_backgroud3x"
             android:layout_marginBottom="@dimen/dp_25"/>
 
-        <connect.view.TopToolBar
+        <connect.widget.TopToolBar
             android:id="@id/toolbar_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <connect.view.roundedimageview.RoundedImageView
+        <connect.widget.roundedimageview.RoundedImageView
             android:id="@+id/avater_rimg"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"

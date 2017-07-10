@@ -13,8 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.RoomSession;
-import connect.ui.base.BaseApplication;
+import connect.activity.chat.bean.RoomSession;
+import connect.activity.base.BaseApplication;
 
 /**
  * Created by Administrator on 2016/8/26.
@@ -78,8 +78,12 @@ public class FileUtil {
      * Create contact's file
      * @param type
      */
-    public static File newContactFile(String pubkey, FileType type) {
-        String index = pubkey + File.separator + randomFileName() + type.getFileType();
+    public static File newContactFile(FileType type) {
+        String index = randomFileName();
+        index = index + type.getFileType();
+
+        String contactkey = RoomSession.getInstance().getRoomKey();
+        index = TextUtils.isEmpty(contactkey) ? index : contactkey + "/" + index;
         return createNewFile(index);
     }
 

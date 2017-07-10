@@ -13,27 +13,27 @@
         android:layout_gravity="center_vertical"
         android:orientation="horizontal">
 
-        <connect.ui.activity.chat.view.MsgStateView
+        <connect.activity.chat.view.MsgStateView
             android:id="@id/msgstateview"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_gravity="center"/>
 
-        <connect.ui.activity.chat.view.BurnProBar
+        <connect.activity.chat.view.BurnProBar
             android:id="@id/burnprogressbar"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"/>
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@id/content_layout"
+        android:id="@+id/content_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:duplicateParentState="true"
         android:background="@mipmap/message_box_blue2x">
 
-        <connect.ui.activity.chat.view.EmoTextView
+        <connect.activity.chat.view.EmoTextView
             android:id="@id/txtmsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             android:textSize="@dimen/sp_14"/>
     </RelativeLayout>
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"

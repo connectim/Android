@@ -14,16 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import connect.db.MemoryDataManager;
-import connect.db.green.DaoHelper.ContactHelper;
-import connect.db.green.DaoHelper.MessageHelper;
-import connect.db.green.DaoHelper.ParamHelper;
-import connect.db.green.DaoHelper.ParamManager;
-import connect.db.green.bean.ContactEntity;
-import connect.db.green.bean.FriendRequestEntity;
-import connect.db.green.bean.GroupEntity;
-import connect.db.green.bean.GroupMemberEntity;
-import connect.db.green.bean.ParamEntity;
+import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.DaoHelper.ParamHelper;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.FriendRequestEntity;
+import connect.database.green.bean.GroupEntity;
+import connect.database.green.bean.GroupMemberEntity;
+import connect.database.green.bean.ParamEntity;
 import connect.im.bean.ConnectState;
 import connect.im.bean.Session;
 import connect.im.bean.UserCookie;
@@ -31,20 +31,20 @@ import connect.im.bean.UserOrderBean;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.MsgEntity;
-import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.activity.chat.bean.Talker;
-import connect.ui.activity.chat.model.content.FriendChat;
-import connect.ui.activity.chat.model.content.GroupChat;
-import connect.ui.activity.chat.model.content.NormalChat;
-import connect.ui.activity.chat.model.content.RobotChat;
-import connect.ui.activity.contact.bean.ContactNotice;
-import connect.ui.activity.contact.model.ConvertUtil;
-import connect.ui.activity.home.bean.HomeAction;
-import connect.ui.activity.home.bean.HttpRecBean;
-import connect.ui.activity.home.bean.MsgNoticeBean;
-import connect.ui.base.BaseApplication;
+import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgSender;
+import connect.activity.chat.bean.RecExtBean;
+import connect.activity.chat.bean.Talker;
+import connect.activity.chat.model.content.FriendChat;
+import connect.activity.chat.model.content.GroupChat;
+import connect.activity.chat.model.content.NormalChat;
+import connect.activity.chat.model.content.RobotChat;
+import connect.activity.contact.bean.ContactNotice;
+import connect.activity.contact.model.ConvertUtil;
+import connect.activity.home.bean.HomeAction;
+import connect.activity.home.bean.HttpRecBean;
+import connect.activity.home.bean.MsgNoticeBean;
+import connect.activity.base.BaseApplication;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -190,7 +190,7 @@ public class CommandBean extends InterParse {
                         }
                         break;
                     case 0x05://Offline notification
-                        InterParse interParse = new MsgParseBean((byte) extension, ByteBuffer.wrap(msgDetail.getData().toByteArray()),0);
+                        InterParse interParse = new MsgParseBean((byte) extension, ByteBuffer.wrap(msgDetail.getData().toByteArray()), 0);
                         interParse.msgParse();
                         break;
                 }
@@ -252,7 +252,7 @@ public class CommandBean extends InterParse {
             List<ContactEntity> friendInfoEntities = new ArrayList();
             List<Connect.FriendInfo> friendInfoList = friendShip.getFriendsList();
             for (Connect.FriendInfo friendInfo : friendInfoList) {
-                String friendKey=friendInfo.getPubKey();
+                String friendKey = friendInfo.getPubKey();
                 ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendKey);
                 if (contactEntity == null) {
                     contactEntity = new ContactEntity();
@@ -370,7 +370,7 @@ public class CommandBean extends InterParse {
                             MsgEntity msgEntity = normalChat.txtMsg(content);
                             msgEntity.getMsgDefinBean().setSenderInfoExt(msgSender);
                             MessageHelper.getInstance().insertFromMsg(entity.getPub_key(), msgEntity.getMsgDefinBean());
-                            normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+                            normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
                         }
                         FailMsgsManager.getInstance().receiveFailMsgs(pubKey);
                         break;
@@ -596,8 +596,8 @@ public class CommandBean extends InterParse {
                         MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
                         MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
 
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,groupKey,msgEntity);
-                        normalChat.updateRoomMsg(null,msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()),msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
+                        normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
                     }
                 }
                 break;
@@ -799,7 +799,7 @@ public class CommandBean extends InterParse {
                             BaseApplication.getInstance().getString(R.string.app_name),
                             RobotChat.getInstance().address(), RobotChat.getInstance().headImg()));
                     MessageHelper.getInstance().insertFromMsg(BaseApplication.getInstance().getString(R.string.app_name), msgEntity.getMsgDefinBean());
-                    RobotChat.getInstance().updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(2), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+                    RobotChat.getInstance().updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(2), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
                     HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(2, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
                 } else {
                     Connect.UserInfo userInfo = packageInfo.getSender();
@@ -817,7 +817,7 @@ public class CommandBean extends InterParse {
                     MsgEntity msgEntity = normalChat.luckPacketMsg(packageInfo.getHashId(), packageInfo.getTips(), 1);
                     msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAddress(), friendEntity.getAvatar()));
                     MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
-                    normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+                    normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
                     HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
                 }
                 break;

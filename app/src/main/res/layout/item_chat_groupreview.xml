@@ -7,7 +7,7 @@
               android:gravity="center_vertical"
               android:orientation="horizontal">
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <connect.view.roundedimageview.RoundedImageView
+            <connect.widget.roundedimageview.RoundedImageView
                 android:id="@id/roundimg1"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"

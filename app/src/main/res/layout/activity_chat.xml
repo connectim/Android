@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <connect.view.TopToolBar
+        <connect.widget.TopToolBar
             android:id="@id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <connect.ui.activity.chat.view.ChatRecyclerView
+            <connect.activity.chat.view.ChatRecyclerView
                 android:id="@id/recycler_chat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -43,14 +43,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <connect.ui.activity.chat.view.ExBottomLayout
+            <connect.activity.chat.view.ExBottomLayout
                 android:id="@id/layout_exbottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
 
-    <connect.ui.activity.chat.view.RecordView
+    <connect.activity.chat.view.RecordView
         android:id="@id/recordview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

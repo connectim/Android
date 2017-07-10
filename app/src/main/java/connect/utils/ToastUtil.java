@@ -2,13 +2,9 @@ package connect.utils;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 
 /**

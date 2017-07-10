@@ -24,7 +24,7 @@
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_weight="1">
 
-        <connect.ui.activity.chat.view.ChatEditText
+        <connect.activity.chat.view.ChatEditText
             android:id="@id/inputedit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

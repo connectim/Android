@@ -3,7 +3,6 @@ package connect.utils;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Xml;
-import android.widget.Toast;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.GeneratedMessageV3;
@@ -14,14 +13,12 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import connect.ui.activity.R;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
-import protos.Connect;
 
 /**
  * Created by pujin on 2017/5/31.
@@ -136,30 +133,35 @@ public class ProtoBufUtil {
                 String content = contentMap.get("CONTENT");
 
                 Object value = fieldMap.get(attrTxt);
-                switch (extTxt) {
-                    case "reg":
-                        checkstate = RegularUtil.matches(String.valueOf(value), content);
-                        break;
-                    case "bytes":
-                        break;
-                    case "address":
-                        checkstate = SupportKeyUril.checkAddress(String.valueOf(value));
-                        break;
-                    case "list":
-                        break;
-                    case "proto":
-                        break;
-                    case "string":
-                        break;
-                    case "int":
-                        break;
-                    case "float":
-                        break;
-                    default:
-                        break;
-                }
-                if (!checkstate) {
+                if (value == null) {
+                    checkstate = false;
                     break;
+                } else {
+                    switch (extTxt) {
+                        case "reg":
+                            checkstate = RegularUtil.matches(String.valueOf(value), content);
+                            break;
+                        case "bytes":
+                            break;
+                        case "address":
+                            checkstate = SupportKeyUril.checkAddress(String.valueOf(value));
+                            break;
+                        case "list":
+                            break;
+                        case "proto":
+                            break;
+                        case "string":
+                            break;
+                        case "int":
+                            break;
+                        case "float":
+                            break;
+                        default:
+                            break;
+                    }
+                    if (!checkstate) {
+                        break;
+                    }
                 }
             }
         }

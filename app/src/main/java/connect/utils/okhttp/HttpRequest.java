@@ -15,13 +15,11 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
 import connect.ui.activity.R;
-import connect.ui.activity.home.bean.HttpRecBean;
-import connect.ui.base.BaseApplication;
+import connect.activity.home.bean.HttpRecBean;
+import connect.activity.base.BaseApplication;
 import connect.utils.ConfigUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
-import connect.utils.UriUtil;
 import connect.utils.log.LogManager;
 import okhttp3.Call;
 import okhttp3.MediaType;

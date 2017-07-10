@@ -3,7 +3,7 @@ package connect.im.parser;
 import java.nio.ByteBuffer;
 
 import connect.im.inter.InterParse;
-import connect.ui.activity.home.bean.HomeAction;
+import connect.activity.home.bean.HomeAction;
 
 /**
  * Created by pujin on 2017/4/18.
