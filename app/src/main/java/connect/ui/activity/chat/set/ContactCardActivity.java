@@ -39,6 +39,8 @@ public class ContactCardActivity extends BaseActivity {
     private ContactCardActivity activity;
     private FriendCompara friendCompara = new FriendCompara();
 
+    private static String PUBLIC_KEY="PUBLIC_KEY";
+
     private boolean move;
     private int topPosi;
     private LinearLayoutManager linearLayoutManager;
@@ -52,14 +54,10 @@ public class ContactCardActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity) {
-        startActivity(activity,null);
-    }
-
-    public static void startActivity(Activity activity,ContactEntity friendEntity) {
+    public static void startActivity(Activity activity, String pubkey) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("bean",friendEntity);
-        ActivityUtil.next(activity, ContactCardActivity.class,bundle);
+        bundle.putString(PUBLIC_KEY, pubkey);
+        ActivityUtil.next(activity, ContactCardActivity.class, bundle);
     }
 
     @Override
@@ -74,11 +72,11 @@ public class ContactCardActivity extends BaseActivity {
                 ActivityUtil.goBack(activity);
             }
         });
-        String type = getIntent().getExtras().getString("type");
 
         linearLayoutManager = new LinearLayoutManager(activity);
 
-        List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend(RoomSession.getInstance().getRoomKey());
+        String pubKey = getIntent().getStringExtra(PUBLIC_KEY);
+        List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend(pubKey);
         Collections.sort(friendEntities, friendCompara);
 
         contactCardAdapter = new ContactCardAdapter(activity, friendEntities);

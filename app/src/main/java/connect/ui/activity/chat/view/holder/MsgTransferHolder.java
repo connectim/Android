@@ -52,10 +52,10 @@ public class MsgTransferHolder extends MsgChatHolder {
             }
         });
 
-        if (entity.getTransStatus() == 0) {
-            String hashid = entity.getMsgDefinBean().getContent();
-            String messageid = entity.getMsgid();
-            TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 1);
-        }
+//        if (entity.getTransStatus() == 0) {
+//            String hashid = entity.getMsgDefinBean().getContent();
+//            String messageid = entity.getMsgid();
+//            TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 1);
+//        }
     }
 }

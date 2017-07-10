@@ -79,7 +79,6 @@ public class ChatActivity extends BaseChatActvity {
     }
 
     public static void startActivity(Activity activity, Talker talker) {
-        RoomSession.getInstance().setRoomType(talker.getTalkType());
         RoomSession.getInstance().setRoomKey(talker.getTalkKey());
 
         Bundle bundle = new Bundle();
@@ -112,6 +111,8 @@ public class ChatActivity extends BaseChatActvity {
                 }
             }
         });
+        layoutExbottom.getMorePanel().setRoomType(talker.getTalkType());
+
         // robot/stranger donot show setting
         if (!(talker.getTalkType() == 2 || baseChat.isStranger())) {
             toolbar.setRightImg(R.mipmap.menu_white);
@@ -133,6 +134,7 @@ public class ChatActivity extends BaseChatActvity {
                 return false;
             }
         });
+        ((DefaultItemAnimator)recyclerChat.getItemAnimator()).setSupportsChangeAnimations(false);
 
         scrollHelper.attachToRecycleView(recyclerChat);
         loadChatInfor();
@@ -163,7 +165,7 @@ public class ChatActivity extends BaseChatActvity {
                     entities.add(0, encryEntity);
                 }
 
-                chatAdapter.setDatas(entities);
+                chatAdapter.insertItems(entities);
             }
         }.execute();
     }
@@ -185,7 +187,7 @@ public class ChatActivity extends BaseChatActvity {
                     View firstChild = recyclerChat.getChildAt(0);
                     int top = firstChild.getTop();
 
-                    chatAdapter.insertMoreItems(msgEntities);
+                    chatAdapter.insertItems(msgEntities);
                     scrollHelper.scrollToPosition(msgEntities.size(), top);//Some errors, top - SystemUtil.dipToPx(48)
                 }
             }
@@ -223,7 +225,7 @@ public class ChatActivity extends BaseChatActvity {
                     toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
                 } else {
                     List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(baseChat.roomKey());
-                    toolbar.setTitle(indexName + String.format(Locale.ENGLISH,"(%d)", memEntities.size()));
+                    toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
                 }
                 break;
         }

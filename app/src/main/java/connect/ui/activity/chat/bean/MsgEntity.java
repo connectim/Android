@@ -1,5 +1,7 @@
 package connect.ui.activity.chat.bean;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 /**
@@ -103,5 +105,18 @@ public class MsgEntity implements Serializable {
 
     public void setBurnstarttime(long burnstarttime) {
         this.burnstarttime = burnstarttime;
+    }
+
+    public RoomType getRoomType() {
+        RoomType roomType = null;
+        String pubkey = msgDefinBean.getPublicKey();
+        if (TextUtils.isEmpty(pubkey) || pubkey.length() < 10) {
+            roomType = RoomType.RobotType;
+        } else if (pubkey.length() == 40) {
+            roomType = RoomType.GroupType;
+        } else {
+            roomType = RoomType.FriendType;
+        }
+        return roomType;
     }
 }

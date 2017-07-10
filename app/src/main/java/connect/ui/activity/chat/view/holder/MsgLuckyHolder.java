@@ -31,6 +31,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
 
     /** check is group lucky packet */
     private boolean systemPacket = false;
+    private TransferExt transferExt;
 
     public MsgLuckyHolder(View itemView) {
         super(itemView);
@@ -48,7 +49,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
         });
 
         if (entity.getReadstate() == 0) {//do not click
-            TransferExt transferExt = new Gson().fromJson(entity.getMsgDefinBean().getExt1(), TransferExt.class);
+            transferExt = new Gson().fromJson(entity.getMsgDefinBean().getExt1(), TransferExt.class);
             if (transferExt != null && transferExt.getType() == 1) {//outer lucky packet
                 contentLayout.performClick();
             }

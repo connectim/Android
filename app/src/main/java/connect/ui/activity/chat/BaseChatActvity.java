@@ -44,6 +44,7 @@ import connect.ui.activity.chat.bean.WebsiteExt1Bean;
 import connect.ui.activity.chat.exts.GatherActivity;
 import connect.ui.activity.chat.exts.RedPacketActivity;
 import connect.ui.activity.chat.exts.TransferToActivity;
+import connect.ui.activity.chat.inter.BaseListener;
 import connect.ui.activity.chat.inter.FileUpLoad;
 import connect.ui.activity.chat.model.InputPanel;
 import connect.ui.activity.chat.model.content.BaseChat;
@@ -105,13 +106,10 @@ public abstract class BaseChatActvity extends BaseActivity {
 
         talker = (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
         roomSession = RoomSession.getInstance();
-        roomSession.setRoomType(talker.getTalkType());
         roomSession.setRoomKey(talker.getTalkKey());
 
         switch (talker.getTalkType()) {
             case 0:
-                roomSession.setRoomName(talker.getTalkName());
-                roomSession.setFriendAvatar(talker.getFriendEntity().getAvatar());
                 baseChat = new FriendChat(talker.getFriendEntity());
 
                 if (!TextUtils.isEmpty(baseChat.address())) {
@@ -121,13 +119,11 @@ public abstract class BaseChatActvity extends BaseActivity {
                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNSTATE, roomSession.getBurntime() == 0 ? 0 : 1);
                 break;
             case 1:
-                roomSession.setRoomName(talker.getTalkName());
                 roomSession.setGroupEcdh(talker.getGroupEntity().getEcdh_key());
                 baseChat = new GroupChat(talker.getGroupEntity());
                 break;
             case 2:
                 baseChat = RobotChat.getInstance();
-                roomSession.setRoomName(baseChat.nickName());
                 break;
         }
 
@@ -308,8 +304,10 @@ public abstract class BaseChatActvity extends BaseActivity {
     public synchronized void onEventMainThread(RecExtBean bean) {
         MsgEntity msgEntity = null;
 
-        Object[] objects = null;
-        if (bean.getObj() != null) {
+        final Object[] objects;
+        if (bean.getObj() == null) {
+            objects = null;
+        } else {
             objects = (Object[]) bean.getObj();
         }
 
@@ -336,7 +334,7 @@ public abstract class BaseChatActvity extends BaseActivity {
             case TRANSFER:
                 if (baseChat.roomType() == 0) {
                     TransferToActivity.startActivity(activity, baseChat.address());
-                } else if (RoomSession.getInstance().getRoomType() == 1) {
+                } else if (baseChat.roomType() == 1) {
                     TransferFriendSeleActivity.startActivity(activity, 0, TransferFriendSeleActivity.SOURCE_GROUP, baseChat.roomKey());
                 }
                 break;
@@ -347,7 +345,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 GatherActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
                 break;
             case NAMECARD:
-                ContactCardActivity.startActivity(activity);
+                ContactCardActivity.startActivity(activity,talker.getTalkKey());
                 break;
             case MSGSTATE://message send state 0:sending 1:send success 2:send fail 3:send refuse
                 if (talker.getTalkKey().equals(objects[0])) {
@@ -362,8 +360,17 @@ public abstract class BaseChatActvity extends BaseActivity {
                 reSendFailMsg((MsgEntity) objects[0]);
                 break;
             case IMGVIEWER://Image viewer
-                ArrayList<String> imgs = chatAdapter.showImgMsgs();
-                ImageViewerActivity.startActivity(activity, (String) objects[0], imgs);
+                chatAdapter.showImgMsgs(new BaseListener<ArrayList<String>>() {
+                    @Override
+                    public void Success(ArrayList<String> strings) {
+                        ImageViewerActivity.startActivity(activity, (String) objects[0], strings);
+                    }
+
+                    @Override
+                    public void fail(Object... objects) {
+
+                    }
+                });
                 break;
             case NOTICE://notice message
                 adapterInsetItem((MsgEntity) baseChat.noticeMsg((String) objects[0]));

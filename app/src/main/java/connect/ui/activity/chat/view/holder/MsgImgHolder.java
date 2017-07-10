@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -18,7 +17,6 @@ import java.io.File;
 
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.MsgEntity;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgDirect;
 import connect.ui.activity.chat.bean.MsgEntity;
@@ -28,7 +26,6 @@ import connect.ui.activity.common.ConversationActivity;
 import connect.ui.activity.common.bean.ConverType;
 import connect.ui.base.BaseApplication;
 import connect.utils.FileUtil;
-import connect.utils.system.SystemUtil;
 
 /**
  * Created by gtq on 2016/11/23.
@@ -48,7 +45,7 @@ public class MsgImgHolder extends MsgChatHolder {
         String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
 
         imgmsg.setOpenBurn(TextUtils.isEmpty(definBean.getExt())?false:true);
-        imgmsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
+        imgmsg.loadUri(direct, entity.getRoomType(),entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
 
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

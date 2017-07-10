@@ -1,6 +1,10 @@
 package connect.ui.adapter;
 
 import android.app.Activity;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import connect.db.green.DaoHelper.MessageHelper;
 import connect.db.green.bean.MessageEntity;
@@ -18,6 +24,7 @@ import connect.ui.activity.chat.bean.ItemViewType;
 import connect.ui.activity.chat.bean.MsgDefinBean;
 import connect.ui.activity.chat.bean.MsgDirect;
 import connect.ui.activity.chat.bean.MsgEntity;
+import connect.ui.activity.chat.inter.BaseListener;
 import connect.ui.activity.chat.model.ChatMsgUtil;
 import connect.ui.activity.chat.view.holder.MsgBaseHolder;
 import connect.ui.activity.chat.view.row.MsgBaseRow;
@@ -29,20 +36,19 @@ import connect.utils.TimeUtil;
  * Created by gtq on 2016/11/23.
  */
 public class ChatAdapter extends BaseChatAdapter {
+
     private LayoutInflater inflater;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     protected List<MsgEntity> msgEntities = new ArrayList<>();
 
+    /** mapping msgid，MsgEntity ,quickly query msgid and Message Entities */
+    private Map<String, MsgEntity> msgEntityMap = new HashMap<>();
+
     public ChatAdapter(Activity activity, RecyclerView recycler, LinearLayoutManager manager) {
         this.inflater = LayoutInflater.from(activity);
         this.recyclerView = recycler;
         this.layoutManager = manager;
-    }
-
-    public void setDatas(List<MsgEntity> entities) {
-        this.msgEntities = entities;
-        notifyDataSetChanged();
     }
 
     public List<MsgEntity> getMsgEntities() {
@@ -100,69 +106,157 @@ public class ChatAdapter extends BaseChatAdapter {
         holder.buildRowData(holder, msgEntities.get(position));
     }
 
-    public void insertItem(MsgEntity t) {
-        int posi = msgEntities.size();
-        msgEntities.add(posi, t);
-        notifyItemInserted(posi);
-    }
-
-    public void insertMoreItems(List<MsgEntity> entities) {
-        msgEntities.addAll(0, entities);
-        notifyDataSetChanged();
-    }
-
-    public void removeItem(MsgEntity t) {
-        int posi = msgEntities.lastIndexOf(t);
-        if (posi >= 0) {
-            msgEntities.remove(posi);
-            notifyItemRemoved(posi);
+    private Handler itemsUpdateHandler = new Handler(Looper.myLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
+                BaseListener listener = (BaseListener) msg.obj;
+                listener.Success(0);
+            } else {
+                Message message = new Message();
+                message.what = 50;
+                message.obj = msg.obj;
+                itemsUpdateHandler.sendMessageDelayed(message, 100);
+            }
         }
+    };
+
+    public void insertItem(final MsgEntity t) {
+        BaseListener listener = new BaseListener() {
+            @Override
+            public void Success(Object ts) {
+                int posi = msgEntities.size();
+                msgEntities.add(posi, t);
+                notifyItemInserted(posi);
+
+                msgEntityMap.put(t.getMsgid(), t);
+            }
+
+            @Override
+            public void fail(Object... objects) {
+
+            }
+        };
+
+        Message message = new Message();
+        message.what = 50;
+        message.obj = listener;
+        itemsUpdateHandler.sendMessage(message);
+    }
+
+    public void insertItems(final List<MsgEntity> entities) {
+        BaseListener listener = new BaseListener() {
+            @Override
+            public void Success(Object ts) {
+                msgEntities.addAll(0, entities);
+                notifyDataSetChanged();
+
+                for (MsgEntity entity : entities) {
+                    msgEntityMap.put(entity.getMsgid(), entity);
+                }
+            }
+
+            @Override
+            public void fail(Object... objects) {
+
+            }
+        };
+
+        Message message = new Message();
+        message.what = 50;
+        message.obj = listener;
+        itemsUpdateHandler.sendMessage(message);
+    }
+
+    public void removeItem(final MsgEntity t) {
+        BaseListener listener=new BaseListener() {
+            @Override
+            public void Success(Object ts) {
+                int posi = msgEntities.lastIndexOf(t);
+                if (posi >= 0) {
+                    msgEntities.remove(posi);
+                    notifyItemRemoved(posi);
+
+                    msgEntityMap.remove(t.getMsgid());
+                }
+            }
+
+            @Override
+            public void fail(Object... objects) {
+
+            }
+        };
+
+        Message message = new Message();
+        message.what = 50;
+        message.obj = listener;
+        itemsUpdateHandler.sendMessage(message);
     }
 
     public void updateItemSendState(String msgid, int state) {
-        for (int i = 0; i < msgEntities.size(); i++) {
-            MsgEntity chatBean = msgEntities.get(i);
-            if (chatBean.getMsgDefinBean().getMessage_id().equals(msgid)) {
-                chatBean.setSendstate(state);
-                break;
-            }
+        MsgEntity msgEntity = msgEntityMap.get(msgid);
+        if (msgEntity != null) {
+            msgEntity.setSendstate(state);
         }
     }
 
-    public ArrayList<String> showImgMsgs() {
-        ArrayList<String> imgList = new ArrayList<>();
-        for (int i = 0; i < msgEntities.size(); i++) {
-            MsgEntity index = msgEntities.get(i);
-            MsgDefinBean definBean = index.getMsgDefinBean();
-            if (definBean.getType() == MsgType.Photo.type) {
-                String thumb = definBean.getContent();
-                String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(index.getPubkey(), definBean.getMessage_id(), FileUtil.FileType.IMG);
-                imgList.add(path);
+    public void showImgMsgs(final BaseListener listener) {
+        new AsyncTask<List<MsgEntity>,Void,ArrayList<String>>(){
+            @Override
+            protected ArrayList<String> doInBackground(List<MsgEntity>... params) {
+                ArrayList<String> imgList = new ArrayList<>();
+                for (int i = 0; i < msgEntities.size(); i++) {
+                    MsgEntity index = msgEntities.get(i);
+                    MsgDefinBean definBean = index.getMsgDefinBean();
+                    if (definBean.getType() == MsgType.Photo.type) {
+                        String thumb = definBean.getContent();
+                        String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(index.getPubkey(), definBean.getMessage_id(), FileUtil.FileType.IMG);
+                        imgList.add(path);
+                    }
+                }
+                return imgList;
             }
-        }
-        return imgList;
+
+            @Override
+            protected void onPostExecute(ArrayList<String> strings) {
+                super.onPostExecute(strings);
+                listener.Success(strings);
+            }
+        }.execute(msgEntities);
     }
 
-    public void unReadVoice(String msgid) {
-        boolean startUnrRead = false;
-        for (int i = 0; i < msgEntities.size(); i++) {
-            MsgEntity index = msgEntities.get(i);
-            if (index.getMsgDefinBean().getMessage_id().equals(msgid)) {
-                startUnrRead = true;
-                continue;
+    public void unReadVoice(final String msgid) {
+        new AsyncTask<List<MsgEntity>, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(List<MsgEntity>... params) {
+                int holdPosi = -1;
+                MsgEntity msgEntity = msgEntityMap.get(msgid);
+                if (msgEntity != null) {
+                    List<MsgEntity> msgEntities = params[0];
+                    int readPosi = msgEntities.indexOf(msgEntity);
+                    for (int i = readPosi; i < msgEntities.size(); i++) {
+                        msgEntity = msgEntities.get(i);//Ergodic voice list
+                        MsgDefinBean definBean = msgEntity.getMsgDefinBean();
+                        if (definBean.getType() == MsgType.Voice.type && msgEntity.getReadstate() == 0) {
+                            holdPosi = i;
+                        }
+                    }
+                }
+                return holdPosi;
             }
 
-            if (startUnrRead) {
-                MsgDefinBean definBean = index.getMsgDefinBean();
-                if (definBean.getType() == MsgType.Voice.type && index.getReadstate() == 0) {
-                    MsgBaseHolder holder = viewHoldByPosition(i);
+            @Override
+            protected void onPostExecute(Integer integer) {
+                super.onPostExecute(integer);
+                if (integer != -1) {
+                    MsgBaseHolder holder = viewHoldByPosition(integer);
                     if (holder != null) {
                         holder.itemView.findViewById(R.id.voicemsg).performClick();
-                        break;
                     }
                 }
             }
-        }
+        }.execute(msgEntities);
     }
 
     /**
@@ -170,21 +264,17 @@ public class ChatAdapter extends BaseChatAdapter {
      * @param msgid
      */
     public void hasReadBurnMsg(String msgid) {
-        for (int i = 0; i < msgEntities.size(); i++) {
-            MsgEntity index = msgEntities.get(i);
-            if (!"Connect".equals(index.getPubkey())) {
-                if (index.getMsgDefinBean().getMessage_id().equals(msgid)) {
-                    long burntime = TimeUtil.getCurrentTimeInLong();
-                    ((MsgEntity) index).setBurnstarttime(burntime);
+        MsgEntity msgEntity = msgEntityMap.get(msgid);
+        long burntime = TimeUtil.getCurrentTimeInLong();
+        if (msgEntity != null) {
+            msgEntity.setBurnstarttime(burntime);
+        }
 
-                    //Modify read time
-                    MessageEntity msgEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
-                    if (msgEntity != null) {
-                        msgEntity.setSnap_time(burntime);
-                        MessageHelper.getInstance().updateMsg(msgEntity);
-                    }
-                }
-            }
+        //Modify read time
+        MessageEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
+        if (messageEntity != null) {
+            messageEntity.setSnap_time(burntime);
+            MessageHelper.getInstance().updateMsg(messageEntity);
         }
     }
 
@@ -203,15 +293,5 @@ public class ChatAdapter extends BaseChatAdapter {
     public void clearHistory() {
         this.msgEntities.clear();
         notifyDataSetChanged();
-    }
-
-    public MsgEntity firstEntity() {
-        if (msgEntities.size() == 0) return null;
-        return msgEntities.get(0);
-    }
-
-    public MsgEntity lastEntity() {
-        if (msgEntities.size() == 0) return null;
-        return msgEntities.get(getItemCount() - 1);
     }
 }
