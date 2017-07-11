@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import connect.activity.wallet.bean.AddressBean;
 import connect.activity.base.BaseApplication;
+import connect.activity.wallet.bean.WalletAccountBean;
 import connect.utils.log.LogManager;
 
 import com.google.gson.Gson;
@@ -25,7 +26,7 @@ public class SharePreferenceUser {
     public static final String CONTACT_VERSION = "CONTACT_VERSION";
     public static final String DB_PUBKEY = "db_pubkey";
     public static final String DB_SALT = "db_salt";
-    public static final String BASE_SEED = "base_seed";
+    public static final String WALLET_INFO = "wallet_info";
 
     private static SharePreferenceUser sharePreUtil;
     private static SharedPreferences sharePre;
@@ -93,4 +94,17 @@ public class SharePreferenceUser {
         }.getType();
         return new Gson().fromJson(getStringValue(USER_ADDRESS_BOOK), type);
     }
+
+    public void putWalletInfo(WalletAccountBean accountBean){
+        String value = new Gson().toJson(accountBean);
+        SharedPreferences.Editor editor = sharePre.edit();
+        editor.putString(WALLET_INFO, value);
+        editor.apply();
+    }
+
+    public WalletAccountBean getWalletInfo() {
+        Type type = new TypeToken<WalletAccountBean>() {}.getType();
+        return new Gson().fromJson(getStringValue(WALLET_INFO), type);
+    }
+
 }

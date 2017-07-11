@@ -5,6 +5,8 @@ import org.greenrobot.greendao.annotation.Id;
 
 import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * Created by Administrator on 2017/7/10.
@@ -17,28 +19,27 @@ public class CurrencyEntity implements Serializable{
     @Id(autoincrement = true)
     private Long _id;
 
-    private String baseSeedEncryption;
-    private String baseSeedSalt;
-    private String currency_salt;
-    private Integer currency_index;
-    private String currency_code;
-    private Integer currency_status;
-    private Integer currency_switch;
-    private Long currency_balance;
-    @Generated(hash = 352144314)
-    public CurrencyEntity(Long _id, String baseSeedEncryption, String baseSeedSalt,
-            String currency_salt, Integer currency_index, String currency_code,
-            Integer currency_status, Integer currency_switch,
-            Long currency_balance) {
+    @Unique
+    @NotNull
+    private String currency;
+    private Integer category;
+    @Unique
+    @NotNull
+    private String salt;
+    private String masterAddress;
+    private Integer status;
+    private Long balance;
+    @Generated(hash = 160433907)
+    public CurrencyEntity(Long _id, @NotNull String currency, Integer category,
+            @NotNull String salt, String masterAddress, Integer status,
+            Long balance) {
         this._id = _id;
-        this.baseSeedEncryption = baseSeedEncryption;
-        this.baseSeedSalt = baseSeedSalt;
-        this.currency_salt = currency_salt;
-        this.currency_index = currency_index;
-        this.currency_code = currency_code;
-        this.currency_status = currency_status;
-        this.currency_switch = currency_switch;
-        this.currency_balance = currency_balance;
+        this.currency = currency;
+        this.category = category;
+        this.salt = salt;
+        this.masterAddress = masterAddress;
+        this.status = status;
+        this.balance = balance;
     }
     @Generated(hash = 228156879)
     public CurrencyEntity() {
@@ -49,53 +50,42 @@ public class CurrencyEntity implements Serializable{
     public void set_id(Long _id) {
         this._id = _id;
     }
-    public String getBaseSeedEncryption() {
-        return this.baseSeedEncryption;
+    public String getCurrency() {
+        return this.currency;
     }
-    public void setBaseSeedEncryption(String baseSeedEncryption) {
-        this.baseSeedEncryption = baseSeedEncryption;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
-    public String getBaseSeedSalt() {
-        return this.baseSeedSalt;
+    public Integer getCategory() {
+        return this.category;
     }
-    public void setBaseSeedSalt(String baseSeedSalt) {
-        this.baseSeedSalt = baseSeedSalt;
+    public void setCategory(Integer category) {
+        this.category = category;
     }
-    public String getCurrency_salt() {
-        return this.currency_salt;
+    public String getSalt() {
+        return this.salt;
     }
-    public void setCurrency_salt(String currency_salt) {
-        this.currency_salt = currency_salt;
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
-    public Integer getCurrency_index() {
-        return this.currency_index;
+    public String getMasterAddress() {
+        return this.masterAddress;
     }
-    public void setCurrency_index(Integer currency_index) {
-        this.currency_index = currency_index;
+    public void setMasterAddress(String masterAddress) {
+        this.masterAddress = masterAddress;
     }
-    public String getCurrency_code() {
-        return this.currency_code;
+    public Integer getStatus() {
+        return this.status;
     }
-    public void setCurrency_code(String currency_code) {
-        this.currency_code = currency_code;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
-    public Integer getCurrency_status() {
-        return this.currency_status;
+    public Long getBalance() {
+        return this.balance;
     }
-    public void setCurrency_status(Integer currency_status) {
-        this.currency_status = currency_status;
+    public void setBalance(Long balance) {
+        this.balance = balance;
     }
-    public Integer getCurrency_switch() {
-        return this.currency_switch;
-    }
-    public void setCurrency_switch(Integer currency_switch) {
-        this.currency_switch = currency_switch;
-    }
-    public Long getCurrency_balance() {
-        return this.currency_balance;
-    }
-    public void setCurrency_balance(Long currency_balance) {
-        this.currency_balance = currency_balance;
-    }
+    
 
 }
