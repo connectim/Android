@@ -1,23 +1,23 @@
-package connect.activity.home.bean;
+package connect.activity.wallet.bean;
 
 /**
  * Created by Administrator on 2017/7/10 0010.
  */
 
-public class WalletAccountBean {
-    private String encryptSeed;
+public class WalletBean {
+    private String payload;
     private String salt;
     private int n;
     private int version;
     private String wid;
     private String status;
 
-    public String getEncryptSeed() {
-        return encryptSeed;
+    public String getPayload() {
+        return payload;
     }
 
-    public void setEncryptSeed(String encryptSeed) {
-        this.encryptSeed = encryptSeed;
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 
     public String getSalt() {

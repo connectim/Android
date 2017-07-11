@@ -1,4 +1,4 @@
-package connect.activity.walletnew.repository;
+package connect.activity.wallet.manager;
 
 import java.io.Serializable;
 
@@ -13,9 +13,5 @@ public enum CurrencyType implements Serializable {
 
     CurrencyType(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 }

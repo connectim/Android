@@ -364,7 +364,7 @@ public class HomeActivity extends BaseFragmentActivity {
         if(resultCode == RESULT_OK){
                 switch (requestCode){
                     case RandomVoiceActivity.REQUEST_CODE:
-                        walletFragment.createCurrency(data.getExtras());
+                        walletFragment.callBaseSeed(data.getExtras());
                         break;
                     default:
                         break;

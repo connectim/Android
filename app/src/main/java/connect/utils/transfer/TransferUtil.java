@@ -333,10 +333,10 @@ public class TransferUtil {
         String rawTranscation = AllNativeMethod.cdCreateRawTranscation(inputStrings + " " + outputStrings);
         ArrayList arrayList = new ArrayList<>();
         arrayList.add(priKey);
-        String aa = rawTranscation + " " +
+        String signTranscation = rawTranscation + " " +
                 inputStrings + " " +
                 new Gson().toJson(arrayList);
-        String signRawTranscation = AllNativeMethod.cdSignRawTranscation(aa);
+        String signRawTranscation = AllNativeMethod.cdSignRawTranscation(signTranscation);
         SignRawBean signRawBean = new Gson().fromJson(signRawTranscation, SignRawBean.class);
         return signRawBean.getHex();
     }

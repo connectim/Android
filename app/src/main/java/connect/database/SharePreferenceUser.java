@@ -2,10 +2,12 @@ package connect.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import connect.activity.wallet.bean.AddressBean;
 import connect.activity.base.BaseApplication;
 import connect.activity.wallet.bean.WalletAccountBean;
+import connect.activity.wallet.bean.WalletBean;
 import connect.utils.log.LogManager;
 
 import com.google.gson.Gson;
@@ -95,16 +97,20 @@ public class SharePreferenceUser {
         return new Gson().fromJson(getStringValue(USER_ADDRESS_BOOK), type);
     }
 
-    public void putWalletInfo(WalletAccountBean accountBean){
-        String value = new Gson().toJson(accountBean);
+    public void putWalletInfo(WalletBean walletBean){
+        String value = new Gson().toJson(walletBean);
         SharedPreferences.Editor editor = sharePre.edit();
         editor.putString(WALLET_INFO, value);
         editor.apply();
     }
 
-    public WalletAccountBean getWalletInfo() {
-        Type type = new TypeToken<WalletAccountBean>() {}.getType();
-        return new Gson().fromJson(getStringValue(WALLET_INFO), type);
+    public WalletBean getWalletInfo() {
+        String value = getStringValue(WALLET_INFO);
+        if(TextUtils.isEmpty(value)){
+            return null;
+        }
+        Type type = new TypeToken<WalletBean>() {}.getType();
+        return new Gson().fromJson(value, type);
     }
 
 }
