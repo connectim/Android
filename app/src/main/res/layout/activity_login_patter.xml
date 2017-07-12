@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -18,7 +18,7 @@
         android:textColor="@color/color_f04a5f"
         android:layout_marginTop="@dimen/dp_50"/>
 
-    <connect.view.lockview.GestureLockViewGroup
+    <connect.widget.lockview.GestureLockViewGroup
         android:id="@+id/id_gestureLockViewGroup"
         android:layout_below="@+id/hint_tv"
         android:layout_width="@dimen/dp_260"

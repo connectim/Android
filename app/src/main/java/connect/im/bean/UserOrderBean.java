@@ -4,8 +4,7 @@ import com.google.protobuf.ByteString;
 
 import java.io.UnsupportedEncodingException;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
+import connect.database.MemoryDataManager;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.utils.TimeUtil;

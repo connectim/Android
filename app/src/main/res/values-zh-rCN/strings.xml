@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="Chat">聊天</string>
     <string name="Chat_Agree">同意</string>
     <string name="Chat_Album_Permission_Get">缺少读取系统相册的权限，请点击 "设置" - "权限" 授予应用权限</string>

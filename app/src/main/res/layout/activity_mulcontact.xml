@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -15,7 +15,7 @@
         android:overScrollMode="never"
         android:layout_below="@id/toolbar"/>
 
-    <connect.view.SideBar
+    <connect.widget.SideBar
         android:id="@id/siderbar"
         android:layout_width="25dp"
         android:layout_height="match_parent"

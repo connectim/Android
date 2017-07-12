@@ -4,12 +4,12 @@
                 android:layout_height="match_parent"
                 android:background="@color/color_bg_activity">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <connect.view.DBUpgradeView
+    <connect.widget.DBUpgradeView
         android:id="@id/upgradeview"
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_80"

@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.ParamManager;
+import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.ui.activity.home.bean.EstimatefeeBean;
-import connect.ui.activity.set.bean.PaySetBean;
-import connect.ui.activity.wallet.bean.SignRawBean;
-import connect.ui.activity.wallet.bean.TranAddressBean;
+import connect.activity.home.bean.EstimatefeeBean;
+import connect.activity.set.bean.PaySetBean;
+import connect.activity.wallet.bean.SignRawBean;
+import connect.activity.wallet.bean.TranAddressBean;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.data.RateFormatUtil;
@@ -333,10 +333,10 @@ public class TransferUtil {
         String rawTranscation = AllNativeMethod.cdCreateRawTranscation(inputStrings + " " + outputStrings);
         ArrayList arrayList = new ArrayList<>();
         arrayList.add(priKey);
-        String aa = rawTranscation + " " +
+        String signTranscation = rawTranscation + " " +
                 inputStrings + " " +
                 new Gson().toJson(arrayList);
-        String signRawTranscation = AllNativeMethod.cdSignRawTranscation(aa);
+        String signRawTranscation = AllNativeMethod.cdSignRawTranscation(signTranscation);
         SignRawBean signRawBean = new Gson().fromJson(signRawTranscation, SignRawBean.class);
         return signRawBean.getHex();
     }

@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import connect.ui.activity.R;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 public class ActivityUtil {
 
@@ -34,7 +34,7 @@ public class ActivityUtil {
         next(curActivity, nextActivity, extras, reqCode, R.anim.dialog_bottom_show, R.anim.activity_0_to_0);
     }
 
-    private static void next(Activity curActivity, Class nextActivity, Bundle extras, int reqCode, int inAnimId,
+    public static void next(Activity curActivity, Class nextActivity, Bundle extras, int reqCode, int inAnimId,
                              int outAnimId) {
         Intent intent = new Intent(curActivity, nextActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

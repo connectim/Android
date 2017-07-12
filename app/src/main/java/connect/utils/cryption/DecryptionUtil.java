@@ -1,6 +1,6 @@
 package connect.utils.cryption;
 
-import connect.db.MemoryDataManager;
+import connect.database.MemoryDataManager;
 import connect.utils.ConfigUtil;
 import connect.wallet.jni.AllNativeMethod;
 import com.google.protobuf.InvalidProtocolBufferException;

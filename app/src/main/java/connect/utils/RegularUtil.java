@@ -1,10 +1,5 @@
 package connect.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Canonical matching tool
  * Created by Administrator on 2016/8/26.
@@ -46,7 +41,7 @@ public class RegularUtil {
     /** group avatar */
     public static final String GROUP_AVATAR = "%1$s/avatar/v1/group/%2$s.jpg";
     /** password */
-    public static final String PASSWORD = "^(?!^(\\d+|[a-zA-Z]+|[~!\\@#$%^&*\\/\\.,;:\\-_?]+)$)^[\\w~!\\@#$%\\^&*\\/\\.,;:\\-_?]{8,32}$";
+    public static final String PASSWORD = "^(?!^(\\d+|[a-zA-Z]+|[`~!@#\\$%\\^&*\\(\\)\\-_=\\+\\\\\\|\\[\\]\\{\\}:;\\\"\\',.<>\\/\\?]+)$)^[\\w`~!@#\\$%\\^&*\\(\\)\\-_=\\+\\\\\\|\\[\\]\\{\\}:;\\\"\\',.<>\\/\\?]{8,32}$";
     /** expression */
     public static final String VERIFYCATION_EMOTION = "\\[([\\u4e00-\\u9fa5]|[a-zA-Z]|[0-9])+\\]";
 
@@ -56,17 +51,6 @@ public class RegularUtil {
 
     public static String[] splite(String value, String rule) {
         return value.split(rule);
-    }
-
-    public static List<String> find(String value, String rule) {
-        List<String> strings = new ArrayList<>();
-
-        Pattern pattern = Pattern.compile(rule);
-        Matcher matcher = pattern.matcher(value);
-        while (matcher.find()) {
-            strings.add(matcher.group());
-        }
-        return strings;
     }
 
     public static String replace(String value, String oldstr, String newstr) {

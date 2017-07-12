@@ -25,7 +25,7 @@
         android:layout_marginTop="@dimen/dp_20"
         android:visibility="gone"/>
 
-    <connect.view.payment.PayEditView
+    <connect.widget.payment.PayEditView
         android:id="@+id/payEditView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_30"

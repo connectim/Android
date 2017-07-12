@@ -7,7 +7,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-        greendaoPlugin: 'org.greenrobot:greendao-gradle-plugin:3.2.1'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
 
         //Google 服务插件
         classpath 'com.google.gms:google-services:3.0.0'

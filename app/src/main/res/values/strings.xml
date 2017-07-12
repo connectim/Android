@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="Chat">Chat</string>
     <string name="Chat_Agree">agree</string>
     <string name="Chat_Album_Permission_Get">Lack of reading system album permissions, click "Settings" - "permissions" grant application permissions</string>

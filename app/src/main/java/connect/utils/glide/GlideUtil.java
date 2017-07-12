@@ -12,7 +12,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.io.File;
 
 import connect.ui.activity.R;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 import connect.utils.BitmapUtil;
 
 /**

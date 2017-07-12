@@ -1,9 +1,7 @@
 package connect.im.netty;
 
 import io.netty.channel.Channel;
-import io.netty.channel.EventLoop;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 
 /**
  * Created by Administrator on 2017/6/27.

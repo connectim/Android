@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 /**
  * Created by gtq on 2016/12/26.
@@ -23,7 +23,7 @@ public class ConfigUtil {
     private Map<String, String> keyMaps = null;
 
     public ConfigUtil() {
-        initConfig(ModeEnum.RELEASE);
+        initConfig(ModeEnum.SANDBOX);
     }
 
     /**

@@ -1,0 +1,91 @@
+package connect.database.green.bean;
+
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+
+import java.io.Serializable;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Unique;
+
+/**
+ * Created by Administrator on 2017/7/10.
+ */
+@Entity
+public class CurrencyEntity implements Serializable{
+
+    static final long serialVersionUID = 42L;
+
+    @Id(autoincrement = true)
+    private Long _id;
+
+    @Unique
+    @NotNull
+    private String currency;
+    private Integer category;
+    @Unique
+    @NotNull
+    private String salt;
+    private String masterAddress;
+    private Integer status;
+    private Long balance;
+    @Generated(hash = 160433907)
+    public CurrencyEntity(Long _id, @NotNull String currency, Integer category,
+            @NotNull String salt, String masterAddress, Integer status,
+            Long balance) {
+        this._id = _id;
+        this.currency = currency;
+        this.category = category;
+        this.salt = salt;
+        this.masterAddress = masterAddress;
+        this.status = status;
+        this.balance = balance;
+    }
+    @Generated(hash = 228156879)
+    public CurrencyEntity() {
+    }
+    public Long get_id() {
+        return this._id;
+    }
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
+    public String getCurrency() {
+        return this.currency;
+    }
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+    public Integer getCategory() {
+        return this.category;
+    }
+    public void setCategory(Integer category) {
+        this.category = category;
+    }
+    public String getSalt() {
+        return this.salt;
+    }
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+    public String getMasterAddress() {
+        return this.masterAddress;
+    }
+    public void setMasterAddress(String masterAddress) {
+        this.masterAddress = masterAddress;
+    }
+    public Integer getStatus() {
+        return this.status;
+    }
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    public Long getBalance() {
+        return this.balance;
+    }
+    public void setBalance(Long balance) {
+        this.balance = balance;
+    }
+    
+
+}

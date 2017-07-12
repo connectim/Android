@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_ffffff"
     android:padding="@dimen/dp_12">
 
-    <connect.view.roundedimageview.RoundedImageView
+    <connect.widget.roundedimageview.RoundedImageView
         android:id="@+id/avater_rimg"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"

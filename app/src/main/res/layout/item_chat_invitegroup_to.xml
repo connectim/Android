@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_below="@id/showtime"
@@ -15,7 +14,7 @@
         android:layout_marginRight="@dimen/dp_5"
         android:orientation="horizontal">
 
-        <connect.ui.activity.chat.view.MsgStateView
+        <connect.activity.chat.view.MsgStateView
             android:id="@id/msgstateview"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
@@ -35,7 +34,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <connect.view.roundedimageview.RoundedImageView
+            <connect.widget.roundedimageview.RoundedImageView
                 android:id="@id/roundimg1"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
@@ -86,7 +85,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"

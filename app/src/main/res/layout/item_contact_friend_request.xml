@@ -37,7 +37,7 @@
 
 
 
-    <connect.view.SideScrollView
+    <connect.widget.SideScrollView
         android:id="@+id/side_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -78,7 +78,7 @@
                 android:paddingTop="@dimen/dp_9"
                 android:background="@drawable/selector_list_item_bg"
                 android:layout_centerVertical="true">
-                <connect.view.roundedimageview.RoundedImageView
+                <connect.widget.roundedimageview.RoundedImageView
                     android:id="@+id/avatar_rimg"
                     android:layout_width="@dimen/dp_38"
                     android:layout_height="@dimen/dp_38"
@@ -114,6 +114,6 @@
             </RelativeLayout>
 
         </RelativeLayout>
-    </connect.view.SideScrollView>
+    </connect.widget.SideScrollView>
 
 </LinearLayout>

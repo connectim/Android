@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -14,11 +13,10 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.ParamManager;
+import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.im.bean.Session;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 import connect.utils.StringUtil;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
@@ -260,9 +258,13 @@ public class SupportKeyUril {
      * Password encryption private key, gestures
      */
     public static String encodePri(String value, String salt, String pass) {
+        return encodePri(value,salt,pass,12);
+    }
+
+    public static String encodePri(String value, String salt, String pass,int n) {
         byte[] passByte = pass.getBytes();
         byte[] saltByte = salt.getBytes();
-        byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, 12, 32);
+        byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, n, 32);
         Connect.GcmData gcmData = null;
         try {
             gcmData = EncryptionUtil.encodeAESGCM(EcdhExts.NONE, pbkdf, value.getBytes("UTF-8"));
@@ -277,10 +279,14 @@ public class SupportKeyUril {
      * Password to decrypt the private key, gestures
      */
     public static String decodePri(String encryStr, String salt, String pass) {
+        return decodePri(encryStr,salt,pass,12);
+    }
+
+    public static String decodePri(String encryStr, String salt, String pass,int n) {
         try {
             byte[] passByte = pass.getBytes();
             byte[] saltByte = salt.getBytes();
-            byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, 12, 32);
+            byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, n, 32);
             Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(encryStr));
             byte[] contant = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, pbkdf, gcmData);
             String priKey = "";
