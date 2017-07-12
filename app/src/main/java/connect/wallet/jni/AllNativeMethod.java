@@ -70,6 +70,10 @@ public class AllNativeMethod implements Serializable{
     public static native int checkAddressJ(String address);
     public static native int checkPrivateKeyJ(String privatekey);
 
+    public static native String connectWalletKeyEncrypt(String seed, String pwd, int n, int version);
+
+    public static native String connectWalletKeyDecrypt(String enString, String pwd, int n);
+
     /**
      * The key in password with salt
      * <p/>
