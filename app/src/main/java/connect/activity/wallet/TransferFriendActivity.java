@@ -176,7 +176,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         if (!TextUtils.isEmpty(outputString)) {
             paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
                 @Override
-                public void onTrue() {
+                public void onTrue(String value) {
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     presenter.requestSend(amount, samValue,transferEditView.getNote(),paymentPwd);
                 }

@@ -396,7 +396,7 @@
         </activity>
         <activity android:name="connect.widget.album.ui.activity.PhotoAlbumActivity">
         </activity>
-        <activity android:name="connect.activity.login.DBUpdateActivity">
+        <activity android:name="connect.activity.home.DBUpdateActivity">
         </activity>
 
         <service

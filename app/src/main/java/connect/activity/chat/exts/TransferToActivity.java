@@ -201,7 +201,7 @@ public class TransferToActivity extends BaseActivity {
         if (!TextUtils.isEmpty(outputString)) {
             paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
                 @Override
-                public void onTrue() {
+                public void onTrue(String value) {
                     String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     requestSingleSend(amount, samValue);
                 }

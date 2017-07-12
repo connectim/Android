@@ -149,7 +149,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
             paymentPwd = new PaymentPwd();
             paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
                 @Override
-                public void onTrue() {
+                public void onTrue(String value) {
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     presenter.sendPacket(amount, samValue,transferEditView.getNote(),paymentPwd);
                 }

@@ -17,6 +17,7 @@ import com.google.protobuf.ByteString;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -32,18 +33,25 @@ import connect.activity.wallet.TransferActivity;
 import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.activity.wallet.bean.RateBean;
 import connect.activity.wallet.bean.WalletAccountBean;
+import connect.activity.wallet.bean.WalletBean;
+import connect.activity.wallet.manager.CurrencyManage;
+import connect.activity.wallet.manager.PinManager;
 import connect.activity.wallet.manager.WalletManager;
 import connect.activity.wallet.manager.CurrencyType;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
+import connect.utils.StringUtil;
 import connect.utils.UriUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -114,31 +122,12 @@ public class WalletFragment extends BaseFragment{
         walletMenuRecycler.setAdapter(walletMenuAdapter);
 
         walletManage = new WalletManager(mActivity);
+        walletManage.checkAccount(new WalletManager.OnWalletListener() {
+            @Override
+            public void complete() {
 
-        //PaySetBean paySetBean = ParamManager.getInstance().getPaySet();
-        // 拉取钱包备份信息
-        // 如果没有并且用户钱包已经有钱了，则做老用户钱包的信息上传
-        // 如果有则直接同步信息并显示
-        /*if(paySetBean != null && !TextUtils.isEmpty(paySetBean.getPayPin())){
-            // 老用户
-
-        }else{
-            DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
-                    "你还没有钱包",
-                    "", "立即创建", true, new DialogUtil.OnItemClickListener() {
-                        @Override
-                        public void confirm(String value) {
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("type", BTC);
-                            RandomVoiceActivity.startActivity(mActivity,bundle);
-                        }
-
-                        @Override
-                        public void cancel() {
-
-                        }
-                    });
-        }*/
+            }
+        });
     }
 
     @OnClick(R.id.right_lin)
@@ -232,10 +221,29 @@ public class WalletFragment extends BaseFragment{
     }
 
     public void callBaseSeed(Bundle bundle){
-        String baseSend = bundle.getString("random");
-        CurrencyType type = (CurrencyType)bundle.getSerializable("type");
-        walletManage.createWallet(baseSend, type,"pass");
+        final String baseSend = bundle.getString("random");
+        final CurrencyType type = (CurrencyType)bundle.getSerializable("type");
+        new PinManager().showSetNewPin(mActivity, new PinManager.OnPinListener() {
+            @Override
+            public void success(String value) {
+                walletManage.createWallet(baseSend,value,type);
+            }
+        });
+
+        /*new CurrencyManage().createCurrency(baseSend, type, new CurrencyManage.OnCreateCurrencyListener() {
+            @Override
+            public void success(CurrencyEntity currencyEntity) {
+
+            }
+
+            @Override
+            public void fail(String message) {
+
+            }
+        });*/
     }
+
+
 
     @Override
     public void onDestroyView() {

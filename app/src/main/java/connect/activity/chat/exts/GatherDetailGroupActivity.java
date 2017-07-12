@@ -280,7 +280,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
             paymentPwd = new PaymentPwd();
             paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
                 @Override
-                public void onTrue() {
+                public void onTrue(String value) {
                     String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     groupMemPayment(samValue);
                 }

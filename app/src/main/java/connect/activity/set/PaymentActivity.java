@@ -8,10 +8,16 @@ import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.security.SecureRandom;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.wallet.bean.WalletBean;
+import connect.activity.wallet.manager.PinManager;
+import connect.activity.wallet.manager.WalletManager;
 import connect.database.MemoryDataManager;
+import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -32,6 +38,7 @@ import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -110,11 +117,18 @@ public class PaymentActivity extends BaseActivity {
     @OnClick(R.id.pas_ll)
     void goSetPassword(View view) {
         // 判断是否创建了钱包，没有创建的话直接返回
-        /*if(){
+        WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
+        if(walletBean != null && !TextUtils.isEmpty(walletBean.getPayload())){
+            final PinManager pinManager = new PinManager();
+            pinManager.showCheckPin(mActivity, new PinManager.OnPinListener() {
+                @Override
+                public void success(String value) {
+                    setPayPass(pinManager,value);
+                }
+            });
+        }
 
-        }*/
-
-        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity,new LoginPassCheckUtil.OnResultListence() {
+        /*LoginPassCheckUtil.getInstance().checkLoginPass(mActivity,new LoginPassCheckUtil.OnResultListence() {
             @Override
             public void success(String priKey) {
                 payPass = "";
@@ -123,6 +137,29 @@ public class PaymentActivity extends BaseActivity {
 
             @Override
             public void error() {
+
+            }
+        });*/
+    }
+
+    private void setPayPass(PinManager pinManager, final String value){
+        pinManager.showSetNewPin(mActivity, new PinManager.OnPinListener() {
+            @Override
+            public void success(String pass) {
+                WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
+                String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
+                String payload = SupportKeyUril.encodePri(value,salt,pass);
+                walletBean.setPayload(payload);
+                walletBean.setN(17);
+                walletBean.setSalt(salt);
+
+                WalletManager walletManager = new WalletManager(mActivity);
+                walletManager.requestWalletInfo(walletBean, new WalletManager.OnWalletListener() {
+                    @Override
+                    public void complete() {
+
+                    }
+                });
 
             }
         });
@@ -212,7 +249,7 @@ public class PaymentActivity extends BaseActivity {
 
     private void requestSetPay(String pass){
         // 获取数据库里币种对应的seed依次加密，并上传到服务器并更新到本地
-        String encodeStr = SupportKeyUril.encodePri("aaaa","salt",pass,17);
+        String encodeStr = SupportKeyUril.encodePri("aaaa","salt",pass);
 
 
 

@@ -10,15 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_40">
-        <!--<ProgressBar
-            android:id="@+id/progress"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
-            android:layout_centerHorizontal="true"
-            android:indeterminateTint="@color/color_007aff"
-            android:indeterminateTintMode="src_atop"
-            android:visibility="gone"/>-->
         <connect.widget.MdStyleProgress
             android:id="@+id/progress"
             android:layout_width="wrap_content"

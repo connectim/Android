@@ -129,7 +129,7 @@ public class TransferOutViaActivity extends BaseActivity {
         if (!TextUtils.isEmpty(outputString)) {
             paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
                 @Override
-                public void onTrue() {
+                public void onTrue(String value) {
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     sendExternal(amount, samValue);
                 }

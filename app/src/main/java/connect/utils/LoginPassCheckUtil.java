@@ -62,7 +62,7 @@ public class LoginPassCheckUtil {
         new AsyncTask<Void,Void,String>(){
             @Override
             protected String doInBackground(Void... params) {
-                String priKey = DecryptionUtil.decodeTalkKey(SharedPreferenceUtil.getInstance().getUser().getTalkKey(), pass);
+                String priKey = SupportKeyUril.decodeTalkKey(SharedPreferenceUtil.getInstance().getUser().getTalkKey(), pass);
                 return priKey;
             }
 
