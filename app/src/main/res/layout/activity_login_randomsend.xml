@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -22,7 +22,7 @@
             android:src="@mipmap/recordiing_sound2x"
             android:layout_centerInParent="true"/>
 
-        <connect.view.camera.CricleProgressbar
+        <connect.widget.camera.CricleProgressbar
             android:id="@+id/myProgressBar"
             android:layout_width="@dimen/dp_83"
             android:layout_height="@dimen/dp_83"

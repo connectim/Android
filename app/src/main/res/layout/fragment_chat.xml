@@ -4,7 +4,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/color_white">
 
-    <connect.ui.activity.home.view.ConnectStateView
+    <connect.activity.home.view.ConnectStateView
         android:id="@id/connectstate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

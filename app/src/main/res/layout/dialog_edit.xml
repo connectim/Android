@@ -37,7 +37,7 @@
         android:paddingLeft="@dimen/dp_10"
         android:background="@drawable/shape_stroke_20_ffffff"
         android:padding="8dp"
-        android:singleLine="true"
+        android:maxLines="1"
         android:textSize="14sp">
     </EditText>
 

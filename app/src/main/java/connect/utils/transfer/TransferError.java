@@ -3,7 +3,7 @@ package connect.utils.transfer;
 import android.widget.Toast;
 
 import connect.ui.activity.R;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 /**
  * Created by Administrator on 2017/5/18 0018.

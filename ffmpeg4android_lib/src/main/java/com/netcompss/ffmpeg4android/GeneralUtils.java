@@ -1,5 +1,15 @@
 package com.netcompss.ffmpeg4android;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.util.Log;
+import android.widget.Toast;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,17 +21,6 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 //import com.examples.ffmpeg4android_demo_native.R;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Build;
-import android.util.Log;
-import android.widget.Toast;
 
 
 public class GeneralUtils {

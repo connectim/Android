@@ -19,7 +19,6 @@ package connect.utils.glide;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.NinePatch;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -31,9 +30,6 @@ import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
-
-import connect.utils.BitmapUtil;
-import connect.utils.system.SystemUtil;
 
 public class MaskTransformation implements Transformation<Bitmap> {
 

@@ -6,7 +6,7 @@
               android:padding="@dimen/dp_5"
               android:background="@color/color_cc999999">
 
-    <connect.view.roundedimageview.RoundedImageView
+    <connect.widget.roundedimageview.RoundedImageView
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"/>

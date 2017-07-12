@@ -395,8 +395,8 @@
     </GenerateTokenResponse>
 
     <VersionResponse>
-        <attr name='version' type='reg'>.+</attr>
-        <attr name='upgradeUrl' type='reg'>.+</attr>
+        <attr name='version' type='string'></attr>
+        <attr name='upgradeUrl' type='string'></attr>
     </VersionResponse>
 
     <PaymentSetting>

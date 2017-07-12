@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import connect.db.SharedPreferenceUtil;
-import connect.ui.base.BaseApplication;
+import connect.database.SharedPreferenceUtil;
+import connect.activity.base.BaseApplication;
 
 /**
  * Language International Chemical
