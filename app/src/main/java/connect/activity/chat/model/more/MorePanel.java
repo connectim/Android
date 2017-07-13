@@ -5,10 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import connect.activity.chat.bean.RoomSession;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.BaseAction;
-import connect.activity.chat.bean.RoomSession;
-
 import java.util.ArrayList;
 import java.util.List;
 

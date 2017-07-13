@@ -304,9 +304,13 @@ public class SupportKeyUril {
      * Password encryption private key, gestures
      */
     public static String encodePri(String value, String salt, String pass) {
+        return encodePri(value,salt,pass,12);
+    }
+
+    public static String encodePri(String value, String salt, String pass,int n) {
         byte[] passByte = pass.getBytes();
         byte[] saltByte = salt.getBytes();
-        byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, 12, 32);
+        byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, n, 32);
         Connect.GcmData gcmData = null;
         try {
             gcmData = EncryptionUtil.encodeAESGCM(EcdhExts.NONE, pbkdf, value.getBytes("UTF-8"));
@@ -321,10 +325,14 @@ public class SupportKeyUril {
      * Password to decrypt the private key, gestures
      */
     public static String decodePri(String encryStr, String salt, String pass) {
+        return decodePri(encryStr,salt,pass,12);
+    }
+
+    public static String decodePri(String encryStr, String salt, String pass,int n) {
         try {
             byte[] passByte = pass.getBytes();
             byte[] saltByte = salt.getBytes();
-            byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, 12, 32);
+            byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, n, 32);
             Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(encryStr));
             byte[] contant = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, pbkdf, gcmData);
             String priKey = "";

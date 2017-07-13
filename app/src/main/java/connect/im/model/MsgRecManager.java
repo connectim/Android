@@ -5,13 +5,10 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import java.nio.ByteBuffer;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
+import connect.activity.base.BaseApplication;
+import connect.activity.login.StartActivity;
 import connect.database.MemoryDataManager;
 import connect.im.inter.InterParse;
 import connect.im.parser.CommandBean;
@@ -19,13 +16,10 @@ import connect.im.parser.ExceptionBean;
 import connect.im.parser.MsgParseBean;
 import connect.im.parser.ReceiptBean;
 import connect.im.parser.ShakeHandBean;
-import connect.activity.login.StartActivity;
-import connect.activity.base.BaseApplication;
 import connect.service.bean.PushMessage;
 import connect.service.bean.ServiceAck;
 import connect.utils.log.LogManager;
 import connect.utils.system.SystemUtil;
-import io.netty.util.concurrent.SingleThreadEventExecutor;
 
 /**
  * Created by gtq on 2016/11/30.

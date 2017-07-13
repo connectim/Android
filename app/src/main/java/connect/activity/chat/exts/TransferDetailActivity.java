@@ -12,6 +12,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.wallet.bean.CurrencyBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
@@ -101,7 +102,7 @@ public class TransferDetailActivity extends BaseActivity {
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.linearlayout:
-                BlockchainActivity.startActivity(activity, (String) objects[1]);
+                BlockchainActivity.startActivity(activity, CurrencyBean.BTC, (String) objects[1]);
                 break;
         }
     }
@@ -143,7 +144,7 @@ public class TransferDetailActivity extends BaseActivity {
                             linearlayout.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    BlockchainActivity.startActivity(activity, bill.getTxid());
+                                    BlockchainActivity.startActivity(activity,CurrencyBean.BTC, bill.getTxid());
                                 }
                             });
                             txt3.setText(TimeUtil.getTime(bill.getCreatedAt()*1000,TimeUtil.DEFAULT_DATE_FORMAT));

@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import connect.activity.wallet.bean.CurrencyBean;
 import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
@@ -29,14 +30,8 @@ public class BlockchainActivity extends BaseActivity {
     WebView webView;
     @Bind(R.id.myProgressBar)
     ProgressBar myProgressBar;
+
     private BlockchainActivity mActivity;
-
-    public static void startActivity(Activity activity, String type) {
-        Bundle bundle = new Bundle();
-
-        bundle.putString("id", type);
-        ActivityUtil.next(activity, BlockchainActivity.class, bundle);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +41,13 @@ public class BlockchainActivity extends BaseActivity {
         initView();
     }
 
+    public static void startActivity(Activity activity, CurrencyBean currencyBean, String type) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("CurrencyBean", currencyBean);
+        bundle.putString("id", type);
+        ActivityUtil.next(activity, BlockchainActivity.class, bundle);
+    }
+
     @Override
     public void initView() {
         mActivity = this;
@@ -53,7 +55,11 @@ public class BlockchainActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Wallet_Transaction_detail);
         Bundle bundle = getIntent().getExtras();
-        webView.loadUrl("https://blockchain.info/tx/" + bundle.getString("id"));
+        String id = bundle.getString("id");
+        CurrencyBean currencyBean = (CurrencyBean) bundle.getSerializable("CurrencyBean");
+        String url = currencyUrl(currencyBean, id);
+
+        webView.loadUrl(url);
         webView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -66,7 +72,7 @@ public class BlockchainActivity extends BaseActivity {
                 return true;
             }
         });
-        webView.setWebChromeClient(new WebChromeClient(){
+        webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
@@ -98,6 +104,16 @@ public class BlockchainActivity extends BaseActivity {
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public String currencyUrl(CurrencyBean bean, String id) {
+        String url = "";
+        switch (bean) {
+            case BTC:
+                url = "https://blockchain.info/tx/" + id;
+                break;
+        }
+        return url;
     }
 
 }

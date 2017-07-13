@@ -14,6 +14,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.wallet.bean.CurrencyBean;
 import connect.ui.activity.R;
 import connect.activity.wallet.adapter.RedDerailAdapter;
 import connect.activity.wallet.contract.PacketDetailContract;
@@ -164,7 +165,7 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String txId = redPackageInfo.getRedpackage().getTxid();
                 if (!TextUtils.isEmpty(txId)) {
-                    BlockchainActivity.startActivity(mActivity, txId);
+                    BlockchainActivity.startActivity(mActivity, CurrencyBean.BTC, txId);
                 }
             }
         });

@@ -5,8 +5,6 @@ import android.text.TextUtils;
 import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -17,7 +15,6 @@ import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
 import connect.service.bean.PushMessage;
 import connect.service.bean.ServiceAck;
-import connect.utils.StringUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;

@@ -18,7 +18,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.permission.PermissionUtil;
 import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;

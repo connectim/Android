@@ -13,6 +13,9 @@ import java.security.SecureRandom;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.login.bean.UserBean;
+import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.WalletBean;
 import connect.activity.wallet.manager.PinManager;
 import connect.activity.wallet.manager.WalletManager;
@@ -21,12 +24,9 @@ import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.activity.login.bean.UserBean;
-import connect.activity.set.bean.PaySetBean;
-import connect.utils.LoginPassCheckUtil;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.LoginPassCheckUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.cryption.EncoPinBean;
 import connect.utils.data.RateFormatUtil;
@@ -37,6 +37,7 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.jni.AllNativeMethod;
@@ -130,6 +131,7 @@ public class PaymentActivity extends BaseActivity {
         }
 
         /*LoginPassCheckUtil.getInstance().checkLoginPass(mActivity,new LoginPassCheckUtil.OnResultListence() {
+>>>>>>> c2a87b6891f42c1f40535f9d68e2d6f14002d08c:app/src/main/java/connect/activity/set/PaymentActivity.java
             @Override
             public void success(String priKey) {
                 payPass = "";
@@ -248,9 +250,6 @@ public class PaymentActivity extends BaseActivity {
     private void requestSetPay(String pass){
         // 获取数据库里币种对应的seed依次加密，并上传到服务器并更新到本地
         String encodeStr = SupportKeyUril.encodePri("aaaa","salt",pass);
-
-
-
         byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),userBean.getPubKey());
         try {
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, ecdh, pass.getBytes("UTF-8"));

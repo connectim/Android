@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="Chat">Чат</string>
     <string name="Chat_Agree">Согласие</string>
     <string name="Chat_Album_Permission_Get">Недостаточно прав для считывания фотоальбома системы, пожалуйста щелкните на "Настройки" - "Права" для получения нужнвх прав</string>

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import connect.utils.FileUtil;
 import connect.utils.StringUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.permission.PermissionUtil;
 import connect.wallet.jni.AllNativeMethod;
 

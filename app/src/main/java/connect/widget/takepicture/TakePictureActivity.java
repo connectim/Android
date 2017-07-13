@@ -2,8 +2,6 @@ package connect.widget.takepicture;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,25 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import java.io.File;
 import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.login.presenter.StartPresenter;
-import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.BitmapUtil;
-import connect.utils.FileUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
 import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.ui.activity.PhotoAlbumActivity;
-import connect.widget.camera.CameraManager;
 import connect.widget.clip.ClipImageActivity;
 
 /**

@@ -1,27 +1,19 @@
 package connect.activity.set;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.activity.login.bean.UserBean;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;

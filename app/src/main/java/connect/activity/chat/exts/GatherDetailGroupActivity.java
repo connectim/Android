@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.wallet.bean.CurrencyBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.DaoHelper.TransactionHelper;
@@ -124,7 +125,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Connect.CrowdfundingRecord record = (Connect.CrowdfundingRecord) parent.getItemAtPosition(position);
                 if (record != null) {
-                    BlockchainActivity.startActivity(activity, record.getTxid());
+                    BlockchainActivity.startActivity(activity, CurrencyBean.BTC,record.getTxid());
                 }
             }
         });

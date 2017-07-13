@@ -15,10 +15,7 @@
  */
 package com.netcompss.ffmpeg4android;
 
-import android.app.Activity;
 import android.content.Context;
-import android.widget.TextView;
-import android.os.Bundle;
 
 
 public class LicenseCheckJNI

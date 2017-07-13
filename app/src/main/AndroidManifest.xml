@@ -401,12 +401,18 @@
 
         <service
             android:name="connect.service.PushService"
-            android:process=".push"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.connect.push"/>
             </intent-filter>
         </service>
+
+        <activity
+            android:name="connect.activity.wallet.CAddressListActivty">
+        </activity>
+        <activity
+            android:name="connect.activity.wallet.BackUpCurrencyActivity">
+        </activity>
     </application>
 
 </manifest>

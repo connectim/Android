@@ -102,7 +102,7 @@
             android:layout_marginLeft="@dimen/dp_25"
             android:layout_marginRight="@dimen/dp_25"
             android:imeOptions="actionSend"
-            android:singleLine="true"
+            android:maxLines="1"
             android:hint="@string/Link_Enter_Bitcoin_Address"
             android:visibility="gone"/>
     </RelativeLayout>

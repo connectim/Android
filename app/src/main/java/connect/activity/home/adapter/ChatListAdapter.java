@@ -33,7 +33,6 @@ import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
-import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.MaterialBadgeTextView;

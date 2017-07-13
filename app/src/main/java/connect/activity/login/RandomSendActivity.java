@@ -2,9 +2,6 @@ package connect.activity.login;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,20 +12,20 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RendomSendContract;
 import connect.activity.login.presenter.RendomSendPresenter;
-import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.permission.PermissionUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.permission.PermissionUtil;
+import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import connect.widget.camera.CricleProgressbar;
-import connect.wallet.jni.AllNativeMethod;
 
 /**
  * Voice to generate random number

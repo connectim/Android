@@ -1,5 +1,6 @@
 package connect.activity.wallet;
 
+import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -14,20 +15,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.set.manager.EditInputFilterPrice;
+import connect.activity.wallet.bean.CurrencyBean;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
-import connect.activity.set.manager.EditInputFilterPrice;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.ToastEUtil;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * payment
@@ -49,15 +49,17 @@ public class RequestActivity extends BaseActivity {
     ImageView scanImg;
     @Bind(R.id.setAmount_tv)
     TextView setAmountTv;
+    @Bind(R.id.txt1)
+    TextView txt1;
 
     private RequestActivity mActivity;
-    public static String TRANSFER_SCAN_HEAD = "bitcoin:";
-    public static String TRANSFER_AMOUNT_HEAD = "amount=";
-    private EditInputFilterPrice bitEditFilter = new EditInputFilterPrice(Double.valueOf(999),8);
+    private EditInputFilterPrice bitEditFilter = new EditInputFilterPrice(Double.valueOf(999), 8);
     //bitcoin:1CDheG1rvKoaPMnkswzcr3xphPVTyxxzYY?amount=1.0
     //https://transfer.connect.im/share/v1/pay?address=18gzAo5jxbsF1G2F741EHrwxdD2v11RvXf&amount=0.08
     public String scanHead;
     public String shareUrl = ConfigUtil.getInstance().sharePayAddress() + "?address=";
+
+    private CurrencyBean currencyBean = CurrencyBean.BTC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,10 @@ public class RequestActivity extends BaseActivity {
         setContentView(R.layout.activity_wallet_request);
         ButterKnife.bind(this);
         initView();
+    }
+
+    public static void startActivity(Activity activity) {
+        ActivityUtil.next(activity, RequestActivity.class);
     }
 
     @Override
@@ -76,15 +82,21 @@ public class RequestActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Wallet_Receipt);
         toolbarTop.setRightImg(R.mipmap.wallet_share_payment2x);
 
-        scanHead = TRANSFER_SCAN_HEAD + MemoryDataManager.getInstance().getAddress() + "?" +TRANSFER_AMOUNT_HEAD;
+        scanHead = transferHeader(currencyBean) + MemoryDataManager.getInstance().getAddress() + "?" + "amount=";
 
         addressTv.setText(MemoryDataManager.getInstance().getAddress());
         InputFilter[] inputFiltersBtc = {bitEditFilter};
         amountEt.setFilters(inputFiltersBtc);
         amountEt.addTextChangedListener(textWatcher);
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(TRANSFER_SCAN_HEAD + MemoryDataManager.getInstance().getAddress());
+        Bitmap bitmap = createScan.generateQRCode(transferHeader(currencyBean) + MemoryDataManager.getInstance().getAddress());
         scanImg.setImageBitmap(bitmap);
+
+        switch (currencyBean) {
+            case BTC:
+                txt1.setText(getString(R.string.Wallet_Your_Bitcoin_Address_Title));
+                break;
+        }
     }
 
     @OnClick(R.id.left_img)
@@ -96,13 +108,13 @@ public class RequestActivity extends BaseActivity {
     void goCopy(View view) {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         cm.setText(MemoryDataManager.getInstance().getAddress());
-        ToastEUtil.makeText(mActivity,R.string.Set_Copied).show();
+        ToastEUtil.makeText(mActivity, R.string.Set_Copied).show();
     }
 
     @OnClick(R.id.right_lin)
     void goshare(View view) {
         String url = shareUrl + MemoryDataManager.getInstance().getAddress();
-        if(!TextUtils.isEmpty(amountEt.getText().toString())){
+        if (!TextUtils.isEmpty(amountEt.getText().toString())) {
             url = url + "&amount=" + amountEt.getText().toString();
         }
         Intent shareIntent = new Intent();
@@ -113,12 +125,12 @@ public class RequestActivity extends BaseActivity {
     }
 
     @OnClick(R.id.setAmount_tv)
-    void setAmount(View view){
-        if(addressLin.getVisibility() == View.VISIBLE){
+    void setAmount(View view) {
+        if (addressLin.getVisibility() == View.VISIBLE) {
             addressLin.setVisibility(View.GONE);
             amountLin.setVisibility(View.VISIBLE);
             setAmountTv.setText(R.string.Wallet_Clear);
-        }else{
+        } else {
             addressLin.setVisibility(View.VISIBLE);
             amountLin.setVisibility(View.GONE);
             setAmountTv.setText(R.string.Wallet_Set_Amount);
@@ -140,9 +152,9 @@ public class RequestActivity extends BaseActivity {
         @Override
         public void afterTextChanged(Editable s) {
             String scanUrl;
-            if(TextUtils.isEmpty(s.toString())){
-                scanUrl = TRANSFER_SCAN_HEAD + MemoryDataManager.getInstance().getAddress();
-            }else{
+            if (TextUtils.isEmpty(s.toString())) {
+                scanUrl = transferHeader(currencyBean) + MemoryDataManager.getInstance().getAddress();
+            } else {
                 scanUrl = scanHead + s.toString();
             }
             CreateScan createScan = new CreateScan();
@@ -150,4 +162,14 @@ public class RequestActivity extends BaseActivity {
             scanImg.setImageBitmap(bitmap);
         }
     };
+
+    public String transferHeader(CurrencyBean bean) {
+        String index = "bitcoin:";
+        switch (bean) {
+            case BTC:
+                index = "bitcoin:";
+                break;
+        }
+        return index;
+    }
 }

@@ -4,17 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import connect.activity.wallet.bean.AddressBean;
-import connect.activity.base.BaseApplication;
-import connect.activity.wallet.bean.WalletAccountBean;
-import connect.activity.wallet.bean.WalletBean;
-import connect.utils.log.LogManager;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+
+import connect.activity.base.BaseApplication;
+import connect.activity.wallet.bean.AddressBean;
+import connect.activity.wallet.bean.WalletBean;
+import connect.utils.log.LogManager;
 
 /**
  * save different user information

@@ -101,7 +101,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                         }
                     } else {
                         voiceImg.downLoading();
-                        FileDownLoad.getInstance().downChatFile(url, entity.getPubkey(), new FileDownLoad.IFileDownLoad() {
+                        FileDownLoad.getInstance().downChatFile(entity.getRoomType(),url, entity.getPubkey(), new FileDownLoad.IFileDownLoad() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 loadImg.setVisibility(View.GONE);

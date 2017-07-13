@@ -7,18 +7,16 @@ import android.os.AsyncTask;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.net.URL;
-
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
-import connect.ui.activity.R;
 import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
-import connect.activity.wallet.RequestActivity;
 import connect.activity.wallet.TransferAddressActivity;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
@@ -43,6 +41,8 @@ public class ResolveScanUtil {
     private final String ID_FRIEND = "friend";
     private final String ID_STRANGER = "stranger";
     private final String ID_INEXISTENCE = "inexistence";
+
+    public static String TRANSFER_SCAN_HEAD = "bitcoin:";
 
     public ResolveScanUtil(Activity activity) {
         this.activity = activity;
@@ -109,14 +109,14 @@ public class ResolveScanUtil {
         }
 
         // Determine whether to transfer links
-        if(value.contains(RequestActivity.TRANSFER_SCAN_HEAD)) {
+        if(value.contains(TRANSFER_SCAN_HEAD)) {
             Double amount = null;
-            String valueBitcoin = value.replace(RequestActivity.TRANSFER_SCAN_HEAD,"");
+            String valueBitcoin = value.replace(TRANSFER_SCAN_HEAD,"");
             if(valueBitcoin.contains("amount")) {
                 String amountStr = Uri.parse(valueBitcoin).getQueryParameter("amount");
                 amount = Double.valueOf(amountStr);
-                String[] data = value.split("\\?" + RequestActivity.TRANSFER_AMOUNT_HEAD);
-                valueBitcoin = data[0].replace(RequestActivity.TRANSFER_SCAN_HEAD,"");
+                String[] data = value.split("\\?" + "amount=");
+                valueBitcoin = data[0].replace(TRANSFER_SCAN_HEAD,"");
             }
             if(SupportKeyUril.checkAddress(valueBitcoin)){
                 final String finalValueBitcoin = valueBitcoin;

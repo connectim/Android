@@ -1,7 +1,8 @@
 package connect.activity.chat.inter;
 
-import connect.database.MemoryDataManager;
 import connect.activity.chat.bean.RoomSession;
+import connect.activity.chat.bean.RoomType;
+import connect.database.MemoryDataManager;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -21,7 +22,7 @@ public class FileDownLoad {
         return fileDownLoad;
     }
 
-    public void downChatFile(String url, final String pukkey, final IFileDownLoad fileDownLoad) {
+    public void downChatFile(final RoomType roomType, String url, final String pukkey, final IFileDownLoad fileDownLoad) {
         DownLoadFile downLoadFile = new DownLoadFile(url, new DownLoadFile.ResultListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
@@ -36,14 +37,14 @@ public class FileDownLoad {
             @Override
             public void success(byte[] data) {
                 try {
-                    if (RoomSession.getInstance().getRoomType() == 2) {
+                    if (roomType == RoomType.RobotType) {
                         fileDownLoad.successDown(data);
                     } else {
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(data);
                         Connect.StructData structData = null;
-                        if (RoomSession.getInstance().getRoomType() == 0) {//private chat
+                        if (roomType == RoomType.FriendType) {//private chat
                             structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, MemoryDataManager.getInstance().getPriKey(), pukkey, gcmData);
-                        } else if (RoomSession.getInstance().getRoomType() == 1) {//group chat
+                        } else if (roomType == RoomType.GroupType) {//group chat
                             structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(RoomSession.getInstance().getGroupEcdh()), gcmData);
                         }
                         byte[] dataFile = structData.getPlainData().toByteArray();

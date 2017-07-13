@@ -13,11 +13,9 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.protobuf.ByteString;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -33,25 +31,19 @@ import connect.activity.wallet.TransferActivity;
 import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.activity.wallet.bean.RateBean;
 import connect.activity.wallet.bean.WalletAccountBean;
-import connect.activity.wallet.bean.WalletBean;
-import connect.activity.wallet.manager.CurrencyManage;
+import connect.activity.wallet.manager.CurrencyType;
 import connect.activity.wallet.manager.PinManager;
 import connect.activity.wallet.manager.WalletManager;
-import connect.activity.wallet.manager.CurrencyType;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
-import connect.utils.StringUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -149,7 +141,7 @@ public class WalletFragment extends BaseFragment{
         if (account.contains(mActivity.getString(R.string.Set_BTC_symbol)) && rateBean != null && rateBean.getRate() != null) {
             amountTv.setText(rateBean.getSymbol() + " " +
                     RateFormatUtil.foematNumber(RateFormatUtil.PATTERN_OTHER,
-                    accountBean.getAmount()*rateBean.getRate()/RateFormatUtil.BTC_TO_LONG));
+                            accountBean.getAmount()*rateBean.getRate()/RateFormatUtil.BTC_TO_LONG));
         }else{
             amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
         }
@@ -233,12 +225,9 @@ public class WalletFragment extends BaseFragment{
         /*new CurrencyManage().createCurrency(baseSend, type, new CurrencyManage.OnCreateCurrencyListener() {
             @Override
             public void success(CurrencyEntity currencyEntity) {
-
             }
-
             @Override
             public void fail(String message) {
-
             }
         });*/
     }

@@ -16,25 +16,14 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.GroupEntity;
-import connect.im.bean.UserOrderBean;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.exts.TransferToActivity;
-import connect.activity.chat.model.content.BaseChat;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.GroupChat;
 import connect.activity.common.bean.ConverType;
 import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.contact.bean.ContactNotice;
@@ -43,15 +32,15 @@ import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.FriendInfoContract;
 import connect.activity.contact.presenter.FriendInfoPresenter;
 import connect.activity.home.bean.MsgNoticeBean;
-import connect.activity.base.BaseActivity;
-import connect.activity.base.BaseApplication;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
+import connect.im.bean.UserOrderBean;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.imagewatcher.ImageWatcher;
-import connect.widget.imagewatcher.ImageWatcherUtil;
 import connect.widget.roundedimageview.RoundedImageView;
 
 /**

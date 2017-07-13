@@ -6,23 +6,18 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import java.nio.ByteBuffer;
 import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.SharedPreferenceUtil;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
+import connect.activity.base.BaseApplication;
 import connect.activity.home.HomeActivity;
 import connect.activity.set.adapter.CurrencyAdapter;
 import connect.activity.set.manager.LanguageData;
 import connect.activity.wallet.bean.RateBean;
-import connect.activity.base.BaseActivity;
-import connect.activity.base.BaseApplication;
-import connect.service.bean.PushMessage;
-import connect.service.bean.ServiceAck;
+import connect.database.SharedPreferenceUtil;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;

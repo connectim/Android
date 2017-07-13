@@ -70,6 +70,16 @@ public class CurrencyHelper extends BaseDao{
         return currencyAddressEntityDao.loadAll();
     }
 
+    public List<CurrencyAddressEntity> loadCurrencyAddress(String currency) {
+        QueryBuilder<CurrencyAddressEntity> queryBuilder = currencyAddressEntityDao.queryBuilder();
+        queryBuilder.where(CurrencyAddressEntityDao.Properties.Currency.eq(currency)).limit(1).build();
+        List<CurrencyAddressEntity> currencyAddressEntities = queryBuilder.list();
+        if (null == currencyAddressEntities || currencyAddressEntities.size() == 0) {
+            return null;
+        }
+        return currencyAddressEntities;
+    }
+
     /*********************************  insert ***********************************/
     /**
      * insert currencies

@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.wallet.bean.CurrencyBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.bean.ContactEntity;
-import connect.ui.activity.R;
 import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.activity.wallet.BlockchainActivity;
 import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
@@ -85,7 +86,7 @@ public class FriendRecordActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Connect.FriendBill friendBill = (Connect.FriendBill) parent.getAdapter().getItem(position);
-                BlockchainActivity.startActivity(mActivity, friendBill.getTxId());
+                BlockchainActivity.startActivity(mActivity, CurrencyBean.BTC, friendBill.getTxId());
             }
         });
 

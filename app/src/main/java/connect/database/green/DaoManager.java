@@ -37,8 +37,8 @@ public class DaoManager {
      * 2--->0.0.4
      * 3--->0.0.8
      * 4--->0.0.9
+     * 5--->0.1.2
      */
-    public static final int SCHEMA_VERSION = 4;
     private volatile static DaoManager mDaoManager;
     private static DaoMaster.DevOpenHelper mHelper;
     private static DaoMaster mDaoMaster;

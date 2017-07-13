@@ -12,9 +12,7 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-
 import java.io.File;
-
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
@@ -45,7 +43,7 @@ public class MsgImgHolder extends MsgChatHolder {
         String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
 
         imgmsg.setOpenBurn(TextUtils.isEmpty(definBean.getExt())?false:true);
-        imgmsg.loadUri(direct, entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
+        imgmsg.loadUri(direct, entity.getRoomType(),entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
 
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

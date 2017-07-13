@@ -3,9 +3,7 @@ package connect.activity.login.presenter;
 import android.app.Activity;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.widget.Toast;
 
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -13,12 +11,12 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.File;
 import java.util.List;
 
+import connect.activity.base.BaseApplication;
+import connect.activity.login.bean.UserBean;
+import connect.activity.login.contract.RegisterContract;
 import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.RegisterContract;
-import connect.activity.base.BaseApplication;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;

@@ -22,7 +22,6 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncoPinBean;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.jni.AllNativeMethod;
@@ -89,15 +88,14 @@ public class WalletManager {
         * currencyArray(币种信息)
         * status(同步状态)*/
     private void requestWalletBase(){
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SYNC, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SYNC, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     WalletOuterClass.RespSyncWallet respSyncWallet = WalletOuterClass.RespSyncWallet.parseFrom(structData.getPlainData());
-                    switch (respSyncWallet.getStatus()){
+                    switch (respSyncWallet.getStatus()) {
                         case 0:
                             // 用户没有钱包数据 ，需要创建（新用户）
                             collectSeed();
@@ -128,7 +126,7 @@ public class WalletManager {
                                     MemoryDataManager.getInstance().getAddress(),
                                     CurrencyManage.CURRENCY_DEFAULT,
                                     CurrencyManage.WALLET_CATEGORY_PRI,
-                                    new CurrencyManage.OnCreateCurrencyListener(){
+                                    new CurrencyManage.OnCreateCurrencyListener() {
                                         @Override
                                         public void success(CurrencyEntity currencyEntity) {
 
@@ -154,6 +152,8 @@ public class WalletManager {
             }
         });
     }
+
+
 
     /**
      * 收集baseSeed
@@ -242,9 +242,7 @@ public class WalletManager {
     }
 
     public interface OnWalletListener {
-
         void complete();
-
     }
 
 }

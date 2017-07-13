@@ -20,15 +20,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ConversionSettingHelper;
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.ConversionSettingEntity;
-import connect.database.green.bean.GroupEntity;
-import connect.database.green.bean.GroupMemberEntity;
-import connect.im.bean.MsgType;
-import connect.ui.activity.R;
+import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
@@ -43,7 +35,15 @@ import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.SingleSetActivity;
 import connect.activity.chat.view.ExBottomLayout;
-import connect.activity.chat.adapter.ChatAdapter;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionSettingHelper;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.ConversionSettingEntity;
+import connect.database.green.bean.GroupEntity;
+import connect.database.green.bean.GroupMemberEntity;
+import connect.im.bean.MsgType;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.FileUtil;
 import connect.utils.MediaUtil;
@@ -163,7 +163,7 @@ public class ChatActivity extends BaseChatActvity {
                     entities.add(0, encryEntity);
                 }
 
-                chatAdapter.setDatas(entities);
+                chatAdapter.insertItems(entities);
             }
         }.execute();
     }
@@ -185,7 +185,7 @@ public class ChatActivity extends BaseChatActvity {
                     View firstChild = recyclerChat.getChildAt(0);
                     int top = firstChild.getTop();
 
-                    chatAdapter.insertMoreItems(msgEntities);
+                    chatAdapter.insertItems(msgEntities);
                     scrollHelper.scrollToPosition(msgEntities.size(), top);//Some errors, top - SystemUtil.dipToPx(48)
                 }
             }

@@ -1,7 +1,6 @@
 package connect.activity.chat.model.content;
 
 import com.google.gson.Gson;
-
 import connect.im.bean.MsgType;
 import connect.im.bean.SocketACK;
 import connect.im.model.ChatSendManager;

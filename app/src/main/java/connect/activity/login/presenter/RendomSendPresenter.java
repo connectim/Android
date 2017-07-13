@@ -10,14 +10,12 @@ import android.os.Message;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import connect.activity.login.RegisterActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RendomSendContract;
 import connect.utils.FileUtil;
-import connect.utils.permission.PermissionUtil;
 import connect.utils.StringUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.permission.PermissionUtil;
 import connect.wallet.jni.AllNativeMethod;
 
 /**

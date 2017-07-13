@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
+import connect.activity.chat.bean.RoomType;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.inter.FileDownLoad;
@@ -78,7 +79,7 @@ public class BubbleImg extends RelativeLayout {
     }
 
 
-    public void loadUri(final MsgDirect direct, final String pukkey, final String msgid, final String url,final float imgwidth,final float imgheight) {
+    public void loadUri(final MsgDirect direct, final RoomType roomType, final String pukkey, final String msgid, final String url, final float imgwidth, final float imgheight) {
         msgDirect = direct;
 
         imageView.setImageBitmap(null);
@@ -96,12 +97,12 @@ public class BubbleImg extends RelativeLayout {
                     .bitmapTransform(new CenterCrop(context), new BlurMaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x, (openBurn && msgDirect == MsgDirect.From) ? 16 : 0))
                     .into(imageView);
         } else {
-            FileDownLoad.getInstance().downChatFile(url, pukkey, new FileDownLoad.IFileDownLoad() {
+            FileDownLoad.getInstance().downChatFile(roomType,url,pukkey, new FileDownLoad.IFileDownLoad() {
                 @Override
                 public void successDown(byte[] bytes) {
                     progressBar.setVisibility(GONE);
                     FileUtil.byteArrToFilePath(bytes, localPath);
-                    loadUri(direct, pukkey, msgid, localPath,imgwidth,imgheight);
+                    loadUri(direct,roomType, pukkey, msgid, localPath,imgwidth,imgheight);
                 }
 
                 @Override

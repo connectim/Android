@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;

@@ -18,10 +18,10 @@ import com.google.gson.Gson;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.chat.exts.BaseListener;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -31,7 +31,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.im.bean.MsgType;
 import connect.im.bean.UserOrderBean;
-import connect.ui.activity.R;
 import connect.activity.chat.bean.BurnNotice;
 import connect.activity.chat.bean.ExtBean;
 import connect.activity.chat.bean.GatherBean;
@@ -64,6 +63,7 @@ import connect.activity.chat.bean.GeoAddressBean;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.wallet.TransferFriendActivity;
 import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
@@ -319,8 +319,10 @@ public abstract class BaseChatActvity extends BaseActivity {
     public synchronized void onEventMainThread(RecExtBean bean) {
         MsgEntity msgEntity = null;
 
-        Object[] objects = null;
-        if (bean.getObj() != null) {
+        final Object[] objects;
+        if (bean.getObj() == null) {
+            objects = null;
+        } else {
             objects = (Object[]) bean.getObj();
         }
 
@@ -347,8 +349,8 @@ public abstract class BaseChatActvity extends BaseActivity {
             case TRANSFER:
                 if (baseChat.roomType() == 0) {
                     TransferToActivity.startActivity(activity, baseChat.address());
-                } else if (RoomSession.getInstance().getRoomType() == 1) {
-                    SeleUsersActivity.startActivity(activity, SeleUsersActivity.SOURCE_GROUP, baseChat.roomKey(),null);
+                } else if (baseChat.roomType() == 1) {
+                    //TransferFriendSeleActivity.startActivity(activity, 0, TransferFriendSeleActivity.SOURCE_GROUP, baseChat.roomKey());
                 }
                 break;
             case REDPACKET:
@@ -373,8 +375,17 @@ public abstract class BaseChatActvity extends BaseActivity {
                 reSendFailMsg((MsgEntity) objects[0]);
                 break;
             case IMGVIEWER://Image viewer
-                ArrayList<String> imgs = chatAdapter.showImgMsgs();
-                ImageViewerActivity.startActivity(activity, (String) objects[0], imgs);
+                chatAdapter.showImgMsgs(new BaseListener<ArrayList<String>>() {
+                    @Override
+                    public void Success(ArrayList<String> strings) {
+                        ImageViewerActivity.startActivity(activity, (String) objects[0], strings);
+                    }
+
+                    @Override
+                    public void fail(Object... objects) {
+
+                    }
+                });
                 break;
             case NOTICE://notice message
                 adapterInsetItem((MsgEntity) baseChat.noticeMsg((String) objects[0]));

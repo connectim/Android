@@ -1,7 +1,5 @@
 package connect.im.netty;
 
-import com.google.protobuf.ByteString;
-
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
