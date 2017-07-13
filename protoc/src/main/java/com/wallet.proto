@@ -1,0 +1,98 @@
+syntax = "proto3";
+package wallet_gateway;
+
+message Address {
+    string address = 1;
+}
+
+message Balance {
+    int64 amount = 1;
+    int64 pending = 2;
+}
+
+message Unspent {
+    string tx_hash = 1;
+    int32 tx_output_n = 2;
+    int32 tx_output_n2 = 3;
+    uint64 value = 4;
+    int32 confirmations = 5;
+    string scriptpubkey = 6;
+    int32 priority = 7;
+}
+
+message Unspents {
+    repeated Unspent unspents = 1;
+}
+
+message Wallet {
+    int32 pbkdf2_iterations = 1;
+    int32 version = 2;
+    string uuid = 3;
+    string pay_load = 4;
+    string salt = 5;
+}
+
+message Coin {
+    int32 status = 1;
+    int32 currency = 2;
+    int32 category = 3;
+    string salt = 4;
+    int64 balance = 5;
+    string w_id = 6;
+    string payload = 7;
+}
+
+
+message Coins {
+    repeated Coin Coins = 1;
+}
+
+message CoinsDetail {
+    Coin coin = 1;
+    repeated CoinInfo coinInfos = 2;
+}
+
+message CoinInfo {
+    int32 index = 1;
+    int32 status = 2;
+    string address = 3;
+    string label = 4;
+    int64 balance = 5;
+}
+
+message RespSyncWallet {
+    Wallet wallet = 1;
+    int32 status = 2;
+    Coins Coins = 3;
+}
+
+message RequestWalletInfo {
+    string check_sum = 1;
+    string payload = 2;
+    string salt = 3;
+    int32 n = 4;
+    string wid = 5;
+    int32 version = 6;
+}
+
+message RequestUserInfo {
+    string uid = 1;
+}
+
+message CreateCoinArgs {
+    int32 category =1;
+    int32 currency = 2;
+    string salt = 3;
+    string master_address = 4;
+    string payload = 5;
+    string w_id =6;
+}
+
+message RequestCreateCoinInfo {
+    int32 index = 1;
+    int32 status = 2;
+    string address = 3;
+    string label = 4;
+    int32 currency = 5;
+    string w_id = 6;
+}
