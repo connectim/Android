@@ -25,12 +25,12 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.ui.activity.R;
 import connect.activity.base.BaseFragmentActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.permission.PermissionUtil;
 import connect.utils.glide.GlideUtil;
+import connect.utils.permission.PermissionUtil;
 import connect.widget.album.entity.AlbumFolderInfo;
 import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.presenter.ImageScannerPresenter;

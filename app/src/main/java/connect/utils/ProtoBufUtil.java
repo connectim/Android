@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import connect.activity.base.BaseApplication;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;

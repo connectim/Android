@@ -22,9 +22,9 @@ import connect.activity.login.presenter.ScanLoginPresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.wallet.jni.AllNativeMethod;
 import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.ui.activity.PhotoAlbumActivity;
+import connect.wallet.jni.AllNativeMethod;
 
 /**
  * Scan to login

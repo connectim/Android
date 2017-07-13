@@ -1,5 +1,4 @@
 package connect.activity.chat.bean;
-
 import android.text.TextUtils;
 
 import java.io.Serializable;

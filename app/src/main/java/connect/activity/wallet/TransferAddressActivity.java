@@ -147,7 +147,7 @@ public class TransferAddressActivity extends BaseActivity {
     private void checkPayPassword(final long amount, final String inputString, final String outputString) {
         paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
             @Override
-            public void onTrue() {
+            public void onTrue(String value) {
                 String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                 requestBillingSend(amount, samValue);
             }

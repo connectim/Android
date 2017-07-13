@@ -101,7 +101,7 @@ public class PaymentPwd implements View.OnClickListener{
 
         if(paySetBean != null && paySetBean.getNoSecretPay()){
             statusChange(5);
-            onTrueListener.onTrue();
+            // onTrueListener.onTrue();
         }
 
         if (paySetBean == null || TextUtils.isEmpty(paySetBean.getPayPin())) {
@@ -262,7 +262,7 @@ public class PaymentPwd implements View.OnClickListener{
                 byte[] passByte = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,ecdh,Connect.GcmData.parseFrom(valueByte));
                 String payPass = new String(passByte,"UTF-8");
                 if (pass.equals(payPass)) {// Enter the payment password correctly
-                    onTrueListener.onTrue();
+                    onTrueListener.onTrue(pass);
                 } else {// Incorrect password
                     viewPager.setCurrentItem(1);
                 }
@@ -442,7 +442,7 @@ public class PaymentPwd implements View.OnClickListener{
                             paySetBean.setPayPin(encryPass);
                             paySetBean.setVersionPay(payPinVersion.getVersion());
                             ParamManager.getInstance().putPaySet(paySetBean);
-                            onTrueListener.onTrue();
+                            //onTrueListener.onTrue();
                         }
                     } catch (InvalidProtocolBufferException e) {
                         e.printStackTrace();
@@ -461,7 +461,7 @@ public class PaymentPwd implements View.OnClickListener{
 
     public interface OnTrueListener {
 
-        void onTrue();
+        void onTrue(String priKey);
 
     }
 

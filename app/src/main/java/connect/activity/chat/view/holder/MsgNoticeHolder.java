@@ -21,6 +21,7 @@ import connect.activity.wallet.PacketDetailActivity;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
+
 /**
  * Created by gtq on 2016/12/19.
  */

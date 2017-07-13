@@ -113,6 +113,13 @@ public class UriUtil {
     public static String WALLET_ADDRESS_BOOK_REMOVE = "/wallet/v1/address_book/remove";
     /** Many people transfer */
     public static String WALLET_BILLING_MUILT_SEND = "/wallet/v1/billing/muilt_send";
+    /** 创建钱包 */
+    public static String WALLET_V2_CREATE = "/wallet/v2/create";
+    /** 同步钱包账户 */
+    public static String WALLET_V2_SYNC = "/wallet/v2/sync";
+    /** 创建币种 */
+    public static String WALLET_V2_COINS_CREATE = "/wallet/v2/coins/create";
+
 
     /**======================================================================================
      *                                contact

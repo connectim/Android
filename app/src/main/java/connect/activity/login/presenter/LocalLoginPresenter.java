@@ -41,7 +41,7 @@ public class LocalLoginPresenter implements LocalLoginContract.Presenter {
 
             @Override
             protected String doInBackground(Void... params) {
-                String priKey = DecryptionUtil.decodeTalkKey(talkKey, passWord);
+                String priKey = SupportKeyUril.decodeTalkKey(talkKey, passWord);
                 return priKey;
             }
 

@@ -22,10 +22,23 @@ public class RoomSession {
         return roomSession;
     }
 
+    private int roomType = -1;
     private String roomKey;
+    private String roomName;
     private String groupEcdh;
     /** 0:close burn  5000+:start burn */
     private long burntime;
+    /** friend avatar */
+    private String friendAvatar;
+
+    public int getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(int roomtype) {
+        this.roomType = roomtype;
+        SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.ROOM_TYPE, roomtype);
+    }
 
     public String getRoomKey() {
         if (TextUtils.isEmpty(roomKey)) {
@@ -57,5 +70,21 @@ public class RoomSession {
 
     public void setBurntime(long burntime) {
         this.burntime = burntime;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public String getFriendAvatar() {
+        return friendAvatar;
+    }
+
+    public void setFriendAvatar(String friendAvatar) {
+        this.friendAvatar = friendAvatar;
     }
 }

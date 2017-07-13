@@ -7,11 +7,22 @@ import java.io.Serializable;
  */
 
 public enum CurrencyType implements Serializable {
-    BTC("btc");
 
-    private final String name;
+    BTC("btc",0);
 
-    CurrencyType(String name) {
+    private  String name;
+    private  int code;
+
+    CurrencyType(String name, int code) {
         this.name = name;
+        this.code = code;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public int getCode(){
+        return code;
     }
 }

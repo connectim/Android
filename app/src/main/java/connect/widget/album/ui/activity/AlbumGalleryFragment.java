@@ -16,13 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import connect.activity.chat.exts.VideoPlayerActivity;
 import connect.ui.activity.R;
+
+import connect.activity.chat.exts.VideoPlayerActivity;
 import connect.widget.album.adapter.AlbumGalleryAdp;
 import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.ui.activity.PhotoAlbumActivity;
 import connect.widget.album.ui.widget.HackyViewPager;
-
 public class AlbumGalleryFragment extends Fragment implements View.OnClickListener{
+
+    private static AlbumGalleryFragment galleryFragment;
+
     private PhotoAlbumActivity activity;
     private HackyViewPager viewPager;
     private ImageView videoImg;
@@ -90,6 +94,13 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
             }
         });
         return rootView;
+    }
+
+    public static AlbumGalleryFragment newInstance() {
+        if (galleryFragment == null) {
+            galleryFragment = new AlbumGalleryFragment();
+        }
+        return galleryFragment;
     }
 
     public void initImgInfos(){

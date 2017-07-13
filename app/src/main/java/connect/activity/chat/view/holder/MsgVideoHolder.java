@@ -55,7 +55,7 @@ public class MsgVideoHolder extends MsgChatHolder {
             videomsg.setOpenBurn(false);
         }
 
-        videomsg.loadUri(direct,entity.getRoomType(), entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
+        videomsg.loadUri(direct, entity.getRoomType(),entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +85,7 @@ public class MsgVideoHolder extends MsgChatHolder {
                         public void successDown(byte[] bytes) {
                             videoProView.loadState(true, 0);
                             videomsg.setOpenBurn(false);
-                            videomsg.loadUri(direct, entity.getRoomType(),entity.getPubkey(), bean.getMessage_id(), definBean.getUrl(),definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
+                            videomsg.loadUri(direct,entity.getRoomType(), entity.getPubkey(), bean.getMessage_id(), definBean.getUrl(),definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
 
                             FileUtil.byteArrToFilePath(bytes, localPath);
 

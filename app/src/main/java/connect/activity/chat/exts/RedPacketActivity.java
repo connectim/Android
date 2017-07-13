@@ -220,7 +220,7 @@ public class RedPacketActivity extends BaseActivity {
             paymentPwd = new PaymentPwd();
             paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
                 @Override
-                public void onTrue() {
+                public void onTrue(String value) {
                     String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
                     sendPacket(amount, samValue);
                 }

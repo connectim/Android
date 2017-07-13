@@ -37,6 +37,18 @@ public class StringUtil {
         return value;
     }
 
+    public static String cdHash256(String value){
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(value.getBytes());
+            String hash = StringUtil.bytesToHexString(md.digest());
+            return hash;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     /**
      * byte to String
      * @param src

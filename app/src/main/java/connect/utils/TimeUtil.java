@@ -2,7 +2,6 @@ package connect.utils;
 
 import android.content.Context;
 
-import connect.ui.activity.Manifest;
 import connect.ui.activity.R;
 import connect.activity.base.BaseApplication;
 

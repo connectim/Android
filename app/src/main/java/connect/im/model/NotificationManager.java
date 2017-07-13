@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.MsgDefinBean;

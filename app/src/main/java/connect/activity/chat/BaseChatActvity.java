@@ -20,6 +20,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
+
+import connect.activity.chat.exts.BaseListener;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -29,8 +31,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.im.bean.MsgType;
 import connect.im.bean.UserOrderBean;
-import connect.ui.activity.R;
-import connect.activity.chat.exts.BaseListener;
 import connect.activity.chat.bean.BurnNotice;
 import connect.activity.chat.bean.ExtBean;
 import connect.activity.chat.bean.GatherBean;
@@ -63,6 +63,7 @@ import connect.activity.chat.bean.GeoAddressBean;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.wallet.TransferFriendActivity;
 import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
@@ -110,10 +111,13 @@ public abstract class BaseChatActvity extends BaseActivity {
 
         talker = (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
         roomSession = RoomSession.getInstance();
+        roomSession.setRoomType(talker.getTalkType());
         roomSession.setRoomKey(talker.getTalkKey());
 
         switch (talker.getTalkType()) {
             case 0:
+                roomSession.setRoomName(talker.getTalkName());
+                roomSession.setFriendAvatar(talker.getFriendEntity().getAvatar());
                 baseChat = new FriendChat(talker.getFriendEntity());
 
                 if (!TextUtils.isEmpty(baseChat.address())) {
@@ -123,11 +127,13 @@ public abstract class BaseChatActvity extends BaseActivity {
                 RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNSTATE, roomSession.getBurntime() == 0 ? 0 : 1);
                 break;
             case 1:
+                roomSession.setRoomName(talker.getTalkName());
                 roomSession.setGroupEcdh(talker.getGroupEntity().getEcdh_key());
                 baseChat = new GroupChat(talker.getGroupEntity());
                 break;
             case 2:
                 baseChat = RobotChat.getInstance();
+                roomSession.setRoomName(baseChat.nickName());
                 break;
         }
 
@@ -354,7 +360,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 GatherActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
                 break;
             case NAMECARD:
-                ContactCardActivity.startActivity(activity,talker.getTalkKey());
+                ContactCardActivity.startActivity(activity);
                 break;
             case MSGSTATE://message send state 0:sending 1:send success 2:send fail 3:send refuse
                 if (talker.getTalkKey().equals(objects[0])) {

@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.AdBean;
 import connect.activity.chat.bean.ApplyGroupBean;

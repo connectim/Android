@@ -34,6 +34,7 @@ public class SupportKeyUril {
     public static final int CRYPTION_N = 17;
     /** hmac transform default salt */
     public static String HmacSalt = "49f41477fa1bfc3b4792d5233b6a659f4b";
+    public static final int CRYPTION_TALKKEY_VER = 1;
 
     /**
      * The secret key generating random number
@@ -176,9 +177,44 @@ public class SupportKeyUril {
             priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(priKey, 44, 0, 0, 0, 0);
         }*/
         String priKey_16 = AllNativeMethod.cdgetRawPrivateKey(priKey);
-        String talkKey = AllNativeMethod.cdxTalkKeyEncrypt(address, priKey_16, passWord, CRYPTION_N,
-                DecryptionUtil.CRYPTION_TALKKEY_VER);
+        String talkKey = AllNativeMethod.cdxTalkKeyEncrypt(address, priKey_16, passWord, CRYPTION_N, CRYPTION_TALKKEY_VER);
         return talkKey;
+    }
+
+    /**
+     * Decryption TalkKey
+     *
+     * @param talkKey
+     * @param pass
+     * @return
+     */
+    public static String decodeTalkKey(String talkKey, String pass) {
+        String addressandpriKey_16 = AllNativeMethod.cdxTalkKeyDecrypt(talkKey, pass, CRYPTION_TALKKEY_VER);
+        try {
+            String priKey_16 = addressandpriKey_16.split("@")[1];
+            String prikey = AllNativeMethod.cdgetRawToPrivateKey(priKey_16);
+            return prikey;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 加密支付密码
+     */
+    private static String encoPin(String value, String salt, String pass,int n){
+        byte[] passByte = pass.getBytes();
+        byte[] saltByte = salt.getBytes();
+        byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, 12, 32);
+        String priKey_16 = AllNativeMethod.cdgetRawPrivateKey(value);
+        String encoStr = "";
+        try {
+            encoStr = AllNativeMethod.cdxTalkKeyEncrypt("aaaa", priKey_16, new String(pbkdf,"UTF-8"), CRYPTION_N, CRYPTION_TALKKEY_VER);
+        }catch (Exception e){
+
+        }
+        return encoStr;
     }
 
     /**

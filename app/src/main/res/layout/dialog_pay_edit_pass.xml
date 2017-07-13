@@ -19,6 +19,7 @@
             android:indeterminateTint="@color/color_007aff"
             android:indeterminateTintMode="src_atop"
             android:visibility="gone"/>-->
+
         <connect.widget.MdStyleProgress
             android:id="@+id/progress"
             android:layout_width="wrap_content"

@@ -2,6 +2,7 @@ package connect.activity.login.presenter;
 
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -9,7 +10,6 @@ import android.os.Message;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RendomSendContract;
 import connect.utils.FileUtil;

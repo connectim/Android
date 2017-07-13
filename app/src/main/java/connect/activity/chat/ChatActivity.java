@@ -79,6 +79,7 @@ public class ChatActivity extends BaseChatActvity {
     }
 
     public static void startActivity(Activity activity, Talker talker) {
+        RoomSession.getInstance().setRoomType(talker.getTalkType());
         RoomSession.getInstance().setRoomKey(talker.getTalkKey());
 
         Bundle bundle = new Bundle();
@@ -111,8 +112,6 @@ public class ChatActivity extends BaseChatActvity {
                 }
             }
         });
-        layoutExbottom.getMorePanel().setRoomType(talker.getTalkType());
-
         // robot/stranger donot show setting
         if (!(talker.getTalkType() == 2 || baseChat.isStranger())) {
             toolbar.setRightImg(R.mipmap.menu_white);
@@ -134,7 +133,6 @@ public class ChatActivity extends BaseChatActvity {
                 return false;
             }
         });
-        ((DefaultItemAnimator)recyclerChat.getItemAnimator()).setSupportsChangeAnimations(false);
 
         scrollHelper.attachToRecycleView(recyclerChat);
         loadChatInfor();

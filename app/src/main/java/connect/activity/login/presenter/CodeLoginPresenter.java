@@ -61,7 +61,7 @@ public class CodeLoginPresenter implements CodeLoginContract.Presenter{
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
-                String priKey = DecryptionUtil.decodeTalkKey(talkKey, passWord);
+                String priKey = SupportKeyUril.decodeTalkKey(talkKey, passWord);
                 return priKey;
             }
 
