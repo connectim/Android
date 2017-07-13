@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class BitmapUtilTest {
 
+    private String Tag = "_BitmapUtilTest";
+
     @Test
     public void compressTest() throws Exception {
         String path = "/mnt/sdcard/Ui.jpg";
@@ -25,9 +27,8 @@ public class BitmapUtilTest {
 
     @Test
     public void getImageSizeTest() throws Exception {
-//        String path = "/mnt/sdcard/Ui.jpg";
-//        int[] size = BitmapUtil.getInstance().getImageSize(path);
-//        assertTrue(size[0] > 0 && size[1] > 0);
+        String path = "/mnt/sdcard/Ui.jpg";
+        int[] size = BitmapUtil.getInstance().getImageSize(path);
+        assertTrue(size[0] > 0 && size[1] > 0);
     }
-
 }

@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class RegularUtilTest {
 
-    private String Tag="RegularUtilTest";
+    private String Tag = "_RegularUtilTest";
 
     private RegularUtil regularUtil;
 

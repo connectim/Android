@@ -12,8 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.security.SecureRandom;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -33,10 +31,7 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.StringUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.log.LogManager;
-import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 
