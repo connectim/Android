@@ -13,11 +13,11 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.wallet.bean.CurrencyBean;
+import connect.activity.base.BaseActivity;
+import connect.activity.wallet.adapter.TransactionAdapter;
+import connect.activity.wallet.manager.CurrencyType;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
-import connect.activity.wallet.adapter.TransactionAdapter;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
@@ -77,7 +77,7 @@ public class TransactionActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Connect.Transaction transaction  = (Connect.Transaction)parent.getAdapter().getItem(position);
-                BlockchainActivity.startActivity(mActivity, CurrencyBean.BTC,transaction.getHash());
+                BlockchainActivity.startActivity(mActivity, CurrencyType.BTC,transaction.getHash());
             }
         });
         requsetTransaction();

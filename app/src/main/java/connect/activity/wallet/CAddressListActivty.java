@@ -13,7 +13,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.wallet.adapter.CAddressAdapter;
-import connect.activity.wallet.bean.CurrencyBean;
+import connect.activity.wallet.manager.CurrencyType;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.ui.activity.R;
@@ -31,6 +31,7 @@ public class CAddressListActivty extends BaseActivity {
     RecyclerView recyclerview;
 
     private CAddressListActivty activity;
+    private CurrencyType currencyBean;
     private List<CurrencyAddressEntity> currencyAddressEntities = new ArrayList<>();
 
     @Override
@@ -40,7 +41,7 @@ public class CAddressListActivty extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    public static void startActivity(Activity activity, CurrencyBean bean) {
+    public static void startActivity(Activity activity, CurrencyType bean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("Currency", bean);
         ActivityUtil.next(activity, CAddressListActivty.class, bundle);
@@ -59,7 +60,8 @@ public class CAddressListActivty extends BaseActivity {
             }
         });
 
-        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress("BTC");
+        currencyBean = (CurrencyType) getIntent().getSerializableExtra("Currency");
+        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(currencyBean.getName());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         CAddressAdapter cAddressAdapter = new CAddressAdapter(activity, currencyAddressEntities);
         recyclerview.setLayoutManager(linearLayoutManager);

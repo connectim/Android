@@ -8,7 +8,7 @@ import connect.database.SharePreferenceUser;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
 import connect.utils.ToastUtil;
-import connect.wallet.jni.AllNativeMethod;
+import connect.utils.cryption.SupportKeyUril;
 
 /**
  * Created by Administrator on 2017/7/11 0011.

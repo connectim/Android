@@ -18,8 +18,8 @@ import connect.activity.base.BaseActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.contract.BackUpContract;
 import connect.activity.set.presenter.BackUpPresenter;
-import connect.activity.wallet.bean.CurrencyBean;
 import connect.activity.wallet.bean.WalletBean;
+import connect.activity.wallet.manager.CurrencyType;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
@@ -48,7 +48,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
     private UserBean userBean;
     private Bitmap bitmap;
 
-    private CurrencyBean currencyBean;
+    private CurrencyType currencyBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         initView();
     }
 
-    public static void startActivity(Activity activity, CurrencyBean currencyBean) {
+    public static void startActivity(Activity activity, CurrencyType currencyBean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("Currency", currencyBean);
         ActivityUtil.next(activity, BackUpCurrencyActivity.class, bundle);
@@ -73,7 +73,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         toolbarTop.setRightImg(R.mipmap.menu_white);
         userBean = SharedPreferenceUtil.getInstance().getUser();
 
-        currencyBean= (CurrencyBean) getIntent().getSerializableExtra("Currency");
+        currencyBean= (CurrencyType) getIntent().getSerializableExtra("Currency");
         new BackUpPresenter(this).start();
         switchPriKey(1);
     }
@@ -146,12 +146,12 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         }
     }
 
-    public String currencyName(CurrencyBean bean) {
+    public String currencyName(CurrencyType bean) {
         String name = "";
         switch (bean) {
             case BTC:
                 name = "BTC";
-                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(name);
+                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(0);
                 if (currencyEntity == null) {
                     break;
                 }

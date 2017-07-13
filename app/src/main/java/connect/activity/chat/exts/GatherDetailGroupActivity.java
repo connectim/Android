@@ -20,30 +20,30 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.wallet.bean.CurrencyBean;
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.DaoHelper.TransactionHelper;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
+import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.wallet.BlockchainActivity;
 import connect.activity.wallet.bean.WalletAccountBean;
-import connect.utils.ProtoBufUtil;
-import connect.utils.transfer.TransferError;
-import connect.utils.transfer.TransferUtil;
-import connect.activity.base.BaseActivity;
-import connect.activity.base.BaseApplication;
+import connect.activity.wallet.manager.CurrencyType;
+import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.DaoHelper.TransactionHelper;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ToastEUtil;
-import connect.utils.data.RateFormatUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.TimeUtil;
+import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.transfer.TransferError;
+import connect.utils.transfer.TransferUtil;
 import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
@@ -125,7 +125,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Connect.CrowdfundingRecord record = (Connect.CrowdfundingRecord) parent.getItemAtPosition(position);
                 if (record != null) {
-                    BlockchainActivity.startActivity(activity, CurrencyBean.BTC,record.getTxid());
+                    BlockchainActivity.startActivity(activity, CurrencyType.BTC,record.getTxid());
                 }
             }
         });

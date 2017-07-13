@@ -15,12 +15,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.set.manager.EditInputFilterPrice;
-import connect.activity.wallet.bean.CurrencyBean;
+import connect.activity.wallet.manager.CurrencyType;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -59,7 +60,7 @@ public class RequestActivity extends BaseActivity {
     public String scanHead;
     public String shareUrl = ConfigUtil.getInstance().sharePayAddress() + "?address=";
 
-    private CurrencyBean currencyBean = CurrencyBean.BTC;
+    private CurrencyType currencyBean = CurrencyType.BTC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,7 +164,7 @@ public class RequestActivity extends BaseActivity {
         }
     };
 
-    public String transferHeader(CurrencyBean bean) {
+    public String transferHeader(CurrencyType bean) {
         String index = "bitcoin:";
         switch (bean) {
             case BTC:
