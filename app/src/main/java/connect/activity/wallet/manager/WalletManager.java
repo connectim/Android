@@ -2,12 +2,9 @@ package connect.activity.wallet.manager;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.webkit.URLUtil;
 
 import com.google.protobuf.ByteString;
 
-import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.wallet.bean.WalletBean;
@@ -24,12 +21,11 @@ import connect.utils.cryption.EncoPinBean;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.jni.AllNativeMethod;
 import connect.widget.random.RandomVoiceActivity;
 import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
-import static connect.activity.wallet.manager.CurrencyType.*;
+import static connect.activity.wallet.manager.CurrencyType.BTC;
 
 /**
  * Created by Administrator on 2017/7/11 0011.
@@ -46,7 +42,7 @@ public class WalletManager {
 
     public void checkAccount(OnWalletListener onWalletListener){
         this.onWalletListener = onWalletListener;
-        WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
+        final WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
         if(walletBean == null){
             // 用户没有钱包数据
             requestWalletBase();
@@ -55,22 +51,37 @@ public class WalletManager {
             List<CurrencyEntity> list = CurrencyHelper.getInstance().loadCurrencyList();
             if(list == null || list.size() == 0){
                 // 用户已经创建过钱包到时没有创建币种
-                new PinManager().showCheckPin(mActivity, walletBean.getPayload(), new PinManager.OnPinListener() {
-                    @Override
-                    public void success(String value) {
-                        new CurrencyManage().createCurrencyBaseSeed(value, CurrencyType.BTC, new CurrencyManage.OnCreateCurrencyListener() {
+                DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
+                        "你还没有为钱包创建币种",
+                        "", "立即创建", true, new DialogUtil.OnItemClickListener() {
                             @Override
-                            public void success(CurrencyEntity currencyEntity) {
+                            public void confirm(String value) {
+
+                                new PinManager().showCheckPin(mActivity, walletBean.getPayload(), new PinManager.OnPinListener() {
+                                    @Override
+                                    public void success(String value) {
+                                        CurrencyManage currencyManage = new CurrencyManage();
+                                        currencyManage.createCurrencyBaseSeed(value, CurrencyManage.CURRENCY_DEFAULT, new CurrencyManage.OnCreateCurrencyListener() {
+                                            @Override
+                                            public void success(CurrencyEntity currencyEntity) {
+
+                                            }
+
+                                            @Override
+                                            public void fail(String message) {
+
+                                            }
+                                        });
+                                    }
+                                });
 
                             }
 
                             @Override
-                            public void fail(String message) {
+                            public void cancel() {
 
                             }
                         });
-                    }
-                });
 
             }
         }
@@ -93,21 +104,15 @@ public class WalletManager {
                             collectSeed();
                             break;
                         case 2:
-                            // 用户有钱包数据，保存到本地
                             WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
-                            WalletBean walletBean = new WalletBean();
-                            walletBean.setPayload(wallet.getPayLoad());
-                            walletBean.setN(wallet.getPbkdf2Iterations());
-                            walletBean.setVersion(wallet.getVersion());
-                            walletBean.setWid(wallet.getUuid());
-                            walletBean.setStatus(respSyncWallet.getStatus());
+                            WalletBean walletBean = new WalletBean(wallet.getPayLoad(),wallet.getSalt(),wallet.getPbkdf2Iterations(),
+                                    wallet.getVersion(),wallet.getUuid(),respSyncWallet.getStatus());
                             //保存钱包账户信息
                             SharePreferenceUser.getInstance().putWalletInfo(walletBean);
 
                             WalletOuterClass.Coins coins = respSyncWallet.getCoins();
-                            List<WalletOuterClass.Coin> list = coins.getCoinsList();
                             //保存货币信息
-                            CurrencyHelper.getInstance().insertCurrencyListCoin(list);
+                            CurrencyHelper.getInstance().insertCurrencyListCoin(coins.getCoinsList());
                             onWalletListener.complete();
                             break;
                         case 3:

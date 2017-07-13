@@ -78,6 +78,12 @@ public class CurrencyManage {
         createCurrency("", salt, currencyType, WALLET_CATEGORY_BASE, address,onCurrencyListener);
     }
 
+    /**
+     * 不同币种生成不同的地址
+     * @param currencyType
+     * @param currencySeend
+     * @return
+     */
     private String cdMasterAddress(CurrencyType currencyType,String currencySeend){
         // 不同币种生成不同的地址
         String address = "";
@@ -102,6 +108,8 @@ public class CurrencyManage {
         builder.setSalt(salt);
         builder.setCurrency(currencyType.getCode());
         builder.setCategory(category);
+        builder.setPayload(payload);
+        builder.setMasterAddress(masterAddress);
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_CREATE, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {

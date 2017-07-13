@@ -12,6 +12,18 @@ public class WalletBean {
     private String wid;
     private int status;
 
+    public WalletBean() {
+    }
+
+    public WalletBean(String payload, String salt, int n, int version, String wid, int status) {
+        this.payload = payload;
+        this.salt = salt;
+        this.n = n;
+        this.version = version;
+        this.wid = wid;
+        this.status = status;
+    }
+
     public String getPayload() {
         return payload;
     }

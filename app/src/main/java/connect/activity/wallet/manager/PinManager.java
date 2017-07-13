@@ -2,11 +2,13 @@ package connect.activity.wallet.manager;
 
 import android.app.Activity;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.SharePreferenceUser;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
+import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.wallet.jni.AllNativeMethod;
@@ -21,7 +23,13 @@ public class PinManager {
     private Activity mActivity;
     private OnPinListener onPinListener;
 
-    public void showCheckPin(Activity mActivity, final String payload, final OnPinListener onPinListener){
+    /**
+     * 检查支付密码
+     * @param mActivity
+     * @param payload
+     * @param onPinListener
+     */
+    public void showCheckPin(final Activity mActivity, final String payload, final OnPinListener onPinListener){
         DialogUtil.showPayEditView(mActivity, R.string.Set_Enter_Login_Password, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener(){
             @Override
             public void confirm(String value) {
@@ -39,6 +47,11 @@ public class PinManager {
         });
     }
 
+    /**
+     * 重新设置支付密码
+     * @param mActivity
+     * @param onPinListener
+     */
     public void showSetNewPin(Activity mActivity, final OnPinListener onPinListener){
         this.mActivity = mActivity;
         this.onPinListener = onPinListener;

@@ -12,11 +12,14 @@ import android.widget.EditText;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.wallet.manager.CurrencyType;
+import connect.activity.wallet.manager.TransferManager;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -39,6 +42,7 @@ import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
+import connect.widget.payment.PinTransferDialog;
 import protos.Connect;
 
 /**
@@ -58,8 +62,7 @@ public class TransferAddressActivity extends BaseActivity {
 
     private TransferAddressActivity mActivity;
     private final int BOOK_CODE = 100;
-    private TransferUtil transaUtil;
-    private PaymentPwd paymentPwd;
+    private TransferManager transferManager;
 
     public static void startActivity(Activity activity, String address) {
         startActivity(activity,address,null);
@@ -104,8 +107,8 @@ public class TransferAddressActivity extends BaseActivity {
         addressTv.setText(bundle.getString("address",""));
         addressTv.addTextChangedListener(textWatcher);
         transferEditView.setEditListener(onEditListener);
-        transaUtil = new TransferUtil();
-        paymentPwd = new PaymentPwd();
+
+        transferManager = new TransferManager();
     }
 
     @OnClick(R.id.left_img)
@@ -125,7 +128,16 @@ public class TransferAddressActivity extends BaseActivity {
             ToastEUtil.makeText(mActivity,R.string.Wallet_Result_is_not_a_bitcoin_address,ToastEUtil.TOAST_STATUS_FAILE).show();
             return;
         }
+        final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
+        transferManager.getTranferRow(mActivity, new ArrayList<String>(), new ArrayList<Integer>(),
+                new ArrayList<String>(), CurrencyType.BTC, new TransferManager.OnResultCall() {
+                    @Override
+                    public void result(String value) {
 
+                    }
+                });
+
+        /*
         final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
         transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), false, address,
                 transferEditView.getAvaAmount(),amount,new TransferUtil.OnResultCall(){
@@ -133,7 +145,7 @@ public class TransferAddressActivity extends BaseActivity {
             public void result(String inputString, String outputString) {
                 checkPayPassword(amount, inputString, outputString);
             }
-        });
+        });*/
     }
 
     @Override
@@ -144,8 +156,8 @@ public class TransferAddressActivity extends BaseActivity {
         }
     }
 
-    private void checkPayPassword(final long amount, final String inputString, final String outputString) {
-        paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
+    /*private void checkPayPassword(final long amount, final String inputString, final String outputString) {
+        pinTransferDialog.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String value) {
                 String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
@@ -178,7 +190,7 @@ public class TransferAddressActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
                 TransferError.getInstance().showError(response.getCode(),response.getMessage());
             }
         });
@@ -192,7 +204,7 @@ public class TransferAddressActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_BILLING_PUBLISH_TX, publishTx, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
+                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
                     @Override
                     public void onComplete() {
                         List<Activity> list = BaseApplication.getInstance().getActivityList();
@@ -208,10 +220,10 @@ public class TransferAddressActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
             }
         });
-    }
+    }*/
 
     private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
         @Override

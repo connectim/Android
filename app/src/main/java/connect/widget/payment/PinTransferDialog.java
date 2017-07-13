@@ -52,12 +52,14 @@ public class PinTransferDialog implements View.OnClickListener{
     private int currentIndex;
     private PayEditView payEdit;
     private Handler handler;
+    private String payload;
 
     /**
      * show pay the password box
      */
-    public Dialog showPaymentPwd(Activity activity, final PaymentPwd.OnTrueListener onTrueListener) {
+    public Dialog showPaymentPwd(Activity activity, String payload, final PaymentPwd.OnTrueListener onTrueListener) {
         this.activity = activity;
+        this.payload = payload;
         paySetBean = ParamManager.getInstance().getPaySet();
 
         this.onTrueListener = onTrueListener;
@@ -154,9 +156,7 @@ public class PinTransferDialog implements View.OnClickListener{
         @Override
         public void inputComplete(String pass) {
             statusChange(3);
-            WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-            // 解密支付密码
-            String decodeStr = SupportKeyUril.decodePri(walletBean.getPayload(),walletBean.getSalt(),pass);
+            String decodeStr = SupportKeyUril.decodePin(payload,pass);
             if(TextUtils.isEmpty(decodeStr)){
                 viewPager.setCurrentItem(1);
             }else{
