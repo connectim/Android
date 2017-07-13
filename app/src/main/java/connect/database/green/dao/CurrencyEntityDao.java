@@ -25,7 +25,7 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
      */
     public static class Properties {
         public final static Property _id = new Property(0, Long.class, "_id", true, "_id");
-        public final static Property Currency = new Property(1, String.class, "currency", false, "CURRENCY");
+        public final static Property Currency = new Property(1, Integer.class, "currency", false, "CURRENCY");
         public final static Property Category = new Property(2, Integer.class, "category", false, "CATEGORY");
         public final static Property Salt = new Property(3, String.class, "salt", false, "SALT");
         public final static Property MasterAddress = new Property(4, String.class, "masterAddress", false, "MASTER_ADDRESS");
@@ -48,7 +48,7 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CURRENCY_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
-                "\"CURRENCY\" TEXT NOT NULL UNIQUE ," + // 1: currency
+                "\"CURRENCY\" INTEGER NOT NULL UNIQUE ," + // 1: currency
                 "\"CATEGORY\" INTEGER," + // 2: category
                 "\"SALT\" TEXT NOT NULL UNIQUE ," + // 3: salt
                 "\"MASTER_ADDRESS\" TEXT," + // 4: masterAddress
@@ -71,7 +71,7 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getCurrency());
+        stmt.bindLong(2, entity.getCurrency());
  
         Integer category = entity.getCategory();
         if (category != null) {
@@ -108,7 +108,7 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getCurrency());
+        stmt.bindLong(2, entity.getCurrency());
  
         Integer category = entity.getCategory();
         if (category != null) {
@@ -146,7 +146,7 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
     public CurrencyEntity readEntity(Cursor cursor, int offset) {
         CurrencyEntity entity = new CurrencyEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
-            cursor.getString(offset + 1), // currency
+            cursor.getInt(offset + 1), // currency
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // category
             cursor.getString(offset + 3), // salt
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // masterAddress
@@ -160,7 +160,7 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
     @Override
     public void readEntity(Cursor cursor, CurrencyEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setCurrency(cursor.getString(offset + 1));
+        entity.setCurrency(cursor.getInt(offset + 1));
         entity.setCategory(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setSalt(cursor.getString(offset + 3));
         entity.setMasterAddress(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));

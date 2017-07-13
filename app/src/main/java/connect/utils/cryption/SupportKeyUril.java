@@ -32,6 +32,8 @@ public class SupportKeyUril {
 
     /** Key number expansion */
     public static final int CRYPTION_N = 17;
+    /** Pin Version */
+    public static final int PIN_VERSION = 1;
     /** hmac transform default salt */
     public static String HmacSalt = "49f41477fa1bfc3b4792d5233b6a659f4b";
     public static final int CRYPTION_TALKKEY_VER = 1;
@@ -200,21 +202,29 @@ public class SupportKeyUril {
         return null;
     }
 
+
+
     /**
      * 加密支付密码
      */
-    private static String encoPin(String value, String salt, String pass,int n){
-        byte[] passByte = pass.getBytes();
-        byte[] saltByte = salt.getBytes();
-        byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, 12, 32);
-        String priKey_16 = AllNativeMethod.cdgetRawPrivateKey(value);
-        String encoStr = "";
-        try {
-            encoStr = AllNativeMethod.cdxTalkKeyEncrypt("aaaa", priKey_16, new String(pbkdf,"UTF-8"), CRYPTION_N, CRYPTION_TALKKEY_VER);
-        }catch (Exception e){
+    public static EncoPinBean encoPinDefult(String value, String pass){
+        return encoPin(value,pass,CRYPTION_N);
+    }
 
-        }
-        return encoStr;
+    public static EncoPinBean encoPin(String value, String pass,int n){
+        EncoPinBean encoPinBean = new EncoPinBean();
+        String payload = AllNativeMethod.connectWalletKeyEncrypt(value,pass,n,PIN_VERSION);
+        encoPinBean.setPayload(payload);
+        encoPinBean.setVersion(PIN_VERSION);
+        encoPinBean.setN(n);
+        return encoPinBean;
+    }
+
+    /**
+     * 解密支付密码
+     */
+    public static String decodePin(String value, String pass){
+        return AllNativeMethod.connectWalletKeyDecrypt(value,pass,PIN_VERSION);
     }
 
     /**

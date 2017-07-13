@@ -28,6 +28,8 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.LoginPassCheckUtil;
 import connect.utils.ProtoBufUtil;
+import connect.utils.cryption.EncoPinBean;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
@@ -148,14 +150,11 @@ public class PaymentActivity extends BaseActivity {
             @Override
             public void success(String pass) {
                 WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
-                String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-                String payload = SupportKeyUril.encodePri(value,salt,pass);
-                walletBean.setPayload(payload);
-                walletBean.setN(17);
-                walletBean.setSalt(salt);
-
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(value,pass);
+                walletBean.setPayload(encoPinBean.getPayload());
+                walletBean.setN(encoPinBean.getN());
                 WalletManager walletManager = new WalletManager(mActivity);
-                walletManager.requestWalletInfo(walletBean, new WalletManager.OnWalletListener() {
+                walletManager.updataWalletInfo(walletBean, new WalletManager.OnWalletListener() {
                     @Override
                     public void complete() {
 

@@ -10,7 +10,7 @@ public class WalletBean {
     private int n;
     private int version;
     private String wid;
-    private String status;
+    private int status;
 
     public String getPayload() {
         return payload;
@@ -52,11 +52,11 @@ public class WalletBean {
         this.wid = wid;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 }
