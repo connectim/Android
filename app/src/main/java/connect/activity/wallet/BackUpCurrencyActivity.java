@@ -150,12 +150,12 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         String name = "";
         switch (bean) {
             case BTC:
-                name = "BTC";
+                /*name = "BTC";
                 CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(name);
                 if (currencyEntity == null) {
                     break;
                 }
-                name = name + ":" + currencyEntity.getCurrency();
+                name = name + ":" + currencyEntity.getCurrency();*/
                 break;
         }
         return name;

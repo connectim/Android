@@ -55,7 +55,7 @@ public class WalletManager {
             List<CurrencyEntity> list = CurrencyHelper.getInstance().loadCurrencyList();
             if(list == null || list.size() == 0){
                 // 用户已经创建过钱包到时没有创建币种
-                new PinManager().showCheckPin(mActivity, new PinManager.OnPinListener() {
+                new PinManager().showCheckPin(mActivity, walletBean.getPayload(), new PinManager.OnPinListener() {
                     @Override
                     public void success(String value) {
                         new CurrencyManage().createCurrencyBaseSeed(value, CurrencyType.BTC, new CurrencyManage.OnCreateCurrencyListener() {
@@ -76,17 +76,9 @@ public class WalletManager {
         }
     }
 
-    /*###### 同步钱包账户
-    - uri: /wallet/v1/sync
-    - method: post
-    - response
-        * payload
-        * salt
-        * n
-        * version
-        * wid
-        * currencyArray(币种信息)
-        * status(同步状态)*/
+    /**
+     * 同步钱包账户
+     */
     private void requestWalletBase(){
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SYNC, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
             @Override
@@ -129,7 +121,10 @@ public class WalletManager {
                                     new CurrencyManage.OnCreateCurrencyListener() {
                                         @Override
                                         public void success(CurrencyEntity currencyEntity) {
-
+                                            WalletBean walletBean = new WalletBean();
+                                            walletBean.setStatus(3);
+                                            SharePreferenceUser.getInstance().putWalletInfo(walletBean);
+                                            onWalletListener.complete();
                                         }
 
                                         @Override
@@ -148,7 +143,7 @@ public class WalletManager {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                onWalletListener.fail(response.getMessage());
             }
         });
     }
@@ -192,7 +187,7 @@ public class WalletManager {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 WalletBean walletBean = new WalletBean();
-                walletBean.setN(17);
+                walletBean.setN(encoPinBean.getN());
                 walletBean.setPayload(encoPinBean.getPayload());
                 walletBean.setSalt(seed);
                 walletBean.setVersion(1);
@@ -211,7 +206,7 @@ public class WalletManager {
             }
             @Override
             public void onError(Connect.HttpResponse response) {
-                int a = 1;
+                onWalletListener.fail(response.getMessage());
             }
         });
     }
@@ -219,12 +214,12 @@ public class WalletManager {
     /**
      * 更新钱包账户信息
      */
-    public void updataWalletInfo(final WalletBean walletBean, final OnWalletListener onWalletListener){
+    public void updateWalletInfo(final WalletBean walletBean, final OnWalletListener onWalletListener){
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
         String check_sum = StringUtil.cdHash256(walletBean.getN() + "" + walletBean.getPayload());
         builder.setPayload(walletBean.getPayload());
         builder.setCheckSum(check_sum);
-        builder.setN(17);
+        builder.setN(walletBean.getN());
         builder.setSalt("");
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_UPDATA, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
@@ -235,7 +230,7 @@ public class WalletManager {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                onWalletListener.fail(response.getMessage());
             }
         });
 
@@ -243,6 +238,8 @@ public class WalletManager {
 
     public interface OnWalletListener {
         void complete();
+
+        void fail(String message);
     }
 
 }

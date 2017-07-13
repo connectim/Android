@@ -8,6 +8,7 @@ import connect.database.SharePreferenceUser;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
 import connect.utils.ToastUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.wallet.jni.AllNativeMethod;
 
 /**
@@ -20,12 +21,11 @@ public class PinManager {
     private Activity mActivity;
     private OnPinListener onPinListener;
 
-    public void showCheckPin(Activity mActivity, final OnPinListener onPinListener){
+    public void showCheckPin(Activity mActivity, final String payload, final OnPinListener onPinListener){
         DialogUtil.showPayEditView(mActivity, R.string.Set_Enter_Login_Password, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener(){
             @Override
             public void confirm(String value) {
-                WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-                String baseSeed = SupportKeyUril.decodePin(walletBean.getPayload(),value);
+                String baseSeed = SupportKeyUril.decodePin(payload,value);
                 if(TextUtils.isEmpty(baseSeed)){
                     ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
                 }else{

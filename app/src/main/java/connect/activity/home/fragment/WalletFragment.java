@@ -119,6 +119,11 @@ public class WalletFragment extends BaseFragment{
             public void complete() {
 
             }
+
+            @Override
+            public void fail(String message) {
+
+            }
         });
     }
 
