@@ -21,7 +21,7 @@ public class CurrencyEntity implements Serializable{
 
     @Unique
     @NotNull
-    private String currency;
+    private Integer currency;
     private Integer category;
     @Unique
     @NotNull
@@ -30,8 +30,8 @@ public class CurrencyEntity implements Serializable{
     private Integer status;
     private Long balance;
     private String payload;
-    @Generated(hash = 221734218)
-    public CurrencyEntity(Long _id, @NotNull String currency, Integer category,
+    @Generated(hash = 1572568548)
+    public CurrencyEntity(Long _id, @NotNull Integer currency, Integer category,
             @NotNull String salt, String masterAddress, Integer status,
             Long balance, String payload) {
         this._id = _id;
@@ -52,10 +52,10 @@ public class CurrencyEntity implements Serializable{
     public void set_id(Long _id) {
         this._id = _id;
     }
-    public String getCurrency() {
+    public Integer getCurrency() {
         return this.currency;
     }
-    public void setCurrency(String currency) {
+    public void setCurrency(Integer currency) {
         this.currency = currency;
     }
     public Integer getCategory() {
@@ -94,6 +94,4 @@ public class CurrencyEntity implements Serializable{
     public void setPayload(String payload) {
         this.payload = payload;
     }
-    
-
 }

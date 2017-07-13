@@ -119,6 +119,12 @@ public class UriUtil {
     public static String WALLET_V2_SYNC = "/wallet/v2/sync";
     /** 创建币种 */
     public static String WALLET_V2_COINS_CREATE = "/wallet/v2/coins/create";
+    /** 更新钱包信息 */
+    public static String WALLET_V2_UPDATA = "/wallet/v2/update";
+    /** 获取货币列表 */
+    public static String WALLET_V2_COINS_LIST = "/wallet/v2/coins/list";
+    /** 更新货币信息 */
+    public static String WALLET_V2_COINS_UPDATA = "/wallet/v2/coins/update";
 
 
     /**======================================================================================

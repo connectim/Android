@@ -3648,6 +3648,16 @@ public final class WalletOuterClass {
      */
     com.google.protobuf.ByteString
         getWIdBytes();
+
+    /**
+     * <code>optional string payload = 7;</code>
+     */
+    java.lang.String getPayload();
+    /**
+     * <code>optional string payload = 7;</code>
+     */
+    com.google.protobuf.ByteString
+        getPayloadBytes();
   }
   /**
    * Protobuf type {@code wallet_gateway.Coin}
@@ -3667,6 +3677,7 @@ public final class WalletOuterClass {
       salt_ = "";
       balance_ = 0L;
       wId_ = "";
+      payload_ = "";
     }
 
     @java.lang.Override
@@ -3724,6 +3735,12 @@ public final class WalletOuterClass {
               java.lang.String s = input.readStringRequireUtf8();
 
               wId_ = s;
+              break;
+            }
+            case 58: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              payload_ = s;
               break;
             }
           }
@@ -3853,6 +3870,40 @@ public final class WalletOuterClass {
       }
     }
 
+    public static final int PAYLOAD_FIELD_NUMBER = 7;
+    private volatile java.lang.Object payload_;
+    /**
+     * <code>optional string payload = 7;</code>
+     */
+    public java.lang.String getPayload() {
+      java.lang.Object ref = payload_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        payload_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string payload = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPayloadBytes() {
+      java.lang.Object ref = payload_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        payload_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -3883,6 +3934,9 @@ public final class WalletOuterClass {
       if (!getWIdBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 6, wId_);
       }
+      if (!getPayloadBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, payload_);
+      }
     }
 
     public int getSerializedSize() {
@@ -3912,6 +3966,9 @@ public final class WalletOuterClass {
       if (!getWIdBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, wId_);
       }
+      if (!getPayloadBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, payload_);
+      }
       memoizedSize = size;
       return size;
     }
@@ -3940,6 +3997,8 @@ public final class WalletOuterClass {
           == other.getBalance());
       result = result && getWId()
           .equals(other.getWId());
+      result = result && getPayload()
+          .equals(other.getPayload());
       return result;
     }
 
@@ -3963,6 +4022,8 @@ public final class WalletOuterClass {
           getBalance());
       hash = (37 * hash) + W_ID_FIELD_NUMBER;
       hash = (53 * hash) + getWId().hashCode();
+      hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
+      hash = (53 * hash) + getPayload().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4093,6 +4154,8 @@ public final class WalletOuterClass {
 
         wId_ = "";
 
+        payload_ = "";
+
         return this;
       }
 
@@ -4121,6 +4184,7 @@ public final class WalletOuterClass {
         result.salt_ = salt_;
         result.balance_ = balance_;
         result.wId_ = wId_;
+        result.payload_ = payload_;
         onBuilt();
         return result;
       }
@@ -4180,6 +4244,10 @@ public final class WalletOuterClass {
         }
         if (!other.getWId().isEmpty()) {
           wId_ = other.wId_;
+          onChanged();
+        }
+        if (!other.getPayload().isEmpty()) {
+          payload_ = other.payload_;
           onChanged();
         }
         onChanged();
@@ -4446,6 +4514,75 @@ public final class WalletOuterClass {
   checkByteStringIsUtf8(value);
         
         wId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object payload_ = "";
+      /**
+       * <code>optional string payload = 7;</code>
+       */
+      public java.lang.String getPayload() {
+        java.lang.Object ref = payload_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          payload_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string payload = 7;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPayloadBytes() {
+        java.lang.Object ref = payload_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          payload_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string payload = 7;</code>
+       */
+      public Builder setPayload(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        payload_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string payload = 7;</code>
+       */
+      public Builder clearPayload() {
+        
+        payload_ = getDefaultInstance().getPayload();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string payload = 7;</code>
+       */
+      public Builder setPayloadBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        payload_ = value;
         onChanged();
         return this;
       }
@@ -10479,25 +10616,25 @@ public final class WalletOuterClass {
       "(\0132\027.wallet_gateway.Unspent\"b\n\006Wallet\022\031\n" +
       "\021pbkdf2_iterations\030\001 \001(\005\022\017\n\007version\030\002 \001(" +
       "\005\022\014\n\004uuid\030\003 \001(\t\022\020\n\010pay_load\030\004 \001(\t\022\014\n\004sal",
-      "t\030\005 \001(\t\"g\n\004Coin\022\016\n\006status\030\001 \001(\005\022\020\n\010curre" +
+      "t\030\005 \001(\t\"x\n\004Coin\022\016\n\006status\030\001 \001(\005\022\020\n\010curre" +
       "ncy\030\002 \001(\005\022\020\n\010category\030\003 \001(\005\022\014\n\004salt\030\004 \001(" +
-      "\t\022\017\n\007balance\030\005 \001(\003\022\014\n\004w_id\030\006 \001(\t\",\n\005Coin" +
-      "s\022#\n\005Coins\030\001 \003(\0132\024.wallet_gateway.Coin\"^" +
-      "\n\013CoinsDetail\022\"\n\004coin\030\001 \001(\0132\024.wallet_gat" +
-      "eway.Coin\022+\n\tcoinInfos\030\002 \003(\0132\030.wallet_ga" +
-      "teway.CoinInfo\"Z\n\010CoinInfo\022\r\n\005index\030\001 \001(" +
-      "\005\022\016\n\006status\030\002 \001(\005\022\017\n\007address\030\003 \001(\t\022\r\n\005la" +
-      "bel\030\004 \001(\t\022\017\n\007balance\030\005 \001(\003\"n\n\016RespSyncWa" +
-      "llet\022&\n\006wallet\030\001 \001(\0132\026.wallet_gateway.Wa",
-      "llet\022\016\n\006status\030\002 \001(\005\022$\n\005Coins\030\003 \001(\0132\025.wa" +
-      "llet_gateway.Coins\"n\n\021RequestWalletInfo\022" +
-      "\021\n\tcheck_sum\030\001 \001(\t\022\017\n\007payload\030\002 \001(\t\022\014\n\004s" +
-      "alt\030\003 \001(\t\022\t\n\001n\030\004 \001(\005\022\013\n\003wid\030\005 \001(\t\022\017\n\007ver" +
-      "sion\030\006 \001(\005\"\036\n\017RequestUserInfo\022\013\n\003uid\030\001 \001" +
-      "(\t\"y\n\016CreateCoinArgs\022\020\n\010category\030\001 \001(\005\022\020" +
-      "\n\010currency\030\002 \001(\005\022\014\n\004salt\030\003 \001(\t\022\026\n\016master" +
-      "_address\030\004 \001(\t\022\017\n\007payload\030\005 \001(\t\022\014\n\004w_id\030" +
-      "\006 \001(\tb\006proto3"
+      "\t\022\017\n\007balance\030\005 \001(\003\022\014\n\004w_id\030\006 \001(\t\022\017\n\007payl" +
+      "oad\030\007 \001(\t\",\n\005Coins\022#\n\005Coins\030\001 \003(\0132\024.wall" +
+      "et_gateway.Coin\"^\n\013CoinsDetail\022\"\n\004coin\030\001" +
+      " \001(\0132\024.wallet_gateway.Coin\022+\n\tcoinInfos\030" +
+      "\002 \003(\0132\030.wallet_gateway.CoinInfo\"Z\n\010CoinI" +
+      "nfo\022\r\n\005index\030\001 \001(\005\022\016\n\006status\030\002 \001(\005\022\017\n\007ad" +
+      "dress\030\003 \001(\t\022\r\n\005label\030\004 \001(\t\022\017\n\007balance\030\005 " +
+      "\001(\003\"n\n\016RespSyncWallet\022&\n\006wallet\030\001 \001(\0132\026.",
+      "wallet_gateway.Wallet\022\016\n\006status\030\002 \001(\005\022$\n" +
+      "\005Coins\030\003 \001(\0132\025.wallet_gateway.Coins\"n\n\021R" +
+      "equestWalletInfo\022\021\n\tcheck_sum\030\001 \001(\t\022\017\n\007p" +
+      "ayload\030\002 \001(\t\022\014\n\004salt\030\003 \001(\t\022\t\n\001n\030\004 \001(\005\022\013\n" +
+      "\003wid\030\005 \001(\t\022\017\n\007version\030\006 \001(\005\"\036\n\017RequestUs" +
+      "erInfo\022\013\n\003uid\030\001 \001(\t\"y\n\016CreateCoinArgs\022\020\n" +
+      "\010category\030\001 \001(\005\022\020\n\010currency\030\002 \001(\005\022\014\n\004sal" +
+      "t\030\003 \001(\t\022\026\n\016master_address\030\004 \001(\t\022\017\n\007paylo" +
+      "ad\030\005 \001(\t\022\014\n\004w_id\030\006 \001(\tb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -10546,7 +10683,7 @@ public final class WalletOuterClass {
     internal_static_wallet_gateway_Coin_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_wallet_gateway_Coin_descriptor,
-        new java.lang.String[] { "Status", "Currency", "Category", "Salt", "Balance", "WId", });
+        new java.lang.String[] { "Status", "Currency", "Category", "Salt", "Balance", "WId", "Payload", });
     internal_static_wallet_gateway_Coins_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_wallet_gateway_Coins_fieldAccessorTable = new

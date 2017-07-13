@@ -26,7 +26,7 @@ public class PinManager {
             @Override
             public void confirm(String value) {
                 WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-                String baseSeed = AllNativeMethod.connectWalletKeyDecrypt(walletBean.getPayload(),value,17);
+                String baseSeed = SupportKeyUril.decodePin(walletBean.getPayload(),value);
                 if(TextUtils.isEmpty(baseSeed)){
                     ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
                 }else{

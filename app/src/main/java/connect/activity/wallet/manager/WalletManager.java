@@ -20,6 +20,7 @@ import connect.utils.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncoPinBean;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
@@ -54,11 +55,10 @@ public class WalletManager {
             // 用户已经拉取过钱包数据
             List<CurrencyEntity> list = CurrencyHelper.getInstance().loadCurrencyList();
             if(list == null || list.size() == 0){
-
+                // 用户已经创建过钱包到时没有创建币种
                 new PinManager().showCheckPin(mActivity, new PinManager.OnPinListener() {
                     @Override
                     public void success(String value) {
-
                         new CurrencyManage().createCurrencyBaseSeed(value, CurrencyType.BTC, new CurrencyManage.OnCreateCurrencyListener() {
                             @Override
                             public void success(CurrencyEntity currencyEntity) {
@@ -70,7 +70,6 @@ public class WalletManager {
 
                             }
                         });
-
                     }
                 });
 
@@ -90,8 +89,6 @@ public class WalletManager {
         * currencyArray(币种信息)
         * status(同步状态)*/
     private void requestWalletBase(){
-        // 测试新用户流程
-
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SYNC, ByteString.copyFrom(new byte[]{}),
                 new ResultCall<Connect.HttpResponse>() {
             @Override
@@ -107,49 +104,41 @@ public class WalletManager {
                             break;
                         case 2:
                             // 用户有钱包数据，保存到本地
-                            SharePreferenceUser.getInstance().putWalletInfo(new WalletBean());
-                            CurrencyHelper.getInstance().insertCurrencyList(new ArrayList<CurrencyEntity>());
+                            WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
+                            WalletBean walletBean = new WalletBean();
+                            walletBean.setPayload(wallet.getPayLoad());
+                            walletBean.setN(wallet.getPbkdf2Iterations());
+                            walletBean.setVersion(wallet.getVersion());
+                            walletBean.setWid(wallet.getUuid());
+                            walletBean.setStatus(respSyncWallet.getStatus());
+                            //保存钱包账户信息
+                            SharePreferenceUser.getInstance().putWalletInfo(walletBean);
+
+                            WalletOuterClass.Coins coins = respSyncWallet.getCoins();
+                            List<WalletOuterClass.Coin> list = coins.getCoinsList();
+                            //保存货币信息
+                            CurrencyHelper.getInstance().insertCurrencyListCoin(list);
                             onWalletListener.complete();
                             break;
                         case 3:
                             // 用户为老用户需要迁移
-                            new PinManager().showSetNewPin(mActivity, new PinManager.OnPinListener() {
-                                @Override
-                                public void success(final String pass) {
-                                    String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-                                    String payload = SupportKeyUril.encodePri(MemoryDataManager.getInstance().getPriKey(),salt,pass);
-
-                                    WalletBean walletBean = new WalletBean();
-                                    walletBean.setPayload(payload);
-                                    walletBean.setN(17);
-                                    walletBean.setSalt(salt);
-                                    walletBean.setVersion(0);
-                                    //createWallet(walletBean);
-                                }
-                            });
-
                             CurrencyManage currencyManage = new CurrencyManage();
-                        /*currencyManage.createCurrencyPri(MemoryDataManager.getInstance().getAddress(),
-                                CurrencyType.BTC, new CurrencyManage.OnCreateCurrencyListener() {
-                                    @Override
-                                    public void success(CurrencyEntity currencyEntity) {
-                                        String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-                                        String payload = SupportKeyUril.encodePri(MemoryDataManager.getInstance().getPriKey(),salt,pass);
+                            currencyManage.createCurrencyPin(mActivity,
+                                    MemoryDataManager.getInstance().getPriKey(),
+                                    MemoryDataManager.getInstance().getAddress(),
+                                    CurrencyManage.CURRENCY_DEFAULT,
+                                    CurrencyManage.WALLET_CATEGORY_PRI,
+                                    new CurrencyManage.OnCreateCurrencyListener(){
+                                        @Override
+                                        public void success(CurrencyEntity currencyEntity) {
 
-                                        WalletBean walletBean = new WalletBean();
-                                        walletBean.setPayload(payload);
-                                        walletBean.setN(17);
-                                        walletBean.setSalt(salt);
-                                        walletBean.setVersion(0);
-                                        createWallet(walletBean);
-                                        onWalletListener.complete();
-                                    }
+                                        }
 
-                                    @Override
-                                    public void fail(String message) {
+                                        @Override
+                                        public void fail(String message) {
 
-                                    }
-                                });*/
+                                        }
+                                    });
                             break;
                         default:
                             break;
@@ -187,39 +176,25 @@ public class WalletManager {
                 });
     }
 
-    /*###### 创建钱包账户
-    - uri: /wallet/v1/base
-    - method: post
-    - args:
-        * checksum
-        * payload
-        * salt
-        * n
-    - response
-        * wid*/
     /**
-     *
-     * @param seed
-     * @param type 1:种子，2:纯私钥
+     * 创建钱包账户
      */
     public void createWallet(final String seed, String pin, final CurrencyType type){
-
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
-        int n = 17;
-        final String payload = AllNativeMethod.connectWalletKeyEncrypt(seed,pin,n,1);
-        String check_sum = StringUtil.cdHash256(n + "" + payload);
-        builder.setPayload(payload);
+        final EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(seed,pin);
+        String check_sum = StringUtil.cdHash256(encoPinBean.getN() + "" + encoPinBean.getPayload());
+        builder.setPayload(encoPinBean.getPayload());
         builder.setCheckSum(check_sum);
-        builder.setN(17);
+        builder.setN(encoPinBean.getN());
         builder.setSalt("");
-
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_CREATE,builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 WalletBean walletBean = new WalletBean();
                 walletBean.setN(17);
-                walletBean.setPayload(payload);
+                walletBean.setPayload(encoPinBean.getPayload());
+                walletBean.setSalt(seed);
                 walletBean.setVersion(1);
                 SharePreferenceUser.getInstance().putWalletInfo(walletBean);
                 new CurrencyManage().createCurrencyBaseSeed(seed, type, new CurrencyManage.OnCreateCurrencyListener() {
@@ -233,74 +208,33 @@ public class WalletManager {
 
                     }
                 });
-
             }
-
             @Override
             public void onError(Connect.HttpResponse response) {
                 int a = 1;
             }
         });
-
-        /*WalletBean walletBean;
-        String baseSalt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-        int n = 17;
-        String encoBaseSalt = SupportKeyUril.encodePri(seed,baseSalt,pin);
-        walletBean = new WalletBean();
-        walletBean.setSalt(baseSalt);
-        walletBean.setN(n);
-        walletBean.setPayload(encoBaseSalt);
-        walletBean.setVersion(0);*/
-
-
-
-        //
-
-        //WalletOuterClass.RequestWalletInfo
-        //OkHttpUtil.getInstance().postEncrySelf();
-
-
-       /* WalletBean walletBean;
-        switch (type){
-            case 1:
-                String baseSalt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-                int n = 17;
-                String encoBaseSalt = SupportKeyUril.encodePri(seed,baseSalt,pin);
-                walletBean = new WalletBean();
-                walletBean.setSalt(baseSalt);
-                walletBean.setN(n);
-                walletBean.setPayload(encoBaseSalt);
-                walletBean.setVersion(0);
-                break;
-            case 2:
-                break;
-            default:
-                break;
-        }*/
-
-
     }
 
-    /*###### 更新钱包账户信息
-    - uri: /wallet/v1/update
-    - method: post
-    - args
-        * checksum
-        * payload
-        * salt
-        * n
-    - response
-        * version*/
-    public void requestWalletInfo(WalletBean walletBean, final OnWalletListener onWalletListener){
-        OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
+    /**
+     * 更新钱包账户信息
+     */
+    public void updataWalletInfo(final WalletBean walletBean, final OnWalletListener onWalletListener){
+        WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
+        String check_sum = StringUtil.cdHash256(walletBean.getN() + "" + walletBean.getPayload());
+        builder.setPayload(walletBean.getPayload());
+        builder.setCheckSum(check_sum);
+        builder.setN(17);
+        builder.setSalt("");
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_UPDATA, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
-            public void onResponse(Object response) {
-                SharePreferenceUser.getInstance().putWalletInfo(new WalletBean());
+            public void onResponse(Connect.HttpResponse response) {
+                SharePreferenceUser.getInstance().putWalletInfo(walletBean);
                 onWalletListener.complete();
             }
 
             @Override
-            public void onError(Object response) {
+            public void onError(Connect.HttpResponse response) {
 
             }
         });

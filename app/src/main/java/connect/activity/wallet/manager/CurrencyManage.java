@@ -17,6 +17,7 @@ import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyEntity;
 import connect.utils.StringUtil;
 import connect.utils.UriUtil;
+import connect.utils.cryption.EncoPinBean;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -30,6 +31,12 @@ import wallet_gateway.WalletOuterClass;
  */
 
 public class CurrencyManage {
+
+    public static CurrencyType CURRENCY_DEFAULT = CurrencyType.BTC;
+    //(1:纯私钥，2:baseseed，3:salt+seed)
+    public static final int WALLET_CATEGORY_PRI = 1;
+    public static final int WALLET_CATEGORY_BASE = 2;
+    public static final int WALLET_CATEGORY_SEED = 3;
 
     /**
      * 需要密码加密上传payLoad
@@ -45,8 +52,8 @@ public class CurrencyManage {
         new PinManager().showSetNewPin(activity, new PinManager.OnPinListener() {
             @Override
             public void success(final String pass) {
-                String payLoad = AllNativeMethod.connectWalletKeyEncrypt(value,pass,17,0);
-                createCurrency(payLoad,"",currencyType,category,address,onCurrencyListener);
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(value,pass);
+                createCurrency(encoPinBean.getPayload(),"",currencyType,category,address,onCurrencyListener);
             }
         });
     }
@@ -75,7 +82,7 @@ public class CurrencyManage {
         String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
         String currencySeend = SupportKeyUril.xor(baseSeed, salt, 64);
         String address = cdMasterAddress(currencyType,currencySeend);
-        createCurrency("", salt, currencyType, 2, address,onCurrencyListener);
+        createCurrency("", salt, currencyType, WALLET_CATEGORY_BASE, address,onCurrencyListener);
     }
 
     private String cdMasterAddress(CurrencyType currencyType,String currencySeend){
@@ -137,7 +144,7 @@ public class CurrencyManage {
                 CurrencyEntity currencyEntity = new CurrencyEntity();
                 currencyEntity.setSalt(salt);
                 currencyEntity.setBalance(0L);
-                currencyEntity.setCurrency(currencyType.getName());
+                currencyEntity.setCurrency(currencyType.getCode());
                 currencyEntity.setCategory(category);
                 CurrencyHelper.getInstance().insertCurrency(currencyEntity);
                 onCurrencyListener.success(currencyEntity);

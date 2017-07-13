@@ -163,7 +163,7 @@ public class TransferManager {
                     priKey = decodeStr;
                 }else{
                     // 原始种子，生成货币种子，再生成对应的私钥
-                    CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyType.getName());
+                    CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyType.getCode());
                     String currencySeend = SupportKeyUril.xor(decodeStr, currencyEntity.getSalt(), 64);
                     priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(currencySeend,44,0,0,0,indexList.get(0));
                 }
