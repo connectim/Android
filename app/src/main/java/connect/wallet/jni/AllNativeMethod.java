@@ -72,7 +72,7 @@ public class AllNativeMethod implements Serializable{
 
     public static native String connectWalletKeyEncrypt(String seed, String pwd, int n, int version);
 
-    public static native String connectWalletKeyDecrypt(String enString, String pwd, int n);
+    public static native String connectWalletKeyDecrypt(String enString, String pwd, int version);
 
     /**
      * The key in password with salt
