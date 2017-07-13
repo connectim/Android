@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +15,21 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.wallet.adapter.CAddressAdapter;
+import connect.activity.wallet.manager.CurrencyManage;
 import connect.activity.wallet.manager.CurrencyType;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
+import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Sets the default address
@@ -69,13 +80,42 @@ public class CAddressListActivty extends BaseActivity {
         cAddressAdapter.setItemClickListener(new CAddressAdapter.OnItemClickListener() {
             @Override
             public void onClick(View v) {
-                CurrencyAddressEntity addressEntity = (CurrencyAddressEntity) v.getTag();
-                updateDefaultAddress(addressEntity);
+                //CurrencyAddressEntity addressEntity = (CurrencyAddressEntity) v.getTag();
+
+                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
+                updateDefaultAddress(currencyEntity);
             }
         });
     }
 
-    public void updateDefaultAddress(CurrencyAddressEntity addressEntity){
+    public void updateDefaultAddress(CurrencyEntity addressEntity) {
+        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
+        WalletOuterClass.RequestCreateCoinInfo history = WalletOuterClass.RequestCreateCoinInfo.newBuilder()
+                .setCurrency(addressEntity.getCurrency())
+                .setAddress(addressEntity.getMasterAddress())
+                .setIndex(0)
+                .setLabel("Label")
+                .build();
 
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_DEFAULT, history, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.RequestCreateCoinInfo createCoinInfo = WalletOuterClass.RequestCreateCoinInfo.parseFrom(structData.getPlainData());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
+
+                    }
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+
+            }
+        });
     }
 }

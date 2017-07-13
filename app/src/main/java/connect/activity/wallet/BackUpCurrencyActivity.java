@@ -30,7 +30,7 @@ import connect.utils.DialogUtil;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 
-public class BackUpCurrencyActivity extends BaseActivity implements BackUpContract.View{
+public class BackUpCurrencyActivity extends BaseActivity implements BackUpContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;

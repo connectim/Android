@@ -113,18 +113,22 @@ public class UriUtil {
     public static String WALLET_ADDRESS_BOOK_REMOVE = "/wallet/v1/address_book/remove";
     /** Many people transfer */
     public static String WALLET_BILLING_MUILT_SEND = "/wallet/v1/billing/muilt_send";
-    /** 创建钱包 */
+    /** create wallet */
     public static String WALLET_V2_CREATE = "/wallet/v2/create";
-    /** 同步钱包账户 */
+    /** sync wallet */
     public static String WALLET_V2_SYNC = "/wallet/v2/sync";
-    /** 创建币种 */
+    /** create coin */
     public static String WALLET_V2_COINS_CREATE = "/wallet/v2/coins/create";
-    /** 更新钱包信息 */
+    /** update wallet */
     public static String WALLET_V2_UPDATA = "/wallet/v2/update";
-    /** 获取货币列表 */
+    /** coin list */
     public static String WALLET_V2_COINS_LIST = "/wallet/v2/coins/list";
-    /** 更新货币信息 */
+    /** update coin */
     public static String WALLET_V2_COINS_UPDATA = "/wallet/v2/coins/update";
+    /** address default */
+    public static String WALLET_V2_COINS_ADDRESS_DEFAULT = "/wallet/v2/coins/addresses/default";
+    /** update coin */
+    public static String WALLET_V2_COINS_ADDRESS_GET_DEFAULT = "/wallet/v2/coins/addresses/get_default";
 
 
     /**======================================================================================
