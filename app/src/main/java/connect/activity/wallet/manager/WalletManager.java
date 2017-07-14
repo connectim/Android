@@ -103,7 +103,7 @@ public class WalletManager {
                             // 用户没有钱包数据 ，需要创建（新用户）
                             collectSeed();
                             break;
-                        case 2:
+                        case 1:
                             WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
                             WalletBean walletBean = new WalletBean(wallet.getPayLoad(),wallet.getSalt(),wallet.getPbkdf2Iterations(),
                                     wallet.getVersion(),wallet.getUuid(),respSyncWallet.getStatus());

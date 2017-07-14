@@ -25,7 +25,7 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
      */
     public static class Properties {
         public final static Property _id = new Property(0, Long.class, "_id", true, "_id");
-        public final static Property Currency = new Property(1, String.class, "currency", false, "CURRENCY");
+        public final static Property Currency = new Property(1, Integer.class, "currency", false, "CURRENCY");
         public final static Property Address = new Property(2, String.class, "address", false, "ADDRESS");
         public final static Property Index = new Property(3, Integer.class, "index", false, "INDEX");
         public final static Property Balance = new Property(4, Long.class, "balance", false, "BALANCE");
@@ -47,7 +47,7 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CURRENCY_ADDRESS_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
-                "\"CURRENCY\" TEXT NOT NULL ," + // 1: currency
+                "\"CURRENCY\" INTEGER NOT NULL ," + // 1: currency
                 "\"ADDRESS\" TEXT NOT NULL UNIQUE ," + // 2: address
                 "\"INDEX\" INTEGER," + // 3: index
                 "\"BALANCE\" INTEGER," + // 4: balance
@@ -69,7 +69,7 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getCurrency());
+        stmt.bindLong(2, entity.getCurrency());
         stmt.bindString(3, entity.getAddress());
  
         Integer index = entity.getIndex();
@@ -101,7 +101,7 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getCurrency());
+        stmt.bindLong(2, entity.getCurrency());
         stmt.bindString(3, entity.getAddress());
  
         Integer index = entity.getIndex();
@@ -134,7 +134,7 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
     public CurrencyAddressEntity readEntity(Cursor cursor, int offset) {
         CurrencyAddressEntity entity = new CurrencyAddressEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
-            cursor.getString(offset + 1), // currency
+            cursor.getInt(offset + 1), // currency
             cursor.getString(offset + 2), // address
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // index
             cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // balance
@@ -147,7 +147,7 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
     @Override
     public void readEntity(Cursor cursor, CurrencyAddressEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setCurrency(cursor.getString(offset + 1));
+        entity.setCurrency(cursor.getInt(offset + 1));
         entity.setAddress(cursor.getString(offset + 2));
         entity.setIndex(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setBalance(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));

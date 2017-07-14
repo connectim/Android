@@ -96,3 +96,69 @@ message RequestCreateCoinInfo {
     int32 currency = 5;
     string w_id = 6;
 }
+
+message LuckyPackageRequest {
+int32 total = 1;
+int64 amount = 2;
+int64 fee = 3;
+int32 allot_type = 4;
+int32 package_type = 5;
+string tips = 6;
+repeated string addresses = 7;
+}
+
+message TransferRequest {
+int64 amount = 1;
+int64 fee = 2;
+int32 transfer_type = 3;
+string tips = 4;
+repeated string from_addresses = 5;
+repeated string to_addresses = 6;
+}
+
+message CrowdfuningRequest {
+int64 amount = 1;
+int32 total = 2;
+string tips = 3;
+}
+
+message CrowdfuningResp {
+string txId = 1;
+}
+
+message PayCrowdRequest {
+string txId = 1;
+repeated string addresses = 2;
+}
+
+message OriginalTransaction {
+string rawhex = 1;
+string vts = 2;
+string transaction_id = 3;
+}
+
+message PublishTransaction {
+string signed_hex = 1;
+string transaction_id = 2;
+}
+
+message TransactionFlowingRequest {
+int32 currency = 1;
+}
+
+message TransactionFlowing {
+int32 status =1; // confirm unconfirm
+int32 category = 2; // transfer luckypackage
+int64 amount = 3;
+int64 time = 4;
+string avatar = 5;
+string username = 6;
+string address = 7;
+string txid = 8;
+int32 currency = 9; // btc ltc
+}
+
+message TransactionFlowings {
+int32 currency = 1; // btc ltc
+repeated TransactionFlowing transaction_history = 2;
+}
