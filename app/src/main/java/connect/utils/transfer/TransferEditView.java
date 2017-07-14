@@ -345,6 +345,11 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         return currentBtc;
     }
 
+    public Long getCurrentBtcLong(){
+        long amount = RateFormatUtil.stringToLongBtc(currentBtc);
+        return amount;
+    }
+
     /**
      * available balance
      * @return

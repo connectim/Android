@@ -59,7 +59,7 @@ public class CAddressListActivty extends BaseActivity {
             }
         });
 
-        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress("BTC");
+        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(0);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         CAddressAdapter cAddressAdapter = new CAddressAdapter(activity, currencyAddressEntities);
         recyclerview.setLayoutManager(linearLayoutManager);

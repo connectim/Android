@@ -21,7 +21,9 @@ import butterknife.OnClick;
 import connect.activity.wallet.manager.CurrencyType;
 import connect.activity.wallet.manager.TransferManager;
 import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.activity.set.PayFeeActivity;
 import connect.activity.wallet.bean.TransferBean;
@@ -44,6 +46,7 @@ import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
 import connect.widget.payment.PinTransferDialog;
 import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Transfer to BTC address
@@ -108,7 +111,12 @@ public class TransferAddressActivity extends BaseActivity {
         addressTv.addTextChangedListener(textWatcher);
         transferEditView.setEditListener(onEditListener);
 
-        transferManager = new TransferManager();
+        transferManager = new TransferManager(CurrencyType.BTC, new TransferManager.OnResultCall() {
+            @Override
+            public void result(String value) {
+                int a = 1;
+            }
+        });
     }
 
     @OnClick(R.id.left_img)
@@ -124,28 +132,23 @@ public class TransferAddressActivity extends BaseActivity {
     @OnClick(R.id.ok_btn)
     void goTransferOut(View view) {
         String address = addressTv.getText().toString().trim();
+        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
         if(TextUtils.isEmpty(address) || !SupportKeyUril.checkAddress(address)){
             ToastEUtil.makeText(mActivity,R.string.Wallet_Result_is_not_a_bitcoin_address,ToastEUtil.TOAST_STATUS_FAILE).show();
             return;
+        }else if(currencyEntity == null){
+            ToastEUtil.makeText(mActivity,"钱包数据没有同步",ToastEUtil.TOAST_STATUS_FAILE).show();
+            return;
         }
-        final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        transferManager.getTranferRow(mActivity, new ArrayList<String>(), new ArrayList<Integer>(),
-                new ArrayList<String>(), CurrencyType.BTC, new TransferManager.OnResultCall() {
-                    @Override
-                    public void result(String value) {
-
-                    }
-                });
-
-        /*
-        final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), false, address,
-                transferEditView.getAvaAmount(),amount,new TransferUtil.OnResultCall(){
-            @Override
-            public void result(String inputString, String outputString) {
-                checkPayPassword(amount, inputString, outputString);
-            }
-        });*/
+        ArrayList<String> fromList = new ArrayList<>();
+        fromList.add(currencyEntity.getMasterAddress());
+        ArrayList<WalletOuterClass.AddressAndAmount> toList = new ArrayList<>();
+        WalletOuterClass.AddressAndAmount addressAndAmount = WalletOuterClass.AddressAndAmount.newBuilder()
+                        .setAddress("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew")
+                        .setAmount(transferEditView.getCurrentBtcLong())
+                        .build();
+        toList.add(addressAndAmount);
+        transferManager.getTransferRow(mActivity, fromList, toList);
     }
 
     @Override

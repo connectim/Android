@@ -6,8 +6,12 @@ import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Unique;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import connect.activity.wallet.bean.WalletBean;
@@ -35,7 +39,7 @@ import wallet_gateway.WalletOuterClass;
 public class CurrencyManage {
 
     public static CurrencyType CURRENCY_DEFAULT = CurrencyType.BTC;
-    private final int MASTER_ADDRESS = 0;
+    private final int MASTER_ADDRESS_INDEX = 0;
     //(1:纯私钥，2:baseseed，3:salt+seed)
     public static final int WALLET_CATEGORY_PRI = 1;
     public static final int WALLET_CATEGORY_BASE = 2;
@@ -76,36 +80,50 @@ public class CurrencyManage {
     public void createCurrencyBaseSeed(String baseSeed, final CurrencyType currencyType, final OnCreateCurrencyListener onCurrencyListener){
         String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
         String currencySeend = SupportKeyUril.xor(baseSeed, salt, 64);
-        String address = cdMasterAddress(currencyType,currencySeend);
-        createCurrency("", salt, currencyType, WALLET_CATEGORY_BASE, address,onCurrencyListener);
+        CurrencyAddressEntity addressEntity = createCurrencyAddress(currencyType,currencySeend);
+        createCurrency("", salt, currencyType, WALLET_CATEGORY_BASE, addressEntity.getAddress(),onCurrencyListener);
     }
 
     /**
      * 不同币种生成不同的地址
      * @param currencyType
-     * @param currencySeend
+     * @param currencySeed
      * @return
      */
-    private String cdMasterAddress(CurrencyType currencyType,String currencySeend){
-        // 不同币种生成不同的地址
+    private CurrencyAddressEntity createCurrencyAddress(CurrencyType currencyType,String currencySeed){
+        // 获取对应币种的最大index
+        CurrencyAddressEntity addressBean = new CurrencyAddressEntity();
+        int index = MASTER_ADDRESS_INDEX;
+        List<CurrencyAddressEntity> addressList = CurrencyHelper.getInstance().loadCurrencyAddress(currencyType.getCode());
+        if(addressList != null && addressList.size() > 0){
+            for(CurrencyAddressEntity addressEntity : addressList){
+                if(index < addressEntity.getIndex()){
+                    index = addressEntity.getIndex();
+                }
+            }
+            index ++;
+        }
         String address = "";
+        // 不同币种生成不同的地址
         switch (currencyType){
             case BTC:
                 // BIP44 生成对应的公私钥，地址
-                String pubKey = AllNativeMethod.cdGetPubKeyFromSeedBIP44(currencySeend,44,0,0,0,MASTER_ADDRESS);
+                String pubKey = AllNativeMethod.cdGetPubKeyFromSeedBIP44(currencySeed,44,0,0,0,index);
                 address = AllNativeMethod.cdGetBTCAddrFromPubKey(pubKey);
                 break;
             default:
                 break;
         }
-        return address;
+        addressBean.setAddress(address);
+        addressBean.setIndex(index);
+        return addressBean;
     }
 
     /**
      * 创建币种
      * @param category 1:纯私钥，2:baseSeed，3:salt+seed
      */
-    public void createCurrency(String payload, final String salt, final CurrencyType currencyType, final int category, final String masterAddress, final OnCreateCurrencyListener onCurrencyListener){
+    public void createCurrency(final String payload, final String salt, final CurrencyType currencyType, final int category, final String masterAddress, final OnCreateCurrencyListener onCurrencyListener){
         WalletOuterClass.CreateCoinArgs.Builder builder = WalletOuterClass.CreateCoinArgs.newBuilder();
         builder.setSalt(salt);
         builder.setCurrency(currencyType.getCode());
@@ -120,16 +138,21 @@ public class CurrencyManage {
                 currencyEntity.setBalance(0L);
                 currencyEntity.setCurrency(currencyType.getCode());
                 currencyEntity.setCategory(category);
+                currencyEntity.setMasterAddress(masterAddress);
+                currencyEntity.setPayload(payload);
+                currencyEntity.setStatus(1);
                 CurrencyHelper.getInstance().insertCurrency(currencyEntity);
-                onCurrencyListener.success(currencyEntity);
 
                 CurrencyAddressEntity addressEntity = new CurrencyAddressEntity();
                 addressEntity.setBalance(0L);
                 addressEntity.setStatus(1);
                 addressEntity.setCurrency(currencyType.getCode());
                 addressEntity.setAddress(masterAddress);
-                addressEntity.setIndex(MASTER_ADDRESS);
+                addressEntity.setIndex(MASTER_ADDRESS_INDEX);
+                addressEntity.setLabel("");
                 CurrencyHelper.getInstance().insertCurrencyAddress(addressEntity);
+
+                onCurrencyListener.success(currencyEntity);
             }
 
             @Override

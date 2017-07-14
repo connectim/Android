@@ -43,7 +43,8 @@ public class WalletManager {
     public void checkAccount(OnWalletListener onWalletListener){
         this.onWalletListener = onWalletListener;
         final WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-        if(walletBean == null){
+        requestWalletBase();
+        /*if(walletBean == null){
             // 用户没有钱包数据
             requestWalletBase();
         }else{
@@ -56,25 +57,18 @@ public class WalletManager {
                         "", "立即创建", true, new DialogUtil.OnItemClickListener() {
                             @Override
                             public void confirm(String value) {
-
-                                new PinManager().showCheckPin(mActivity, walletBean.getPayload(), new PinManager.OnPinListener() {
+                                CurrencyManage currencyManage = new CurrencyManage();
+                                currencyManage.createCurrencyBaseSeed(mActivity, CurrencyManage.CURRENCY_DEFAULT, new CurrencyManage.OnCreateCurrencyListener() {
                                     @Override
-                                    public void success(String value) {
-                                        CurrencyManage currencyManage = new CurrencyManage();
-                                        currencyManage.createCurrencyBaseSeed(value, CurrencyManage.CURRENCY_DEFAULT, new CurrencyManage.OnCreateCurrencyListener() {
-                                            @Override
-                                            public void success(CurrencyEntity currencyEntity) {
+                                    public void success(CurrencyEntity currencyEntity) {
 
-                                            }
+                                    }
 
-                                            @Override
-                                            public void fail(String message) {
+                                    @Override
+                                    public void fail(String message) {
 
-                                            }
-                                        });
                                     }
                                 });
-
                             }
 
                             @Override
@@ -84,7 +78,7 @@ public class WalletManager {
                         });
 
             }
-        }
+        }*/
     }
 
     /**
@@ -104,15 +98,16 @@ public class WalletManager {
                             collectSeed();
                             break;
                         case 1:
+                            // 更新钱包数据
                             WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
                             WalletBean walletBean = new WalletBean(wallet.getPayLoad(),wallet.getSalt(),wallet.getPbkdf2Iterations(),
                                     wallet.getVersion(),wallet.getUuid(),respSyncWallet.getStatus());
                             //保存钱包账户信息
                             SharePreferenceUser.getInstance().putWalletInfo(walletBean);
 
-                            WalletOuterClass.Coins coins = respSyncWallet.getCoins();
+                            List<WalletOuterClass.Coin> list = respSyncWallet.getCoinsList();
                             //保存货币信息
-                            CurrencyHelper.getInstance().insertCurrencyListCoin(coins.getCoinsList());
+                            CurrencyHelper.getInstance().insertCurrencyListCoin(list);
                             onWalletListener.complete();
                             break;
                         case 3:

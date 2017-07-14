@@ -125,7 +125,10 @@ public class UriUtil {
     public static String WALLET_V2_COINS_LIST = "/wallet/v2/coins/list";
     /** 更新货币信息 */
     public static String WALLET_V2_COINS_UPDATA = "/wallet/v2/coins/update";
-
+    /** 钱包转账 */
+    public static String WALLET_V2_SERVICE_TRANSFER = "/wallet/v2/service/transfer";
+    /** 获取币种地址列表 */
+    public static String WALLET_V2_COINS_ADDRESS_LIST = "/wallet/v2/coins/addresses/list";
 
     /**======================================================================================
      *                                contact
