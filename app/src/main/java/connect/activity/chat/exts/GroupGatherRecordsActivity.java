@@ -2,8 +2,10 @@ package connect.activity.chat.exts;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -11,9 +13,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.ui.activity.R;
-import connect.activity.wallet.adapter.GroupGatherRecordsAdapter;
 import connect.activity.base.BaseActivity;
+import connect.activity.wallet.adapter.GroupGatherRecordsAdapter;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
@@ -21,7 +23,7 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import connect.widget.pullTorefresh.XListView;
+import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
 
 /**
@@ -31,8 +33,11 @@ public class GroupGatherRecordsActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.list_view)
-    XListView listView;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
+    @Bind(R.id.refreshview)
+    SwipeRefreshLayout refreshview;
+
 
     private GroupGatherRecordsActivity activity;
     private final int PAGESIZE_MAX = 10;
@@ -65,26 +70,34 @@ public class GroupGatherRecordsActivity extends BaseActivity {
         });
         toolbarTop.setTitle(null, R.string.Chat_History);
 
-        recordsAdapter = new GroupGatherRecordsAdapter();
-        listView.setAdapter(recordsAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Connect.Crowdfunding crowdfunding = (Connect.Crowdfunding) parent.getAdapter().getItem(position);
-                GatherDetailGroupActivity.startActivity(activity, crowdfunding.getHashId());
-            }
-        });
-        listView.setXListViewListener(new XListView.IXListViewListener() {
+        refreshview.setColorSchemeResources(
+                R.color.color_ebecee,
+                R.color.color_c8ccd5,
+                R.color.color_lightgray
+        );
+        refreshview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 page = 1;
                 requestHostory();
+                refreshview.setRefreshing(false);
             }
+        });
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
+        recordsAdapter = new GroupGatherRecordsAdapter(activity);
+        recyclerview.setAdapter(recordsAdapter);
+        recyclerview.addOnScrollListener(new EndlessScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore() {
                 page++;
                 requestHostory();
+            }
+        });
+        recordsAdapter.setItemClickListener(new GroupGatherRecordsAdapter.OnItemClickListener() {
+            @Override
+            public void itemClick(Connect.Crowdfunding crowdfunding) {
+                GatherDetailGroupActivity.startActivity(activity, crowdfunding.getHashId());
             }
         });
 
@@ -104,18 +117,12 @@ public class GroupGatherRecordsActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.Crowdfundings crowdfundings = Connect.Crowdfundings.parseFrom(structData.getPlainData());
                     List<Connect.Crowdfunding> list = crowdfundings.getListList();
+
+                    refreshview.setRefreshing(false);
                     if (page > 1) {
                         recordsAdapter.setNotifyData(list, false);
                     } else {
                         recordsAdapter.setNotifyData(list, true);
-                    }
-
-                    listView.stopRefresh();
-                    listView.stopLoadMore();
-                    if (list.size() == PAGESIZE_MAX) {
-                        listView.setPullLoadEnable(true);
-                    } else {
-                        listView.setPullLoadEnable(false);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

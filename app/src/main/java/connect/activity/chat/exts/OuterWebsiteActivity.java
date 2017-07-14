@@ -16,7 +16,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -121,9 +120,9 @@ public class OuterWebsiteActivity extends BaseActivity {
                 listArr.add(activity.getString(R.string.Link_Share_to_Friend));
                 listArr.add(activity.getString(R.string.Link_Open_in_Browser));
 
-                DialogUtil.showBottomListView(activity, listArr, new DialogUtil.DialogListItemClickListener() {
+                DialogUtil.showBottomView(activity, listArr, new DialogUtil.DialogListItemClickListener() {
                     @Override
-                    public void confirm(AdapterView<?> parent, View view, int position) {
+                    public void confirm(int position) {
                         if (activity.getResources().getString(R.string.Link_Share_to_Friend).equals(listArr.get(position))) {
                             ConversationActivity.startActivity(activity, ConverType.URL);
                         } else if (getString(R.string.Link_Open_in_Browser).equals(listArr.get(position))) {//open browser

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -116,9 +115,9 @@ public class PacketSendActivity extends BaseActivity {
     void goHistory(View view) {
         ArrayList list = new ArrayList<>();
         list.add(mActivity.getResources().getString(R.string.Wallet_transferOutVia_return));
-        DialogUtil.showBottomListView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
+        DialogUtil.showBottomView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
             @Override
-            public void confirm(AdapterView<?> parent, View view, int position) {
+            public void confirm(int position) {
                 request();
             }
         });

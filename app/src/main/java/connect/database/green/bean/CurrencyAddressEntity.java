@@ -20,7 +20,7 @@ public class CurrencyAddressEntity implements Serializable{
     private Long _id;
 
     @NotNull
-    private String currency;
+    private Integer currency;
     @Unique
     @NotNull
     private String address;
@@ -28,8 +28,8 @@ public class CurrencyAddressEntity implements Serializable{
     private Long balance;
     private Integer status;
     private String label;
-    @Generated(hash = 614865199)
-    public CurrencyAddressEntity(Long _id, @NotNull String currency,
+    @Generated(hash = 383368957)
+    public CurrencyAddressEntity(Long _id, @NotNull Integer currency,
             @NotNull String address, Integer index, Long balance, Integer status,
             String label) {
         this._id = _id;
@@ -49,10 +49,10 @@ public class CurrencyAddressEntity implements Serializable{
     public void set_id(Long _id) {
         this._id = _id;
     }
-    public String getCurrency() {
+    public Integer getCurrency() {
         return this.currency;
     }
-    public void setCurrency(String currency) {
+    public void setCurrency(Integer currency) {
         this.currency = currency;
     }
     public String getAddress() {

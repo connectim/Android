@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -268,9 +267,9 @@ public class GroupSetActivity extends BaseActivity {
                 if (getResources().getString(R.string.Link_Clear_Chat_History).equals(tag)) {
                     ArrayList<String> strings = new ArrayList();
                     strings.add(getString(R.string.Link_Clear_Chat_History));
-                    DialogUtil.showBottomListView(activity, strings, new DialogUtil.DialogListItemClickListener() {
+                    DialogUtil.showBottomView(activity, strings, new DialogUtil.DialogListItemClickListener() {
                         @Override
-                        public void confirm(AdapterView<?> parent, View view, int position) {
+                        public void confirm(int position) {
                             ConversionHelper.getInstance().deleteRoom(groupKey);
                             RecExtBean.sendRecExtMsg(RecExtBean.ExtType.CLEAR_HISTORY);
                         }

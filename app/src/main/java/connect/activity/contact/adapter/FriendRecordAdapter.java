@@ -1,22 +1,21 @@
 package connect.activity.contact.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.utils.data.RateFormatUtil;
 import connect.utils.TimeUtil;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.AvatarGridView;
 import connect.widget.roundedimageview.RoundedImageView;
@@ -26,23 +25,61 @@ import protos.Connect;
  * Created by Administrator on 2017/4/26 0026.
  */
 
-public class FriendRecordAdapter extends BaseAdapter{
+public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapter.ViewHolder> {
 
+    private Activity activity;
     private ArrayList<Connect.FriendBill> mListData = new ArrayList();
     private ContactEntity friendEntity;
 
-    public FriendRecordAdapter(ContactEntity friendEntity) {
+    public FriendRecordAdapter(Activity activity, ContactEntity friendEntity) {
+        this.activity = activity;
         this.friendEntity = friendEntity;
     }
 
     @Override
-    public int getCount() {
-        return mListData.size();
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_wallet_transaction, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mListData.get(position);
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+        final Connect.FriendBill friendBill = mListData.get(position);
+        viewHolder.avatarGridview.setVisibility(View.GONE);
+        viewHolder.avaterRimg.setVisibility(View.VISIBLE);
+
+        GlideUtil.loadAvater(viewHolder.avaterRimg, friendEntity.getAvatar());
+        String curName = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
+        viewHolder.nameTv.setText(curName);
+        viewHolder.timeTv.setText(TimeUtil.getTime(friendBill.getCreatedAt() * 1000, TimeUtil.DATE_FORMAT_MONTH_HOUR));
+
+        if (friendBill.getAmount() > 0) {
+            viewHolder.balanceTv.setTextColor(activity.getResources().getColor(R.color.color_00c400));
+            viewHolder.balanceTv.setText("+" + RateFormatUtil.longToDoubleBtc(friendBill.getAmount()));
+        } else {
+            viewHolder.balanceTv.setTextColor(activity.getResources().getColor(R.color.color_f04a5f));
+            viewHolder.balanceTv.setText("" + RateFormatUtil.longToDoubleBtc(friendBill.getAmount()));
+        }
+
+        if (friendBill.getStatus() == 1) {
+            viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_767a82));
+            viewHolder.statusTv.setText(activity.getString(R.string.Wallet_Confirmed));
+        } else {
+            viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_f04a5f));
+            viewHolder.statusTv.setText(activity.getString(R.string.Wallet_Unconfirmed));
+        }
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListData != null && mListData.size() > position) {
+                    Connect.FriendBill friendBill1 = mListData.get(position);
+                    itemClickListener.itemClick(friendBill1);
+                }
+            }
+        });
     }
 
     @Override
@@ -51,60 +88,29 @@ public class FriendRecordAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet_transaction, parent, false);
-            viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (FriendRecordAdapter.ViewHolder)convertView.getTag();
-        }
-        Connect.FriendBill friendBill = mListData.get(position);
-        viewHolder.avatarGridview.setVisibility(View.GONE);
-        viewHolder.avaterRimg.setVisibility(View.VISIBLE);
-
-        GlideUtil.loadAvater(viewHolder.avaterRimg,friendEntity.getAvatar());
-        String curName = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
-        viewHolder.nameTv.setText(curName);
-        viewHolder.timeTv.setText(TimeUtil.getTime(friendBill.getCreatedAt() * 1000, TimeUtil.DATE_FORMAT_MONTH_HOUR));
-
-        if (friendBill.getAmount() > 0) {
-            viewHolder.balanceTv.setTextColor(parent.getContext().getResources().getColor(R.color.color_00c400));
-            viewHolder.balanceTv.setText("+" + RateFormatUtil.longToDoubleBtc(friendBill.getAmount()));
-        } else {
-            viewHolder.balanceTv.setTextColor(parent.getContext().getResources().getColor(R.color.color_f04a5f));
-            viewHolder.balanceTv.setText("" + RateFormatUtil.longToDoubleBtc(friendBill.getAmount()));
-        }
-
-        if (friendBill.getStatus() == 1) {
-            viewHolder.statusTv.setTextColor(parent.getContext().getResources().getColor(R.color.color_767a82));
-            viewHolder.statusTv.setText(parent.getContext().getString(R.string.Wallet_Confirmed));
-        } else {
-            viewHolder.statusTv.setTextColor(parent.getContext().getResources().getColor(R.color.color_f04a5f));
-            viewHolder.statusTv.setText(parent.getContext().getString(R.string.Wallet_Unconfirmed));
-        }
-        return convertView;
+    public int getItemCount() {
+        return mListData.size();
     }
 
-    class ViewHolder {
-        @Bind(R.id.avater_rimg)
+    class ViewHolder extends RecyclerView.ViewHolder {
+
         RoundedImageView avaterRimg;
-        @Bind(R.id.avatar_gridview)
         AvatarGridView avatarGridview;
-        @Bind(R.id.left_rela)
         RelativeLayout leftRela;
-        @Bind(R.id.name_tv)
         TextView nameTv;
-        @Bind(R.id.balance_tv)
         TextView balanceTv;
-        @Bind(R.id.time_tv)
         TextView timeTv;
-        @Bind(R.id.status_tv)
         TextView statusTv;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
+            avatarGridview = (AvatarGridView) itemview.findViewById(R.id.avatar_gridview);
+            leftRela = (RelativeLayout) itemview.findViewById(R.id.left_rela);
+            nameTv = (TextView) itemview.findViewById(R.id.name_tv);
+            balanceTv = (TextView) itemview.findViewById(R.id.balance_tv);
+            timeTv = (TextView) itemview.findViewById(R.id.time_tv);
+            statusTv = (TextView) itemview.findViewById(R.id.status_tv);
         }
     }
 
@@ -116,4 +122,13 @@ public class FriendRecordAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
+    private OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void itemClick(Connect.FriendBill friendBill);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 }

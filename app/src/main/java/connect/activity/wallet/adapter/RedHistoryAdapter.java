@@ -1,11 +1,14 @@
 package connect.activity.wallet.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.ui.activity.R;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.TimeUtil;
@@ -20,36 +23,26 @@ import protos.Connect;
 /**
  * Created by Administrator on 2016/12/19.
  */
-public class RedHistoryAdapter extends BaseAdapter {
+public class RedHistoryAdapter extends RecyclerView.Adapter<RedHistoryAdapter.ViewHolder> {
 
+    private Activity activity;
     private ArrayList<Connect.RedPackageInfo> mListData = new ArrayList();
 
-    @Override
-    public int getCount() {
-        return mListData.size();
+    public RedHistoryAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mListData.get(position);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_wallet_red_history, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet_red_history, parent, false);
-            viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-        Connect.RedPackageInfo redPackageInfo = (Connect.RedPackageInfo)getItem(position);
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+        Connect.RedPackageInfo redPackageInfo = mListData.get(position);
         Connect.RedPackage redPackage = redPackageInfo.getRedpackage();
 
         if(redPackage.getTyp() == 1){
@@ -62,35 +55,52 @@ public class RedHistoryAdapter extends BaseAdapter {
             }
         }
 
-        viewHolder.moneyTv.setText(RateFormatUtil.longToDoubleBtc(redPackage.getMoney()) + parent.getContext().getString(R.string.Set_BTC_symbol));
+        viewHolder.moneyTv.setText(RateFormatUtil.longToDoubleBtc(redPackage.getMoney()) + activity.getString(R.string.Set_BTC_symbol));
         viewHolder.timeTv.setText(TimeUtil.getTime(redPackage.getCreatedAt() * 1000,TimeUtil.DATE_FORMAT_MONTH_HOUR));
 
         if(redPackage.getRemainSize() == 0){
-            viewHolder.numberTv.setText(parent.getContext().getString(R.string.Wallet_Opened,
+            viewHolder.numberTv.setText(activity.getString(R.string.Wallet_Opened,
                     redPackage.getSize() - redPackage.getRemainSize(),redPackage.getSize()));
         }else if(redPackage.getDeadline() < 0){
-            viewHolder.numberTv.setText(parent.getContext().getString(R.string.Chat_Expired,
+            viewHolder.numberTv.setText(activity.getString(R.string.Chat_Expired,
                     redPackage.getSize() - redPackage.getRemainSize(),redPackage.getSize()));
         }else {
-            viewHolder.numberTv.setText(parent.getContext().getString(R.string.Wallet_PacketSend_Opened) + " "
+            viewHolder.numberTv.setText(activity.getString(R.string.Wallet_PacketSend_Opened) + " "
                     + (redPackage.getSize() - redPackage.getRemainSize()) +"/"+ redPackage.getSize());
         }
-
-        return convertView;
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListData!=null&&mListData.size()>=position){
+                    itemClickListener.itemClick(mListData.get(position));
+                }
+            }
+        });
     }
 
-    static class ViewHolder {
-        @Bind(R.id.status_tv)
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return 0;
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
         TextView statusTv;
-        @Bind(R.id.money_tv)
         TextView moneyTv;
-        @Bind(R.id.time_tv)
         TextView timeTv;
-        @Bind(R.id.number_tv)
         TextView numberTv;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            statusTv = (TextView) itemview.findViewById(R.id.status_tv);
+            moneyTv = (TextView) itemview.findViewById(R.id.money_tv);
+            timeTv = (TextView) itemview.findViewById(R.id.time_tv);
+            numberTv = (TextView) itemview.findViewById(R.id.number_tv);
         }
     }
 
@@ -102,5 +112,14 @@ public class RedHistoryAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    private OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void itemClick(Connect.RedPackageInfo packageInfo);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
 }

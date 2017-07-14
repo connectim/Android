@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -16,13 +17,13 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.common.adapter.ConversationAdapter;
+import connect.activity.common.bean.ConverType;
+import connect.activity.home.bean.RoomAttrBean;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.activity.common.bean.ConverType;
-import connect.activity.common.adapter.ConversationAdapter;
-import connect.activity.home.bean.RoomAttrBean;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.widget.TopToolBar;
@@ -38,8 +39,8 @@ public class ConversationActivity extends BaseActivity {
     LinearLayout createChatLin;
     @Bind(R.id.lately_title_tv)
     TextView latelyTitleTv;
-    @Bind(R.id.list_view)
-    ListView listView;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
 
     public static final int CODE_REQUEST = 512;
 
@@ -68,7 +69,7 @@ public class ConversationActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        activity=this;
+        activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setLeftListence(new View.OnClickListener() {
@@ -92,9 +93,45 @@ public class ConversationActivity extends BaseActivity {
                 break;
         }
 
-        conversationAdapter = new ConversationAdapter();
-        listView.setAdapter(conversationAdapter);
-        listView.setOnItemClickListener(itemClickListener);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
+        conversationAdapter = new ConversationAdapter(activity);
+        recyclerview.setAdapter(conversationAdapter);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        conversationAdapter.setItemClickListener(new ConversationAdapter.OnItemClickListener() {
+            @Override
+            public void itemClick(final RoomAttrBean roomAttrBean) {
+                String title = "";
+                String message = "";
+                switch (converType) {
+                    case URL:
+                        message = getString(R.string.Link_Share_to, roomAttrBean.getName());
+                        break;
+                    case TRANSPOND:
+                        message = getString(R.string.Link_Send_to, roomAttrBean.getName());
+                        break;
+                    case CAED:
+                        Object[] objects = (Object[]) serializables;
+                        ContactEntity contactEntity = (ContactEntity) objects[0];
+                        message = getString(R.string.Chat_Share_contact_to, contactEntity.getUsername(), roomAttrBean.getName());
+                        break;
+                    default:
+                        break;
+                }
+
+                DialogUtil.showAlertTextView(activity, title, message,
+                        "", "", false, new DialogUtil.OnItemClickListener() {
+                            @Override
+                            public void confirm(String value) {
+                                backActivity(roomAttrBean.getRoomtype(), roomAttrBean.getRoomid());
+                            }
+
+                            @Override
+                            public void cancel() {
+
+                            }
+                        });
+            }
+        });
         loadConverChats();
     }
 
@@ -116,49 +153,11 @@ public class ConversationActivity extends BaseActivity {
         }.execute();
     }
 
-    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final RoomAttrBean roomAttrBean = (RoomAttrBean) parent.getAdapter().getItem(position);
-
-            String title = "";
-            String message = "";
-            switch (converType) {
-                case URL:
-                    message = getString(R.string.Link_Share_to, roomAttrBean.getName());
-                    break;
-                case TRANSPOND:
-                    message = getString(R.string.Link_Send_to, roomAttrBean.getName());
-                    break;
-                case CAED:
-                    Object[] objects = (Object[]) serializables;
-                    ContactEntity contactEntity  = (ContactEntity)objects[0];
-                    message = getString(R.string.Chat_Share_contact_to, contactEntity.getUsername(), roomAttrBean.getName());
-                    break;
-                default:
-                    break;
-            }
-
-            DialogUtil.showAlertTextView(activity, title, message,
-                    "", "", false, new DialogUtil.OnItemClickListener() {
-                        @Override
-                        public void confirm(String value) {
-                            backActivity(roomAttrBean.getRoomtype(), roomAttrBean.getRoomid());
-                        }
-
-                        @Override
-                        public void cancel() {
-
-                        }
-                    });
-        }
-    };
-
     @OnClick(R.id.create_chat_lin)
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.create_chat_lin:
-                NewConversationActivity.startActivity(activity, converType,serializables);
+                NewConversationActivity.startActivity(activity, converType, serializables);
                 break;
         }
     }
@@ -172,8 +171,7 @@ public class ConversationActivity extends BaseActivity {
     }
 
     /**
-     *
-     * @param type 0:friend 1:group
+     * @param type   0:friend 1:group
      * @param pubkey
      */
     public void backActivity(int type, String pubkey) {

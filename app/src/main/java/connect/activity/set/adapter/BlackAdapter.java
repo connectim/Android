@@ -1,40 +1,56 @@
 package connect.activity.set.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import connect.ui.activity.R;
-import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
+import connect.ui.activity.R;
+import connect.utils.glide.GlideUtil;
+import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
  * Created by Administrator on 2017/1/4.
  */
-public class BlackAdapter extends BaseAdapter {
+public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.ViewHolder> {
 
     private ArrayList<Connect.UserInfo> mDataList = new ArrayList<>();
     private OnItemChildClickListence childListence;
 
-    @Override
-    public int getCount() {
-        return mDataList.size();
+    private Activity activity;
+
+    public BlackAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mDataList.get(position);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_set_black_list, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder,final int position) {
+        final Connect.UserInfo userInfo = mDataList.get(position);
+        GlideUtil.loadAvater(holder.avatarRimg, userInfo.getAvatar());
+        holder.nicknameTv.setText(userInfo.getUsername());
+        holder.statusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                childListence.remove(position, userInfo);
+            }
+        });
     }
 
     @Override
@@ -43,27 +59,8 @@ public class BlackAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_set_black_list, parent, false);
-            viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
-        final Connect.UserInfo userInfo = mDataList.get(position);
-        GlideUtil.loadAvater(viewHolder.avatarRimg,userInfo.getAvatar());
-        viewHolder.nicknameTv.setText(userInfo.getUsername());
-        viewHolder.statusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                childListence.remove(position,userInfo);
-            }
-        });
-
-        return convertView;
+    public int getItemCount() {
+        return mDataList.size();
     }
 
     public void setDataNotify(List<Connect.UserInfo> list) {
@@ -81,7 +78,8 @@ public class BlackAdapter extends BaseAdapter {
         this.childListence = childListence;
     }
 
-    static class ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
         @Bind(R.id.avatar_rimg)
         RoundedImageView avatarRimg;
         @Bind(R.id.nickname_tv)
@@ -91,13 +89,16 @@ public class BlackAdapter extends BaseAdapter {
         @Bind(R.id.content_rela)
         RelativeLayout contentRela;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            avatarRimg = (RoundedImageView) itemview.findViewById(R.id.avatar_rimg);
+            nicknameTv = (TextView) itemview.findViewById(R.id.nickname_tv);
+            statusBtn = (Button) itemview.findViewById(R.id.status_btn);
+            contentRela = (RelativeLayout) itemview.findViewById(R.id.content_rela);
         }
     }
 
     public interface OnItemChildClickListence{
         void remove(int position,Connect.UserInfo userInfo);
     }
-
 }

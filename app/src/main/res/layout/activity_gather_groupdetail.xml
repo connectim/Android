@@ -86,8 +86,8 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"/>
 
-        <ListView
-            android:id="@id/listview"
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_250"
             android:divider="@null"

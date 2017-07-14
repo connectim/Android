@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,20 +16,19 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.ContactEntity;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.chat.exts.RedPacketActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.wallet.adapter.LatelyTransferAdapter;
 import connect.activity.wallet.bean.TransferBean;
-import connect.activity.base.BaseActivity;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.ContactEntity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
 
 /**
- *
  * Created by Administrator on 2016/12/10.
  */
 public class TransferActivity extends BaseActivity {
@@ -41,10 +41,11 @@ public class TransferActivity extends BaseActivity {
     TextView transferAddressTv;
     @Bind(R.id.transfer_outVia_tv)
     TextView transferOutViaTv;
-    @Bind(R.id.list_view)
-    ListView listView;
     @Bind(R.id.lately_title_tv)
     TextView latelyTitleTv;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
+
 
     private TransferActivity mActivity;
     private LatelyTransferAdapter adapter;
@@ -68,9 +69,34 @@ public class TransferActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Wallet_Transfer);
 
-        adapter = new LatelyTransferAdapter();
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(clickListener);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        adapter = new LatelyTransferAdapter(mActivity);
+        recyclerview.setAdapter(adapter);
+        adapter.setItemClickListener(new LatelyTransferAdapter.OnItemClickListener() {
+            @Override
+            public void itemClick(TransferBean transferBean) {
+                switch (transferBean.getType()) {
+                    case 1:
+                        PacketActivity.startActivity(mActivity);
+                        break;
+                    case 2:
+                        TransferOutViaActivity.startActivity(mActivity);
+                        break;
+                    case 3:
+                        TransferAddressActivity.startActivity(mActivity, transferBean.getAddress());
+                        break;
+                    case 4:
+                        TransferToActivity.startActivity(mActivity, transferBean.getAddress());
+                        break;
+                    case 5:
+                        RedPacketActivity.startActivity(mActivity, 1, transferBean.getAddress());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
         queryTranfer();
     }
 
@@ -81,7 +107,7 @@ public class TransferActivity extends BaseActivity {
 
     @OnClick(R.id.transfer_friend_tv)
     void goFriend(View view) {
-        SeleUsersActivity.startActivity(mActivity, SeleUsersActivity.SOURCE_FRIEND, "",null);
+        SeleUsersActivity.startActivity(mActivity, SeleUsersActivity.SOURCE_FRIEND, "", null);
     }
 
     @OnClick(R.id.transfer_address_tv)
@@ -97,38 +123,11 @@ public class TransferActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SeleUsersActivity.CODE_REQUEST && resultCode == RESULT_OK){
+        if (requestCode == SeleUsersActivity.CODE_REQUEST && resultCode == RESULT_OK) {
             ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
-            TransferFriendActivity.startActivity(mActivity, friendList,"");
+            TransferFriendActivity.startActivity(mActivity, friendList, "");
         }
     }
-
-    private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            TransferBean transEntity = (TransferBean) parent.getAdapter().getItem(position);
-            //1. outer lucky packet 2. outer transfer 3. address transfer 4. transfer to friend  5. friend lucky packet
-            switch (transEntity.getType()) {
-                case 1:
-                    PacketActivity.startActivity(mActivity);
-                    break;
-                case 2:
-                    TransferOutViaActivity.startActivity(mActivity);
-                    break;
-                case 3:
-                    TransferAddressActivity.startActivity(mActivity, transEntity.getAddress());
-                    break;
-                case 4:
-                    TransferToActivity.startActivity(mActivity, transEntity.getAddress());
-                    break;
-                case 5:
-                    RedPacketActivity.startActivity(mActivity,1,transEntity.getAddress());
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     private void queryTranfer() {
         new AsyncTask<Void, Void, List<TransferBean>>() {
@@ -140,7 +139,7 @@ public class TransferActivity extends BaseActivity {
             @Override
             protected void onPostExecute(List<TransferBean> transEntities) {
                 super.onPostExecute(transEntities);
-                if(transEntities.size() > 0)
+                if (transEntities.size() > 0)
                     latelyTitleTv.setVisibility(View.VISIBLE);
                 adapter.setDataNotigy(transEntities);
             }

@@ -2,11 +2,14 @@ package connect.activity.set;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
+
 import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,8 +32,8 @@ public class LanguageActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.list_view)
-    ListView listView;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
 
     private LanguageActivity mActivity;
     private CurrencyAdapter adapter;
@@ -52,18 +55,17 @@ public class LanguageActivity extends BaseActivity {
         toolbarTop.setRightText(R.string.Set_Save);
         toolbarTop.setRightTextColor(R.color.color_00c400);
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
         List<RateBean> list = LanguageData.getInstance().getLanguageData();
-        adapter = new CurrencyAdapter();
-
+        adapter = new CurrencyAdapter(mActivity);
         String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
         adapter.setSeleCurrency(languageCode);
-
-        listView.setAdapter(adapter);
+        recyclerview.setAdapter(adapter);
         adapter.setDataNotify(list);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        adapter.setItemClickListener(new CurrencyAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RateBean rateBean = (RateBean)parent.getAdapter().getItem(position);
+            public void itemClick(RateBean rateBean) {
                 adapter.setSeleCurrency(rateBean.getCode());
                 adapter.notifyDataSetChanged();
             }
@@ -71,7 +73,7 @@ public class LanguageActivity extends BaseActivity {
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view){
+    void goback(View view) {
         ActivityUtil.goBack(mActivity);
     }
 

@@ -2,15 +2,15 @@ package connect.activity.chat.exts;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -67,8 +67,6 @@ public class GatherDetailGroupActivity extends BaseActivity {
     TextView txt3;
     @Bind(R.id.txt4)
     TextView txt4;
-    @Bind(R.id.listview)
-    ListView listview;
     @Bind(R.id.txt5)
     TextView txt5;
     @Bind(R.id.btn)
@@ -77,6 +75,8 @@ public class GatherDetailGroupActivity extends BaseActivity {
     LinearLayout layoutFirst;
     @Bind(R.id.txt6)
     TextView txt6;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
 
     private GatherDetailGroupActivity activity;
     private static String GATHER_HASHID = "GATHER_HASHID";
@@ -118,14 +118,15 @@ public class GatherDetailGroupActivity extends BaseActivity {
             }
         });
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         paymentAdapter = new PaymentAdapter();
-        listview.setAdapter(paymentAdapter);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.setAdapter(paymentAdapter);
+        paymentAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Connect.CrowdfundingRecord record = (Connect.CrowdfundingRecord) parent.getItemAtPosition(position);
+            public void itemClick(Connect.CrowdfundingRecord record) {
                 if (record != null) {
-                    BlockchainActivity.startActivity(activity, CurrencyType.BTC,record.getTxid());
+                    BlockchainActivity.startActivity(activity, CurrencyType.BTC, record.getTxid());
                 }
             }
         });
@@ -152,7 +153,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     crowdfunding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
-                    if(!ProtoBufUtil.getInstance().checkProtoBuf(crowdfunding)){
+                    if (!ProtoBufUtil.getInstance().checkProtoBuf(crowdfunding)) {
                         return;
                     }
 
@@ -198,7 +199,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
                     }
 
                     int payMemCount = (int) (crowdfunding.getSize() - crowdfunding.getRemainSize());
-                    int crowdSize=(int) crowdfunding.getSize();
+                    int crowdSize = (int) crowdfunding.getSize();
                     txt5.setText(String.format(getString(R.string.Wallet_members_paid_BTC), payMemCount, crowdSize, "" + RateFormatUtil.longToDoubleBtc(payMemCount * singePayAmount)));
 
                     TransactionHelper.getInstance().updateTransEntity(hashid, msgId, payMemCount, crowdSize);
@@ -235,7 +236,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
                 try {
                     if (response.getCode() == 2000) {
                         Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
+                        if (ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)) {
                             WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
                             txt6.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
                                     RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
@@ -267,13 +268,13 @@ public class GatherDetailGroupActivity extends BaseActivity {
         final long amount = crowdfunding.getTotal() / crowdfunding.getSize();
         WalletAccountBean accountBean = ParamManager.getInstance().getWalletAmount();
         new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), false,
-                crowdfunding.getSender().getAddress(), accountBean.getAvaAmount(),amount,
+                crowdfunding.getSender().getAddress(), accountBean.getAvaAmount(), amount,
                 new TransferUtil.OnResultCall() {
-            @Override
-            public void result(String inputString, String outputString) {
-                checkPayPassword(inputString, outputString);
-            }
-        });
+                    @Override
+                    public void result(String inputString, String outputString) {
+                        checkPayPassword(inputString, outputString);
+                    }
+                });
     }
 
     private void checkPayPassword(final String inputString, final String outputString) {
@@ -311,7 +312,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.Crowdfunding crowdfunding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
-                    if(!ProtoBufUtil.getInstance().checkProtoBuf(crowdfunding)){
+                    if (!ProtoBufUtil.getInstance().checkProtoBuf(crowdfunding)) {
                         return;
                     }
 
@@ -339,14 +340,15 @@ public class GatherDetailGroupActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpResponse response) {
                 paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                TransferError.getInstance().showError(response.getCode(),response.getMessage());
+                TransferError.getInstance().showError(response.getCode(), response.getMessage());
             }
         });
     }
 
-    private class PaymentAdapter extends BaseAdapter {
+    private class PaymentAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-        private Connect.CrowdfundingRecord crowdRecord;
+        private LayoutInflater inflater = LayoutInflater.from(activity);
+        private OnItemClickListener itemClickListener;
         private List<Connect.CrowdfundingRecord> crowdRecords = new ArrayList<>();
 
         public void setDatas(List<Connect.CrowdfundingRecord> records) {
@@ -355,13 +357,43 @@ public class GatherDetailGroupActivity extends BaseActivity {
         }
 
         @Override
-        public int getCount() {
-            return crowdRecords.size();
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = inflater.inflate(R.layout.item_payment, parent, false);
+            ViewHolder holder = new ViewHolder(view);
+            return holder;
         }
 
         @Override
-        public Object getItem(int position) {
-            return crowdRecords.get(position);
+        public void onBindViewHolder(ViewHolder holder, final int position) {
+            Connect.CrowdfundingRecord crowdRecord = crowdRecords.get(position);
+            Connect.UserInfo userInfo = crowdRecord.getUser();
+
+            GlideUtil.loadAvater(holder.avaterRimg, userInfo.getAvatar());
+            holder.nameTv.setText(userInfo.getUsername());
+
+            holder.balanceTv.setText(RateFormatUtil.longToDoubleBtc(crowdRecord.getAmount()) + getResources().getString(R.string.Set_BTC_symbol));
+
+            String time = TimeUtil.getTime(crowdRecord.getCreatedAt() * 1000, TimeUtil.DATE_FORMAT_MONTH_HOUR);
+            holder.timeTv.setText(time);
+
+            if (crowdRecord.getStatus() == 0) {
+                holder.statusTv.setText(getString(R.string.Wallet_Waitting_for_pay));
+                holder.statusTv.setTextColor(getResources().getColor(R.color.color_f04a5f));
+            } else if (crowdRecord.getStatus() == 1) {
+                holder.statusTv.setText(getString(R.string.Wallet_Unconfirmed));
+                holder.statusTv.setTextColor(getResources().getColor(R.color.color_f04a5f));
+            } else {
+                holder.statusTv.setTextColor(getResources().getColor(R.color.color_767a82));
+                holder.statusTv.setText(getString(R.string.Wallet_Confirmed));
+            }
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (crowdRecords != null && position < crowdRecords.size()) {
+                        itemClickListener.itemClick(crowdRecords.get(position));
+                    }
+                }
+            });
         }
 
         @Override
@@ -370,57 +402,38 @@ public class GatherDetailGroupActivity extends BaseActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
-            if (null == convertView) {
-                convertView = LayoutInflater.from(activity).inflate(R.layout.item_payment, parent, false);
-                holder = new ViewHolder(convertView);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
+        public int getItemCount() {
+            return crowdRecords.size();
+        }
 
-            crowdRecord = crowdRecords.get(position);
-            Connect.UserInfo userInfo = crowdRecord.getUser();
-
-            GlideUtil.loadAvater(holder.avaterRimg, userInfo.getAvatar());
-            holder.nameTv.setText(userInfo.getUsername());
-
-            holder.balanceTv.setText(RateFormatUtil.longToDoubleBtc(crowdRecord.getAmount()) + getResources().getString(R.string.Set_BTC_symbol));
-
-            String time = TimeUtil.getTime(crowdRecord.getCreatedAt() * 1000,TimeUtil.DATE_FORMAT_MONTH_HOUR);
-            holder.timeTv.setText(time);
-
-            if (crowdRecord.getStatus() == 0) {
-                holder.statusTv.setText(parent.getContext().getString(R.string.Wallet_Waitting_for_pay));
-                holder.statusTv.setTextColor(getResources().getColor(R.color.color_f04a5f));
-            } else if (crowdRecord.getStatus() == 1) {
-                holder.statusTv.setText(parent.getContext().getString(R.string.Wallet_Unconfirmed));
-                holder.statusTv.setTextColor(getResources().getColor(R.color.color_f04a5f));
-            } else {
-                holder.statusTv.setTextColor(getResources().getColor(R.color.color_767a82));
-                holder.statusTv.setText(parent.getContext().getString(R.string.Wallet_Confirmed));
-            }
-            return convertView;
+        public void setItemClickListener(OnItemClickListener itemClickListener) {
+            this.itemClickListener = itemClickListener;
         }
     }
 
-    protected static class ViewHolder {
-        @Bind(R.id.avater_rimg)
+    public interface OnItemClickListener{
+        void itemClick(Connect.CrowdfundingRecord record);
+    }
+
+    protected class ViewHolder extends RecyclerView.ViewHolder {
+
+        View itemView;
         RoundedImageView avaterRimg;
-        @Bind(R.id.left_rela)
         RelativeLayout leftRela;
-        @Bind(R.id.name_tv)
         TextView nameTv;
-        @Bind(R.id.balance_tv)
         TextView balanceTv;
-        @Bind(R.id.time_tv)
         TextView timeTv;
-        @Bind(R.id.status_tv)
         TextView statusTv;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        public ViewHolder(View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+            avaterRimg = (RoundedImageView) itemView.findViewById(R.id.avater_rimg);
+            leftRela = (RelativeLayout) itemView.findViewById(R.id.left_rela);
+            nameTv = (TextView) itemView.findViewById(R.id.name_tv);
+            balanceTv = (TextView) itemView.findViewById(R.id.balance_tv);
+            timeTv = (TextView) itemView.findViewById(R.id.time_tv);
+            statusTv = (TextView) itemView.findViewById(R.id.status_tv);
         }
     }
 }

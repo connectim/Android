@@ -48,8 +48,8 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
     Button okBtn;
     @Bind(R.id.number_tv)
     TextView numberTv;
-    @Bind(R.id.listView)
-    GridView listView;
+    @Bind(R.id.gridview)
+    GridView gridview;
     @Bind(R.id.sele_friend_img)
     ImageView seleFriendImg;
 
@@ -98,13 +98,13 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         presenter.setListData(list);
 
         friendGridAdapter = new FriendGridAdapter();
-        listView.setAdapter(friendGridAdapter);
-        listView.setOnItemClickListener(presenter.getItemClickListener());
+        gridview.setAdapter(friendGridAdapter);
+        gridview.setOnItemClickListener(presenter.getItemClickListener());
 
         friendGridAdapter.setNotifyData(list);
         numberTv.setText(getString(R.string.Wallet_transfer_man, list.size()));
         transferEditView.setEditListener(presenter.getOnEditListener());
-        presenter.horizontal_layout(listView);
+        presenter.horizontal_layout(gridview);
 
         transaUtil = new TransferUtil();
         paymentPwd = new PaymentPwd();
@@ -193,14 +193,14 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                 FriendSeleBean friendSeleBean = (FriendSeleBean) data.getExtras().getSerializable("list");
                 List<ContactEntity> list = friendSeleBean.getList();
                 presenter.setListData(list);
-                presenter.horizontal_layout(listView);
+                presenter.horizontal_layout(gridview);
                 friendGridAdapter.setNotifyData(list);
                 numberTv.setText(getString(R.string.Wallet_transfer_man, list.size()));
                 presenter.checkBtnEnable();
             }else if(requestCode == SeleUsersActivity.CODE_REQUEST){
                 ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
                 presenter.setListData(friendList);
-                presenter.horizontal_layout(listView);
+                presenter.horizontal_layout(gridview);
                 friendGridAdapter.setNotifyData(friendList);
                 numberTv.setText(getString(R.string.Wallet_transfer_man, friendList.size()));
                 presenter.checkBtnEnable();

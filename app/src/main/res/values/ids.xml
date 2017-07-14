@@ -55,6 +55,7 @@
     <item name="checkbox" type="id"/>
     <item name="surfaceview" type="id"/>
     <item name="upgradeview" type="id"/>
+    <item name="refreshview" type="id"/>
 
     <!-- TopToolBar -->
     <item name="left_img" type="id"/>
@@ -122,7 +123,6 @@
     <item name="contact" type="id"/>
     <item name="wallet" type="id"/>
     <item name="set" type="id"/>
-    <item name="listview" type="id"/>
 
     <item name="content_notice" type="id"/>
     <item name="content_layout" type="id"/>

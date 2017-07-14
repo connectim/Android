@@ -1,20 +1,24 @@
 package connect.widget.album.ui.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -28,9 +32,10 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseFragmentActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemDataUtil;
+import connect.utils.system.SystemUtil;
 import connect.widget.album.entity.AlbumFolderInfo;
 import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.presenter.ImageScannerPresenter;
@@ -179,21 +184,53 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
         ActivityUtil.goBackWithResult(activity, requestCode, bundle);
     }
 
-    public void popUpAlbumSelectDialog(){
-        DialogUtil.showAlertListView(activity, null, albumFolderAdapter, new DialogUtil.DialogListItemLongClickListener() {
+    public void popUpAlbumSelectDialog() {
+        final Dialog dialog = new Dialog(activity, R.style.Dialog);
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.view_list, null);
+        dialog.setContentView(view);
+        TextView titleTextView = (TextView) view.findViewById(R.id.title_tv);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        LinearLayout list_lin = (LinearLayout) view.findViewById(R.id.list_lin);
+        if (albumFolderAdapter != null) {
+            list_lin.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setAdapter(albumFolderAdapter);
+        }
+
+        ViewGroup.LayoutParams layoutParams = null;
+        if (albumFolderAdapter.getItemCount() >= 5) {
+            layoutParams = new LinearLayout.LayoutParams(SystemDataUtil.getScreenWidth(),
+                    SystemUtil.dipToPx(450));
+        } else {
+            layoutParams = new LinearLayout.LayoutParams(SystemDataUtil.getScreenWidth(),
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+        list_lin.setLayoutParams(layoutParams);
+
+        titleTextView.setVisibility(View.GONE);
+        albumFolderAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
-            public void onClick(AdapterView<?> parent, View view, int position) {
+            public void itemClick(int position) {
                 AlbumFolderInfo albumFolderInfo = mAlbumFolderInfoList.get(position);
                 gridFragment.setTitle(albumFolderInfo.getFolderName());
                 albumView.switchAlbumFolder(albumFolderInfo);
-            }
-
-            @Override
-            public void onLongClick(AdapterView<?> parent, View view, int position) {
-
+                dialog.dismiss();
             }
         });
+
+        Window mWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = mWindow.getAttributes();
+        lp.width = SystemDataUtil.getScreenWidth();
+        mWindow.setGravity(Gravity.BOTTOM);
+        mWindow.setWindowAnimations(R.style.DialogAnim);
+        mWindow.setAttributes(lp);
+        dialog.show();
+        dialog.setCanceledOnTouchOutside(true);
     }
+
 
     /**
      * View the photo album pictures
@@ -282,42 +319,20 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public BaseAdapter albumFolderAdapter = new BaseAdapter() {
+    public BaseAdapter albumFolderAdapter = new BaseAdapter();
+
+    class BaseAdapter extends RecyclerView.Adapter<PhotoAlbumActivity.ViewHolder> {
 
         @Override
-        public int getCount() {
-            int size = 0;
-            if (mAlbumFolderInfoList != null) {
-                size = mAlbumFolderInfoList.size();
-            }
-            return size;
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(activity);
+            View view = inflater.inflate(R.layout.album_directory_item, parent, false);
+            ViewHolder holder = new ViewHolder(view);
+            return holder;
         }
 
         @Override
-        public AlbumFolderInfo getItem(int position) {
-            return mAlbumFolderInfoList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
-            if (convertView == null) {
-                convertView = View.inflate(parent.getContext(), R.layout.album_directory_item, null);
-                holder = new ViewHolder();
-                holder.ivAlbumCover = (ImageView) convertView.findViewById(R.id.iv_album_cover);
-                holder.videoStateImg = (ImageView) convertView.findViewById(R.id.img2);
-                holder.tvDirectoryName = (TextView) convertView.findViewById(R.id.tv_directory_name);
-                holder.tvChildCount = (TextView) convertView.findViewById(R.id.tv_child_count);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
+        public void onBindViewHolder(ViewHolder holder, int position) {
             AlbumFolderInfo albumFolderInfo = mAlbumFolderInfoList.get(position);
 
             File frontCover = albumFolderInfo.getFrontCover();
@@ -333,15 +348,47 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
 
             List<ImageInfo> imageInfoList = albumFolderInfo.getImageInfoList();
             holder.tvChildCount.setText(imageInfoList.size() + "");
-            return convertView;
         }
-    };
 
-    private static class ViewHolder {
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemCount() {
+            int size = 0;
+            if (mAlbumFolderInfoList != null) {
+                size = mAlbumFolderInfoList.size();
+            }
+            return size;
+        }
+
+        private OnItemClickListener itemClickListener;
+
+        public void setItemClickListener(OnItemClickListener itemClickListener) {
+            this.itemClickListener = itemClickListener;
+        }
+    }
+
+    public interface OnItemClickListener{
+        void itemClick(int position);
+    }
+
+    private static class ViewHolder extends RecyclerView.ViewHolder{
+
         ImageView ivAlbumCover;
         ImageView videoStateImg;
         TextView tvDirectoryName;
         TextView tvChildCount;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            ivAlbumCover = (ImageView) itemView.findViewById(R.id.iv_album_cover);
+            videoStateImg = (ImageView) itemView.findViewById(R.id.img2);
+            tvDirectoryName = (TextView) itemView.findViewById(R.id.tv_directory_name);
+            tvChildCount = (TextView) itemView.findViewById(R.id.tv_child_count);
+        }
     }
 
     public int getMaxSelect() {

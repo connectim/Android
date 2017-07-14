@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,9 +82,9 @@ public class ModifyAvaterActivity extends BaseActivity implements ModifyAvaterCo
         list.add(mActivity.getResources().getString(R.string.Login_Take_Photo));
         list.add(mActivity.getResources().getString(R.string.Login_Select_form_album));
         list.add(mActivity.getResources().getString(R.string.Set_Save_Photo));
-        DialogUtil.showBottomListView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
+        DialogUtil.showBottomView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
             @Override
-            public void confirm(AdapterView<?> parent, View view, int position) {
+            public void confirm(int position) {
                 switch (position) {
                     case 0://take photo
                         TakePictureActivity.startActivity(mActivity);

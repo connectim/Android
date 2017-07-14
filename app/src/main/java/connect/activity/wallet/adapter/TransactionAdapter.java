@@ -1,59 +1,47 @@
 package connect.activity.wallet.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import connect.ui.activity.R;
-import connect.utils.data.RateFormatUtil;
-import connect.utils.TimeUtil;
-import connect.widget.AvatarGridView;
-import connect.widget.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import connect.activity.contact.adapter.FriendRecordAdapter;
+import connect.ui.activity.R;
+import connect.utils.TimeUtil;
+import connect.utils.data.RateFormatUtil;
+import connect.widget.AvatarGridView;
+import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
  * Created by Administrator on 2016/12/14.
  */
-public class TransactionAdapter extends BaseAdapter {
+public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
+    private Activity activity;
     private ArrayList<Connect.Transaction> mListData = new ArrayList();
 
-    @Override
-    public int getCount() {
-        return mListData.size();
+    public TransactionAdapter(Activity activity){
+        this.activity=activity;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mListData.get(position);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_wallet_transaction, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet_transaction, parent, false);
-            viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         int typeTx = mListData.get(position).getTxType();
         viewHolder.avatarGridview.setVisibility(View.GONE);
         viewHolder.avaterRimg.setVisibility(View.GONE);
@@ -105,44 +93,63 @@ public class TransactionAdapter extends BaseAdapter {
         }
 
         if (mListData.get(position).getBalance() > 0) {
-            viewHolder.balanceTv.setTextColor(parent.getContext().getResources().getColor(R.color.color_00c400));
+            viewHolder.balanceTv.setTextColor(activity.getResources().getColor(R.color.color_00c400));
             viewHolder.balanceTv.setText("+" + RateFormatUtil.longToDoubleBtc(mListData.get(position).getBalance()));
         } else {
-            viewHolder.balanceTv.setTextColor(parent.getContext().getResources().getColor(R.color.color_f04a5f));
+            viewHolder.balanceTv.setTextColor(activity.getResources().getColor(R.color.color_f04a5f));
             viewHolder.balanceTv.setText("" + RateFormatUtil.longToDoubleBtc(mListData.get(position).getBalance()));
         }
 
         viewHolder.timeTv.setText(TimeUtil.getTime(mListData.get(position).getCreatedAt() * 1000, TimeUtil.DATE_FORMAT_MONTH_HOUR));
 
         if (mListData.get(position).getConfirmations() > 0) {//confirm
-            viewHolder.statusTv.setTextColor(parent.getContext().getResources().getColor(R.color.color_767a82));
-            viewHolder.statusTv.setText(parent.getContext().getString(R.string.Wallet_Confirmed));
+            viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_767a82));
+            viewHolder.statusTv.setText(activity.getString(R.string.Wallet_Confirmed));
         } else {
-            viewHolder.statusTv.setTextColor(parent.getContext().getResources().getColor(R.color.color_f04a5f));
-            viewHolder.statusTv.setText(parent.getContext().getString(R.string.Wallet_Unconfirmed));
+            viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_f04a5f));
+            viewHolder.statusTv.setText(activity.getString(R.string.Wallet_Unconfirmed));
         }
 
-        return convertView;
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListData != null && mListData.size() >= position) {
+                    itemClickListener.itemClick(mListData.get(position));
+                }
+            }
+        });
     }
 
-    class ViewHolder {
-        @Bind(R.id.avater_rimg)
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mListData.size();
+    }
+
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+
         RoundedImageView avaterRimg;
-        @Bind(R.id.avatar_gridview)
         AvatarGridView avatarGridview;
-        @Bind(R.id.left_rela)
         RelativeLayout leftRela;
-        @Bind(R.id.name_tv)
         TextView nameTv;
-        @Bind(R.id.balance_tv)
         TextView balanceTv;
-        @Bind(R.id.time_tv)
         TextView timeTv;
-        @Bind(R.id.status_tv)
         TextView statusTv;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
+            avatarGridview = (AvatarGridView) itemview.findViewById(R.id.avatar_gridview);
+            leftRela = (RelativeLayout) itemview.findViewById(R.id.left_rela);
+            nameTv = (TextView) itemview.findViewById(R.id.name_tv);
+            balanceTv = (TextView) itemview.findViewById(R.id.balance_tv);
+            timeTv = (TextView) itemview.findViewById(R.id.time_tv);
+            statusTv = (TextView) itemview.findViewById(R.id.status_tv);
         }
     }
 
@@ -154,5 +161,14 @@ public class TransactionAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    private OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void itemClick(Connect.Transaction transaction);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
 }

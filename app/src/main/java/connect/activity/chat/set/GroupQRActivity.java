@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -93,9 +92,9 @@ public class GroupQRActivity extends BaseActivity {
                 }
                 list.add(getString(R.string.Link_Share));
                 list.add(getString(R.string.Set_Save_Photo));
-                DialogUtil.showBottomListView(activity, list, new DialogUtil.DialogListItemClickListener() {
+                DialogUtil.showBottomView(activity, list, new DialogUtil.DialogListItemClickListener() {
                     @Override
-                    public void confirm(AdapterView<?> parent, View view, int position) {
+                    public void confirm(int position) {
                         if (activity.getResources().getString(R.string.Link_Refresh_QR_Code).equals(list.get(position))) {//refresh qrcode
                             DialogUtil.showAlertTextView(activity, "", getString(R.string.Link_Refresh_QR_tip), getString(R.string.Common_Cancel), getString(R.string.Common_OK),
                                     false, new DialogUtil.OnItemClickListener() {

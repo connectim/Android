@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -212,9 +211,9 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     void goDeleteFriend(View view) {
         ArrayList<String> list = new ArrayList<>();
         list.add(mActivity.getResources().getString(R.string.Link_Delete_This_Friend));
-        DialogUtil.showBottomListView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
+        DialogUtil.showBottomView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
             @Override
-            public void confirm(AdapterView<?> parent, View view, int position) {
+            public void confirm(int position) {
                 switch (position) {
                     case 0:
                         MsgSendBean msgSendBean = new MsgSendBean();

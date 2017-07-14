@@ -208,6 +208,9 @@ public class HttpsService extends Service {
             case WALLET_DEFAULT_ADDRESS:
                 getCurrencyDefaultAddress();
                 break;
+            case WALLET_CURRENCY_SET:
+                updateCurrency();
+                break;
         }
     }
 
@@ -686,6 +689,33 @@ public class HttpsService extends Service {
 
     private void getCurrencyDefaultAddress() {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_GET_DEFAULT, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
+
+                    }
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+
+            }
+        });
+    }
+
+    private void updateCurrency() {
+        WalletOuterClass.Coin coin = WalletOuterClass.Coin.newBuilder()
+                .setCurrency(0)
+                .setStatus(0).build();
+
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_CURRENCY_SET, coin, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {

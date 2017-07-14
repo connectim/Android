@@ -14,6 +14,7 @@ import connect.activity.wallet.bean.WalletBean;
 import connect.database.MemoryDataManager;
 import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.utils.StringUtil;
 import connect.utils.UriUtil;
@@ -34,6 +35,7 @@ import wallet_gateway.WalletOuterClass;
 public class CurrencyManage {
 
     public static CurrencyType CURRENCY_DEFAULT = CurrencyType.BTC;
+    private final int MASTER_ADDRESS = 0;
     //(1:纯私钥，2:baseseed，3:salt+seed)
     public static final int WALLET_CATEGORY_PRI = 1;
     public static final int WALLET_CATEGORY_BASE = 2;
@@ -90,7 +92,7 @@ public class CurrencyManage {
         switch (currencyType){
             case BTC:
                 // BIP44 生成对应的公私钥，地址
-                String pubKey = AllNativeMethod.cdGetPubKeyFromSeedBIP44(currencySeend,44,0,0,0,0);
+                String pubKey = AllNativeMethod.cdGetPubKeyFromSeedBIP44(currencySeend,44,0,0,0,MASTER_ADDRESS);
                 address = AllNativeMethod.cdGetBTCAddrFromPubKey(pubKey);
                 break;
             default:
@@ -103,7 +105,7 @@ public class CurrencyManage {
      * 创建币种
      * @param category 1:纯私钥，2:baseSeed，3:salt+seed
      */
-    public void createCurrency(String payload, final String salt, final CurrencyType currencyType, final int category, String masterAddress, final OnCreateCurrencyListener onCurrencyListener){
+    public void createCurrency(String payload, final String salt, final CurrencyType currencyType, final int category, final String masterAddress, final OnCreateCurrencyListener onCurrencyListener){
         WalletOuterClass.CreateCoinArgs.Builder builder = WalletOuterClass.CreateCoinArgs.newBuilder();
         builder.setSalt(salt);
         builder.setCurrency(currencyType.getCode());
@@ -120,11 +122,19 @@ public class CurrencyManage {
                 currencyEntity.setCategory(category);
                 CurrencyHelper.getInstance().insertCurrency(currencyEntity);
                 onCurrencyListener.success(currencyEntity);
+
+                CurrencyAddressEntity addressEntity = new CurrencyAddressEntity();
+                addressEntity.setBalance(0L);
+                addressEntity.setStatus(1);
+                addressEntity.setCurrency(currencyType.getCode());
+                addressEntity.setAddress(masterAddress);
+                addressEntity.setIndex(MASTER_ADDRESS);
+                CurrencyHelper.getInstance().insertCurrencyAddress(addressEntity);
             }
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                int a = 1;
+
             }
         });
     }

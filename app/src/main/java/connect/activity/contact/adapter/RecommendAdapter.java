@@ -1,5 +1,7 @@
 package connect.activity.contact.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,39 +28,26 @@ import connect.widget.roundedimageview.RoundedImageView;
  * Created by Administrator on 2017/1/21.
  */
 
-public class RecommendAdapter extends BaseAdapter {
+public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder> {
 
+    private Activity activity;
     private ArrayList<RecommandFriendEntity> mList = new ArrayList<>();
     private OnAddListence onAddListence;
 
-    @Override
-    public int getCount() {
-        return mList.size();
+    public RecommendAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mList.get(position);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_contact_recommend, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_recommend, parent, false);
-            viewHolder = new ViewHolder(convertView);
-            viewHolder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
-            viewHolder.sideScrollView.setSideScrollListener(sideScrollListener);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final RecommandFriendEntity recommendEntity = mList.get(position);
         GlideUtil.loadAvater(viewHolder.avatarRimg,recommendEntity.getAvatar() + "?size=80");
         viewHolder.nicknameTv.setText(recommendEntity.getUsername());
@@ -80,7 +69,16 @@ public class RecommendAdapter extends BaseAdapter {
                 onAddListence.deleteItem(position,recommendEntity);
             }
         });
-        return convertView;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mList.size();
     }
 
     public void setDataNotify(List list,boolean isClear) {
@@ -94,26 +92,27 @@ public class RecommendAdapter extends BaseAdapter {
         return mList;
     }
 
-    static class ViewHolder {
-        @Bind(R.id.delete_tv)
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
         ImageView deleteTv;
-        @Bind(R.id.bottom_layout)
         RelativeLayout bottomLayout;
-        @Bind(R.id.avatar_rimg)
         RoundedImageView avatarRimg;
-        @Bind(R.id.nickname_tv)
         TextView nicknameTv;
-        @Bind(R.id.status_btn)
         Button statusBtn;
-        @Bind(R.id.content_layout)
         RelativeLayout contentLayout;
-        @Bind(R.id.side_scroll_view)
         SideScrollView sideScrollView;
-        @Bind(R.id.content_rela)
         LinearLayout contentRela;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            deleteTv = (ImageView) itemview.findViewById(R.id.delete_tv);
+            bottomLayout = (RelativeLayout) itemview.findViewById(R.id.bottom_layout);
+            avatarRimg = (RoundedImageView) itemview.findViewById(R.id.avatar_rimg);
+            nicknameTv = (TextView) itemview.findViewById(R.id.nickname_tv);
+            statusBtn = (Button) itemview.findViewById(R.id.status_btn);
+            contentLayout = (RelativeLayout) itemview.findViewById(R.id.content_layout);
+            sideScrollView = (SideScrollView) itemview.findViewById(R.id.side_scroll_view);
+            contentRela = (LinearLayout) itemview.findViewById(R.id.content_rela);
         }
     }
 

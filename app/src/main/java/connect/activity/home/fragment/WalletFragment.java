@@ -93,13 +93,12 @@ public class WalletFragment extends BaseFragment{
         currencyEntity = CurrencyHelper.getInstance().loadCurrency(0);
         if (currencyEntity == null) {
             currencyEntity = new CurrencyEntity();
+            currencyEntity.setBalance(0L);
         }
+        amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
 
-        if(mActivity != null && isAdded()){
-            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
-            requestRate();
-            requestWallet();
-        }
+        requestRate();
+        requestWallet();
     }
 
     private void initView() {
@@ -151,8 +150,8 @@ public class WalletFragment extends BaseFragment{
         if (account.contains(mActivity.getString(R.string.Set_BTC_symbol)) && rateBean != null && rateBean.getRate() != null) {
             amountTv.setText(rateBean.getSymbol() + " " +
                     RateFormatUtil.foematNumber(RateFormatUtil.PATTERN_OTHER,
-                            currencyEntity.getBalance()*rateBean.getRate()/RateFormatUtil.BTC_TO_LONG));
-        }else{
+                            currencyEntity.getBalance() * rateBean.getRate() / RateFormatUtil.BTC_TO_LONG));
+        } else {
             amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
         }
     }

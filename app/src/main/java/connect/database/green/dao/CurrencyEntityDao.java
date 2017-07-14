@@ -29,9 +29,10 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
         public final static Property Category = new Property(2, Integer.class, "category", false, "CATEGORY");
         public final static Property Salt = new Property(3, String.class, "salt", false, "SALT");
         public final static Property MasterAddress = new Property(4, String.class, "masterAddress", false, "MASTER_ADDRESS");
-        public final static Property Status = new Property(5, Integer.class, "status", false, "STATUS");
-        public final static Property Balance = new Property(6, Long.class, "balance", false, "BALANCE");
-        public final static Property Payload = new Property(7, String.class, "payload", false, "PAYLOAD");
+        public final static Property DefaultAddress = new Property(5, String.class, "defaultAddress", false, "DEFAULT_ADDRESS");
+        public final static Property Status = new Property(6, Integer.class, "status", false, "STATUS");
+        public final static Property Balance = new Property(7, Long.class, "balance", false, "BALANCE");
+        public final static Property Payload = new Property(8, String.class, "payload", false, "PAYLOAD");
     }
 
 
@@ -52,9 +53,10 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
                 "\"CATEGORY\" INTEGER," + // 2: category
                 "\"SALT\" TEXT NOT NULL UNIQUE ," + // 3: salt
                 "\"MASTER_ADDRESS\" TEXT," + // 4: masterAddress
-                "\"STATUS\" INTEGER," + // 5: status
-                "\"BALANCE\" INTEGER," + // 6: balance
-                "\"PAYLOAD\" TEXT);"); // 7: payload
+                "\"DEFAULT_ADDRESS\" TEXT," + // 5: defaultAddress
+                "\"STATUS\" INTEGER," + // 6: status
+                "\"BALANCE\" INTEGER," + // 7: balance
+                "\"PAYLOAD\" TEXT);"); // 8: payload
     }
 
     /** Drops the underlying database table. */
@@ -84,19 +86,24 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
             stmt.bindString(5, masterAddress);
         }
  
+        String defaultAddress = entity.getDefaultAddress();
+        if (defaultAddress != null) {
+            stmt.bindString(6, defaultAddress);
+        }
+ 
         Integer status = entity.getStatus();
         if (status != null) {
-            stmt.bindLong(6, status);
+            stmt.bindLong(7, status);
         }
  
         Long balance = entity.getBalance();
         if (balance != null) {
-            stmt.bindLong(7, balance);
+            stmt.bindLong(8, balance);
         }
  
         String payload = entity.getPayload();
         if (payload != null) {
-            stmt.bindString(8, payload);
+            stmt.bindString(9, payload);
         }
     }
 
@@ -121,19 +128,24 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
             stmt.bindString(5, masterAddress);
         }
  
+        String defaultAddress = entity.getDefaultAddress();
+        if (defaultAddress != null) {
+            stmt.bindString(6, defaultAddress);
+        }
+ 
         Integer status = entity.getStatus();
         if (status != null) {
-            stmt.bindLong(6, status);
+            stmt.bindLong(7, status);
         }
  
         Long balance = entity.getBalance();
         if (balance != null) {
-            stmt.bindLong(7, balance);
+            stmt.bindLong(8, balance);
         }
  
         String payload = entity.getPayload();
         if (payload != null) {
-            stmt.bindString(8, payload);
+            stmt.bindString(9, payload);
         }
     }
 
@@ -150,9 +162,10 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // category
             cursor.getString(offset + 3), // salt
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // masterAddress
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // status
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // balance
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // payload
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // defaultAddress
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // status
+            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // balance
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // payload
         );
         return entity;
     }
@@ -164,9 +177,10 @@ public class CurrencyEntityDao extends AbstractDao<CurrencyEntity, Long> {
         entity.setCategory(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setSalt(cursor.getString(offset + 3));
         entity.setMasterAddress(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setStatus(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setBalance(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
-        entity.setPayload(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setDefaultAddress(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setStatus(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setBalance(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
+        entity.setPayload(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

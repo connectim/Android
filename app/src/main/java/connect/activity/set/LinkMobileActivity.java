@@ -3,7 +3,6 @@ package connect.activity.set;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 import java.util.ArrayList;
@@ -85,9 +84,9 @@ public class LinkMobileActivity extends BaseActivity {
     void rightMore(View view) {
         ArrayList list = new ArrayList<>();
         list.add(mActivity.getResources().getString(R.string.Set_Unlink));
-        DialogUtil.showBottomListView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
+        DialogUtil.showBottomView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
             @Override
-            public void confirm(AdapterView<?> parent, View view, int position) {
+            public void confirm(int position) {
                 switch (position) {
                     case 0:
                         unLinkPhone();

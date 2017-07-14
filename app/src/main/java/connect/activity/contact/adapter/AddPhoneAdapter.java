@@ -1,5 +1,7 @@
 package connect.activity.contact.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import connect.utils.PinyinUtil;
 import connect.activity.contact.bean.PhoneContactBean;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,24 +24,23 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/12/30.
  */
-public class AddPhoneAdapter extends BaseAdapter {
+public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<PhoneContactBean> mDataList = new ArrayList<>();
     private List<PhoneContactBean> selectList = new ArrayList<>();
-    private final int VIEW_TYP_TITLE = 100;
-    private final int VIEW_TYP_SERVER = 101;
-    private final int VIEW_TYP_LOAD = 102;
     private OnSeleListence onSeleListence;
     private int serverSize;
 
-    @Override
-    public int getCount() {
-        return mDataList.size();
+    private Activity activity;
+
+    public enum ITEMTYPE {
+        VIEW_TYP_TITLE,
+        VIEW_TYP_SERVER,
+        VIEW_TYP_LOAD
     }
 
-    @Override
-    public Object getItem(int position) {
-        return mDataList.get(position);
+    public AddPhoneAdapter(Activity activity){
+        this.activity=activity;
     }
 
     @Override
@@ -47,111 +49,119 @@ public class AddPhoneAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (!TextUtils.isEmpty(mDataList.get(position).getAddress())) {
-            return VIEW_TYP_SERVER;
-        } else if (!TextUtils.isEmpty(mDataList.get(position).getPhone())) {
-            return VIEW_TYP_LOAD;
-        } else {
-            return VIEW_TYP_TITLE;
+    public int getItemCount() {
+        return mDataList.size();
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View convertView = null;
+        RecyclerView.ViewHolder holder = null;
+        if (viewType == ITEMTYPE.VIEW_TYP_TITLE.ordinal()) {
+            convertView = inflater.inflate(R.layout.item_contact_phone_title, parent, false);
+            holder = new TitleViewHolder(convertView);
+        } else if (viewType == ITEMTYPE.VIEW_TYP_SERVER.ordinal()) {
+            convertView = inflater.inflate(R.layout.item_contact_phone_request, parent, false);
+            holder = new ServerHolder(convertView);
+        } else if (viewType == ITEMTYPE.VIEW_TYP_LOAD.ordinal()) {
+            convertView = inflater.inflate(R.layout.item_contact_phone_local, parent, false);
+            holder = new LoaderHolder(convertView);
+        }
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        int type = getItemViewType(position);
+        if (mDataList != null && mDataList.size() > 0) {
+            final PhoneContactBean contactBean = mDataList.get(position);
+            if(type==ITEMTYPE.VIEW_TYP_TITLE.ordinal()){
+                ((TitleViewHolder)holder).titleTv.setText(R.string.Set_Installed);
+            }else if(type==ITEMTYPE.VIEW_TYP_SERVER.ordinal()){
+                GlideUtil.loadAvater(((ServerHolder)holder).avater,contactBean.getAvater());
+                ((ServerHolder)holder).nameTvS.setText(contactBean.getName());
+                ((ServerHolder)holder).nicName.setText(contactBean.getNickName());
+                showStatus(position,contactBean,((ServerHolder)holder).addBtn);
+            }if(type==ITEMTYPE.VIEW_TYP_LOAD.ordinal()){
+                String lastName = "";
+                if(position > 0 && !TextUtils.isEmpty(mDataList.get(position - 1).getName())){
+                    lastName = PinyinUtil.chatToPinyin(mDataList.get(position - 1).getName().charAt(0));
+                }
+                String curName = PinyinUtil.chatToPinyin(contactBean.getName().charAt(0));
+                if (lastName.equals(curName)) {
+                    ((LoaderHolder) holder).txt.setVisibility(View.GONE);
+                } else {
+                    ((LoaderHolder) holder).txt.setVisibility(View.VISIBLE);
+                    ((LoaderHolder) holder).txt.setText(curName);
+                }
+
+                if (selectList.contains(contactBean)) {
+                    ((LoaderHolder) holder).select.setSelected(true);
+                } else {
+                    ((LoaderHolder) holder).select.setSelected(false);
+                }
+                ((LoaderHolder) holder).nameTv.setText(contactBean.getName());
+                ((LoaderHolder) holder).phoneTv.setText(contactBean.getPhone());
+                ((LoaderHolder) holder).itemView.setOnClickListener(itemListener);
+            }
         }
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        int type = getItemViewType(position);
-        int tmp = 0;
-        if (convertView != null) {
-            tmp = (Integer) convertView.getTag(R.id.status_key);
-        }
-        if (convertView == null || tmp != type) {
-            holder = new ViewHolder();
-            switch (type) {
-                case VIEW_TYP_TITLE:
-                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_phone_title, parent, false);
-                    holder.titleTv = (TextView) convertView.findViewById(R.id.title_tv);
-                    break;
-                case VIEW_TYP_SERVER:
-                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_phone_request, parent, false);
-                    holder.avater = (RoundedImageView)convertView.findViewById(R.id.avatar_rimg);
-                    holder.nameTvS = (TextView)convertView.findViewById(R.id.nickname_tv);
-                    holder.nicName = (TextView)convertView.findViewById(R.id.hint_tv);
-                    holder.addBtn = (Button) convertView.findViewById(R.id.status_btn);
-                    break;
-                case VIEW_TYP_LOAD:
-                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_phone_local, parent, false);
-                    holder.txt = (TextView)convertView.findViewById(R.id.txt);
-                    holder.select = convertView.findViewById(R.id.select);
-                    holder.nameTv = (TextView)convertView.findViewById(R.id.name_tv);
-                    holder.phoneTv = (TextView)convertView.findViewById(R.id.phone_tv);
-                    break;
-            }
-            if (convertView != null) {
-                convertView.setTag(holder);
-                convertView.setTag(R.id.status_key, type);
-            }
+    public int getItemViewType(int position) {
+        if (!TextUtils.isEmpty(mDataList.get(position).getAddress())) {
+            return ITEMTYPE.VIEW_TYP_SERVER.ordinal();
+        } else if (!TextUtils.isEmpty(mDataList.get(position).getPhone())) {
+            return ITEMTYPE.VIEW_TYP_LOAD.ordinal();
         } else {
-            holder = (ViewHolder) convertView.getTag();
+            return ITEMTYPE.VIEW_TYP_TITLE.ordinal();
         }
-
-        if (mDataList != null && mDataList.size() > 0) {
-            final PhoneContactBean contactBean = mDataList.get(position);
-            switch (type) {
-                case VIEW_TYP_TITLE:
-                    holder.titleTv.setText(R.string.Set_Installed);
-                    break;
-                case VIEW_TYP_SERVER:
-                    GlideUtil.loadAvater(holder.avater,contactBean.getAvater());
-                    holder.nameTvS.setText(contactBean.getName());
-                    holder.nicName.setText(contactBean.getNickName());
-                    showStatus(position,contactBean,holder.addBtn);
-                    break;
-                case VIEW_TYP_LOAD:
-                    String lastName = "";
-                    if(position > 0 && !TextUtils.isEmpty(mDataList.get(position - 1).getName())){
-                        lastName = PinyinUtil.chatToPinyin(mDataList.get(position - 1).getName().charAt(0));
-                    }
-                    String curName = PinyinUtil.chatToPinyin(contactBean.getName().charAt(0));
-                    if (lastName.equals(curName)) {
-                        holder.txt.setVisibility(View.GONE);
-                    } else {
-                        holder.txt.setVisibility(View.VISIBLE);
-                        holder.txt.setText(curName);
-                    }
-
-                    if (selectList.contains(contactBean)) {
-                        holder.select.setSelected(true);
-                    } else {
-                        holder.select.setSelected(false);
-                    }
-                    holder.nameTv.setText(contactBean.getName());
-                    holder.phoneTv.setText(contactBean.getPhone());
-                    convertView.setOnClickListener(itemClickListener);
-                    convertView.setTag(R.id.position_key,position);
-                    break;
-            }
-        }
-
-        return convertView;
     }
 
-    private static class ViewHolder {
+    class TitleViewHolder extends RecyclerView.ViewHolder {
+
         TextView titleTv;
 
-        TextView txt;
-        View select;
-        TextView nameTv;
-        TextView phoneTv;
+        public TitleViewHolder(View itemView) {
+            super(itemView);
+            titleTv = (TextView) itemView.findViewById(R.id.title_tv);
+        }
+    }
+
+    class ServerHolder extends RecyclerView.ViewHolder{
 
         RoundedImageView avater;
         TextView nameTvS;
         TextView nicName;
         Button addBtn;
 
+        public ServerHolder(View itemView) {
+            super(itemView);
+            avater = (RoundedImageView)itemView.findViewById(R.id.avatar_rimg);
+            nameTvS = (TextView)itemView.findViewById(R.id.nickname_tv);
+            nicName = (TextView)itemView.findViewById(R.id.hint_tv);
+            addBtn = (Button) itemView.findViewById(R.id.status_btn);
+        }
     }
 
-    private View.OnClickListener itemClickListener = new View.OnClickListener() {
+    class LoaderHolder extends RecyclerView.ViewHolder{
+
+        TextView txt;
+        View select;
+        TextView nameTv;
+        TextView phoneTv;
+
+        public LoaderHolder(View itemView) {
+            super(itemView);
+            txt = (TextView)itemView.findViewById(R.id.txt);
+            select = itemView.findViewById(R.id.select);
+            nameTv = (TextView)itemView.findViewById(R.id.name_tv);
+            phoneTv = (TextView)itemView.findViewById(R.id.phone_tv);
+        }
+    }
+
+    private View.OnClickListener itemListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int position = (int)v.getTag(R.id.position_key);
@@ -236,7 +246,5 @@ public class AddPhoneAdapter extends BaseAdapter {
         void seleFriend(List<PhoneContactBean> list);
 
         void addFriend(int position,PhoneContactBean contactBean);
-
     }
-
 }
