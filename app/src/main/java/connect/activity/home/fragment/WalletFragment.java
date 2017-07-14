@@ -35,7 +35,9 @@ import connect.activity.wallet.manager.CurrencyType;
 import connect.activity.wallet.manager.PinManager;
 import connect.activity.wallet.manager.WalletManager;
 import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
@@ -64,7 +66,6 @@ public class WalletFragment extends BaseFragment{
     TextView amountTv;
 
     private FragmentActivity mActivity;
-    private WalletAccountBean accountBean;
     private RateBean rateBean;
     public WalletManager walletManage;
 
@@ -83,15 +84,19 @@ public class WalletFragment extends BaseFragment{
         return view;
     }
 
+    private CurrencyEntity currencyEntity = null;
+
     @Override
     public void onStart() {
         super.onStart();
         rateBean = ParamManager.getInstance().getCountryRate();
-        accountBean = ParamManager.getInstance().getWalletAmount();
-        if(accountBean == null)
-            accountBean = new WalletAccountBean(0L, 0L);
+        currencyEntity = CurrencyHelper.getInstance().loadCurrency(0);
+        if (currencyEntity == null) {
+            currencyEntity = new CurrencyEntity();
+        }
+
         if(mActivity != null && isAdded()){
-            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
+            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
             requestRate();
             requestWallet();
         }
@@ -119,6 +124,11 @@ public class WalletFragment extends BaseFragment{
             public void complete() {
 
             }
+
+            @Override
+            public void fail(String message) {
+
+            }
         });
     }
 
@@ -141,9 +151,9 @@ public class WalletFragment extends BaseFragment{
         if (account.contains(mActivity.getString(R.string.Set_BTC_symbol)) && rateBean != null && rateBean.getRate() != null) {
             amountTv.setText(rateBean.getSymbol() + " " +
                     RateFormatUtil.foematNumber(RateFormatUtil.PATTERN_OTHER,
-                            accountBean.getAmount()*rateBean.getRate()/RateFormatUtil.BTC_TO_LONG));
+                            currencyEntity.getBalance()*rateBean.getRate()/RateFormatUtil.BTC_TO_LONG));
         }else{
-            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
+            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
         }
     }
 

@@ -224,7 +224,11 @@ public class SupportKeyUril {
      * 解密支付密码
      */
     public static String decodePin(String value, String pass){
-        return AllNativeMethod.connectWalletKeyDecrypt(value,pass,PIN_VERSION);
+        String seed = AllNativeMethod.connectWalletKeyDecrypt(value,pass,PIN_VERSION);
+        if(seed.equals("error")){
+            seed = "";
+        }
+        return seed;
     }
 
     /**

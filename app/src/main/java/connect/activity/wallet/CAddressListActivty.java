@@ -43,6 +43,7 @@ public class CAddressListActivty extends BaseActivity {
 
     private CAddressListActivty activity;
     private CurrencyType currencyBean;
+    private CurrencyEntity currencyEntity;
     private List<CurrencyAddressEntity> currencyAddressEntities = new ArrayList<>();
 
     @Override
@@ -72,6 +73,7 @@ public class CAddressListActivty extends BaseActivity {
         });
 
         currencyBean = (CurrencyType) getIntent().getSerializableExtra("Currency");
+        currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyBean.getCode());
         currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(currencyBean.getName());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         CAddressAdapter cAddressAdapter = new CAddressAdapter(activity, currencyAddressEntities);
@@ -80,21 +82,16 @@ public class CAddressListActivty extends BaseActivity {
         cAddressAdapter.setItemClickListener(new CAddressAdapter.OnItemClickListener() {
             @Override
             public void onClick(View v) {
-                //CurrencyAddressEntity addressEntity = (CurrencyAddressEntity) v.getTag();
-
-                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
-                updateDefaultAddress(currencyEntity);
+                CurrencyAddressEntity addressEntity = (CurrencyAddressEntity) v.getTag();
+                updateDefaultAddress(addressEntity);
             }
         });
     }
 
-    public void updateDefaultAddress(CurrencyEntity addressEntity) {
-        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
+    public void updateDefaultAddress(final CurrencyAddressEntity addressEntity) {
         WalletOuterClass.RequestCreateCoinInfo history = WalletOuterClass.RequestCreateCoinInfo.newBuilder()
-                .setCurrency(addressEntity.getCurrency())
-                .setAddress(addressEntity.getMasterAddress())
-                .setIndex(0)
-                .setLabel("Label")
+                .setCurrency(currencyEntity.getCurrency())
+                .setAddress(addressEntity.getAddress())
                 .build();
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_DEFAULT, history, new ResultCall<Connect.HttpResponse>() {
@@ -105,7 +102,8 @@ public class CAddressListActivty extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     WalletOuterClass.RequestCreateCoinInfo createCoinInfo = WalletOuterClass.RequestCreateCoinInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
-
+                        currencyEntity.setMasterAddress(addressEntity.getAddress());
+                        CurrencyHelper.getInstance().updateCurrency(currencyEntity);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

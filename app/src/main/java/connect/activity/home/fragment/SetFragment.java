@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import butterknife.Bind;
@@ -152,26 +153,21 @@ public class SetFragment extends BaseFragment {
     @OnClick(R.id.llAbout)
     void intoAbout(View view) {
         //AboutActivity.startActivity(mActivity);
-        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
-        WalletOuterClass.RequestCreateCoinInfo history = WalletOuterClass.RequestCreateCoinInfo.newBuilder()
-                .setCurrency(0)
-                .setAddress("123")
-                .setIndex(0)
-                .setStatus(0)
-                .setWId("102")
-                .setLabel("Label")
-                .build();
 
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_DEFAULT, history, new ResultCall<Connect.HttpResponse>() {
+        WalletOuterClass.Coin coin = WalletOuterClass.Coin.newBuilder()
+                .setCurrency(0)
+                .setStatus(0).build();
+
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_CURRENCY_SET, coin, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    WalletOuterClass.RequestCreateCoinInfo createCoinInfo = WalletOuterClass.RequestCreateCoinInfo.parseFrom(structData.getPlainData());
+                    /*WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
 
-                    }
+                    }*/
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

@@ -24,6 +24,7 @@ public class HttpRecBean implements Serializable {
         SOUNDPOOL,//system voice
         SYSTEM_VIBRATION,//system vibrate
         GroupNotificaton,//Mute Notification
+        WALLET_DEFAULT_ADDRESS,//default wallet address
     }
 
     public HttpRecType httpRecType;

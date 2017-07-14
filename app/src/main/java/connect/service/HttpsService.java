@@ -63,6 +63,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Background processing HTTP requests
@@ -203,6 +204,9 @@ public class HttpsService extends Service {
                 break;
             case GroupNotificaton:
                 updateGroupMute((String) objects[0], (Integer) objects[1]);
+                break;
+            case WALLET_DEFAULT_ADDRESS:
+                getCurrencyDefaultAddress();
                 break;
         }
     }
@@ -676,6 +680,29 @@ public class HttpsService extends Service {
 
             @Override
             public void onError(Connect.HttpResponse response) {
+            }
+        });
+    }
+
+    private void getCurrencyDefaultAddress() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_GET_DEFAULT, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
+
+                    }
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+
             }
         });
     }

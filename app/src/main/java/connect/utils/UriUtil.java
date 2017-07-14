@@ -129,7 +129,8 @@ public class UriUtil {
     public static String WALLET_V2_COINS_ADDRESS_DEFAULT = "/wallet/v2/coins/addresses/default";
     /** update coin */
     public static String WALLET_V2_COINS_ADDRESS_GET_DEFAULT = "/wallet/v2/coins/addresses/get_default";
-
+    /** update coin */
+    public static String WALLET_V2_COINS_CURRENCY_SET = "/wallet/v2/coins/update";
 
     /**======================================================================================
      *                                contact

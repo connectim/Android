@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 import connect.activity.home.bean.EstimatefeeBean;
 import connect.activity.wallet.bean.SignRawBean;
+import connect.activity.wallet.bean.WalletBean;
+import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -24,6 +26,7 @@ import connect.wallet.jni.AllNativeMethod;
 import connect.widget.MdStyleProgress;
 import connect.widget.payment.PaymentPwd;
 import connect.widget.payment.PinTransferDialog;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Created by Administrator on 2017/7/12 0012.
@@ -41,7 +44,8 @@ public class TransferManager {
     /**
      * 前置判断
      */
-    public boolean baseCheckTransfer(Context context, long avaAmount, long outAmount) {
+    public boolean baseCheckTransfer(Context context, Long outAmount) {
+        Long avaAmount = 0L;
         // 判断余额
         long fee = ParamManager.getInstance().getPaySet().getFee();
         if (avaAmount < outAmount + fee) {
@@ -73,6 +77,8 @@ public class TransferManager {
         this.onResultCall = onResultCall;
         this.currencyType = currencyType;
         this.indexList = indexList;
+        baseCheckTransfer(activity,0L);
+
         OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
             @Override
             public void onResponse(Object response) {
@@ -106,6 +112,8 @@ public class TransferManager {
         this.onResultCall = onResultCall;
         this.currencyType = currencyType;
         this.indexList = indexList;
+        baseCheckTransfer(activity,amount);
+
         OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
             @Override
             public void onResponse(Object response) {
@@ -135,6 +143,8 @@ public class TransferManager {
         this.onResultCall = onResultCall;
         this.currencyType = currencyType;
         this.indexList = indexList;
+        baseCheckTransfer(activity,amount);
+
         OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
             @Override
             public void onResponse(Object response) {
@@ -154,14 +164,23 @@ public class TransferManager {
      */
     private void checkPin(Activity activity, final String rowhex, final String tvs, final String url){
         pinTransferDialog = new PinTransferDialog();
-        pinTransferDialog.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
+        String payload = "";
+        final CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyType.getCode());
+        if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_PRI){
+            payload = currencyEntity.getPayload();
+        }else if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_BASE){
+            WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
+            payload = walletBean.getPayload();
+        }
+
+        pinTransferDialog.showPaymentPwd(activity, payload, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {
                 String priKey = "";
-                if(SupportKeyUril.checkPrikey(decodeStr)){
+                if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_PRI){
                     // 纯私钥
                     priKey = decodeStr;
-                }else{
+                }else if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_BASE){
                     // 原始种子，生成货币种子，再生成对应的私钥
                     CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyType.getCode());
                     String currencySeend = SupportKeyUril.xor(decodeStr, currencyEntity.getSalt(), 64);
