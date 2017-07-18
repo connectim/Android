@@ -82,7 +82,7 @@ abstract class BaseTransfer {
     /**
      * 广播交易
      */
-    protected void publishTransfer(String tansferType, String rawHex, String hashId, final OnBaseResultCall onResultCall){
+    protected void publishTransfer(String rawHex, String hashId, final OnBaseResultCall onResultCall){
         OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
             @Override
             public void onResponse(Object response) {

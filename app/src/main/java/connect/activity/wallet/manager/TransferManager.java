@@ -96,24 +96,26 @@ public class TransferManager extends BaseTransfer{
                     WalletOuterClass.OriginalTransactionResponse originalResponse = WalletOuterClass.OriginalTransactionResponse.parseFrom(structData.getPlainData());
                     WalletOuterClass.OriginalTransaction originalTransaction = originalResponse.getData();
                     switch (originalResponse.getCode()){
-                        case 1:
+                        case 0:
+                            ArrayList<String> priKeyList = checkPin(activity, originalTransaction.getAddressesList());
+                            String rawHex = getSignRawTrans(priKeyList, originalTransaction.getVts(), originalTransaction.getRawhex());
+                            publishTransfer(rawHex, originalTransaction.getHashId(), new OnBaseResultCall(){
+                                @Override
+                                public void success() {
+                                    //广播成功
+                                    onResultCall.result("asdasd");
+                                }
+                            });
                             break;
-                        case 2:
+                        case 1://手续费过小
                             break;
-                        case 3:
+                        case 2://手续费为空
+                            break;
+                        case 3://unspent太大
                             break;
                         default:
                             break;
                     }
-                    ArrayList<String> priKeyList = checkPin(activity, originalTransaction.getAddressesList());
-                    String rawHex = getSignRawTrans(priKeyList, originalTransaction.getVts(), originalTransaction.getRawhex());
-                    publishTransfer("transferType", rawHex, originalTransaction.getHashId(), new OnBaseResultCall(){
-                        @Override
-                        public void success() {
-                            //广播成功
-                            onResultCall.result("asdasd");
-                        }
-                    });
                 }catch (Exception e){
                     e.printStackTrace();
                 }
