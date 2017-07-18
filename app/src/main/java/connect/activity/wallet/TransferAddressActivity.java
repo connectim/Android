@@ -23,6 +23,7 @@ import connect.activity.wallet.manager.TransferManager;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.activity.set.PayFeeActivity;
@@ -112,6 +113,7 @@ public class TransferAddressActivity extends BaseActivity {
         transferEditView.setEditListener(onEditListener);
 
         transferManager = new TransferManager(CurrencyType.BTC);
+        addressTv.setText("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew");
     }
 
     @OnClick(R.id.left_img)
@@ -135,42 +137,20 @@ public class TransferAddressActivity extends BaseActivity {
             ToastEUtil.makeText(mActivity,R.string.Wallet_synchronization_data_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
             return;
         }
-        /*message SendCurrency {
-            Txin txin = 1;
-            int32 currency = 2;
-        }
-        message Txin {
-            repeated string addresses = 1;
-        }
-        message Txout {
-            string address = 1;
-            int64 amount = 2;
-        }
-        message TransferRequest {
-            SendCurrency send_currency = 1;
-            repeated Txout out_puts = 2;
-            int64 fee = 3;
-            int32 transfer_type = 4;
-            string tips = 5;
-        }
-        */
-
-        WalletOuterClass.Txin.Builder builder = WalletOuterClass.Txin.newBuilder();
-        builder.addAddresses(currencyEntity.getMasterAddress());
 
         ArrayList<WalletOuterClass.Txout> txoutList = new ArrayList<>();
         WalletOuterClass.Txout.Builder builderTxout = WalletOuterClass.Txout.newBuilder();
-        builderTxout.setAddress("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew");
-        builderTxout.setAmount(10000L);
+        builderTxout.setAddress(addressTv.getText().toString());
+        builderTxout.setAmount(transferEditView.getCurrentBtcLong());
         txoutList.add(builderTxout.build());
 
-        transferManager.getTransferRow(mActivity, builder.build(), txoutList, new TransferManager.OnResultCall() {
+        transferManager.getTransferRow(mActivity, null, txoutList, new TransferManager.OnResultCall() {
             @Override
             public void result(String value) {
-
+                // 存储最近10条转账记录
+                ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
             }
         });
-
     }
 
     @Override

@@ -12,6 +12,8 @@ import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -19,6 +21,8 @@ import connect.wallet.jni.AllNativeMethod;
 import connect.widget.MdStyleProgress;
 import connect.widget.payment.PaymentPwd;
 import connect.widget.payment.PinTransferDialog;
+import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * 针对所有币种的BaseTransfer
@@ -58,7 +62,6 @@ abstract class BaseTransfer {
         pinTransferDialog.showPaymentPwd(activity, payload, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {
-
                 if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_PRI ){
                     // 纯私钥
                     String priKey = decodeStr;
@@ -82,20 +85,33 @@ abstract class BaseTransfer {
     /**
      * 广播交易
      */
-    protected void publishTransfer(String tansferType, String rawHex, String hashId, final OnBaseResultCall onResultCall){
-        OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
+    protected void publishTransfer(String rawHex, String hashId, final OnBaseResultCall onResultCall){
+        WalletOuterClass.PublishTransaction publishTransaction = WalletOuterClass.PublishTransaction.newBuilder()
+                .setCurrency(currencyType.getCode())
+                .setHashId(hashId)
+                .setTxHex(rawHex)
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_PUBLISH, publishTransaction, new ResultCall<Connect.HttpResponse>() {
             @Override
-            public void onResponse(Object response) {
-                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
-                    @Override
-                    public void onComplete() {
-                        onResultCall.success();
-                    }
-                });
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.ResponsePublish responsePublish = WalletOuterClass.ResponsePublish.parseFrom(structData.getPlainData());
+                    responsePublish.getTxid();
+                    pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
+                        @Override
+                        public void onComplete() {
+                            onResultCall.success();
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            public void onError(Object response) {
+            public void onError(Connect.HttpResponse response) {
                 pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
             }
         });

@@ -2,11 +2,13 @@ package connect.activity.wallet.manager;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.protobuf.ByteString;
 
 import java.util.List;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.MemoryDataManager;
 import connect.database.SharePreferenceUser;
@@ -44,41 +46,6 @@ public class WalletManager {
     public void checkAccount(OnWalletListener onWalletListener){
         this.onWalletListener = onWalletListener;
         requestWalletBase();
-        /*final WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-        if(walletBean == null){
-            // 用户没有钱包数据
-            requestWalletBase();
-        }else{
-            // 用户已经拉取过钱包数据
-            List<CurrencyEntity> list = CurrencyHelper.getInstance().loadCurrencyList();
-            if(list == null || list.size() == 0){
-                // 用户已经创建过钱包到时没有创建币种
-                DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
-                        "你还没有为钱包创建币种",
-                        "", "立即创建", true, new DialogUtil.OnItemClickListener() {
-                            @Override
-                            public void confirm(String value) {
-                                CurrencyManage currencyManage = new CurrencyManage();
-                                currencyManage.createCurrencyBaseSeed(mActivity, CurrencyManage.CURRENCY_DEFAULT, new CurrencyManage.OnCreateCurrencyListener() {
-                                    @Override
-                                    public void success(CurrencyEntity currencyEntity) {
-
-                                    }
-
-                                    @Override
-                                    public void fail(String message) {
-
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void cancel() {
-
-                            }
-                        });
-            }
-        }*/
     }
 
     /**
@@ -92,45 +59,19 @@ public class WalletManager {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     WalletOuterClass.RespSyncWallet respSyncWallet = WalletOuterClass.RespSyncWallet.parseFrom(structData.getPlainData());
-                    switch (respSyncWallet.getStatus()) {
-                        case 0:
-                            // 用户没有钱包数据 ，需要创建（新用户）
-                            collectSeed();
-                            break;
-                        case 1:
-                            // 更新钱包数据
-                            WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
-                            WalletBean walletBean = new WalletBean(wallet.getPayLoad(),wallet.getVer(),
-                                    wallet.getVersion(),wallet.getCheckSum());
-                            //保存钱包账户信息
-                            SharePreferenceUser.getInstance().putWalletInfo(walletBean);
-                            List<WalletOuterClass.Coin> list = respSyncWallet.getCoinsList();
-                            //保存货币信息
-                            CurrencyHelper.getInstance().insertCurrencyListCoin(list);
-                            onWalletListener.complete();
-                            break;
-                        case 3:
-                            // 用户为老用户需要迁移
-                            CurrencyManage currencyManage = new CurrencyManage();
-                            currencyManage.createCurrencyPin(mActivity,
-                                    MemoryDataManager.getInstance().getPriKey(),
-                                    MemoryDataManager.getInstance().getAddress(),
-                                    CurrencyManage.CURRENCY_DEFAULT,
-                                    CurrencyManage.WALLET_CATEGORY_PRI,
-                                    new CurrencyManage.OnCreateCurrencyListener() {
-                                        @Override
-                                        public void success(CurrencyEntity currencyEntity) {
-                                            onWalletListener.complete();
-                                        }
-
-                                        @Override
-                                        public void fail(String message) {
-
-                                        }
-                                    });
-                            break;
-                        default:
-                            break;
+                    if(respSyncWallet.getCoinsList() != null && respSyncWallet.getCoinsList().size() > 0){
+                        // 更新钱包数据
+                        WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
+                        WalletBean walletBean = new WalletBean(wallet.getPayLoad(),wallet.getVer(),
+                                wallet.getVersion(),wallet.getCheckSum());
+                        //保存钱包账户信息
+                        SharePreferenceUser.getInstance().putWalletInfo(walletBean);
+                        List<WalletOuterClass.Coin> list = respSyncWallet.getCoinsList();
+                        //保存货币信息
+                        CurrencyHelper.getInstance().insertCurrencyListCoin(list);
+                        onWalletListener.complete();
+                    }else{
+                        chechCurrencyType();
                     }
                 }catch (Exception e){
                     e.printStackTrace();
@@ -145,6 +86,56 @@ public class WalletManager {
         });
     }
 
+    /**
+     * 用户没有创建过钱包 判断是新用户还是老用户
+     */
+    private void chechCurrencyType(){
+        WalletOuterClass.RequestUserInfo requestUserInfo = WalletOuterClass.RequestUserInfo.newBuilder()
+                .setCurrency(CurrencyType.BTC.getCode())
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_USER_STATUS, requestUserInfo, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
+                    int category = coinsDetail.getCoin().getCategory();
+                    if(category == 1){
+                        // 用户为老用户需要迁移
+                        CurrencyManage currencyManage = new CurrencyManage();
+                        currencyManage.createCurrencyPin(mActivity,
+                                MemoryDataManager.getInstance().getPriKey(),
+                                MemoryDataManager.getInstance().getAddress(),
+                                CurrencyManage.CURRENCY_DEFAULT,
+                                CurrencyManage.WALLET_CATEGORY_PRI,
+                                new CurrencyManage.OnCreateCurrencyListener() {
+                                    @Override
+                                    public void success(CurrencyEntity currencyEntity) {
+                                        onWalletListener.complete();
+                                    }
+
+                                    @Override
+                                    public void fail(String message) {
+
+                                    }
+                                });
+                    }else if(category == 2){
+                        // 用户没有钱包数据 ，需要创建（新用户）
+                        collectSeed();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 
 
     /**

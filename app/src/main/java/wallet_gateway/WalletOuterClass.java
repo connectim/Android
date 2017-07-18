@@ -861,30 +861,25 @@ public final class WalletOuterClass {
     wallet_gateway.WalletOuterClass.WalletOrBuilder getWalletOrBuilder();
 
     /**
-     * <code>optional int32 status = 2;</code>
-     */
-    int getStatus();
-
-    /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     java.util.List<wallet_gateway.WalletOuterClass.Coin>
     getCoinsList();
     /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     wallet_gateway.WalletOuterClass.Coin getCoins(int index);
     /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     int getCoinsCount();
     /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     java.util.List<? extends wallet_gateway.WalletOuterClass.CoinOrBuilder>
     getCoinsOrBuilderList();
     /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     wallet_gateway.WalletOuterClass.CoinOrBuilder getCoinsOrBuilder(
             int index);
@@ -901,7 +896,6 @@ public final class WalletOuterClass {
       super(builder);
     }
     private RespSyncWallet() {
-      status_ = 0;
       coins_ = java.util.Collections.emptyList();
     }
 
@@ -943,15 +937,10 @@ public final class WalletOuterClass {
 
               break;
             }
-            case 16: {
-
-              status_ = input.readInt32();
-              break;
-            }
-            case 26: {
-              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
                 coins_ = new java.util.ArrayList<wallet_gateway.WalletOuterClass.Coin>();
-                mutable_bitField0_ |= 0x00000004;
+                mutable_bitField0_ |= 0x00000002;
               }
               coins_.add(
                       input.readMessage(wallet_gateway.WalletOuterClass.Coin.parser(), extensionRegistry));
@@ -965,7 +954,7 @@ public final class WalletOuterClass {
         throw new com.google.protobuf.InvalidProtocolBufferException(
                 e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           coins_ = java.util.Collections.unmodifiableList(coins_);
         }
         makeExtensionsImmutable();
@@ -1005,44 +994,35 @@ public final class WalletOuterClass {
       return getWallet();
     }
 
-    public static final int STATUS_FIELD_NUMBER = 2;
-    private int status_;
-    /**
-     * <code>optional int32 status = 2;</code>
-     */
-    public int getStatus() {
-      return status_;
-    }
-
-    public static final int COINS_FIELD_NUMBER = 3;
+    public static final int COINS_FIELD_NUMBER = 2;
     private java.util.List<wallet_gateway.WalletOuterClass.Coin> coins_;
     /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     public java.util.List<wallet_gateway.WalletOuterClass.Coin> getCoinsList() {
       return coins_;
     }
     /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     public java.util.List<? extends wallet_gateway.WalletOuterClass.CoinOrBuilder>
     getCoinsOrBuilderList() {
       return coins_;
     }
     /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     public int getCoinsCount() {
       return coins_.size();
     }
     /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     public wallet_gateway.WalletOuterClass.Coin getCoins(int index) {
       return coins_.get(index);
     }
     /**
-     * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+     * <code>repeated .wallet_gateway.Coin coins = 2;</code>
      */
     public wallet_gateway.WalletOuterClass.CoinOrBuilder getCoinsOrBuilder(
             int index) {
@@ -1064,11 +1044,8 @@ public final class WalletOuterClass {
       if (wallet_ != null) {
         output.writeMessage(1, getWallet());
       }
-      if (status_ != 0) {
-        output.writeInt32(2, status_);
-      }
       for (int i = 0; i < coins_.size(); i++) {
-        output.writeMessage(3, coins_.get(i));
+        output.writeMessage(2, coins_.get(i));
       }
     }
 
@@ -1081,13 +1058,9 @@ public final class WalletOuterClass {
         size += com.google.protobuf.CodedOutputStream
                 .computeMessageSize(1, getWallet());
       }
-      if (status_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt32Size(2, status_);
-      }
       for (int i = 0; i < coins_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-                .computeMessageSize(3, coins_.get(i));
+                .computeMessageSize(2, coins_.get(i));
       }
       memoizedSize = size;
       return size;
@@ -1110,8 +1083,6 @@ public final class WalletOuterClass {
         result = result && getWallet()
                 .equals(other.getWallet());
       }
-      result = result && (getStatus()
-              == other.getStatus());
       result = result && getCoinsList()
               .equals(other.getCoinsList());
       return result;
@@ -1128,8 +1099,6 @@ public final class WalletOuterClass {
         hash = (37 * hash) + WALLET_FIELD_NUMBER;
         hash = (53 * hash) + getWallet().hashCode();
       }
-      hash = (37 * hash) + STATUS_FIELD_NUMBER;
-      hash = (53 * hash) + getStatus();
       if (getCoinsCount() > 0) {
         hash = (37 * hash) + COINS_FIELD_NUMBER;
         hash = (53 * hash) + getCoinsList().hashCode();
@@ -1259,11 +1228,9 @@ public final class WalletOuterClass {
           wallet_ = null;
           walletBuilder_ = null;
         }
-        status_ = 0;
-
         if (coinsBuilder_ == null) {
           coins_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           coinsBuilder_.clear();
         }
@@ -1296,11 +1263,10 @@ public final class WalletOuterClass {
         } else {
           result.wallet_ = walletBuilder_.build();
         }
-        result.status_ = status_;
         if (coinsBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
             coins_ = java.util.Collections.unmodifiableList(coins_);
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000002);
           }
           result.coins_ = coins_;
         } else {
@@ -1351,14 +1317,11 @@ public final class WalletOuterClass {
         if (other.hasWallet()) {
           mergeWallet(other.getWallet());
         }
-        if (other.getStatus() != 0) {
-          setStatus(other.getStatus());
-        }
         if (coinsBuilder_ == null) {
           if (!other.coins_.isEmpty()) {
             if (coins_.isEmpty()) {
               coins_ = other.coins_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000002);
             } else {
               ensureCoinsIsMutable();
               coins_.addAll(other.coins_);
@@ -1371,7 +1334,7 @@ public final class WalletOuterClass {
               coinsBuilder_.dispose();
               coinsBuilder_ = null;
               coins_ = other.coins_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000002);
               coinsBuilder_ =
                       com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                               getCoinsFieldBuilder() : null;
@@ -1524,38 +1487,12 @@ public final class WalletOuterClass {
         return walletBuilder_;
       }
 
-      private int status_ ;
-      /**
-       * <code>optional int32 status = 2;</code>
-       */
-      public int getStatus() {
-        return status_;
-      }
-      /**
-       * <code>optional int32 status = 2;</code>
-       */
-      public Builder setStatus(int value) {
-
-        status_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 status = 2;</code>
-       */
-      public Builder clearStatus() {
-
-        status_ = 0;
-        onChanged();
-        return this;
-      }
-
       private java.util.List<wallet_gateway.WalletOuterClass.Coin> coins_ =
               java.util.Collections.emptyList();
       private void ensureCoinsIsMutable() {
-        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
           coins_ = new java.util.ArrayList<wallet_gateway.WalletOuterClass.Coin>(coins_);
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000002;
         }
       }
 
@@ -1563,7 +1500,7 @@ public final class WalletOuterClass {
               wallet_gateway.WalletOuterClass.Coin, wallet_gateway.WalletOuterClass.Coin.Builder, wallet_gateway.WalletOuterClass.CoinOrBuilder> coinsBuilder_;
 
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public java.util.List<wallet_gateway.WalletOuterClass.Coin> getCoinsList() {
         if (coinsBuilder_ == null) {
@@ -1573,7 +1510,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public int getCoinsCount() {
         if (coinsBuilder_ == null) {
@@ -1583,7 +1520,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public wallet_gateway.WalletOuterClass.Coin getCoins(int index) {
         if (coinsBuilder_ == null) {
@@ -1593,7 +1530,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public Builder setCoins(
               int index, wallet_gateway.WalletOuterClass.Coin value) {
@@ -1610,7 +1547,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public Builder setCoins(
               int index, wallet_gateway.WalletOuterClass.Coin.Builder builderForValue) {
@@ -1624,7 +1561,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public Builder addCoins(wallet_gateway.WalletOuterClass.Coin value) {
         if (coinsBuilder_ == null) {
@@ -1640,7 +1577,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public Builder addCoins(
               int index, wallet_gateway.WalletOuterClass.Coin value) {
@@ -1657,7 +1594,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public Builder addCoins(
               wallet_gateway.WalletOuterClass.Coin.Builder builderForValue) {
@@ -1671,7 +1608,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public Builder addCoins(
               int index, wallet_gateway.WalletOuterClass.Coin.Builder builderForValue) {
@@ -1685,7 +1622,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public Builder addAllCoins(
               java.lang.Iterable<? extends wallet_gateway.WalletOuterClass.Coin> values) {
@@ -1700,12 +1637,12 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public Builder clearCoins() {
         if (coinsBuilder_ == null) {
           coins_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
         } else {
           coinsBuilder_.clear();
@@ -1713,7 +1650,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public Builder removeCoins(int index) {
         if (coinsBuilder_ == null) {
@@ -1726,14 +1663,14 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public wallet_gateway.WalletOuterClass.Coin.Builder getCoinsBuilder(
               int index) {
         return getCoinsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public wallet_gateway.WalletOuterClass.CoinOrBuilder getCoinsOrBuilder(
               int index) {
@@ -1743,7 +1680,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public java.util.List<? extends wallet_gateway.WalletOuterClass.CoinOrBuilder>
       getCoinsOrBuilderList() {
@@ -1754,14 +1691,14 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public wallet_gateway.WalletOuterClass.Coin.Builder addCoinsBuilder() {
         return getCoinsFieldBuilder().addBuilder(
                 wallet_gateway.WalletOuterClass.Coin.getDefaultInstance());
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public wallet_gateway.WalletOuterClass.Coin.Builder addCoinsBuilder(
               int index) {
@@ -1769,7 +1706,7 @@ public final class WalletOuterClass {
                 index, wallet_gateway.WalletOuterClass.Coin.getDefaultInstance());
       }
       /**
-       * <code>repeated .wallet_gateway.Coin coins = 3;</code>
+       * <code>repeated .wallet_gateway.Coin coins = 2;</code>
        */
       public java.util.List<wallet_gateway.WalletOuterClass.Coin.Builder>
       getCoinsBuilderList() {
@@ -1782,7 +1719,7 @@ public final class WalletOuterClass {
           coinsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
                   wallet_gateway.WalletOuterClass.Coin, wallet_gateway.WalletOuterClass.Coin.Builder, wallet_gateway.WalletOuterClass.CoinOrBuilder>(
                   coins_,
-                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  ((bitField0_ & 0x00000002) == 0x00000002),
                   getParentForChildren(),
                   isClean());
           coins_ = null;
@@ -6635,34 +6572,39 @@ public final class WalletOuterClass {
     int getIndex();
 
     /**
-     * <code>optional string address = 2;</code>
+     * <code>optional int32 status = 2;</code>
+     */
+    int getStatus();
+
+    /**
+     * <code>optional string address = 3;</code>
      */
     java.lang.String getAddress();
     /**
-     * <code>optional string address = 2;</code>
+     * <code>optional string address = 3;</code>
      */
     com.google.protobuf.ByteString
     getAddressBytes();
 
     /**
-     * <code>optional string label = 3;</code>
+     * <code>optional string label = 4;</code>
      */
     java.lang.String getLabel();
     /**
-     * <code>optional string label = 3;</code>
+     * <code>optional string label = 4;</code>
      */
     com.google.protobuf.ByteString
     getLabelBytes();
 
     /**
-     * <code>optional int64 balance = 4;</code>
+     * <code>optional int64 balance = 5;</code>
      */
     long getBalance();
 
     /**
-     * <code>optional int32 status = 5;</code>
+     * <code>optional int64 amount = 6;</code>
      */
-    int getStatus();
+    long getAmount();
   }
   /**
    * Protobuf type {@code wallet_gateway.CoinInfo}
@@ -6677,10 +6619,11 @@ public final class WalletOuterClass {
     }
     private CoinInfo() {
       index_ = 0;
+      status_ = 0;
       address_ = "";
       label_ = "";
       balance_ = 0L;
-      status_ = 0;
+      amount_ = 0L;
     }
 
     @java.lang.Override
@@ -6713,26 +6656,31 @@ public final class WalletOuterClass {
               index_ = input.readInt32();
               break;
             }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 16: {
 
-              address_ = s;
+              status_ = input.readInt32();
               break;
             }
             case 26: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              label_ = s;
+              address_ = s;
               break;
             }
-            case 32: {
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              balance_ = input.readInt64();
+              label_ = s;
               break;
             }
             case 40: {
 
-              status_ = input.readInt32();
+              balance_ = input.readInt64();
+              break;
+            }
+            case 48: {
+
+              amount_ = input.readInt64();
               break;
             }
           }
@@ -6767,10 +6715,19 @@ public final class WalletOuterClass {
       return index_;
     }
 
-    public static final int ADDRESS_FIELD_NUMBER = 2;
+    public static final int STATUS_FIELD_NUMBER = 2;
+    private int status_;
+    /**
+     * <code>optional int32 status = 2;</code>
+     */
+    public int getStatus() {
+      return status_;
+    }
+
+    public static final int ADDRESS_FIELD_NUMBER = 3;
     private volatile java.lang.Object address_;
     /**
-     * <code>optional string address = 2;</code>
+     * <code>optional string address = 3;</code>
      */
     public java.lang.String getAddress() {
       java.lang.Object ref = address_;
@@ -6785,7 +6742,7 @@ public final class WalletOuterClass {
       }
     }
     /**
-     * <code>optional string address = 2;</code>
+     * <code>optional string address = 3;</code>
      */
     public com.google.protobuf.ByteString
     getAddressBytes() {
@@ -6801,10 +6758,10 @@ public final class WalletOuterClass {
       }
     }
 
-    public static final int LABEL_FIELD_NUMBER = 3;
+    public static final int LABEL_FIELD_NUMBER = 4;
     private volatile java.lang.Object label_;
     /**
-     * <code>optional string label = 3;</code>
+     * <code>optional string label = 4;</code>
      */
     public java.lang.String getLabel() {
       java.lang.Object ref = label_;
@@ -6819,7 +6776,7 @@ public final class WalletOuterClass {
       }
     }
     /**
-     * <code>optional string label = 3;</code>
+     * <code>optional string label = 4;</code>
      */
     public com.google.protobuf.ByteString
     getLabelBytes() {
@@ -6835,22 +6792,22 @@ public final class WalletOuterClass {
       }
     }
 
-    public static final int BALANCE_FIELD_NUMBER = 4;
+    public static final int BALANCE_FIELD_NUMBER = 5;
     private long balance_;
     /**
-     * <code>optional int64 balance = 4;</code>
+     * <code>optional int64 balance = 5;</code>
      */
     public long getBalance() {
       return balance_;
     }
 
-    public static final int STATUS_FIELD_NUMBER = 5;
-    private int status_;
+    public static final int AMOUNT_FIELD_NUMBER = 6;
+    private long amount_;
     /**
-     * <code>optional int32 status = 5;</code>
+     * <code>optional int64 amount = 6;</code>
      */
-    public int getStatus() {
-      return status_;
+    public long getAmount() {
+      return amount_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -6868,17 +6825,20 @@ public final class WalletOuterClass {
       if (index_ != 0) {
         output.writeInt32(1, index_);
       }
+      if (status_ != 0) {
+        output.writeInt32(2, status_);
+      }
       if (!getAddressBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, address_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, address_);
       }
       if (!getLabelBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, label_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, label_);
       }
       if (balance_ != 0L) {
-        output.writeInt64(4, balance_);
+        output.writeInt64(5, balance_);
       }
-      if (status_ != 0) {
-        output.writeInt32(5, status_);
+      if (amount_ != 0L) {
+        output.writeInt64(6, amount_);
       }
     }
 
@@ -6891,19 +6851,23 @@ public final class WalletOuterClass {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(1, index_);
       }
+      if (status_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt32Size(2, status_);
+      }
       if (!getAddressBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, address_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, address_);
       }
       if (!getLabelBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, label_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, label_);
       }
       if (balance_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(4, balance_);
+                .computeInt64Size(5, balance_);
       }
-      if (status_ != 0) {
+      if (amount_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt32Size(5, status_);
+                .computeInt64Size(6, amount_);
       }
       memoizedSize = size;
       return size;
@@ -6923,14 +6887,16 @@ public final class WalletOuterClass {
       boolean result = true;
       result = result && (getIndex()
               == other.getIndex());
+      result = result && (getStatus()
+              == other.getStatus());
       result = result && getAddress()
               .equals(other.getAddress());
       result = result && getLabel()
               .equals(other.getLabel());
       result = result && (getBalance()
               == other.getBalance());
-      result = result && (getStatus()
-              == other.getStatus());
+      result = result && (getAmount()
+              == other.getAmount());
       return result;
     }
 
@@ -6943,6 +6909,8 @@ public final class WalletOuterClass {
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + INDEX_FIELD_NUMBER;
       hash = (53 * hash) + getIndex();
+      hash = (37 * hash) + STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + getStatus();
       hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
       hash = (53 * hash) + getAddress().hashCode();
       hash = (37 * hash) + LABEL_FIELD_NUMBER;
@@ -6950,8 +6918,9 @@ public final class WalletOuterClass {
       hash = (37 * hash) + BALANCE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getBalance());
-      hash = (37 * hash) + STATUS_FIELD_NUMBER;
-      hash = (53 * hash) + getStatus();
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getAmount());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -7072,13 +7041,15 @@ public final class WalletOuterClass {
         super.clear();
         index_ = 0;
 
+        status_ = 0;
+
         address_ = "";
 
         label_ = "";
 
         balance_ = 0L;
 
-        status_ = 0;
+        amount_ = 0L;
 
         return this;
       }
@@ -7103,10 +7074,11 @@ public final class WalletOuterClass {
       public wallet_gateway.WalletOuterClass.CoinInfo buildPartial() {
         wallet_gateway.WalletOuterClass.CoinInfo result = new wallet_gateway.WalletOuterClass.CoinInfo(this);
         result.index_ = index_;
+        result.status_ = status_;
         result.address_ = address_;
         result.label_ = label_;
         result.balance_ = balance_;
-        result.status_ = status_;
+        result.amount_ = amount_;
         onBuilt();
         return result;
       }
@@ -7151,6 +7123,9 @@ public final class WalletOuterClass {
         if (other.getIndex() != 0) {
           setIndex(other.getIndex());
         }
+        if (other.getStatus() != 0) {
+          setStatus(other.getStatus());
+        }
         if (!other.getAddress().isEmpty()) {
           address_ = other.address_;
           onChanged();
@@ -7162,8 +7137,8 @@ public final class WalletOuterClass {
         if (other.getBalance() != 0L) {
           setBalance(other.getBalance());
         }
-        if (other.getStatus() != 0) {
-          setStatus(other.getStatus());
+        if (other.getAmount() != 0L) {
+          setAmount(other.getAmount());
         }
         onChanged();
         return this;
@@ -7217,9 +7192,35 @@ public final class WalletOuterClass {
         return this;
       }
 
+      private int status_ ;
+      /**
+       * <code>optional int32 status = 2;</code>
+       */
+      public int getStatus() {
+        return status_;
+      }
+      /**
+       * <code>optional int32 status = 2;</code>
+       */
+      public Builder setStatus(int value) {
+
+        status_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 status = 2;</code>
+       */
+      public Builder clearStatus() {
+
+        status_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object address_ = "";
       /**
-       * <code>optional string address = 2;</code>
+       * <code>optional string address = 3;</code>
        */
       public java.lang.String getAddress() {
         java.lang.Object ref = address_;
@@ -7234,7 +7235,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>optional string address = 2;</code>
+       * <code>optional string address = 3;</code>
        */
       public com.google.protobuf.ByteString
       getAddressBytes() {
@@ -7250,7 +7251,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>optional string address = 2;</code>
+       * <code>optional string address = 3;</code>
        */
       public Builder setAddress(
               java.lang.String value) {
@@ -7263,7 +7264,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>optional string address = 2;</code>
+       * <code>optional string address = 3;</code>
        */
       public Builder clearAddress() {
 
@@ -7272,7 +7273,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>optional string address = 2;</code>
+       * <code>optional string address = 3;</code>
        */
       public Builder setAddressBytes(
               com.google.protobuf.ByteString value) {
@@ -7288,7 +7289,7 @@ public final class WalletOuterClass {
 
       private java.lang.Object label_ = "";
       /**
-       * <code>optional string label = 3;</code>
+       * <code>optional string label = 4;</code>
        */
       public java.lang.String getLabel() {
         java.lang.Object ref = label_;
@@ -7303,7 +7304,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>optional string label = 3;</code>
+       * <code>optional string label = 4;</code>
        */
       public com.google.protobuf.ByteString
       getLabelBytes() {
@@ -7319,7 +7320,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>optional string label = 3;</code>
+       * <code>optional string label = 4;</code>
        */
       public Builder setLabel(
               java.lang.String value) {
@@ -7332,7 +7333,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>optional string label = 3;</code>
+       * <code>optional string label = 4;</code>
        */
       public Builder clearLabel() {
 
@@ -7341,7 +7342,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>optional string label = 3;</code>
+       * <code>optional string label = 4;</code>
        */
       public Builder setLabelBytes(
               com.google.protobuf.ByteString value) {
@@ -7357,13 +7358,13 @@ public final class WalletOuterClass {
 
       private long balance_ ;
       /**
-       * <code>optional int64 balance = 4;</code>
+       * <code>optional int64 balance = 5;</code>
        */
       public long getBalance() {
         return balance_;
       }
       /**
-       * <code>optional int64 balance = 4;</code>
+       * <code>optional int64 balance = 5;</code>
        */
       public Builder setBalance(long value) {
 
@@ -7372,7 +7373,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>optional int64 balance = 4;</code>
+       * <code>optional int64 balance = 5;</code>
        */
       public Builder clearBalance() {
 
@@ -7381,28 +7382,28 @@ public final class WalletOuterClass {
         return this;
       }
 
-      private int status_ ;
+      private long amount_ ;
       /**
-       * <code>optional int32 status = 5;</code>
+       * <code>optional int64 amount = 6;</code>
        */
-      public int getStatus() {
-        return status_;
+      public long getAmount() {
+        return amount_;
       }
       /**
-       * <code>optional int32 status = 5;</code>
+       * <code>optional int64 amount = 6;</code>
        */
-      public Builder setStatus(int value) {
+      public Builder setAmount(long value) {
 
-        status_ = value;
+        amount_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 status = 5;</code>
+       * <code>optional int64 amount = 6;</code>
        */
-      public Builder clearStatus() {
+      public Builder clearAmount() {
 
-        status_ = 0;
+        amount_ = 0L;
         onChanged();
         return this;
       }
@@ -10071,9 +10072,14 @@ public final class WalletOuterClass {
      * privte group outer
      * </pre>
      *
-     * <code>optional int32 package_type = 3;</code>
+     * <code>optional int32 typ = 3;</code>
      */
-    int getPackageType();
+    int getTyp();
+
+    /**
+     * <code>optional int32 category = 5;</code>
+     */
+    int getCategory();
 
     /**
      * <code>optional int32 size = 4;</code>
@@ -10081,21 +10087,21 @@ public final class WalletOuterClass {
     int getSize();
 
     /**
-     * <code>optional int64 amount = 5;</code>
+     * <code>optional int64 amount = 6;</code>
      */
     long getAmount();
 
     /**
-     * <code>optional int64 fee = 6;</code>
+     * <code>optional int64 fee = 7;</code>
      */
     long getFee();
 
     /**
-     * <code>optional string tips = 7;</code>
+     * <code>optional string tips = 8;</code>
      */
     java.lang.String getTips();
     /**
-     * <code>optional string tips = 7;</code>
+     * <code>optional string tips = 8;</code>
      */
     com.google.protobuf.ByteString
     getTipsBytes();
@@ -10113,7 +10119,8 @@ public final class WalletOuterClass {
     }
     private LuckyPackageRequest() {
       reciverIdentifier_ = "";
-      packageType_ = 0;
+      typ_ = 0;
+      category_ = 0;
       size_ = 0;
       amount_ = 0L;
       fee_ = 0L;
@@ -10166,7 +10173,7 @@ public final class WalletOuterClass {
             }
             case 24: {
 
-              packageType_ = input.readInt32();
+              typ_ = input.readInt32();
               break;
             }
             case 32: {
@@ -10176,15 +10183,20 @@ public final class WalletOuterClass {
             }
             case 40: {
 
-              amount_ = input.readInt64();
+              category_ = input.readInt32();
               break;
             }
             case 48: {
 
+              amount_ = input.readInt64();
+              break;
+            }
+            case 56: {
+
               fee_ = input.readInt64();
               break;
             }
-            case 58: {
+            case 66: {
               java.lang.String s = input.readStringRequireUtf8();
 
               tips_ = s;
@@ -10276,17 +10288,26 @@ public final class WalletOuterClass {
       }
     }
 
-    public static final int PACKAGE_TYPE_FIELD_NUMBER = 3;
-    private int packageType_;
+    public static final int TYP_FIELD_NUMBER = 3;
+    private int typ_;
     /**
      * <pre>
      * privte group outer
      * </pre>
      *
-     * <code>optional int32 package_type = 3;</code>
+     * <code>optional int32 typ = 3;</code>
      */
-    public int getPackageType() {
-      return packageType_;
+    public int getTyp() {
+      return typ_;
+    }
+
+    public static final int CATEGORY_FIELD_NUMBER = 5;
+    private int category_;
+    /**
+     * <code>optional int32 category = 5;</code>
+     */
+    public int getCategory() {
+      return category_;
     }
 
     public static final int SIZE_FIELD_NUMBER = 4;
@@ -10298,28 +10319,28 @@ public final class WalletOuterClass {
       return size_;
     }
 
-    public static final int AMOUNT_FIELD_NUMBER = 5;
+    public static final int AMOUNT_FIELD_NUMBER = 6;
     private long amount_;
     /**
-     * <code>optional int64 amount = 5;</code>
+     * <code>optional int64 amount = 6;</code>
      */
     public long getAmount() {
       return amount_;
     }
 
-    public static final int FEE_FIELD_NUMBER = 6;
+    public static final int FEE_FIELD_NUMBER = 7;
     private long fee_;
     /**
-     * <code>optional int64 fee = 6;</code>
+     * <code>optional int64 fee = 7;</code>
      */
     public long getFee() {
       return fee_;
     }
 
-    public static final int TIPS_FIELD_NUMBER = 7;
+    public static final int TIPS_FIELD_NUMBER = 8;
     private volatile java.lang.Object tips_;
     /**
-     * <code>optional string tips = 7;</code>
+     * <code>optional string tips = 8;</code>
      */
     public java.lang.String getTips() {
       java.lang.Object ref = tips_;
@@ -10334,7 +10355,7 @@ public final class WalletOuterClass {
       }
     }
     /**
-     * <code>optional string tips = 7;</code>
+     * <code>optional string tips = 8;</code>
      */
     public com.google.protobuf.ByteString
     getTipsBytes() {
@@ -10368,20 +10389,23 @@ public final class WalletOuterClass {
       if (!getReciverIdentifierBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, reciverIdentifier_);
       }
-      if (packageType_ != 0) {
-        output.writeInt32(3, packageType_);
+      if (typ_ != 0) {
+        output.writeInt32(3, typ_);
       }
       if (size_ != 0) {
         output.writeInt32(4, size_);
       }
+      if (category_ != 0) {
+        output.writeInt32(5, category_);
+      }
       if (amount_ != 0L) {
-        output.writeInt64(5, amount_);
+        output.writeInt64(6, amount_);
       }
       if (fee_ != 0L) {
-        output.writeInt64(6, fee_);
+        output.writeInt64(7, fee_);
       }
       if (!getTipsBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, tips_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, tips_);
       }
     }
 
@@ -10397,24 +10421,28 @@ public final class WalletOuterClass {
       if (!getReciverIdentifierBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, reciverIdentifier_);
       }
-      if (packageType_ != 0) {
+      if (typ_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt32Size(3, packageType_);
+                .computeInt32Size(3, typ_);
       }
       if (size_ != 0) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt32Size(4, size_);
       }
+      if (category_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt32Size(5, category_);
+      }
       if (amount_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(5, amount_);
+                .computeInt64Size(6, amount_);
       }
       if (fee_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(6, fee_);
+                .computeInt64Size(7, fee_);
       }
       if (!getTipsBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, tips_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, tips_);
       }
       memoizedSize = size;
       return size;
@@ -10439,8 +10467,10 @@ public final class WalletOuterClass {
       }
       result = result && getReciverIdentifier()
               .equals(other.getReciverIdentifier());
-      result = result && (getPackageType()
-              == other.getPackageType());
+      result = result && (getTyp()
+              == other.getTyp());
+      result = result && (getCategory()
+              == other.getCategory());
       result = result && (getSize()
               == other.getSize());
       result = result && (getAmount()
@@ -10465,8 +10495,10 @@ public final class WalletOuterClass {
       }
       hash = (37 * hash) + RECIVER_IDENTIFIER_FIELD_NUMBER;
       hash = (53 * hash) + getReciverIdentifier().hashCode();
-      hash = (37 * hash) + PACKAGE_TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + getPackageType();
+      hash = (37 * hash) + TYP_FIELD_NUMBER;
+      hash = (53 * hash) + getTyp();
+      hash = (37 * hash) + CATEGORY_FIELD_NUMBER;
+      hash = (53 * hash) + getCategory();
       hash = (37 * hash) + SIZE_FIELD_NUMBER;
       hash = (53 * hash) + getSize();
       hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
@@ -10603,7 +10635,9 @@ public final class WalletOuterClass {
         }
         reciverIdentifier_ = "";
 
-        packageType_ = 0;
+        typ_ = 0;
+
+        category_ = 0;
 
         size_ = 0;
 
@@ -10641,7 +10675,8 @@ public final class WalletOuterClass {
           result.spentCurrency_ = spentCurrencyBuilder_.build();
         }
         result.reciverIdentifier_ = reciverIdentifier_;
-        result.packageType_ = packageType_;
+        result.typ_ = typ_;
+        result.category_ = category_;
         result.size_ = size_;
         result.amount_ = amount_;
         result.fee_ = fee_;
@@ -10694,8 +10729,11 @@ public final class WalletOuterClass {
           reciverIdentifier_ = other.reciverIdentifier_;
           onChanged();
         }
-        if (other.getPackageType() != 0) {
-          setPackageType(other.getPackageType());
+        if (other.getTyp() != 0) {
+          setTyp(other.getTyp());
+        }
+        if (other.getCategory() != 0) {
+          setCategory(other.getCategory());
         }
         if (other.getSize() != 0) {
           setSize(other.getSize());
@@ -10942,27 +10980,27 @@ public final class WalletOuterClass {
         return this;
       }
 
-      private int packageType_ ;
+      private int typ_ ;
       /**
        * <pre>
        * privte group outer
        * </pre>
        *
-       * <code>optional int32 package_type = 3;</code>
+       * <code>optional int32 typ = 3;</code>
        */
-      public int getPackageType() {
-        return packageType_;
+      public int getTyp() {
+        return typ_;
       }
       /**
        * <pre>
        * privte group outer
        * </pre>
        *
-       * <code>optional int32 package_type = 3;</code>
+       * <code>optional int32 typ = 3;</code>
        */
-      public Builder setPackageType(int value) {
+      public Builder setTyp(int value) {
 
-        packageType_ = value;
+        typ_ = value;
         onChanged();
         return this;
       }
@@ -10971,11 +11009,37 @@ public final class WalletOuterClass {
        * privte group outer
        * </pre>
        *
-       * <code>optional int32 package_type = 3;</code>
+       * <code>optional int32 typ = 3;</code>
        */
-      public Builder clearPackageType() {
+      public Builder clearTyp() {
 
-        packageType_ = 0;
+        typ_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int category_ ;
+      /**
+       * <code>optional int32 category = 5;</code>
+       */
+      public int getCategory() {
+        return category_;
+      }
+      /**
+       * <code>optional int32 category = 5;</code>
+       */
+      public Builder setCategory(int value) {
+
+        category_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 category = 5;</code>
+       */
+      public Builder clearCategory() {
+
+        category_ = 0;
         onChanged();
         return this;
       }
@@ -11008,13 +11072,13 @@ public final class WalletOuterClass {
 
       private long amount_ ;
       /**
-       * <code>optional int64 amount = 5;</code>
+       * <code>optional int64 amount = 6;</code>
        */
       public long getAmount() {
         return amount_;
       }
       /**
-       * <code>optional int64 amount = 5;</code>
+       * <code>optional int64 amount = 6;</code>
        */
       public Builder setAmount(long value) {
 
@@ -11023,7 +11087,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>optional int64 amount = 5;</code>
+       * <code>optional int64 amount = 6;</code>
        */
       public Builder clearAmount() {
 
@@ -11034,13 +11098,13 @@ public final class WalletOuterClass {
 
       private long fee_ ;
       /**
-       * <code>optional int64 fee = 6;</code>
+       * <code>optional int64 fee = 7;</code>
        */
       public long getFee() {
         return fee_;
       }
       /**
-       * <code>optional int64 fee = 6;</code>
+       * <code>optional int64 fee = 7;</code>
        */
       public Builder setFee(long value) {
 
@@ -11049,7 +11113,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>optional int64 fee = 6;</code>
+       * <code>optional int64 fee = 7;</code>
        */
       public Builder clearFee() {
 
@@ -11060,7 +11124,7 @@ public final class WalletOuterClass {
 
       private java.lang.Object tips_ = "";
       /**
-       * <code>optional string tips = 7;</code>
+       * <code>optional string tips = 8;</code>
        */
       public java.lang.String getTips() {
         java.lang.Object ref = tips_;
@@ -11075,7 +11139,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>optional string tips = 7;</code>
+       * <code>optional string tips = 8;</code>
        */
       public com.google.protobuf.ByteString
       getTipsBytes() {
@@ -11091,7 +11155,7 @@ public final class WalletOuterClass {
         }
       }
       /**
-       * <code>optional string tips = 7;</code>
+       * <code>optional string tips = 8;</code>
        */
       public Builder setTips(
               java.lang.String value) {
@@ -11104,7 +11168,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>optional string tips = 7;</code>
+       * <code>optional string tips = 8;</code>
        */
       public Builder clearTips() {
 
@@ -11113,7 +11177,7 @@ public final class WalletOuterClass {
         return this;
       }
       /**
-       * <code>optional string tips = 7;</code>
+       * <code>optional string tips = 8;</code>
        */
       public Builder setTipsBytes(
               com.google.protobuf.ByteString value) {
@@ -16040,6 +16104,1041 @@ public final class WalletOuterClass {
 
   }
 
+  public interface OriginalTransactionOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:wallet_gateway.OriginalTransaction)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string rawhex = 1;</code>
+     */
+    java.lang.String getRawhex();
+    /**
+     * <code>optional string rawhex = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getRawhexBytes();
+
+    /**
+     * <code>optional string vts = 2;</code>
+     */
+    java.lang.String getVts();
+    /**
+     * <code>optional string vts = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getVtsBytes();
+
+    /**
+     * <code>optional string transaction_id = 3;</code>
+     */
+    java.lang.String getTransactionId();
+    /**
+     * <code>optional string transaction_id = 3;</code>
+     */
+    com.google.protobuf.ByteString
+    getTransactionIdBytes();
+
+    /**
+     * <code>repeated string addresses = 4;</code>
+     */
+    java.util.List<java.lang.String>
+    getAddressesList();
+    /**
+     * <code>repeated string addresses = 4;</code>
+     */
+    int getAddressesCount();
+    /**
+     * <code>repeated string addresses = 4;</code>
+     */
+    java.lang.String getAddresses(int index);
+    /**
+     * <code>repeated string addresses = 4;</code>
+     */
+    com.google.protobuf.ByteString
+    getAddressesBytes(int index);
+
+    /**
+     * <code>optional int64 fee = 5;</code>
+     */
+    long getFee();
+  }
+  /**
+   * Protobuf type {@code wallet_gateway.OriginalTransaction}
+   */
+  public  static final class OriginalTransaction extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:wallet_gateway.OriginalTransaction)
+          OriginalTransactionOrBuilder {
+    // Use OriginalTransaction.newBuilder() to construct.
+    private OriginalTransaction(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private OriginalTransaction() {
+      rawhex_ = "";
+      vts_ = "";
+      transactionId_ = "";
+      addresses_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      fee_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private OriginalTransaction(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              rawhex_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              vts_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              transactionId_ = s;
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                addresses_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              addresses_.add(s);
+              break;
+            }
+            case 40: {
+
+              fee_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+          addresses_ = addresses_.getUnmodifiableView();
+        }
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      wallet_gateway.WalletOuterClass.OriginalTransaction.class, wallet_gateway.WalletOuterClass.OriginalTransaction.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int RAWHEX_FIELD_NUMBER = 1;
+    private volatile java.lang.Object rawhex_;
+    /**
+     * <code>optional string rawhex = 1;</code>
+     */
+    public java.lang.String getRawhex() {
+      java.lang.Object ref = rawhex_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rawhex_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string rawhex = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getRawhexBytes() {
+      java.lang.Object ref = rawhex_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        rawhex_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VTS_FIELD_NUMBER = 2;
+    private volatile java.lang.Object vts_;
+    /**
+     * <code>optional string vts = 2;</code>
+     */
+    public java.lang.String getVts() {
+      java.lang.Object ref = vts_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        vts_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string vts = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getVtsBytes() {
+      java.lang.Object ref = vts_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        vts_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TRANSACTION_ID_FIELD_NUMBER = 3;
+    private volatile java.lang.Object transactionId_;
+    /**
+     * <code>optional string transaction_id = 3;</code>
+     */
+    public java.lang.String getTransactionId() {
+      java.lang.Object ref = transactionId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        transactionId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string transaction_id = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+    getTransactionIdBytes() {
+      java.lang.Object ref = transactionId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        transactionId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ADDRESSES_FIELD_NUMBER = 4;
+    private com.google.protobuf.LazyStringList addresses_;
+    /**
+     * <code>repeated string addresses = 4;</code>
+     */
+    public com.google.protobuf.ProtocolStringList
+    getAddressesList() {
+      return addresses_;
+    }
+    /**
+     * <code>repeated string addresses = 4;</code>
+     */
+    public int getAddressesCount() {
+      return addresses_.size();
+    }
+    /**
+     * <code>repeated string addresses = 4;</code>
+     */
+    public java.lang.String getAddresses(int index) {
+      return addresses_.get(index);
+    }
+    /**
+     * <code>repeated string addresses = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+    getAddressesBytes(int index) {
+      return addresses_.getByteString(index);
+    }
+
+    public static final int FEE_FIELD_NUMBER = 5;
+    private long fee_;
+    /**
+     * <code>optional int64 fee = 5;</code>
+     */
+    public long getFee() {
+      return fee_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (!getRawhexBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, rawhex_);
+      }
+      if (!getVtsBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, vts_);
+      }
+      if (!getTransactionIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, transactionId_);
+      }
+      for (int i = 0; i < addresses_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, addresses_.getRaw(i));
+      }
+      if (fee_ != 0L) {
+        output.writeInt64(5, fee_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getRawhexBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, rawhex_);
+      }
+      if (!getVtsBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, vts_);
+      }
+      if (!getTransactionIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, transactionId_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < addresses_.size(); i++) {
+          dataSize += computeStringSizeNoTag(addresses_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getAddressesList().size();
+      }
+      if (fee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(5, fee_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof wallet_gateway.WalletOuterClass.OriginalTransaction)) {
+        return super.equals(obj);
+      }
+      wallet_gateway.WalletOuterClass.OriginalTransaction other = (wallet_gateway.WalletOuterClass.OriginalTransaction) obj;
+
+      boolean result = true;
+      result = result && getRawhex()
+              .equals(other.getRawhex());
+      result = result && getVts()
+              .equals(other.getVts());
+      result = result && getTransactionId()
+              .equals(other.getTransactionId());
+      result = result && getAddressesList()
+              .equals(other.getAddressesList());
+      result = result && (getFee()
+              == other.getFee());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + RAWHEX_FIELD_NUMBER;
+      hash = (53 * hash) + getRawhex().hashCode();
+      hash = (37 * hash) + VTS_FIELD_NUMBER;
+      hash = (53 * hash) + getVts().hashCode();
+      hash = (37 * hash) + TRANSACTION_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getTransactionId().hashCode();
+      if (getAddressesCount() > 0) {
+        hash = (37 * hash) + ADDRESSES_FIELD_NUMBER;
+        hash = (53 * hash) + getAddressesList().hashCode();
+      }
+      hash = (37 * hash) + FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getFee());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(wallet_gateway.WalletOuterClass.OriginalTransaction prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code wallet_gateway.OriginalTransaction}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:wallet_gateway.OriginalTransaction)
+            wallet_gateway.WalletOuterClass.OriginalTransactionOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        wallet_gateway.WalletOuterClass.OriginalTransaction.class, wallet_gateway.WalletOuterClass.OriginalTransaction.Builder.class);
+      }
+
+      // Construct using wallet_gateway.WalletOuterClass.OriginalTransaction.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        rawhex_ = "";
+
+        vts_ = "";
+
+        transactionId_ = "";
+
+        addresses_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        fee_ = 0L;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_descriptor;
+      }
+
+      public wallet_gateway.WalletOuterClass.OriginalTransaction getDefaultInstanceForType() {
+        return wallet_gateway.WalletOuterClass.OriginalTransaction.getDefaultInstance();
+      }
+
+      public wallet_gateway.WalletOuterClass.OriginalTransaction build() {
+        wallet_gateway.WalletOuterClass.OriginalTransaction result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public wallet_gateway.WalletOuterClass.OriginalTransaction buildPartial() {
+        wallet_gateway.WalletOuterClass.OriginalTransaction result = new wallet_gateway.WalletOuterClass.OriginalTransaction(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.rawhex_ = rawhex_;
+        result.vts_ = vts_;
+        result.transactionId_ = transactionId_;
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          addresses_ = addresses_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.addresses_ = addresses_;
+        result.fee_ = fee_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof wallet_gateway.WalletOuterClass.OriginalTransaction) {
+          return mergeFrom((wallet_gateway.WalletOuterClass.OriginalTransaction)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(wallet_gateway.WalletOuterClass.OriginalTransaction other) {
+        if (other == wallet_gateway.WalletOuterClass.OriginalTransaction.getDefaultInstance()) return this;
+        if (!other.getRawhex().isEmpty()) {
+          rawhex_ = other.rawhex_;
+          onChanged();
+        }
+        if (!other.getVts().isEmpty()) {
+          vts_ = other.vts_;
+          onChanged();
+        }
+        if (!other.getTransactionId().isEmpty()) {
+          transactionId_ = other.transactionId_;
+          onChanged();
+        }
+        if (!other.addresses_.isEmpty()) {
+          if (addresses_.isEmpty()) {
+            addresses_ = other.addresses_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensureAddressesIsMutable();
+            addresses_.addAll(other.addresses_);
+          }
+          onChanged();
+        }
+        if (other.getFee() != 0L) {
+          setFee(other.getFee());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        wallet_gateway.WalletOuterClass.OriginalTransaction parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (wallet_gateway.WalletOuterClass.OriginalTransaction) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object rawhex_ = "";
+      /**
+       * <code>optional string rawhex = 1;</code>
+       */
+      public java.lang.String getRawhex() {
+        java.lang.Object ref = rawhex_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rawhex_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string rawhex = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getRawhexBytes() {
+        java.lang.Object ref = rawhex_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          rawhex_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string rawhex = 1;</code>
+       */
+      public Builder setRawhex(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        rawhex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string rawhex = 1;</code>
+       */
+      public Builder clearRawhex() {
+
+        rawhex_ = getDefaultInstance().getRawhex();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string rawhex = 1;</code>
+       */
+      public Builder setRawhexBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        rawhex_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object vts_ = "";
+      /**
+       * <code>optional string vts = 2;</code>
+       */
+      public java.lang.String getVts() {
+        java.lang.Object ref = vts_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          vts_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string vts = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getVtsBytes() {
+        java.lang.Object ref = vts_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          vts_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string vts = 2;</code>
+       */
+      public Builder setVts(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        vts_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string vts = 2;</code>
+       */
+      public Builder clearVts() {
+
+        vts_ = getDefaultInstance().getVts();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string vts = 2;</code>
+       */
+      public Builder setVtsBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        vts_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object transactionId_ = "";
+      /**
+       * <code>optional string transaction_id = 3;</code>
+       */
+      public java.lang.String getTransactionId() {
+        java.lang.Object ref = transactionId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          transactionId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string transaction_id = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+      getTransactionIdBytes() {
+        java.lang.Object ref = transactionId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          transactionId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string transaction_id = 3;</code>
+       */
+      public Builder setTransactionId(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        transactionId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string transaction_id = 3;</code>
+       */
+      public Builder clearTransactionId() {
+
+        transactionId_ = getDefaultInstance().getTransactionId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string transaction_id = 3;</code>
+       */
+      public Builder setTransactionIdBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        transactionId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList addresses_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureAddressesIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          addresses_ = new com.google.protobuf.LazyStringArrayList(addresses_);
+          bitField0_ |= 0x00000008;
+        }
+      }
+      /**
+       * <code>repeated string addresses = 4;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+      getAddressesList() {
+        return addresses_.getUnmodifiableView();
+      }
+      /**
+       * <code>repeated string addresses = 4;</code>
+       */
+      public int getAddressesCount() {
+        return addresses_.size();
+      }
+      /**
+       * <code>repeated string addresses = 4;</code>
+       */
+      public java.lang.String getAddresses(int index) {
+        return addresses_.get(index);
+      }
+      /**
+       * <code>repeated string addresses = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+      getAddressesBytes(int index) {
+        return addresses_.getByteString(index);
+      }
+      /**
+       * <code>repeated string addresses = 4;</code>
+       */
+      public Builder setAddresses(
+              int index, java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureAddressesIsMutable();
+        addresses_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string addresses = 4;</code>
+       */
+      public Builder addAddresses(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureAddressesIsMutable();
+        addresses_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string addresses = 4;</code>
+       */
+      public Builder addAllAddresses(
+              java.lang.Iterable<java.lang.String> values) {
+        ensureAddressesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, addresses_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string addresses = 4;</code>
+       */
+      public Builder clearAddresses() {
+        addresses_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string addresses = 4;</code>
+       */
+      public Builder addAddressesBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+        ensureAddressesIsMutable();
+        addresses_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private long fee_ ;
+      /**
+       * <code>optional int64 fee = 5;</code>
+       */
+      public long getFee() {
+        return fee_;
+      }
+      /**
+       * <code>optional int64 fee = 5;</code>
+       */
+      public Builder setFee(long value) {
+
+        fee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 fee = 5;</code>
+       */
+      public Builder clearFee() {
+
+        fee_ = 0L;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:wallet_gateway.OriginalTransaction)
+    }
+
+    // @@protoc_insertion_point(class_scope:wallet_gateway.OriginalTransaction)
+    private static final wallet_gateway.WalletOuterClass.OriginalTransaction DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new wallet_gateway.WalletOuterClass.OriginalTransaction();
+    }
+
+    public static wallet_gateway.WalletOuterClass.OriginalTransaction getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<OriginalTransaction>
+            PARSER = new com.google.protobuf.AbstractParser<OriginalTransaction>() {
+      public OriginalTransaction parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new OriginalTransaction(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<OriginalTransaction> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<OriginalTransaction> getParserForType() {
+      return PARSER;
+    }
+
+    public wallet_gateway.WalletOuterClass.OriginalTransaction getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface OriginalTransactionResponseOrBuilder extends
           // @@protoc_insertion_point(interface_extends:wallet_gateway.OriginalTransactionResponse)
           com.google.protobuf.MessageOrBuilder {
@@ -16800,1041 +17899,6 @@ public final class WalletOuterClass {
 
   }
 
-  public interface OriginalTransactionOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:wallet_gateway.OriginalTransaction)
-          com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional string hash_id = 1;</code>
-     */
-    java.lang.String getHashId();
-    /**
-     * <code>optional string hash_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-    getHashIdBytes();
-
-    /**
-     * <code>optional string rawhex = 2;</code>
-     */
-    java.lang.String getRawhex();
-    /**
-     * <code>optional string rawhex = 2;</code>
-     */
-    com.google.protobuf.ByteString
-    getRawhexBytes();
-
-    /**
-     * <code>optional string vts = 3;</code>
-     */
-    java.lang.String getVts();
-    /**
-     * <code>optional string vts = 3;</code>
-     */
-    com.google.protobuf.ByteString
-    getVtsBytes();
-
-    /**
-     * <code>optional int64 fee = 4;</code>
-     */
-    long getFee();
-
-    /**
-     * <code>repeated string addresses = 5;</code>
-     */
-    java.util.List<java.lang.String>
-    getAddressesList();
-    /**
-     * <code>repeated string addresses = 5;</code>
-     */
-    int getAddressesCount();
-    /**
-     * <code>repeated string addresses = 5;</code>
-     */
-    java.lang.String getAddresses(int index);
-    /**
-     * <code>repeated string addresses = 5;</code>
-     */
-    com.google.protobuf.ByteString
-    getAddressesBytes(int index);
-  }
-  /**
-   * Protobuf type {@code wallet_gateway.OriginalTransaction}
-   */
-  public  static final class OriginalTransaction extends
-          com.google.protobuf.GeneratedMessageV3 implements
-          // @@protoc_insertion_point(message_implements:wallet_gateway.OriginalTransaction)
-          OriginalTransactionOrBuilder {
-    // Use OriginalTransaction.newBuilder() to construct.
-    private OriginalTransaction(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private OriginalTransaction() {
-      hashId_ = "";
-      rawhex_ = "";
-      vts_ = "";
-      fee_ = 0L;
-      addresses_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-    }
-    private OriginalTransaction(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      int mutable_bitField0_ = 0;
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!input.skipField(tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              hashId_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              rawhex_ = s;
-              break;
-            }
-            case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              vts_ = s;
-              break;
-            }
-            case 32: {
-
-              fee_ = input.readInt64();
-              break;
-            }
-            case 42: {
-              java.lang.String s = input.readStringRequireUtf8();
-              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
-                addresses_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00000010;
-              }
-              addresses_.add(s);
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
-          addresses_ = addresses_.getUnmodifiableView();
-        }
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      wallet_gateway.WalletOuterClass.OriginalTransaction.class, wallet_gateway.WalletOuterClass.OriginalTransaction.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int HASH_ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object hashId_;
-    /**
-     * <code>optional string hash_id = 1;</code>
-     */
-    public java.lang.String getHashId() {
-      java.lang.Object ref = hashId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        hashId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string hash_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-    getHashIdBytes() {
-      java.lang.Object ref = hashId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
-        hashId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RAWHEX_FIELD_NUMBER = 2;
-    private volatile java.lang.Object rawhex_;
-    /**
-     * <code>optional string rawhex = 2;</code>
-     */
-    public java.lang.String getRawhex() {
-      java.lang.Object ref = rawhex_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        rawhex_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string rawhex = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-    getRawhexBytes() {
-      java.lang.Object ref = rawhex_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
-        rawhex_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int VTS_FIELD_NUMBER = 3;
-    private volatile java.lang.Object vts_;
-    /**
-     * <code>optional string vts = 3;</code>
-     */
-    public java.lang.String getVts() {
-      java.lang.Object ref = vts_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        vts_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string vts = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-    getVtsBytes() {
-      java.lang.Object ref = vts_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
-        vts_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int FEE_FIELD_NUMBER = 4;
-    private long fee_;
-    /**
-     * <code>optional int64 fee = 4;</code>
-     */
-    public long getFee() {
-      return fee_;
-    }
-
-    public static final int ADDRESSES_FIELD_NUMBER = 5;
-    private com.google.protobuf.LazyStringList addresses_;
-    /**
-     * <code>repeated string addresses = 5;</code>
-     */
-    public com.google.protobuf.ProtocolStringList
-    getAddressesList() {
-      return addresses_;
-    }
-    /**
-     * <code>repeated string addresses = 5;</code>
-     */
-    public int getAddressesCount() {
-      return addresses_.size();
-    }
-    /**
-     * <code>repeated string addresses = 5;</code>
-     */
-    public java.lang.String getAddresses(int index) {
-      return addresses_.get(index);
-    }
-    /**
-     * <code>repeated string addresses = 5;</code>
-     */
-    public com.google.protobuf.ByteString
-    getAddressesBytes(int index) {
-      return addresses_.getByteString(index);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-      if (!getHashIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, hashId_);
-      }
-      if (!getRawhexBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, rawhex_);
-      }
-      if (!getVtsBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, vts_);
-      }
-      if (fee_ != 0L) {
-        output.writeInt64(4, fee_);
-      }
-      for (int i = 0; i < addresses_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, addresses_.getRaw(i));
-      }
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getHashIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, hashId_);
-      }
-      if (!getRawhexBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, rawhex_);
-      }
-      if (!getVtsBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, vts_);
-      }
-      if (fee_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(4, fee_);
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < addresses_.size(); i++) {
-          dataSize += computeStringSizeNoTag(addresses_.getRaw(i));
-        }
-        size += dataSize;
-        size += 1 * getAddressesList().size();
-      }
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-        return true;
-      }
-      if (!(obj instanceof wallet_gateway.WalletOuterClass.OriginalTransaction)) {
-        return super.equals(obj);
-      }
-      wallet_gateway.WalletOuterClass.OriginalTransaction other = (wallet_gateway.WalletOuterClass.OriginalTransaction) obj;
-
-      boolean result = true;
-      result = result && getHashId()
-              .equals(other.getHashId());
-      result = result && getRawhex()
-              .equals(other.getRawhex());
-      result = result && getVts()
-              .equals(other.getVts());
-      result = result && (getFee()
-              == other.getFee());
-      result = result && getAddressesList()
-              .equals(other.getAddressesList());
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + HASH_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getHashId().hashCode();
-      hash = (37 * hash) + RAWHEX_FIELD_NUMBER;
-      hash = (53 * hash) + getRawhex().hashCode();
-      hash = (37 * hash) + VTS_FIELD_NUMBER;
-      hash = (53 * hash) + getVts().hashCode();
-      hash = (37 * hash) + FEE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getFee());
-      if (getAddressesCount() > 0) {
-        hash = (37 * hash) + ADDRESSES_FIELD_NUMBER;
-        hash = (53 * hash) + getAddressesList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
-    }
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
-    }
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(wallet_gateway.WalletOuterClass.OriginalTransaction prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-              ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code wallet_gateway.OriginalTransaction}
-     */
-    public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:wallet_gateway.OriginalTransaction)
-            wallet_gateway.WalletOuterClass.OriginalTransactionOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
-        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        wallet_gateway.WalletOuterClass.OriginalTransaction.class, wallet_gateway.WalletOuterClass.OriginalTransaction.Builder.class);
-      }
-
-      // Construct using wallet_gateway.WalletOuterClass.OriginalTransaction.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        hashId_ = "";
-
-        rawhex_ = "";
-
-        vts_ = "";
-
-        fee_ = 0L;
-
-        addresses_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
-        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OriginalTransaction_descriptor;
-      }
-
-      public wallet_gateway.WalletOuterClass.OriginalTransaction getDefaultInstanceForType() {
-        return wallet_gateway.WalletOuterClass.OriginalTransaction.getDefaultInstance();
-      }
-
-      public wallet_gateway.WalletOuterClass.OriginalTransaction build() {
-        wallet_gateway.WalletOuterClass.OriginalTransaction result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public wallet_gateway.WalletOuterClass.OriginalTransaction buildPartial() {
-        wallet_gateway.WalletOuterClass.OriginalTransaction result = new wallet_gateway.WalletOuterClass.OriginalTransaction(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        result.hashId_ = hashId_;
-        result.rawhex_ = rawhex_;
-        result.vts_ = vts_;
-        result.fee_ = fee_;
-        if (((bitField0_ & 0x00000010) == 0x00000010)) {
-          addresses_ = addresses_.getUnmodifiableView();
-          bitField0_ = (bitField0_ & ~0x00000010);
-        }
-        result.addresses_ = addresses_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-              com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof wallet_gateway.WalletOuterClass.OriginalTransaction) {
-          return mergeFrom((wallet_gateway.WalletOuterClass.OriginalTransaction)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(wallet_gateway.WalletOuterClass.OriginalTransaction other) {
-        if (other == wallet_gateway.WalletOuterClass.OriginalTransaction.getDefaultInstance()) return this;
-        if (!other.getHashId().isEmpty()) {
-          hashId_ = other.hashId_;
-          onChanged();
-        }
-        if (!other.getRawhex().isEmpty()) {
-          rawhex_ = other.rawhex_;
-          onChanged();
-        }
-        if (!other.getVts().isEmpty()) {
-          vts_ = other.vts_;
-          onChanged();
-        }
-        if (other.getFee() != 0L) {
-          setFee(other.getFee());
-        }
-        if (!other.addresses_.isEmpty()) {
-          if (addresses_.isEmpty()) {
-            addresses_ = other.addresses_;
-            bitField0_ = (bitField0_ & ~0x00000010);
-          } else {
-            ensureAddressesIsMutable();
-            addresses_.addAll(other.addresses_);
-          }
-          onChanged();
-        }
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
-        wallet_gateway.WalletOuterClass.OriginalTransaction parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (wallet_gateway.WalletOuterClass.OriginalTransaction) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object hashId_ = "";
-      /**
-       * <code>optional string hash_id = 1;</code>
-       */
-      public java.lang.String getHashId() {
-        java.lang.Object ref = hashId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          hashId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string hash_id = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-      getHashIdBytes() {
-        java.lang.Object ref = hashId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
-          hashId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string hash_id = 1;</code>
-       */
-      public Builder setHashId(
-              java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-
-        hashId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string hash_id = 1;</code>
-       */
-      public Builder clearHashId() {
-
-        hashId_ = getDefaultInstance().getHashId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string hash_id = 1;</code>
-       */
-      public Builder setHashIdBytes(
-              com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-
-        hashId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object rawhex_ = "";
-      /**
-       * <code>optional string rawhex = 2;</code>
-       */
-      public java.lang.String getRawhex() {
-        java.lang.Object ref = rawhex_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          rawhex_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string rawhex = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-      getRawhexBytes() {
-        java.lang.Object ref = rawhex_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
-          rawhex_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string rawhex = 2;</code>
-       */
-      public Builder setRawhex(
-              java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-
-        rawhex_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string rawhex = 2;</code>
-       */
-      public Builder clearRawhex() {
-
-        rawhex_ = getDefaultInstance().getRawhex();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string rawhex = 2;</code>
-       */
-      public Builder setRawhexBytes(
-              com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-
-        rawhex_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object vts_ = "";
-      /**
-       * <code>optional string vts = 3;</code>
-       */
-      public java.lang.String getVts() {
-        java.lang.Object ref = vts_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          vts_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string vts = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-      getVtsBytes() {
-        java.lang.Object ref = vts_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
-          vts_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string vts = 3;</code>
-       */
-      public Builder setVts(
-              java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-
-        vts_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string vts = 3;</code>
-       */
-      public Builder clearVts() {
-
-        vts_ = getDefaultInstance().getVts();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string vts = 3;</code>
-       */
-      public Builder setVtsBytes(
-              com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-
-        vts_ = value;
-        onChanged();
-        return this;
-      }
-
-      private long fee_ ;
-      /**
-       * <code>optional int64 fee = 4;</code>
-       */
-      public long getFee() {
-        return fee_;
-      }
-      /**
-       * <code>optional int64 fee = 4;</code>
-       */
-      public Builder setFee(long value) {
-
-        fee_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 fee = 4;</code>
-       */
-      public Builder clearFee() {
-
-        fee_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.LazyStringList addresses_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureAddressesIsMutable() {
-        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
-          addresses_ = new com.google.protobuf.LazyStringArrayList(addresses_);
-          bitField0_ |= 0x00000010;
-        }
-      }
-      /**
-       * <code>repeated string addresses = 5;</code>
-       */
-      public com.google.protobuf.ProtocolStringList
-      getAddressesList() {
-        return addresses_.getUnmodifiableView();
-      }
-      /**
-       * <code>repeated string addresses = 5;</code>
-       */
-      public int getAddressesCount() {
-        return addresses_.size();
-      }
-      /**
-       * <code>repeated string addresses = 5;</code>
-       */
-      public java.lang.String getAddresses(int index) {
-        return addresses_.get(index);
-      }
-      /**
-       * <code>repeated string addresses = 5;</code>
-       */
-      public com.google.protobuf.ByteString
-      getAddressesBytes(int index) {
-        return addresses_.getByteString(index);
-      }
-      /**
-       * <code>repeated string addresses = 5;</code>
-       */
-      public Builder setAddresses(
-              int index, java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureAddressesIsMutable();
-        addresses_.set(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string addresses = 5;</code>
-       */
-      public Builder addAddresses(
-              java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureAddressesIsMutable();
-        addresses_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string addresses = 5;</code>
-       */
-      public Builder addAllAddresses(
-              java.lang.Iterable<java.lang.String> values) {
-        ensureAddressesIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, addresses_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string addresses = 5;</code>
-       */
-      public Builder clearAddresses() {
-        addresses_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string addresses = 5;</code>
-       */
-      public Builder addAddressesBytes(
-              com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-        ensureAddressesIsMutable();
-        addresses_.add(value);
-        onChanged();
-        return this;
-      }
-      public final Builder setUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
-      }
-
-      public final Builder mergeUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:wallet_gateway.OriginalTransaction)
-    }
-
-    // @@protoc_insertion_point(class_scope:wallet_gateway.OriginalTransaction)
-    private static final wallet_gateway.WalletOuterClass.OriginalTransaction DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new wallet_gateway.WalletOuterClass.OriginalTransaction();
-    }
-
-    public static wallet_gateway.WalletOuterClass.OriginalTransaction getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<OriginalTransaction>
-            PARSER = new com.google.protobuf.AbstractParser<OriginalTransaction>() {
-      public OriginalTransaction parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        return new OriginalTransaction(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<OriginalTransaction> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<OriginalTransaction> getParserForType() {
-      return PARSER;
-    }
-
-    public wallet_gateway.WalletOuterClass.OriginalTransaction getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface PublishTransactionOrBuilder extends
           // @@protoc_insertion_point(interface_extends:wallet_gateway.PublishTransaction)
           com.google.protobuf.MessageOrBuilder {
@@ -17863,6 +17927,11 @@ public final class WalletOuterClass {
      */
     com.google.protobuf.ByteString
     getTxHexBytes();
+
+    /**
+     * <code>optional int32 currency = 4;</code>
+     */
+    int getCurrency();
   }
   /**
    * Protobuf type {@code wallet_gateway.PublishTransaction}
@@ -17879,6 +17948,7 @@ public final class WalletOuterClass {
       transactionType_ = 0;
       hashId_ = "";
       txHex_ = "";
+      currency_ = 0;
     }
 
     @java.lang.Override
@@ -17921,6 +17991,11 @@ public final class WalletOuterClass {
               java.lang.String s = input.readStringRequireUtf8();
 
               txHex_ = s;
+              break;
+            }
+            case 32: {
+
+              currency_ = input.readInt32();
               break;
             }
           }
@@ -18023,6 +18098,15 @@ public final class WalletOuterClass {
       }
     }
 
+    public static final int CURRENCY_FIELD_NUMBER = 4;
+    private int currency_;
+    /**
+     * <code>optional int32 currency = 4;</code>
+     */
+    public int getCurrency() {
+      return currency_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -18044,6 +18128,9 @@ public final class WalletOuterClass {
       if (!getTxHexBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, txHex_);
       }
+      if (currency_ != 0) {
+        output.writeInt32(4, currency_);
+      }
     }
 
     public int getSerializedSize() {
@@ -18060,6 +18147,10 @@ public final class WalletOuterClass {
       }
       if (!getTxHexBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, txHex_);
+      }
+      if (currency_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt32Size(4, currency_);
       }
       memoizedSize = size;
       return size;
@@ -18083,6 +18174,8 @@ public final class WalletOuterClass {
               .equals(other.getHashId());
       result = result && getTxHex()
               .equals(other.getTxHex());
+      result = result && (getCurrency()
+              == other.getCurrency());
       return result;
     }
 
@@ -18099,6 +18192,8 @@ public final class WalletOuterClass {
       hash = (53 * hash) + getHashId().hashCode();
       hash = (37 * hash) + TX_HEX_FIELD_NUMBER;
       hash = (53 * hash) + getTxHex().hashCode();
+      hash = (37 * hash) + CURRENCY_FIELD_NUMBER;
+      hash = (53 * hash) + getCurrency();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -18223,6 +18318,8 @@ public final class WalletOuterClass {
 
         txHex_ = "";
 
+        currency_ = 0;
+
         return this;
       }
 
@@ -18248,6 +18345,7 @@ public final class WalletOuterClass {
         result.transactionType_ = transactionType_;
         result.hashId_ = hashId_;
         result.txHex_ = txHex_;
+        result.currency_ = currency_;
         onBuilt();
         return result;
       }
@@ -18299,6 +18397,9 @@ public final class WalletOuterClass {
         if (!other.getTxHex().isEmpty()) {
           txHex_ = other.txHex_;
           onChanged();
+        }
+        if (other.getCurrency() != 0) {
+          setCurrency(other.getCurrency());
         }
         onChanged();
         return this;
@@ -18486,6 +18587,32 @@ public final class WalletOuterClass {
         checkByteStringIsUtf8(value);
 
         txHex_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int currency_ ;
+      /**
+       * <code>optional int32 currency = 4;</code>
+       */
+      public int getCurrency() {
+        return currency_;
+      }
+      /**
+       * <code>optional int32 currency = 4;</code>
+       */
+      public Builder setCurrency(int value) {
+
+        currency_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 currency = 4;</code>
+       */
+      public Builder clearCurrency() {
+
+        currency_ = 0;
         onChanged();
         return this;
       }
@@ -21036,6 +21163,4395 @@ public final class WalletOuterClass {
 
   }
 
+  public interface RequestUserInfoOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:wallet_gateway.RequestUserInfo)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string uid = 1;</code>
+     */
+    java.lang.String getUid();
+    /**
+     * <code>optional string uid = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getUidBytes();
+
+    /**
+     * <code>optional int32 currency = 2;</code>
+     */
+    int getCurrency();
+  }
+  /**
+   * Protobuf type {@code wallet_gateway.RequestUserInfo}
+   */
+  public  static final class RequestUserInfo extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:wallet_gateway.RequestUserInfo)
+          RequestUserInfoOrBuilder {
+    // Use RequestUserInfo.newBuilder() to construct.
+    private RequestUserInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private RequestUserInfo() {
+      uid_ = "";
+      currency_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private RequestUserInfo(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              uid_ = s;
+              break;
+            }
+            case 16: {
+
+              currency_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_RequestUserInfo_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_RequestUserInfo_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      wallet_gateway.WalletOuterClass.RequestUserInfo.class, wallet_gateway.WalletOuterClass.RequestUserInfo.Builder.class);
+    }
+
+    public static final int UID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object uid_;
+    /**
+     * <code>optional string uid = 1;</code>
+     */
+    public java.lang.String getUid() {
+      java.lang.Object ref = uid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        uid_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string uid = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getUidBytes() {
+      java.lang.Object ref = uid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        uid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CURRENCY_FIELD_NUMBER = 2;
+    private int currency_;
+    /**
+     * <code>optional int32 currency = 2;</code>
+     */
+    public int getCurrency() {
+      return currency_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (!getUidBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uid_);
+      }
+      if (currency_ != 0) {
+        output.writeInt32(2, currency_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getUidBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uid_);
+      }
+      if (currency_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt32Size(2, currency_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof wallet_gateway.WalletOuterClass.RequestUserInfo)) {
+        return super.equals(obj);
+      }
+      wallet_gateway.WalletOuterClass.RequestUserInfo other = (wallet_gateway.WalletOuterClass.RequestUserInfo) obj;
+
+      boolean result = true;
+      result = result && getUid()
+              .equals(other.getUid());
+      result = result && (getCurrency()
+              == other.getCurrency());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + UID_FIELD_NUMBER;
+      hash = (53 * hash) + getUid().hashCode();
+      hash = (37 * hash) + CURRENCY_FIELD_NUMBER;
+      hash = (53 * hash) + getCurrency();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(wallet_gateway.WalletOuterClass.RequestUserInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code wallet_gateway.RequestUserInfo}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:wallet_gateway.RequestUserInfo)
+            wallet_gateway.WalletOuterClass.RequestUserInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_RequestUserInfo_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_RequestUserInfo_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        wallet_gateway.WalletOuterClass.RequestUserInfo.class, wallet_gateway.WalletOuterClass.RequestUserInfo.Builder.class);
+      }
+
+      // Construct using wallet_gateway.WalletOuterClass.RequestUserInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        uid_ = "";
+
+        currency_ = 0;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_RequestUserInfo_descriptor;
+      }
+
+      public wallet_gateway.WalletOuterClass.RequestUserInfo getDefaultInstanceForType() {
+        return wallet_gateway.WalletOuterClass.RequestUserInfo.getDefaultInstance();
+      }
+
+      public wallet_gateway.WalletOuterClass.RequestUserInfo build() {
+        wallet_gateway.WalletOuterClass.RequestUserInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public wallet_gateway.WalletOuterClass.RequestUserInfo buildPartial() {
+        wallet_gateway.WalletOuterClass.RequestUserInfo result = new wallet_gateway.WalletOuterClass.RequestUserInfo(this);
+        result.uid_ = uid_;
+        result.currency_ = currency_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof wallet_gateway.WalletOuterClass.RequestUserInfo) {
+          return mergeFrom((wallet_gateway.WalletOuterClass.RequestUserInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(wallet_gateway.WalletOuterClass.RequestUserInfo other) {
+        if (other == wallet_gateway.WalletOuterClass.RequestUserInfo.getDefaultInstance()) return this;
+        if (!other.getUid().isEmpty()) {
+          uid_ = other.uid_;
+          onChanged();
+        }
+        if (other.getCurrency() != 0) {
+          setCurrency(other.getCurrency());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        wallet_gateway.WalletOuterClass.RequestUserInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (wallet_gateway.WalletOuterClass.RequestUserInfo) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object uid_ = "";
+      /**
+       * <code>optional string uid = 1;</code>
+       */
+      public java.lang.String getUid() {
+        java.lang.Object ref = uid_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          uid_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string uid = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getUidBytes() {
+        java.lang.Object ref = uid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          uid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string uid = 1;</code>
+       */
+      public Builder setUid(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        uid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string uid = 1;</code>
+       */
+      public Builder clearUid() {
+
+        uid_ = getDefaultInstance().getUid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string uid = 1;</code>
+       */
+      public Builder setUidBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        uid_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int currency_ ;
+      /**
+       * <code>optional int32 currency = 2;</code>
+       */
+      public int getCurrency() {
+        return currency_;
+      }
+      /**
+       * <code>optional int32 currency = 2;</code>
+       */
+      public Builder setCurrency(int value) {
+
+        currency_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 currency = 2;</code>
+       */
+      public Builder clearCurrency() {
+
+        currency_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:wallet_gateway.RequestUserInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:wallet_gateway.RequestUserInfo)
+    private static final wallet_gateway.WalletOuterClass.RequestUserInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new wallet_gateway.WalletOuterClass.RequestUserInfo();
+    }
+
+    public static wallet_gateway.WalletOuterClass.RequestUserInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<RequestUserInfo>
+            PARSER = new com.google.protobuf.AbstractParser<RequestUserInfo>() {
+      public RequestUserInfo parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new RequestUserInfo(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<RequestUserInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<RequestUserInfo> getParserForType() {
+      return PARSER;
+    }
+
+    public wallet_gateway.WalletOuterClass.RequestUserInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ReceiveRequestOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:wallet_gateway.ReceiveRequest)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string sender = 1;</code>
+     */
+    java.lang.String getSender();
+    /**
+     * <code>optional string sender = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getSenderBytes();
+
+    /**
+     * <code>optional uint64 amount = 2;</code>
+     */
+    long getAmount();
+
+    /**
+     * <code>optional string tips = 3;</code>
+     */
+    java.lang.String getTips();
+    /**
+     * <code>optional string tips = 3;</code>
+     */
+    com.google.protobuf.ByteString
+    getTipsBytes();
+
+    /**
+     * <code>optional int32 currency = 4;</code>
+     */
+    int getCurrency();
+  }
+  /**
+   * Protobuf type {@code wallet_gateway.ReceiveRequest}
+   */
+  public  static final class ReceiveRequest extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:wallet_gateway.ReceiveRequest)
+          ReceiveRequestOrBuilder {
+    // Use ReceiveRequest.newBuilder() to construct.
+    private ReceiveRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ReceiveRequest() {
+      sender_ = "";
+      amount_ = 0L;
+      tips_ = "";
+      currency_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private ReceiveRequest(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              sender_ = s;
+              break;
+            }
+            case 16: {
+
+              amount_ = input.readUInt64();
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              tips_ = s;
+              break;
+            }
+            case 32: {
+
+              currency_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ReceiveRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ReceiveRequest_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      wallet_gateway.WalletOuterClass.ReceiveRequest.class, wallet_gateway.WalletOuterClass.ReceiveRequest.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    private volatile java.lang.Object sender_;
+    /**
+     * <code>optional string sender = 1;</code>
+     */
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string sender = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 2;
+    private long amount_;
+    /**
+     * <code>optional uint64 amount = 2;</code>
+     */
+    public long getAmount() {
+      return amount_;
+    }
+
+    public static final int TIPS_FIELD_NUMBER = 3;
+    private volatile java.lang.Object tips_;
+    /**
+     * <code>optional string tips = 3;</code>
+     */
+    public java.lang.String getTips() {
+      java.lang.Object ref = tips_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        tips_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string tips = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+    getTipsBytes() {
+      java.lang.Object ref = tips_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        tips_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CURRENCY_FIELD_NUMBER = 4;
+    private int currency_;
+    /**
+     * <code>optional int32 currency = 4;</code>
+     */
+    public int getCurrency() {
+      return currency_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (!getSenderBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, sender_);
+      }
+      if (amount_ != 0L) {
+        output.writeUInt64(2, amount_);
+      }
+      if (!getTipsBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, tips_);
+      }
+      if (currency_ != 0) {
+        output.writeInt32(4, currency_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getSenderBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, sender_);
+      }
+      if (amount_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeUInt64Size(2, amount_);
+      }
+      if (!getTipsBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, tips_);
+      }
+      if (currency_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt32Size(4, currency_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof wallet_gateway.WalletOuterClass.ReceiveRequest)) {
+        return super.equals(obj);
+      }
+      wallet_gateway.WalletOuterClass.ReceiveRequest other = (wallet_gateway.WalletOuterClass.ReceiveRequest) obj;
+
+      boolean result = true;
+      result = result && getSender()
+              .equals(other.getSender());
+      result = result && (getAmount()
+              == other.getAmount());
+      result = result && getTips()
+              .equals(other.getTips());
+      result = result && (getCurrency()
+              == other.getCurrency());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getAmount());
+      hash = (37 * hash) + TIPS_FIELD_NUMBER;
+      hash = (53 * hash) + getTips().hashCode();
+      hash = (37 * hash) + CURRENCY_FIELD_NUMBER;
+      hash = (53 * hash) + getCurrency();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(wallet_gateway.WalletOuterClass.ReceiveRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code wallet_gateway.ReceiveRequest}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:wallet_gateway.ReceiveRequest)
+            wallet_gateway.WalletOuterClass.ReceiveRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ReceiveRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ReceiveRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        wallet_gateway.WalletOuterClass.ReceiveRequest.class, wallet_gateway.WalletOuterClass.ReceiveRequest.Builder.class);
+      }
+
+      // Construct using wallet_gateway.WalletOuterClass.ReceiveRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        sender_ = "";
+
+        amount_ = 0L;
+
+        tips_ = "";
+
+        currency_ = 0;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ReceiveRequest_descriptor;
+      }
+
+      public wallet_gateway.WalletOuterClass.ReceiveRequest getDefaultInstanceForType() {
+        return wallet_gateway.WalletOuterClass.ReceiveRequest.getDefaultInstance();
+      }
+
+      public wallet_gateway.WalletOuterClass.ReceiveRequest build() {
+        wallet_gateway.WalletOuterClass.ReceiveRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public wallet_gateway.WalletOuterClass.ReceiveRequest buildPartial() {
+        wallet_gateway.WalletOuterClass.ReceiveRequest result = new wallet_gateway.WalletOuterClass.ReceiveRequest(this);
+        result.sender_ = sender_;
+        result.amount_ = amount_;
+        result.tips_ = tips_;
+        result.currency_ = currency_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof wallet_gateway.WalletOuterClass.ReceiveRequest) {
+          return mergeFrom((wallet_gateway.WalletOuterClass.ReceiveRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(wallet_gateway.WalletOuterClass.ReceiveRequest other) {
+        if (other == wallet_gateway.WalletOuterClass.ReceiveRequest.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          onChanged();
+        }
+        if (other.getAmount() != 0L) {
+          setAmount(other.getAmount());
+        }
+        if (!other.getTips().isEmpty()) {
+          tips_ = other.tips_;
+          onChanged();
+        }
+        if (other.getCurrency() != 0) {
+          setCurrency(other.getCurrency());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        wallet_gateway.WalletOuterClass.ReceiveRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (wallet_gateway.WalletOuterClass.ReceiveRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public Builder setSender(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        sender_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public Builder clearSender() {
+
+        sender_ = getDefaultInstance().getSender();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string sender = 1;</code>
+       */
+      public Builder setSenderBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        sender_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long amount_ ;
+      /**
+       * <code>optional uint64 amount = 2;</code>
+       */
+      public long getAmount() {
+        return amount_;
+      }
+      /**
+       * <code>optional uint64 amount = 2;</code>
+       */
+      public Builder setAmount(long value) {
+
+        amount_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 amount = 2;</code>
+       */
+      public Builder clearAmount() {
+
+        amount_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object tips_ = "";
+      /**
+       * <code>optional string tips = 3;</code>
+       */
+      public java.lang.String getTips() {
+        java.lang.Object ref = tips_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          tips_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string tips = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+      getTipsBytes() {
+        java.lang.Object ref = tips_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          tips_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string tips = 3;</code>
+       */
+      public Builder setTips(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        tips_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string tips = 3;</code>
+       */
+      public Builder clearTips() {
+
+        tips_ = getDefaultInstance().getTips();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string tips = 3;</code>
+       */
+      public Builder setTipsBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        tips_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int currency_ ;
+      /**
+       * <code>optional int32 currency = 4;</code>
+       */
+      public int getCurrency() {
+        return currency_;
+      }
+      /**
+       * <code>optional int32 currency = 4;</code>
+       */
+      public Builder setCurrency(int value) {
+
+        currency_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 currency = 4;</code>
+       */
+      public Builder clearCurrency() {
+
+        currency_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:wallet_gateway.ReceiveRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:wallet_gateway.ReceiveRequest)
+    private static final wallet_gateway.WalletOuterClass.ReceiveRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new wallet_gateway.WalletOuterClass.ReceiveRequest();
+    }
+
+    public static wallet_gateway.WalletOuterClass.ReceiveRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ReceiveRequest>
+            PARSER = new com.google.protobuf.AbstractParser<ReceiveRequest>() {
+      public ReceiveRequest parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReceiveRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ReceiveRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReceiveRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public wallet_gateway.WalletOuterClass.ReceiveRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PaymentOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:wallet_gateway.Payment)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    boolean hasSpentCurrency();
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    wallet_gateway.WalletOuterClass.SpentCurrency getSpentCurrency();
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder getSpentCurrencyOrBuilder();
+
+    /**
+     * <code>optional int32 pay_type = 2;</code>
+     */
+    int getPayType();
+
+    /**
+     * <code>optional string hash_id = 3;</code>
+     */
+    java.lang.String getHashId();
+    /**
+     * <code>optional string hash_id = 3;</code>
+     */
+    com.google.protobuf.ByteString
+    getHashIdBytes();
+
+    /**
+     * <code>optional int64 fee = 4;</code>
+     */
+    long getFee();
+  }
+  /**
+   * Protobuf type {@code wallet_gateway.Payment}
+   */
+  public  static final class Payment extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:wallet_gateway.Payment)
+          PaymentOrBuilder {
+    // Use Payment.newBuilder() to construct.
+    private Payment(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Payment() {
+      payType_ = 0;
+      hashId_ = "";
+      fee_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private Payment(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              wallet_gateway.WalletOuterClass.SpentCurrency.Builder subBuilder = null;
+              if (spentCurrency_ != null) {
+                subBuilder = spentCurrency_.toBuilder();
+              }
+              spentCurrency_ = input.readMessage(wallet_gateway.WalletOuterClass.SpentCurrency.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(spentCurrency_);
+                spentCurrency_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 16: {
+
+              payType_ = input.readInt32();
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              hashId_ = s;
+              break;
+            }
+            case 32: {
+
+              fee_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_Payment_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_Payment_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      wallet_gateway.WalletOuterClass.Payment.class, wallet_gateway.WalletOuterClass.Payment.Builder.class);
+    }
+
+    public static final int SPENT_CURRENCY_FIELD_NUMBER = 1;
+    private wallet_gateway.WalletOuterClass.SpentCurrency spentCurrency_;
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    public boolean hasSpentCurrency() {
+      return spentCurrency_ != null;
+    }
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    public wallet_gateway.WalletOuterClass.SpentCurrency getSpentCurrency() {
+      return spentCurrency_ == null ? wallet_gateway.WalletOuterClass.SpentCurrency.getDefaultInstance() : spentCurrency_;
+    }
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    public wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder getSpentCurrencyOrBuilder() {
+      return getSpentCurrency();
+    }
+
+    public static final int PAY_TYPE_FIELD_NUMBER = 2;
+    private int payType_;
+    /**
+     * <code>optional int32 pay_type = 2;</code>
+     */
+    public int getPayType() {
+      return payType_;
+    }
+
+    public static final int HASH_ID_FIELD_NUMBER = 3;
+    private volatile java.lang.Object hashId_;
+    /**
+     * <code>optional string hash_id = 3;</code>
+     */
+    public java.lang.String getHashId() {
+      java.lang.Object ref = hashId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        hashId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string hash_id = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+    getHashIdBytes() {
+      java.lang.Object ref = hashId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        hashId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int FEE_FIELD_NUMBER = 4;
+    private long fee_;
+    /**
+     * <code>optional int64 fee = 4;</code>
+     */
+    public long getFee() {
+      return fee_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (spentCurrency_ != null) {
+        output.writeMessage(1, getSpentCurrency());
+      }
+      if (payType_ != 0) {
+        output.writeInt32(2, payType_);
+      }
+      if (!getHashIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, hashId_);
+      }
+      if (fee_ != 0L) {
+        output.writeInt64(4, fee_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (spentCurrency_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(1, getSpentCurrency());
+      }
+      if (payType_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt32Size(2, payType_);
+      }
+      if (!getHashIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, hashId_);
+      }
+      if (fee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(4, fee_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof wallet_gateway.WalletOuterClass.Payment)) {
+        return super.equals(obj);
+      }
+      wallet_gateway.WalletOuterClass.Payment other = (wallet_gateway.WalletOuterClass.Payment) obj;
+
+      boolean result = true;
+      result = result && (hasSpentCurrency() == other.hasSpentCurrency());
+      if (hasSpentCurrency()) {
+        result = result && getSpentCurrency()
+                .equals(other.getSpentCurrency());
+      }
+      result = result && (getPayType()
+              == other.getPayType());
+      result = result && getHashId()
+              .equals(other.getHashId());
+      result = result && (getFee()
+              == other.getFee());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasSpentCurrency()) {
+        hash = (37 * hash) + SPENT_CURRENCY_FIELD_NUMBER;
+        hash = (53 * hash) + getSpentCurrency().hashCode();
+      }
+      hash = (37 * hash) + PAY_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getPayType();
+      hash = (37 * hash) + HASH_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getHashId().hashCode();
+      hash = (37 * hash) + FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getFee());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static wallet_gateway.WalletOuterClass.Payment parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.Payment parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.Payment parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.Payment parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.Payment parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.Payment parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.Payment parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.Payment parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.Payment parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.Payment parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(wallet_gateway.WalletOuterClass.Payment prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code wallet_gateway.Payment}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:wallet_gateway.Payment)
+            wallet_gateway.WalletOuterClass.PaymentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_Payment_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_Payment_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        wallet_gateway.WalletOuterClass.Payment.class, wallet_gateway.WalletOuterClass.Payment.Builder.class);
+      }
+
+      // Construct using wallet_gateway.WalletOuterClass.Payment.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (spentCurrencyBuilder_ == null) {
+          spentCurrency_ = null;
+        } else {
+          spentCurrency_ = null;
+          spentCurrencyBuilder_ = null;
+        }
+        payType_ = 0;
+
+        hashId_ = "";
+
+        fee_ = 0L;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_Payment_descriptor;
+      }
+
+      public wallet_gateway.WalletOuterClass.Payment getDefaultInstanceForType() {
+        return wallet_gateway.WalletOuterClass.Payment.getDefaultInstance();
+      }
+
+      public wallet_gateway.WalletOuterClass.Payment build() {
+        wallet_gateway.WalletOuterClass.Payment result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public wallet_gateway.WalletOuterClass.Payment buildPartial() {
+        wallet_gateway.WalletOuterClass.Payment result = new wallet_gateway.WalletOuterClass.Payment(this);
+        if (spentCurrencyBuilder_ == null) {
+          result.spentCurrency_ = spentCurrency_;
+        } else {
+          result.spentCurrency_ = spentCurrencyBuilder_.build();
+        }
+        result.payType_ = payType_;
+        result.hashId_ = hashId_;
+        result.fee_ = fee_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof wallet_gateway.WalletOuterClass.Payment) {
+          return mergeFrom((wallet_gateway.WalletOuterClass.Payment)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(wallet_gateway.WalletOuterClass.Payment other) {
+        if (other == wallet_gateway.WalletOuterClass.Payment.getDefaultInstance()) return this;
+        if (other.hasSpentCurrency()) {
+          mergeSpentCurrency(other.getSpentCurrency());
+        }
+        if (other.getPayType() != 0) {
+          setPayType(other.getPayType());
+        }
+        if (!other.getHashId().isEmpty()) {
+          hashId_ = other.hashId_;
+          onChanged();
+        }
+        if (other.getFee() != 0L) {
+          setFee(other.getFee());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        wallet_gateway.WalletOuterClass.Payment parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (wallet_gateway.WalletOuterClass.Payment) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private wallet_gateway.WalletOuterClass.SpentCurrency spentCurrency_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+              wallet_gateway.WalletOuterClass.SpentCurrency, wallet_gateway.WalletOuterClass.SpentCurrency.Builder, wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder> spentCurrencyBuilder_;
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public boolean hasSpentCurrency() {
+        return spentCurrencyBuilder_ != null || spentCurrency_ != null;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public wallet_gateway.WalletOuterClass.SpentCurrency getSpentCurrency() {
+        if (spentCurrencyBuilder_ == null) {
+          return spentCurrency_ == null ? wallet_gateway.WalletOuterClass.SpentCurrency.getDefaultInstance() : spentCurrency_;
+        } else {
+          return spentCurrencyBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public Builder setSpentCurrency(wallet_gateway.WalletOuterClass.SpentCurrency value) {
+        if (spentCurrencyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          spentCurrency_ = value;
+          onChanged();
+        } else {
+          spentCurrencyBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public Builder setSpentCurrency(
+              wallet_gateway.WalletOuterClass.SpentCurrency.Builder builderForValue) {
+        if (spentCurrencyBuilder_ == null) {
+          spentCurrency_ = builderForValue.build();
+          onChanged();
+        } else {
+          spentCurrencyBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public Builder mergeSpentCurrency(wallet_gateway.WalletOuterClass.SpentCurrency value) {
+        if (spentCurrencyBuilder_ == null) {
+          if (spentCurrency_ != null) {
+            spentCurrency_ =
+                    wallet_gateway.WalletOuterClass.SpentCurrency.newBuilder(spentCurrency_).mergeFrom(value).buildPartial();
+          } else {
+            spentCurrency_ = value;
+          }
+          onChanged();
+        } else {
+          spentCurrencyBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public Builder clearSpentCurrency() {
+        if (spentCurrencyBuilder_ == null) {
+          spentCurrency_ = null;
+          onChanged();
+        } else {
+          spentCurrency_ = null;
+          spentCurrencyBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public wallet_gateway.WalletOuterClass.SpentCurrency.Builder getSpentCurrencyBuilder() {
+
+        onChanged();
+        return getSpentCurrencyFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder getSpentCurrencyOrBuilder() {
+        if (spentCurrencyBuilder_ != null) {
+          return spentCurrencyBuilder_.getMessageOrBuilder();
+        } else {
+          return spentCurrency_ == null ?
+                  wallet_gateway.WalletOuterClass.SpentCurrency.getDefaultInstance() : spentCurrency_;
+        }
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+              wallet_gateway.WalletOuterClass.SpentCurrency, wallet_gateway.WalletOuterClass.SpentCurrency.Builder, wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder>
+      getSpentCurrencyFieldBuilder() {
+        if (spentCurrencyBuilder_ == null) {
+          spentCurrencyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                  wallet_gateway.WalletOuterClass.SpentCurrency, wallet_gateway.WalletOuterClass.SpentCurrency.Builder, wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder>(
+                  getSpentCurrency(),
+                  getParentForChildren(),
+                  isClean());
+          spentCurrency_ = null;
+        }
+        return spentCurrencyBuilder_;
+      }
+
+      private int payType_ ;
+      /**
+       * <code>optional int32 pay_type = 2;</code>
+       */
+      public int getPayType() {
+        return payType_;
+      }
+      /**
+       * <code>optional int32 pay_type = 2;</code>
+       */
+      public Builder setPayType(int value) {
+
+        payType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 pay_type = 2;</code>
+       */
+      public Builder clearPayType() {
+
+        payType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object hashId_ = "";
+      /**
+       * <code>optional string hash_id = 3;</code>
+       */
+      public java.lang.String getHashId() {
+        java.lang.Object ref = hashId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          hashId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string hash_id = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+      getHashIdBytes() {
+        java.lang.Object ref = hashId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          hashId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string hash_id = 3;</code>
+       */
+      public Builder setHashId(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        hashId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string hash_id = 3;</code>
+       */
+      public Builder clearHashId() {
+
+        hashId_ = getDefaultInstance().getHashId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string hash_id = 3;</code>
+       */
+      public Builder setHashIdBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        hashId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long fee_ ;
+      /**
+       * <code>optional int64 fee = 4;</code>
+       */
+      public long getFee() {
+        return fee_;
+      }
+      /**
+       * <code>optional int64 fee = 4;</code>
+       */
+      public Builder setFee(long value) {
+
+        fee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 fee = 4;</code>
+       */
+      public Builder clearFee() {
+
+        fee_ = 0L;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:wallet_gateway.Payment)
+    }
+
+    // @@protoc_insertion_point(class_scope:wallet_gateway.Payment)
+    private static final wallet_gateway.WalletOuterClass.Payment DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new wallet_gateway.WalletOuterClass.Payment();
+    }
+
+    public static wallet_gateway.WalletOuterClass.Payment getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Payment>
+            PARSER = new com.google.protobuf.AbstractParser<Payment>() {
+      public Payment parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Payment(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Payment> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Payment> getParserForType() {
+      return PARSER;
+    }
+
+    public wallet_gateway.WalletOuterClass.Payment getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface OutTransferOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:wallet_gateway.OutTransfer)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    boolean hasSpentCurrency();
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    wallet_gateway.WalletOuterClass.SpentCurrency getSpentCurrency();
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder getSpentCurrencyOrBuilder();
+
+    /**
+     * <code>optional int64 amount = 2;</code>
+     */
+    long getAmount();
+
+    /**
+     * <code>optional int64 fee = 3;</code>
+     */
+    long getFee();
+
+    /**
+     * <code>optional string tips = 4;</code>
+     */
+    java.lang.String getTips();
+    /**
+     * <code>optional string tips = 4;</code>
+     */
+    com.google.protobuf.ByteString
+    getTipsBytes();
+  }
+  /**
+   * Protobuf type {@code wallet_gateway.OutTransfer}
+   */
+  public  static final class OutTransfer extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:wallet_gateway.OutTransfer)
+          OutTransferOrBuilder {
+    // Use OutTransfer.newBuilder() to construct.
+    private OutTransfer(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private OutTransfer() {
+      amount_ = 0L;
+      fee_ = 0L;
+      tips_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private OutTransfer(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              wallet_gateway.WalletOuterClass.SpentCurrency.Builder subBuilder = null;
+              if (spentCurrency_ != null) {
+                subBuilder = spentCurrency_.toBuilder();
+              }
+              spentCurrency_ = input.readMessage(wallet_gateway.WalletOuterClass.SpentCurrency.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(spentCurrency_);
+                spentCurrency_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 16: {
+
+              amount_ = input.readInt64();
+              break;
+            }
+            case 24: {
+
+              fee_ = input.readInt64();
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              tips_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OutTransfer_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OutTransfer_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      wallet_gateway.WalletOuterClass.OutTransfer.class, wallet_gateway.WalletOuterClass.OutTransfer.Builder.class);
+    }
+
+    public static final int SPENT_CURRENCY_FIELD_NUMBER = 1;
+    private wallet_gateway.WalletOuterClass.SpentCurrency spentCurrency_;
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    public boolean hasSpentCurrency() {
+      return spentCurrency_ != null;
+    }
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    public wallet_gateway.WalletOuterClass.SpentCurrency getSpentCurrency() {
+      return spentCurrency_ == null ? wallet_gateway.WalletOuterClass.SpentCurrency.getDefaultInstance() : spentCurrency_;
+    }
+    /**
+     * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+     */
+    public wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder getSpentCurrencyOrBuilder() {
+      return getSpentCurrency();
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 2;
+    private long amount_;
+    /**
+     * <code>optional int64 amount = 2;</code>
+     */
+    public long getAmount() {
+      return amount_;
+    }
+
+    public static final int FEE_FIELD_NUMBER = 3;
+    private long fee_;
+    /**
+     * <code>optional int64 fee = 3;</code>
+     */
+    public long getFee() {
+      return fee_;
+    }
+
+    public static final int TIPS_FIELD_NUMBER = 4;
+    private volatile java.lang.Object tips_;
+    /**
+     * <code>optional string tips = 4;</code>
+     */
+    public java.lang.String getTips() {
+      java.lang.Object ref = tips_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        tips_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string tips = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+    getTipsBytes() {
+      java.lang.Object ref = tips_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        tips_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (spentCurrency_ != null) {
+        output.writeMessage(1, getSpentCurrency());
+      }
+      if (amount_ != 0L) {
+        output.writeInt64(2, amount_);
+      }
+      if (fee_ != 0L) {
+        output.writeInt64(3, fee_);
+      }
+      if (!getTipsBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, tips_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (spentCurrency_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(1, getSpentCurrency());
+      }
+      if (amount_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(2, amount_);
+      }
+      if (fee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(3, fee_);
+      }
+      if (!getTipsBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, tips_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof wallet_gateway.WalletOuterClass.OutTransfer)) {
+        return super.equals(obj);
+      }
+      wallet_gateway.WalletOuterClass.OutTransfer other = (wallet_gateway.WalletOuterClass.OutTransfer) obj;
+
+      boolean result = true;
+      result = result && (hasSpentCurrency() == other.hasSpentCurrency());
+      if (hasSpentCurrency()) {
+        result = result && getSpentCurrency()
+                .equals(other.getSpentCurrency());
+      }
+      result = result && (getAmount()
+              == other.getAmount());
+      result = result && (getFee()
+              == other.getFee());
+      result = result && getTips()
+              .equals(other.getTips());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasSpentCurrency()) {
+        hash = (37 * hash) + SPENT_CURRENCY_FIELD_NUMBER;
+        hash = (53 * hash) + getSpentCurrency().hashCode();
+      }
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getAmount());
+      hash = (37 * hash) + FEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getFee());
+      hash = (37 * hash) + TIPS_FIELD_NUMBER;
+      hash = (53 * hash) + getTips().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.OutTransfer parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(wallet_gateway.WalletOuterClass.OutTransfer prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code wallet_gateway.OutTransfer}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:wallet_gateway.OutTransfer)
+            wallet_gateway.WalletOuterClass.OutTransferOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OutTransfer_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OutTransfer_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        wallet_gateway.WalletOuterClass.OutTransfer.class, wallet_gateway.WalletOuterClass.OutTransfer.Builder.class);
+      }
+
+      // Construct using wallet_gateway.WalletOuterClass.OutTransfer.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (spentCurrencyBuilder_ == null) {
+          spentCurrency_ = null;
+        } else {
+          spentCurrency_ = null;
+          spentCurrencyBuilder_ = null;
+        }
+        amount_ = 0L;
+
+        fee_ = 0L;
+
+        tips_ = "";
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_OutTransfer_descriptor;
+      }
+
+      public wallet_gateway.WalletOuterClass.OutTransfer getDefaultInstanceForType() {
+        return wallet_gateway.WalletOuterClass.OutTransfer.getDefaultInstance();
+      }
+
+      public wallet_gateway.WalletOuterClass.OutTransfer build() {
+        wallet_gateway.WalletOuterClass.OutTransfer result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public wallet_gateway.WalletOuterClass.OutTransfer buildPartial() {
+        wallet_gateway.WalletOuterClass.OutTransfer result = new wallet_gateway.WalletOuterClass.OutTransfer(this);
+        if (spentCurrencyBuilder_ == null) {
+          result.spentCurrency_ = spentCurrency_;
+        } else {
+          result.spentCurrency_ = spentCurrencyBuilder_.build();
+        }
+        result.amount_ = amount_;
+        result.fee_ = fee_;
+        result.tips_ = tips_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof wallet_gateway.WalletOuterClass.OutTransfer) {
+          return mergeFrom((wallet_gateway.WalletOuterClass.OutTransfer)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(wallet_gateway.WalletOuterClass.OutTransfer other) {
+        if (other == wallet_gateway.WalletOuterClass.OutTransfer.getDefaultInstance()) return this;
+        if (other.hasSpentCurrency()) {
+          mergeSpentCurrency(other.getSpentCurrency());
+        }
+        if (other.getAmount() != 0L) {
+          setAmount(other.getAmount());
+        }
+        if (other.getFee() != 0L) {
+          setFee(other.getFee());
+        }
+        if (!other.getTips().isEmpty()) {
+          tips_ = other.tips_;
+          onChanged();
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        wallet_gateway.WalletOuterClass.OutTransfer parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (wallet_gateway.WalletOuterClass.OutTransfer) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private wallet_gateway.WalletOuterClass.SpentCurrency spentCurrency_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+              wallet_gateway.WalletOuterClass.SpentCurrency, wallet_gateway.WalletOuterClass.SpentCurrency.Builder, wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder> spentCurrencyBuilder_;
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public boolean hasSpentCurrency() {
+        return spentCurrencyBuilder_ != null || spentCurrency_ != null;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public wallet_gateway.WalletOuterClass.SpentCurrency getSpentCurrency() {
+        if (spentCurrencyBuilder_ == null) {
+          return spentCurrency_ == null ? wallet_gateway.WalletOuterClass.SpentCurrency.getDefaultInstance() : spentCurrency_;
+        } else {
+          return spentCurrencyBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public Builder setSpentCurrency(wallet_gateway.WalletOuterClass.SpentCurrency value) {
+        if (spentCurrencyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          spentCurrency_ = value;
+          onChanged();
+        } else {
+          spentCurrencyBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public Builder setSpentCurrency(
+              wallet_gateway.WalletOuterClass.SpentCurrency.Builder builderForValue) {
+        if (spentCurrencyBuilder_ == null) {
+          spentCurrency_ = builderForValue.build();
+          onChanged();
+        } else {
+          spentCurrencyBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public Builder mergeSpentCurrency(wallet_gateway.WalletOuterClass.SpentCurrency value) {
+        if (spentCurrencyBuilder_ == null) {
+          if (spentCurrency_ != null) {
+            spentCurrency_ =
+                    wallet_gateway.WalletOuterClass.SpentCurrency.newBuilder(spentCurrency_).mergeFrom(value).buildPartial();
+          } else {
+            spentCurrency_ = value;
+          }
+          onChanged();
+        } else {
+          spentCurrencyBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public Builder clearSpentCurrency() {
+        if (spentCurrencyBuilder_ == null) {
+          spentCurrency_ = null;
+          onChanged();
+        } else {
+          spentCurrency_ = null;
+          spentCurrencyBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public wallet_gateway.WalletOuterClass.SpentCurrency.Builder getSpentCurrencyBuilder() {
+
+        onChanged();
+        return getSpentCurrencyFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      public wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder getSpentCurrencyOrBuilder() {
+        if (spentCurrencyBuilder_ != null) {
+          return spentCurrencyBuilder_.getMessageOrBuilder();
+        } else {
+          return spentCurrency_ == null ?
+                  wallet_gateway.WalletOuterClass.SpentCurrency.getDefaultInstance() : spentCurrency_;
+        }
+      }
+      /**
+       * <code>optional .wallet_gateway.SpentCurrency spent_currency = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+              wallet_gateway.WalletOuterClass.SpentCurrency, wallet_gateway.WalletOuterClass.SpentCurrency.Builder, wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder>
+      getSpentCurrencyFieldBuilder() {
+        if (spentCurrencyBuilder_ == null) {
+          spentCurrencyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                  wallet_gateway.WalletOuterClass.SpentCurrency, wallet_gateway.WalletOuterClass.SpentCurrency.Builder, wallet_gateway.WalletOuterClass.SpentCurrencyOrBuilder>(
+                  getSpentCurrency(),
+                  getParentForChildren(),
+                  isClean());
+          spentCurrency_ = null;
+        }
+        return spentCurrencyBuilder_;
+      }
+
+      private long amount_ ;
+      /**
+       * <code>optional int64 amount = 2;</code>
+       */
+      public long getAmount() {
+        return amount_;
+      }
+      /**
+       * <code>optional int64 amount = 2;</code>
+       */
+      public Builder setAmount(long value) {
+
+        amount_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 amount = 2;</code>
+       */
+      public Builder clearAmount() {
+
+        amount_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long fee_ ;
+      /**
+       * <code>optional int64 fee = 3;</code>
+       */
+      public long getFee() {
+        return fee_;
+      }
+      /**
+       * <code>optional int64 fee = 3;</code>
+       */
+      public Builder setFee(long value) {
+
+        fee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 fee = 3;</code>
+       */
+      public Builder clearFee() {
+
+        fee_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object tips_ = "";
+      /**
+       * <code>optional string tips = 4;</code>
+       */
+      public java.lang.String getTips() {
+        java.lang.Object ref = tips_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          tips_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string tips = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+      getTipsBytes() {
+        java.lang.Object ref = tips_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          tips_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string tips = 4;</code>
+       */
+      public Builder setTips(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        tips_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string tips = 4;</code>
+       */
+      public Builder clearTips() {
+
+        tips_ = getDefaultInstance().getTips();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string tips = 4;</code>
+       */
+      public Builder setTipsBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        tips_ = value;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:wallet_gateway.OutTransfer)
+    }
+
+    // @@protoc_insertion_point(class_scope:wallet_gateway.OutTransfer)
+    private static final wallet_gateway.WalletOuterClass.OutTransfer DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new wallet_gateway.WalletOuterClass.OutTransfer();
+    }
+
+    public static wallet_gateway.WalletOuterClass.OutTransfer getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<OutTransfer>
+            PARSER = new com.google.protobuf.AbstractParser<OutTransfer>() {
+      public OutTransfer parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new OutTransfer(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<OutTransfer> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<OutTransfer> getParserForType() {
+      return PARSER;
+    }
+
+    public wallet_gateway.WalletOuterClass.OutTransfer getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface CrowdfundingRequestOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:wallet_gateway.CrowdfundingRequest)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string currency = 1;</code>
+     */
+    java.lang.String getCurrency();
+    /**
+     * <code>optional string currency = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getCurrencyBytes();
+
+    /**
+     * <code>optional string group_identifier = 2;</code>
+     */
+    java.lang.String getGroupIdentifier();
+    /**
+     * <code>optional string group_identifier = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getGroupIdentifierBytes();
+
+    /**
+     * <code>optional int64 amount = 3;</code>
+     */
+    long getAmount();
+
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    int getSize();
+
+    /**
+     * <code>optional string tips = 5;</code>
+     */
+    java.lang.String getTips();
+    /**
+     * <code>optional string tips = 5;</code>
+     */
+    com.google.protobuf.ByteString
+    getTipsBytes();
+  }
+  /**
+   * Protobuf type {@code wallet_gateway.CrowdfundingRequest}
+   */
+  public  static final class CrowdfundingRequest extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:wallet_gateway.CrowdfundingRequest)
+          CrowdfundingRequestOrBuilder {
+    // Use CrowdfundingRequest.newBuilder() to construct.
+    private CrowdfundingRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CrowdfundingRequest() {
+      currency_ = "";
+      groupIdentifier_ = "";
+      amount_ = 0L;
+      size_ = 0;
+      tips_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private CrowdfundingRequest(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              currency_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              groupIdentifier_ = s;
+              break;
+            }
+            case 24: {
+
+              amount_ = input.readInt64();
+              break;
+            }
+            case 32: {
+
+              size_ = input.readInt32();
+              break;
+            }
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              tips_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_CrowdfundingRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_CrowdfundingRequest_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      wallet_gateway.WalletOuterClass.CrowdfundingRequest.class, wallet_gateway.WalletOuterClass.CrowdfundingRequest.Builder.class);
+    }
+
+    public static final int CURRENCY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object currency_;
+    /**
+     * <code>optional string currency = 1;</code>
+     */
+    public java.lang.String getCurrency() {
+      java.lang.Object ref = currency_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        currency_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string currency = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getCurrencyBytes() {
+      java.lang.Object ref = currency_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        currency_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int GROUP_IDENTIFIER_FIELD_NUMBER = 2;
+    private volatile java.lang.Object groupIdentifier_;
+    /**
+     * <code>optional string group_identifier = 2;</code>
+     */
+    public java.lang.String getGroupIdentifier() {
+      java.lang.Object ref = groupIdentifier_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        groupIdentifier_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string group_identifier = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getGroupIdentifierBytes() {
+      java.lang.Object ref = groupIdentifier_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        groupIdentifier_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 3;
+    private long amount_;
+    /**
+     * <code>optional int64 amount = 3;</code>
+     */
+    public long getAmount() {
+      return amount_;
+    }
+
+    public static final int SIZE_FIELD_NUMBER = 4;
+    private int size_;
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    public int getSize() {
+      return size_;
+    }
+
+    public static final int TIPS_FIELD_NUMBER = 5;
+    private volatile java.lang.Object tips_;
+    /**
+     * <code>optional string tips = 5;</code>
+     */
+    public java.lang.String getTips() {
+      java.lang.Object ref = tips_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        tips_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string tips = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+    getTipsBytes() {
+      java.lang.Object ref = tips_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        tips_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (!getCurrencyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, currency_);
+      }
+      if (!getGroupIdentifierBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, groupIdentifier_);
+      }
+      if (amount_ != 0L) {
+        output.writeInt64(3, amount_);
+      }
+      if (size_ != 0) {
+        output.writeInt32(4, size_);
+      }
+      if (!getTipsBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, tips_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getCurrencyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, currency_);
+      }
+      if (!getGroupIdentifierBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, groupIdentifier_);
+      }
+      if (amount_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(3, amount_);
+      }
+      if (size_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt32Size(4, size_);
+      }
+      if (!getTipsBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, tips_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof wallet_gateway.WalletOuterClass.CrowdfundingRequest)) {
+        return super.equals(obj);
+      }
+      wallet_gateway.WalletOuterClass.CrowdfundingRequest other = (wallet_gateway.WalletOuterClass.CrowdfundingRequest) obj;
+
+      boolean result = true;
+      result = result && getCurrency()
+              .equals(other.getCurrency());
+      result = result && getGroupIdentifier()
+              .equals(other.getGroupIdentifier());
+      result = result && (getAmount()
+              == other.getAmount());
+      result = result && (getSize()
+              == other.getSize());
+      result = result && getTips()
+              .equals(other.getTips());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + CURRENCY_FIELD_NUMBER;
+      hash = (53 * hash) + getCurrency().hashCode();
+      hash = (37 * hash) + GROUP_IDENTIFIER_FIELD_NUMBER;
+      hash = (53 * hash) + getGroupIdentifier().hashCode();
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getAmount());
+      hash = (37 * hash) + SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + getSize();
+      hash = (37 * hash) + TIPS_FIELD_NUMBER;
+      hash = (53 * hash) + getTips().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(wallet_gateway.WalletOuterClass.CrowdfundingRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code wallet_gateway.CrowdfundingRequest}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:wallet_gateway.CrowdfundingRequest)
+            wallet_gateway.WalletOuterClass.CrowdfundingRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_CrowdfundingRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_CrowdfundingRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        wallet_gateway.WalletOuterClass.CrowdfundingRequest.class, wallet_gateway.WalletOuterClass.CrowdfundingRequest.Builder.class);
+      }
+
+      // Construct using wallet_gateway.WalletOuterClass.CrowdfundingRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        currency_ = "";
+
+        groupIdentifier_ = "";
+
+        amount_ = 0L;
+
+        size_ = 0;
+
+        tips_ = "";
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_CrowdfundingRequest_descriptor;
+      }
+
+      public wallet_gateway.WalletOuterClass.CrowdfundingRequest getDefaultInstanceForType() {
+        return wallet_gateway.WalletOuterClass.CrowdfundingRequest.getDefaultInstance();
+      }
+
+      public wallet_gateway.WalletOuterClass.CrowdfundingRequest build() {
+        wallet_gateway.WalletOuterClass.CrowdfundingRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public wallet_gateway.WalletOuterClass.CrowdfundingRequest buildPartial() {
+        wallet_gateway.WalletOuterClass.CrowdfundingRequest result = new wallet_gateway.WalletOuterClass.CrowdfundingRequest(this);
+        result.currency_ = currency_;
+        result.groupIdentifier_ = groupIdentifier_;
+        result.amount_ = amount_;
+        result.size_ = size_;
+        result.tips_ = tips_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof wallet_gateway.WalletOuterClass.CrowdfundingRequest) {
+          return mergeFrom((wallet_gateway.WalletOuterClass.CrowdfundingRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(wallet_gateway.WalletOuterClass.CrowdfundingRequest other) {
+        if (other == wallet_gateway.WalletOuterClass.CrowdfundingRequest.getDefaultInstance()) return this;
+        if (!other.getCurrency().isEmpty()) {
+          currency_ = other.currency_;
+          onChanged();
+        }
+        if (!other.getGroupIdentifier().isEmpty()) {
+          groupIdentifier_ = other.groupIdentifier_;
+          onChanged();
+        }
+        if (other.getAmount() != 0L) {
+          setAmount(other.getAmount());
+        }
+        if (other.getSize() != 0) {
+          setSize(other.getSize());
+        }
+        if (!other.getTips().isEmpty()) {
+          tips_ = other.tips_;
+          onChanged();
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        wallet_gateway.WalletOuterClass.CrowdfundingRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (wallet_gateway.WalletOuterClass.CrowdfundingRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object currency_ = "";
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public java.lang.String getCurrency() {
+        java.lang.Object ref = currency_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          currency_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getCurrencyBytes() {
+        java.lang.Object ref = currency_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          currency_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public Builder setCurrency(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        currency_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public Builder clearCurrency() {
+
+        currency_ = getDefaultInstance().getCurrency();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public Builder setCurrencyBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        currency_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object groupIdentifier_ = "";
+      /**
+       * <code>optional string group_identifier = 2;</code>
+       */
+      public java.lang.String getGroupIdentifier() {
+        java.lang.Object ref = groupIdentifier_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          groupIdentifier_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string group_identifier = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getGroupIdentifierBytes() {
+        java.lang.Object ref = groupIdentifier_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          groupIdentifier_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string group_identifier = 2;</code>
+       */
+      public Builder setGroupIdentifier(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        groupIdentifier_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string group_identifier = 2;</code>
+       */
+      public Builder clearGroupIdentifier() {
+
+        groupIdentifier_ = getDefaultInstance().getGroupIdentifier();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string group_identifier = 2;</code>
+       */
+      public Builder setGroupIdentifierBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        groupIdentifier_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long amount_ ;
+      /**
+       * <code>optional int64 amount = 3;</code>
+       */
+      public long getAmount() {
+        return amount_;
+      }
+      /**
+       * <code>optional int64 amount = 3;</code>
+       */
+      public Builder setAmount(long value) {
+
+        amount_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 amount = 3;</code>
+       */
+      public Builder clearAmount() {
+
+        amount_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int size_ ;
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public int getSize() {
+        return size_;
+      }
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public Builder setSize(int value) {
+
+        size_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public Builder clearSize() {
+
+        size_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object tips_ = "";
+      /**
+       * <code>optional string tips = 5;</code>
+       */
+      public java.lang.String getTips() {
+        java.lang.Object ref = tips_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          tips_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string tips = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+      getTipsBytes() {
+        java.lang.Object ref = tips_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          tips_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string tips = 5;</code>
+       */
+      public Builder setTips(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        tips_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string tips = 5;</code>
+       */
+      public Builder clearTips() {
+
+        tips_ = getDefaultInstance().getTips();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string tips = 5;</code>
+       */
+      public Builder setTipsBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        tips_ = value;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:wallet_gateway.CrowdfundingRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:wallet_gateway.CrowdfundingRequest)
+    private static final wallet_gateway.WalletOuterClass.CrowdfundingRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new wallet_gateway.WalletOuterClass.CrowdfundingRequest();
+    }
+
+    public static wallet_gateway.WalletOuterClass.CrowdfundingRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CrowdfundingRequest>
+            PARSER = new com.google.protobuf.AbstractParser<CrowdfundingRequest>() {
+      public CrowdfundingRequest parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CrowdfundingRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<CrowdfundingRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CrowdfundingRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public wallet_gateway.WalletOuterClass.CrowdfundingRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ResponsePublishOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:wallet_gateway.ResponsePublish)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string txid = 1;</code>
+     */
+    java.lang.String getTxid();
+    /**
+     * <code>optional string txid = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getTxidBytes();
+  }
+  /**
+   * Protobuf type {@code wallet_gateway.ResponsePublish}
+   */
+  public  static final class ResponsePublish extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:wallet_gateway.ResponsePublish)
+          ResponsePublishOrBuilder {
+    // Use ResponsePublish.newBuilder() to construct.
+    private ResponsePublish(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ResponsePublish() {
+      txid_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private ResponsePublish(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              txid_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ResponsePublish_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ResponsePublish_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      wallet_gateway.WalletOuterClass.ResponsePublish.class, wallet_gateway.WalletOuterClass.ResponsePublish.Builder.class);
+    }
+
+    public static final int TXID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object txid_;
+    /**
+     * <code>optional string txid = 1;</code>
+     */
+    public java.lang.String getTxid() {
+      java.lang.Object ref = txid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        txid_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string txid = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getTxidBytes() {
+      java.lang.Object ref = txid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        txid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (!getTxidBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, txid_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getTxidBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, txid_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof wallet_gateway.WalletOuterClass.ResponsePublish)) {
+        return super.equals(obj);
+      }
+      wallet_gateway.WalletOuterClass.ResponsePublish other = (wallet_gateway.WalletOuterClass.ResponsePublish) obj;
+
+      boolean result = true;
+      result = result && getTxid()
+              .equals(other.getTxid());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + TXID_FIELD_NUMBER;
+      hash = (53 * hash) + getTxid().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static wallet_gateway.WalletOuterClass.ResponsePublish parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(wallet_gateway.WalletOuterClass.ResponsePublish prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code wallet_gateway.ResponsePublish}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:wallet_gateway.ResponsePublish)
+            wallet_gateway.WalletOuterClass.ResponsePublishOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ResponsePublish_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ResponsePublish_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        wallet_gateway.WalletOuterClass.ResponsePublish.class, wallet_gateway.WalletOuterClass.ResponsePublish.Builder.class);
+      }
+
+      // Construct using wallet_gateway.WalletOuterClass.ResponsePublish.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        txid_ = "";
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return wallet_gateway.WalletOuterClass.internal_static_wallet_gateway_ResponsePublish_descriptor;
+      }
+
+      public wallet_gateway.WalletOuterClass.ResponsePublish getDefaultInstanceForType() {
+        return wallet_gateway.WalletOuterClass.ResponsePublish.getDefaultInstance();
+      }
+
+      public wallet_gateway.WalletOuterClass.ResponsePublish build() {
+        wallet_gateway.WalletOuterClass.ResponsePublish result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public wallet_gateway.WalletOuterClass.ResponsePublish buildPartial() {
+        wallet_gateway.WalletOuterClass.ResponsePublish result = new wallet_gateway.WalletOuterClass.ResponsePublish(this);
+        result.txid_ = txid_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof wallet_gateway.WalletOuterClass.ResponsePublish) {
+          return mergeFrom((wallet_gateway.WalletOuterClass.ResponsePublish)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(wallet_gateway.WalletOuterClass.ResponsePublish other) {
+        if (other == wallet_gateway.WalletOuterClass.ResponsePublish.getDefaultInstance()) return this;
+        if (!other.getTxid().isEmpty()) {
+          txid_ = other.txid_;
+          onChanged();
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        wallet_gateway.WalletOuterClass.ResponsePublish parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (wallet_gateway.WalletOuterClass.ResponsePublish) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object txid_ = "";
+      /**
+       * <code>optional string txid = 1;</code>
+       */
+      public java.lang.String getTxid() {
+        java.lang.Object ref = txid_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          txid_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string txid = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getTxidBytes() {
+        java.lang.Object ref = txid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          txid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string txid = 1;</code>
+       */
+      public Builder setTxid(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        txid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string txid = 1;</code>
+       */
+      public Builder clearTxid() {
+
+        txid_ = getDefaultInstance().getTxid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string txid = 1;</code>
+       */
+      public Builder setTxidBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        txid_ = value;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:wallet_gateway.ResponsePublish)
+    }
+
+    // @@protoc_insertion_point(class_scope:wallet_gateway.ResponsePublish)
+    private static final wallet_gateway.WalletOuterClass.ResponsePublish DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new wallet_gateway.WalletOuterClass.ResponsePublish();
+    }
+
+    public static wallet_gateway.WalletOuterClass.ResponsePublish getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ResponsePublish>
+            PARSER = new com.google.protobuf.AbstractParser<ResponsePublish>() {
+      public ResponsePublish parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ResponsePublish(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ResponsePublish> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ResponsePublish> getParserForType() {
+      return PARSER;
+    }
+
+    public wallet_gateway.WalletOuterClass.ResponsePublish getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_wallet_gateway_RequestWalletInfo_descriptor;
   private static final
@@ -21137,15 +25653,15 @@ public final class WalletOuterClass {
   com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internal_static_wallet_gateway_Pay_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_wallet_gateway_OriginalTransactionResponse_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_wallet_gateway_OriginalTransactionResponse_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_wallet_gateway_OriginalTransaction_descriptor;
   private static final
   com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internal_static_wallet_gateway_OriginalTransaction_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_wallet_gateway_OriginalTransactionResponse_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_wallet_gateway_OriginalTransactionResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_wallet_gateway_PublishTransaction_descriptor;
   private static final
@@ -21166,6 +25682,36 @@ public final class WalletOuterClass {
   private static final
   com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internal_static_wallet_gateway_TransactionFlowings_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_wallet_gateway_RequestUserInfo_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_wallet_gateway_RequestUserInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_wallet_gateway_ReceiveRequest_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_wallet_gateway_ReceiveRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_wallet_gateway_Payment_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_wallet_gateway_Payment_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_wallet_gateway_OutTransfer_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_wallet_gateway_OutTransfer_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_wallet_gateway_CrowdfundingRequest_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_wallet_gateway_CrowdfundingRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_wallet_gateway_ResponsePublish_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_wallet_gateway_ResponsePublish_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
   getDescriptor() {
@@ -21178,65 +25724,78 @@ public final class WalletOuterClass {
             "\n\014wallet.proto\022\016wallet_gateway\"p\n\021Reques" +
                     "tWalletInfo\022\017\n\007payload\030\001 \001(\t\022\031\n\021pbkdf2_i" +
                     "terations\030\002 \001(\005\022\021\n\tcheck_sum\030\003 \001(\t\022\017\n\007ve" +
-                    "rsion\030\004 \001(\005\022\013\n\003ver\030\005 \001(\005\"m\n\016RespSyncWall" +
+                    "rsion\030\004 \001(\005\022\013\n\003ver\030\005 \001(\005\"]\n\016RespSyncWall" +
                     "et\022&\n\006wallet\030\001 \001(\0132\026.wallet_gateway.Wall" +
-                    "et\022\016\n\006status\030\002 \001(\005\022#\n\005coins\030\003 \003(\0132\024.wall" +
-                    "et_gateway.Coin\"K\n\006Wallet\022\020\n\010pay_load\030\001 " +
-                    "\001(\t\022\017\n\007version\030\002 \001(\005\022\013\n\003ver\030\003 \001(\005\022\021\n\tche" +
-                    "ck_sum\030\004 \001(\t\"*\n\007Balance\022\016\n\006amount\030\001 \001(\003\022" +
-                    "\017\n\007pending\030\002 \001(\003\"n\n\021CreateCoinRequest\022\020\n",
-            "\010currency\030\001 \001(\005\022\026\n\016master_address\030\002 \001(\t\022" +
-                    "\017\n\007payload\030\003 \001(\t\022\020\n\010category\030\004 \001(\005\022\014\n\004sa" +
-                    "lt\030\005 \001(\t\"z\n\004Coin\022\016\n\006status\030\001 \001(\005\022\020\n\010curr" +
-                    "ency\030\002 \001(\005\022\020\n\010category\030\003 \001(\005\022\014\n\004salt\030\004 \001" +
-                    "(\t\022\017\n\007balance\030\005 \001(\003\022\017\n\007payload\030\006 \001(\t\022\016\n\006" +
-                    "amount\030\007 \001(\003\",\n\005Coins\022#\n\005Coins\030\001 \003(\0132\024.w" +
-                    "allet_gateway.Coin\"^\n\013CoinsDetail\022\"\n\004coi" +
-                    "n\030\001 \001(\0132\024.wallet_gateway.Coin\022+\n\tcoinInf" +
-                    "os\030\002 \003(\0132\030.wallet_gateway.CoinInfo\"Z\n\010Co" +
-                    "inInfo\022\r\n\005index\030\001 \001(\005\022\017\n\007address\030\002 \001(\t\022\r",
-            "\n\005label\030\003 \001(\t\022\017\n\007balance\030\004 \001(\003\022\016\n\006status" +
-                    "\030\005 \001(\005\"d\n\021CreateCoinAccount\022\r\n\005index\030\001 \001" +
+                    "et\022#\n\005coins\030\002 \003(\0132\024.wallet_gateway.Coin\"" +
+                    "K\n\006Wallet\022\020\n\010pay_load\030\001 \001(\t\022\017\n\007version\030\002" +
+                    " \001(\005\022\013\n\003ver\030\003 \001(\005\022\021\n\tcheck_sum\030\004 \001(\t\"*\n\007" +
+                    "Balance\022\016\n\006amount\030\001 \001(\003\022\017\n\007pending\030\002 \001(\003" +
+                    "\"n\n\021CreateCoinRequest\022\020\n\010currency\030\001 \001(\005\022",
+            "\026\n\016master_address\030\002 \001(\t\022\017\n\007payload\030\003 \001(\t" +
+                    "\022\020\n\010category\030\004 \001(\005\022\014\n\004salt\030\005 \001(\t\"z\n\004Coin" +
+                    "\022\016\n\006status\030\001 \001(\005\022\020\n\010currency\030\002 \001(\005\022\020\n\010ca" +
+                    "tegory\030\003 \001(\005\022\014\n\004salt\030\004 \001(\t\022\017\n\007balance\030\005 " +
+                    "\001(\003\022\017\n\007payload\030\006 \001(\t\022\016\n\006amount\030\007 \001(\003\",\n\005" +
+                    "Coins\022#\n\005Coins\030\001 \003(\0132\024.wallet_gateway.Co" +
+                    "in\"^\n\013CoinsDetail\022\"\n\004coin\030\001 \001(\0132\024.wallet" +
+                    "_gateway.Coin\022+\n\tcoinInfos\030\002 \003(\0132\030.walle" +
+                    "t_gateway.CoinInfo\"j\n\010CoinInfo\022\r\n\005index\030" +
+                    "\001 \001(\005\022\016\n\006status\030\002 \001(\005\022\017\n\007address\030\003 \001(\t\022\r",
+            "\n\005label\030\004 \001(\t\022\017\n\007balance\030\005 \001(\003\022\016\n\006amount" +
+                    "\030\006 \001(\003\"d\n\021CreateCoinAccount\022\r\n\005index\030\001 \001" +
                     "(\005\022\017\n\007address\030\002 \001(\t\022\r\n\005label\030\003 \001(\t\022\016\n\006st" +
                     "atus\030\004 \001(\005\022\020\n\010currency\030\005 \001(\005\"\031\n\004Txin\022\021\n\t" +
                     "addresses\030\001 \003(\t\"(\n\005Txout\022\017\n\007address\030\001 \001(" +
                     "\t\022\016\n\006amount\030\002 \001(\003\"E\n\rSpentCurrency\022\020\n\010cu" +
                     "rrency\030\001 \001(\005\022\"\n\004txin\030\002 \001(\0132\024.wallet_gate" +
-                    "way.Txin\"\267\001\n\023LuckyPackageRequest\0225\n\016spen" +
+                    "way.Txin\"\300\001\n\023LuckyPackageRequest\0225\n\016spen" +
                     "t_currency\030\001 \001(\0132\035.wallet_gateway.SpentC" +
-                    "urrency\022\032\n\022reciver_identifier\030\002 \001(\t\022\024\n\014p",
-            "ackage_type\030\003 \001(\005\022\014\n\004size\030\004 \001(\005\022\016\n\006amoun" +
-                    "t\030\005 \001(\003\022\013\n\003fee\030\006 \001(\003\022\014\n\004tips\030\007 \001(\t\"h\n\022UR" +
-                    "LTransferRequest\0225\n\016spent_currency\030\001 \001(\013" +
-                    "2\035.wallet_gateway.SpentCurrency\022\016\n\006amoun" +
-                    "t\030\002 \001(\003\022\013\n\003fee\030\003 \001(\003\"\212\001\n\017TransferRequest" +
-                    "\0225\n\016spent_currency\030\001 \001(\0132\035.wallet_gatewa" +
-                    "y.SpentCurrency\022%\n\006tx_out\030\002 \003(\0132\025.wallet" +
-                    "_gateway.Txout\022\013\n\003fee\030\003 \001(\003\022\014\n\004tips\030\004 \001(" +
-                    "\t\"p\n\022CrowdfuningRequest\022\020\n\010currency\030\001 \001(" +
-                    "\t\022\030\n\020group_identifier\030\002 \001(\t\022\022\n\nper_amoun",
-            "t\030\003 \001(\003\022\014\n\004size\030\004 \001(\005\022\014\n\004tips\030\005 \001(\t\"O\n\016R" +
-                    "eceiptRequest\022\020\n\010currency\030\001 \001(\t\022\r\n\005payer" +
-                    "\030\002 \001(\t\022\016\n\006amount\030\003 \001(\003\022\014\n\004tips\030\004 \001(\t\"\035\n\n" +
-                    "HashIdResp\022\017\n\007hash_id\030\001 \001(\t\"_\n\003Pay\0225\n\016sp" +
-                    "ent_currency\030\001 \001(\0132\035.wallet_gateway.Spen" +
-                    "tCurrency\022\020\n\010pay_type\030\002 \001(\005\022\017\n\007hash_id\030\003" +
-                    " \001(\t\"o\n\033OriginalTransactionResponse\022\014\n\004c" +
-                    "ode\030\001 \001(\005\0221\n\004data\030\002 \001(\0132#.wallet_gateway" +
-                    ".OriginalTransaction\022\017\n\007message\030\003 \001(\t\"c\n" +
-                    "\023OriginalTransaction\022\017\n\007hash_id\030\001 \001(\t\022\016\n",
-            "\006rawhex\030\002 \001(\t\022\013\n\003vts\030\003 \001(\t\022\013\n\003fee\030\004 \001(\003\022" +
-                    "\021\n\taddresses\030\005 \003(\t\"O\n\022PublishTransaction" +
-                    "\022\030\n\020transaction_type\030\001 \001(\005\022\017\n\007hash_id\030\002 " +
-                    "\001(\t\022\016\n\006tx_hex\030\003 \001(\t\"I\n\031TransactionFlowin" +
-                    "gRequest\022\020\n\010currency\030\001 \001(\005\022\014\n\004page\030\002 \001(\005" +
-                    "\022\014\n\004size\030\003 \001(\005\"\225\001\n\022TransactionFlowing\022\014\n" +
-                    "\004time\030\001 \001(\003\022\020\n\010username\030\002 \001(\t\022\017\n\007address" +
-                    "\030\003 \001(\t\022\016\n\006avatar\030\004 \001(\t\022\016\n\006amount\030\005 \001(\003\022\014" +
-                    "\n\004txid\030\006 \001(\t\022\016\n\006status\030\007 \001(\005\022\020\n\010category" +
-                    "\030\010 \001(\005\"V\n\023TransactionFlowings\022?\n\023transac",
-            "tion_history\030\002 \003(\0132\".wallet_gateway.Tran" +
-                    "sactionFlowingb\006proto3"
+                    "urrency\022\032\n\022reciver_identifier\030\002 \001(\t\022\013\n\003t",
+            "yp\030\003 \001(\005\022\020\n\010category\030\005 \001(\005\022\014\n\004size\030\004 \001(\005" +
+                    "\022\016\n\006amount\030\006 \001(\003\022\013\n\003fee\030\007 \001(\003\022\014\n\004tips\030\010 " +
+                    "\001(\t\"h\n\022URLTransferRequest\0225\n\016spent_curre" +
+                    "ncy\030\001 \001(\0132\035.wallet_gateway.SpentCurrency" +
+                    "\022\016\n\006amount\030\002 \001(\003\022\013\n\003fee\030\003 \001(\003\"\212\001\n\017Transf" +
+                    "erRequest\0225\n\016spent_currency\030\001 \001(\0132\035.wall" +
+                    "et_gateway.SpentCurrency\022%\n\006tx_out\030\002 \003(\013" +
+                    "2\025.wallet_gateway.Txout\022\013\n\003fee\030\003 \001(\003\022\014\n\004" +
+                    "tips\030\004 \001(\t\"p\n\022CrowdfuningRequest\022\020\n\010curr" +
+                    "ency\030\001 \001(\t\022\030\n\020group_identifier\030\002 \001(\t\022\022\n\n",
+            "per_amount\030\003 \001(\003\022\014\n\004size\030\004 \001(\005\022\014\n\004tips\030\005" +
+                    " \001(\t\"O\n\016ReceiptRequest\022\020\n\010currency\030\001 \001(\t" +
+                    "\022\r\n\005payer\030\002 \001(\t\022\016\n\006amount\030\003 \001(\003\022\014\n\004tips\030" +
+                    "\004 \001(\t\"\035\n\nHashIdResp\022\017\n\007hash_id\030\001 \001(\t\"_\n\003" +
+                    "Pay\0225\n\016spent_currency\030\001 \001(\0132\035.wallet_gat" +
+                    "eway.SpentCurrency\022\020\n\010pay_type\030\002 \001(\005\022\017\n\007" +
+                    "hash_id\030\003 \001(\t\"j\n\023OriginalTransaction\022\016\n\006" +
+                    "rawhex\030\001 \001(\t\022\013\n\003vts\030\002 \001(\t\022\026\n\016transaction" +
+                    "_id\030\003 \001(\t\022\021\n\taddresses\030\004 \003(\t\022\013\n\003fee\030\005 \001(" +
+                    "\003\"o\n\033OriginalTransactionResponse\022\014\n\004code",
+            "\030\001 \001(\005\0221\n\004data\030\002 \001(\0132#.wallet_gateway.Or" +
+                    "iginalTransaction\022\017\n\007message\030\003 \001(\t\"a\n\022Pu" +
+                    "blishTransaction\022\030\n\020transaction_type\030\001 \001" +
+                    "(\005\022\017\n\007hash_id\030\002 \001(\t\022\016\n\006tx_hex\030\003 \001(\t\022\020\n\010c" +
+                    "urrency\030\004 \001(\005\"I\n\031TransactionFlowingReque" +
+                    "st\022\020\n\010currency\030\001 \001(\005\022\014\n\004page\030\002 \001(\005\022\014\n\004si" +
+                    "ze\030\003 \001(\005\"\225\001\n\022TransactionFlowing\022\014\n\004time\030" +
+                    "\001 \001(\003\022\020\n\010username\030\002 \001(\t\022\017\n\007address\030\003 \001(\t" +
+                    "\022\016\n\006avatar\030\004 \001(\t\022\016\n\006amount\030\005 \001(\003\022\014\n\004txid" +
+                    "\030\006 \001(\t\022\016\n\006status\030\007 \001(\005\022\020\n\010category\030\010 \001(\005",
+            "\"V\n\023TransactionFlowings\022?\n\023transaction_h" +
+                    "istory\030\002 \003(\0132\".wallet_gateway.Transactio" +
+                    "nFlowing\"0\n\017RequestUserInfo\022\013\n\003uid\030\001 \001(\t" +
+                    "\022\020\n\010currency\030\002 \001(\005\"P\n\016ReceiveRequest\022\016\n\006" +
+                    "sender\030\001 \001(\t\022\016\n\006amount\030\002 \001(\004\022\014\n\004tips\030\003 \001" +
+                    "(\t\022\020\n\010currency\030\004 \001(\005\"p\n\007Payment\0225\n\016spent" +
+                    "_currency\030\001 \001(\0132\035.wallet_gateway.SpentCu" +
+                    "rrency\022\020\n\010pay_type\030\002 \001(\005\022\017\n\007hash_id\030\003 \001(" +
+                    "\t\022\013\n\003fee\030\004 \001(\003\"o\n\013OutTransfer\0225\n\016spent_c" +
+                    "urrency\030\001 \001(\0132\035.wallet_gateway.SpentCurr",
+            "ency\022\016\n\006amount\030\002 \001(\003\022\013\n\003fee\030\003 \001(\003\022\014\n\004tip" +
+                    "s\030\004 \001(\t\"m\n\023CrowdfundingRequest\022\020\n\010curren" +
+                    "cy\030\001 \001(\t\022\030\n\020group_identifier\030\002 \001(\t\022\016\n\006am" +
+                    "ount\030\003 \001(\003\022\014\n\004size\030\004 \001(\005\022\014\n\004tips\030\005 \001(\t\"\037" +
+                    "\n\017ResponsePublish\022\014\n\004txid\030\001 \001(\tb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
             new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -21261,7 +25820,7 @@ public final class WalletOuterClass {
     internal_static_wallet_gateway_RespSyncWallet_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_wallet_gateway_RespSyncWallet_descriptor,
-            new java.lang.String[] { "Wallet", "Status", "Coins", });
+            new java.lang.String[] { "Wallet", "Coins", });
     internal_static_wallet_gateway_Wallet_descriptor =
             getDescriptor().getMessageTypes().get(2);
     internal_static_wallet_gateway_Wallet_fieldAccessorTable = new
@@ -21303,7 +25862,7 @@ public final class WalletOuterClass {
     internal_static_wallet_gateway_CoinInfo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_wallet_gateway_CoinInfo_descriptor,
-            new java.lang.String[] { "Index", "Address", "Label", "Balance", "Status", });
+            new java.lang.String[] { "Index", "Status", "Address", "Label", "Balance", "Amount", });
     internal_static_wallet_gateway_CreateCoinAccount_descriptor =
             getDescriptor().getMessageTypes().get(9);
     internal_static_wallet_gateway_CreateCoinAccount_fieldAccessorTable = new
@@ -21333,7 +25892,7 @@ public final class WalletOuterClass {
     internal_static_wallet_gateway_LuckyPackageRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_wallet_gateway_LuckyPackageRequest_descriptor,
-            new java.lang.String[] { "SpentCurrency", "ReciverIdentifier", "PackageType", "Size", "Amount", "Fee", "Tips", });
+            new java.lang.String[] { "SpentCurrency", "ReciverIdentifier", "Typ", "Category", "Size", "Amount", "Fee", "Tips", });
     internal_static_wallet_gateway_URLTransferRequest_descriptor =
             getDescriptor().getMessageTypes().get(14);
     internal_static_wallet_gateway_URLTransferRequest_fieldAccessorTable = new
@@ -21370,24 +25929,24 @@ public final class WalletOuterClass {
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_wallet_gateway_Pay_descriptor,
             new java.lang.String[] { "SpentCurrency", "PayType", "HashId", });
-    internal_static_wallet_gateway_OriginalTransactionResponse_descriptor =
+    internal_static_wallet_gateway_OriginalTransaction_descriptor =
             getDescriptor().getMessageTypes().get(20);
+    internal_static_wallet_gateway_OriginalTransaction_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_wallet_gateway_OriginalTransaction_descriptor,
+            new java.lang.String[] { "Rawhex", "Vts", "TransactionId", "Addresses", "Fee", });
+    internal_static_wallet_gateway_OriginalTransactionResponse_descriptor =
+            getDescriptor().getMessageTypes().get(21);
     internal_static_wallet_gateway_OriginalTransactionResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_wallet_gateway_OriginalTransactionResponse_descriptor,
             new java.lang.String[] { "Code", "Data", "Message", });
-    internal_static_wallet_gateway_OriginalTransaction_descriptor =
-            getDescriptor().getMessageTypes().get(21);
-    internal_static_wallet_gateway_OriginalTransaction_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_wallet_gateway_OriginalTransaction_descriptor,
-            new java.lang.String[] { "HashId", "Rawhex", "Vts", "Fee", "Addresses", });
     internal_static_wallet_gateway_PublishTransaction_descriptor =
             getDescriptor().getMessageTypes().get(22);
     internal_static_wallet_gateway_PublishTransaction_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_wallet_gateway_PublishTransaction_descriptor,
-            new java.lang.String[] { "TransactionType", "HashId", "TxHex", });
+            new java.lang.String[] { "TransactionType", "HashId", "TxHex", "Currency", });
     internal_static_wallet_gateway_TransactionFlowingRequest_descriptor =
             getDescriptor().getMessageTypes().get(23);
     internal_static_wallet_gateway_TransactionFlowingRequest_fieldAccessorTable = new
@@ -21406,6 +25965,42 @@ public final class WalletOuterClass {
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_wallet_gateway_TransactionFlowings_descriptor,
             new java.lang.String[] { "TransactionHistory", });
+    internal_static_wallet_gateway_RequestUserInfo_descriptor =
+            getDescriptor().getMessageTypes().get(26);
+    internal_static_wallet_gateway_RequestUserInfo_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_wallet_gateway_RequestUserInfo_descriptor,
+            new java.lang.String[] { "Uid", "Currency", });
+    internal_static_wallet_gateway_ReceiveRequest_descriptor =
+            getDescriptor().getMessageTypes().get(27);
+    internal_static_wallet_gateway_ReceiveRequest_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_wallet_gateway_ReceiveRequest_descriptor,
+            new java.lang.String[] { "Sender", "Amount", "Tips", "Currency", });
+    internal_static_wallet_gateway_Payment_descriptor =
+            getDescriptor().getMessageTypes().get(28);
+    internal_static_wallet_gateway_Payment_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_wallet_gateway_Payment_descriptor,
+            new java.lang.String[] { "SpentCurrency", "PayType", "HashId", "Fee", });
+    internal_static_wallet_gateway_OutTransfer_descriptor =
+            getDescriptor().getMessageTypes().get(29);
+    internal_static_wallet_gateway_OutTransfer_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_wallet_gateway_OutTransfer_descriptor,
+            new java.lang.String[] { "SpentCurrency", "Amount", "Fee", "Tips", });
+    internal_static_wallet_gateway_CrowdfundingRequest_descriptor =
+            getDescriptor().getMessageTypes().get(30);
+    internal_static_wallet_gateway_CrowdfundingRequest_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_wallet_gateway_CrowdfundingRequest_descriptor,
+            new java.lang.String[] { "Currency", "GroupIdentifier", "Amount", "Size", "Tips", });
+    internal_static_wallet_gateway_ResponsePublish_descriptor =
+            getDescriptor().getMessageTypes().get(31);
+    internal_static_wallet_gateway_ResponsePublish_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_wallet_gateway_ResponsePublish_descriptor,
+            new java.lang.String[] { "Txid", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
