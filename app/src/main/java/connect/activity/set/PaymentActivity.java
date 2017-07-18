@@ -153,7 +153,7 @@ public class PaymentActivity extends BaseActivity {
                 EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(value,pass);
                 if(!TextUtils.isEmpty(walletBean.getPayload())){
                     walletBean.setPayload(encoPinBean.getPayload());
-                    walletBean.setN(encoPinBean.getN());
+                    walletBean.setVer(SupportKeyUril.PIN_VERSION);
                     WalletManager walletManager = new WalletManager(mActivity);
                     walletManager.updateWalletInfo(walletBean, new WalletManager.OnWalletListener() {
                         @Override

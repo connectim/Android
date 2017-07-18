@@ -6,22 +6,18 @@ package connect.activity.wallet.bean;
 
 public class WalletBean {
     private String payload;
-    private String salt;
-    private int n;
+    private int ver;
     private int version;
-    private String wid;
-    private int status;
+    private String checkSum;
 
     public WalletBean() {
     }
 
-    public WalletBean(String payload, String salt, int n, int version, String wid, int status) {
+    public WalletBean(String payload ,int ver, int version, String checkSum) {
         this.payload = payload;
-        this.salt = salt;
-        this.n = n;
+        this.ver = ver;
         this.version = version;
-        this.wid = wid;
-        this.status = status;
+        this.checkSum = checkSum;
     }
 
     public String getPayload() {
@@ -32,20 +28,12 @@ public class WalletBean {
         this.payload = payload;
     }
 
-    public String getSalt() {
-        return salt;
+    public int getVer() {
+        return ver;
     }
 
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
-    public int getN() {
-        return n;
-    }
-
-    public void setN(int n) {
-        this.n = n;
+    public void setVer(int ver) {
+        this.ver = ver;
     }
 
     public int getVersion() {
@@ -56,19 +44,11 @@ public class WalletBean {
         this.version = version;
     }
 
-    public String getWid() {
-        return wid;
+    public String getCheckSum() {
+        return checkSum;
     }
 
-    public void setWid(String wid) {
-        this.wid = wid;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
+    public void setCheckSum(String checkSum) {
+        this.checkSum = checkSum;
     }
 }

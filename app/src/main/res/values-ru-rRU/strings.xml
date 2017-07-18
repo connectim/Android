@@ -716,4 +716,10 @@
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_system_luckypackage_have_been_frozen">Красный конверт подвешен системный администратор</string>
     <string name="Chat_one_device_can_only_grab_a_luckypackage">Устройство может только захватить красный конверт</string>
+    <string name="Wallet_create_currency_failed">Создание валюты не удалось</string>
+    <string name="Wallet_Create_wallet_failed">Не удалось создать кошелек</string>
+    <string name="Wallet_synchronization_data_failed">Синхронные данные не удалось</string>
+    <string name="Set_please_enter_the_original_password">Пожалуйста введите оригинальный пароль</string>
+    <string name="Wallet_Failed_to_get_the_default_address">Получить адрес по умолчанию не удалось</string>
+    <string name="Wallet_Failed_to_get_the_list_address">Не удалось получить список адресов</string>
 </resources>

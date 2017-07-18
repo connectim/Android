@@ -8,85 +8,119 @@ import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import connect.activity.home.bean.EstimatefeeBean;
+import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.SignRawBean;
-import connect.activity.wallet.bean.WalletBean;
-import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.SupportKeyUril;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.jni.AllNativeMethod;
-import connect.widget.MdStyleProgress;
-import connect.widget.payment.PaymentPwd;
-import connect.widget.payment.PinTransferDialog;
+import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**
  * Created by Administrator on 2017/7/12 0012.
  */
 
-public class TransferManager {
+public class TransferManager extends BaseTransfer{
 
-
-    private PinTransferDialog pinTransferDialog;
-
-    private OnResultCall onResultCall;
     private CurrencyType currencyType;
-    private ArrayList<Integer> indexList;
 
-    /**
-     * 前置判断
-     */
-    public boolean baseCheckTransfer(Context context, Long outAmount) {
-        Long avaAmount = 0L;
-        // 判断余额
-        long fee = ParamManager.getInstance().getPaySet().getFee();
-        if (avaAmount < outAmount + fee) {
-            ToastEUtil.makeText(context, R.string.Wallet_Insufficient_balance,ToastEUtil.TOAST_STATUS_FAILE).show();
-            return false;
-        }
-
-        // 判断输出金额是否肮脏
-        if (ishaveDustWithAmount(outAmount)) {
-            ToastEUtil.makeText(context,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
-            return false;
-        }
-        return true;
+    public TransferManager(CurrencyType currencyType) {
+        super(currencyType);
+        this.currencyType = currencyType;
     }
 
-    /*###### 普通打款
-    - uri: /wallet/v1/send
-    - method: post
-    - args:
-        * to(数组:{address:amount,  address:amount,})
-        * fee
-        * currency
-        * from:(数组：{address, address})
-    - response
-        * rowhex
-        * tvs*/
-    public void getTranferRow(final Activity activity, ArrayList<String> formList, ArrayList<Integer> indexList, ArrayList<String> toList,
-                              CurrencyType currencyType, OnResultCall onResultCall){
-        this.onResultCall = onResultCall;
-        this.currencyType = currencyType;
-        this.indexList = indexList;
+    /**
+     * 基本打款
+     * @param activity
+     * @param txin 输入地址数组
+     * @param outPuts 输出地址信息
+     * @param onResultCall
+     */
+    public void getTransferRow(final Activity activity, WalletOuterClass.Txin txin,
+                               List<WalletOuterClass.Txout> outPuts, final OnResultCall onResultCall){
         baseCheckTransfer(activity,0L);
+        PaySetBean paySetBean = ParamManager.getInstance().getPaySet();
+        /*message SendCurrency {
+            Txin txin = 1;
+            int32 currency = 2;
+        }
+        message Txin {
+            repeated string addresses = 1;
+        }
+        message Txout {
+            string address = 1;
+            int64 amount = 2;
+        }
+        message TransferRequest {
+            SendCurrency send_currency = 1;
+            repeated Txout out_puts = 2;
+            int64 fee = 3;
+            int32 transfer_type = 4;
+            string tips = 5;
+        }
+        /wallet/v2/service/transfer
+        request: TransferRequest   resp: OriginalTransactionResponse
+        */
+        WalletOuterClass.TransferRequest.Builder builder = WalletOuterClass.TransferRequest.newBuilder();
 
-        OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
+        WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
+        builderSend.setCurrency(currencyType.getCode());
+        builderSend.setTxin(txin);
+        builder.setSpentCurrency(builderSend);
+        if(paySetBean.isAutoFee()){
+            builder.setFee(0L);
+        }else{
+            builder.setFee(paySetBean.getFee());
+        }
+        for(WalletOuterClass.Txout txout : outPuts){
+            builder.addTxOut(txout);
+        }
+        builder.setTips("");
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_TRANSFER, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
-            public void onResponse(Object response) {
-                checkPin(activity, "rowhex", "tvs", "url");
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.OriginalTransactionResponse originalResponse = WalletOuterClass.OriginalTransactionResponse.parseFrom(structData.getPlainData());
+                    WalletOuterClass.OriginalTransaction originalTransaction = originalResponse.getData();
+                    switch (originalResponse.getCode()){
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        default:
+                            break;
+                    }
+                    ArrayList<String> priKeyList = checkPin(activity, originalTransaction.getAddressesList());
+                    String rawHex = getSignRawTrans(priKeyList, originalTransaction.getVts(), originalTransaction.getRawhex());
+                    publishTransfer("transferType", rawHex, originalTransaction.getHashId(), new OnBaseResultCall(){
+                        @Override
+                        public void success() {
+                            //广播成功
+                            onResultCall.result("asdasd");
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            public void onError(Object response) {
+            public void onError(Connect.HttpResponse response) {
 
             }
         });
@@ -107,17 +141,12 @@ public class TransferManager {
         * rowhex
         * tvs
         * url (外部红包的url)*/
-    public void sendRedPack(final Activity activity, ArrayList<String> fromList, ArrayList<Integer> indexList, int total, Long amount, int category,
-                            CurrencyType currencyType, OnResultCall onResultCall){
-        this.onResultCall = onResultCall;
-        this.currencyType = currencyType;
-        this.indexList = indexList;
+    public void sendRedPack(final Activity activity, ArrayList<String> fromList, ArrayList<Integer> indexList, int total, Long amount, int category){
         baseCheckTransfer(activity,amount);
-
         OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
             @Override
             public void onResponse(Object response) {
-                checkPin(activity, "rowhex", "tvs", "url");
+                //checkPin(activity, "rowhex", "tvs", "url");
             }
 
             @Override
@@ -138,17 +167,13 @@ public class TransferManager {
     - response
         * rowhex
         * tvs*/
-    private void seedOutTransfer(final Activity activity, ArrayList<String> fromList, ArrayList<Integer> indexList, Long amount,
-                                 CurrencyType currencyType, OnResultCall onResultCall){
-        this.onResultCall = onResultCall;
-        this.currencyType = currencyType;
-        this.indexList = indexList;
+    private void seedOutTransfer(final Activity activity, ArrayList<String> fromList, ArrayList<Integer> indexList, Long amount){
         baseCheckTransfer(activity,amount);
 
         OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
             @Override
             public void onResponse(Object response) {
-                checkPin(activity, "rowhex", "tvs", "url");
+                //checkPin(activity, "rowhex", "tvs", "url");
             }
 
             @Override
@@ -157,75 +182,73 @@ public class TransferManager {
             }
         });
     }
-
 
     /**
-     * 检查交易密码
+     * 同步货币地址列表
      */
-    private void checkPin(Activity activity, final String rowhex, final String tvs, final String url){
-        pinTransferDialog = new PinTransferDialog();
-        String payload = "";
-        final CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyType.getCode());
-        if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_PRI){
-            payload = currencyEntity.getPayload();
-        }else if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_BASE){
-            WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-            payload = walletBean.getPayload();
+    private void requestCurrencyAddress(){
+        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyType.getCode());
+        WalletOuterClass.Coin.Builder builder = WalletOuterClass.Coin.newBuilder();
+        builder.setCurrency(currencyEntity.getCurrency());
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_LIST, builder.build(), new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
+                    List<WalletOuterClass.CoinInfo> list = coinsDetail.getCoinInfosList();
+                    CurrencyHelper.getInstance().insertCurrencyAddressListCoinInfo(list,currencyType.getCode());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+
+            }
+        });
+    }
+
+    /**
+     * 检查交易
+     * @return
+     */
+    private boolean checkTransfer(){
+        return true;
+    }
+
+    /**
+     * 前置判断
+     */
+    public boolean baseCheckTransfer(Context context, Long outAmount) {
+        requestCurrencyAddress();
+        Long avaAmount = 0L;
+        // 判断余额
+        long fee = ParamManager.getInstance().getPaySet().getFee();
+        if (avaAmount < outAmount + fee) {
+            ToastEUtil.makeText(context, R.string.Wallet_Insufficient_balance,ToastEUtil.TOAST_STATUS_FAILE).show();
+            return false;
         }
 
-        pinTransferDialog.showPaymentPwd(activity, payload, new PaymentPwd.OnTrueListener() {
-            @Override
-            public void onTrue(String decodeStr) {
-                String priKey = "";
-                if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_PRI){
-                    // 纯私钥
-                    priKey = decodeStr;
-                }else if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_BASE){
-                    // 原始种子，生成货币种子，再生成对应的私钥
-                    CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyType.getCode());
-                    String currencySeend = SupportKeyUril.xor(decodeStr, currencyEntity.getSalt(), 64);
-                    priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(currencySeend,44,0,0,0,indexList.get(0));
-                }
-                String rawHex = getSignRawTrans(priKey, tvs, rowhex);
-                publishTransfer(rawHex, url);
-            }
-        });
+        // 判断输出金额是否肮脏
+        if (isHaveDustWithAmount(outAmount)) {
+            ToastEUtil.makeText(context,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
+            return false;
+        }
+        return true;
     }
-
-
-    /*###### 广播交易
-    - uri: /wallet/v1/publish
-    - method: post
-    - args:
-        * rawHex
-    - response*/
-    private void publishTransfer(String rawHex, final String value){
-        OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
-            @Override
-            public void onResponse(Object response) {
-                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
-                    @Override
-                    public void onComplete() {
-                        onResultCall.result(value);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(Object response) {
-                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-            }
-        });
-    }
-
 
     /**
      * 签名交易
+     * @param priList 签名交易的PriKey数组
+     * @param tvs 所有输入地址的Unspent字符串集合
+     * @param rowhex 原始交易
+     * @return 签名交易
      */
-    private String getSignRawTrans(String priKey, String tvs, String rowhex) {
-        ArrayList arrayList = new ArrayList<>();
-        arrayList.add(priKey);
-        String signTransfer = rowhex + " " + tvs + " " + new Gson().toJson(arrayList);
+    private String getSignRawTrans(ArrayList<String> priList, String tvs, String rowhex) {
+        String signTransfer = rowhex + " " + tvs + " " + new Gson().toJson(priList);
         String signRawTransfer = AllNativeMethod.cdSignRawTranscation(signTransfer);
         SignRawBean signRawBean = new Gson().fromJson(signRawTransfer, SignRawBean.class);
         return signRawBean.getHex();
@@ -235,7 +258,7 @@ public class TransferManager {
     /**
      * 判断金额是否肮脏
      */
-    private static boolean ishaveDustWithAmount(long amount) {
+    private static boolean isHaveDustWithAmount(long amount) {
         EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
         if(feeBean == null || TextUtils.isEmpty(feeBean.getData())){
             return false;

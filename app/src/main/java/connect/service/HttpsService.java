@@ -694,10 +694,10 @@ public class HttpsService extends Service {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
-                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
-
-                    }
+//                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
+//                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
+//
+//                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -721,10 +721,10 @@ public class HttpsService extends Service {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
-                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
-
-                    }
+//                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
+//                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
+//
+//                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

@@ -70,9 +70,19 @@ public class CurrencyHelper extends BaseDao{
         return currencyAddressEntityDao.loadAll();
     }
 
-    public List<CurrencyAddressEntity> loadCurrencyAddress(String currency) {
+    public CurrencyAddressEntity loadCurrencyAddressFromAddress(String address) {
         QueryBuilder<CurrencyAddressEntity> queryBuilder = currencyAddressEntityDao.queryBuilder();
-        queryBuilder.where(CurrencyAddressEntityDao.Properties.Currency.eq(currency)).limit(1).build();
+        queryBuilder.where(CurrencyAddressEntityDao.Properties.Address.eq(address)).limit(1).build();
+        List<CurrencyAddressEntity> currencyAddressEntities = queryBuilder.list();
+        if (null == currencyAddressEntities || currencyAddressEntities.size() == 0) {
+            return null;
+        }
+        return currencyAddressEntities.get(0);
+    }
+
+    public List<CurrencyAddressEntity> loadCurrencyAddress(int currencyCode) {
+        QueryBuilder<CurrencyAddressEntity> queryBuilder = currencyAddressEntityDao.queryBuilder();
+        queryBuilder.where(CurrencyAddressEntityDao.Properties.Currency.eq(currencyCode)).limit(1).build();
         List<CurrencyAddressEntity> currencyAddressEntities = queryBuilder.list();
         if (null == currencyAddressEntities || currencyAddressEntities.size() == 0) {
             return null;
@@ -87,7 +97,17 @@ public class CurrencyHelper extends BaseDao{
      */
     public void insertCurrencyListCoin(List<WalletOuterClass.Coin> list){
         for(WalletOuterClass.Coin coin : list){
-            insertCurrencyCoin(coin);
+            CurrencyEntity currencyEntity = loadCurrency(coin.getCurrency());
+            if(currencyEntity == null){
+                currencyEntity = new CurrencyEntity();
+            }
+            currencyEntity.setSalt(coin.getSalt());
+            currencyEntity.setBalance(coin.getBalance());
+            currencyEntity.setCurrency(coin.getCurrency());
+            currencyEntity.setCategory(coin.getCategory());
+            currencyEntity.setPayload(coin.getPayload());
+            currencyEntity.setStatus(coin.getStatus());
+            insertCurrency(currencyEntity);
         }
     }
 
@@ -97,20 +117,6 @@ public class CurrencyHelper extends BaseDao{
      */
     public void insertCurrencyList(List<CurrencyEntity> list){
         currencyEntityDao.insertOrReplaceInTx(list);
-    }
-
-    public void insertCurrencyCoin(WalletOuterClass.Coin coin){
-        CurrencyEntity currencyEntity = loadCurrency(coin.getCurrency());
-        if(currencyEntity == null){
-            currencyEntity = new CurrencyEntity();
-        }
-        currencyEntity.setPayload(coin.getPayload());
-        currencyEntity.setCategory(coin.getCategory());
-        currencyEntity.setBalance(coin.getBalance());
-        currencyEntity.setCurrency(coin.getCurrency());
-        currencyEntity.setStatus(coin.getStatus());
-        currencyEntity.setSalt(coin.getSalt());
-        insertCurrency(currencyEntity);
     }
 
     /**
@@ -131,6 +137,23 @@ public class CurrencyHelper extends BaseDao{
      * insert currencies address
      * @param list
      */
+    public void insertCurrencyAddressListCoinInfo(List<WalletOuterClass.CoinInfo> list,int currencyCode){
+
+        for(WalletOuterClass.CoinInfo coinInfo : list){
+            CurrencyAddressEntity addressEntity = loadCurrencyAddressFromAddress(coinInfo.getAddress());
+            if(addressEntity == null){
+                addressEntity = new CurrencyAddressEntity();
+            }
+            addressEntity.setIndex(coinInfo.getIndex());
+            addressEntity.setAddress(coinInfo.getAddress());
+            addressEntity.setLabel(coinInfo.getLabel());
+            addressEntity.setStatus(coinInfo.getStatus());
+            addressEntity.setBalance(coinInfo.getBalance());
+            addressEntity.setCurrency(currencyCode);
+            insertCurrencyAddress(addressEntity);
+        }
+    }
+
     public void insertCurrencyAddressList(List<CurrencyAddressEntity> list){
         currencyAddressEntityDao.insertOrReplaceInTx(list);
     }

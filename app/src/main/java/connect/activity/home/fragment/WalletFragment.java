@@ -68,6 +68,7 @@ public class WalletFragment extends BaseFragment{
     private FragmentActivity mActivity;
     private RateBean rateBean;
     public WalletManager walletManage;
+    private CurrencyEntity currencyEntity = null;
 
     public static WalletFragment startFragment() {
         WalletFragment walletFragment = new WalletFragment();
@@ -84,21 +85,25 @@ public class WalletFragment extends BaseFragment{
         return view;
     }
 
-    private CurrencyEntity currencyEntity = null;
-
     @Override
     public void onStart() {
         super.onStart();
         rateBean = ParamManager.getInstance().getCountryRate();
-        currencyEntity = CurrencyHelper.getInstance().loadCurrency(0);
-        if (currencyEntity == null) {
-            currencyEntity = new CurrencyEntity();
-            currencyEntity.setBalance(0L);
-        }
-        amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
+        if(mActivity != null && isAdded()){
+            requestRate();
+            walletManage.checkAccount(new WalletManager.OnWalletListener() {
+                @Override
+                public void complete() {
+                    currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
+                    amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
+                }
 
-        requestRate();
-        requestWallet();
+                @Override
+                public void fail(String message) {
+
+                }
+            });
+        }
     }
 
     private void initView() {
@@ -150,8 +155,8 @@ public class WalletFragment extends BaseFragment{
         if (account.contains(mActivity.getString(R.string.Set_BTC_symbol)) && rateBean != null && rateBean.getRate() != null) {
             amountTv.setText(rateBean.getSymbol() + " " +
                     RateFormatUtil.foematNumber(RateFormatUtil.PATTERN_OTHER,
-                            currencyEntity.getBalance() * rateBean.getRate() / RateFormatUtil.BTC_TO_LONG));
-        } else {
+                            currencyEntity.getBalance()*rateBean.getRate()/RateFormatUtil.BTC_TO_LONG));
+        }else{
             amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
         }
     }

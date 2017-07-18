@@ -163,9 +163,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
         stringBuffer.append("Payload:" + walletBean.getPayload());
         stringBuffer.append(",");
-        stringBuffer.append("Salt:" + walletBean.getSalt());
         stringBuffer.append(",");
-        stringBuffer.append("N:" + walletBean.getN());
         stringBuffer.append(";");
 
         List<CurrencyEntity> currencyList = CurrencyHelper.getInstance().loadCurrencyList();

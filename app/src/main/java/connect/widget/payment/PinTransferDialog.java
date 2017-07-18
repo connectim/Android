@@ -156,7 +156,7 @@ public class PinTransferDialog implements View.OnClickListener{
         @Override
         public void inputComplete(String pass) {
             statusChange(3);
-            String decodeStr = SupportKeyUril.decodePin(payload,pass);
+            String decodeStr = SupportKeyUril.decodePinDefult(payload,pass);
             if(TextUtils.isEmpty(decodeStr)){
                 viewPager.setCurrentItem(1);
             }else{

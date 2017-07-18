@@ -28,7 +28,7 @@ public class PinManager {
         DialogUtil.showPayEditView(mActivity, R.string.Set_Enter_Login_Password, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener(){
             @Override
             public void confirm(String value) {
-                String baseSeed = SupportKeyUril.decodePin(payload,value);
+                String baseSeed = SupportKeyUril.decodePinDefult(payload,value);
                 if(TextUtils.isEmpty(baseSeed)){
                     ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
                 }else{
@@ -57,7 +57,7 @@ public class PinManager {
     private void setPin() {
         Integer title;
         if(TextUtils.isEmpty(payPass)){
-            title = R.string.Set_Payment_Password;
+            title = R.string.Set_please_enter_the_original_password;
         }else {
             title = R.string.Wallet_Confirm_PIN;
         }

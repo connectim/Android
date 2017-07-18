@@ -74,7 +74,8 @@ public class CAddressListActivty extends BaseActivity {
 
         currencyBean = (CurrencyType) getIntent().getSerializableExtra("Currency");
         currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyBean.getCode());
-        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(currencyBean.getName());
+        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(currencyBean.getCode());
+        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(0);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         CAddressAdapter cAddressAdapter = new CAddressAdapter(activity, currencyAddressEntities);
         recyclerview.setLayoutManager(linearLayoutManager);
@@ -89,31 +90,31 @@ public class CAddressListActivty extends BaseActivity {
     }
 
     public void updateDefaultAddress(final CurrencyAddressEntity addressEntity) {
-        WalletOuterClass.RequestCreateCoinInfo history = WalletOuterClass.RequestCreateCoinInfo.newBuilder()
-                .setCurrency(currencyEntity.getCurrency())
-                .setAddress(addressEntity.getAddress())
-                .build();
-
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_DEFAULT, history, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    WalletOuterClass.RequestCreateCoinInfo createCoinInfo = WalletOuterClass.RequestCreateCoinInfo.parseFrom(structData.getPlainData());
-                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
-                        currencyEntity.setMasterAddress(addressEntity.getAddress());
-                        CurrencyHelper.getInstance().updateCurrency(currencyEntity);
-                    }
-                } catch (InvalidProtocolBufferException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
-        });
+//        WalletOuterClass.RequestCreateCoinInfo history = WalletOuterClass.RequestCreateCoinInfo.newBuilder()
+//                .setCurrency(currencyEntity.getCurrency())
+//                .setAddress(addressEntity.getAddress())
+//                .build();
+//
+//        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_DEFAULT, history, new ResultCall<Connect.HttpResponse>() {
+//            @Override
+//            public void onResponse(Connect.HttpResponse response) {
+//                try {
+//                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+//                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+//                    WalletOuterClass.RequestCreateCoinInfo createCoinInfo = WalletOuterClass.RequestCreateCoinInfo.parseFrom(structData.getPlainData());
+//                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
+//                        currencyEntity.setMasterAddress(addressEntity.getAddress());
+//                        CurrencyHelper.getInstance().updateCurrency(currencyEntity);
+//                    }
+//                } catch (InvalidProtocolBufferException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Connect.HttpResponse response) {
+//
+//            }
+//        });
     }
 }
