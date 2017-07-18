@@ -27,6 +27,7 @@ import protos.Connect;
 
 public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapter.ViewHolder> {
 
+
     private Activity activity;
     private ArrayList<Connect.FriendBill> mListData = new ArrayList();
     private ContactEntity friendEntity;
