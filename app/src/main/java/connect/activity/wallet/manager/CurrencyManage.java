@@ -20,7 +20,9 @@ import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
+import connect.ui.activity.R;
 import connect.utils.StringUtil;
+import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.EncoPinBean;
 import connect.utils.cryption.SupportKeyUril;
@@ -46,7 +48,7 @@ public class CurrencyManage {
     public static final int WALLET_CATEGORY_SEED = 3;
 
     /**
-     * 需要密码加密上传payLoad
+     * 纯私钥匙加密方式
      * @param category (1:纯私钥，2:baseseed，3:salt+seed)
      */
     public void createCurrencyPin(Activity activity, final String value, final String address, final CurrencyType currencyType,
@@ -124,7 +126,7 @@ public class CurrencyManage {
      * @param category 1:纯私钥，2:baseSeed，3:salt+seed
      */
     public void createCurrency(final String payload, final String salt, final CurrencyType currencyType, final int category, final String masterAddress, final OnCreateCurrencyListener onCurrencyListener){
-        WalletOuterClass.CreateCoinArgs.Builder builder = WalletOuterClass.CreateCoinArgs.newBuilder();
+        WalletOuterClass.CreateCoinRequest.Builder builder = WalletOuterClass.CreateCoinRequest.newBuilder();
         builder.setSalt(salt);
         builder.setCurrency(currencyType.getCode());
         builder.setCategory(category);
@@ -200,7 +202,6 @@ public class CurrencyManage {
         * status(0: 隐藏 1:显示)*/
     private void requestCurrencyList(final OnCurrencyListListener onCurrencyListListener){
         WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-        walletBean.getWid();
         OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
             @Override
             public void onResponse(Object response) {

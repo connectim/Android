@@ -111,12 +111,7 @@ public class TransferAddressActivity extends BaseActivity {
         addressTv.addTextChangedListener(textWatcher);
         transferEditView.setEditListener(onEditListener);
 
-        transferManager = new TransferManager(CurrencyType.BTC, new TransferManager.OnResultCall() {
-            @Override
-            public void result(String value) {
-                int a = 1;
-            }
-        });
+        transferManager = new TransferManager(CurrencyType.BTC);
     }
 
     @OnClick(R.id.left_img)
@@ -137,18 +132,45 @@ public class TransferAddressActivity extends BaseActivity {
             ToastEUtil.makeText(mActivity,R.string.Wallet_Result_is_not_a_bitcoin_address,ToastEUtil.TOAST_STATUS_FAILE).show();
             return;
         }else if(currencyEntity == null){
-            ToastEUtil.makeText(mActivity,"钱包数据没有同步",ToastEUtil.TOAST_STATUS_FAILE).show();
+            ToastEUtil.makeText(mActivity,R.string.Wallet_synchronization_data_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
             return;
         }
-        ArrayList<String> fromList = new ArrayList<>();
-        fromList.add(currencyEntity.getMasterAddress());
-        ArrayList<WalletOuterClass.AddressAndAmount> toList = new ArrayList<>();
-        WalletOuterClass.AddressAndAmount addressAndAmount = WalletOuterClass.AddressAndAmount.newBuilder()
-                        .setAddress("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew")
-                        .setAmount(transferEditView.getCurrentBtcLong())
-                        .build();
-        toList.add(addressAndAmount);
-        transferManager.getTransferRow(mActivity, fromList, toList);
+        /*message SendCurrency {
+            Txin txin = 1;
+            int32 currency = 2;
+        }
+        message Txin {
+            repeated string addresses = 1;
+        }
+        message Txout {
+            string address = 1;
+            int64 amount = 2;
+        }
+        message TransferRequest {
+            SendCurrency send_currency = 1;
+            repeated Txout out_puts = 2;
+            int64 fee = 3;
+            int32 transfer_type = 4;
+            string tips = 5;
+        }
+        */
+
+        WalletOuterClass.Txin.Builder builder = WalletOuterClass.Txin.newBuilder();
+        builder.addAddresses(currencyEntity.getMasterAddress());
+
+        ArrayList<WalletOuterClass.Txout> txoutList = new ArrayList<>();
+        WalletOuterClass.Txout.Builder builderTxout = WalletOuterClass.Txout.newBuilder();
+        builderTxout.setAddress("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew");
+        builderTxout.setAmount(10000L);
+        txoutList.add(builderTxout.build());
+
+        transferManager.getTransferRow(mActivity, builder.build(), txoutList, new TransferManager.OnResultCall() {
+            @Override
+            public void result(String value) {
+
+            }
+        });
+
     }
 
     @Override

@@ -716,4 +716,9 @@
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_system_luckypackage_have_been_frozen">红包被系统管理员暂停</string>
     <string name="Chat_one_device_can_only_grab_a_luckypackage">一个设备只能抢一个红包</string>
+    <string name="Wallet_create_currency_failed">创建币种失败</string>
+    <string name="Wallet_Create_wallet_failed">创建钱包失败</string>
+    <string name="Wallet_synchronization_data_failed">同步数据失败</string>
+    <string name="Set_please_enter_the_original_password">请输入原密码</string>
+    <string name="Wallet_Failed_to_get_the_list_address">获取地址列表失败</string>
 </resources>

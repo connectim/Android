@@ -15,6 +15,7 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
 import connect.utils.StringUtil;
+import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncoPinBean;
@@ -42,9 +43,9 @@ public class WalletManager {
 
     public void checkAccount(OnWalletListener onWalletListener){
         this.onWalletListener = onWalletListener;
-        final WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
         requestWalletBase();
-        /*if(walletBean == null){
+        /*final WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
+        if(walletBean == null){
             // 用户没有钱包数据
             requestWalletBase();
         }else{
@@ -76,7 +77,6 @@ public class WalletManager {
 
                             }
                         });
-
             }
         }*/
     }
@@ -100,11 +100,10 @@ public class WalletManager {
                         case 1:
                             // 更新钱包数据
                             WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
-                            WalletBean walletBean = new WalletBean(wallet.getPayLoad(),wallet.getSalt(),wallet.getPbkdf2Iterations(),
-                                    wallet.getVersion(),wallet.getUuid(),respSyncWallet.getStatus());
+                            WalletBean walletBean = new WalletBean(wallet.getPayLoad(),wallet.getVer(),
+                                    wallet.getVersion(),wallet.getCheckSum());
                             //保存钱包账户信息
                             SharePreferenceUser.getInstance().putWalletInfo(walletBean);
-
                             List<WalletOuterClass.Coin> list = respSyncWallet.getCoinsList();
                             //保存货币信息
                             CurrencyHelper.getInstance().insertCurrencyListCoin(list);
@@ -121,9 +120,6 @@ public class WalletManager {
                                     new CurrencyManage.OnCreateCurrencyListener() {
                                         @Override
                                         public void success(CurrencyEntity currencyEntity) {
-                                            WalletBean walletBean = new WalletBean();
-                                            walletBean.setStatus(3);
-                                            SharePreferenceUser.getInstance().putWalletInfo(walletBean);
                                             onWalletListener.complete();
                                         }
 
@@ -144,6 +140,7 @@ public class WalletManager {
             @Override
             public void onError(Connect.HttpResponse response) {
                 onWalletListener.fail(response.getMessage());
+                ToastEUtil.makeText(mActivity,R.string.Wallet_synchronization_data_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         });
     }
@@ -177,19 +174,18 @@ public class WalletManager {
     public void createWallet(final String seed, String pin, final CurrencyType type){
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
         final EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(seed,pin);
-        String check_sum = StringUtil.cdHash256(encoPinBean.getN() + "" + encoPinBean.getPayload());
+        final String checkSum = StringUtil.cdHash256(SupportKeyUril.PIN_VERSION + "" + encoPinBean.getPayload());
         builder.setPayload(encoPinBean.getPayload());
-        builder.setCheckSum(check_sum);
-        builder.setN(encoPinBean.getN());
-        builder.setSalt("");
+        builder.setCheckSum(checkSum);
+        builder.setVer(SupportKeyUril.PIN_VERSION);
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_CREATE,builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 WalletBean walletBean = new WalletBean();
-                walletBean.setN(encoPinBean.getN());
+                walletBean.setVer(SupportKeyUril.PIN_VERSION);
                 walletBean.setPayload(encoPinBean.getPayload());
-                walletBean.setSalt(seed);
+                walletBean.setCheckSum(checkSum);
                 walletBean.setVersion(1);
                 SharePreferenceUser.getInstance().putWalletInfo(walletBean);
                 new CurrencyManage().createCurrencyBaseSeed(seed, type, new CurrencyManage.OnCreateCurrencyListener() {
@@ -207,6 +203,7 @@ public class WalletManager {
             @Override
             public void onError(Connect.HttpResponse response) {
                 onWalletListener.fail(response.getMessage());
+                ToastEUtil.makeText(mActivity,R.string.Wallet_Create_wallet_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         });
     }
@@ -216,14 +213,15 @@ public class WalletManager {
      */
     public void updateWalletInfo(final WalletBean walletBean, final OnWalletListener onWalletListener){
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
-        String check_sum = StringUtil.cdHash256(walletBean.getN() + "" + walletBean.getPayload());
+        final String checkSum = StringUtil.cdHash256(walletBean.getVer() + "" + walletBean.getPayload());
         builder.setPayload(walletBean.getPayload());
-        builder.setCheckSum(check_sum);
-        builder.setN(walletBean.getN());
-        builder.setSalt("");
+        builder.setCheckSum(checkSum);
+        builder.setVer(walletBean.getVer());
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_UPDATA, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
+                walletBean.setCheckSum(checkSum);
+                walletBean.setVersion(walletBean.getVersion() + 1);
                 SharePreferenceUser.getInstance().putWalletInfo(walletBean);
                 onWalletListener.complete();
             }

@@ -35,7 +35,9 @@ import connect.activity.wallet.manager.CurrencyType;
 import connect.activity.wallet.manager.PinManager;
 import connect.activity.wallet.manager.WalletManager;
 import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
@@ -67,6 +69,7 @@ public class WalletFragment extends BaseFragment{
     private WalletAccountBean accountBean;
     private RateBean rateBean;
     public WalletManager walletManage;
+    private CurrencyEntity currencyEntity;
 
     public static WalletFragment startFragment() {
         WalletFragment walletFragment = new WalletFragment();
@@ -93,7 +96,18 @@ public class WalletFragment extends BaseFragment{
         if(mActivity != null && isAdded()){
             amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
             requestRate();
-            requestWallet();
+            walletManage.checkAccount(new WalletManager.OnWalletListener() {
+                @Override
+                public void complete() {
+                    currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
+                    amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
+                }
+
+                @Override
+                public void fail(String message) {
+
+                }
+            });
         }
     }
 
@@ -114,17 +128,6 @@ public class WalletFragment extends BaseFragment{
         walletMenuRecycler.setAdapter(walletMenuAdapter);
 
         walletManage = new WalletManager(mActivity);
-        walletManage.checkAccount(new WalletManager.OnWalletListener() {
-            @Override
-            public void complete() {
-
-            }
-
-            @Override
-            public void fail(String message) {
-
-            }
-        });
     }
 
     @OnClick(R.id.right_lin)
@@ -148,7 +151,7 @@ public class WalletFragment extends BaseFragment{
                     RateFormatUtil.foematNumber(RateFormatUtil.PATTERN_OTHER,
                             accountBean.getAmount()*rateBean.getRate()/RateFormatUtil.BTC_TO_LONG));
         }else{
-            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
+            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
         }
     }
 
