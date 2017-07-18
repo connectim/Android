@@ -131,7 +131,7 @@ public class UriUtil {
     public static String WALLET_V2_COINS_ADDRESS_LIST = "/wallet/v2/coins/addresses/list";
     /** 获取钱包货币状态 */
     public static String WALLET_V2_SERVICE_USER_STATUS = "/wallet/v2/service/user_status";
-    /** 收款 */
+    /** 收款 (不属于钱包基础功能)*/
     public static String WALLET_V2_SERVICE_RECEIVE = "/wallet/v2/service/receive";
     /*resquest:ReceiveRequest  resp:Bill*/
     /** 支付 */
