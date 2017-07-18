@@ -3,6 +3,7 @@ package connect.activity.wallet.manager;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
@@ -10,6 +11,7 @@ import com.google.protobuf.ByteString;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.EstimatefeeBean;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.SignRawBean;
@@ -18,6 +20,7 @@ import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
+import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -49,35 +52,16 @@ public class TransferManager extends BaseTransfer{
      */
     public void getTransferRow(final Activity activity, WalletOuterClass.Txin txin,
                                List<WalletOuterClass.Txout> outPuts, final OnResultCall onResultCall){
-        baseCheckTransfer(activity,0L);
+        requestCurrencyAddress();
         PaySetBean paySetBean = ParamManager.getInstance().getPaySet();
-        /*message SendCurrency {
-            Txin txin = 1;
-            int32 currency = 2;
-        }
-        message Txin {
-            repeated string addresses = 1;
-        }
-        message Txout {
-            string address = 1;
-            int64 amount = 2;
-        }
-        message TransferRequest {
-            SendCurrency send_currency = 1;
-            repeated Txout out_puts = 2;
-            int64 fee = 3;
-            int32 transfer_type = 4;
-            string tips = 5;
-        }
-        /wallet/v2/service/transfer
-        request: TransferRequest   resp: OriginalTransactionResponse
-        */
         WalletOuterClass.TransferRequest.Builder builder = WalletOuterClass.TransferRequest.newBuilder();
-
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
         builderSend.setCurrency(currencyType.getCode());
-        builderSend.setTxin(txin);
-        builder.setSpentCurrency(builderSend);
+        if(txin != null){
+            builderSend.setTxin(txin);
+        }
+        builder.setSpentCurrency(builderSend.build());
+
         if(paySetBean.isAutoFee()){
             builder.setFee(0L);
         }else{
@@ -87,6 +71,7 @@ public class TransferManager extends BaseTransfer{
             builder.addTxOut(txout);
         }
         builder.setTips("");
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_TRANSFER, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -99,7 +84,7 @@ public class TransferManager extends BaseTransfer{
                         case 0:
                             ArrayList<String> priKeyList = checkPin(activity, originalTransaction.getAddressesList());
                             String rawHex = getSignRawTrans(priKeyList, originalTransaction.getVts(), originalTransaction.getRawhex());
-                            publishTransfer(rawHex, originalTransaction.getHashId(), new OnBaseResultCall(){
+                            publishTransfer(rawHex, originalTransaction.getTransactionId(), new OnBaseResultCall(){
                                 @Override
                                 public void success() {
                                     //广播成功
@@ -108,6 +93,19 @@ public class TransferManager extends BaseTransfer{
                             });
                             break;
                         case 1://手续费过小
+                            DialogUtil.showAlertTextView(activity, activity.getString(R.string.Set_tip_title),
+                                    activity.getString(R.string.Wallet_Transaction_fee_too_low_Continue),
+                                    "", "", false, new DialogUtil.OnItemClickListener() {
+                                        @Override
+                                        public void confirm(String value) {
+                                            //checkDust(orderResponse);
+                                        }
+
+                                        @Override
+                                        public void cancel() {
+                                            //connectDialog.dismiss();
+                                        }
+                                    });
                             break;
                         case 2://手续费为空
                             break;
@@ -123,7 +121,7 @@ public class TransferManager extends BaseTransfer{
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -144,7 +142,6 @@ public class TransferManager extends BaseTransfer{
         * tvs
         * url (外部红包的url)*/
     public void sendRedPack(final Activity activity, ArrayList<String> fromList, ArrayList<Integer> indexList, int total, Long amount, int category){
-        baseCheckTransfer(activity,amount);
         OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
             @Override
             public void onResponse(Object response) {
@@ -170,8 +167,6 @@ public class TransferManager extends BaseTransfer{
         * rowhex
         * tvs*/
     private void seedOutTransfer(final Activity activity, ArrayList<String> fromList, ArrayList<Integer> indexList, Long amount){
-        baseCheckTransfer(activity,amount);
-
         OkHttpUtil.getInstance().postEncrySelf("url", ByteString.copyFrom(new byte[]{}), new ResultCall() {
             @Override
             public void onResponse(Object response) {
@@ -218,27 +213,6 @@ public class TransferManager extends BaseTransfer{
      * @return
      */
     private boolean checkTransfer(){
-        return true;
-    }
-
-    /**
-     * 前置判断
-     */
-    public boolean baseCheckTransfer(Context context, Long outAmount) {
-        requestCurrencyAddress();
-        Long avaAmount = 0L;
-        // 判断余额
-        long fee = ParamManager.getInstance().getPaySet().getFee();
-        if (avaAmount < outAmount + fee) {
-            ToastEUtil.makeText(context, R.string.Wallet_Insufficient_balance,ToastEUtil.TOAST_STATUS_FAILE).show();
-            return false;
-        }
-
-        // 判断输出金额是否肮脏
-        if (isHaveDustWithAmount(outAmount)) {
-            ToastEUtil.makeText(context,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
-            return false;
-        }
         return true;
     }
 

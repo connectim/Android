@@ -58,7 +58,6 @@ abstract class BaseTransfer {
         pinTransferDialog.showPaymentPwd(activity, payload, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {
-
                 if(currencyEntity.getCategory() == CurrencyManage.WALLET_CATEGORY_PRI ){
                     // 纯私钥
                     String priKey = decodeStr;

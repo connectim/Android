@@ -129,6 +129,26 @@ public class UriUtil {
     public static String WALLET_V2_SERVICE_TRANSFER = "/wallet/v2/service/transfer";
     /** 获取币种地址列表 */
     public static String WALLET_V2_COINS_ADDRESS_LIST = "/wallet/v2/coins/addresses/list";
+    /** 获取钱包货币状态 */
+    public static String WALLET_V2_SERVICE_USER_STATUS = "/wallet/v2/service/user_status";
+    /** 收款 */
+    public static String WALLET_V2_SERVICE_RECEIVE = "/wallet/v2/service/receive";
+    /*resquest:ReceiveRequest  resp:Bill*/
+    /** 支付 */
+    public static String WALLET_V2_SERVICE_PAYMENT = "/wallet/v2/service/payment";
+    /*req:Payment  resp:OriginalTransactionResponse*/
+    /** 红包 */
+    public static String WALLET_V2_SERVICE_LUCKPACKAGE = "/wallet/v2/service/luckpackage";
+    /*req:LuckyPackageRequest  resp:OriginalTransactionResponse*/
+    /** 外部转账 */
+    public static String WALLET_V2_SERVICE_EXTERNAL = "/wallet/v2/service/external";
+    /*req:OutTransfer  resp:ExternalBillingInfo*/
+    /** 众筹 */
+    public static String WALLET_V2_SERVICE_CROWDFUNING = "/wallet/v2/service/crowdfuning";
+    /*req:CrowdfundingRequest  resp:Crowdfunding*/
+    /** 广播 */
+    public static String WALLET_V2_SERVICE_PUBLISH = "/wallet/v2/service/publish";
+    /*req:PublishTransaction  resp:ResponsePublish*/
 
     /**======================================================================================
      *                                contact

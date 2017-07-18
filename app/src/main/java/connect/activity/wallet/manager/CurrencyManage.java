@@ -3,6 +3,7 @@ package connect.activity.wallet.manager;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.protobuf.ByteString;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.MemoryDataManager;
 import connect.database.SharePreferenceUser;
@@ -159,7 +161,7 @@ public class CurrencyManage {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }
