@@ -90,6 +90,17 @@ public class CurrencyHelper extends BaseDao{
         return currencyAddressEntities;
     }
 
+    public List<CurrencyAddressEntity> loadCurrencyAddress(List<String> addressList){
+        String addressStr = "";
+        for(String address : addressList){
+            addressStr = addressStr + ","+ address;
+        }
+        QueryBuilder<CurrencyAddressEntity> qb = currencyAddressEntityDao.queryBuilder();
+        qb.where(CurrencyAddressEntityDao.Properties.Address.like(addressStr));
+        List<CurrencyAddressEntity> list = qb.list();
+        return list;
+    }
+
     /*********************************  insert ***********************************/
     /**
      * insert currencies
