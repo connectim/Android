@@ -8,6 +8,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.HashMap;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,6 +23,9 @@ import connect.utils.transfer.TransferUtil;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
@@ -45,6 +50,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
     private TransferUtil transaUtil;
     private PaymentPwd paymentPwd;
     private final String defilet_num = "1";
+    private BaseBusiness baseBusiness;
 
     public static void startActivity(Activity activity) {
         Bundle bundle = new Bundle();
@@ -82,6 +88,8 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
         transaUtil = new TransferUtil();
 
         presenter.start();
+
+        baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
     }
 
     @Override
@@ -106,7 +114,21 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
 
     @OnClick(R.id.pay)
     void finish(View view) {
-        final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
+        baseBusiness.luckyPacket(null, "030f6816ce8634c2899820500797388025a667848f732c9f4f53b4bfe60a4846c4", 1, 0,
+                Integer.valueOf(packetNumberEt.getText().toString()), transferEditView.getCurrentBtcLong(), "", new WalletListener<String>() {
+            @Override
+            public void success(String value) {
+
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
+            }
+        });
+
+
+        /*final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
         if(null == presenter.getPendingPackage())
             return;
         transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), true,
@@ -116,7 +138,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
             public void result(String inputString, String outputString) {
                 checkPayPassword(amount, inputString, outputString);
             }
-        });
+        });*/
     }
 
     @Override
