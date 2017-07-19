@@ -109,9 +109,24 @@ public class WalletFragment extends BaseFragment{
         menuList.add(new WalletMenuBean(R.mipmap.wallet_packet_icon2x, R.string.Wallet_Packet));
 
         WalletMenuAdapter walletMenuAdapter = new WalletMenuAdapter(menuList, mActivity);
-        walletMenuAdapter.setOnItemClickListence(onClickListener);
         walletMenuRecycler.setLayoutManager(new GridLayoutManager(mActivity, 3));
         walletMenuRecycler.setAdapter(walletMenuAdapter);
+        walletMenuAdapter.setOnItemClickListener(new WalletMenuAdapter.OnItemClickListener() {
+            @Override
+            public void itemClick(int position) {
+                switch (position) {
+                    case 0:
+                        ActivityUtil.next(mActivity, RequestActivity.class);
+                        break;
+                    case 1:
+                        TransferActivity.startActivity(mActivity);
+                        break;
+                    case 2:
+                        PacketActivity.startActivity(mActivity);
+                        break;
+                }
+            }
+        });
         syncWallet();
     }
 
@@ -139,24 +154,6 @@ public class WalletFragment extends BaseFragment{
             amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
         }
     }
-
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int tag = (Integer) v.getTag();
-            switch (tag) {
-                case 0:
-                    ActivityUtil.next(mActivity, RequestActivity.class);
-                    break;
-                case 1:
-                    TransferActivity.startActivity(mActivity);
-                    break;
-                case 2:
-                    PacketActivity.startActivity(mActivity);
-                    break;
-            }
-        }
-    };
 
     private void requestRate() {
         if(rateBean == null || TextUtils.isEmpty(rateBean.getUrl()))

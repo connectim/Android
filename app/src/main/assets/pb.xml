@@ -428,4 +428,6 @@
         <attr name='redPackageInfos' type='list'></attr>
     </RedPackageInfos>
 
+    <Bill>
+    </Bill>
 </PBRule>

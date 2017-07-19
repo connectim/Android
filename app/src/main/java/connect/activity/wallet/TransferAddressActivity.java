@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -127,7 +128,11 @@ public class TransferAddressActivity extends BaseActivity {
         builderTxout.setAmount(transferEditView.getCurrentBtcLong());
         txoutList.add(builderTxout.build());
 
-        baseBusiness.transferAddress(null, txoutList, new WalletListener<String>() {
+        HashMap<String,Long> outMap = new HashMap<String,Long>();
+        outMap.put("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew",transferEditView.getCurrentBtcLong());
+        // outMap.put("030f6816ce8634c2899820500797388025a667848f732c9f4f53b4bfe60a4846c4",transferEditView.getCurrentBtcLong());
+
+        baseBusiness.transferAddress(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {
                 // 存储最近10条转账记录

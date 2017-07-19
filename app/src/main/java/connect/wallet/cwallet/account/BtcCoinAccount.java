@@ -34,7 +34,7 @@ public class BtcCoinAccount implements CoinAccount {
     }
 
     @Override
-    public List<Object> addressList() {
+    public void requestAddressList(final WalletListener listener) {
         CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
         WalletOuterClass.Coin.Builder builder = WalletOuterClass.Coin.newBuilder();
         builder.setCurrency(currencyEntity.getCurrency());
@@ -47,6 +47,7 @@ public class BtcCoinAccount implements CoinAccount {
                     WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
                     List<WalletOuterClass.CoinInfo> list = coinsDetail.getCoinInfosList();
                     CurrencyHelper.getInstance().insertCurrencyAddressListCoinInfo(list,CurrencyEnum.BTC.getCode());
+                    listener.success(WalletListener.success);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -54,10 +55,9 @@ public class BtcCoinAccount implements CoinAccount {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                listener.fail(WalletListener.WalletError.NETError);
             }
         });
-        return null;
     }
 
     @Override

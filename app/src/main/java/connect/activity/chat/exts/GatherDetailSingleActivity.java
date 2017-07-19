@@ -241,7 +241,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
     protected void requestPayment() {
         BaseBusiness baseBusiness = new BaseBusiness(activity);
-        baseBusiness.typePayment(hashid, 1, new WalletListener<WalletOuterClass.OriginalTransactionResponse>() {
+        baseBusiness.typePayment(hashid, 8, new WalletListener<WalletOuterClass.OriginalTransactionResponse>() {
             @Override
             public void success(WalletOuterClass.OriginalTransactionResponse response) {
                 ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getReceiver());

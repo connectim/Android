@@ -211,7 +211,7 @@ public class GatherActivity extends BaseActivity {
     protected void requestSingleGather() {
         CurrencyEnum currencyEnum = transferEditView.getCurrencyEnum();
         long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
-        String senderAddress = friendEntity.getAddress();
+        String senderAddress = friendEntity.getPub_key();
         String tips = transferEditView.getNote();
         BaseBusiness baseBusiness = new BaseBusiness(activity, currencyEnum);
         baseBusiness.friendReceiver(amount, senderAddress, tips, new WalletListener<Connect.Bill>() {
@@ -237,10 +237,11 @@ public class GatherActivity extends BaseActivity {
     protected void requestGroupGather() {
         long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
         int member = Integer.parseInt(edit.getText().toString());
+        long totalAmount = amount * member;
         String tips = transferEditView.getNote();
 
         BaseBusiness baseBusiness = new BaseBusiness(activity, transferEditView.getCurrencyEnum());
-        baseBusiness.crowdFuning(gatherKey, amount, member, tips, new WalletListener<Connect.Crowdfunding>() {
+        baseBusiness.crowdFuning(gatherKey, totalAmount, member, tips, new WalletListener<Connect.Crowdfunding>() {
 
             @Override
             public void success(Connect.Crowdfunding crowdfunding) {

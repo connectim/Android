@@ -58,11 +58,10 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
         WalletMenuAdapter walletMenuAdapter = new WalletMenuAdapter(menuList, mView.getActivity());
         recycler.setLayoutManager(new GridLayoutManager(mView.getActivity(), 3));
         recycler.setAdapter(walletMenuAdapter);
-        walletMenuAdapter.setOnItemClickListence(new View.OnClickListener() {
+        walletMenuAdapter.setOnItemClickListener(new WalletMenuAdapter.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                int tag = (Integer) v.getTag();
-                mView.itemClick(tag);
+            public void itemClick(int position) {
+                mView.itemClick(position);
             }
         });
     }

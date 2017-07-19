@@ -364,15 +364,7 @@ public class NativeWallet {
         coinAccount.hideAddress(address);
     }
 
-    /**
-     * 获取地址列表
-     * @param currencyEnum
-     * @return
-     */
-    public List<Object> addressList(CurrencyEnum currencyEnum) {
-        CoinAccount coinAccount = initAccount(currencyEnum);
-        return coinAccount.addressList();
-    }
+
 
     /**
      * 转账

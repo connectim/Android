@@ -26,7 +26,7 @@ public interface CoinAccount {
     /**
      * 获取地址列表
      */
-    public List<Object> addressList();
+    public void requestAddressList(WalletListener listener);
 
     /**
      * 转账

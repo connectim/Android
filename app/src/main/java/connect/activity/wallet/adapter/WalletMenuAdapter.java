@@ -24,7 +24,6 @@ public class WalletMenuAdapter extends RecyclerView.Adapter<WalletMenuAdapter.Wa
 
     private ArrayList<WalletMenuBean> mDates;
     private Activity mActivity;
-    private View.OnClickListener mClickListener;
 
     public WalletMenuAdapter(ArrayList<WalletMenuBean> mDates, Activity mActivity) {
         this.mDates = mDates;
@@ -38,13 +37,17 @@ public class WalletMenuAdapter extends RecyclerView.Adapter<WalletMenuAdapter.Wa
     }
 
     @Override
-    public void onBindViewHolder(WalletMenuAdapter.WalletMenuItem holder, int position) {
+    public void onBindViewHolder(WalletMenuAdapter.WalletMenuItem holder, final int position) {
         WalletMenuBean menuBean = mDates.get(position);
 
         holder.iconImg.setImageResource(menuBean.getIconID());
         holder.nameTv.setText(menuBean.getNameID());
-        holder.itemView.setTag(position);
-        holder.itemView.setOnClickListener(mClickListener);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.itemClick(position);
+            }
+        });
     }
 
     @Override
@@ -68,8 +71,13 @@ public class WalletMenuAdapter extends RecyclerView.Adapter<WalletMenuAdapter.Wa
         }
     }
 
-    public void setOnItemClickListence(View.OnClickListener mClickListener){
-        this.mClickListener = mClickListener;
+    private OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void itemClick(int position);
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 }

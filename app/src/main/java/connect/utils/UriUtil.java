@@ -155,6 +155,10 @@ public class UriUtil {
     /** 广播 */
     public static String WALLET_V2_SERVICE_PUBLISH = "/wallet/v2/service/publish";
     /*req:PublishTransaction  resp:ResponsePublish*/
+    /** 转账到地址 */
+    public static String WALLET_V2_SERVICE_TRANSFER_ADDRESS= "/wallet/v2/service/transfer_to_address";
+    /*req:PublishTransaction  resp:ResponsePublish*/
+
 
     /**======================================================================================
      *                                contact
