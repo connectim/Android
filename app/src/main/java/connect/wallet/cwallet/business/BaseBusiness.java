@@ -77,12 +77,12 @@ public class BaseBusiness {
                 dealTransferResutl(mActivity, response, new WalletListener<WalletOuterClass.ResponsePublish>() {
                     @Override
                     public void success(WalletOuterClass.ResponsePublish responsePublish) {
-
+                        int a = 1;
                     }
 
                     @Override
                     public void fail(WalletError error) {
-
+                        int a = 1;
                     }
                 });
             }
@@ -169,18 +169,27 @@ public class BaseBusiness {
      * @param response
      * @param listener
      */
-    private void dealTransferResutl(Activity activity, Connect.HttpResponse response, WalletListener listener){
+    private void dealTransferResutl(Activity activity, Connect.HttpResponse response, final WalletListener listener){
         try{
             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
             WalletOuterClass.OriginalTransactionResponse originalResponse = WalletOuterClass.OriginalTransactionResponse.parseFrom(structData.getPlainData());
-            WalletOuterClass.OriginalTransaction originalTransaction = originalResponse.getData();
+            final WalletOuterClass.OriginalTransaction originalTransaction = originalResponse.getData();
             switch (originalResponse.getCode()){
                 case 0:
-                    ArrayList<String> priKeyList = checkPin(activity, originalTransaction.getAddressesList());
-                    String rawHex = NativeWallet.getInstance().initCurrency(currencyEnum).getSignRawTrans(priKeyList,
-                            originalTransaction.getVts(), originalTransaction.getRawhex());
-                    publishTransfer(rawHex, originalTransaction.getTransactionId(), listener);
+                    checkPin(activity, originalTransaction.getAddressesList(), new WalletListener<ArrayList<String>>() {
+                        @Override
+                        public void success(ArrayList<String> priKeyList) {
+                            String rawHex = NativeWallet.getInstance().initCurrency(currencyEnum).getSignRawTrans(priKeyList,
+                                    originalTransaction.getVts(), originalTransaction.getRawhex());
+                            publishTransfer(rawHex, originalTransaction.getTransactionId(), listener);
+                        }
+
+                        @Override
+                        public void fail(WalletError error) {
+
+                        }
+                    });
                     break;
                 case 1:// 手续费过小
                     DialogUtil.showAlertTextView(activity, activity.getString(R.string.Set_tip_title),
@@ -212,7 +221,10 @@ public class BaseBusiness {
     /**
      * 检查交易密码,返回私钥数组
      */
-    private ArrayList<String> checkPin(Activity activity, ProtocolStringList addressList){
+    private void checkPin(Activity activity, ProtocolStringList addressList, final WalletListener listener){
+        if(addressList.size() == 0){
+            return;
+        }
         pinTransferDialog = new PinTransferDialog();
         String payload = "";
         final ArrayList<Integer> indexList = new ArrayList<>();
@@ -247,9 +259,9 @@ public class BaseBusiness {
                         priList.add(priKey);
                     }
                 }
+                listener.success(priList);
             }
         });
-        return priList;
     }
 
 }
