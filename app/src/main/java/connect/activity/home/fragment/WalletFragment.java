@@ -175,6 +175,8 @@ public class WalletFragment extends BaseFragment{
                 rateBean.setRate(rate.getRate());
                 rateBean.setDatetime(rate.getDatetime());
                 ParamManager.getInstance().putCountryRate(rateBean);
+
+                requestWallet();
             }
         });
     }

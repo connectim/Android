@@ -37,6 +37,7 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -85,6 +86,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     private String note = "";
     private PaySetBean paySetBean;
     private WalletAccountBean accountBean;
+    private CurrencyEnum currencyEnum = CurrencyEnum.BTC;
 
     public TransferEditView(Context context) {
         this(context, null);
@@ -403,6 +405,13 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
      */
     public void setFeeVisibility(int visibility){
         findViewById(R.id.linearlayout).setVisibility(visibility);
+    }
+
+    public CurrencyEnum getCurrencyEnum() {
+        if (currencyEnum == null) {
+            currencyEnum = CurrencyEnum.BTC;
+        }
+        return currencyEnum;
     }
 
     public interface OnEditListener {

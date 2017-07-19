@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.GatherBean;
+import connect.activity.chat.bean.MsgSend;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.SharePreferenceUser;
@@ -16,10 +18,14 @@ import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
+import connect.im.bean.MsgType;
 import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.NativeWallet;
@@ -40,6 +46,10 @@ public class BaseBusiness {
     private final Activity mActivity;
     private PinTransferDialog pinTransferDialog;
     private CurrencyEnum currencyEnum;
+
+    public BaseBusiness(Activity mActivity) {
+        this.mActivity = mActivity;
+    }
 
     public BaseBusiness(Activity mActivity, CurrencyEnum currencyEnum) {
         this.mActivity = mActivity;
@@ -95,6 +105,126 @@ public class BaseBusiness {
     }
 
     /**
+     * 单人收款
+     */
+    public void friendReceiver(long amount, String senderaddress, String tips, final WalletListener listener) {
+        WalletOuterClass.ReceiveRequest receiveRequest = WalletOuterClass.ReceiveRequest.newBuilder()
+                .setCurrency(getCurrency())
+                .setAmount(amount)
+                .setSender(senderaddress)
+                .setTips(tips).build();
+
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_RECEIVE, receiveRequest, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    //check sign
+                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
+                        throw new Exception("Validation fails");
+                    }
+
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
+                        listener.success(bill);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * 支付
+     * @param hash payment hash
+     * @param type TransactionTypeBill = 1
+     *             TransactionTypePayCrowding = 2
+     *             TransactionTypeLuckypackage = 3
+     *             TransactionTypeURLTransfer = 6
+     */
+    public void typePayment(String hash,int type, final WalletListener listener) {
+        WalletOuterClass.Payment payment = WalletOuterClass.Payment.newBuilder()
+                .setHashId(hash)
+                .setFee(0L)
+                .setPayType(type).build();
+
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_PAYMENT, payment, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    //check sign
+                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
+                        throw new Exception("Validation fails");
+                    }
+
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.OriginalTransactionResponse originalTransactionResponse = WalletOuterClass.OriginalTransactionResponse.parseFrom(structData.getPlainData());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(originalTransactionResponse)) {
+                        listener.success(originalTransactionResponse);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                Toast.makeText(BaseApplication.getInstance().getAppContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * 众筹
+     * @param groupkey
+     * @param amount
+     * @param size
+     * @param tips
+     */
+    public void crowdFuning(String groupkey, long amount, int size, String tips, final WalletListener listener) {
+        WalletOuterClass.CrowdfundingRequest crowdfundingRequest = WalletOuterClass.CrowdfundingRequest.newBuilder()
+                .setCurrency(getCurrency())
+                .setGroupIdentifier(groupkey)
+                .setAmount(amount)
+                .setSize(size)
+                .setTips(tips).build();
+
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_CROWDFUNING, crowdfundingRequest, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    //check sign
+                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
+                        throw new Exception("Validation fails");
+                    }
+
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.Crowdfunding crowdfunding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(crowdfunding)) {
+                        listener.success(crowdfunding);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                Toast.makeText(BaseApplication.getInstance().getAppContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
      * 红包
      * @param txin
      * @param reciverId
@@ -118,17 +248,6 @@ public class BaseBusiness {
      */
     public void outerTransfer(List<String> fromlist, List<Integer> indexList, long amount,
                               WalletListener listener){
-
-    }
-
-    /**
-     * 支付
-     *
-     * @param hashId
-     * @param payType
-     * @param listener
-     */
-    public void payment(String hashId, int payType, WalletListener listener){
 
     }
 
@@ -182,7 +301,7 @@ public class BaseBusiness {
                         public void success(ArrayList<String> priKeyList) {
                             String rawHex = NativeWallet.getInstance().initCurrency(currencyEnum).getSignRawTrans(priKeyList,
                                     originalTransaction.getVts(), originalTransaction.getRawhex());
-                            publishTransfer(rawHex, originalTransaction.getTransactionId(), listener);
+                            publishTransfer(rawHex, originalTransaction.getHashId(), listener);
                         }
 
                         @Override
@@ -264,4 +383,14 @@ public class BaseBusiness {
         });
     }
 
+    /**
+     * 获取币种
+     * @return
+     */
+    public int getCurrency() {
+        if (currencyEnum == null) {
+            throw new NumberFormatException("currencyEnum is null");
+        }
+        return currencyEnum.getCode();
+    }
 }

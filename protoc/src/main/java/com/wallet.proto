@@ -96,6 +96,18 @@ int64 fee = 3;
 string tips = 4;
 }
 
+message ConnectTxout {
+    string uid = 1;
+    int64 amount = 2;
+}
+
+message ConnectTransferRequest {
+    SpentCurrency spent_currency = 1;
+    repeated ConnectTxout tx_out = 2;
+    int64 fee = 3;
+    string tips = 4;
+}
+
 message CrowdfuningRequest {
 string currency = 1;
 string group_identifier = 2;
@@ -122,11 +134,11 @@ string hash_id = 3;
 }
 
 message OriginalTransaction {
-    string rawhex = 1;
-    string vts = 2;
-    string transaction_id = 3;
-    repeated string addresses = 4;
-    int64 fee = 5;
+    string hash_id = 1;
+    string rawhex = 2;
+    string vts = 3;
+    int64 fee = 4;
+    repeated string addresses = 5;
 }
 
 message OriginalTransactionResponse {
@@ -187,7 +199,7 @@ message OutTransfer {
     string tips = 4;
 }
 message CrowdfundingRequest {
-    string currency = 1;
+    int32 currency = 1;
     string group_identifier = 2;
     int64 amount = 3;
     int32 size = 4;

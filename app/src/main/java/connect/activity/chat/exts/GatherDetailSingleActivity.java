@@ -35,11 +35,14 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * private chat gather
@@ -71,6 +74,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
     private Connect.Bill billDetail = null;
 
     private String msgId;
+    private String hashid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +106,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
             }
         });
 
-        String hashid = getIntent().getStringExtra(GATHER_HASHID);
+        hashid = getIntent().getStringExtra(GATHER_HASHID);
         msgId = getIntent().getStringExtra(GATHER_MSGID);
         requestGatherDetail(hashid);
     }
@@ -117,7 +121,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
                         ActivityUtil.goBack(activity);
                         break;
                     case 1://Did not pay ,to pay
-                        requestGatherPayment();
+                        requestPayment();
                         break;
                     case 2:
                         ActivityUtil.goBack(activity);
@@ -235,40 +239,11 @@ public class GatherDetailSingleActivity extends BaseActivity {
         });
     }
 
-    protected void requestGatherPayment() {
-        WalletAccountBean accountBean = ParamManager.getInstance().getWalletAmount();
-        new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), false,
-                billDetail.getSender(),accountBean.getAvaAmount(), billDetail.getAmount(),
-                new TransferUtil.OnResultCall() {
+    protected void requestPayment() {
+        BaseBusiness baseBusiness = new BaseBusiness(activity);
+        baseBusiness.typePayment(hashid, 1, new WalletListener<WalletOuterClass.OriginalTransactionResponse>() {
             @Override
-            public void result(String inputString, String outputString) {
-                checkPayPassword(inputString, outputString);
-            }
-        });
-    }
-
-    private void checkPayPassword(final String inputString, final String outputString) {
-        if (!TextUtils.isEmpty(outputString)) {
-            paymentPwd = new PaymentPwd();
-            paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
-                @Override
-                public void onTrue(String value) {
-                    String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
-                    requestPublicTx(samValue);
-                }
-            });
-        }
-    }
-
-    private void requestPublicTx(String rawTx) {
-        Connect.PublishTx publishTx = Connect.PublishTx.newBuilder()
-                .setHash(billDetail.getHash())
-                .setRawTx(rawTx)
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_BILLING_PUBLISH_TX, publishTx, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess);
+            public void success(WalletOuterClass.OriginalTransactionResponse response) {
                 ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getReceiver());
                 if (entity != null) {
                     String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
@@ -278,22 +253,13 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
                 TransactionHelper.getInstance().updateTransEntity(billDetail.getHash(), msgId, 1);
                 ToastEUtil.makeText(activity, R.string.Wallet_Payment_Successful).show();
-                handler.sendEmptyMessageDelayed(50, 2000);
+                ActivityUtil.goBack(activity);
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                TransferError.getInstance().showError(response.getCode(),response.getMessage());
+            public void fail(WalletError error) {
+
             }
         });
     }
-
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            ActivityUtil.goBack(activity);
-        }
-    };
 }
