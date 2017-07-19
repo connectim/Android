@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2016/12/10.
  */
-public class WalletMenuAdapter extends RecyclerView.Adapter {
+public class WalletMenuAdapter extends RecyclerView.Adapter<WalletMenuAdapter.WalletMenuItem> {
 
     private ArrayList<WalletMenuBean> mDates;
     private Activity mActivity;
@@ -32,20 +32,19 @@ public class WalletMenuAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WalletMenuAdapter.WalletMenuItem onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.wallet_menu_item, null);
         return new WalletMenuItem(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        WalletMenuItem viewHolder = (WalletMenuItem) holder;
+    public void onBindViewHolder(WalletMenuAdapter.WalletMenuItem holder, int position) {
         WalletMenuBean menuBean = mDates.get(position);
 
-        viewHolder.iconImg.setImageResource(menuBean.getIconID());
-        viewHolder.nameTv.setText(menuBean.getNameID());
-        viewHolder.mContentLinearLayout.setTag(position);
-        viewHolder.mContentLinearLayout.setOnClickListener(mClickListener);
+        holder.iconImg.setImageResource(menuBean.getIconID());
+        holder.nameTv.setText(menuBean.getNameID());
+        holder.itemView.setTag(position);
+        holder.itemView.setOnClickListener(mClickListener);
     }
 
     @Override
