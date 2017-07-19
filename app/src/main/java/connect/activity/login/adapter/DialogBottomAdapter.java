@@ -30,7 +30,7 @@ public class DialogBottomAdapter extends RecyclerView.Adapter<DialogBottomAdapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_wallet_transaction, parent, false);
+        View view = inflater.inflate(R.layout.dialog_bottom_item, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }

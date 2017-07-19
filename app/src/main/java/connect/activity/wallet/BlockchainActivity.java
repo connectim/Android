@@ -13,9 +13,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.wallet.manager.CurrencyType;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 
 /**
@@ -40,7 +40,7 @@ public class BlockchainActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, CurrencyType currencyBean, String type) {
+    public static void startActivity(Activity activity, CurrencyEnum currencyBean, String type) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("Currency", currencyBean);
         bundle.putString("id", type);
@@ -55,7 +55,7 @@ public class BlockchainActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Wallet_Transaction_detail);
         Bundle bundle = getIntent().getExtras();
         String id = bundle.getString("id");
-        CurrencyType currencyBean = (CurrencyType) bundle.getSerializable("Currency");
+        CurrencyEnum currencyBean = (CurrencyEnum) bundle.getSerializable("Currency");
         String url = currencyUrl(currencyBean, id);
 
         webView.loadUrl(url);
@@ -105,7 +105,7 @@ public class BlockchainActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public String currencyUrl(CurrencyType bean, String id) {
+    public String currencyUrl(CurrencyEnum bean, String id) {
         String url = "";
         switch (bean) {
             case BTC:

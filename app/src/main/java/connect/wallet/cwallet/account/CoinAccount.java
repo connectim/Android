@@ -1,8 +1,11 @@
 package connect.wallet.cwallet.account;
 
+import com.google.protobuf.GeneratedMessageV3;
+
 import java.util.List;
 
 import connect.wallet.cwallet.currency.BaseCurrency;
+import connect.wallet.cwallet.inter.WalletListener;
 
 /**
  * Created by Administrator on 2017/7/18.
@@ -28,5 +31,5 @@ public interface CoinAccount {
     /**
      * 转账
      */
-    public void transfer(BaseCurrency baseCurrency, double amount, List<String> fromAddress, List<String> toAddress);
+    public void transfer(String url, GeneratedMessageV3 body, WalletListener listener);
 }

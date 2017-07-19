@@ -8,32 +8,20 @@ import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import java.security.SecureRandom;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.bean.PaySetBean;
-import connect.activity.wallet.bean.WalletBean;
-import connect.activity.wallet.manager.CurrencyManage;
-import connect.activity.wallet.manager.CurrencyType;
-import connect.activity.wallet.manager.PinManager;
-import connect.activity.wallet.manager.WalletManager;
 import connect.database.MemoryDataManager;
-import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.LoginPassCheckUtil;
 import connect.utils.ProtoBufUtil;
-import connect.utils.cryption.EncoPinBean;
-import connect.utils.data.RateFormatUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
@@ -44,7 +32,8 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.jni.AllNativeMethod;
+import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -123,65 +112,25 @@ public class PaymentActivity extends BaseActivity {
     @OnClick(R.id.pas_ll)
     void goSetPassword(View view) {
         // 判断是否创建了钱包，没有创建的话直接返回
-        final WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-        if(walletBean != null){
-            String payload = "";
-            if(!TextUtils.isEmpty(walletBean.getPayload())){
-                payload = walletBean.getPayload();
-            }else{
-                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
-                payload = currencyEntity.getPayload();
-
-            }
-            new PinManager().showCheckPin(mActivity, payload, new PinManager.OnPinListener() {
-                @Override
-                public void success(String value) {
-                    setPayPass(value);
-                }
-            });
-
-        }else{
-            ToastEUtil.makeText(mActivity,"你的钱包改没有创建不能修改密码").show();
-        }
-    }
-
-    private void setPayPass(final String value){
-        new PinManager().showSetNewPin(mActivity, new PinManager.OnPinListener() {
+        NativeWallet.getInstance().checkPin(mActivity,new WalletListener<String>() {
             @Override
-            public void success(String pass) {
-                WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
-                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(value,pass);
-                if(!TextUtils.isEmpty(walletBean.getPayload())){
-                    walletBean.setPayload(encoPinBean.getPayload());
-                    walletBean.setVer(SupportKeyUril.PIN_VERSION);
-                    WalletManager walletManager = new WalletManager(mActivity);
-                    walletManager.updateWalletInfo(walletBean, new WalletManager.OnWalletListener() {
-                        @Override
-                        public void complete() {
-                            ToastEUtil.makeText(mActivity,R.string.Set_Set_success).show();
-                        }
+            public void success(String seed) {
+                NativeWallet.getInstance().setPin(mActivity,seed, new WalletListener<String>() {
+                    @Override
+                    public void success(String o) {
+                        ToastEUtil.makeText(mActivity,R.string.Set_Set_success).show();
+                    }
 
-                        @Override
-                        public void fail(String message) {
-                            ToastEUtil.makeText(mActivity,R.string.Set_Setting_Faied).show();
-                        }
-                    });
-                }else{
-                    CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
-                    currencyEntity.setPayload(encoPinBean.getPayload());
-                    new CurrencyManage().setCurrencyInfo(currencyEntity,new CurrencyManage.OnCurrencyListener(){
-                        @Override
-                        public void success() {
-                            ToastEUtil.makeText(mActivity,R.string.Set_Set_success).show();
-                        }
+                    @Override
+                    public void fail(WalletError error) {
+                        ToastEUtil.makeText(mActivity,R.string.Set_Setting_Faied).show();
+                    }
+                });
+            }
 
-                        @Override
-                        public void fail(String message) {
-                            ToastEUtil.makeText(mActivity,R.string.Set_Setting_Faied).show();
-                        }
-                    });
-                }
-
+            @Override
+            public void fail(WalletError error) {
+                pasLl.setVisibility(View.INVISIBLE);
             }
         });
     }

@@ -1,15 +1,35 @@
 package connect.wallet.cwallet;
 
+import android.app.Activity;
+import android.text.TextUtils;
+import android.widget.Toast;
+
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import connect.activity.base.BaseApplication;
+import connect.activity.wallet.bean.WalletBean;
+import connect.database.SharePreferenceUser;
+import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.bean.CurrencyEntity;
+import connect.utils.StringUtil;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncoPinBean;
+import connect.utils.cryption.SupportKeyUril;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.account.BtcCoinAccount;
 import connect.wallet.cwallet.account.CoinAccount;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.currency.BtcCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
+import connect.wallet.jni.AllNativeMethod;
+import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * 钱包管理工具类
@@ -18,6 +38,9 @@ import connect.wallet.cwallet.inter.WalletListener;
 public class NativeWallet {
 
     private static NativeWallet nativeWallet;
+    private BaseWallet baseWallet;
+    private Map<CurrencyEnum, BaseCurrency> baseCurrencyMap;
+    private Map<CurrencyEnum, CoinAccount> coinAccountMap;
 
     public static NativeWallet getInstance() {
         if (nativeWallet == null) {
@@ -33,21 +56,7 @@ public class NativeWallet {
     public NativeWallet() {
         baseCurrencyMap = new HashMap<>();
         coinAccountMap = new HashMap<>();
-    }
-
-    private BaseWallet baseWallet;
-    private Map<CurrencyEnum, BaseCurrency> baseCurrencyMap;
-    private Map<CurrencyEnum, CoinAccount> coinAccountMap;
-
-    /**
-     * 钱包基本功能
-     * @return
-     */
-    public BaseWallet initBaseWallet(){
-        if(baseWallet==null){
-            baseWallet=new BaseWallet();
-        }
-        return baseWallet;
+        baseWallet = new BaseWallet();
     }
 
     /**
@@ -94,52 +103,237 @@ public class NativeWallet {
         return baseCurrency;
     }
 
-
     /**
-     * 设置密码
+     * 检查密码
+     * @param listener
      */
-    public void setPwd() {
-        BaseWallet baseWallet = initBaseWallet();
-        baseWallet.setPwd();
+    public void checkPin(Activity mActivity, final WalletListener listener){
+        final WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
+        if(walletBean != null){
+            String payload = "";
+            if(!TextUtils.isEmpty(walletBean.getPayload())){
+                payload = walletBean.getPayload();
+            }else{
+                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+                payload = currencyEntity.getPayload();
+            }
+            baseWallet.checkPwd(payload, new WalletListener<String>() {
+                @Override
+                public void success(String seed) {
+                    listener.success(seed);
+                }
+
+                @Override
+                public void fail(WalletError error) {
+                    listener.fail(error);
+                }
+            });
+        }else{
+            listener.fail(WalletListener.WalletError.DBError);
+        }
     }
 
     /**
-     * 校验密码
-     * @param pwd 密码
+     * 显示输入新密码
+     * @param listen
      */
-    public boolean checkPwd(String pwd) {
-        BaseWallet baseWallet = initBaseWallet();
-        return baseWallet.checkPwd(pwd);
+    public void showSetPin(Activity mActivity, final WalletListener listen){
+        baseWallet.showSetNewPin(mActivity,new WalletListener<String>() {
+            @Override
+            public void success(String pin) {
+                listen.success(pin);
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
+            }
+        });
+    }
+
+    /**
+     * 重置支付密码
+     */
+    public void setPin(Activity mActivity,final String seed, final WalletListener listener) {
+        baseWallet.showSetNewPin(mActivity,new WalletListener<String>() {
+            @Override
+            public void success(String pin) {
+                WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(seed,pin);
+                if(!TextUtils.isEmpty(walletBean.getPayload())){
+                    // baseSeed的方式需要同步钱包信息
+                    walletBean.setPayload(encoPinBean.getPayload());
+                    walletBean.setVer(SupportKeyUril.PIN_VERSION);
+                    baseWallet.updateWallet(walletBean, new WalletListener<WalletBean>() {
+                        @Override
+                        public void success(WalletBean bean) {
+                            listener.success(WalletListener.success);
+                        }
+
+                        @Override
+                        public void fail(WalletError error) {
+                            listener.fail(error);
+                        }
+                    });
+                }else{
+                    // priKey加密方式需要同步货币信息
+                    BaseCurrency baseCurrency = initCurrency(CurrencyEnum.BTC);
+                    CurrencyEntity currencyEntity = baseCurrency.getCurrencyData();
+                    currencyEntity.setPayload(encoPinBean.getPayload());
+                    baseCurrency.setCurrencyInfo(currencyEntity, new WalletListener<CurrencyEntity>() {
+                        @Override
+                        public void success(CurrencyEntity entity) {
+                            listener.success(WalletListener.success);
+                        }
+
+                        @Override
+                        public void fail(WalletError error) {
+                            listener.success(error);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
+            }
+        });
+    }
+
+    /**
+     * 同步钱包信息
+     * @param listener
+     */
+    public void syncWalletInfo(final WalletListener listener){
+        baseWallet.syncWallet(new WalletListener<List<WalletOuterClass.Coin>>() {
+            @Override
+            public void success(List<WalletOuterClass.Coin> list) {
+                if(list == null){
+                    //用户没有创建过币种
+                    requestUserStatus(listener);
+                }else{
+                    listener.success(0);
+                }
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
+            }
+        });
+    }
+
+    /**
+     * 检查用户类型（新用户，）
+     * @param listener
+     */
+    private void requestUserStatus(final WalletListener listener){
+        WalletOuterClass.RequestUserInfo requestUserInfo = WalletOuterClass.RequestUserInfo.newBuilder()
+                .setCurrency(CurrencyEnum.BTC.getCode())
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_USER_STATUS, requestUserInfo, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
+                    int category = coinsDetail.getCoin().getCategory();
+                    if(category == 1){
+                        // 用户为老用户需要迁移
+                        listener.success(1);
+                    }else if(category == 2){
+                        // 用户没有钱包数据 ，需要创建（新用户）
+                        listener.success(2);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
      * 创建钱包
-     * @param currencyEnum 钱包类型
      * @param baseseed 种子
      * @param pwd 密码
      */
-    public void createWallet(CurrencyEnum currencyEnum, String baseseed, String pwd, int n) {
-        BaseWallet baseWallet = initBaseWallet();
-        baseWallet.createWallet(currencyEnum, baseseed, pwd, n);
+    public void createWallet(String baseseed, String pwd, final WalletListener listener) {
+        baseWallet.createWallet(baseseed, pwd, new WalletListener<WalletBean>() {
+            @Override
+            public void success(WalletBean walletBean) {
+                listener.success(walletBean);
+            }
+
+            @Override
+            public void fail(WalletError error) {
+                listener.fail(error);
+            }
+        });
     }
 
     /**
      * 更新钱包
      * @param payload 加密种子
-     * @param version 版本号
+     * @param ver 加密版本号
      */
-    public void updateWallet(String payload, String version) {
-        BaseWallet baseWallet = initBaseWallet();
-        baseWallet.updateWallet();
+    public void updateWallet(String payload, int ver) {
+        WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
+        walletBean.setPayload(payload);
+        walletBean.setVer(ver);
+        baseWallet.updateWallet(walletBean, new WalletListener<WalletBean>() {
+            @Override
+            public void success(WalletBean bean) {
+
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
+            }
+        });
     }
 
     /**
-     * 创建币种
+     * 创建币种(priKey\baseSeed\salt+seed)
      * @param currencyEnum
      */
-    public void createCurrency(CurrencyEnum currencyEnum) {
-        BaseCurrency baseCurrency = initCurrency(currencyEnum);
-        baseCurrency.createCurrency();
+    public void createCurrency(CurrencyEnum currencyEnum, int category, String value, String pin, String masterAddress,
+                               final WalletListener listener) {
+        String payload = "";
+        String currencySeend = "";
+        switch (category){
+            case BaseCurrency.CATEGORY_PRIKEY:
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(value,pin);
+                payload = encoPinBean.getPayload();
+                break;
+            case BaseCurrency.CATEGORY_BASESEED:
+                String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
+                currencySeend = SupportKeyUril.xor(value, salt, 64);
+                masterAddress = initCurrency(currencyEnum).ceaterAddress(currencySeend);
+                break;
+            case BaseCurrency.CATEGORY_SALT_SEED:
+                break;
+            default:
+                break;
+        }
+        baseWallet.createCurrency(currencyEnum, payload, currencySeend, category, masterAddress, new WalletListener<CurrencyEntity>() {
+            @Override
+            public void success(CurrencyEntity currencyEntity) {
+                listener.success(currencyEntity);
+            }
+
+            @Override
+            public void fail(WalletError error) {
+                listener.fail(error);
+            }
+        });
     }
 
     /**
@@ -190,6 +384,6 @@ public class NativeWallet {
     public void transfer(CurrencyEnum currencyEnum, double amount, List<String> fromAddress, List<String> toAddress, WalletListener walletListener) {
         CoinAccount coinAccount = initAccount(currencyEnum);
         BaseCurrency baseCurrency = initCurrency(currencyEnum);
-        coinAccount.transfer(baseCurrency, amount, fromAddress, toAddress);
+        //coinAccount.transfer(baseCurrency, amount, fromAddress, toAddress);
     }
 }

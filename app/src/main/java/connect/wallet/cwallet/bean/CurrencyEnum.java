@@ -5,12 +5,15 @@ package connect.wallet.cwallet.bean;
  */
 
 public enum CurrencyEnum {
-    BTC(0),
-    LTC(1);
+    BTC(0);
 
     private int code;
 
     CurrencyEnum(int code) {
         this.code = code;
+    }
+
+    public int getCode(){
+        return code;
     }
 }

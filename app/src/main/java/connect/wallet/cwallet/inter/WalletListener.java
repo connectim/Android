@@ -6,6 +6,8 @@ package connect.wallet.cwallet.inter;
  */
 public interface WalletListener<T> {
 
+    String success = "success";
+
     enum WalletError {
         DBError,//数据异常
         NETError,//网络异常

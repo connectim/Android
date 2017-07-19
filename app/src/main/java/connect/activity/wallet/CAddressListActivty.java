@@ -6,8 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,21 +13,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.wallet.adapter.CAddressAdapter;
-import connect.activity.wallet.manager.CurrencyManage;
-import connect.activity.wallet.manager.CurrencyType;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
-import protos.Connect;
-import wallet_gateway.WalletOuterClass;
 
 /**
  * Sets the default address
@@ -42,7 +32,7 @@ public class CAddressListActivty extends BaseActivity {
     RecyclerView recyclerview;
 
     private CAddressListActivty activity;
-    private CurrencyType currencyBean;
+    private CurrencyEnum currencyBean;
     private CurrencyEntity currencyEntity;
     private List<CurrencyAddressEntity> currencyAddressEntities = new ArrayList<>();
 
@@ -53,7 +43,7 @@ public class CAddressListActivty extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    public static void startActivity(Activity activity, CurrencyType bean) {
+    public static void startActivity(Activity activity, CurrencyEnum bean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("Currency", bean);
         ActivityUtil.next(activity, CAddressListActivty.class, bundle);
@@ -72,7 +62,7 @@ public class CAddressListActivty extends BaseActivity {
             }
         });
 
-        currencyBean = (CurrencyType) getIntent().getSerializableExtra("Currency");
+        currencyBean = (CurrencyEnum) getIntent().getSerializableExtra("Currency");
         currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyBean.getCode());
         currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(currencyBean.getCode());
         currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(0);

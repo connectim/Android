@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,7 +25,6 @@ import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.wallet.BlockchainActivity;
 import connect.activity.wallet.bean.WalletAccountBean;
-import connect.activity.wallet.manager.CurrencyType;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.DaoHelper.TransactionHelper;
@@ -44,6 +42,7 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
@@ -126,7 +125,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
             @Override
             public void itemClick(Connect.CrowdfundingRecord record) {
                 if (record != null) {
-                    BlockchainActivity.startActivity(activity, CurrencyType.BTC, record.getTxid());
+                    BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, record.getTxid());
                 }
             }
         });

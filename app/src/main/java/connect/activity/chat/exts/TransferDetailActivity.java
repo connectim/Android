@@ -15,7 +15,6 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.wallet.BlockchainActivity;
-import connect.activity.wallet.manager.CurrencyType;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
@@ -32,6 +31,7 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
@@ -102,7 +102,7 @@ public class TransferDetailActivity extends BaseActivity {
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.linearlayout:
-                BlockchainActivity.startActivity(activity, CurrencyType.BTC, (String) objects[1]);
+                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, (String) objects[1]);
                 break;
         }
     }
@@ -144,7 +144,7 @@ public class TransferDetailActivity extends BaseActivity {
                             linearlayout.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    BlockchainActivity.startActivity(activity, CurrencyType.BTC, bill.getTxid());
+                                    BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, bill.getTxid());
                                 }
                             });
                             txt3.setText(TimeUtil.getTime(bill.getCreatedAt()*1000,TimeUtil.DEFAULT_DATE_FORMAT));

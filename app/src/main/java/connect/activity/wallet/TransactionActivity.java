@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.wallet.adapter.TransactionAdapter;
-import connect.activity.wallet.manager.CurrencyType;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -25,6 +24,7 @@ import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
@@ -91,7 +91,7 @@ public class TransactionActivity extends BaseActivity {
         ransactionAdapter.setItemClickListener(new TransactionAdapter.OnItemClickListener() {
             @Override
             public void itemClick(Connect.Transaction transaction) {
-                BlockchainActivity.startActivity(mActivity, CurrencyType.BTC, transaction.getHash());
+                BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, transaction.getHash());
             }
         });
         requsetTransaction();

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,27 +25,15 @@ import connect.activity.set.ModifyInfoActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
-import connect.activity.wallet.manager.CurrencyType;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.CurrencyHelper;
-import connect.database.green.bean.CurrencyEntity;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.ProtoBufUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.log.LogManager;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
-import protos.Connect;
-import wallet_gateway.WalletOuterClass;
 
 /**
  * setting

@@ -31,22 +31,26 @@ import connect.activity.wallet.TransferActivity;
 import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.activity.wallet.bean.RateBean;
 import connect.activity.wallet.bean.WalletAccountBean;
-import connect.activity.wallet.manager.CurrencyType;
-import connect.activity.wallet.manager.PinManager;
-import connect.activity.wallet.manager.WalletManager;
+import connect.activity.wallet.bean.WalletBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.currency.BaseCurrency;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
+import connect.widget.random.RandomVoiceActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -67,7 +71,6 @@ public class WalletFragment extends BaseFragment{
 
     private FragmentActivity mActivity;
     private RateBean rateBean;
-    public WalletManager walletManage;
     private CurrencyEntity currencyEntity = null;
 
     public static WalletFragment startFragment() {
@@ -91,18 +94,6 @@ public class WalletFragment extends BaseFragment{
         rateBean = ParamManager.getInstance().getCountryRate();
         if(mActivity != null && isAdded()){
             requestRate();
-            walletManage.checkAccount(new WalletManager.OnWalletListener() {
-                @Override
-                public void complete() {
-                    currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
-                    amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
-                }
-
-                @Override
-                public void fail(String message) {
-
-                }
-            });
         }
     }
 
@@ -121,19 +112,7 @@ public class WalletFragment extends BaseFragment{
         walletMenuAdapter.setOnItemClickListence(onClickListener);
         walletMenuRecycler.setLayoutManager(new GridLayoutManager(mActivity, 3));
         walletMenuRecycler.setAdapter(walletMenuAdapter);
-
-        walletManage = new WalletManager(mActivity);
-        walletManage.checkAccount(new WalletManager.OnWalletListener() {
-            @Override
-            public void complete() {
-
-            }
-
-            @Override
-            public void fail(String message) {
-
-            }
-        });
+        syncWallet();
     }
 
     @OnClick(R.id.right_lin)
@@ -226,24 +205,122 @@ public class WalletFragment extends BaseFragment{
         });
     }
 
-    public void callBaseSeed(Bundle bundle){
-        final String baseSend = bundle.getString("random");
-        final CurrencyType type = (CurrencyType)bundle.getSerializable("type");
-        new PinManager().showSetNewPin(mActivity, new PinManager.OnPinListener() {
+    /**
+     * 同步钱包信息
+     */
+    private void syncWallet(){
+        NativeWallet.getInstance().syncWalletInfo(new WalletListener<Integer>() {
             @Override
-            public void success(String value) {
-                walletManage.createWallet(baseSend,value,type);
+            public void success(Integer status) {
+                switch (status){
+                    case 0:// 有钱包数据
+                        currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+                        amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
+                        break;
+                    case 1:// 用户为老用户需要迁移
+                        NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
+                            @Override
+                            public void success(String pin) {
+                                NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_PRIKEY,
+                                        MemoryDataManager.getInstance().getPriKey(), pin,
+                                        MemoryDataManager.getInstance().getAddress(),
+                                        new WalletListener<CurrencyEntity>() {
+                                            @Override
+                                            public void success(CurrencyEntity currencyEntity) {
+
+                                            }
+
+                                            @Override
+                                            public void fail(WalletError error) {
+
+                                            }
+                                        });
+                            }
+                            @Override
+                            public void fail(WalletError error) {
+
+                            }
+                        });
+
+                        break;
+                    case 2:// 用户没有钱包数据 ，需要创建（新用户）
+                        DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
+                                "你还没有钱包",
+                                "", "立即创建", true, new DialogUtil.OnItemClickListener() {
+                                    @Override
+                                    public void confirm(String value) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("type", CurrencyEnum.BTC);
+                                        RandomVoiceActivity.startActivity(mActivity,bundle);
+                                    }
+
+                                    @Override
+                                    public void cancel() {
+
+                                    }
+                                });
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
             }
         });
+    }
 
-        /*new CurrencyManage().createCurrency(baseSend, type, new CurrencyManage.OnCreateCurrencyListener() {
+    /**
+     * 收集随机数返回
+     * @param bundle
+     */
+    public void callBaseSeed(Bundle bundle){
+        final String baseSend = bundle.getString("random");
+        NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
             @Override
-            public void success(CurrencyEntity currencyEntity) {
+            public void success(String pin) {
+                createWallet(baseSend, pin);
             }
+
             @Override
-            public void fail(String message) {
+            public void fail(WalletError error) {
+
             }
-        });*/
+        });
+    }
+
+    /**
+     * 创建钱包
+     * @param baseSend
+     * @param pin
+     */
+    private void createWallet(final String baseSend, final String pin){
+        NativeWallet.getInstance().createWallet(baseSend, pin, new WalletListener<WalletBean>() {
+            @Override
+            public void success(WalletBean walletBean) {
+
+                NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_BASESEED, baseSend, pin, "",
+                        new WalletListener<CurrencyEntity>() {
+                    @Override
+                    public void success(CurrencyEntity currencyEntity) {
+
+                    }
+
+                    @Override
+                    public void fail(WalletError error) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
+            }
+        });
     }
 
 

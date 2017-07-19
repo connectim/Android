@@ -21,12 +21,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.set.manager.EditInputFilterPrice;
-import connect.activity.wallet.manager.CurrencyType;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.ToastEUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 
@@ -60,7 +60,7 @@ public class RequestActivity extends BaseActivity {
     public String scanHead;
     public String shareUrl = ConfigUtil.getInstance().sharePayAddress() + "?address=";
 
-    private CurrencyType currencyBean = CurrencyType.BTC;
+    private CurrencyEnum currencyBean = CurrencyEnum.BTC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +164,7 @@ public class RequestActivity extends BaseActivity {
         }
     };
 
-    public String transferHeader(CurrencyType bean) {
+    public String transferHeader(CurrencyEnum bean) {
         String index = "bitcoin:";
         switch (bean) {
             case BTC:

@@ -3,16 +3,14 @@ package wallet_gateway;
 
 message RequestWalletInfo {
 string payload = 1;
-int32 pbkdf2_iterations = 2;
-string check_sum = 3;
+string check_sum = 2;
+int32 ver = 3;
 int32 version = 4;
-int32 ver = 5;
 }
 
 message RespSyncWallet {
-Wallet wallet = 1;
-int32 status = 2;
-repeated Coin coins = 3;
+    Wallet wallet = 1;
+    repeated Coin coins = 2;
 }
 
 message Wallet {
@@ -55,11 +53,12 @@ repeated CoinInfo coinInfos = 2;
 }
 
 message CoinInfo {
-int32 index = 1;
-string address = 2;
-string label = 3;
-int64 balance = 4;
-int32 status = 5;
+    int32 index = 1;
+    int32 status = 2;
+    string address = 3;
+    string label = 4;
+    int64 balance = 5;
+    int64 amount = 6;
 }
 
 message CreateCoinAccount {
@@ -82,16 +81,6 @@ int64 amount = 2;
 message SpentCurrency {
 int32 currency = 1;
 Txin txin = 2;
-}
-
-message LuckyPackageRequest {
-SpentCurrency spent_currency = 1;
-string reciver_identifier = 2; //group id or user pubkey(address)
-int32 package_type = 3;// privte group outer
-int32 size = 4;
-int64 amount = 5;
-int64 fee = 6;
-string tips = 7;
 }
 
 message URLTransferRequest {
@@ -132,24 +121,25 @@ int32 pay_type = 2;
 string hash_id = 3;
 }
 
+message OriginalTransaction {
+    string rawhex = 1;
+    string vts = 2;
+    string transaction_id = 3;
+    repeated string addresses = 4;
+    int64 fee = 5;
+}
+
 message OriginalTransactionResponse {
 int32 code = 1;
 OriginalTransaction data = 2;
 string message = 3;
 }
 
-message OriginalTransaction {
-string hash_id = 1;
-string rawhex = 2;
-string vts = 3;
-int64 fee = 4;
-repeated string addresses = 5;
-}
-
 message PublishTransaction {
 int32 transaction_type = 1;
 string hash_id = 2;
 string tx_hex = 3;
+int32 currency = 4;
 }
 
 message TransactionFlowingRequest {
@@ -173,11 +163,47 @@ message TransactionFlowings {
 repeated TransactionFlowing transaction_history = 2;
 }
 
-message DefaultAddress {
-    int32 currency = 1;
-    string address =2;
+message RequestUserInfo {
+    string uid = 1;
+    int32  currency = 2;
 }
 
-message ListDefaultAddress {
-    repeated DefaultAddress defaultAddresses = 1;
+message ReceiveRequest {
+    string sender = 1;
+    uint64 amount = 2;
+    string tips = 3;
+    int32 currency = 4;
+}
+message Payment {
+    SpentCurrency spent_currency = 1;
+    int32 pay_type = 2;
+    string hash_id = 3;
+    int64 fee = 4;
+}
+message OutTransfer {
+    SpentCurrency spent_currency = 1;
+    int64 amount = 2;
+    int64 fee = 3;
+    string tips = 4;
+}
+message CrowdfundingRequest {
+    string currency = 1;
+    string group_identifier = 2;
+    int64 amount = 3;
+    int32 size = 4;
+    string tips = 5;
+}
+message ResponsePublish {
+    string txid = 1;
+}
+
+message LuckyPackageRequest {
+    SpentCurrency spent_currency = 1;
+    string receiver_identifier = 2; //group id or user pubkey(address)
+    int32 typ = 3; // privte group outer
+    int32 category = 5;
+    int32 size = 4;
+    int64 amount = 6;
+    int64 fee = 7;
+    string tips = 8;
 }

@@ -103,6 +103,7 @@ public class CurrencyHelper extends BaseDao{
             }
             currencyEntity.setSalt(coin.getSalt());
             currencyEntity.setBalance(coin.getBalance());
+            currencyEntity.setAmount(coin.getAmount());
             currencyEntity.setCurrency(coin.getCurrency());
             currencyEntity.setCategory(coin.getCategory());
             currencyEntity.setPayload(coin.getPayload());
@@ -149,6 +150,7 @@ public class CurrencyHelper extends BaseDao{
             addressEntity.setLabel(coinInfo.getLabel());
             addressEntity.setStatus(coinInfo.getStatus());
             addressEntity.setBalance(coinInfo.getBalance());
+            addressEntity.setAmount(coinInfo.getAmount());
             addressEntity.setCurrency(currencyCode);
             insertCurrencyAddress(addressEntity);
         }

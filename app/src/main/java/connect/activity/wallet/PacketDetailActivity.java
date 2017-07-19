@@ -17,12 +17,12 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.wallet.adapter.RedDerailAdapter;
 import connect.activity.wallet.contract.PacketDetailContract;
-import connect.activity.wallet.manager.CurrencyType;
 import connect.activity.wallet.presenter.PacketDetailPresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
@@ -167,7 +167,7 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
             public void itemClick(Connect.GradRedPackageHistroy histroy) {
                 String txId = redPackageInfo.getRedpackage().getTxid();
                 if (!TextUtils.isEmpty(txId)) {
-                    BlockchainActivity.startActivity(mActivity, CurrencyType.BTC, txId);
+                    BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, txId);
                 }
             }
         });

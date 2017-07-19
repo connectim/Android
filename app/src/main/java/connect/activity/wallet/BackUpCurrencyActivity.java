@@ -16,7 +16,6 @@ import connect.activity.login.bean.UserBean;
 import connect.activity.set.contract.BackUpContract;
 import connect.activity.set.presenter.BackUpPresenter;
 import connect.activity.wallet.bean.WalletBean;
-import connect.activity.wallet.manager.CurrencyType;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
@@ -24,6 +23,7 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 
@@ -45,7 +45,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
     private UserBean userBean;
     private Bitmap bitmap;
 
-    private CurrencyType currencyBean;
+    private CurrencyEnum currencyBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         initView();
     }
 
-    public static void startActivity(Activity activity, CurrencyType currencyBean) {
+    public static void startActivity(Activity activity, CurrencyEnum currencyBean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("Currency", currencyBean);
         ActivityUtil.next(activity, BackUpCurrencyActivity.class, bundle);
@@ -70,7 +70,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         toolbarTop.setRightImg(R.mipmap.menu_white);
         userBean = SharedPreferenceUtil.getInstance().getUser();
 
-        currencyBean= (CurrencyType) getIntent().getSerializableExtra("Currency");
+        currencyBean= (CurrencyEnum) getIntent().getSerializableExtra("Currency");
         new BackUpPresenter(this).start();
         switchPriKey(1);
     }
@@ -143,7 +143,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         }
     }
 
-    public String currencyName(CurrencyType bean) {
+    public String currencyName(CurrencyEnum bean) {
         String name = "";
         switch (bean) {
             case BTC:

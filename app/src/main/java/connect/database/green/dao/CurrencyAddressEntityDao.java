@@ -29,8 +29,9 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
         public final static Property Address = new Property(2, String.class, "address", false, "ADDRESS");
         public final static Property Index = new Property(3, Integer.class, "index", false, "INDEX");
         public final static Property Balance = new Property(4, Long.class, "balance", false, "BALANCE");
-        public final static Property Status = new Property(5, Integer.class, "status", false, "STATUS");
-        public final static Property Label = new Property(6, String.class, "label", false, "LABEL");
+        public final static Property Amount = new Property(5, Long.class, "amount", false, "AMOUNT");
+        public final static Property Status = new Property(6, Integer.class, "status", false, "STATUS");
+        public final static Property Label = new Property(7, String.class, "label", false, "LABEL");
     }
 
 
@@ -51,8 +52,9 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
                 "\"ADDRESS\" TEXT NOT NULL UNIQUE ," + // 2: address
                 "\"INDEX\" INTEGER," + // 3: index
                 "\"BALANCE\" INTEGER," + // 4: balance
-                "\"STATUS\" INTEGER," + // 5: status
-                "\"LABEL\" TEXT);"); // 6: label
+                "\"AMOUNT\" INTEGER," + // 5: amount
+                "\"STATUS\" INTEGER," + // 6: status
+                "\"LABEL\" TEXT);"); // 7: label
     }
 
     /** Drops the underlying database table. */
@@ -82,14 +84,19 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
             stmt.bindLong(5, balance);
         }
  
+        Long amount = entity.getAmount();
+        if (amount != null) {
+            stmt.bindLong(6, amount);
+        }
+ 
         Integer status = entity.getStatus();
         if (status != null) {
-            stmt.bindLong(6, status);
+            stmt.bindLong(7, status);
         }
  
         String label = entity.getLabel();
         if (label != null) {
-            stmt.bindString(7, label);
+            stmt.bindString(8, label);
         }
     }
 
@@ -114,14 +121,19 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
             stmt.bindLong(5, balance);
         }
  
+        Long amount = entity.getAmount();
+        if (amount != null) {
+            stmt.bindLong(6, amount);
+        }
+ 
         Integer status = entity.getStatus();
         if (status != null) {
-            stmt.bindLong(6, status);
+            stmt.bindLong(7, status);
         }
  
         String label = entity.getLabel();
         if (label != null) {
-            stmt.bindString(7, label);
+            stmt.bindString(8, label);
         }
     }
 
@@ -138,8 +150,9 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
             cursor.getString(offset + 2), // address
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // index
             cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // balance
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // status
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // label
+            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // amount
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // status
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // label
         );
         return entity;
     }
@@ -151,8 +164,9 @@ public class CurrencyAddressEntityDao extends AbstractDao<CurrencyAddressEntity,
         entity.setAddress(cursor.getString(offset + 2));
         entity.setIndex(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setBalance(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setStatus(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setLabel(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setAmount(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
+        entity.setStatus(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setLabel(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     @Override

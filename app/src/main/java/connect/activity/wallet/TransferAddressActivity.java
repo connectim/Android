@@ -10,43 +10,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.wallet.manager.CurrencyType;
-import connect.activity.wallet.manager.TransferManager;
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.CurrencyHelper;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.CurrencyAddressEntity;
-import connect.database.green.bean.CurrencyEntity;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.set.PayFeeActivity;
 import connect.activity.wallet.bean.TransferBean;
-import connect.utils.ProtoBufUtil;
-import connect.utils.transfer.TransferError;
-import connect.utils.transfer.TransferUtil;
-import connect.activity.base.BaseActivity;
-import connect.activity.base.BaseApplication;
+import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyEntity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.data.RateFormatUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
-import connect.widget.MdStyleProgress;
-import connect.widget.TopToolBar;
-import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
-import connect.widget.payment.PinTransferDialog;
-import protos.Connect;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.inter.WalletListener;
+import connect.widget.TopToolBar;
 import wallet_gateway.WalletOuterClass;
 
 /**
@@ -66,7 +49,7 @@ public class TransferAddressActivity extends BaseActivity {
 
     private TransferAddressActivity mActivity;
     private final int BOOK_CODE = 100;
-    private TransferManager transferManager;
+    private BaseBusiness baseBusiness;
 
     public static void startActivity(Activity activity, String address) {
         startActivity(activity,address,null);
@@ -112,7 +95,7 @@ public class TransferAddressActivity extends BaseActivity {
         addressTv.addTextChangedListener(textWatcher);
         transferEditView.setEditListener(onEditListener);
 
-        transferManager = new TransferManager(CurrencyType.BTC);
+        baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
         addressTv.setText("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew");
     }
 
@@ -129,7 +112,7 @@ public class TransferAddressActivity extends BaseActivity {
     @OnClick(R.id.ok_btn)
     void goTransferOut(View view) {
         String address = addressTv.getText().toString().trim();
-        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyType.BTC.getCode());
+        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
         if(TextUtils.isEmpty(address) || !SupportKeyUril.checkAddress(address)){
             ToastEUtil.makeText(mActivity,R.string.Wallet_Result_is_not_a_bitcoin_address,ToastEUtil.TOAST_STATUS_FAILE).show();
             return;
@@ -144,11 +127,16 @@ public class TransferAddressActivity extends BaseActivity {
         builderTxout.setAmount(transferEditView.getCurrentBtcLong());
         txoutList.add(builderTxout.build());
 
-        transferManager.getTransferRow(mActivity, null, txoutList, new TransferManager.OnResultCall() {
+        baseBusiness.transferAddress(null, txoutList, new WalletListener<String>() {
             @Override
-            public void result(String value) {
+            public void success(String value) {
                 // 存储最近10条转账记录
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
             }
         });
     }
