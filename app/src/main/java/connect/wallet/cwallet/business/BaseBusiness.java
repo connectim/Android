@@ -19,6 +19,7 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
+import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -545,7 +546,7 @@ public class BaseBusiness {
             public void onTrue(String decodeStr) {
                 if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY){
                     // 纯私钥
-                    String priKey = decodeStr;
+                    String priKey = new String(StringUtil.hexStringToBytes(decodeStr));
                     priList.add(priKey);
                 }else if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_SALT_SEED){
                     // 导入第三方种子

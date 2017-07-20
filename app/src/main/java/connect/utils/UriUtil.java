@@ -75,8 +75,6 @@ public class UriUtil {
     /**======================================================================================
      *                                wallet
      * ====================================================================================== */
-    /** Check account balances */
-    public static String BLOCKCHAIN_UNSPENT_INFO = "/blockchain/v1/unspent/%s/info";
     /** Query the address all of the transactions */
     public static String BLOCKCHAIN_ADDRESS_TX = "/blockchain/v1/address/%s/tx?page=%d&pagesize=%d";
     /** Fundamental information for sending a red envelope */

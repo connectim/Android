@@ -187,9 +187,7 @@ public class WalletFragment extends BaseFragment{
                                         });
                             }
                             @Override
-                            public void fail(WalletError error) {
-
-                            }
+                            public void fail(WalletError error) {}
                         });
 
                         break;

@@ -310,7 +310,8 @@ public class NativeWallet {
         String currencySeend = "";
         switch (category){
             case BaseCurrency.CATEGORY_PRIKEY:
-                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(value,pin);
+                String valueHex = StringUtil.bytesToHexString(value.getBytes());
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(valueHex,pin);
                 payload = encoPinBean.getPayload();
                 break;
             case BaseCurrency.CATEGORY_BASESEED:
