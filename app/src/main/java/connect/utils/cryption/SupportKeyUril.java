@@ -217,6 +217,12 @@ public class SupportKeyUril {
         encoPinBean.setPayload(payload);
         encoPinBean.setVersion(PIN_VERSION);
         encoPinBean.setN(n);
+        /**
+         * L58QekqQYviQVx1uLxm6rj5Lpwr6i9meP8HF5rPcMZvrbjkYwsU1
+         * 1234
+         * 17
+         * error wallet lenght
+         */
         return encoPinBean;
     }
 

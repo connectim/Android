@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -26,10 +27,14 @@ import connect.activity.wallet.bean.FriendSeleBean;
 import connect.activity.wallet.bean.TranAddressBean;
 import connect.activity.wallet.contract.TransferFriendContract;
 import connect.activity.wallet.presenter.TransferFriendPresenter;
+import connect.utils.ToastEUtil;
 import connect.utils.transfer.TransferUtil;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
@@ -61,6 +66,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
     private final int BACK_DEL_CODE = 103;
     private PaymentPwd paymentPwd;
     private String pubGroup;
+    private BaseBusiness baseBusiness;
 
     public static void startActivity(Activity activity, List<ContactEntity> list,String pubGroup) {
         Bundle bundle = new Bundle();
@@ -108,6 +114,8 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
 
         transaUtil = new TransferUtil();
         paymentPwd = new PaymentPwd();
+
+        baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
     }
 
     @Override
@@ -158,18 +166,21 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
 
     @OnClick(R.id.ok_btn)
     void goTransferOut(View view) {
-        final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        ArrayList arrayList = new ArrayList<TranAddressBean>();
+        HashMap<String,Long> outMap = new HashMap<String,Long>();
         for (ContactEntity friendEntity : presenter.getListFriend()) {
-            arrayList.add(new TranAddressBean(friendEntity.getAddress(), amount));
+            outMap.put(friendEntity.getAddress(),transferEditView.getCurrentBtcLong());
         }
-        transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), false, arrayList,
-                transferEditView.getAvaAmount(), amount, new TransferUtil.OnResultCall() {
-                    @Override
-                    public void result(String inputString, String outputString) {
-                        checkPayPassword(amount, inputString, outputString);
-                    }
-                });
+        baseBusiness.transferConnectUser(null, outMap, new WalletListener<String>() {
+            @Override
+            public void success(String value) {
+                ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
+            }
+
+            @Override
+            public void fail(WalletError error) {
+                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
+            }
+        });
     }
 
     private void checkPayPassword(final long amount, final String inputString, final String outputString) {

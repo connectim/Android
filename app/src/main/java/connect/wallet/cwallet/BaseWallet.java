@@ -50,7 +50,7 @@ public class BaseWallet {
     private void setPin(final Activity mActivity, final WalletListener listener) {
         Integer title;
         if (TextUtils.isEmpty(payPass)) {
-            title = R.string.Set_please_enter_the_original_password;
+            title = R.string.Wallet_Enter_your_PIN;
         } else {
             title = R.string.Wallet_Confirm_PIN;
         }
@@ -78,8 +78,8 @@ public class BaseWallet {
     /**
      * 校验密码
      */
-    public void checkPwd(final String payload, final WalletListener listener) {
-        DialogUtil.showPayEditView(BaseApplication.getInstance(), R.string.Set_Enter_Login_Password, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
+    public void checkPwd(Activity activity,final String payload, final WalletListener listener) {
+        DialogUtil.showPayEditView(activity, R.string.Set_Enter_Login_Password, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(String value) {
                 String baseSeed = SupportKeyUril.decodePinDefult(payload, value);

@@ -117,7 +117,7 @@ public class NativeWallet {
                 CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
                 payload = currencyEntity.getPayload();
             }
-            baseWallet.checkPwd(payload, new WalletListener<String>() {
+            baseWallet.checkPwd(mActivity,payload, new WalletListener<String>() {
                 @Override
                 public void success(String seed) {
                     listener.success(seed);

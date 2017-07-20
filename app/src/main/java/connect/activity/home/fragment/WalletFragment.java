@@ -155,55 +155,6 @@ public class WalletFragment extends BaseFragment{
         }
     }
 
-    private void requestRate() {
-        if(rateBean == null || TextUtils.isEmpty(rateBean.getUrl()))
-            return;
-        HttpRequest.getInstance().get(rateBean.getUrl(), new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String data = response.body().string();
-                Type type = new TypeToken<RateBean>() {}.getType();
-                RateBean rate = new Gson().fromJson(data, type);
-                rateBean.setRate(rate.getRate());
-                rateBean.setDatetime(rate.getDatetime());
-                ParamManager.getInstance().putCountryRate(rateBean);
-
-                requestWallet();
-            }
-        });
-    }
-
-    private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
-        OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
-            @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                try {
-                    if (response.getCode() == 2000) {
-                        Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
-                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                            ParamManager.getInstance().putWalletAmount(accountBean);
-                            amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(accountBean.getAmount()));
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-
-            }
-        });
-    }
-
     /**
      * 同步钱包信息
      */
@@ -272,6 +223,29 @@ public class WalletFragment extends BaseFragment{
     }
 
     /**
+     * 请求汇率
+     */
+    private void requestRate() {
+        if(rateBean == null || TextUtils.isEmpty(rateBean.getUrl()))
+            return;
+        HttpRequest.getInstance().get(rateBean.getUrl(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String data = response.body().string();
+                Type type = new TypeToken<RateBean>() {}.getType();
+                RateBean rate = new Gson().fromJson(data, type);
+                rateBean.setRate(rate.getRate());
+                rateBean.setDatetime(rate.getDatetime());
+                ParamManager.getInstance().putCountryRate(rateBean);
+            }
+        });
+    }
+
+    /**
      * 收集随机数返回
      * @param bundle
      */
@@ -284,9 +258,7 @@ public class WalletFragment extends BaseFragment{
             }
 
             @Override
-            public void fail(WalletError error) {
-
-            }
+            public void fail(WalletError error) {}
         });
     }
 
@@ -299,7 +271,6 @@ public class WalletFragment extends BaseFragment{
         NativeWallet.getInstance().createWallet(baseSend, pin, new WalletListener<WalletBean>() {
             @Override
             public void success(WalletBean walletBean) {
-
                 NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_BASESEED, baseSend, pin, "",
                         new WalletListener<CurrencyEntity>() {
                     @Override
@@ -308,17 +279,12 @@ public class WalletFragment extends BaseFragment{
                     }
 
                     @Override
-                    public void fail(WalletError error) {
-
-                    }
+                    public void fail(WalletError error) {}
                 });
-
             }
 
             @Override
-            public void fail(WalletError error) {
-
-            }
+            public void fail(WalletError error) {}
         });
     }
 

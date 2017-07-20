@@ -141,7 +141,7 @@ public class TransferAddressActivity extends BaseActivity {
 
             @Override
             public void fail(WalletError error) {
-
+                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
             }
         });
     }

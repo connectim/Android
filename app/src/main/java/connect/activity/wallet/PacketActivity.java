@@ -19,6 +19,13 @@ import connect.activity.set.PayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
 import connect.activity.wallet.contract.PacketContract;
 import connect.activity.wallet.presenter.PacketPresenter;
+import connect.utils.ProtoBufUtil;
+import connect.utils.ToastEUtil;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import connect.utils.transfer.TransferUtil;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
@@ -29,6 +36,7 @@ import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
+import protos.Connect;
 
 /**
  * lucky packet
@@ -47,8 +55,6 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
 
     private PacketActivity mActivity;
     private PacketContract.Presenter presenter;
-    private TransferUtil transaUtil;
-    private PaymentPwd paymentPwd;
     private final String defilet_num = "1";
     private BaseBusiness baseBusiness;
 
@@ -85,10 +91,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
         packetNumberEt.addTextChangedListener(presenter.getNumberWatcher());
         transferEditView.setNote(getString(R.string.Wallet_Best_wishes));
         transferEditView.setEditListener(presenter.getEditListener());
-        transaUtil = new TransferUtil();
-
         presenter.start();
-
         baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
     }
 
@@ -114,31 +117,19 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
 
     @OnClick(R.id.pay)
     void finish(View view) {
-        baseBusiness.luckyPacket(null, "030f6816ce8634c2899820500797388025a667848f732c9f4f53b4bfe60a4846c4", 1, 0,
-                Integer.valueOf(packetNumberEt.getText().toString()), transferEditView.getCurrentBtcLong(), "", new WalletListener<String>() {
+        baseBusiness.luckyPacket(null, "", 1, 0, Integer.valueOf(packetNumberEt.getText().toString()),
+                transferEditView.getCurrentBtcLong(), transferEditView.getNote(), new WalletListener<String>() {
             @Override
-            public void success(String value) {
-
+            public void success(String hashId) {
+                presenter.getPacketDetail(hashId);
+                ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
             }
 
             @Override
             public void fail(WalletError error) {
-
+                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
             }
         });
-
-
-        /*final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        if(null == presenter.getPendingPackage())
-            return;
-        transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), true,
-                presenter.getPendingPackage().getAddress(), transferEditView.getAvaAmount(),amount,
-                new TransferUtil.OnResultCall(){
-            @Override
-            public void result(String inputString, String outputString) {
-                checkPayPassword(amount, inputString, outputString);
-            }
-        });*/
     }
 
     @Override
@@ -162,21 +153,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
     }
 
     @Override
-    public void goinPacketSend(SendOutBean sendOutBean) {
+    public void goPacketView(SendOutBean sendOutBean) {
         PacketSendActivity.startActivity(mActivity, sendOutBean);
     }
-
-    private void checkPayPassword(final long amount, final String inputString, final String outputString) {
-        if (!TextUtils.isEmpty(outputString)) {
-            paymentPwd = new PaymentPwd();
-            paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
-                @Override
-                public void onTrue(String value) {
-                    String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
-                    presenter.sendPacket(amount, samValue,transferEditView.getNote(),paymentPwd);
-                }
-            });
-        }
-    }
-
 }

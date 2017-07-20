@@ -104,6 +104,7 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((LoaderHolder) holder).nameTv.setText(contactBean.getName());
                 ((LoaderHolder) holder).phoneTv.setText(contactBean.getPhone());
                 ((LoaderHolder) holder).itemView.setOnClickListener(itemListener);
+                ((LoaderHolder) holder).itemView.setTag(R.id.position_key,position);
             }
         }
     }
@@ -164,7 +165,7 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private View.OnClickListener itemListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int position = (int)v.getTag(R.id.position_key);
+            int position = (Integer) v.getTag(R.id.position_key);
             PhoneContactBean bean = mDataList.get(position);
             View secview = v.findViewById(R.id.select);
             if (selectList.contains(bean)) {
