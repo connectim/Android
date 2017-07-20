@@ -94,7 +94,7 @@ public class BaseBusiness {
     }
 
     /**
-     * Connect用户转账
+     * 地址转账
      * @param outMap
      * @param listener
      */
@@ -328,7 +328,6 @@ public class BaseBusiness {
     /**
      * 红包
      * @param listAddress
-     * @param outMap
      * @param receiverIdentifier // group id or user pubkey(address)
      * @param type // private group outer //0：内部 1：外部
      * @param category //0：个人 1：群主
@@ -337,7 +336,7 @@ public class BaseBusiness {
      * @param tips
      * @param listener
      */
-    public void luckyPacket(ArrayList<String> listAddress, HashMap<String,Long> outMap, String receiverIdentifier,int type, int category,
+    public void luckyPacket(ArrayList<String> listAddress, String receiverIdentifier,int type, int category,
                             int size, long amount, String tips,WalletListener listener){
         WalletOuterClass.LuckyPackageRequest.Builder builder = WalletOuterClass.LuckyPackageRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
@@ -417,6 +416,7 @@ public class BaseBusiness {
             @Override
             public void onError(Connect.HttpResponse response) {
                 listener.fail(WalletListener.WalletError.NETError);
+                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
             }
         });
     }
