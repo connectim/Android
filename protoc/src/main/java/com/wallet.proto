@@ -9,15 +9,15 @@ int32 version = 4;
 }
 
 message RespSyncWallet {
-    Wallet wallet = 1;
-    repeated Coin coins = 2;
+Wallet wallet = 1;
+repeated Coin coins = 2;
 }
 
 message Wallet {
-    string pay_load = 1;
-    int32 version = 2;
-    int32 ver = 3;
-    string check_sum = 4;
+string pay_load = 1;
+int32 version = 2;
+int32 ver = 3;
+string check_sum = 4;
 }
 
 message Balance {
@@ -26,21 +26,21 @@ int64 pending = 2;
 }
 
 message CreateCoinRequest {
-    int32 currency = 1;
-    string master_address = 2;
-    string payload = 3;
-    int32 category = 4;
-    string salt = 5;
+int32 currency = 1;
+string master_address = 2;
+string payload = 3;
+int32 category = 4;
+string salt = 5;
 }
 
 message Coin {
-    int32 status = 1;
-    int32 currency = 2;
-    int32 category = 3;
-    string salt = 4;
-    int64 balance = 5;
-    string payload = 6;
-    int64 amount = 7;
+int32 status = 1;
+int32 currency = 2;
+int32 category = 3;
+string salt = 4;
+int64 balance = 5;
+string payload = 6;
+int64 amount = 7;
 }
 
 message Coins {
@@ -53,12 +53,12 @@ repeated CoinInfo coinInfos = 2;
 }
 
 message CoinInfo {
-    int32 index = 1;
-    int32 status = 2;
-    string address = 3;
-    string label = 4;
-    int64 balance = 5;
-    int64 amount = 6;
+int32 index = 1;
+int32 status = 2;
+string address = 3;
+string label = 4;
+int64 balance = 5;
+int64 amount = 6;
 }
 
 message CreateCoinAccount {
@@ -83,10 +83,22 @@ int32 currency = 1;
 Txin txin = 2;
 }
 
-message URLTransferRequest {
+message LuckyPackageRequest {
+SpentCurrency spent_currency = 1;
+string receiver_identifier = 2; //group id or user pubkey(address)
+int32 typ = 3; // privte group outer
+int32 category = 5;
+int32 size = 4;
+int64 amount = 6;
+int64 fee = 7;
+string tips = 8;
+}
+
+message OutTransfer {
 SpentCurrency spent_currency = 1;
 int64 amount = 2;
 int64 fee = 3;
+string tips = 4;
 }
 
 message TransferRequest {
@@ -96,61 +108,52 @@ int64 fee = 3;
 string tips = 4;
 }
 
-message ConnectTxout {
-    string uid = 1;
-    int64 amount = 2;
-}
-
-message ConnectTransferRequest {
-    SpentCurrency spent_currency = 1;
-    repeated ConnectTxout tx_out = 2;
-    int64 fee = 3;
-    string tips = 4;
-}
-
-message CrowdfuningRequest {
-string currency = 1;
+message CrowdfundingRequest {
+int32 currency = 1;
 string group_identifier = 2;
-int64 per_amount = 3;
+int64 amount = 3;
 int32 size = 4;
 string tips = 5;
 }
 
-message ReceiptRequest {
-string currency = 1;
-string payer = 2; // who need pay this receipt
-int64 amount = 3;
+message ConnectTxout {
+string uid = 1;
+int64 amount = 2;
+}
+
+message ConnectTransferRequest {
+SpentCurrency spent_currency = 1;
+repeated ConnectTxout tx_out = 2;
+int64 fee = 3;
 string tips = 4;
+}
+
+message ReceiveRequest {
+string sender = 1;
+uint64 amount = 2;
+string tips = 3;
+int32 currency = 4;
+}
+
+message Payment {
+SpentCurrency spent_currency = 1;
+int32 pay_type = 2;
+string hash_id = 3;
+int64 fee = 4;
 }
 
 message HashIdResp {
 string hash_id = 1;
 }
 
-message Pay {
-SpentCurrency spent_currency = 1;
-int32 pay_type = 2;
-string hash_id = 3;
-}
-
-imessage OriginalTransaction {
-    string hash_id = 1;
-    string rawhex = 2;
-    string vts = 3;
-    int64 fee = 4;
-    repeated string addresses = 5;
-    int64 estimate_fee = 6;
-    int64 odd_change = 7;
-}
-
 message OriginalTransaction {
-    string hash_id = 1;
-    string rawhex = 2;
-    string vts = 3;
-    int64 fee = 4;
-    repeated string addresses = 5;
-    int64 estimate_fee = 6;
-    int64 odd_change = 7;
+string hash_id = 1;
+string rawhex = 2;
+string vts = 3;
+int64 fee = 4;
+repeated string addresses = 5;
+int64 estimate_fee = 6;
+int64 odd_change = 7;
 }
 
 message OriginalTransactionResponse {
@@ -166,117 +169,21 @@ string tx_hex = 3;
 int32 currency = 4;
 }
 
-message TransactionFlowingRequest {
+message ResponsePublish {
+string txid = 1;
+}
+message GetTx {
 int32 currency = 1;
-int32 page = 2;
-int32 size = 3;
+string address = 2;
+Pagination page = 3;
 }
 
-message TransactionFlowing {
-int64 time = 1;
-string username = 2;
-string address = 3;
-string avatar = 4;
-int64 amount = 5;
-string txid = 6;
-int32 status =7; // confirm unconfirm
-int32 category = 8; // transfer luckypackage
-}
-
-message TransactionFlowings {
-repeated TransactionFlowing transaction_history = 2;
+message Pagination {
+int32 page = 1;
+int32 size = 2;
 }
 
 message RequestUserInfo {
-    string uid = 1;
-    int32  currency = 2;
-}
-
-message ReceiveRequest {
-    string sender = 1;
-    uint64 amount = 2;
-    string tips = 3;
-    int32 currency = 4;
-}
-message Payment {
-    SpentCurrency spent_currency = 1;
-    int32 pay_type = 2;
-    string hash_id = 3;
-    int64 fee = 4;
-}
-message OutTransfer {
-    SpentCurrency spent_currency = 1;
-    int64 amount = 2;
-    int64 fee = 3;
-    string tips = 4;
-}
-message CrowdfundingRequest {
-    int32 currency = 1;
-    string group_identifier = 2;
-    int64 amount = 3;
-    int32 size = 4;
-    string tips = 5;
-}
-message ResponsePublish {
-    string txid = 1;
-}
-
-message LuckyPackageRequest {
-    SpentCurrency spent_currency = 1;
-    string receiver_identifier = 2; //group id or user pubkey(address)
-    int32 typ = 3; // privte group outer
-    int32 category = 5;
-    int32 size = 4;
-    int64 amount = 6;
-    int64 fee = 7;
-    string tips = 8;
-}
-
-message Pagination {  
-    int32 page = 1;
-    int32 size = 2;
-}
-
-message GetTx {  
-    int32 currency = 1;
-    string address = 2;
-    Pagination page = 3;
-}
-
-message Transactions {  
-    repeated Transaction transactions = 1;
-}
-
-message Transaction {  
-    string hash = 1 ; //TXID
-    uint64 block_height = 2; //块高度
-    uint64 created_at = 3; //交易发生时间
-    uint64 fee = 4; //手续费
-    uint64 inputs_value = 5; //
-    string category = 6; //交易类型
-    int64 balance = 7; // 交易金额
-    repeated UserInfoBalance userInfos = 8;
-    repeated Input inputs = 9; // 总输入
-    repeated Output outputs = 10; //总输出
-    uint64 confirmations = 11; //确认数
-    int32 tx_type = 12; //交易类型红包,转账...
-}
-
-message UserInfoBalance {
-string username = 1;
-string avatar = 2;
-string pub_key = 3;
-string address = 4;
-uint64 balance = 5;
-string type = 6;
-}
-
-message Input {
-repeated string prev_addresses=1;
-uint64 prev_value=2 ;
-}
-
-message Output {
-repeated string addresses=1;
-uint64 value=2;
+string uid = 1;
+int32  currency = 2;
 }

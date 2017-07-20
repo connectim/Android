@@ -47,7 +47,16 @@ string latitude = 2;
 string address = 3;
 }
 
+message Pagination {  
+    int32 page = 1;
+    int32 size = 2;
+}
 
+message GetTx {  
+    int32 currency = 1;
+    string address = 2;
+    Pagination page = 3;
+}
 
 message SystemRedpackgeNotice {
 UserInfo receiver = 1;
@@ -1186,4 +1195,3 @@ message ChatCookie {
     string sign = 1;
     ChatCookieData data = 2;
 }
-
