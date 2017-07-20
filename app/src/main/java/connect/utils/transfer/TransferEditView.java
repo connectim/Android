@@ -168,8 +168,9 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         }else{
             feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
         }
+        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
         requestRate();
-        requestWallet();
     }
 
     @Override
@@ -311,7 +312,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     /**
      * Get the wallet balance
      */
-    private void requestWallet(){
+    /*private void requestWallet(){
         String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
         accountBean = new WalletAccountBean(0L,0L);
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
@@ -337,7 +338,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                         RateFormatUtil.longToDoubleBtc(0)));
             }
         });
-    }
+    }*/
 
     /**
      * Gets the current input bitcoin
@@ -356,9 +357,9 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
      * available balance
      * @return
      */
-    public Long getAvaAmount(){
+    /*public Long getAvaAmount(){
         return null == accountBean.getAvaAmount() ? 0 : accountBean.getAvaAmount();
-    }
+    }*/
 
     /**
      * Hide it when you don't need to display the available amount

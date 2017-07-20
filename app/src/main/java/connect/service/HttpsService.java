@@ -143,7 +143,6 @@ public class HttpsService extends Service {
             HttpsService.sendPrivateSet();
         }
 
-        HttpsService.sendWalletAmount();
         HttpsService.sendEstimatefee();
 
         if (ParamHelper.getInstance().loadParamEntity(ParamManager.COUNTRY_RATE) == null) {
@@ -183,9 +182,6 @@ public class HttpsService extends Service {
                 break;
             case BlackList://black list
                 requestBlackList();
-                break;
-            case WalletAccount://wallet account
-                requestWallet();
                 break;
             case Estimate://fee
                 requestEstimatefee();
@@ -236,10 +232,6 @@ public class HttpsService extends Service {
 
     public static void sendPrivateSet() {
         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PrivateSet, "");
-    }
-
-    public static void sendWalletAmount() {
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.WalletAccount, "");
     }
 
     public static void sendBlackList() {
@@ -586,32 +578,6 @@ public class HttpsService extends Service {
 
                     }
                 });
-    }
-
-    private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
-        OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
-            @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                try {
-                    if (response.getCode() == 2000) {
-                        Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
-                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                            ParamManager.getInstance().putWalletAmount(accountBean);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-                WalletAccountBean accountBean = new WalletAccountBean(0L, 0L);
-                ParamManager.getInstance().putWalletAmount(accountBean);
-            }
-        });
     }
 
     public void requestEstimatefee() {

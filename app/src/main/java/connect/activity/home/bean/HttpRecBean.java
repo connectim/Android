@@ -15,7 +15,6 @@ public class HttpRecBean implements Serializable {
         GroupInfo,//group information
         PaySet,//pay setting
         PrivateSet,//private setting
-        WalletAccount,//wallet account
         BlackList,//black list
         Estimate,//fee
         UpLoadBackUp,//upload backup

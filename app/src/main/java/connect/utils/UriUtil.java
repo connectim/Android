@@ -75,8 +75,6 @@ public class UriUtil {
     /**======================================================================================
      *                                wallet
      * ====================================================================================== */
-    /** Check account balances */
-    public static String BLOCKCHAIN_UNSPENT_INFO = "/blockchain/v1/unspent/%s/info";
     /** Query the address all of the transactions */
     public static String BLOCKCHAIN_ADDRESS_TX = "/blockchain/v1/address/%s/tx?page=%d&pagesize=%d";
     /** Fundamental information for sending a red envelope */
@@ -159,7 +157,7 @@ public class UriUtil {
     public static String WALLET_V2_SERVICE_TRANSFER_ADDRESS= "/wallet/v2/service/transfer_to_address";
     /*req:PublishTransaction  resp:ResponsePublish*/
     /** 获取地址交易流水 */
-    public static String WALLET_V2_COINS_ADDRESSES_TX= "/wallet/v2/coins/addresses/tx";
+    public static String WALLET_V2_COINS_ADDRESSES_TX = "/wallet/v2/coins/addresses/tx";
 
 
     /**======================================================================================

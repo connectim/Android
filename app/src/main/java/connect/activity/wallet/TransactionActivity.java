@@ -22,12 +22,14 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * transaction
@@ -103,12 +105,22 @@ public class TransactionActivity extends BaseActivity {
     }
 
     public void requsetTransaction() {
-        String url = String.format(Locale.ENGLISH, UriUtil.BLOCKCHAIN_ADDRESS_TX, MemoryDataManager.getInstance().getAddress(), page, PAGESIZE_MAX);
-        OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
+        WalletOuterClass.Pagination pagination = WalletOuterClass.Pagination.newBuilder()
+                .setPage(page)
+                .setSize(PAGESIZE_MAX).build();
+
+        WalletOuterClass.GetTx getTx = WalletOuterClass.GetTx.newBuilder()
+                .setCurrency(0)
+                .setAddress(MemoryDataManager.getInstance().getAddress())
+                .setPage(pagination).build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESSES_TX, getTx, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.Transactions transactions = Connect.Transactions.parseFrom(response.getBody());
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.Transactions transactions = Connect.Transactions.parseFrom(structData.getPlainData());
+
                     List<Connect.Transaction> list = transactions.getTransactionsList();
                     ArrayList<Connect.Transaction> listChecks = new ArrayList<>();
                     for (Connect.Transaction transaction : list) {

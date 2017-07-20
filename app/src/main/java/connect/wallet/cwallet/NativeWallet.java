@@ -117,7 +117,7 @@ public class NativeWallet {
                 CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
                 payload = currencyEntity.getPayload();
             }
-            baseWallet.checkPwd(payload, new WalletListener<String>() {
+            baseWallet.checkPwd(mActivity,payload, new WalletListener<String>() {
                 @Override
                 public void success(String seed) {
                     listener.success(seed);
@@ -310,7 +310,8 @@ public class NativeWallet {
         String currencySeend = "";
         switch (category){
             case BaseCurrency.CATEGORY_PRIKEY:
-                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(value,pin);
+                String valueHex = StringUtil.bytesToHexString(value.getBytes());
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(valueHex,pin);
                 payload = encoPinBean.getPayload();
                 break;
             case BaseCurrency.CATEGORY_BASESEED:

@@ -27,7 +27,7 @@ public interface PacketContract {
 
         void setPayFee();
 
-        void goinPacketSend(SendOutBean sendOutBean);
+        void goPacketView(SendOutBean sendOutBean);
     }
 
     interface Presenter extends BasePresenter {
@@ -35,9 +35,7 @@ public interface PacketContract {
 
         TransferEditView.OnEditListener getEditListener();
 
-        void sendPacket(long amount, String siginRaw, String note, PaymentPwd paymentPwd);
-
-        Connect.PendingRedPackage getPendingPackage();
+        void getPacketDetail(String hashId);
     }
 
 }

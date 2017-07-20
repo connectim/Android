@@ -228,7 +228,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
      * Get the wallet balance
      */
     private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
+        /*String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
@@ -251,7 +251,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
                 txt6.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
                         RateFormatUtil.longToDoubleBtc(0)));
             }
-        });
+        });*/
     }
 
     @OnClick({R.id.btn})

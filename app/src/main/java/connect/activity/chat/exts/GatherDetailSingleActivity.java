@@ -213,7 +213,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
     }
 
     private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
+        /*String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
         OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
@@ -236,7 +236,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
                 txt4.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
                         RateFormatUtil.longToDoubleBtc(0)));
             }
-        });
+        });*/
     }
 
     protected void requestPayment() {

@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.security.SecureRandom;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -25,7 +27,6 @@ import connect.activity.set.ModifyInfoActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
@@ -33,10 +34,8 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.StringUtil;
-import connect.utils.cryption.EncoPinBean;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
-import connect.utils.log.LogManager;
+import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 
@@ -144,7 +143,9 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.llAbout)
     void intoAbout(View view) {
-        AboutActivity.startActivity(mActivity);
+        // AboutActivity.startActivity(mActivity);
+        String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
+        String payload = AllNativeMethod.connectWalletKeyEncrypt(salt,"1234",17,1);
     }
 
     @OnClick(R.id.log_out_tv)

@@ -174,8 +174,9 @@ public class HttpRequest {
     public void post(String url, byte[] content, final ResultCall resultCall) {
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE_DEFAULT, content);
         String test = getAbsoluteUrl(url);
+
         Request request = new Request.Builder()
-                .url(test)
+                .url(getAbsoluteUrl(url))
                 .post(requestBody)
                 .build();
 

@@ -205,14 +205,14 @@ public class RedPacketActivity extends BaseActivity {
 
     private void checkWalletMoney() {
         final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), true,
+        /*new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), true,
                 pendingRedPackage.getAddress(),transferEditView.getAvaAmount(), amount,
                 new TransferUtil.OnResultCall() {
             @Override
             public void result(String inputString, String outputString) {
                 checkPayPassword(amount, inputString, outputString);
             }
-        });
+        });*/
     }
 
     private void checkPayPassword(final long amount, final String inputString, final String outputString) {

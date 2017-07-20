@@ -19,6 +19,7 @@ import connect.activity.set.PayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
 import connect.activity.wallet.bean.TransferBean;
 import connect.utils.ProtoBufUtil;
+import connect.utils.ToastEUtil;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.activity.base.BaseActivity;
@@ -28,6 +29,10 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.BaseWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
@@ -51,6 +56,7 @@ public class TransferOutViaActivity extends BaseActivity {
     private Connect.PendingRedPackage pendingRedPackage;
     private TransferUtil transaUtil;
     private PaymentPwd paymentPwd;
+    private BaseBusiness baseBusiness;
 
     public static void startActivity(Activity activity) {
         ActivityUtil.next(activity, TransferOutViaActivity.class);
@@ -81,6 +87,8 @@ public class TransferOutViaActivity extends BaseActivity {
         getPaddingInfo();
         transaUtil = new TransferUtil();
         paymentPwd = new PaymentPwd();
+
+        baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
     }
 
     @OnClick(R.id.left_img)
@@ -95,7 +103,19 @@ public class TransferOutViaActivity extends BaseActivity {
 
     @OnClick(R.id.ok_btn)
     void goTransferOut(View view) {
-        final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
+        baseBusiness.outerTransfer(null, transferEditView.getCurrentBtcLong(), new WalletListener<String>() {
+            @Override
+            public void success(String value) {
+                ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
+            }
+
+            @Override
+            public void fail(WalletError error) {
+                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
+            }
+        });
+
+        /*final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
         if(null == pendingRedPackage){
             return;
         }
@@ -105,7 +125,7 @@ public class TransferOutViaActivity extends BaseActivity {
             public void result(String inputString, String outputString) {
                 checkPayPassword(amount, inputString, outputString);
             }
-        });
+        });*/
     }
 
     private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
