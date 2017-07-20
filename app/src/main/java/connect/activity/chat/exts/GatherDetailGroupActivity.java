@@ -26,7 +26,6 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.wallet.BlockchainActivity;
 import connect.activity.wallet.bean.WalletAccountBean;
 import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -40,14 +39,14 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.utils.transfer.TransferError;
-import connect.utils.transfer.TransferUtil;
 import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.widget.MdStyleProgress;
+import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Created by gtq on 2016/12/21.
@@ -85,6 +84,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
     private PaymentPwd paymentPwd;
 
     private String msgId;
+    private String hashid;
     private Connect.Crowdfunding crowdfunding = null;
 
     @Override
@@ -130,7 +130,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
             }
         });
 
-        String hashid = getIntent().getStringExtra(GATHER_HASHID);
+        hashid = getIntent().getStringExtra(GATHER_HASHID);
         msgId = getIntent().getStringExtra(GATHER_MSGID);
         requestGatherDetail(hashid);
     }
@@ -264,82 +264,31 @@ public class GatherDetailGroupActivity extends BaseActivity {
     }
 
     protected void requestGatherPayment() {
-        final long amount = crowdfunding.getTotal() / crowdfunding.getSize();
-        WalletAccountBean accountBean = ParamManager.getInstance().getWalletAmount();
-        new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), false,
-                crowdfunding.getSender().getAddress(), accountBean.getAvaAmount(), amount,
-                new TransferUtil.OnResultCall() {
-                    @Override
-                    public void result(String inputString, String outputString) {
-                        checkPayPassword(inputString, outputString);
-                    }
-                });
-    }
-
-    private void checkPayPassword(final String inputString, final String outputString) {
-        if (!TextUtils.isEmpty(outputString)) {
-            paymentPwd = new PaymentPwd();
-            paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
-                @Override
-                public void onTrue(String value) {
-                    String samValue = new TransferUtil().getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
-                    groupMemPayment(samValue);
-                }
-            });
-        }
-    }
-
-    /**
-     * payment
-     *
-     * @param rawtx
-     */
-    public void groupMemPayment(String rawtx) {
-        Connect.PayCrowdfunding funding = Connect.PayCrowdfunding.newBuilder()
-                .setAmount(crowdfunding.getTotal() / crowdfunding.getSize())
-                .setRawTx(rawtx)
-                .setHashId(crowdfunding.getHashId()).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CROWDFUN_PAY, funding, new ResultCall<Connect.HttpResponse>() {
+        BaseBusiness baseBusiness = new BaseBusiness(activity);
+        baseBusiness.typePayment(hashid, 2, new WalletListener<WalletOuterClass.OriginalTransactionResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess);
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
+            public void success(WalletOuterClass.OriginalTransactionResponse response) {
+                String contactName = crowdfunding.getSender().getUsername();
+                String noticeContent = getString(R.string.Chat_paid_the_crowd_founding_to, activity.getString(R.string.Chat_You), contactName);
+                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.NOTICE, noticeContent);
+
+                String hashid = crowdfunding.getHashId();
+                int paycount = (int) (crowdfunding.getSize() - crowdfunding.getRemainSize());
+                int crowdcount = (int) crowdfunding.getSize();
+                TransactionHelper.getInstance().updateTransEntity(hashid, msgId, paycount, crowdcount);
+
+                ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.GATHER_DETAIL, msgId, 1, paycount, crowdcount);
+                ToastEUtil.makeText(activity, activity.getString(R.string.Wallet_Payment_Successful), 1, new ToastEUtil.OnToastListener() {
+                    @Override
+                    public void animFinish() {
+                        ActivityUtil.goBack(activity);
                     }
-
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.Crowdfunding crowdfunding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
-                    if (!ProtoBufUtil.getInstance().checkProtoBuf(crowdfunding)) {
-                        return;
-                    }
-
-                    String contactName = crowdfunding.getSender().getUsername();
-                    String noticeContent = getString(R.string.Chat_paid_the_crowd_founding_to, activity.getString(R.string.Chat_You), contactName);
-                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.NOTICE, noticeContent);
-
-                    String hashid = crowdfunding.getHashId();
-                    int paycount = (int) (crowdfunding.getSize() - crowdfunding.getRemainSize());
-                    int crowdcount = (int) crowdfunding.getSize();
-                    TransactionHelper.getInstance().updateTransEntity(hashid, msgId, paycount, crowdcount);
-
-                    ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.GATHER_DETAIL, msgId, 1, paycount, crowdcount);
-                    ToastEUtil.makeText(activity, activity.getString(R.string.Wallet_Payment_Successful), 1, new ToastEUtil.OnToastListener() {
-                        @Override
-                        public void animFinish() {
-                            ActivityUtil.goBack(activity);
-                        }
-                    }).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                }).show();
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                TransferError.getInstance().showError(response.getCode(), response.getMessage());
+            public void fail(WalletError error) {
+
             }
         });
     }
