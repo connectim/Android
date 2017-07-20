@@ -2,21 +2,25 @@ package connect.utils;
 
 import org.junit.Test;
 
-import protos.Connect;
-
-import static org.junit.Assert.*;
+import connect.utils.log.LogManager;
+import wallet_gateway.WalletOuterClass;
 
 /**
+ *
  * Created by Administrator on 2017/7/10.
  */
 public class ProtoBufUtilTest {
 
+    private String Tag = "_ProtoBufUtilTest";
+
     @Test
     public void checkProtoBufTest() throws Exception {
-        Connect.VersionResponse response=Connect.VersionResponse.newBuilder()
-                .setVersion("1")
-                .setUpgradeUrl("123").build();
+        WalletOuterClass.OriginalTransactionResponse response = WalletOuterClass.OriginalTransactionResponse.newBuilder()
+                .setCode(120)
+                .setMessage("123456").build();
 
-        assertTrue(ProtoBufUtil.getInstance().checkProtoBuf(response));
+        if (ProtoBufUtil.getInstance().checkProtoBuf(response)) {
+            LogManager.getLogger().d(Tag, "checkProtoBufTest: true");
+        }
     }
 }

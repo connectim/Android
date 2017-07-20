@@ -219,3 +219,8 @@ message LuckyPackageRequest {
     int64 fee = 7;
     string tips = 8;
 }
+
+message Pagination {  
+    int32 page = 1;
+    int32 size = 2;
+}

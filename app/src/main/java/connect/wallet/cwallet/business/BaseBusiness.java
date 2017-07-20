@@ -211,10 +211,9 @@ public class BaseBusiness {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData());
-//                    if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
-//                        listener.success(bill);
-//                    }
-                    listener.success(bill);
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
+                        listener.success(bill);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

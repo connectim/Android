@@ -27,7 +27,8 @@ public class LineDecoration extends RecyclerView.ItemDecoration {
         final int left = parent.getPaddingLeft();
         final int right = parent.getWidth() - parent.getPaddingRight();
 
-        final int childCount = parent.getChildCount();
+        // The last entry does not set divider padding
+        final int childCount = parent.getChildCount() - 1;
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
@@ -41,6 +42,13 @@ public class LineDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.set(0, 0, 0, mDrawable.getIntrinsicHeight());
+        int childAdapterPosition = parent.getChildAdapterPosition(view);
+        int lastCount = parent.getAdapter().getItemCount() - 1;
+        // The current entry is the last entry, and the divider padding is not set
+        if (childAdapterPosition == lastCount) {
+            outRect.set(0, 0, 0, 0);
+        } else {
+            outRect.set(0, 0, 0, mDrawable.getIntrinsicHeight());
+        }
     }
 }

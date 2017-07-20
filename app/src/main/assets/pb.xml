@@ -79,7 +79,6 @@
 
     <Bill>
         <attr name='hash' type='string'></attr>
-        <attr name='receiver' type='string'></attr>
     </Bill>
 
     <FriendRecords>
@@ -427,7 +426,4 @@
     <RedPackageInfos>
         <attr name='redPackageInfos' type='list'></attr>
     </RedPackageInfos>
-
-    <Bill>
-    </Bill>
 </PBRule>

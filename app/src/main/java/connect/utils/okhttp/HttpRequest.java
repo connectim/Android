@@ -173,13 +173,7 @@ public class HttpRequest {
      */
     public void post(String url, byte[] content, final ResultCall resultCall) {
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE_DEFAULT, content);
-        String test = "";
-        if(url.contains("wallet/v2")){
-            test = "http://192.168.40.110:18083" + url;
-        }else{
-            test = getAbsoluteUrl(url);
-        }
-
+        String test = getAbsoluteUrl(url);
         Request request = new Request.Builder()
                 .url(test)
                 .post(requestBody)

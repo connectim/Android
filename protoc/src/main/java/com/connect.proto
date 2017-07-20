@@ -1187,3 +1187,8 @@ message ChatCookie {
     ChatCookieData data = 2;
 }
 
+message Pagination {  
+    int32 page = 1;
+    int32 size = 2;
+}
+

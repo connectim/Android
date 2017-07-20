@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import connect.activity.home.view.LineDecoration;
 import connect.activity.login.adapter.DialogBottomAdapter;
 import connect.ui.activity.R;
 import connect.utils.system.SystemDataUtil;
@@ -295,6 +296,7 @@ public class DialogUtil {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new LineDecoration(mContext));
         DialogBottomAdapter dialogBottomAdapter = new DialogBottomAdapter(list);
         recyclerView.setAdapter(dialogBottomAdapter);
         dialogBottomAdapter.setItemClickListener(new DialogBottomAdapter.OnItemClickListener() {

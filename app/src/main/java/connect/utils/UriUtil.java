@@ -158,6 +158,8 @@ public class UriUtil {
     /** 转账到地址 */
     public static String WALLET_V2_SERVICE_TRANSFER_ADDRESS= "/wallet/v2/service/transfer_to_address";
     /*req:PublishTransaction  resp:ResponsePublish*/
+    /** 获取地址交易流水 */
+    public static String WALLET_V2_COINS_ADDRESSES_TX= "/wallet/v2/coins/addresses/tx";
 
 
     /**======================================================================================
