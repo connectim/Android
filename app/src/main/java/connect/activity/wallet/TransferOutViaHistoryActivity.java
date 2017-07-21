@@ -83,6 +83,12 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
                 requestHostory();
             }
         });
+        transferOutAdapter.setItemClickListener(new TransferOutAdapter.OnItemClickListener() {
+            @Override
+            public void itemClick(Connect.ExternalBillingInfo billingInfo) {
+
+            }
+        });
 
         requestHostory();
     }

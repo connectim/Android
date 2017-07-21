@@ -20,28 +20,23 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.ui.activity.R;
+import connect.activity.base.BaseApplication;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.manager.EditInputFilterPrice;
 import connect.activity.wallet.bean.RateBean;
-import connect.activity.wallet.bean.WalletAccountBean;
-import connect.activity.base.BaseApplication;
+import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyEntity;
+import connect.ui.activity.R;
 import connect.utils.DialogUtil;
-import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
-import connect.utils.UriUtil;
 import connect.utils.data.RateDataUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import protos.Connect;
 
 /**
  * Transfer amount input
@@ -85,7 +80,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     private boolean isClickTransfer;
     private String note = "";
     private PaySetBean paySetBean;
-    private WalletAccountBean accountBean;
     private CurrencyEnum currencyEnum = CurrencyEnum.BTC;
 
     public TransferEditView(Context context) {
@@ -168,8 +162,15 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         }else{
             feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
         }
-        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
+
+        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
+        if(currencyEntity != null){
+            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                    RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance())));
+        }else{
+            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                    RateFormatUtil.longToDoubleBtc(0L)));
+        }
         requestRate();
     }
 

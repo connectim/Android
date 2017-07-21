@@ -20,6 +20,7 @@ import connect.activity.wallet.bean.SendOutBean;
 import connect.activity.wallet.bean.TransferBean;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.activity.base.BaseActivity;
@@ -84,7 +85,6 @@ public class TransferOutViaActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Wallet_Transfer);
         toolbarTop.setRightText(R.string.Chat_History);
         transferEditView.setEditListener(onEditListener);
-        getPaddingInfo();
         transaUtil = new TransferUtil();
         paymentPwd = new PaymentPwd();
 
@@ -106,7 +106,7 @@ public class TransferOutViaActivity extends BaseActivity {
         baseBusiness.outerTransfer(null, transferEditView.getCurrentBtcLong(), new WalletListener<String>() {
             @Override
             public void success(String value) {
-                ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
+                requestTransferDetail(value);
             }
 
             @Override
@@ -114,18 +114,6 @@ public class TransferOutViaActivity extends BaseActivity {
                 ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
             }
         });
-
-        /*final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        if(null == pendingRedPackage){
-            return;
-        }
-        transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), true, pendingRedPackage.getAddress(),
-                transferEditView.getAvaAmount(),amount, new TransferUtil.OnResultCall(){
-            @Override
-            public void result(String inputString, String outputString) {
-                checkPayPassword(amount, inputString, outputString);
-            }
-        });*/
     }
 
     private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
@@ -145,88 +133,36 @@ public class TransferOutViaActivity extends BaseActivity {
         }
     };
 
-    private void checkPayPassword(final long amount, final String inputString, final String outputString) {
-        if (!TextUtils.isEmpty(outputString)) {
-            paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
-                @Override
-                public void onTrue(String value) {
-                    String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
-                    sendExternal(amount, samValue);
-                }
-            });
-        }
-    }
-
-    private void sendExternal(final long amount, String rawStr) {
-        Connect.OrdinaryBilling.Builder builder = Connect.OrdinaryBilling.newBuilder();
-        builder.setMoney(amount);
-        builder.setRawTx(rawStr);
-        builder.setHashId(pendingRedPackage.getHashId());
-        if (!TextUtils.isEmpty(transferEditView.getNote())) {
-            builder.setHashId(transferEditView.getNote());
-        }
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_BILLING_EXTERNAL_SEND, builder.build(),
-                new ResultCall<Connect.HttpResponse>() {
+    private void requestTransferDetail(String hashId){
+        Connect.BillHashId billHashId = Connect.BillHashId.newBuilder().setHash(hashId).build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.TRANSFER_OUTER, billHashId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData());
-
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)){
-                        final SendOutBean sendOutBean = new SendOutBean();
-                        sendOutBean.setType(PacketSendActivity.OUT_VIA);
-                        sendOutBean.setUrl(billingInfo.getUrl());
-                        sendOutBean.setDeadline(billingInfo.getDeadline());
-                        sendOutBean.setHashId(billingInfo.getHash());
-
-                        ParamManager.getInstance().putLatelyTransfer(new TransferBean(2,
-                                getResources().getString(R.string.Wallet_Transfer)));
-                        paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
-                            @Override
-                            public void onComplete() {
-                                PacketSendActivity.startActivity(mActivity, sendOutBean);
-                                finish();
-                            }
-                        });
+                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
+                        throw new Exception("Validation fails");
                     }
-                } catch (InvalidProtocolBufferException e) {
-                    paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    final Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData().toByteArray());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)){
+                        return;
+                    }
+                    SendOutBean sendOutBean = new SendOutBean();
+                    sendOutBean.setType(PacketSendActivity.OUT_VIA);
+                    sendOutBean.setUrl(billingInfo.getUrl());
+                    sendOutBean.setDeadline(billingInfo.getDeadline());
+                    PacketSendActivity.startActivity(mActivity,sendOutBean);
+                }catch (Exception e){
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                TransferError.getInstance().showError(response.getCode(),response.getMessage());
+
             }
         });
-    }
-
-    private void getPaddingInfo() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_EXTERNAL_PENDING, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
-                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
-                                pendingRedPackage = pending;
-                            }
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
-                });
     }
 
 }

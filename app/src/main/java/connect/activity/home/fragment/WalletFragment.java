@@ -30,7 +30,6 @@ import connect.activity.wallet.TransactionActivity;
 import connect.activity.wallet.TransferActivity;
 import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.activity.wallet.bean.RateBean;
-import connect.activity.wallet.bean.WalletAccountBean;
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
@@ -39,12 +38,8 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.ProtoBufUtil;
-import connect.utils.UriUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.currency.BaseCurrency;
@@ -54,7 +49,6 @@ import connect.widget.random.RandomVoiceActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import protos.Connect;
 
 /**
  * wallet
