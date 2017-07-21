@@ -111,7 +111,7 @@ public class TransactionActivity extends BaseActivity {
 
         WalletOuterClass.GetTx getTx = WalletOuterClass.GetTx.newBuilder()
                 .setCurrency(0)
-                .setAddress(MemoryDataManager.getInstance().getAddress())
+                //.setAddress(MemoryDataManager.getInstance().getAddress())
                 .setPage(pagination).build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESSES_TX, getTx, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
