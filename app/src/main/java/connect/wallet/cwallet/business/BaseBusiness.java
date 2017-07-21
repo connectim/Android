@@ -67,6 +67,11 @@ public class BaseBusiness {
         this.currencyEnum = currencyEnum;
     }
 
+    /**
+     * 组装输入Txin
+     * @param listAddress
+     * @return
+     */
     private WalletOuterClass.Txin getTxin(ArrayList<String> listAddress){
         if(listAddress != null && listAddress.size() > 0){
             WalletOuterClass.Txin.Builder txin = WalletOuterClass.Txin.newBuilder();
@@ -78,6 +83,11 @@ public class BaseBusiness {
         return null;
     }
 
+    /**
+     * 组装输出Txouts
+     * @param outMap
+     * @return
+     */
     private ArrayList<WalletOuterClass.Txout> getTxOut(HashMap<String,Long> outMap){
         ArrayList<WalletOuterClass.Txout> list = new ArrayList<>();
         for (HashMap.Entry<String, Long> entry : outMap.entrySet()) {
@@ -91,6 +101,10 @@ public class BaseBusiness {
         return list;
     }
 
+    /**
+     * 获取手续费
+     * @return
+     */
     private Long getFee(){
         Long fee = 0L;
         PaySetBean paySetBean = ParamManager.getInstance().getPaySet();
@@ -132,7 +146,8 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
+                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
+                connectDialog.dismiss();
             }
         });
     }
@@ -173,7 +188,8 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
+                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
+                connectDialog.dismiss();
             }
         });
     }
@@ -224,6 +240,7 @@ public class BaseBusiness {
      *             TransactionTypeURLTransfer = 6
      */
     public void typePayment(String hash,int type, final WalletListener listener) {
+        connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.Payment payment = WalletOuterClass.Payment.newBuilder()
                 .setHashId(hash)
                 .setFee(0L)
@@ -232,41 +249,13 @@ public class BaseBusiness {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_PAYMENT, payment, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    //check sign
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
-                    }
-
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    WalletOuterClass.OriginalTransactionResponse originalTransactionResponse = WalletOuterClass.OriginalTransactionResponse.parseFrom(structData.getPlainData());
-//                    if (ProtoBufUtil.getInstance().checkProtoBuf(originalTransactionResponse)) {
-//                        listener.success(originalTransactionResponse);
-//                    }
-                    listener.success(originalTransactionResponse.getData());
-
-                    WalletOuterClass.OriginalTransaction originalTransaction = originalTransactionResponse.getData();
-                    publishTransfer(originalTransaction.getRawhex(), originalTransaction.getHashId(), new WalletListener() {
-                        @Override
-                        public void success(Object o) {
-
-                        }
-
-                        @Override
-                        public void fail(WalletError error) {
-
-                        }
-                    });
-                    //todo 广播
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                dealTransferResult(mActivity, response, listener);
             }
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                Toast.makeText(BaseApplication.getInstance().getAppContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
+                connectDialog.dismiss();
             }
         });
     }
@@ -351,7 +340,8 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
+                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
+                connectDialog.dismiss();
             }
         });
     }
@@ -383,6 +373,7 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
+                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
                 connectDialog.dismiss();
             }
         });
@@ -524,6 +515,7 @@ public class BaseBusiness {
         }else{
             decodePayload(activity, addressList, walletListener);
         }
+        connectDialog.dismiss();
     }
 
     /**
@@ -533,7 +525,6 @@ public class BaseBusiness {
      * @param listener
      */
     private void decodePayload(Activity activity, final ArrayList<String> addressList,final WalletListener listener){
-        connectDialog.dismiss();
         String payload = "";
         final ArrayList<Integer> indexList = new ArrayList<>();
         /*for(String address : addressList){
