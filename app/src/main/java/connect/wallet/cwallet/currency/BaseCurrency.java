@@ -67,5 +67,15 @@ public abstract class BaseCurrency {
      */
     public abstract String getSignRawTrans(ArrayList<String> priList, String tvs, String rowhex);
 
+    /**
+     * 货币转换成对应Long型
+     */
+    public abstract long doubleToLongCurrency(double value);
+
+    /**
+     * Long型转换成对应货币
+     */
+    public abstract String longToDoubleCurrency(long value);
+
 }
 

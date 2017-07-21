@@ -1,4 +1,7 @@
 <resources>
+    <string name="Link_Friend">好友</string>
+    <string name="Wallet_Transfer_details">转账详情</string>
+    <string name="Wallet_Confirm_transfer">确认转账</string>
     <string name="Chat">聊天</string>
     <string name="Chat_Agree">同意</string>
     <string name="Chat_Album_Permission_Get">缺少读取系统相册的权限，请点击 "设置" - "权限" 授予应用权限</string>

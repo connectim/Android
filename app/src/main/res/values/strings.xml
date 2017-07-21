@@ -54,6 +54,9 @@
     <string name="Chat_Crowd_funding">Crowd-funding</string>
     <string name="Chat_Crowd_funding_by_who">By %s</string>
     <string name="Chat_Crowdfoundind_History">History</string>
+    <string name="Link_Friend">Friend</string>
+    <string name="Wallet_Confirm_transfer">Confirm transfer</string>
+    <string name="Wallet_Transfer_details">Transfer details</string>
     <string name="Chat_Crowdfunding">Crowdfunding</string>
     <string name="Chat_Crowfunding">Create</string>
     <string name="Chat_Disable_self_destruct">Disable self-destruct</string>

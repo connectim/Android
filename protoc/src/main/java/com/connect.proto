@@ -47,12 +47,12 @@ string latitude = 2;
 string address = 3;
 }
 
-message Pagination {
+message Pagination {  
     int32 page = 1;
     int32 size = 2;
 }
 
-message GetTx {
+message GetTx {  
     int32 currency = 1;
     string address = 2;
     Pagination page = 3;
@@ -903,23 +903,25 @@ int32 type = 8;
 }
 
 message RedPackage {
-string hash_id=1;
-string send_address=2;
-int32 category=3;
-int32 size=4;
-int64 money=5;
-string tips=6;
-string send_tx=7;
-int32 status=8;
-string txid=9;
-int64 remain_size=10;
-bool  refund=11;
-bool expired =12;
-string url = 13;
-int64 deadline = 14;
-int32 typ = 15;
-int64 created_at=16;
-bool  system = 17;
+    string hash_id = 1;
+    string send_address = 2;
+    int32 category = 3;
+    int32 size = 4;
+    int64 money = 5;
+    string tips = 6;
+    string send_tx = 7;
+    int32 status = 8;
+    string txid = 9;
+    int64 remain_size = 10;
+    bool refund = 11;
+    bool expired = 12;
+    string url = 13;
+    int64 deadline = 14;
+    int32 typ = 15;
+    int64 created_at = 16;
+    bool system = 17;
+    bool pause = 18;
+    int32 currency = 19;
 }
 
 message RedPackageInfo {
@@ -1067,22 +1069,23 @@ int32 pageIndex = 2;
 
 
 message ExternalBillingInfo {
-string hash = 1;
-string sender = 2;
-string receiver = 3;
-uint64 amount = 4;
-string txid = 5;
-int32 status = 6;
-string tips = 7;
-bool received = 8;
-bool publish = 9;
-bool refund = 10;
-bool expired = 11;
-int64 created_at = 12;
-string url = 13;
-UserInfo receiverInfo = 14;
-int64 deadline = 15;
-bool cancelled = 16;
+    string hash = 1;
+    string sender = 2;
+    string receiver = 3;
+    uint64 amount = 4;
+    string txid = 5;
+    int32 status = 6;
+    string tips = 7;
+    bool received = 8;
+    bool publish = 9;
+    bool refund = 10;
+    bool expired = 11;
+    int64 created_at = 12;
+    string url = 13;
+    UserInfo receiverInfo = 14;
+    int64 deadline = 15;
+    bool cancelled = 16;
+    int32 currency = 17;
 }
 
 

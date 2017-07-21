@@ -131,8 +131,7 @@ public class TransferAddressActivity extends BaseActivity {
         txoutList.add(builderTxout.build());
 
         HashMap<String,Long> outMap = new HashMap<String,Long>();
-        outMap.put("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew",transferEditView.getCurrentBtcLong());
-        // outMap.put("030f6816ce8634c2899820500797388025a667848f732c9f4f53b4bfe60a4846c4",transferEditView.getCurrentBtcLong());
+        outMap.put(address,transferEditView.getCurrentBtcLong());
         baseBusiness.transferAddress(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {

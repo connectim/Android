@@ -33,7 +33,9 @@ import connect.utils.RegularUtil;
 import connect.utils.data.RateDataUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
+import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.inter.WalletListener;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -162,15 +164,9 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         }else{
             feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
         }
-
-        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
-        if(currencyEntity != null){
-            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                    RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance())));
-        }else{
-            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                    RateFormatUtil.longToDoubleBtc(0L)));
-        }
+        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                RateFormatUtil.longToDoubleBtc(0L)));
+        requestWallet();
         requestRate();
     }
 
@@ -313,33 +309,28 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     /**
      * Get the wallet balance
      */
-    /*private void requestWallet(){
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
-        accountBean = new WalletAccountBean(0L,0L);
-        OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
+    private void requestWallet(){
+        NativeWallet.getInstance().syncWalletInfo(new WalletListener<Integer>() {
             @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                try {
-                    if (response.getCode() == 2000) {
-                        Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
-                            accountBean = new WalletAccountBean(unspentAmount.getAmount(),unspentAmount.getAvaliableAmount());
-                            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                    RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
-                        }
+            public void success(Integer status) {
+                if(status == 0){
+                    CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
+                    if(currencyEntity != null){
+                        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                                RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance())));
+                    }else{
+                        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                                RateFormatUtil.longToDoubleBtc(0L)));
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
 
             @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-                amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                        RateFormatUtil.longToDoubleBtc(0)));
+            public void fail(WalletError error) {
+
             }
         });
-    }*/
+    }
 
     /**
      * Gets the current input bitcoin

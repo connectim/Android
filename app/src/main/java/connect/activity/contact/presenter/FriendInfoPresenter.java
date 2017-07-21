@@ -54,10 +54,10 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
 
     @Override
     public void start() {
-//        vImageWatcher = ImageWatcher.Helper.with(mView.getActivity())
-//                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(mView.getActivity()))
-//                .setErrorImageRes(R.mipmap.img_default)
-//                .create();
+        vImageWatcher = ImageWatcher.Helper.with(mView.getActivity())
+                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(mView.getActivity()))
+                .setErrorImageRes(R.mipmap.img_default)
+                .create();
     }
 
     @Override

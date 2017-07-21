@@ -16,4 +16,14 @@ public enum CurrencyEnum {
     public int getCode(){
         return code;
     }
+
+    public static CurrencyEnum getCurrency(int code){
+        switch (code){
+            case 0:
+                return BTC;
+            default:
+                break;
+        }
+        return null;
+    }
 }

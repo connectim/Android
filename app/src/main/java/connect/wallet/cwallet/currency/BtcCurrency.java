@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import connect.activity.home.bean.EstimatefeeBean;
@@ -28,6 +29,11 @@ import wallet_gateway.WalletOuterClass;
  */
 
 public class BtcCurrency extends BaseCurrency {
+
+    /** BTC (decimal turn o tLong) */
+    public static final double BTC_TO_LONG = Math.pow(10,8);
+    /** Bitcoin input format */
+    public static final String PATTERN_BTC = "##0.00000000";
 
     @Override
     public void createAddress() {
@@ -100,6 +106,16 @@ public class BtcCurrency extends BaseCurrency {
         }else{
             return "";
         }
+    }
+
+    public long doubleToLongCurrency(double value){
+        return Math.round(value * BTC_TO_LONG);
+    }
+
+    public String longToDoubleCurrency(long value) {
+        DecimalFormat myformat = new DecimalFormat(PATTERN_BTC);
+        String format = myformat.format(value / BTC_TO_LONG);
+        return format.replace(",", ".");
     }
 
     /**

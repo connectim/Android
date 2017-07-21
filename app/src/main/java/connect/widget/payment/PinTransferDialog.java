@@ -2,6 +2,8 @@ package connect.widget.payment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -12,23 +14,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import connect.activity.common.adapter.ViewPagerAdapter;
-import connect.activity.set.PaymentActivity;
 import connect.activity.set.bean.PaySetBean;
-import connect.activity.wallet.bean.WalletBean;
 import connect.database.SharePreferenceUser;
+import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.system.SystemDataUtil;
+import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.ControlScrollViewPager;
 import connect.widget.MdStyleProgress;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Created by Administrator on 2017/7/12 0012.
@@ -53,13 +63,19 @@ public class PinTransferDialog implements View.OnClickListener{
     private PayEditView payEdit;
     private Handler handler;
     private String payload;
+    private List<WalletOuterClass.Txout> txouts;
+    private long fee;
+    private CurrencyEnum currencyEnum;
 
     /**
      * show pay the password box
      */
-    public Dialog showPaymentPwd(Activity activity, String payload, final PaymentPwd.OnTrueListener onTrueListener) {
+    public Dialog showPaymentPwd(Activity activity, List<WalletOuterClass.Txout> txouts, long fee, int currency, String payload, final PaymentPwd.OnTrueListener onTrueListener) {
         this.activity = activity;
         this.payload = payload;
+        this.txouts = txouts;
+        this.fee = fee;
+        this.currencyEnum = CurrencyEnum.getCurrency(currency);
         paySetBean = ParamManager.getInstance().getPaySet();
 
         this.onTrueListener = onTrueListener;
@@ -69,8 +85,6 @@ public class PinTransferDialog implements View.OnClickListener{
         dialog.setContentView(view);
 
         viewPager = (ControlScrollViewPager) view.findViewById(R.id.view_pager);
-        closeImg = (ImageView) view.findViewById(R.id.close_img);
-        closeImg.setOnClickListener(this);
         initViewPage();
 
         Window mWindow = dialog.getWindow();
@@ -88,12 +102,12 @@ public class PinTransferDialog implements View.OnClickListener{
      */
     private void initViewPage() {
         ArrayList<View> arrayList = new ArrayList<>();
+        View payDetail = LayoutInflater.from(activity).inflate(R.layout.dialog_pay_detail, null);
         View editPass = LayoutInflater.from(activity).inflate(R.layout.dialog_pay_edit_pass, null);
         View passForget = LayoutInflater.from(activity).inflate(R.layout.dialog_pay_forget, null);
-        View setPay = LayoutInflater.from(activity).inflate(R.layout.dialog_pay_setpay, null);
+        arrayList.add(payDetail);
         arrayList.add(editPass);
         arrayList.add(passForget);
-        arrayList.add(setPay);
 
         viewPager.setAdapter(new ViewPagerAdapter(arrayList));
         viewPager.addOnPageChangeListener(pageChangeListener);
@@ -101,15 +115,45 @@ public class PinTransferDialog implements View.OnClickListener{
 
         initEditPay(editPass);
         initPassForget(passForget);
-        initSetPay(setPay);
+        initPayDetail(payDetail);
     }
 
-    private void initSetPay(View view) {
-        TextView retryTv = (TextView) view.findViewById(R.id.retry_tv);
-        retryTv.setOnClickListener(this);
+    private void initPayDetail(View view) {
+        TextView feeTv = (TextView) view.findViewById(R.id.fee_tv);
+        TextView transferTv = (TextView) view.findViewById(R.id.transfer_tv);
+        ImageView closeImg = (ImageView) view.findViewById(R.id.close_img);
+        LinearLayout detailLin = (LinearLayout)view.findViewById(R.id.detail_lin);
+
+        transferTv.setText(activity.getString(R.string.Wallet_Transfer_To_User,":"));
+        feeTv.setText(activity.getString(R.string.Wallet_Fee_BTC,
+                Double.valueOf(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(fee))));
+
+        String txinAddress = SharedPreferenceUtil.getInstance().getUser().getAddress();
+        for (WalletOuterClass.Txout txout : txouts) {
+            if(txinAddress.equals(txout.getAddress())){
+                continue;
+            }
+            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(txout.getAddress());
+            View detailView = LayoutInflater.from(activity).inflate(R.layout.item_pay_address, null);
+            TextView address = (TextView) detailView.findViewById(R.id.address_tv);
+            TextView amount = (TextView) detailView.findViewById(R.id.amount_tv);
+            if(contactEntity != null){
+                address.setText(contactEntity.getUsername() + activity.getString(R.string.Chat_Accept_success)
+                        + "( "+ activity.getString(R.string.Link_Friend) + ")");
+            }else{
+                address.setText(txout.getAddress());
+            }
+            amount.setText(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(txout.getAmount()) + "BTC");
+            detailLin.addView(detailView);
+        }
+
+        Button okBtn = (Button) view.findViewById(R.id.ok_btn);
+        okBtn.setOnClickListener(this);
+        closeImg.setOnClickListener(this);
     }
 
     private void initEditPay(View view) {
+        ImageView backImg = (ImageView) view.findViewById(R.id.back_img);
         progressBar = (MdStyleProgress) view.findViewById(R.id.progress);
         payEdit = (PayEditView) view.findViewById(R.id.pay_edit);
         statusTv = (TextView)view.findViewById(R.id.status_tv);
@@ -122,6 +166,7 @@ public class PinTransferDialog implements View.OnClickListener{
         });
         payEdit.setEditClosePan();
         payEdit.setInputCompleteListener(completeListener);
+        backImg.setOnClickListener(this);
     }
 
     private void initPassForget(View view) {
@@ -135,7 +180,7 @@ public class PinTransferDialog implements View.OnClickListener{
         @Override
         public void onPageSelected(int position) {
             switch (position) {
-                case 0:
+                case 1:
                     statusChange(0);
                     break;
                 default:
@@ -152,14 +197,25 @@ public class PinTransferDialog implements View.OnClickListener{
      */
     PayEditView.InputCompleteListener completeListener = new PayEditView.InputCompleteListener(){
         @Override
-        public void inputComplete(String pass) {
+        public void inputComplete(final String pass) {
             statusChange(3);
-            String decodeStr = SupportKeyUril.decodePinDefult(payload,pass);
-            if(TextUtils.isEmpty(decodeStr)){
-                viewPager.setCurrentItem(1);
-            }else{
-                onTrueListener.onTrue(decodeStr);
-            }
+            new AsyncTask<Void,Void,String>(){
+                @Override
+                protected String doInBackground(Void... params) {
+                    String decodeStr = SupportKeyUril.decodePinDefult(payload,pass);
+                    return decodeStr;
+                }
+
+                @Override
+                protected void onPostExecute(String decodeStr) {
+                    super.onPostExecute(decodeStr);
+                    if(TextUtils.isEmpty(decodeStr)){
+                        viewPager.setCurrentItem(2);
+                    }else{
+                        onTrueListener.onTrue(decodeStr);
+                    }
+                }
+            }.execute();
         }
     };
 
@@ -169,8 +225,14 @@ public class PinTransferDialog implements View.OnClickListener{
             case R.id.close_img:
                 dialog.cancel();
                 break;
-            case R.id.retry_tv:
+            case R.id.ok_btn:
+                viewPager.setCurrentItem(1);
+                break;
+            case R.id.back_img:
                 viewPager.setCurrentItem(0);
+                break;
+            case R.id.retry_tv:
+                viewPager.setCurrentItem(1);
                 break;
             default:
                 break;

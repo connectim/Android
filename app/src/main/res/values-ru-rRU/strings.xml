@@ -66,6 +66,9 @@
     <string name="Chat_Failed_to_get_redpact">Неудалось получить денежный подарок, обновите страницу и поробуйте снова</string>
     <string name="Chat_Failed_to_get_transfer">Неудалось получить оплату, обновите страницу и поробуйте снова</string>
     <string name="Chat_Favorites">Избранное</string>
+    <string name="Link_Friend">друзья</string>
+    <string name="Wallet_Transfer_details">Передача детали</string>
+    <string name="Wallet_Confirm_transfer">Подтверждение передачи</string>
     <string name="Chat_Find_me_from_the_recommendation">Найти меня по рекомендации</string>
     <string name="Chat_Founded_complete">Краудфандинг завершен</string>
     <string name="Chat_Group_Members">Члены группы (%d человек)</string>

@@ -57,7 +57,6 @@ public class BaseBusiness {
     private final int OUTPUTDUST = 3005; // 输出金额太小（肮脏）
     private final int UNSPENTDUST = 3006; // 找零太小
     private Dialog connectDialog;
-
     public BaseBusiness(Activity mActivity) {
         this.mActivity = mActivity;
     }
@@ -456,6 +455,7 @@ public class BaseBusiness {
                 default:
                     break;
             }
+
             DialogUtil.showAlertTextView(activity, activity.getString(R.string.Set_tip_title),message, "", "", false,
                     new DialogUtil.OnItemClickListener() {
                         @Override
@@ -506,14 +506,14 @@ public class BaseBusiness {
             NativeWallet.getInstance().initAccount(CurrencyEnum.BTC).requestAddressList(new WalletListener<String>() {
                 @Override
                 public void success(String list) {
-                    decodePayload(activity, addressList, walletListener);
+                    decodePayload(activity, addressList, transaction, walletListener);
                 }
 
                 @Override
                 public void fail(WalletError error) {}
             });
         }else{
-            decodePayload(activity, addressList, walletListener);
+            decodePayload(activity, addressList, transaction, walletListener);
         }
         connectDialog.dismiss();
     }
@@ -524,7 +524,8 @@ public class BaseBusiness {
      * @param addressList
      * @param listener
      */
-    private void decodePayload(Activity activity, final ArrayList<String> addressList,final WalletListener listener){
+    private void decodePayload(Activity activity, final ArrayList<String> addressList, WalletOuterClass.OriginalTransaction transaction,
+                               final WalletListener listener){
         String payload = "";
         final ArrayList<Integer> indexList = new ArrayList<>();
         /*for(String address : addressList){
@@ -545,7 +546,9 @@ public class BaseBusiness {
         }
         final ArrayList<String> priList = new ArrayList<String>();
         pinTransferDialog = new PinTransferDialog();
-        pinTransferDialog.showPaymentPwd(activity, payload, new PaymentPwd.OnTrueListener() {
+
+        pinTransferDialog.showPaymentPwd(activity, transaction.getTxOutsList(), transaction.getFee(), transaction.getCurrency(),
+                payload, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {
                 if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY){

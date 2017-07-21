@@ -95,6 +95,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         setContentView(R.layout.activity_contact_friend_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        mActivity = this;
         new FriendInfoPresenter(this).start();
     }
 
@@ -106,7 +107,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @Override
     public void initView() {
-        mActivity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Profile);

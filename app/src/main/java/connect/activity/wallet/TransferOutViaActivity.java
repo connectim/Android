@@ -54,9 +54,6 @@ public class TransferOutViaActivity extends BaseActivity {
     Button okBtn;
 
     private TransferOutViaActivity mActivity;
-    private Connect.PendingRedPackage pendingRedPackage;
-    private TransferUtil transaUtil;
-    private PaymentPwd paymentPwd;
     private BaseBusiness baseBusiness;
 
     public static void startActivity(Activity activity) {
@@ -85,8 +82,6 @@ public class TransferOutViaActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Wallet_Transfer);
         toolbarTop.setRightText(R.string.Chat_History);
         transferEditView.setEditListener(onEditListener);
-        transaUtil = new TransferUtil();
-        paymentPwd = new PaymentPwd();
 
         baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
     }

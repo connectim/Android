@@ -147,13 +147,15 @@ string hash_id = 1;
 }
 
 message OriginalTransaction {
-string hash_id = 1;
-string rawhex = 2;
-string vts = 3;
-int64 fee = 4;
-repeated string addresses = 5;
-int64 estimate_fee = 6;
-int64 odd_change = 7;
+    string hash_id = 1;
+    string rawhex = 2;
+    string vts = 3;
+    int64 fee = 4;
+    repeated string addresses = 5;
+    int64 estimate_fee = 6;
+    int64 odd_change = 7;
+    repeated Txout tx_outs = 8;
+    int32 currency = 9;
 }
 
 message OriginalTransactionResponse {
