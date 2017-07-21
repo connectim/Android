@@ -73,9 +73,9 @@ public class TransactionActivity extends BaseActivity {
         refreshview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                refreshview.setRefreshing(false);
                 page = 1;
                 requsetTransaction();
-                refreshview.setRefreshing(false);
             }
         });
 
