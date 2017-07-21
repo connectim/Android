@@ -43,7 +43,6 @@ import connect.activity.home.bean.HttpRecBean;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.bean.PrivateSetBean;
 import connect.activity.wallet.bean.RateBean;
-import connect.activity.wallet.bean.WalletAccountBean;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;

@@ -94,15 +94,15 @@ public class PacketPresenter implements PacketContract.Presenter{
                         throw new Exception("Validation fails");
                     }
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
-                    if(!ProtoBufUtil.getInstance().checkProtoBuf(bill)){
+                    final Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData().toByteArray());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)){
                         return;
                     }
                     SendOutBean sendOutBean = new SendOutBean();
                     sendOutBean.setType(PacketSendActivity.RED_PACKET);
-                    sendOutBean.setUrl("url");
+                    sendOutBean.setUrl(billingInfo.getUrl());
                     sendOutBean.setNumber(Integer.valueOf(mView.getPacketNumber()));
-                    sendOutBean.setDeadline(100000L);
+                    sendOutBean.setDeadline(billingInfo.getDeadline());
                     mView.goPacketView(sendOutBean);
                 }catch (Exception e){
                     e.printStackTrace();

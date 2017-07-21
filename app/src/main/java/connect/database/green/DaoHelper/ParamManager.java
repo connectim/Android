@@ -13,7 +13,6 @@ import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.bean.PrivateSetBean;
 import connect.activity.wallet.bean.RateBean;
 import connect.activity.wallet.bean.TransferBean;
-import connect.activity.wallet.bean.WalletAccountBean;
 
 /**
  * Created by Administrator on 2017/1/8.
@@ -133,21 +132,6 @@ public class ParamManager {
             return null;
         }
         return new Gson().fromJson(paramEntity.getValue(), PrivateSetBean.class);
-    }
-
-    public void putWalletAmount(WalletAccountBean accountBean) {
-        ParamEntity paramEntity = new ParamEntity();
-        paramEntity.setKey("wallet_amount");
-        paramEntity.setValue(new Gson().toJson(accountBean));
-        ParamHelper.getInstance().insertParamEntity(paramEntity);
-    }
-
-    public WalletAccountBean getWalletAmount() {
-        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity("wallet_amount");
-        if(paramEntity == null){
-            return null;
-        }
-        return new Gson().fromJson(paramEntity.getValue(), WalletAccountBean.class);
     }
 
     public void putCountryRate(RateBean rateBean) {

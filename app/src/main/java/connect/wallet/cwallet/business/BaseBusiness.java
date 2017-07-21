@@ -1,6 +1,7 @@
 package connect.wallet.cwallet.business;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class BaseBusiness {
     private final int UNSPENTNOTENOUGH = 3004; // 余额不足
     private final int OUTPUTDUST = 3005; // 输出金额太小（肮脏）
     private final int UNSPENTDUST = 3006; // 找零太小
+    private Dialog connectDialog;
 
     public BaseBusiness(Activity mActivity) {
         this.mActivity = mActivity;
@@ -104,6 +106,7 @@ public class BaseBusiness {
      * @param listener
      */
     public void transferAddress(ArrayList<String> listAddress, HashMap<String,Long> outMap, final WalletListener listener){
+        connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.TransferRequest.Builder builder = WalletOuterClass.TransferRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
         // 组装输入
@@ -140,6 +143,7 @@ public class BaseBusiness {
      * @param listener
      */
     public void transferConnectUser(ArrayList<String> listAddress, HashMap<String,Long> outMap, final WalletListener listener){
+        connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.ConnectTransferRequest.Builder builder = WalletOuterClass.ConnectTransferRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
         // 组装输入
@@ -322,6 +326,7 @@ public class BaseBusiness {
      */
     public void luckyPacket(ArrayList<String> listAddress, String receiverIdentifier, int type, int category,
                             int size, long amount, String tips, final WalletListener listener){
+        connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.LuckyPackageRequest.Builder builder = WalletOuterClass.LuckyPackageRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
         // 组装输入
@@ -359,6 +364,7 @@ public class BaseBusiness {
      * @param listener
      */
     public void outerTransfer(ArrayList<String> listAddress, long amount, final WalletListener listener){
+        connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.OutTransfer.Builder builder = WalletOuterClass.OutTransfer.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
         // 组装输入
@@ -377,7 +383,7 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                connectDialog.dismiss();
             }
         });
 
@@ -432,16 +438,21 @@ public class BaseBusiness {
                     checkPin(activity, originalTransaction, listener);
                     return;
                 case FEEEMPTY:
+                    connectDialog.dismiss();
                     return;
                 case UNSPENTTOOLARGE:
+                    connectDialog.dismiss();
                     ToastEUtil.makeText(activity,R.string.Wallet_Too_much_transaction_can_not_generated,ToastEUtil.TOAST_STATUS_FAILE).show();
                     return;
                 case UNSPENTERROR:
+                    connectDialog.dismiss();
                     return;
                 case UNSPENTNOTENOUGH:
+                    connectDialog.dismiss();
                     ToastEUtil.makeText(activity,R.string.Wallet_Insufficient_balance,ToastEUtil.TOAST_STATUS_FAILE).show();
                     return;
                 case OUTPUTDUST:
+                    connectDialog.dismiss();
                     ToastEUtil.makeText(activity,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
                     return;
                 case FEETOSAMLL:
@@ -449,7 +460,7 @@ public class BaseBusiness {
                     break;
                 case UNSPENTDUST:
                     message = activity.getString(R.string.Wallet_Charge_small_calculate_to_the_poundage,
-                            RateFormatUtil.longToDoubleBtc(originalTransaction.getFee()));
+                            RateFormatUtil.longToDoubleBtc(originalTransaction.getOddChange()));
                     break;
                 default:
                     break;
@@ -462,7 +473,9 @@ public class BaseBusiness {
                         }
 
                         @Override
-                        public void cancel() {}
+                        public void cancel() {
+                            connectDialog.dismiss();
+                        }
                     });
         }catch (Exception e){
             e.printStackTrace();
@@ -520,6 +533,7 @@ public class BaseBusiness {
      * @param listener
      */
     private void decodePayload(Activity activity, final ArrayList<String> addressList,final WalletListener listener){
+        connectDialog.dismiss();
         String payload = "";
         final ArrayList<Integer> indexList = new ArrayList<>();
         /*for(String address : addressList){

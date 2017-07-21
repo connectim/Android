@@ -125,10 +125,8 @@ public class PinTransferDialog implements View.OnClickListener{
     }
 
     private void initPassForget(View view) {
-        TextView forgetTv = (TextView) view.findViewById(R.id.forget_tv);
         TextView retryTv = (TextView) view.findViewById(R.id.retry_tv);
         retryTv.setOnClickListener(this);
-        forgetTv.setOnClickListener(this);
     }
 
     private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -173,9 +171,6 @@ public class PinTransferDialog implements View.OnClickListener{
                 break;
             case R.id.retry_tv:
                 viewPager.setCurrentItem(0);
-                break;
-            case R.id.forget_tv:
-                ActivityUtil.next(activity, PaymentActivity.class);
                 break;
             default:
                 break;

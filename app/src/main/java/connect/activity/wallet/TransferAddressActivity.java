@@ -12,11 +12,13 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.base.BaseApplication;
 import connect.activity.set.PayFeeActivity;
 import connect.activity.wallet.bean.TransferBean;
 import connect.database.green.DaoHelper.CurrencyHelper;
@@ -131,12 +133,18 @@ public class TransferAddressActivity extends BaseActivity {
         HashMap<String,Long> outMap = new HashMap<String,Long>();
         outMap.put("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew",transferEditView.getCurrentBtcLong());
         // outMap.put("030f6816ce8634c2899820500797388025a667848f732c9f4f53b4bfe60a4846c4",transferEditView.getCurrentBtcLong());
-
         baseBusiness.transferAddress(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {
                 // 存储最近10条转账记录
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
+                List<Activity> list = BaseApplication.getInstance().getActivityList();
+                for (Activity activity : list) {
+                    if (activity.getClass().getName().equals(TransferActivity.class.getName())) {
+                        activity.finish();
+                    }
+                }
+                finish();
             }
 
             @Override
@@ -153,75 +161,6 @@ public class TransferAddressActivity extends BaseActivity {
             addressTv.setText(data.getExtras().getString("address",""));
         }
     }
-
-    /*private void checkPayPassword(final long amount, final String inputString, final String outputString) {
-        pinTransferDialog.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
-            @Override
-            public void onTrue(String value) {
-                String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
-                requestBillingSend(amount, samValue);
-            }
-        });
-    }
-
-    private void requestBillingSend(final long amount, final String samValue) {
-        Connect.SendBill sendBill = Connect.SendBill.newBuilder()
-                .setAmount(amount)
-                .setReceiver(addressTv.getText().toString().trim())
-                .setTips(transferEditView.getNote())
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_BILLING_SEND, sendBill, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.BillHashId billHashId = Connect.BillHashId.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(billHashId)){
-                        ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
-                        requestPublicTx(billHashId.getHash(), samValue);
-                    }
-                } catch (InvalidProtocolBufferException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                TransferError.getInstance().showError(response.getCode(),response.getMessage());
-            }
-        });
-    }
-
-    private void requestPublicTx(String hashId, String rawTx) {
-        Connect.PublishTx publishTx = Connect.PublishTx.newBuilder()
-                .setHash(hashId)
-                .setRawTx(rawTx)
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_BILLING_PUBLISH_TX, publishTx, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
-                    @Override
-                    public void onComplete() {
-                        List<Activity> list = BaseApplication.getInstance().getActivityList();
-                        for (Activity activity : list) {
-                            if (activity.getClass().getName().equals(TransferActivity.class.getName())) {
-                                activity.finish();
-                            }
-                        }
-                        finish();
-                    }
-                });
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-            }
-        });
-    }*/
 
     private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
         @Override

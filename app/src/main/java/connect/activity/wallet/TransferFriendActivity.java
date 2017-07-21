@@ -17,6 +17,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseApplication;
 import connect.database.MemoryDataManager;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -174,6 +175,13 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
             @Override
             public void success(String value) {
                 ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
+                List<Activity> list = BaseApplication.getInstance().getActivityList();
+                for (Activity activity : list) {
+                    if (activity.getClass().getName().equals(TransferActivity.class.getName())) {
+                        activity.finish();
+                    }
+                }
+                finish();
             }
 
             @Override
@@ -181,19 +189,6 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                 ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
             }
         });
-    }
-
-    private void checkPayPassword(final long amount, final String inputString, final String outputString) {
-        if (!TextUtils.isEmpty(outputString)) {
-            paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
-                @Override
-                public void onTrue(String value) {
-                    String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
-                    presenter.requestSend(amount, samValue,transferEditView.getNote(),paymentPwd);
-                }
-            });
-
-        }
     }
 
     @Override
