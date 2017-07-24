@@ -27,6 +27,7 @@ import connect.activity.set.ModifyInfoActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
+import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
@@ -143,9 +144,7 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.llAbout)
     void intoAbout(View view) {
-        // AboutActivity.startActivity(mActivity);
-        String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-        String payload = AllNativeMethod.connectWalletKeyEncrypt(salt,"1234",17,1);
+         AboutActivity.startActivity(mActivity);
     }
 
     @OnClick(R.id.log_out_tv)

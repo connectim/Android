@@ -206,6 +206,9 @@ public class GroupSetActivity extends BaseActivity {
         img1.setBackgroundResource(img);
         txt1.setText(title);
         if (!TextUtils.isEmpty(name)) {
+            if (name.length() > 10) {
+                name = name.substring(0, 10) + "...";
+            }
             txt2.setText(name);
         }
 
@@ -307,6 +310,9 @@ public class GroupSetActivity extends BaseActivity {
                 name.setVisibility(View.GONE);
             } else {
                 name.setVisibility(View.VISIBLE);
+                if (nameTxt.length() > 3) {
+                    nameTxt = nameTxt.substring(0, 3) + "...";
+                }
                 name.setText(nameTxt);
             }
 

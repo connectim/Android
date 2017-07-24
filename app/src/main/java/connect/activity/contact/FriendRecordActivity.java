@@ -89,7 +89,7 @@ public class FriendRecordActivity extends BaseActivity {
         adapter = new FriendRecordAdapter(mActivity, friendEntity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(new EndlessScrollListener(linearLayoutManager) {
+        recyclerview.addOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore() {
                 page++;

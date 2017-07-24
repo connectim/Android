@@ -87,7 +87,7 @@ public class PacketHistoryActivity extends BaseActivity {
                 PacketDetailActivity.startActivity(mActivity, packageInfo.getRedpackage().getHashId());
             }
         });
-        recyclerview.addOnScrollListener(new EndlessScrollListener(linearLayoutManager) {
+        recyclerview.addOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore() {
                 page++;
