@@ -28,6 +28,7 @@ import connect.activity.set.ModifyInfoActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
+import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;

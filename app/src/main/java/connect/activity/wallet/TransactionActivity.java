@@ -84,7 +84,7 @@ public class TransactionActivity extends BaseActivity {
         recyclerview.setLayoutManager(linearLayoutManager);
         ransactionAdapter = new TransactionAdapter(mActivity);
         recyclerview.setAdapter(ransactionAdapter);
-        recyclerview.addOnScrollListener(new EndlessScrollListener(linearLayoutManager) {
+        recyclerview.addOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore() {
                 page++;

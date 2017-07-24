@@ -76,7 +76,7 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
         recyclerview.setLayoutManager(linearLayoutManager);
         transferOutAdapter = new TransferOutAdapter(mActivity);
         recyclerview.setAdapter(transferOutAdapter);
-        recyclerview.addOnScrollListener(new EndlessScrollListener(linearLayoutManager) {
+        recyclerview.addOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore() {
                 page++;

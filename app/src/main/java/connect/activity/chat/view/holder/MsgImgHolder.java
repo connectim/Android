@@ -3,6 +3,7 @@ package connect.activity.chat.view.holder;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -13,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import java.io.File;
+import java.io.FileNotFoundException;
+
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
@@ -23,13 +26,17 @@ import connect.activity.chat.view.BubbleImg;
 import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.common.bean.ConverType;
 import connect.activity.base.BaseApplication;
+import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 
 /**
  * Created by gtq on 2016/11/23.
  */
 public class MsgImgHolder extends MsgChatHolder {
+
     private BubbleImg imgmsg;
+    private String filePath;
+    private MediaScannerConnection scanner = null;
 
     public MsgImgHolder(View itemView) {
         super(itemView);
@@ -51,11 +58,11 @@ public class MsgImgHolder extends MsgChatHolder {
                 MsgDefinBean bean = entity.getMsgDefinBean();
                 String thumb = bean.getContent();
                 String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(entity.getPubkey(), bean.getMessage_id(), FileUtil.FileType.IMG);
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.IMGVIEWER, path);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.IMGVIEWER, path);
 
                 if (entity instanceof MsgEntity) {
                     if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, entity.getMsgDefinBean().getMessage_id(), direct);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, entity.getMsgDefinBean().getMessage_id(), direct);
                         MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
                     }
                 }
@@ -71,19 +78,34 @@ public class MsgImgHolder extends MsgChatHolder {
     @Override
     public void saveInPhone() {
         super.saveInPhone();
-        final MsgDefinBean bean = baseEntity.getMsgDefinBean();
-        String local = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
-        Glide.with(BaseApplication.getInstance())
-                .load(local)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        File file = FileUtil.createAbsNewFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/connect/" + bean.getMessage_id() + FileUtil.FileType.IMG.getFileType());
-                        MediaStore.Images.Media.insertImage(context.getContentResolver(), resource, "connect", "");
-                        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-                    }
-                });
+        scanner = new MediaScannerConnection(context, new MediaScannerConnection.MediaScannerConnectionClient() {
+            @Override
+            public void onMediaScannerConnected() {
+                if (filePath != null) {
+                    scanner.scanFile(filePath, "media/*");
+                }
+            }
+
+            @Override
+            public void onScanCompleted(String path, Uri uri) {
+                scanner.disconnect();
+            }
+        });
+
+        String url = imgmsg.getLocalPath();
+        Glide.with(context).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                File file = BitmapUtil.getInstance().bitmapSavePathDCIM(resource);
+                filePath = file.getAbsolutePath();
+                try {
+                    MediaStore.Images.Media.insertImage(context.getContentResolver(), filePath, "", null);
+                    scanner.connect();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override

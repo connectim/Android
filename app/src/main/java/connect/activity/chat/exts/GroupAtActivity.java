@@ -133,7 +133,7 @@ public class GroupAtActivity extends BaseActivity {
     }
 
     public void groupAtMember(GroupMemberEntity groupMemEntity) {
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.GROUP_AT, groupMemEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_AT, groupMemEntity);
         ActivityUtil.goBack(activity);
     }
 }

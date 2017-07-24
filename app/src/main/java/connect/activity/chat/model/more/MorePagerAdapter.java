@@ -86,20 +86,20 @@ public class MorePagerAdapter extends PagerAdapter {
                 BaseAction baseAction = (BaseAction) parent.getItemAtPosition(position);
                 switch (baseAction.getTitleId()) {
                     case R.string.Chat_Photo:
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.HIDEPANEL);
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.RECENT_ALBUM);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.HIDEPANEL);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.RECENT_ALBUM);
                         break;
                     case R.string.Chat_Sight:
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.TAKE_PHOTO);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.TAKE_PHOTO);
                         break;
                     case R.string.Wallet_Transfer:
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.TRANSFER);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.TRANSFER);
                         break;
                     case R.string.Wallet_Packet:
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.REDPACKET);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.REDPACKET);
                         break;
                     case R.string.Wallet_Receipt:
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.GATHER);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GATHER);
                         break;
                     case R.string.Chat_Read_Burn:
                         String roomkey = RoomSession.getInstance().getRoomKey();
@@ -109,10 +109,10 @@ public class MorePagerAdapter extends PagerAdapter {
                         showBurnDialog(context, burncount, onTimerListener);
                         break;
                     case R.string.Chat_Name_Card:
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.NAMECARD);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NAMECARD);
                         break;
                     case R.string.Chat_Loc:
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MAP_LOCATION);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MAP_LOCATION);
                         break;
                 }
             }
@@ -156,7 +156,7 @@ public class MorePagerAdapter extends PagerAdapter {
             if (!Long.valueOf(time).equals(chatSetEntity.getSnap_time())) {
                 BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
                 MsgSend.sendOuterMsg(MsgType.Self_destruct_Notice, time);
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
 
                 chatSetEntity.setSnap_time(time);
                 ConversionSettingHelper.getInstance().insertSetEntity(chatSetEntity);
@@ -246,7 +246,7 @@ public class MorePagerAdapter extends PagerAdapter {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(ViewHolder holder, final int position) {
             holder.time.setText(strings[position]);
             if (position == strings.length - 1) {
                 holder.time.setTextColor(context.getResources().getColor(R.color.color_blue));
@@ -259,6 +259,12 @@ public class MorePagerAdapter extends PagerAdapter {
             } else {
                 holder.img.setVisibility(View.GONE);
             }
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemClickListener.itemClick(position);
+                }
+            });
         }
 
         @Override

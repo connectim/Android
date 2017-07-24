@@ -212,7 +212,7 @@ public class VideoPlayerActivity extends BaseActivity {
             if (!TextUtils.isEmpty(burnTime)) {
                 String msgid = (String) objs[3];
                 MessageHelper.getInstance().updateMsgState(msgid, 2);
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, msgid, MsgDirect.From);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, MsgDirect.From);
             }
         }
     }

@@ -86,7 +86,7 @@ public class VoiceImg extends ImageView {
                 if (filepath.equals(voicePath)) {
                     stopPlay();
                     if (!TextUtils.isEmpty(msgid)) {
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.VOICE_UNREAD, msgid);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.VOICE_UNREAD, msgid);
                     }
                 }
                 break;

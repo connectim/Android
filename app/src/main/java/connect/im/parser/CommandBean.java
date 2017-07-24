@@ -548,7 +548,7 @@ public class CommandBean extends InterParse {
                             MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
                             MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
 
-                            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
+                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
                             normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
                         }
                     }
@@ -596,7 +596,7 @@ public class CommandBean extends InterParse {
                         MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
                         MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
 
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
                         normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
                     }
                 }
@@ -755,7 +755,7 @@ public class CommandBean extends InterParse {
         }
 
         Session.getInstance().setUserCookie(pubkey, friendCookie);
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.UNARRIVE_UPDATE, pubkey);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, pubkey);
     }
 
     /**

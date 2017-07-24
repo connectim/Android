@@ -38,6 +38,9 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
@@ -80,6 +83,7 @@ public class RedPacketActivity extends BaseActivity {
     private GroupEntity groupEntity;
     private Connect.PendingRedPackage pendingRedPackage = null;
     private PaymentPwd paymentPwd = null;
+    private BaseBusiness baseBusiness;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +159,7 @@ public class RedPacketActivity extends BaseActivity {
         }
 
         getPaddingInfo();
+        baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
     }
 
     @Override
@@ -203,104 +208,33 @@ public class RedPacketActivity extends BaseActivity {
                 });
     }
 
-    private void checkWalletMoney() {
-        final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        /*new TransferUtil().getOutputTran(activity, MemoryDataManager.getInstance().getAddress(), true,
-                pendingRedPackage.getAddress(),transferEditView.getAvaAmount(), amount,
-                new TransferUtil.OnResultCall() {
-            @Override
-            public void result(String inputString, String outputString) {
-                checkPayPassword(amount, inputString, outputString);
-            }
-        });*/
-    }
-
-    private void checkPayPassword(final long amount, final String inputString, final String outputString) {
-        if (!TextUtils.isEmpty(outputString)) {
-            paymentPwd = new PaymentPwd();
-            paymentPwd.showPaymentPwd(activity, new PaymentPwd.OnTrueListener() {
-                @Override
-                public void onTrue(String value) {
-                    String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
-                    sendPacket(amount, samValue);
-                }
-            });
-        }
-    }
-
-    private void sendPacket(final long amount, String siginRaw) {
-        Connect.OrdinaryRedPackage.Builder builder = Connect.OrdinaryRedPackage.newBuilder();
-        builder.setHashId(pendingRedPackage.getHashId());
-        builder.setMoney(amount);
-        if (!TextUtils.isEmpty(transferEditView.getNote())) {
-            builder.setTips(transferEditView.getNote());
-        }
-        if (redType == 0) {
-            builder.setSize(1);
-            ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(redKey);
-            builder.setReciverIdentifier(entity.getAddress());
-        } else {
-            builder.setReciverIdentifier(redKey);
-            builder.setSize(Integer.valueOf(edit.getText().toString()));
-        }
-
-        builder.setRawTx(siginRaw);
-        builder.setCategory(redType);
-        builder.setType(0);//inner packet 0 ,outer packet 1
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_PACKAGE_SEND,builder.build(),new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(final Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
+    private void sendRedPacket() {
+        baseBusiness.luckyPacket(null, redKey, 0, redType, redType == 0 ? 1 : Integer.valueOf(edit.getText().toString()),
+                transferEditView.getCurrentBtcLong(), transferEditView.getNote(), new WalletListener<String>() {
                     @Override
-                    public void onComplete() {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
-                            if(ProtoBufUtil.getInstance().checkProtoBuf(redPackage)){
-                                MsgSend.sendOuterMsg(MsgType.Lucky_Packet, redPackage.getHashId(), transferEditView.getNote());
-                            }
-                            if (redType == 0) {
-                                ParamManager.getInstance().putLatelyTransfer(new TransferBean(5,friendEntity.getAvatar(),
-                                        friendEntity.getUsername(),friendEntity.getAvatar()));
-                            } else {
-
-                            }
-                            ToastEUtil.makeText(activity,R.string.Link_Send_successful).show();
-                            ActivityUtil.goBack(activity);
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
+                    public void success(String hashId) {
+                        if (redType == 0) {
+                            ParamManager.getInstance().putLatelyTransfer(new TransferBean(5, friendEntity.getAvatar(),
+                                    friendEntity.getUsername(), friendEntity.getAvatar()));
                         }
+
+                        MsgSend.sendOuterMsg(MsgType.Lucky_Packet, hashId, transferEditView.getNote());
+                        ToastEUtil.makeText(activity, R.string.Link_Send_successful).show();
+                        ActivityUtil.goBack(activity);
+                    }
+
+                    @Override
+                    public void fail(WalletError error) {
+                        ToastEUtil.makeText(activity,R.string.Login_Send_failed).show();
                     }
                 });
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                if (response.getCode() == 2421) {
-                    ToastEUtil.makeText(activity, activity.getString(R.string.Wallet_error_lucky_packet_amount_too_small, 0.00005), 2).show();
-                }else {
-                    paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                    TransferError.getInstance().showError(response.getCode(),response.getMessage());
-                }
-            }
-        });
     }
 
     @OnClick({R.id.btn})
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.btn:
-                if (redType != 0) {//minimum amount check
-                    long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
-                    int size = Integer.valueOf(edit.getText().toString());
-                    if (amount / size < 5000) {
-                        ToastEUtil.makeText(activity, activity.getString(R.string.Wallet_error_lucky_packet_amount_too_small, 0.00005), 2).show();
-                        return;
-                    }
-                }
-
-                checkWalletMoney();
+                sendRedPacket();
                 break;
         }
     }

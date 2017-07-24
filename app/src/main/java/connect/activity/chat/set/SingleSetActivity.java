@@ -164,7 +164,7 @@ public class SingleSetActivity extends BaseActivity {
                         @Override
                         public void confirm(int position) {
                             ConversionHelper.getInstance().deleteRoom(roomKey);
-                            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.CLEAR_HISTORY);
+                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY);
                         }
                     });
                 }

@@ -206,6 +206,9 @@ public class GroupSetActivity extends BaseActivity {
         img1.setBackgroundResource(img);
         txt1.setText(title);
         if (!TextUtils.isEmpty(name)) {
+            if (name.length() > 10) {
+                name = name.substring(0, 10) + "...";
+            }
             txt2.setText(name);
         }
 
@@ -271,7 +274,7 @@ public class GroupSetActivity extends BaseActivity {
                         @Override
                         public void confirm(int position) {
                             ConversionHelper.getInstance().deleteRoom(groupKey);
-                            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.CLEAR_HISTORY);
+                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY);
                         }
                     });
                 } else if (getResources().getString(R.string.Link_Delete_and_Leave).equals(tag)) {
@@ -307,6 +310,9 @@ public class GroupSetActivity extends BaseActivity {
                 name.setVisibility(View.GONE);
             } else {
                 name.setVisibility(View.VISIBLE);
+                if (nameTxt.length() > 3) {
+                    nameTxt = nameTxt.substring(0, 3) + "...";
+                }
                 name.setText(nameTxt);
             }
 
@@ -352,7 +358,7 @@ public class GroupSetActivity extends BaseActivity {
                         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_QUIT, groupId, new ResultCall<Connect.HttpResponse>() {
                             @Override
                             public void onResponse(Connect.HttpResponse response) {
-                                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.CLEAR_HISTORY);
+                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY);
 
                                 ContactHelper.getInstance().removeGroupInfos(groupKey);
                                 //FileUtil.deleteDirectory();

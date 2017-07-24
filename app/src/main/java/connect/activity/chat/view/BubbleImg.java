@@ -27,6 +27,7 @@ public class BubbleImg extends RelativeLayout {
     private MsgDirect msgDirect;
     private ProgressBar progressBar;
     private ImageView imageView;
+    private String localPath=null;
 
     public BubbleImg(Context context) {
         super(context);
@@ -83,15 +84,15 @@ public class BubbleImg extends RelativeLayout {
         msgDirect = direct;
 
         imageView.setImageBitmap(null);
-        final String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
+        String msgidToLocal = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
 
-        if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(localPath)) {
+        if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(msgidToLocal)) {
             progressBar.setVisibility(GONE);
-            String local = FileUtil.islocalFile(url) ? url : localPath;
+            localPath = FileUtil.islocalFile(url) ? url : msgidToLocal;
             calculateSize(imgwidth,imgheight);
 
             Glide.with(BaseApplication.getInstance())
-                    .load(local)
+                    .load(localPath)
                     .override(imgWidth, imgHeight)
                     .crossFade(1000)
                     .bitmapTransform(new CenterCrop(context), new BlurMaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x, (openBurn && msgDirect == MsgDirect.From) ? 16 : 0))
@@ -101,6 +102,7 @@ public class BubbleImg extends RelativeLayout {
                 @Override
                 public void successDown(byte[] bytes) {
                     progressBar.setVisibility(GONE);
+                    String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
                     FileUtil.byteArrToFilePath(bytes, localPath);
                     loadUri(direct,roomType, pukkey, msgid, localPath,imgwidth,imgheight);
                 }
@@ -126,5 +128,9 @@ public class BubbleImg extends RelativeLayout {
 
     public void setOpenBurn(boolean openBurn) {
         this.openBurn = openBurn;
+    }
+
+    public String getLocalPath() {
+        return localPath;
     }
 }

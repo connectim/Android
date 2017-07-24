@@ -44,7 +44,11 @@ public class ConversionSettingHelper extends BaseDao {
 
     /************************  update *****************************************/
     public void insertSetEntity(ConversionSettingEntity entity) {
-        conversionSettingEntityDao.insertOrReplace(entity);
+        ConversionSettingEntity setEntity = loadSetEntity(entity.getIdentifier());
+        if (setEntity == null) {
+            setEntity = entity;
+        }
+        conversionSettingEntityDao.insertOrReplace(setEntity);
     }
 
     public void updateBurnTime(String roomkey, long time) {

@@ -305,7 +305,7 @@ public class BaseBusiness {
     /**
      * 红包
      * @param listAddress
-     * @param receiverIdentifier // group id or user pubkey(address)
+     * @param receiverIdentifier // group id or user pubkey
      * @param type // private group outer //0：内部 1：外部
      * @param category //0：个人 1：群主
      * @param size

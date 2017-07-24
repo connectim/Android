@@ -5,6 +5,7 @@ import org.greenrobot.greendao.annotation.Id;
 
 import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
 public class ConversionSettingEntity implements Serializable {
@@ -13,9 +14,12 @@ public class ConversionSettingEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
+    @Unique
     private String identifier;
+
     private Long snap_time;
     private Integer disturb;
+
     @Generated(hash = 648267286)
     public ConversionSettingEntity(Long _id, String identifier, Long snap_time,
             Integer disturb) {

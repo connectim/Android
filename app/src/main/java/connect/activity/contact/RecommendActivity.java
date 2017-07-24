@@ -84,7 +84,7 @@ public class RecommendActivity extends BaseActivity {
         adapter = new RecommendAdapter(mActivity);
         adapter.setOnAddListence(onAddListence);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(new EndlessScrollListener(linearLayoutManager) {
+        recyclerview.addOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore() {
                 page++;

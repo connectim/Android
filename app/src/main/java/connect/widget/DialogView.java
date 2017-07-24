@@ -69,7 +69,7 @@ public class DialogView {
             @Override
             public void onClick(View v) {
                 if (horScrollView.getClickLists().size() == 0) {
-                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.OPEN_ALBUM);
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.OPEN_ALBUM);
                 } else {
                     MsgSend.sendOuterMsg(MsgType.Photo,horScrollView.getClickLists());
                 }

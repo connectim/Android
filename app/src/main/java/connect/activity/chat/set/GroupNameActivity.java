@@ -123,7 +123,7 @@ public class GroupNameActivity extends BaseActivity {
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
 
                     ContactNotice.receiverGroup();
-                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.GROUP_UPDATENAME, groupName);
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATENAME, groupName);
                 }
                 GroupSetActivity.startActivity(activity,groupKey);
             }

@@ -135,7 +135,7 @@ public class InputPanel {
 
                     InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(inputEdit, 0);
-                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.SCROLLBOTTOM);
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.SCROLLBOTTOM);
                 }
                 return false;
             }
