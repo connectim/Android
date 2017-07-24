@@ -18,8 +18,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.MsgSend;
 import connect.database.MemoryDataManager;
 import connect.database.green.bean.ContactEntity;
+import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.set.PayFeeActivity;
@@ -61,11 +63,9 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
 
     private TransferFriendActivity mActivity;
     private TransferFriendContract.Presenter presenter;
-    private TransferUtil transaUtil;
     private FriendGridAdapter friendGridAdapter;
     private final int BACK_CODE = 102;
     private final int BACK_DEL_CODE = 103;
-    private PaymentPwd paymentPwd;
     private String pubGroup;
     private BaseBusiness baseBusiness;
 
@@ -87,7 +87,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView();
+        transferEditView.initView(mActivity);
     }
 
     @Override
@@ -112,9 +112,6 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         numberTv.setText(getString(R.string.Wallet_transfer_man, list.size()));
         transferEditView.setEditListener(presenter.getOnEditListener());
         presenter.horizontal_layout(gridview);
-
-        transaUtil = new TransferUtil();
-        paymentPwd = new PaymentPwd();
 
         baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
     }
@@ -167,14 +164,20 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
 
     @OnClick(R.id.ok_btn)
     void goTransferOut(View view) {
-        HashMap<String,Long> outMap = new HashMap<String,Long>();
+        final HashMap<String,Long> outMap = new HashMap<>();
         for (ContactEntity friendEntity : presenter.getListFriend()) {
-            outMap.put(friendEntity.getAddress(),transferEditView.getCurrentBtcLong());
+            outMap.put(friendEntity.getPub_key(),transferEditView.getCurrentBtcLong());
         }
         baseBusiness.transferConnectUser(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {
                 ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
+
+                MsgSend.sendOuterMsg(MsgType.Transfer, value, transferEditView.getCurrentBtcLong(), "");
+                for(HashMap.Entry<String, Long> entry : outMap.entrySet()){
+                    presenter.sendTransferMessage(value,entry.getKey(),"");
+                }
+
                 List<Activity> list = BaseApplication.getInstance().getActivityList();
                 for (Activity activity : list) {
                     if (activity.getClass().getName().equals(TransferActivity.class.getName())) {

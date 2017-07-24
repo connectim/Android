@@ -113,9 +113,9 @@ public class TransferToActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if(getIntent().getExtras().containsKey(TRANSFER_AMOUNT)){
-            transferEditView.initView(getIntent().getExtras().getDouble(TRANSFER_AMOUNT));
+            transferEditView.initView(getIntent().getExtras().getDouble(TRANSFER_AMOUNT), activity);
         }else{
-            transferEditView.initView();
+            transferEditView.initView(activity);
         }
     }
 
@@ -154,9 +154,9 @@ public class TransferToActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         if (getIntent().getExtras().containsKey(TRANSFER_AMOUNT)) {
-            transferEditView.initView(getIntent().getExtras().getDouble(TRANSFER_AMOUNT));
+            transferEditView.initView(getIntent().getExtras().getDouble(TRANSFER_AMOUNT), activity);
         } else {
-            transferEditView.initView();
+            transferEditView.initView(activity);
         }
 
         transferEditView.setEditListener(new TransferEditView.OnEditListener() {

@@ -1,6 +1,9 @@
 package connect.widget.payment;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -81,12 +84,7 @@ public class PayEditView extends RelativeLayout {
                     }
 
                     if (stringBuffer.length() == 4 && inputCompleteListener != null) {
-                        inputCompleteListener.inputComplete(stringBuffer.toString());
-                        //Text length bit 4 calls to complete the input listener
-                        stringBuffer.delete(0, stringBuffer.length());
-                        for (int i = 0; i < 4; i++) {
-                            imageViews[i].setImageResource(R.drawable.shape_ring_6d6e75);
-                        }
+                        handler.sendEmptyMessageDelayed(0,100);
                     }
                 }
             }
@@ -106,6 +104,19 @@ public class PayEditView extends RelativeLayout {
             }
         });
     }
+
+    private Handler handler = new Handler(Looper.getMainLooper()){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            inputCompleteListener.inputComplete(stringBuffer.toString());
+            //Text length bit 4 calls to complete the input listener
+            stringBuffer.delete(0, stringBuffer.length());
+            for (int i = 0; i < 4; i++) {
+                imageViews[i].setImageResource(R.drawable.shape_ring_6d6e75);
+            }
+        }
+    };
 
     /**
      * When press the delete button, remove the string in the StringBuffer

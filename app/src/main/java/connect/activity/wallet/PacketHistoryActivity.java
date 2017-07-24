@@ -15,6 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.home.view.LineDecoration;
 import connect.activity.wallet.adapter.RedHistoryAdapter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -79,6 +80,7 @@ public class PacketHistoryActivity extends BaseActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
         redHistoryAdapter = new RedHistoryAdapter(mActivity);
         recyclerview.setAdapter(redHistoryAdapter);
         redHistoryAdapter.setItemClickListener(new RedHistoryAdapter.OnItemClickListener() {

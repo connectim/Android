@@ -1,6 +1,8 @@
 package connect.utils.transfer;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -24,6 +26,7 @@ import connect.activity.base.BaseApplication;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.manager.EditInputFilterPrice;
 import connect.activity.wallet.bean.RateBean;
+import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
@@ -35,7 +38,9 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
+import connect.widget.random.RandomVoiceActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -83,6 +88,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     private String note = "";
     private PaySetBean paySetBean;
     private CurrencyEnum currencyEnum = CurrencyEnum.BTC;
+    private Activity mActivity;
 
     public TransferEditView(Context context) {
         this(context, null);
@@ -138,11 +144,12 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     /**
      * Initialize the View must be called again
      */
-    public void initView(){
-        initView(null);
+    public void initView(Activity mActivity){
+        initView(null,mActivity);
     }
 
-    public void initView(Double amount){
+    public void initView(Double amount,Activity mActivity){
+        this.mActivity = mActivity;
         if(amount != null){
             editDefault = RateFormatUtil.doubleToLongBtc(amount);
         }
@@ -313,15 +320,40 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         NativeWallet.getInstance().syncWalletInfo(new WalletListener<Integer>() {
             @Override
             public void success(Integer status) {
-                if(status == 0){
-                    CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
-                    if(currencyEntity != null){
-                        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance())));
-                    }else{
-                        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                RateFormatUtil.longToDoubleBtc(0L)));
-                    }
+                switch (status){
+                    case 0:
+                        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
+                        if(currencyEntity != null){
+                            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                                    RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance())));
+                        }else{
+                            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                                    RateFormatUtil.longToDoubleBtc(0L)));
+                        }
+                        break;
+                    case 1:// 用户为老用户需要迁移
+                        NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
+                            @Override
+                            public void success(String pin) {
+                                NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_PRIKEY,
+                                        MemoryDataManager.getInstance().getPriKey(), pin,
+                                        MemoryDataManager.getInstance().getAddress(),
+                                        new WalletListener<CurrencyEntity>() {
+                                            @Override
+                                            public void success(CurrencyEntity currencyEntity) {}
+                                            @Override
+                                            public void fail(WalletError error) {}
+                                        });
+                            }
+                            @Override
+                            public void fail(WalletError error) {}
+                        });
+                        break;
+                    case 2:// 用户没有钱包数据 ，需要创建（新用户）
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("type", CurrencyEnum.BTC);
+                        RandomVoiceActivity.startActivity(mActivity,bundle);
+                        break;
                 }
             }
 

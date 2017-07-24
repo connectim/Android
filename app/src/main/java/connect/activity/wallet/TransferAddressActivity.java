@@ -79,9 +79,9 @@ public class TransferAddressActivity extends BaseActivity {
         super.onStart();
         Bundle bundle = getIntent().getExtras();
         if(bundle.containsKey("amount")){
-            transferEditView.initView(bundle.getDouble("amount"));
+            transferEditView.initView(bundle.getDouble("amount"), mActivity);
         }else{
-            transferEditView.initView();
+            transferEditView.initView(mActivity);
         }
     }
 
@@ -99,7 +99,6 @@ public class TransferAddressActivity extends BaseActivity {
         transferEditView.setEditListener(onEditListener);
 
         baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
-        addressTv.setText("15urYnyeJe3gwbGJ74wcX89Tz7ZtsFDVew");
     }
 
     @OnClick(R.id.left_img)
@@ -124,13 +123,7 @@ public class TransferAddressActivity extends BaseActivity {
             return;
         }
 
-        ArrayList<WalletOuterClass.Txout> txoutList = new ArrayList<>();
-        WalletOuterClass.Txout.Builder builderTxout = WalletOuterClass.Txout.newBuilder();
-        builderTxout.setAddress(addressTv.getText().toString());
-        builderTxout.setAmount(transferEditView.getCurrentBtcLong());
-        txoutList.add(builderTxout.build());
-
-        HashMap<String,Long> outMap = new HashMap<String,Long>();
+        HashMap<String,Long> outMap = new HashMap<>();
         outMap.put(address,transferEditView.getCurrentBtcLong());
         baseBusiness.transferAddress(null, outMap, new WalletListener<String>() {
             @Override

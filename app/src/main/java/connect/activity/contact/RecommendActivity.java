@@ -16,6 +16,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.RecommendAdapter;
 import connect.activity.contact.bean.SourceType;
+import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.RecommandFriendEntity;
 import connect.im.bean.UserOrderBean;
@@ -79,6 +80,7 @@ public class RecommendActivity extends BaseActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
         adapter = new RecommendAdapter(mActivity);
         adapter.setOnAddListence(onAddListence);
         recyclerview.setAdapter(adapter);

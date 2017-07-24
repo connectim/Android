@@ -13,7 +13,9 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.wallet.bean.TransferBean;
 import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.activity.set.PayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
@@ -75,7 +77,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView();
+        transferEditView.initView(mActivity);
     }
 
     @Override
@@ -121,6 +123,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
                 transferEditView.getCurrentBtcLong(), transferEditView.getNote(), new WalletListener<String>() {
             @Override
             public void success(String hashId) {
+                ParamManager.getInstance().putLatelyTransfer(new TransferBean(1,"","",""));
                 presenter.getPacketDetail(hashId);
                 ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
             }

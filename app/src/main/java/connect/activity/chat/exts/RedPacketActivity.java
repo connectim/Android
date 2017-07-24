@@ -160,7 +160,7 @@ public class RedPacketActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView();
+        transferEditView.initView(activity);
         transferEditView.setNote(getString(R.string.Wallet_Best_wishes));
         transferEditView.setEditListener(new TransferEditView.OnEditListener() {
             @Override

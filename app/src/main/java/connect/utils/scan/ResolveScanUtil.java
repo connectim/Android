@@ -145,7 +145,7 @@ public class ResolveScanUtil {
             return;
         }
 
-        ToastEUtil.makeText(activity, R.string.Login_scan_string_error);
+        ToastEUtil.makeText(activity, R.string.Login_scan_string_error).show();
     }
 
     /**

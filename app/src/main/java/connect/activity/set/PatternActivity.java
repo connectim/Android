@@ -3,6 +3,7 @@ package connect.activity.set;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.login.ExportPriActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.activity.home.HomeActivity;
@@ -67,8 +69,8 @@ public class PatternActivity extends BaseActivity {
         toolbarTop.setBlackStyle();
         toolbarTop.setTitle(null, R.string.Set_Pattern_Password);
         Bundle bundle = getIntent().getExtras();
-        toolbarTop.setLeftImg(R.mipmap.back_white);
         type = bundle.getString("type");
+        toolbarTop.setLeftImg(R.mipmap.back_white);
 
         userBean = SharedPreferenceUtil.getInstance().getUser();
         if (type.equals(LOGIN_STYPE)) {
@@ -112,7 +114,12 @@ public class PatternActivity extends BaseActivity {
 
     @OnClick(R.id.left_img)
     void goback(View view) {
-        ActivityUtil.goBack(mActivity);
+        List<Activity> list = BaseApplication.getInstance().getActivityList();
+        if(list.size() == 1){
+            return;
+        }else{
+            ActivityUtil.goBack(mActivity);
+        }
     }
 
     @OnClick(R.id.changepatter_ll)
@@ -127,6 +134,18 @@ public class PatternActivity extends BaseActivity {
         } else {
             PatterDrawActivity.startActivity(mActivity, PatterDrawActivity.TYPE_CLOSE, userBean.getSalt());
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            List<Activity> list = BaseApplication.getInstance().getActivityList();
+            if(list.size() > 1){
+                ActivityUtil.goBack(mActivity);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

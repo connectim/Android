@@ -128,9 +128,9 @@ public class PinTransferDialog implements View.OnClickListener{
         feeTv.setText(activity.getString(R.string.Wallet_Fee_BTC,
                 Double.valueOf(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(fee))));
 
-        String txinAddress = SharedPreferenceUtil.getInstance().getUser().getAddress();
+        String selfAddress = SharedPreferenceUtil.getInstance().getUser().getAddress();
         for (WalletOuterClass.Txout txout : txouts) {
-            if(txinAddress.equals(txout.getAddress())){
+            if(selfAddress.equals(txout.getAddress())){
                 continue;
             }
             ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(txout.getAddress());

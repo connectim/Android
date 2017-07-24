@@ -16,6 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.home.view.LineDecoration;
 import connect.activity.wallet.adapter.TransactionAdapter;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;

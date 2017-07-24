@@ -49,6 +49,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final RecommandFriendEntity recommendEntity = mList.get(position);
+        viewHolder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
         GlideUtil.loadAvater(viewHolder.avatarRimg,recommendEntity.getAvatar() + "?size=80");
         viewHolder.nicknameTv.setText(recommendEntity.getUsername());
         viewHolder.statusBtn.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +93,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
         return mList;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView deleteTv;
         RelativeLayout bottomLayout;
@@ -113,6 +114,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
             contentLayout = (RelativeLayout) itemview.findViewById(R.id.content_layout);
             sideScrollView = (SideScrollView) itemview.findViewById(R.id.side_scroll_view);
             contentRela = (LinearLayout) itemview.findViewById(R.id.content_rela);
+            sideScrollView.setSideScrollListener(sideScrollListener);
         }
     }
 

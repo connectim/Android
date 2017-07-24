@@ -1,6 +1,7 @@
 package connect.wallet.cwallet;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -81,13 +82,30 @@ public class BaseWallet {
     public void checkPwd(Activity activity,final String payload, final WalletListener listener) {
         DialogUtil.showPayEditView(activity, R.string.Set_Enter_Login_Password, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
-            public void confirm(String value) {
-                String baseSeed = SupportKeyUril.decodePinDefult(payload, value);
-                if (TextUtils.isEmpty(baseSeed)) {
-                    ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
-                } else {
-                    listener.success(baseSeed);
-                }
+            public void confirm(final String value) {
+                new AsyncTask<Void,Void,String>(){
+                    @Override
+                    protected String doInBackground(Void... params) {
+                        String baseSeed = SupportKeyUril.decodePinDefult(payload, value);
+                        if (TextUtils.isEmpty(baseSeed)) {
+                            return "";
+                        } else {
+                            return baseSeed;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(String baseSeed) {
+                        super.onPostExecute(baseSeed);
+                        if (TextUtils.isEmpty(baseSeed)) {
+                            ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
+                        } else {
+                            listener.success(baseSeed);
+                        }
+                    }
+                }.execute();
+
+
             }
 
             @Override

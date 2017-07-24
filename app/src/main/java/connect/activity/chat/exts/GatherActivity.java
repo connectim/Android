@@ -124,7 +124,7 @@ public class GatherActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView();
+        transferEditView.initView(activity);
         transferEditView.setVisibilityAmount(View.GONE);
         transferEditView.setFeeVisibility(View.GONE);
         transferEditView.setEditListener(new TransferEditView.OnEditListener() {

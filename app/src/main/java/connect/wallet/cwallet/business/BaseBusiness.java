@@ -52,10 +52,11 @@ public class BaseBusiness {
     private final int FEETOSAMLL = 3000; // 手续费太小
     private final int FEEEMPTY = 3001; // 手续费为空
     private final int UNSPENTTOOLARGE = 3002; // 交易笔数太多
-    private final int UNSPENTERROR = 3003;
+    private final int UNSPENTERROR = 3003;  //
     private final int UNSPENTNOTENOUGH = 3004; // 余额不足
     private final int OUTPUTDUST = 3005; // 输出金额太小（肮脏）
     private final int UNSPENTDUST = 3006; // 找零太小
+    private final int AUTOMAX = 3007; // 自动计算手续费大于最大阈值
     private Dialog connectDialog;
     public BaseBusiness(Activity mActivity) {
         this.mActivity = mActivity;
@@ -428,21 +429,27 @@ public class BaseBusiness {
                     checkPin(activity, originalTransaction, listener);
                     return;
                 case FEEEMPTY:
-                    connectDialog.dismiss();
+                    if(connectDialog != null)
+                        connectDialog.dismiss();
                     return;
                 case UNSPENTTOOLARGE:
-                    connectDialog.dismiss();
+                    if(connectDialog != null)
+                        connectDialog.dismiss();
                     ToastEUtil.makeText(activity,R.string.Wallet_Too_much_transaction_can_not_generated,ToastEUtil.TOAST_STATUS_FAILE).show();
                     return;
                 case UNSPENTERROR:
-                    connectDialog.dismiss();
+                    if(connectDialog != null)
+                        connectDialog.dismiss();
+                    ToastEUtil.makeText(activity,R.string.Wallet_Insufficient_balance,ToastEUtil.TOAST_STATUS_FAILE).show();
                     return;
                 case UNSPENTNOTENOUGH:
-                    connectDialog.dismiss();
+                    if(connectDialog != null)
+                        connectDialog.dismiss();
                     ToastEUtil.makeText(activity,R.string.Wallet_Insufficient_balance,ToastEUtil.TOAST_STATUS_FAILE).show();
                     return;
                 case OUTPUTDUST:
-                    connectDialog.dismiss();
+                    if(connectDialog != null)
+                        connectDialog.dismiss();
                     ToastEUtil.makeText(activity,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
                     return;
                 case FEETOSAMLL:
@@ -451,6 +458,10 @@ public class BaseBusiness {
                 case UNSPENTDUST:
                     message = activity.getString(R.string.Wallet_Charge_small_calculate_to_the_poundage,
                             RateFormatUtil.longToDoubleBtc(originalTransaction.getOddChange()));
+                    break;
+                case AUTOMAX:
+                    message = activity.getString(R.string.Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue,
+                            RateFormatUtil.longToDoubleBtc(originalTransaction.getEstimateFee()));
                     break;
                 default:
                     break;
@@ -465,7 +476,8 @@ public class BaseBusiness {
 
                         @Override
                         public void cancel() {
-                            connectDialog.dismiss();
+                            if(connectDialog != null)
+                                connectDialog.dismiss();
                         }
                     });
         }catch (Exception e){
@@ -515,7 +527,8 @@ public class BaseBusiness {
         }else{
             decodePayload(activity, addressList, transaction, walletListener);
         }
-        connectDialog.dismiss();
+        if(connectDialog != null)
+            connectDialog.dismiss();
     }
 
     /**
@@ -544,10 +557,16 @@ public class BaseBusiness {
             WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
             payload = walletBean.getPayload();
         }
-        final ArrayList<String> priList = new ArrayList<String>();
+        final ArrayList<String> priList = new ArrayList<>();
         pinTransferDialog = new PinTransferDialog();
 
-        pinTransferDialog.showPaymentPwd(activity, transaction.getTxOutsList(), transaction.getFee(), transaction.getCurrency(),
+        Long fee;
+        if(ParamManager.getInstance().getPaySet().isAutoFee()){
+            fee = transaction.getEstimateFee();
+        }else{
+            fee = transaction.getFee();
+        }
+        pinTransferDialog.showPaymentPwd(activity, transaction.getTxOutsList(), fee, transaction.getCurrency(),
                 payload, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {

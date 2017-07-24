@@ -66,7 +66,7 @@ public class CurrencyHelper extends BaseDao{
      * Query all currency address
      * @return
      */
-    private List<CurrencyAddressEntity> loadCurrencyAddress(){
+    public List<CurrencyAddressEntity> loadCurrencyAddress(){
         return currencyAddressEntityDao.loadAll();
     }
 

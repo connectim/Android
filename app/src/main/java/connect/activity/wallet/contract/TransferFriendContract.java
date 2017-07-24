@@ -43,7 +43,7 @@ public interface TransferFriendContract {
 
         void checkBtnEnable();
 
-        void requestSend(long amount, String samValue ,String note,PaymentPwd paymentPwd);
+        void sendTransferMessage(String hashid, String address,String note);
     }
 
 }

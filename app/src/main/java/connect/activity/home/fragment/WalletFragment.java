@@ -88,6 +88,7 @@ public class WalletFragment extends BaseFragment{
         rateBean = ParamManager.getInstance().getCountryRate();
         if(mActivity != null && isAdded()){
             requestRate();
+            syncWallet();
         }
     }
 
@@ -121,7 +122,6 @@ public class WalletFragment extends BaseFragment{
                 }
             }
         });
-        syncWallet();
     }
 
     @OnClick(R.id.right_lin)
@@ -170,37 +170,19 @@ public class WalletFragment extends BaseFragment{
                                         MemoryDataManager.getInstance().getAddress(),
                                         new WalletListener<CurrencyEntity>() {
                                             @Override
-                                            public void success(CurrencyEntity currencyEntity) {
-
-                                            }
-
+                                            public void success(CurrencyEntity currencyEntity) {}
                                             @Override
-                                            public void fail(WalletError error) {
-
-                                            }
+                                            public void fail(WalletError error) {}
                                         });
                             }
                             @Override
                             public void fail(WalletError error) {}
                         });
-
                         break;
                     case 2:// 用户没有钱包数据 ，需要创建（新用户）
-                        DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
-                                "你还没有钱包",
-                                "", "立即创建", true, new DialogUtil.OnItemClickListener() {
-                                    @Override
-                                    public void confirm(String value) {
-                                        Bundle bundle = new Bundle();
-                                        bundle.putSerializable("type", CurrencyEnum.BTC);
-                                        RandomVoiceActivity.startActivity(mActivity,bundle);
-                                    }
-
-                                    @Override
-                                    public void cancel() {
-
-                                    }
-                                });
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("type", CurrencyEnum.BTC);
+                        RandomVoiceActivity.startActivity(mActivity,bundle);
                         break;
                     default:
                         break;

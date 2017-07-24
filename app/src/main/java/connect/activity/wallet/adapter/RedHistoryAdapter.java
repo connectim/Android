@@ -85,7 +85,7 @@ public class RedHistoryAdapter extends RecyclerView.Adapter<RedHistoryAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mListData.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

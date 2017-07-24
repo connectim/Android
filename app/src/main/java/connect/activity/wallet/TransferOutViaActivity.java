@@ -71,7 +71,7 @@ public class TransferOutViaActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView();
+        transferEditView.initView(mActivity);
     }
 
     @Override
@@ -84,31 +84,6 @@ public class TransferOutViaActivity extends BaseActivity {
         transferEditView.setEditListener(onEditListener);
 
         baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
-    }
-
-    @OnClick(R.id.left_img)
-    void goback(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.right_lin)
-    void goHistory(View view) {
-        ActivityUtil.next(mActivity, TransferOutViaHistoryActivity.class);
-    }
-
-    @OnClick(R.id.ok_btn)
-    void goTransferOut(View view) {
-        baseBusiness.outerTransfer(null, transferEditView.getCurrentBtcLong(), new WalletListener<String>() {
-            @Override
-            public void success(String value) {
-                requestTransferDetail(value);
-            }
-
-            @Override
-            public void fail(WalletError error) {
-                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
-            }
-        });
     }
 
     private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
@@ -127,6 +102,32 @@ public class TransferOutViaActivity extends BaseActivity {
             PayFeeActivity.startActivity(mActivity);
         }
     };
+
+    @OnClick(R.id.left_img)
+    void goback(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick(R.id.right_lin)
+    void goHistory(View view) {
+        ActivityUtil.next(mActivity, TransferOutViaHistoryActivity.class);
+    }
+
+    @OnClick(R.id.ok_btn)
+    void goTransferOut(View view) {
+        baseBusiness.outerTransfer(null, transferEditView.getCurrentBtcLong(), new WalletListener<String>() {
+            @Override
+            public void success(String value) {
+                ParamManager.getInstance().putLatelyTransfer(new TransferBean(2,"","",""));
+                requestTransferDetail(value);
+            }
+
+            @Override
+            public void fail(WalletError error) {
+                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
+            }
+        });
+    }
 
     private void requestTransferDetail(String hashId){
         Connect.BillHashId billHashId = Connect.BillHashId.newBuilder().setHash(hashId).build();

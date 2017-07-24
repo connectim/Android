@@ -48,7 +48,6 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
 
-
     private NewFriendActivity mActivity;
     private NewFriendContract.Presenter presenter;
     private NewRequestAdapter requestAdapter;
