@@ -110,7 +110,7 @@ public class GroupMyNameActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 groupMemEntity.setUsername(myname);
                 ContactHelper.getInstance().inserGroupMemEntity(groupMemEntity);
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.GROUP_UPDATEMYNAME);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATEMYNAME);
                 GroupSetActivity.startActivity(activity,groupKey);
             }
 

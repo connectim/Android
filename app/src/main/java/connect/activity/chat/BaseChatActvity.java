@@ -124,7 +124,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                     UserOrderBean userOrderBean = new UserOrderBean();
                     userOrderBean.friendChatCookie(baseChat.roomKey());
                 }
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNSTATE, roomSession.getBurntime() == 0 ? 0 : 1);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, roomSession.getBurntime() == 0 ? 0 : 1);
                 break;
             case 1:
                 roomSession.setRoomName(talker.getTalkName());
@@ -350,7 +350,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 if (baseChat.roomType() == 0) {
                     TransferToActivity.startActivity(activity, baseChat.address());
                 } else if (baseChat.roomType() == 1) {
-                    //TransferFriendSeleActivity.startActivity(activity, 0, TransferFriendSeleActivity.SOURCE_GROUP, baseChat.roomKey());
+                    SeleUsersActivity.startActivity(activity, SeleUsersActivity.SOURCE_GROUP, talker.getTalkKey(), null);
                 }
                 break;
             case REDPACKET:
@@ -368,7 +368,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                     int state = (int) objects[2];
 
                     chatAdapter.updateItemSendState(msgid, state);
-                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MSGSTATEVIEW, msgid, state);
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MSGSTATEVIEW, msgid, state);
                 }
                 break;
             case RESEND://resend message
@@ -464,14 +464,14 @@ public abstract class BaseChatActvity extends BaseActivity {
                                 RoomSession.getInstance().setBurntime(time);
                                 ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
                                 BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
-                                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
+                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
                             }
                             adapterInsetItem(msgEntity);
                             ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
                             break;
                         case Self_destruct_Receipt://Accept each other has read one after reading
                             msgid = msgbean.getContent();
-                            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, msgid, MsgDirect.To);
+                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, MsgDirect.To);
                             break;
                         default:
                             adapterInsetItem(msgEntity);
@@ -503,7 +503,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                             if (time != RoomSession.getInstance().getBurntime()) {
                                 RoomSession.getInstance().setBurntime(time);
                                 BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
-                                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
+                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
                                 ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
 
                                 MsgEntity destructEntity = (MsgEntity) baseChat.destructMsg(time);

@@ -77,7 +77,7 @@ public class ChatMsgUtil {
                 }
             }
         } else {
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MSGSTATE, roomkey, msgid, state);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MSGSTATE, roomkey, msgid, state);
         }
     }
 

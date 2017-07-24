@@ -268,7 +268,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
             public void success(WalletOuterClass.OriginalTransactionResponse response) {
                 String contactName = crowdfunding.getSender().getUsername();
                 String noticeContent = getString(R.string.Chat_paid_the_crowd_founding_to, activity.getString(R.string.Chat_You), contactName);
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.NOTICE, noticeContent);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NOTICE, noticeContent);
 
                 String hashid = crowdfunding.getHashId();
                 int paycount = (int) (crowdfunding.getSize() - crowdfunding.getRemainSize());

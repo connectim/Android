@@ -58,11 +58,11 @@ public class MsgImgHolder extends MsgChatHolder {
                 MsgDefinBean bean = entity.getMsgDefinBean();
                 String thumb = bean.getContent();
                 String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(entity.getPubkey(), bean.getMessage_id(), FileUtil.FileType.IMG);
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.IMGVIEWER, path);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.IMGVIEWER, path);
 
                 if (entity instanceof MsgEntity) {
                     if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, entity.getMsgDefinBean().getMessage_id(), direct);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, entity.getMsgDefinBean().getMessage_id(), direct);
                         MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
                     }
                 }

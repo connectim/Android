@@ -189,7 +189,7 @@ public class ChatParseBean extends InterParse {
             MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
             normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime(),-1,true);
             MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgEntity);
         }
     }
 
@@ -201,7 +201,7 @@ public class ChatParseBean extends InterParse {
         msgEntity.setMsgDefinBean(definBean);
         msgEntity.setSendstate(0);
         msgEntity.setPubkey(pubkey);
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
         pushNoticeMsg(pubkey, type, msgEntity);
     }
 }

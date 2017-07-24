@@ -163,7 +163,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                         if (direct == MsgDirect.From && (entity.getMsgDefinBean().getType() == 1 || entity.getMsgDefinBean().getType() == 5)) {
                             ((MsgEntity) entity).setBurnstarttime(TimeUtil.getCurrentTimeInLong());
                             burnProBar.startBurnRead();
-                            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, entity.getMsgDefinBean().getMessage_id(), direct);
+                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, entity.getMsgDefinBean().getMessage_id(), direct);
                         }
                     }
                 }
@@ -186,7 +186,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
     }
 
     public void deleteChatMsg() {
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.DELMSG, baseEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.DELMSG, baseEntity);
         MessageHelper.getInstance().deleteMsgByid(baseEntity.getMsgDefinBean().getMessage_id());
     }
 

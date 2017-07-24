@@ -237,8 +237,8 @@ public class ChatActivity extends BaseChatActvity {
     @Override
     public void adapterInsetItem(MsgEntity bean) {
         chatAdapter.insertItem(bean);
-        if (scrollHelper.isScrollBottom() || !talker.getTalkKey().equals(bean.getMsgDefinBean().getPublicKey())) {
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.SCROLLBOTTOM);
+        if (scrollHelper.isScrollBottom()) {
+            RecExtBean.getInstance().sendEventDelay(RecExtBean.ExtType.SCROLLBOTTOM);
         }
     }
 

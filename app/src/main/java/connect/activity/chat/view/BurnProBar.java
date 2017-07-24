@@ -176,7 +176,7 @@ public class BurnProBar extends View {
             value = 0;
             invalidate();
 
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.DELMSG, entity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.DELMSG, entity);
             MessageHelper.getInstance().deleteMsgByid(entity.getMsgDefinBean().getMessage_id());
         }
 

@@ -1,12 +1,31 @@
 package connect.activity.chat.bean;
 
 import org.greenrobot.eventbus.EventBus;
+import java.io.Serializable;
+import connect.activity.base.bean.BaseEvent;
 
 /**
  * chat message, send to chat activity
  * Created by gtq on 2016/12/21.
  */
-public class RecExtBean {
+public class RecExtBean extends BaseEvent {
+
+    public static RecExtBean recExtBean;
+
+    public static RecExtBean getInstance() {
+        if (recExtBean == null) {
+            recExtBean = new RecExtBean();
+        }
+        return recExtBean;
+    }
+
+    @Override
+    public void sendEvent(Serializable type, Serializable... objects) {
+        RecExtBean recExtBean = new RecExtBean();
+        recExtBean.extType = (ExtType) type;
+        recExtBean.obj = objects;
+        EventBus.getDefault().post(recExtBean);
+    }
 
     public enum ExtType {
         DELMSG,//Delete the message
@@ -45,13 +64,12 @@ public class RecExtBean {
     private ExtType extType;
     private Object obj;
 
+    public RecExtBean() {
+    }
+
     public RecExtBean(ExtType extType, Object obj) {
         this.extType = extType;
         this.obj = obj;
-    }
-
-    public static void sendRecExtMsg(ExtType type, Object... objs) {
-        EventBus.getDefault().post(new RecExtBean(type, objs));
     }
 
     public ExtType getExtType() {

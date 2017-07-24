@@ -274,7 +274,7 @@ public class GroupSetActivity extends BaseActivity {
                         @Override
                         public void confirm(int position) {
                             ConversionHelper.getInstance().deleteRoom(groupKey);
-                            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.CLEAR_HISTORY);
+                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY);
                         }
                     });
                 } else if (getResources().getString(R.string.Link_Delete_and_Leave).equals(tag)) {
@@ -358,7 +358,7 @@ public class GroupSetActivity extends BaseActivity {
                         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_QUIT, groupId, new ResultCall<Connect.HttpResponse>() {
                             @Override
                             public void onResponse(Connect.HttpResponse response) {
-                                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.CLEAR_HISTORY);
+                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY);
 
                                 ContactHelper.getInstance().removeGroupInfos(groupKey);
                                 //FileUtil.deleteDirectory();
