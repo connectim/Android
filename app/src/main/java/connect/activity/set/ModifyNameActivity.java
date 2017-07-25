@@ -116,6 +116,11 @@ public class ModifyNameActivity extends BaseActivity implements ModifyNameContra
     }
 
     @Override
+    public Activity getActivity() {
+        return mActivity;
+    }
+
+    @Override
     public void setCloseVisible(int visibility) {
         closeIb.setVisibility(visibility);
     }

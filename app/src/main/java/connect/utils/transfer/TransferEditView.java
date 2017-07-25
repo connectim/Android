@@ -325,7 +325,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                         CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
                         if(currencyEntity != null){
                             amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                    RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance())));
+                                    RateFormatUtil.longToDoubleBtc(currencyEntity.getAmount())));
                         }else{
                             amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
                                     RateFormatUtil.longToDoubleBtc(0L)));

@@ -88,7 +88,6 @@ public class WalletFragment extends BaseFragment{
         rateBean = ParamManager.getInstance().getCountryRate();
         if(mActivity != null && isAdded()){
             requestRate();
-            syncWallet();
         }
     }
 
@@ -122,6 +121,7 @@ public class WalletFragment extends BaseFragment{
                 }
             }
         });
+        syncWallet();
     }
 
     @OnClick(R.id.right_lin)

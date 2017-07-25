@@ -541,13 +541,13 @@ public class BaseBusiness {
                                final WalletListener listener){
         String payload = "";
         final ArrayList<Integer> indexList = new ArrayList<>();
-        /*for(String address : addressList){
+        for(String address : addressList){
             // 获取输入地址对应的index
             CurrencyAddressEntity addressEntity = CurrencyHelper.getInstance().loadCurrencyAddressFromAddress(address);
             indexList.add(addressEntity.getIndex());
-        }*/
-        List<CurrencyAddressEntity> list = CurrencyHelper.getInstance().loadCurrencyAddress(currencyEnum.getCode());
-        indexList.add(list.get(0).getIndex());
+        }
+        /*List<CurrencyAddressEntity> list = CurrencyHelper.getInstance().loadCurrencyAddress(currencyEnum.getCode());
+        indexList.add(list.get(0).getIndex());*/
 
         // 获取打款币种的加密payload
         final CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());

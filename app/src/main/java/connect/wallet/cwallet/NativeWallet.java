@@ -307,7 +307,7 @@ public class NativeWallet {
     public void createCurrency(CurrencyEnum currencyEnum, int category, String value, String pin, String masterAddress,
                                final WalletListener listener) {
         String payload = "";
-        String currencySeend = "";
+        String salt = "";
         switch (category){
             case BaseCurrency.CATEGORY_PRIKEY:
                 String valueHex = StringUtil.bytesToHexString(value.getBytes());
@@ -315,8 +315,8 @@ public class NativeWallet {
                 payload = encoPinBean.getPayload();
                 break;
             case BaseCurrency.CATEGORY_BASESEED:
-                String salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-                currencySeend = SupportKeyUril.xor(value, salt, 64);
+                salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
+                String currencySeend = SupportKeyUril.xor(value, salt, 64);
                 masterAddress = initCurrency(currencyEnum).ceaterAddress(currencySeend);
                 break;
             case BaseCurrency.CATEGORY_SALT_SEED:
@@ -324,7 +324,7 @@ public class NativeWallet {
             default:
                 break;
         }
-        baseWallet.createCurrency(currencyEnum, payload, currencySeend, category, masterAddress, new WalletListener<CurrencyEntity>() {
+        baseWallet.createCurrency(currencyEnum, payload, salt, category, masterAddress, new WalletListener<CurrencyEntity>() {
             @Override
             public void success(CurrencyEntity currencyEntity) {
                 listener.success(currencyEntity);

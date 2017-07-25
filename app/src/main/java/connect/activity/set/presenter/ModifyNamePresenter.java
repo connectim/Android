@@ -2,6 +2,7 @@ package connect.activity.set.presenter;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
@@ -87,7 +88,9 @@ public class ModifyNamePresenter implements ModifyNameContract.Presenter{
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
-
+                if(response.getCode() == 2102){
+                    Toast.makeText(mView.getActivity(),R.string.Login_username_already_exists,Toast.LENGTH_LONG).show();
+                }
             }
         });
 
