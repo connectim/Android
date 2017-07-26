@@ -11,10 +11,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.RecExtBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -61,7 +63,6 @@ public class GatherDetailSingleActivity extends BaseActivity {
     private static String GATHER_HASHID = "GATHER_HASHID";
     private static String GATHER_MSGID = "GATHER_MSGID";
 
-    private PaymentPwd paymentPwd;
     private int state;
     private Connect.Bill billDetail = null;
 
@@ -136,62 +137,59 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     billDetail = Connect.Bill.parseFrom(structData.getPlainData());
-                    if(!ProtoBufUtil.getInstance().checkProtoBuf(billDetail)){
-                        return;
-                    }
-
-                    String username = "";
-                    ContactEntity entity = null;
-                    if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {//I started gathering
-                        entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getSender());
-                        username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
-                        txt1.setText(String.format(getString(R.string.Wallet_has_requested_to_payment), username));
-                    } else {//I received the payment
-                        entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getReceiver());
-                        username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
-                        txt1.setText(String.format(getString(R.string.Wallet_has_requested_for_payment), username));
-                    }
-                    if (entity != null) {
-                        GlideUtil.loadAvater(roundimg, entity.getAvatar());
-                    }
-
-                    if (TextUtils.isEmpty(billDetail.getTips())) {
-                        txt2.setVisibility(View.GONE);
-                    } else {
-                        txt2.setText(billDetail.getTips());
-                    }
-
-                    String amout = RateFormatUtil.longToDoubleBtc(billDetail.getAmount());
-                    txt3.setText(getResources().getString(R.string.Set_BTC_symbol) + amout);
-
-                    if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {
-                        txt4.setVisibility(View.INVISIBLE);
-                    } else {
-                        txt4.setVisibility(View.VISIBLE);
-                        requestWallet();
-                    }
-
-                    state = billDetail.getStatus();
-                    if (state == 0) {//Did not pay
-                        if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {
-                            btn.setText(getResources().getString(R.string.Wallet_Waitting_for_pay));
-                            btn.setBackgroundResource(R.drawable.shape_stroke_red);
-                            btn.setTag(0);
-                        } else {
-                            btn.setText(getResources().getString(R.string.Set_Payment));
-                            btn.setBackgroundResource(R.drawable.shape_stroke_green);
-                            btn.setTag(1);
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(billDetail)) {
+                        String username = "";
+                        ContactEntity entity = null;
+                        if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver()) || billDetail.getReceiver().equals(CurrencyHelper.getInstance().loadCurrency(0).getMasterAddress())) {//I started gathering
+                            entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getSender());
+                            username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
+                            txt1.setText(String.format(getString(R.string.Wallet_has_requested_to_payment), username));
+                        } else {//I received the payment
+                            entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getReceiver());
+                            username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
+                            txt1.setText(String.format(getString(R.string.Wallet_has_requested_for_payment), username));
                         }
-                    } else if (state == 1) {
-                        btn.setText(getResources().getString(R.string.Common_Cancel));
-                        btn.setBackgroundResource(R.drawable.shape_stroke_red);
-                        btn.setTag(2);
-                    }
+                        if (entity != null) {
+                            GlideUtil.loadAvater(roundimg, entity.getAvatar());
+                        }
 
-                    if (!TextUtils.isEmpty(msgId)) {
-                        TransactionHelper.getInstance().updateTransEntity(hashid, msgId, state);
+                        if (TextUtils.isEmpty(billDetail.getTips())) {
+                            txt2.setVisibility(View.GONE);
+                        } else {
+                            txt2.setText(billDetail.getTips());
+                        }
+
+                        String amout = RateFormatUtil.longToDoubleBtc(billDetail.getAmount());
+                        txt3.setText(getResources().getString(R.string.Set_BTC_symbol) + amout);
+
+                        if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {
+                            txt4.setVisibility(View.INVISIBLE);
+                        } else {
+                            txt4.setVisibility(View.VISIBLE);
+                        }
+
+                        state = billDetail.getStatus();
+                        if (state == 0) {//Did not pay
+                            if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {
+                                btn.setText(getResources().getString(R.string.Wallet_Waitting_for_pay));
+                                btn.setBackgroundResource(R.drawable.shape_stroke_red);
+                                btn.setTag(0);
+                            } else {
+                                btn.setText(getResources().getString(R.string.Set_Payment));
+                                btn.setBackgroundResource(R.drawable.shape_stroke_green);
+                                btn.setTag(1);
+                            }
+                        } else if (state == 1) {
+                            btn.setText(getResources().getString(R.string.Common_Cancel));
+                            btn.setBackgroundResource(R.drawable.shape_stroke_red);
+                            btn.setTag(2);
+                        }
+
+                        if (!TextUtils.isEmpty(msgId)) {
+                            TransactionHelper.getInstance().updateTransEntity(hashid, msgId, state);
+                        }
+                        ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.GATHER_DETAIL, msgId, 0, state);
                     }
-                    ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.GATHER_DETAIL, msgId, 0, state);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -202,33 +200,6 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
             }
         });
-    }
-
-    private void requestWallet() {
-        /*String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
-        OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
-            @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                try {
-                    if (response.getCode() == 2000) {
-                        Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
-                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                            txt4.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
-                                    RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-                txt4.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
-                        RateFormatUtil.longToDoubleBtc(0)));
-            }
-        });*/
     }
 
     protected void requestPayment() {

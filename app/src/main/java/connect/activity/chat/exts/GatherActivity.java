@@ -210,7 +210,7 @@ public class GatherActivity extends BaseActivity {
      */
     protected void requestSingleGather() {
         CurrencyEnum currencyEnum = transferEditView.getCurrencyEnum();
-        long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
+        final long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
         String senderAddress = friendEntity.getPub_key();
         String tips = transferEditView.getNote();
         BaseBusiness baseBusiness = new BaseBusiness(activity, currencyEnum);
@@ -219,7 +219,7 @@ public class GatherActivity extends BaseActivity {
             @Override
             public void success(Connect.Bill bill) {
                 ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
-                GatherBean gatherBean = new GatherBean(bill.getHash(), bill.getAmount(), 1, false, bill.getTips());
+                GatherBean gatherBean = new GatherBean(bill.getHash(), amount, 1, false, bill.getTips());
                 MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
                 ActivityUtil.goBack(activity);
             }
