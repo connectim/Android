@@ -55,28 +55,28 @@ public class PinTransferDialog implements View.OnClickListener{
     private PaySetBean paySetBean;
     private VirtualKeyboardView keyboardView;
     private Activity activity;
-    private ImageView closeImg;
     /** Text state */
     private TextView statusTv;
     /** The current number of ViewPage pages */
     private int currentIndex;
     private PayEditView payEdit;
-    private Handler handler;
     private String payload;
     private List<WalletOuterClass.Txout> txouts;
     private long fee;
     private CurrencyEnum currencyEnum;
     private ArrayList<String> inputsList;
+    private long fixedFee;
 
     /**
      * show pay the password box
      */
-    public Dialog showPaymentPwd(Activity activity, ArrayList<String> inputsList, List<WalletOuterClass.Txout> txouts, long fee, int currency, String payload, final PaymentPwd.OnTrueListener onTrueListener) {
+    public Dialog showPaymentPwd(Activity activity, ArrayList<String> inputsList, List<WalletOuterClass.Txout> txouts, long fee, long fixedFee,int currency, String payload, final PaymentPwd.OnTrueListener onTrueListener) {
         this.activity = activity;
         this.payload = payload;
         this.txouts = txouts;
         this.inputsList = inputsList;
         this.fee = fee;
+        this.fixedFee = fixedFee;
         this.currencyEnum = CurrencyEnum.getCurrency(currency);
         paySetBean = ParamManager.getInstance().getPaySet();
 
@@ -128,7 +128,7 @@ public class PinTransferDialog implements View.OnClickListener{
 
         transferTv.setText(activity.getString(R.string.Wallet_Transfer_To_User,":"));
         feeTv.setText(activity.getString(R.string.Wallet_Fee_BTC,
-                Double.valueOf(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(fee))));
+                Double.valueOf(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(fee + fixedFee))));
 
         for (WalletOuterClass.Txout txout : txouts) {
             if(inputsList.contains(txout.getAddress())){
@@ -138,12 +138,17 @@ public class PinTransferDialog implements View.OnClickListener{
             View detailView = LayoutInflater.from(activity).inflate(R.layout.item_pay_address, null);
             TextView address = (TextView) detailView.findViewById(R.id.address_tv);
             TextView amount = (TextView) detailView.findViewById(R.id.amount_tv);
-            if(contactEntity != null){
-                address.setText(contactEntity.getUsername() + "( "+ activity.getString(R.string.Link_Friend) + ")");
+            if(fixedFee == 0){
+                if(contactEntity != null){
+                    address.setText(contactEntity.getUsername() + "( "+ activity.getString(R.string.Link_Friend) + ")");
+                }else{
+                    address.setText(txout.getAddress());
+                }
+                amount.setText(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(txout.getAmount()) + "BTC");
             }else{
-                address.setText(txout.getAddress());
+                address.setText(activity.getString(R.string.Wallet_Connect_term));
+                amount.setText(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(txout.getAmount() - fixedFee) + "BTC");
             }
-            amount.setText(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(txout.getAmount()) + "BTC");
             detailLin.addView(detailView);
         }
 

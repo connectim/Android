@@ -2,6 +2,8 @@ package connect.activity.chat.set;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -197,6 +199,11 @@ public class ContactSelectActivity extends BaseActivity {
                             } else {
                                 sendGroupToFriend();
                             }
+
+                            toolbar.setRightClickable(false);
+                            Message message = new Message();
+                            message.what = 100;
+                            handler.sendMessageDelayed(message, 3000);
                         }
                     });
                 }
@@ -211,6 +218,18 @@ public class ContactSelectActivity extends BaseActivity {
             }
         });
     }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 100:
+                    toolbar.setRightClickable(true);
+                    break;
+            }
+        }
+    };
 
     private void moveToPosition(int posi) {
         this.topPosi = posi;

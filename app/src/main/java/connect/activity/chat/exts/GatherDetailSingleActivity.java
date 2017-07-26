@@ -203,7 +203,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
         baseBusiness.typePayment(hashid, 8, new WalletListener<String>() {
             @Override
             public void success(String hashId) {
-                ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getReceiver());
+                ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(definBean.getSenderInfoExt().getPublickey());
                 if (entity != null) {
                     String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
                     String noticeContent = getString(R.string.Chat_paid_the_bill_to, activity.getString(R.string.Chat_You), contactName);

@@ -185,7 +185,7 @@ public class RedPacketActivity extends BaseActivity {
                     public void success(String hashId) {
                         if (redType == 0) {
                             ParamManager.getInstance().putLatelyTransfer(new TransferBean(5, friendEntity.getAvatar(),
-                                    friendEntity.getUsername(), friendEntity.getAvatar()));
+                                    friendEntity.getUsername(), friendEntity.getAddress()));
                         }
 
                         MsgSend.sendOuterMsg(MsgType.Lucky_Packet, hashId, transferEditView.getNote());

@@ -36,6 +36,7 @@ import connect.activity.wallet.bean.WalletBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -215,11 +216,14 @@ public class WalletFragment extends BaseFragment{
      * 获取钱包余额
      */
     private void requestCurrencyCoin(){
-        NativeWallet.getInstance().initAccount(CurrencyEnum.BTC).requestAddressList(new WalletListener<WalletOuterClass.Coin>() {
+        NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).requestCoinInfo(new WalletListener<WalletOuterClass.Coin>() {
             @Override
             public void success(WalletOuterClass.Coin coin) {
                 if(coin != null){
+                    CurrencyAddressEntity addressEntity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(CurrencyEnum.BTC.getCode());
                     currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+                    currencyEntity.setAmount(addressEntity.getAmount());
+                    currencyEntity.setBalance(addressEntity.getBalance());
                     amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
                 }else{
                     currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());

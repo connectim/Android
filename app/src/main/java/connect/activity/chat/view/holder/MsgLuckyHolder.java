@@ -90,8 +90,8 @@ public class MsgLuckyHolder extends MsgChatHolder {
 
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GrabRedPackageResp packageResp = Connect.GrabRedPackageResp.parseFrom(structData.getPlainData());
-                    if(!ProtoBufUtil.getInstance().checkProtoBuf(packageResp)){
-                        return;
+                    if (!ProtoBufUtil.getInstance().checkProtoBuf(packageResp)) {//state default 0
+                        packageResp = Connect.GrabRedPackageResp.newBuilder().setStatus(0).build();
                     }
                     switch (packageResp.getStatus()) {
                         case 0://fail
@@ -110,7 +110,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
                                 @Override
                                 public void click() {
                                     startPacketDetail(hashid, systemPacket ? 1 : 0);
-                                    playAnim=false;
+                                    playAnim = false;
                                 }
                             });
                             break;

@@ -52,6 +52,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 break;
             case 1://Common transfer and payment
             case 2://gather
+            case 8://gather
                 List<Connect.UserInfoBalance> list = mListData.get(position).getUserInfosList();
                 if(list.size() > 0){
                     ArrayList arrayList = new ArrayList<String>();

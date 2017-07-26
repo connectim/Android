@@ -125,7 +125,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
             @Override
             public void success(String hashId) {
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(1,"","",""));
-                presenter.getPacketDetail("bfcb7c85baf8008833fdb6f4122e4e009fac25aa");
+                presenter.getPacketDetail(hashId);
                 ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
             }
 

@@ -48,8 +48,9 @@ public class MsgPayHolder extends MsgChatHolder {
 
         if (!gatherBean.getIsCrowdfundRceipt()) {
             name.setVisibility(View.VISIBLE);
-            String paymentstr = "";
-            paymentstr = context.getString(R.string.Wallet_Payment_to_friend);
+            String paymentstr = definBean.msgDirect() == MsgDirect.From
+                    ? context.getString(R.string.Wallet_Receipt)
+                    : context.getString(R.string.Wallet_Payment_to_friend);
 
             btc.setText(String.format(context.getResources().getString(R.string.Chat_Enter_BTC), paymentstr, amout));
             if (entity.getTransStatus() == 0) {

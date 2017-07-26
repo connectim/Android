@@ -144,6 +144,10 @@ public class TopToolBar extends LinearLayout{
         rightLayout.setOnClickListener(onClickListener);
     }
 
+    public void setRightClickable(boolean clickable) {
+        rightLayout.setClickable(clickable);
+    }
+
     public void setWindowStatusBarColor(Activity activity, int colorResId) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

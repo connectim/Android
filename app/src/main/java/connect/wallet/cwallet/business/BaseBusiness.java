@@ -176,7 +176,6 @@ public class BaseBusiness {
         builder.setSpentCurrency(builderSend.build());
         // 组装输出
         for (HashMap.Entry<String, Long> entry : outMap.entrySet()) {
-            System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
             WalletOuterClass.ConnectTxout txout = WalletOuterClass.ConnectTxout.newBuilder()
                     .setUid(entry.getKey())
                     .setAmount(entry.getValue())
@@ -244,6 +243,7 @@ public class BaseBusiness {
      *             TransactionTypePayCrowding = 2
      *             TransactionTypeLuckypackage = 3
      *             TransactionTypeURLTransfer = 6
+     *             requestPayment = 8
      */
     public void typePayment(String hash,int type, final WalletListener<String> listener) {
         transactionType = type;
@@ -557,7 +557,7 @@ public class BaseBusiness {
         Long fee = ParamManager.getInstance().getPaySet().isAutoFee() ? transaction.getEstimateFee() : transaction.getFee();
         // 解密payload
         pinTransferDialog = new PinTransferDialog();
-        pinTransferDialog.showPaymentPwd(activity, addressList,transaction.getTxOutsList(), fee, transaction.getCurrency(),
+        pinTransferDialog.showPaymentPwd(activity, addressList,transaction.getTxOutsList(), fee, transaction.getFixedFee(), transaction.getCurrency(),
                 payload, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {

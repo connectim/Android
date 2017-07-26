@@ -38,6 +38,11 @@ public abstract class BaseCurrency {
     public abstract void createAddress();
 
     /**
+     * 获取币种信息
+     */
+    public abstract void requestCoinInfo(WalletListener listener);
+
+    /**
      * 手续费
      */
     public abstract void fee();
