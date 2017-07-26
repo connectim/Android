@@ -467,7 +467,7 @@ public class BaseBusiness {
                             RateFormatUtil.longToDoubleBtc(originalTransaction.getOddChange()));
                     break;
                 case AUTOMAX:
-                    message = activity.getString(R.string.Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue,
+                    message = activity.getString(R.string.Wallet_Auto_fees_greater_than_the_maximum_continue,
                             RateFormatUtil.longToDoubleBtc(originalTransaction.getEstimateFee()));
                     break;
                 default:
@@ -554,10 +554,9 @@ public class BaseBusiness {
             WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
             payload = walletBean.getPayload();
         }
-        Long fee = ParamManager.getInstance().getPaySet().isAutoFee() ? transaction.getEstimateFee() : transaction.getFee();
         // 解密payload
         pinTransferDialog = new PinTransferDialog();
-        pinTransferDialog.showPaymentPwd(activity, addressList,transaction.getTxOutsList(), fee, transaction.getFixedFee(), transaction.getCurrency(),
+        pinTransferDialog.showPaymentPwd(activity, addressList,transaction.getTxOutsList(), transaction.getFee(), transaction.getFixedFee(), transaction.getCurrency(),
                 payload, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {

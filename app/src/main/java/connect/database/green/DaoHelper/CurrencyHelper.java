@@ -135,7 +135,7 @@ public class CurrencyHelper extends BaseDao{
         currencyEntity.setCategory(coin.getCategory());
         currencyEntity.setPayload(coin.getPayload());
         currencyEntity.setStatus(coin.getStatus());
-        insertCurrency(currencyEntity);
+        currencyEntityDao.insertOrReplace(currencyEntity);
     }
 
     /**

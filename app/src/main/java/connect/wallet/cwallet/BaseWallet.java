@@ -51,7 +51,7 @@ public class BaseWallet {
     private void setPin(final Activity mActivity, final WalletListener listener) {
         Integer title;
         if (TextUtils.isEmpty(payPass)) {
-            title = R.string.Wallet_Enter_your_PIN;
+            title = R.string.Set_Enter_new_password;
         } else {
             title = R.string.Wallet_Confirm_PIN;
         }
@@ -80,7 +80,7 @@ public class BaseWallet {
      * 校验密码
      */
     public void checkPwd(Activity activity,final String payload, final WalletListener listener) {
-        DialogUtil.showPayEditView(activity, R.string.Set_Enter_Login_Password, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
+        DialogUtil.showPayEditView(activity, R.string.Wallet_Enter_your_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(final String value) {
                 new AsyncTask<Void,Void,String>(){

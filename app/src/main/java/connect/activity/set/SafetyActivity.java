@@ -76,26 +76,6 @@ public class SafetyActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_Account_security);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
-        MemoryDataManager.getInstance().getPriKey();
-        CurrencyEntity ccc = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
-        WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-        if(TextUtils.isEmpty(walletBean.getPayload())){
-
-        }else{
-            String baseSeed = SupportKeyUril.decodePinDefult(walletBean.getPayload(),"1234");
-            String currencySeend = SupportKeyUril.xor(baseSeed, ccc.getSalt(), 64);
-
-            String priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(currencySeend,44,0,0,0,0);
-            String pubKey = AllNativeMethod.cdGetPubKeyFromSeedBIP44(currencySeend,44,0,0,0,0);
-            String address = AllNativeMethod.cdGetBTCAddrFromPubKey(pubKey);
-
-            NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).ceaterAddress(currencySeend);
-            NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).ceaterPriKey(baseSeed,ccc.getSalt(),0);
-        }
-
-
-
         if(userBean != null && TextUtils.isEmpty(userBean.getPhone())){
             phoneTv.setText(R.string.Set_Phone_unbinded);
         }else{

@@ -16,6 +16,7 @@ import connect.activity.login.bean.UserBean;
 import connect.activity.set.bean.PaySetBean;
 import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -33,6 +34,7 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import protos.Connect;
@@ -88,6 +90,10 @@ public class PaymentActivity extends BaseActivity {
         if (paySetBean != null) {
             updataView();
         }
+
+        if(CurrencyHelper.getInstance().loadCurrencyList() == null){
+            pasLl.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void updataView() {
@@ -111,7 +117,6 @@ public class PaymentActivity extends BaseActivity {
 
     @OnClick(R.id.pas_ll)
     void goSetPassword(View view) {
-        // 判断是否创建了钱包，没有创建的话直接返回
         NativeWallet.getInstance().checkPin(mActivity,new WalletListener<String>() {
             @Override
             public void success(String seed) {
@@ -129,9 +134,7 @@ public class PaymentActivity extends BaseActivity {
             }
 
             @Override
-            public void fail(WalletError error) {
-                pasLl.setVisibility(View.INVISIBLE);
-            }
+            public void fail(WalletError error) {}
         });
     }
 
