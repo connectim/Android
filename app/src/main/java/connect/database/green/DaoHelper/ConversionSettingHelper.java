@@ -11,6 +11,7 @@ import connect.database.green.dao.ConversionSettingEntityDao;
  * Created by gtq on 2016/12/13.
  */
 public class ConversionSettingHelper extends BaseDao {
+
     private static ConversionSettingHelper conversionSettingHelper;
     private ConversionSettingEntityDao conversionSettingEntityDao;
 
@@ -21,7 +22,11 @@ public class ConversionSettingHelper extends BaseDao {
 
     public static ConversionSettingHelper getInstance() {
         if (conversionSettingHelper == null) {
-            conversionSettingHelper = new ConversionSettingHelper();
+            synchronized (ConversionSettingHelper.class) {
+                if (conversionSettingHelper == null) {
+                    conversionSettingHelper = new ConversionSettingHelper();
+                }
+            }
         }
         return conversionSettingHelper;
     }
@@ -45,9 +50,10 @@ public class ConversionSettingHelper extends BaseDao {
     /************************  update *****************************************/
     public void insertSetEntity(ConversionSettingEntity entity) {
         ConversionSettingEntity setEntity = loadSetEntity(entity.getIdentifier());
-        if (setEntity == null) {
-            setEntity = entity;
+        if (setEntity != null) {
+            entity.set_id(setEntity.get_id());
         }
+        setEntity = entity;
         conversionSettingEntityDao.insertOrReplace(setEntity);
     }
 
