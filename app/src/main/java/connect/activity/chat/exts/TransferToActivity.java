@@ -202,6 +202,7 @@ public class TransferToActivity extends BaseActivity {
             @Override
             public void success(String value) {
                 sendTransferMsg(value);
+                ActivityUtil.goBack(activity);
             }
 
             @Override

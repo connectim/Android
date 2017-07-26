@@ -17,6 +17,7 @@ import connect.activity.chat.bean.ContainerBean;
 import connect.activity.wallet.BlockchainActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -186,7 +187,7 @@ public class TransferDetailActivity extends BaseActivity {
         String avatar = "";
         String name = "";
 
-        if (MemoryDataManager.getInstance().getAddress().equals(address)) {
+        if (MemoryDataManager.getInstance().getAddress().equals(address)|| address.equals(CurrencyHelper.getInstance().loadCurrency(0).getMasterAddress())) {
             avatar = MemoryDataManager.getInstance().getAvatar();
             name = MemoryDataManager.getInstance().getName();
         } else {
@@ -217,7 +218,7 @@ public class TransferDetailActivity extends BaseActivity {
         String avatar = "";
         String name = "";
 
-        if (MemoryDataManager.getInstance().getAddress().equals(address)) {
+        if (MemoryDataManager.getInstance().getAddress().equals(address)|| address.equals(CurrencyHelper.getInstance().loadCurrency(0).getMasterAddress())) {
             avatar = MemoryDataManager.getInstance().getAvatar();
             name = MemoryDataManager.getInstance().getName();
         } else {
