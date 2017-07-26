@@ -98,7 +98,10 @@ public class RequestActivity extends BaseActivity {
         CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
         if(entity != null){
             addressEntity = entity;
-            showScanView();
+            scanHead = transferHeader(currencyBean) + addressEntity.getAddress() + "?" + "amount=";
+            addressTv.setText(addressEntity.getAddress());
+            showScanView(transferHeader(currencyBean) + addressEntity.getAddress());
+
         }else{
             NativeWallet.getInstance().initAccount(currencyBean).requestAddressList(new WalletListener<String>() {
                 @Override
@@ -106,33 +109,16 @@ public class RequestActivity extends BaseActivity {
                     CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
                     if(entity != null){
                         addressEntity = entity;
+                        scanHead = transferHeader(currencyBean) + addressEntity.getAddress() + "?" + "amount=";
+                        addressTv.setText(addressEntity.getAddress());
+                        showScanView(transferHeader(currencyBean) + addressEntity.getAddress());
                     }
-                    showScanView();
                 }
 
                 @Override
                 public void fail(WalletError error) {}
             });
         }
-    }
-
-    private void showScanView(){
-        new AsyncTask<Void,Void,Bitmap>(){
-            @Override
-            protected Bitmap doInBackground(Void... params) {
-                scanHead = transferHeader(currencyBean) + addressEntity.getAddress() + "?" + "amount=";
-                CreateScan createScan = new CreateScan();
-                Bitmap bitmap = createScan.generateQRCode(transferHeader(currencyBean) + addressEntity.getAddress());
-                return bitmap;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                super.onPostExecute(bitmap);
-                addressTv.setText(addressEntity.getAddress());
-                scanImg.setImageBitmap(bitmap);
-            }
-        }.execute();
     }
 
     @OnClick(R.id.left_img)
@@ -193,11 +179,26 @@ public class RequestActivity extends BaseActivity {
             } else {
                 scanUrl = scanHead + s.toString();
             }
-            CreateScan createScan = new CreateScan();
-            Bitmap bitmap = createScan.generateQRCode(scanUrl);
-            scanImg.setImageBitmap(bitmap);
+            showScanView(scanUrl);
         }
     };
+
+    private void showScanView(final String scanUrl){
+        new AsyncTask<Void,Void,Bitmap>(){
+            @Override
+            protected Bitmap doInBackground(Void... params) {
+                CreateScan createScan = new CreateScan();
+                Bitmap bitmap = createScan.generateQRCode(scanUrl);
+                return bitmap;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                scanImg.setImageBitmap(bitmap);
+            }
+        }.execute();
+    }
 
     public String transferHeader(CurrencyEnum bean) {
         String index = "bitcoin:";

@@ -211,7 +211,14 @@ public class NativeWallet {
             public void success(List<WalletOuterClass.Coin> list) {
                 if(list == null){
                     //用户没有创建过币种
-                    requestUserStatus(listener);
+                    baseWallet.requestUserStatus(new WalletListener<Integer>() {
+                        @Override
+                        public void success(Integer category) {
+                            listener.success(category);
+                        }
+                        @Override
+                        public void fail(WalletError error) {}
+                    });
                 }else{
                     listener.success(0);
                 }
@@ -220,41 +227,6 @@ public class NativeWallet {
             @Override
             public void fail(WalletError error) {
 
-            }
-        });
-    }
-
-    /**
-     * 检查用户类型（新用户，）
-     * @param listener
-     */
-    private void requestUserStatus(final WalletListener listener){
-        WalletOuterClass.RequestUserInfo requestUserInfo = WalletOuterClass.RequestUserInfo.newBuilder()
-                .setCurrency(CurrencyEnum.BTC.getCode())
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_USER_STATUS, requestUserInfo, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
-                    int category = coinsDetail.getCoin().getCategory();
-                    if(category == 1){
-                        // 用户为老用户需要迁移
-                        listener.success(1);
-                    }else if(category == 2){
-                        // 用户没有钱包数据 ，需要创建（新用户）
-                        listener.success(2);
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }

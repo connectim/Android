@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.home.bean.HomeAction;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.manager.EditInputFilterPrice;
 import connect.activity.wallet.bean.RateBean;
@@ -30,8 +31,10 @@ import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
+import connect.utils.ProgressUtil;
 import connect.utils.RegularUtil;
 import connect.utils.data.RateDataUtil;
 import connect.utils.data.RateFormatUtil;
@@ -331,7 +334,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                                     RateFormatUtil.longToDoubleBtc(0L)));
                         }
                         break;
-                    case 1:// 用户为老用户需要迁移
+                    case 1:
                         NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
                             @Override
                             public void success(String pin) {
@@ -349,10 +352,23 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                             public void fail(WalletError error) {}
                         });
                         break;
-                    case 2:// 用户没有钱包数据 ，需要创建（新用户）
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("type", CurrencyEnum.BTC);
-                        RandomVoiceActivity.startActivity(mActivity,bundle);
+                    case 2:
+                        DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
+                                mActivity.getString(R.string.Wallet_not_create_wallet), "",
+                                mActivity.getString(R.string.Wallet_Immediately_create),
+                                false, new DialogUtil.OnItemClickListener() {
+                                    @Override
+                                    public void confirm(String value) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("type", CurrencyEnum.BTC);
+                                        RandomVoiceActivity.startActivity(mActivity,bundle);
+                                    }
+
+                                    @Override
+                                    public void cancel() {
+
+                                    }
+                                });
                         break;
                 }
             }

@@ -98,7 +98,9 @@ public class BtcCurrency extends BaseCurrency {
      */
     @Override
     public String getSignRawTrans(ArrayList<String> priList, String tvs, String rowhex) {
-        String signTransfer = rowhex + " " + tvs + " " + new Gson().toJson(priList);
+        String signTransfer = rowhex + " " +
+                tvs + " " +
+                new Gson().toJson(priList);
         String signRawTransfer = AllNativeMethod.cdSignRawTranscation(signTransfer);
         SignRawBean signRawBean = new Gson().fromJson(signRawTransfer, SignRawBean.class);
         if(signRawBean.isComplete()){

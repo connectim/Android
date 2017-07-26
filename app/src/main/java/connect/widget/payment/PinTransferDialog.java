@@ -66,14 +66,16 @@ public class PinTransferDialog implements View.OnClickListener{
     private List<WalletOuterClass.Txout> txouts;
     private long fee;
     private CurrencyEnum currencyEnum;
+    private ArrayList<String> inputsList;
 
     /**
      * show pay the password box
      */
-    public Dialog showPaymentPwd(Activity activity, List<WalletOuterClass.Txout> txouts, long fee, int currency, String payload, final PaymentPwd.OnTrueListener onTrueListener) {
+    public Dialog showPaymentPwd(Activity activity, ArrayList<String> inputsList, List<WalletOuterClass.Txout> txouts, long fee, int currency, String payload, final PaymentPwd.OnTrueListener onTrueListener) {
         this.activity = activity;
         this.payload = payload;
         this.txouts = txouts;
+        this.inputsList = inputsList;
         this.fee = fee;
         this.currencyEnum = CurrencyEnum.getCurrency(currency);
         paySetBean = ParamManager.getInstance().getPaySet();
@@ -128,9 +130,8 @@ public class PinTransferDialog implements View.OnClickListener{
         feeTv.setText(activity.getString(R.string.Wallet_Fee_BTC,
                 Double.valueOf(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(fee))));
 
-        String selfAddress = SharedPreferenceUtil.getInstance().getUser().getAddress();
         for (WalletOuterClass.Txout txout : txouts) {
-            if(selfAddress.equals(txout.getAddress())){
+            if(inputsList.contains(txout.getAddress())){
                 continue;
             }
             ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(txout.getAddress());

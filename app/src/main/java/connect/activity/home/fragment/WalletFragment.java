@@ -121,6 +121,7 @@ public class WalletFragment extends BaseFragment{
                 }
             }
         });
+        amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(0));
         syncWallet();
     }
 
@@ -139,7 +140,6 @@ public class WalletFragment extends BaseFragment{
         String account = amountTv.getText().toString();
         if(mActivity == null || !isAdded())
             return;
-
         if (account.contains(mActivity.getString(R.string.Set_BTC_symbol)) && rateBean != null && rateBean.getRate() != null) {
             amountTv.setText(rateBean.getSymbol() + " " +
                     RateFormatUtil.foematNumber(RateFormatUtil.PATTERN_OTHER,
@@ -179,20 +179,27 @@ public class WalletFragment extends BaseFragment{
                             public void fail(WalletError error) {}
                         });
                         break;
-                    case 2:// 用户没有钱包数据 ，需要创建（新用户）
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("type", CurrencyEnum.BTC);
-                        RandomVoiceActivity.startActivity(mActivity,bundle);
+                    case 2:// 用户没有钱包数据,需要创建（新用户）
+                        DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
+                                mActivity.getString(R.string.Wallet_not_create_wallet), "",
+                                mActivity.getString(R.string.Wallet_Immediately_create),
+                                false, new DialogUtil.OnItemClickListener() {
+                                    @Override
+                                    public void confirm(String value) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("type", CurrencyEnum.BTC);
+                                        RandomVoiceActivity.startActivity(mActivity,bundle);
+                                    }
+                                    @Override
+                                    public void cancel() {}
+                                });
                         break;
                     default:
                         break;
                 }
             }
-
             @Override
-            public void fail(WalletError error) {
-
-            }
+            public void fail(WalletError error) {}
         });
     }
 
