@@ -96,11 +96,15 @@ public class GatherDetailGroupActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, String... strings) {
+    public static void startActivity(Activity activity, String hashid) {
+        startActivity(activity, hashid, null);
+    }
+
+    public static void startActivity(Activity activity, String hashid, String msgid) {
         Bundle bundle = new Bundle();
-        bundle.putString(GATHER_HASHID, strings[0]);
-        if (strings.length == 2) {
-            bundle.putString(GATHER_MSGID, strings[1]);
+        bundle.putString(GATHER_HASHID, hashid);
+        if (!TextUtils.isEmpty(msgid)) {
+            bundle.putString(GATHER_MSGID, msgid);
         }
         ActivityUtil.next(activity, GatherDetailGroupActivity.class, bundle);
     }

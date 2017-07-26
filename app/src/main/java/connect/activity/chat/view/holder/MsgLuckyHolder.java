@@ -1,6 +1,9 @@
 package connect.activity.chat.view.holder;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -53,7 +56,19 @@ public class MsgLuckyHolder extends MsgChatHolder {
         }
     }
 
-    private boolean playAnim = false;
+    private Handler handler = new Handler(Looper.myLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 100:
+                    contentLayout.setClickable(true);
+                    break;
+                case 120:
+                    contentLayout.setClickable(false);
+            }
+        }
+    };
 
     /**
      * request to get the lucky packet
@@ -84,10 +99,6 @@ public class MsgLuckyHolder extends MsgChatHolder {
                         throw new Exception("Validation fails");
                     }
 
-                    if (playAnim) {
-                        return;
-                    }
-
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GrabRedPackageResp packageResp = Connect.GrabRedPackageResp.parseFrom(structData.getPlainData());
                     if (!ProtoBufUtil.getInstance().checkProtoBuf(packageResp)) {//state default 0
@@ -95,33 +106,31 @@ public class MsgLuckyHolder extends MsgChatHolder {
                     }
                     switch (packageResp.getStatus()) {
                         case 0://fail
-                            playAnim=true;
+                            handler.sendEmptyMessage(120);
                             DialogUtil.showRedPacketState(context, 0, new DialogUtil.OnGifListener() {
                                 @Override
                                 public void click() {
                                     startPacketDetail(hashid, systemPacket ? 1 : 0);
-                                    playAnim=false;
+                                    handler.sendEmptyMessage(100);
                                 }
                             });
                             break;
                         case 1://get it
-                            playAnim=true;
+                            handler.sendEmptyMessage(120);
                             DialogUtil.showRedPacketState(context, 1, new DialogUtil.OnGifListener() {
                                 @Override
                                 public void click() {
                                     startPacketDetail(hashid, systemPacket ? 1 : 0);
-                                    playAnim = false;
+                                    handler.sendEmptyMessage(100);
                                 }
                             });
                             break;
                         case 2://Have got it , display  the details
-                            playAnim=false;
                             startPacketDetail(hashid, systemPacket ? 1 : 0);
                             break;
                         case 3://fail
                             break;
                         case 4://have no lucky packet
-                            playAnim=false;
                             startPacketDetail(hashid, systemPacket ? 1 : 0);
                             break;
                         case 5://Mobile phone is not bound

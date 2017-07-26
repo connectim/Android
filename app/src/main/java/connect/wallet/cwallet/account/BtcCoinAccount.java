@@ -11,7 +11,6 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
 import protos.Connect;
 import wallet_gateway.WalletOuterClass;
