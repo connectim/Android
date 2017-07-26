@@ -14,6 +14,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.ContainerBean;
+import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.bean.MsgDirect;
 import connect.activity.wallet.BlockchainActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -66,7 +68,11 @@ public class TransferDetailActivity extends BaseActivity {
     LinearLayout linearlayout;
 
     private TransferDetailActivity activity;
-    private Object[] objects = null;
+    private int transferType;// 0:outer 1:inner
+    private String senderKey;
+    private String receiverKey;
+    private String hashId;
+    private String msgId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +82,13 @@ public class TransferDetailActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, Object... objects) {
+    public static void startActivity(Activity activity, int transferType, String sender, String receiver, String hashid, String msgid) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("objs", objects);
+        bundle.putInt("TransferType", transferType);
+        bundle.putString("Sender", sender);
+        bundle.putString("Receiver", receiver);
+        bundle.putString("Hash", hashid);
+        bundle.putString("Msgid", msgid);
         ActivityUtil.next(activity, TransferDetailActivity.class, bundle);
     }
 
@@ -95,15 +105,22 @@ public class TransferDetailActivity extends BaseActivity {
             }
         });
 
-        objects= (Object[]) getIntent().getSerializableExtra("objs");
-        requestTransferDetail((int)objects[0], (String)objects[1]);
+        transferType = getIntent().getIntExtra("TransferType", 0);
+        senderKey = getIntent().getStringExtra("Sender");
+        receiverKey = getIntent().getStringExtra("Receiver");
+        hashId = getIntent().getStringExtra("Hash");
+        msgId = getIntent().getStringExtra("Msgid");
+
+        requestTransferDetail(transferType, hashId);
+        loadSenderInfo(senderKey);
+        loadReceiverInfo(receiverKey);
     }
 
     @OnClick({R.id.linearlayout})
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.linearlayout:
-                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, (String) objects[1]);
+                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, hashId);
                 break;
         }
     }
@@ -127,46 +144,41 @@ public class TransferDetailActivity extends BaseActivity {
                             }
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
-                            if(!ProtoBufUtil.getInstance().checkProtoBuf(bill)){
-                                return;
-                            }
-
-                            loadSenderInfo(bill.getSender());
-                            loadReceiverInfo(bill.getReceiver());
-
-                            if (TextUtils.isEmpty(bill.getTips())) {
-                                txt7.setVisibility(View.GONE);
-                            } else {
-                                txt7.setText(bill.getTips());
-                            }
-
-                            txt1.setText(getString(R.string.Set_BTC_symbol) + "" + RateFormatUtil.longToDoubleBtc(bill.getAmount()));
-                            txt2.setText(bill.getTxid());
-                            linearlayout.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, bill.getTxid());
+                            if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
+                                if (TextUtils.isEmpty(bill.getTips())) {
+                                    txt7.setVisibility(View.GONE);
+                                } else {
+                                    txt7.setText(bill.getTips());
                                 }
-                            });
-                            txt3.setText(TimeUtil.getTime(bill.getCreatedAt()*1000,TimeUtil.DEFAULT_DATE_FORMAT));
-                            String state = "";
-                            switch (bill.getStatus()) {
-                                case 0://do not pay
-                                    state = getString(R.string.Chat_Unpaid);
-                                    txt4.setBackgroundResource(R.drawable.shape_stroke_green);
-                                    break;
-                                case 1://do not confirm
-                                    state = getString(R.string.Wallet_Unconfirmed);
-                                    txt4.setBackgroundResource(R.drawable.shape_stroke_red);
-                                    break;
-                                case 2://confirm
-                                    state = getString(R.string.Wallet_Confirmed);
-                                    txt4.setBackgroundResource(R.drawable.shape_stroke_green);
-                                    break;
+
+                                txt1.setText(getString(R.string.Set_BTC_symbol) + "" + RateFormatUtil.longToDoubleBtc(bill.getAmount()));
+                                txt2.setText(bill.getTxid());
+                                linearlayout.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, bill.getTxid());
+                                    }
+                                });
+                                txt3.setText(TimeUtil.getTime(bill.getCreatedAt() * 1000, TimeUtil.DEFAULT_DATE_FORMAT));
+                                String state = "";
+                                switch (bill.getStatus()) {
+                                    case 0://do not pay
+                                        state = getString(R.string.Chat_Unpaid);
+                                        txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                                        break;
+                                    case 1://do not confirm
+                                        state = getString(R.string.Wallet_Unconfirmed);
+                                        txt4.setBackgroundResource(R.drawable.shape_stroke_red);
+                                        break;
+                                    case 2://confirm
+                                        state = getString(R.string.Wallet_Confirmed);
+                                        txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                                        break;
+                                }
+                                txt4.setText(state);
+                                TransactionHelper.getInstance().updateTransEntity(hashid, msgId, bill.getStatus());
+                                ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.TRANSFER_STATE, msgId, hashid);
                             }
-                            txt4.setText(state);
-                            TransactionHelper.getInstance().updateTransEntity(hashid, (String) objects[1], bill.getStatus());
-                            ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.TRANSFER_STATE, objects[2], hashid);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -181,21 +193,22 @@ public class TransferDetailActivity extends BaseActivity {
 
     /**
      * send information
-     * @param address
+     * @param pubkey
      */
-    protected void loadSenderInfo(String address) {
+    protected void loadSenderInfo(String pubkey) {
         String avatar = "";
         String name = "";
 
-        if (MemoryDataManager.getInstance().getAddress().equals(address)|| address.equals(CurrencyHelper.getInstance().loadCurrency(0).getMasterAddress())) {
+        if (MemoryDataManager.getInstance().getPubKey().equals(pubkey)) {
             avatar = MemoryDataManager.getInstance().getAvatar();
             name = MemoryDataManager.getInstance().getName();
         } else {
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
+            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
             if (friendEntity != null) {
                 avatar = friendEntity.getAvatar();
                 name = friendEntity.getUsername();
             } else {
+                String address = SupportKeyUril.getAddressFromPubkey(pubkey);
                 requestUserInfo(0, address);
             }
         }
@@ -212,21 +225,22 @@ public class TransferDetailActivity extends BaseActivity {
 
     /**
      * receiver information
-     * @param address
+     * @param pubkey
      */
-    protected void loadReceiverInfo(String address) {
+    protected void loadReceiverInfo(String pubkey) {
         String avatar = "";
         String name = "";
 
-        if (MemoryDataManager.getInstance().getAddress().equals(address)|| address.equals(CurrencyHelper.getInstance().loadCurrency(0).getMasterAddress())) {
+        if (MemoryDataManager.getInstance().getPubKey().equals(pubkey)) {
             avatar = MemoryDataManager.getInstance().getAvatar();
             name = MemoryDataManager.getInstance().getName();
         } else {
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
+            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
             if (friendEntity != null) {
                 avatar = friendEntity.getAvatar();
                 name = friendEntity.getUsername();
             } else {
+                String address = SupportKeyUril.getAddressFromPubkey(pubkey);
                 requestUserInfo(1, address);
             }
         }

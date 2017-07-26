@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import connect.activity.chat.bean.MsgDirect;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.TransactionEntity;
 import connect.ui.activity.R;
@@ -78,9 +79,14 @@ public class MsgPayHolder extends MsgChatHolder {
                 GatherBean gather = new Gson().fromJson(bean.getExt1(), GatherBean.class);
                 if (!gather.getIsCrowdfundRceipt()) {
                     if (entity.getTransStatus() == 0) {
-                        GatherDetailSingleActivity.startActivity((Activity) context, bean.getContent(), bean.getMessage_id());
+                        GatherDetailSingleActivity.startActivity((Activity) context, bean);
                     } else {
-                        TransferDetailActivity.startActivity((Activity) context, 0, entity.getMsgDefinBean().getContent(), entity.getMsgid());
+                        int transferType = 0;
+                        String sender = bean.getPublicKey();
+                        String receiver = bean.getSenderInfoExt().getPublickey();
+                        String hashid = bean.getContent();
+                        String msgid = bean.getMessage_id();
+                        TransferDetailActivity.startActivity((Activity) context, transferType, sender, receiver, hashid, msgid);
                     }
                 } else {
                     GatherDetailGroupActivity.startActivity((Activity) context, bean.getContent(), bean.getMessage_id());

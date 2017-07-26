@@ -13,6 +13,8 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.ContainerBean;
+import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.RecExtBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -61,14 +63,12 @@ public class GatherDetailSingleActivity extends BaseActivity {
     Button btn;
 
     private GatherDetailSingleActivity activity;
-    private static String GATHER_HASHID = "GATHER_HASHID";
-    private static String GATHER_MSGID = "GATHER_MSGID";
 
     private int state;
     private Connect.Bill billDetail = null;
 
+    private MsgDefinBean definBean;
     private String msgId;
-    private String hashid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +78,9 @@ public class GatherDetailSingleActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, String... strings) {
+    public static void startActivity(Activity activity, MsgDefinBean definBean) {
         Bundle bundle = new Bundle();
-        bundle.putString(GATHER_HASHID, strings[0]);
-        if (strings.length == 2) {
-            bundle.putString(GATHER_MSGID, strings[1]);
-        }
+        bundle.putSerializable("MsgDefinBean",definBean);
         ActivityUtil.next(activity, GatherDetailSingleActivity.class, bundle);
     }
 
@@ -100,8 +97,9 @@ public class GatherDetailSingleActivity extends BaseActivity {
             }
         });
 
-        hashid = getIntent().getStringExtra(GATHER_HASHID);
-        msgId = getIntent().getStringExtra(GATHER_MSGID);
+        definBean = (MsgDefinBean) getIntent().getSerializableExtra("MsgDefinBean");
+        msgId = definBean.getMessage_id();
+        String hashid = definBean.getContent();
         requestGatherDetail(hashid);
     }
 
@@ -115,7 +113,8 @@ public class GatherDetailSingleActivity extends BaseActivity {
                         ActivityUtil.goBack(activity);
                         break;
                     case 1://Did not pay ,to pay
-                        requestPayment();
+                        String hashid=definBean.getContent();
+                        requestPayment(hashid);
                         break;
                     case 2:
                         ActivityUtil.goBack(activity);
@@ -141,12 +140,12 @@ public class GatherDetailSingleActivity extends BaseActivity {
                     if (ProtoBufUtil.getInstance().checkProtoBuf(billDetail)) {
                         String username = "";
                         ContactEntity entity = null;
-                        if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver()) || billDetail.getReceiver().equals(CurrencyHelper.getInstance().loadCurrency(0).getMasterAddress())) {//I started gathering
-                            entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getSender());
+                        if (definBean.msgDirect() == MsgDirect.To) {//I started gathering
+                            entity = ContactHelper.getInstance().loadFriendEntity(definBean.getPublicKey());
                             username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
                             txt1.setText(String.format(getString(R.string.Wallet_has_requested_to_payment), username));
                         } else {//I received the payment
-                            entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getReceiver());
+                            entity = ContactHelper.getInstance().loadFriendEntity(definBean.getSenderInfoExt().getPublickey());
                             username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
                             txt1.setText(String.format(getString(R.string.Wallet_has_requested_for_payment), username));
                         }
@@ -203,7 +202,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
         });
     }
 
-    protected void requestPayment() {
+    protected void requestPayment(String hashid) {
         BaseBusiness baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
         baseBusiness.typePayment(hashid, 8, new WalletListener<String>() {
             @Override

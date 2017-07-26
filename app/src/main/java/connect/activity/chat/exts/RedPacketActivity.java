@@ -82,7 +82,6 @@ public class RedPacketActivity extends BaseActivity {
     private ContactEntity friendEntity;
     private GroupEntity groupEntity;
     private Connect.PendingRedPackage pendingRedPackage = null;
-    private PaymentPwd paymentPwd = null;
     private BaseBusiness baseBusiness;
 
     @Override

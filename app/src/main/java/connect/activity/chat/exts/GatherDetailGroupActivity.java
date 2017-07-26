@@ -20,11 +20,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.wallet.BlockchainActivity;
 import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
@@ -162,7 +165,12 @@ public class GatherDetailGroupActivity extends BaseActivity {
                         senderName = activity.getString(R.string.Chat_You);
                     } else {
                         senderName = senderInfo.getUsername();
-                        requestWallet();
+
+                        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(0);
+                        if (currencyEntity != null) {
+                            txt6.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
+                                    RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance())));
+                        }
                     }
                     senderNameTxt.setText(getString(R.string.Chat_Crowd_funding_by_who, senderName));
 
@@ -220,36 +228,6 @@ public class GatherDetailGroupActivity extends BaseActivity {
 
             }
         });
-    }
-
-    /**
-     * Get the wallet balance
-     */
-    private void requestWallet() {
-        /*String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
-        OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
-            @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                try {
-                    if (response.getCode() == 2000) {
-                        Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        if (ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)) {
-                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                            txt6.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
-                                    RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-                txt6.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance,
-                        RateFormatUtil.longToDoubleBtc(0)));
-            }
-        });*/
     }
 
     @OnClick({R.id.btn})

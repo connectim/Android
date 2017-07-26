@@ -1,5 +1,7 @@
 package connect.activity.chat.bean;
 
+import android.text.TextUtils;
+
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.activity.base.BaseApplication;
@@ -217,5 +219,20 @@ public class MsgDefinBean implements Serializable{
                 break;
         }
         return content;
+    }
+
+    public MsgDirect msgDirect() {
+        MsgDirect direct = null;
+        MsgSender sender = getSenderInfoExt();
+        if (sender == null) {
+            direct = (getPublicKey() == null || MemoryDataManager.getInstance().getPubKey().equals(getPublicKey())) ? MsgDirect.From : MsgDirect.To;
+        } else {
+            if (TextUtils.isEmpty(sender.publickey)) {
+                direct = MemoryDataManager.getInstance().getAddress().equals(sender.address) ? MsgDirect.To : MsgDirect.From;
+            } else {
+                direct = MemoryDataManager.getInstance().getPubKey().equals(sender.publickey) ? MsgDirect.To : MsgDirect.From;
+            }
+        }
+        return direct;
     }
 }
