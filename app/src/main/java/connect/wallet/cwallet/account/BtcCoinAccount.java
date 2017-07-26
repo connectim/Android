@@ -36,6 +36,10 @@ public class BtcCoinAccount implements CoinAccount {
     @Override
     public void requestAddressList(final WalletListener listener) {
         CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+        if (currencyEntity == null) {
+            return;
+        }
+
         WalletOuterClass.Coin.Builder builder = WalletOuterClass.Coin.newBuilder();
         builder.setCurrency(currencyEntity.getCurrency());
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_LIST, builder.build(), new ResultCall<Connect.HttpResponse>() {
@@ -47,8 +51,21 @@ public class BtcCoinAccount implements CoinAccount {
                     WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
                     List<WalletOuterClass.CoinInfo> list = coinsDetail.getCoinInfosList();
                     CurrencyHelper.getInstance().insertCurrencyAddressListCoinInfo(list,CurrencyEnum.BTC.getCode());
-                    CurrencyHelper.getInstance().insertCurrencyCoin(coinsDetail.getCoin());
-                    listener.success(coinsDetail.getCoin());
+
+                    WalletOuterClass.Coin.Builder coinBuilder = WalletOuterClass.Coin.newBuilder();
+                    coinBuilder.setSalt(coinsDetail.getCoin().getSalt());
+                    coinBuilder.setCurrency(coinsDetail.getCoin().getCurrency());
+                    coinBuilder.setCategory(coinsDetail.getCoin().getCategory());
+                    coinBuilder.setPayload(coinsDetail.getCoin().getPayload());
+                    coinBuilder.setStatus(coinsDetail.getCoin().getStatus());
+                    for (WalletOuterClass.CoinInfo coinInfo : list) {
+                        coinBuilder.setAmount(coinBuilder.getAmount() + coinInfo.getAmount());
+                        coinBuilder.setBalance(coinBuilder.getBalance() + coinInfo.getBalance());
+                    }
+
+                    WalletOuterClass.Coin localCoin = coinBuilder.build();
+                    CurrencyHelper.getInstance().insertCurrencyCoin(localCoin);
+                    listener.success(localCoin);
                 }catch (Exception e){
                     e.printStackTrace();
                 }

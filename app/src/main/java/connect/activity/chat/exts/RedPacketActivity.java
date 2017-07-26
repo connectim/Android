@@ -78,10 +78,8 @@ public class RedPacketActivity extends BaseActivity {
     private int redType;
     /** packet address */
     private String redKey;
-    private TransferUtil transaUtil;
     private ContactEntity friendEntity;
     private GroupEntity groupEntity;
-    private Connect.PendingRedPackage pendingRedPackage = null;
     private BaseBusiness baseBusiness;
 
     @Override
@@ -119,8 +117,6 @@ public class RedPacketActivity extends BaseActivity {
             }
         });
 
-        transaUtil = new TransferUtil();
-
         redType = getIntent().getIntExtra(RED_TYPE, 0);
         redKey = getIntent().getStringExtra(RED_KEY);
 
@@ -157,7 +153,6 @@ public class RedPacketActivity extends BaseActivity {
             edit.setText(String.valueOf(countMem));
         }
 
-        getPaddingInfo();
         baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
     }
 
@@ -181,30 +176,6 @@ public class RedPacketActivity extends BaseActivity {
                 PayFeeActivity.startActivity(activity);
             }
         });
-    }
-
-    private void getPaddingInfo() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_PACKAGE_PENDING, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
-                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
-                                pendingRedPackage = pending;
-                            }
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
-                });
     }
 
     private void sendRedPacket() {

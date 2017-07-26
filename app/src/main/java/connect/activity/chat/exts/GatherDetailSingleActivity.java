@@ -144,10 +144,12 @@ public class GatherDetailSingleActivity extends BaseActivity {
                             entity = ContactHelper.getInstance().loadFriendEntity(definBean.getPublicKey());
                             username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
                             txt1.setText(String.format(getString(R.string.Wallet_has_requested_to_payment), username));
+                            txt4.setVisibility(View.INVISIBLE);
                         } else {//I received the payment
                             entity = ContactHelper.getInstance().loadFriendEntity(definBean.getSenderInfoExt().getPublickey());
                             username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
                             txt1.setText(String.format(getString(R.string.Wallet_has_requested_for_payment), username));
+                            txt4.setVisibility(View.VISIBLE);
                         }
                         if (entity != null) {
                             GlideUtil.loadAvater(roundimg, entity.getAvatar());
@@ -162,15 +164,9 @@ public class GatherDetailSingleActivity extends BaseActivity {
                         String amout = RateFormatUtil.longToDoubleBtc(billDetail.getAmount());
                         txt3.setText(getResources().getString(R.string.Set_BTC_symbol) + amout);
 
-                        if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {
-                            txt4.setVisibility(View.INVISIBLE);
-                        } else {
-                            txt4.setVisibility(View.VISIBLE);
-                        }
-
                         state = billDetail.getStatus();
                         if (state == 0) {//Did not pay
-                            if (MemoryDataManager.getInstance().getAddress().equals(billDetail.getReceiver())) {
+                            if (definBean.msgDirect() == MsgDirect.To) {
                                 btn.setText(getResources().getString(R.string.Wallet_Waitting_for_pay));
                                 btn.setBackgroundResource(R.drawable.shape_stroke_red);
                                 btn.setTag(0);

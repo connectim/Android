@@ -250,7 +250,7 @@ public class BaseBusiness {
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.Payment payment = WalletOuterClass.Payment.newBuilder()
                 .setHashId(hash)
-                .setFee(0L)
+                .setFee(getFee())
                 .setPayType(transactionType).build();
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_PAYMENT, payment, new ResultCall<Connect.HttpResponse>() {
