@@ -35,9 +35,8 @@ public class BtcCoinAccount implements CoinAccount {
 
     @Override
     public void requestAddressList(final WalletListener listener) {
-        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
         WalletOuterClass.Coin.Builder builder = WalletOuterClass.Coin.newBuilder();
-        builder.setCurrency(currencyEntity.getCurrency());
+        builder.setCurrency(CurrencyEnum.BTC.getCode());
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_LIST, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {

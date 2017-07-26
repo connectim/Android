@@ -17854,6 +17854,11 @@ public final class WalletOuterClass {
      * <code>optional int32 currency = 9;</code>
      */
     int getCurrency();
+
+    /**
+     * <code>optional int64 fixedFee = 10;</code>
+     */
+    long getFixedFee();
   }
   /**
    * Protobuf type {@code wallet_gateway.OriginalTransaction}
@@ -17876,6 +17881,7 @@ public final class WalletOuterClass {
       oddChange_ = 0L;
       txOuts_ = java.util.Collections.emptyList();
       currency_ = 0;
+      fixedFee_ = 0L;
     }
 
     @java.lang.Override
@@ -17957,6 +17963,11 @@ public final class WalletOuterClass {
             case 72: {
 
               currency_ = input.readInt32();
+              break;
+            }
+            case 80: {
+
+              fixedFee_ = input.readInt64();
               break;
             }
           }
@@ -18191,6 +18202,15 @@ public final class WalletOuterClass {
       return currency_;
     }
 
+    public static final int FIXEDFEE_FIELD_NUMBER = 10;
+    private long fixedFee_;
+    /**
+     * <code>optional int64 fixedFee = 10;</code>
+     */
+    public long getFixedFee() {
+      return fixedFee_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -18229,6 +18249,9 @@ public final class WalletOuterClass {
       }
       if (currency_ != 0) {
         output.writeInt32(9, currency_);
+      }
+      if (fixedFee_ != 0L) {
+        output.writeInt64(10, fixedFee_);
       }
     }
 
@@ -18274,6 +18297,10 @@ public final class WalletOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(9, currency_);
       }
+      if (fixedFee_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(10, fixedFee_);
+      }
       memoizedSize = size;
       return size;
     }
@@ -18308,6 +18335,8 @@ public final class WalletOuterClass {
           .equals(other.getTxOutsList());
       result = result && (getCurrency()
           == other.getCurrency());
+      result = result && (getFixedFee()
+          == other.getFixedFee());
       return result;
     }
 
@@ -18343,6 +18372,9 @@ public final class WalletOuterClass {
       }
       hash = (37 * hash) + CURRENCY_FIELD_NUMBER;
       hash = (53 * hash) + getCurrency();
+      hash = (37 * hash) + FIXEDFEE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getFixedFee());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -18484,6 +18516,8 @@ public final class WalletOuterClass {
         }
         currency_ = 0;
 
+        fixedFee_ = 0L;
+
         return this;
       }
 
@@ -18529,6 +18563,7 @@ public final class WalletOuterClass {
           result.txOuts_ = txOutsBuilder_.build();
         }
         result.currency_ = currency_;
+        result.fixedFee_ = fixedFee_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -18630,6 +18665,9 @@ public final class WalletOuterClass {
         }
         if (other.getCurrency() != 0) {
           setCurrency(other.getCurrency());
+        }
+        if (other.getFixedFee() != 0L) {
+          setFixedFee(other.getFixedFee());
         }
         onChanged();
         return this;
@@ -19299,6 +19337,32 @@ public final class WalletOuterClass {
       public Builder clearCurrency() {
         
         currency_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long fixedFee_ ;
+      /**
+       * <code>optional int64 fixedFee = 10;</code>
+       */
+      public long getFixedFee() {
+        return fixedFee_;
+      }
+      /**
+       * <code>optional int64 fixedFee = 10;</code>
+       */
+      public Builder setFixedFee(long value) {
+        
+        fixedFee_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 fixedFee = 10;</code>
+       */
+      public Builder clearFixedFee() {
+        
+        fixedFee_ = 0L;
         onChanged();
         return this;
       }
@@ -23403,23 +23467,23 @@ public final class WalletOuterClass {
       "pent_currency\030\001 \001(\0132\035.wallet_gateway.Spe" +
       "ntCurrency\022\020\n\010pay_type\030\002 \001(\005\022\017\n\007hash_id\030",
       "\003 \001(\t\022\013\n\003fee\030\004 \001(\003\"\035\n\nHashIdResp\022\017\n\007hash" +
-      "_id\030\001 \001(\t\"\307\001\n\023OriginalTransaction\022\017\n\007has" +
+      "_id\030\001 \001(\t\"\331\001\n\023OriginalTransaction\022\017\n\007has" +
       "h_id\030\001 \001(\t\022\016\n\006rawhex\030\002 \001(\t\022\013\n\003vts\030\003 \001(\t\022" +
       "\013\n\003fee\030\004 \001(\003\022\021\n\taddresses\030\005 \003(\t\022\024\n\014estim" +
       "ate_fee\030\006 \001(\003\022\022\n\nodd_change\030\007 \001(\003\022&\n\007tx_" +
       "outs\030\010 \003(\0132\025.wallet_gateway.Txout\022\020\n\010cur" +
-      "rency\030\t \001(\005\"o\n\033OriginalTransactionRespon" +
-      "se\022\014\n\004code\030\001 \001(\005\0221\n\004data\030\002 \001(\0132#.wallet_" +
-      "gateway.OriginalTransaction\022\017\n\007message\030\003" +
-      " \001(\t\"a\n\022PublishTransaction\022\030\n\020transactio",
-      "n_type\030\001 \001(\005\022\017\n\007hash_id\030\002 \001(\t\022\016\n\006tx_hex\030" +
-      "\003 \001(\t\022\020\n\010currency\030\004 \001(\005\"\037\n\017ResponsePubli" +
-      "sh\022\014\n\004txid\030\001 \001(\t\"T\n\005GetTx\022\020\n\010currency\030\001 " +
-      "\001(\005\022\017\n\007address\030\002 \001(\t\022(\n\004page\030\003 \001(\0132\032.wal" +
-      "let_gateway.Pagination\"(\n\nPagination\022\014\n\004" +
-      "page\030\001 \001(\005\022\014\n\004size\030\002 \001(\005\"0\n\017RequestUserI" +
-      "nfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010currency\030\002 \001(\005b\006prot" +
-      "o3"
+      "rency\030\t \001(\005\022\020\n\010fixedFee\030\n \001(\003\"o\n\033Origina" +
+      "lTransactionResponse\022\014\n\004code\030\001 \001(\005\0221\n\004da" +
+      "ta\030\002 \001(\0132#.wallet_gateway.OriginalTransa" +
+      "ction\022\017\n\007message\030\003 \001(\t\"a\n\022PublishTransac",
+      "tion\022\030\n\020transaction_type\030\001 \001(\005\022\017\n\007hash_i" +
+      "d\030\002 \001(\t\022\016\n\006tx_hex\030\003 \001(\t\022\020\n\010currency\030\004 \001(" +
+      "\005\"\037\n\017ResponsePublish\022\014\n\004txid\030\001 \001(\t\"T\n\005Ge" +
+      "tTx\022\020\n\010currency\030\001 \001(\005\022\017\n\007address\030\002 \001(\t\022(" +
+      "\n\004page\030\003 \001(\0132\032.wallet_gateway.Pagination" +
+      "\"(\n\nPagination\022\014\n\004page\030\001 \001(\005\022\014\n\004size\030\002 \001" +
+      "(\005\"0\n\017RequestUserInfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010cu" +
+      "rrency\030\002 \001(\005b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -23570,7 +23634,7 @@ public final class WalletOuterClass {
     internal_static_wallet_gateway_OriginalTransaction_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_wallet_gateway_OriginalTransaction_descriptor,
-        new java.lang.String[] { "HashId", "Rawhex", "Vts", "Fee", "Addresses", "EstimateFee", "OddChange", "TxOuts", "Currency", });
+        new java.lang.String[] { "HashId", "Rawhex", "Vts", "Fee", "Addresses", "EstimateFee", "OddChange", "TxOuts", "Currency", "FixedFee", });
     internal_static_wallet_gateway_OriginalTransactionResponse_descriptor =
       getDescriptor().getMessageTypes().get(23);
     internal_static_wallet_gateway_OriginalTransactionResponse_fieldAccessorTable = new

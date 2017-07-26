@@ -46,7 +46,6 @@ public class TransferActivity extends BaseActivity {
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
 
-
     private TransferActivity mActivity;
     private LatelyTransferAdapter adapter;
 

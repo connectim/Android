@@ -176,7 +176,6 @@ public class BaseBusiness {
         builder.setSpentCurrency(builderSend.build());
         // 组装输出
         for (HashMap.Entry<String, Long> entry : outMap.entrySet()) {
-            System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
             WalletOuterClass.ConnectTxout txout = WalletOuterClass.ConnectTxout.newBuilder()
                     .setUid(entry.getKey())
                     .setAmount(entry.getValue())
@@ -250,7 +249,7 @@ public class BaseBusiness {
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.Payment payment = WalletOuterClass.Payment.newBuilder()
                 .setHashId(hash)
-                .setFee(0L)
+                .setFee(getFee())
                 .setPayType(transactionType).build();
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_PAYMENT, payment, new ResultCall<Connect.HttpResponse>() {
@@ -557,7 +556,7 @@ public class BaseBusiness {
         Long fee = ParamManager.getInstance().getPaySet().isAutoFee() ? transaction.getEstimateFee() : transaction.getFee();
         // 解密payload
         pinTransferDialog = new PinTransferDialog();
-        pinTransferDialog.showPaymentPwd(activity, addressList,transaction.getTxOutsList(), fee, transaction.getCurrency(),
+        pinTransferDialog.showPaymentPwd(activity, addressList,transaction.getTxOutsList(), fee, transaction.getFixedFee(), transaction.getCurrency(),
                 payload, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {

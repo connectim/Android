@@ -13,6 +13,7 @@ import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyEntity;
 import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -80,6 +81,32 @@ public class BtcCurrency extends BaseCurrency {
             public void onResponse(Connect.HttpResponse response) {
                 CurrencyHelper.getInstance().updateCurrency(currencyEntity);
                 listener.success(currencyEntity);
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                listener.fail(WalletListener.WalletError.NETError);
+            }
+        });
+    }
+
+    @Override
+    public void requestCoinInfo(final WalletListener listener) {
+        WalletOuterClass.Coin coin = WalletOuterClass.Coin.newBuilder()
+                .setCurrency(CurrencyEnum.BTC.getCode())
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_INFO, coin, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
+                    CurrencyHelper.getInstance().insertCurrencyAddressListCoinInfo(coinsDetail.getCoinInfosList(),CurrencyEnum.BTC.getCode());
+                    listener.success(coinsDetail.getCoin());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

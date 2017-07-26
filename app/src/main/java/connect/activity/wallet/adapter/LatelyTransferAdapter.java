@@ -45,11 +45,11 @@ public class LatelyTransferAdapter extends RecyclerView.Adapter<LatelyTransferAd
         switch (transEntity.getType()){
             case 1:
                 viewHolder.avaterRimg.setBackgroundResource(R.mipmap.luckpacket_record2x);
-                viewHolder.nameTv.setText(transEntity.getName());
+                viewHolder.nameTv.setText(R.string.Wallet_Sent_via_link_luck_packet);
                 break;
             case 2:
                 viewHolder.avaterRimg.setBackgroundResource(R.mipmap.bitcoin_luckybag3x);
-                viewHolder.nameTv.setText(transEntity.getName());
+                viewHolder.nameTv.setText(R.string.Wallet_Transfer_via_other_APP_messges);
                 break;
             case 3:
                 viewHolder.avaterRimg.setBackgroundResource(R.mipmap.bitcoin_luckybag3x);

@@ -158,6 +158,9 @@ public class UriUtil {
     /*req:PublishTransaction  resp:ResponsePublish*/
     /** 获取地址交易流水 */
     public static String WALLET_V2_COINS_ADDRESSES_TX = "/wallet/v2/coins/addresses/tx";
+    /** 获取币种信息 */
+    public static String WALLET_V2_COINS_INFO = "/wallet/v2/coins/info";
+
 
 
     /**======================================================================================

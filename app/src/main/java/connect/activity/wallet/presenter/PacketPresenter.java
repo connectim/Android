@@ -84,36 +84,33 @@ public class PacketPresenter implements PacketContract.Presenter{
 
     @Override
     public void getPacketDetail(String hashId) {
-        Connect.BillHashId billHashId = Connect.BillHashId.newBuilder().setHash(hashId).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.TRANSFER_OUTER, billHashId, new ResultCall<Connect.HttpResponse>() {
+        Connect.RedPackageHash redPackageHash = Connect.RedPackageHash.newBuilder()
+                .setId(hashId)
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_PACKAGE_INFO, redPackageHash, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
-                    }
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    final Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData().toByteArray());
-                    if(!ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)){
-                        return;
-                    }
+                    Connect.RedPackageInfo redPackageInfo = Connect.RedPackageInfo.parseFrom(structData.getPlainData());
                     SendOutBean sendOutBean = new SendOutBean();
                     sendOutBean.setType(PacketSendActivity.RED_PACKET);
-                    sendOutBean.setUrl(billingInfo.getUrl());
+                    sendOutBean.setUrl(redPackageInfo.getRedpackage().getUrl());
                     sendOutBean.setNumber(Integer.valueOf(mView.getPacketNumber()));
-                    sendOutBean.setDeadline(billingInfo.getDeadline());
+                    sendOutBean.setDeadline(redPackageInfo.getRedpackage().getDeadline());
                     mView.goPacketView(sendOutBean);
-                }catch (Exception e){
+                } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                int a = 0;
+
             }
         });
+
     }
 
 
