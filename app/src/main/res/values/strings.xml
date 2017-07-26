@@ -589,7 +589,7 @@
     <string name="Wallet_Amount_of_member">Amount of member</string>
     <string name="Wallet_Amount_Symbol">Amount(%s)</string>
     <string name="Wallet_Auto_Calculate_Miner_Fee">Auto Calculate Transaction Fee</string>
-    <string name="Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue">Automatic calculation of fees(%sBTC) is greater than the maximum set, whether to need to modify the fees for maximum and continue?</string>
+    <string name="Wallet_Auto_fees_greater_than_the_maximum_continue">Automatic calculation of fee (% sBTC) is greater than the maximum set, whether or not to continue?</string>
     <string name="Wallet_BTC_Each">%s BTC Each</string>
     <string name="Wallet_BTC_Total">%s BTC Total</string>
     <string name="Wallet_Balance">Balance: ฿%s</string>

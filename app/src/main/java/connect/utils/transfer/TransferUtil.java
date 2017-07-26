@@ -197,7 +197,7 @@ public class TransferUtil {
         if (paySetBean.isAutoFee()) {
             if (orderResponse.getFee() > paySetBean.getAutoMaxFee()) {
                 DialogUtil.showAlertTextView(activity, activity.getString(R.string.Set_tip_title),
-                        activity.getString(R.string.Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue,
+                        activity.getString(R.string.Wallet_Auto_fees_greater_than_the_maximum_continue,
                                 RateFormatUtil.longToDoubleBtc(orderResponse.getFee())),
                         "", "", false, new DialogUtil.OnItemClickListener() {
                             @Override

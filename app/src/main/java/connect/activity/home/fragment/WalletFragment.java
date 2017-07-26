@@ -220,10 +220,7 @@ public class WalletFragment extends BaseFragment{
             @Override
             public void success(WalletOuterClass.Coin coin) {
                 if(coin != null){
-                    CurrencyAddressEntity addressEntity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(CurrencyEnum.BTC.getCode());
                     currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
-                    currencyEntity.setAmount(addressEntity.getAmount());
-                    currencyEntity.setBalance(addressEntity.getBalance());
                     amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
                 }else{
                     currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());

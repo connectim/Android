@@ -102,7 +102,7 @@ public class BtcCurrency extends BaseCurrency {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
-                    CurrencyHelper.getInstance().insertCurrencyAddressListCoinInfo(coinsDetail.getCoinInfosList(),CurrencyEnum.BTC.getCode());
+                    CurrencyHelper.getInstance().insertCurrencyCoin(coinsDetail.getCoin());
                     listener.success(coinsDetail.getCoin());
                 } catch (Exception e) {
                     e.printStackTrace();

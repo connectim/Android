@@ -589,7 +589,7 @@
     <string name="Wallet_Amount_of_member">众筹人数</string>
     <string name="Wallet_Amount_Symbol">金额(%s)</string>
     <string name="Wallet_Auto_Calculate_Miner_Fee">自动计算手续费</string>
-    <string name="Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue">自动计算的手续费(%sBTC)大于最大设定，是否需要修改手续费为最大值并继续？</string>
+    <string name="Wallet_Auto_fees_greater_than_the_maximum_continue">自动计算的手续费(%sBTC)大于最大设定，是否继续？</string>
     <string name="Wallet_BTC_Each">每个%sBTC</string>
     <string name="Wallet_BTC_Total">众筹总额:%s</string>
     <string name="Wallet_Balance">余额:฿%s</string>
