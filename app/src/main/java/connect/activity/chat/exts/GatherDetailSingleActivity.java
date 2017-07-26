@@ -28,6 +28,7 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
@@ -232,10 +233,10 @@ public class GatherDetailSingleActivity extends BaseActivity {
     }
 
     protected void requestPayment() {
-        BaseBusiness baseBusiness = new BaseBusiness(activity);
-        baseBusiness.typePayment(hashid, 8, new WalletListener<WalletOuterClass.OriginalTransactionResponse>() {
+        BaseBusiness baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
+        baseBusiness.typePayment(hashid, 8, new WalletListener<String>() {
             @Override
-            public void success(WalletOuterClass.OriginalTransactionResponse response) {
+            public void success(String hashId) {
                 ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(billDetail.getReceiver());
                 if (entity != null) {
                     String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();

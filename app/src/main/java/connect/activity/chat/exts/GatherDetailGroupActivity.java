@@ -262,10 +262,10 @@ public class GatherDetailGroupActivity extends BaseActivity {
     }
 
     protected void requestGatherPayment() {
-        BaseBusiness baseBusiness = new BaseBusiness(activity);
-        baseBusiness.typePayment(hashid, 2, new WalletListener<WalletOuterClass.OriginalTransactionResponse>() {
+        BaseBusiness baseBusiness = new BaseBusiness(activity,CurrencyEnum.BTC);
+        baseBusiness.typePayment(hashid, 2, new WalletListener<String>() {
             @Override
-            public void success(WalletOuterClass.OriginalTransactionResponse response) {
+            public void success(String hashId) {
                 String contactName = crowdfunding.getSender().getUsername();
                 String noticeContent = getString(R.string.Chat_paid_the_crowd_founding_to, activity.getString(R.string.Chat_You), contactName);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NOTICE, noticeContent);

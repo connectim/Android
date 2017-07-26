@@ -139,8 +139,7 @@ public class PinTransferDialog implements View.OnClickListener{
             TextView address = (TextView) detailView.findViewById(R.id.address_tv);
             TextView amount = (TextView) detailView.findViewById(R.id.amount_tv);
             if(contactEntity != null){
-                address.setText(contactEntity.getUsername() + activity.getString(R.string.Chat_Accept_success)
-                        + "( "+ activity.getString(R.string.Link_Friend) + ")");
+                address.setText(contactEntity.getUsername() + "( "+ activity.getString(R.string.Link_Friend) + ")");
             }else{
                 address.setText(txout.getAddress());
             }
@@ -277,36 +276,37 @@ public class PinTransferDialog implements View.OnClickListener{
 
     public void closeStatusDialog(final MdStyleProgress.Status status, final PaymentPwd.OnAnimationListener onAnimationListener) {
         //Sleep 2s Loading
-        handler = new Handler(Looper.getMainLooper()){
+        Handler handler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message msg) {
-                switch (msg.what){
-                    case 1:
-                        if(status == MdStyleProgress.Status.LoadSuccess){
-                            statusChange(1);
-                            progressBar.setStatus(status);
-                            progressBar.startAnima();
-                        }else if(status == MdStyleProgress.Status.LoadFail){
-                            statusChange(2);
-                            progressBar.setStatus(status);
-                            progressBar.failAnima();
-                        }
-                        break;
-                    case 2:
-                        dialog.dismiss();
-                        if(onAnimationListener != null){
-                            onAnimationListener.onComplete();
-                        }
-                        break;
-                    default:
-                        break;
+                if(status == MdStyleProgress.Status.LoadSuccess){
+                    statusChange(1);
+                    progressBar.setStatus(status);
+                    progressBar.startAnima();
+                }else if(status == MdStyleProgress.Status.LoadFail){
+                    statusChange(2);
+                    progressBar.setStatus(status);
+                    progressBar.failAnima();
                 }
-                //Sleep 1.3s (Successful failure time)
-                handler.sendEmptyMessageDelayed(2,1300);
+                sleepCloseDialog(onAnimationListener);
             }
         };
         //Sleep 1s (Circle time)
         handler.sendEmptyMessageDelayed(1,1000);
+    }
+
+    private void sleepCloseDialog(final PaymentPwd.OnAnimationListener onAnimationListener){
+        Handler handler = new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                dialog.dismiss();
+                if(onAnimationListener != null){
+                    onAnimationListener.onComplete();
+                }
+            }
+        };
+        //Sleep 1.3s (Successful failure time)
+        handler.sendEmptyMessageDelayed(2,1300);
     }
 
     public interface OnTrueListener {

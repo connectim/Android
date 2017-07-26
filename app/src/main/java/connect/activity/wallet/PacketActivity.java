@@ -119,12 +119,13 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
 
     @OnClick(R.id.pay)
     void finish(View view) {
-        baseBusiness.luckyPacket(null, "", 1, 0, Integer.valueOf(packetNumberEt.getText().toString()),
+        presenter.getPacketDetail("bfcb7c85baf8008833fdb6f4122e4e009fac25aa");
+        /*baseBusiness.luckyPacket(null, "", 1, 0, Integer.valueOf(packetNumberEt.getText().toString()),
                 transferEditView.getCurrentBtcLong(), transferEditView.getNote(), new WalletListener<String>() {
             @Override
             public void success(String hashId) {
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(1,"","",""));
-                presenter.getPacketDetail(hashId);
+                presenter.getPacketDetail("bfcb7c85baf8008833fdb6f4122e4e009fac25aa");
                 ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
             }
 
@@ -132,7 +133,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
             public void fail(WalletError error) {
                 ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
             }
-        });
+        });*/
     }
 
     @Override

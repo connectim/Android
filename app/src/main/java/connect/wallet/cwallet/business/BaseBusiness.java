@@ -65,9 +65,6 @@ public class BaseBusiness {
     private final int UNSPENTDUST = 3006; // 找零太小
     private final int AUTOMAX = 3007; // 自动计算手续费大于最大阈值
     private Dialog connectDialog;
-    public BaseBusiness(Activity mActivity) {
-        this.mActivity = mActivity;
-    }
 
     public BaseBusiness(Activity mActivity, CurrencyEnum currencyEnum) {
         this.mActivity = mActivity;
@@ -126,7 +123,7 @@ public class BaseBusiness {
      * @param outMap <address,amount>
      * @param listener
      */
-    public void transferAddress(ArrayList<String> listAddress, HashMap<String,Long> outMap, final WalletListener listener){
+    public void transferAddress(ArrayList<String> listAddress, HashMap<String,Long> outMap, final WalletListener<String> listener){
         transactionType = 1;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.TransferRequest.Builder builder = WalletOuterClass.TransferRequest.newBuilder();
@@ -165,7 +162,7 @@ public class BaseBusiness {
      * @param outMap <pubKey,amount>
      * @param listener
      */
-    public void transferConnectUser(ArrayList<String> listAddress, HashMap<String,Long> outMap, final WalletListener listener){
+    public void transferConnectUser(ArrayList<String> listAddress, HashMap<String,Long> outMap, final WalletListener<String> listener){
         transactionType = 1;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.ConnectTransferRequest.Builder builder = WalletOuterClass.ConnectTransferRequest.newBuilder();
@@ -248,7 +245,7 @@ public class BaseBusiness {
      *             TransactionTypeLuckypackage = 3
      *             TransactionTypeURLTransfer = 6
      */
-    public void typePayment(String hash,int type, final WalletListener listener) {
+    public void typePayment(String hash,int type, final WalletListener<String> listener) {
         transactionType = type;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.Payment payment = WalletOuterClass.Payment.newBuilder()
@@ -324,7 +321,7 @@ public class BaseBusiness {
      * @param listener
      */
     public void luckyPacket(ArrayList<String> listAddress, String receiverIdentifier, int type, int category,
-                            int size, long amount, String tips, final WalletListener listener){
+                            int size, long amount, String tips, final WalletListener<String> listener){
         transactionType = 3;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.LuckyPackageRequest.Builder builder = WalletOuterClass.LuckyPackageRequest.newBuilder();
@@ -364,7 +361,7 @@ public class BaseBusiness {
      * @param amount
      * @param listener
      */
-    public void outerTransfer(ArrayList<String> listAddress, long amount, final WalletListener listener){
+    public void outerTransfer(ArrayList<String> listAddress, long amount, final WalletListener<String> listener){
         transactionType = 6;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.OutTransfer.Builder builder = WalletOuterClass.OutTransfer.newBuilder();
@@ -395,7 +392,7 @@ public class BaseBusiness {
     /**
      * 广播交易
      */
-    private void publishTransfer(String rawHex, final String hashId, final WalletListener listener){
+    private void publishTransfer(String rawHex, final String hashId, final WalletListener<String> listener){
         WalletOuterClass.PublishTransaction publishTransaction = WalletOuterClass.PublishTransaction.newBuilder()
                 .setCurrency(CurrencyEnum.BTC.getCode())
                 .setHashId(hashId)
