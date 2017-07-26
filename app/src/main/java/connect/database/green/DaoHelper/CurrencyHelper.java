@@ -119,19 +119,23 @@ public class CurrencyHelper extends BaseDao{
      */
     public void insertCurrencyListCoin(List<WalletOuterClass.Coin> list){
         for(WalletOuterClass.Coin coin : list){
-            CurrencyEntity currencyEntity = loadCurrency(coin.getCurrency());
-            if(currencyEntity == null){
-                currencyEntity = new CurrencyEntity();
-            }
-            currencyEntity.setSalt(coin.getSalt());
-            currencyEntity.setBalance(coin.getBalance());
-            currencyEntity.setAmount(coin.getAmount());
-            currencyEntity.setCurrency(coin.getCurrency());
-            currencyEntity.setCategory(coin.getCategory());
-            currencyEntity.setPayload(coin.getPayload());
-            currencyEntity.setStatus(coin.getStatus());
-            insertCurrency(currencyEntity);
+            insertCurrencyCoin(coin);
         }
+    }
+
+    public void insertCurrencyCoin(WalletOuterClass.Coin coin){
+        CurrencyEntity currencyEntity = loadCurrency(coin.getCurrency());
+        if(currencyEntity == null){
+            currencyEntity = new CurrencyEntity();
+        }
+        currencyEntity.setSalt(coin.getSalt());
+        currencyEntity.setBalance(coin.getBalance());
+        currencyEntity.setAmount(coin.getAmount());
+        currencyEntity.setCurrency(coin.getCurrency());
+        currencyEntity.setCategory(coin.getCategory());
+        currencyEntity.setPayload(coin.getPayload());
+        currencyEntity.setStatus(coin.getStatus());
+        insertCurrency(currencyEntity);
     }
 
     /**

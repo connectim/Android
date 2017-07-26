@@ -47,6 +47,7 @@ import connect.widget.random.RandomVoiceActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Transfer amount input

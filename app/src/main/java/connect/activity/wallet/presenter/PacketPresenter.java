@@ -111,7 +111,7 @@ public class PacketPresenter implements PacketContract.Presenter{
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                int a = 0;
             }
         });
     }

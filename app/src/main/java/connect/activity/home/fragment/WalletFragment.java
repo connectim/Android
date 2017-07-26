@@ -17,10 +17,12 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseApplication;
 import connect.activity.base.BaseFragment;
 import connect.activity.home.bean.WalletMenuBean;
 import connect.activity.wallet.PacketActivity;
@@ -49,6 +51,7 @@ import connect.widget.random.RandomVoiceActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * wallet
@@ -88,6 +91,7 @@ public class WalletFragment extends BaseFragment{
         rateBean = ParamManager.getInstance().getCountryRate();
         if(mActivity != null && isAdded()){
             requestRate();
+            requestCurrencyCoin();
         }
     }
 
@@ -122,7 +126,11 @@ public class WalletFragment extends BaseFragment{
             }
         });
         amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(0));
-        syncWallet();
+
+        List<CurrencyEntity> listCurrency = CurrencyHelper.getInstance().loadCurrencyList();
+        if(listCurrency == null || listCurrency.size() == 0){
+            syncWallet();
+        }
     }
 
     @OnClick(R.id.right_lin)
@@ -198,6 +206,27 @@ public class WalletFragment extends BaseFragment{
                         break;
                 }
             }
+            @Override
+            public void fail(WalletError error) {}
+        });
+    }
+
+    /**
+     * 获取钱包余额
+     */
+    private void requestCurrencyCoin(){
+        NativeWallet.getInstance().initAccount(CurrencyEnum.BTC).requestAddressList(new WalletListener<WalletOuterClass.Coin>() {
+            @Override
+            public void success(WalletOuterClass.Coin coin) {
+                if(coin != null){
+                    currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+                    amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
+                }else{
+                    currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+                    amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(0L));
+                }
+            }
+
             @Override
             public void fail(WalletError error) {}
         });
