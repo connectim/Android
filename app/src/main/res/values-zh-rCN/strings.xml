@@ -245,7 +245,7 @@
     <string name="Link_Address_Book_Access_Denied">通讯录访问被拒绝</string>
     <string name="Link_An_error_occurred_change_nickname">更新昵称失败</string>
     <string name="Link_Application_has_passed">申请已通过</string>
-    <string name="Link_Attorn_failed">转让失败</string>s
+    <string name="Link_Attorn_failed">转让失败</string>
     <string name="Link_Attorn_successful">转让成功</string>
     <string name="Link_Black_List">黑名单</string>
     <string name="Link_Block">加入黑名单</string>
@@ -497,6 +497,8 @@
     <string name="Set_Logging_out">正在退出...</string>
     <string name="Set_Logout_delete_login_data_still_log">退出登录将删除你的登录信息和手势密码，你仍要退出当前账户么?</string>
     <string name="Set_Miner_fee">手续费</string>
+    <string name="Wallet_not_create_wallet">你还没有创建钱包</string>
+    <string name="Wallet_Immediately_create">立即创建</string>
     <string name="Set_Mobile_Number_has_been_updated">手机号修改完成</string>
     <string name="Set_My_Profile">个人资料</string>
     <string name="Set_My_QR_code">我的二维码</string>

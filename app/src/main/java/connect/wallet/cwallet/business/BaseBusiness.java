@@ -48,6 +48,13 @@ public class BaseBusiness {
     private PinTransferDialog pinTransferDialog;
     private CurrencyEnum currencyEnum;
 
+    private int transactionType;
+    /*typedef NS_ENUM(NSInteger ,TransactionType) {
+        TransactionTypeBill = 1,
+                TransactionTypePayCrowding = 2,
+                TransactionTypeLuckypackage = 3,
+                TransactionTypeURLTransfer = 6,
+    }*/
     private final int TRANSFER_SUUESS = 0; // 转账参数正确
     private final int FEETOSAMLL = 3000; // 手续费太小
     private final int FEEEMPTY = 3001; // 手续费为空
@@ -116,10 +123,11 @@ public class BaseBusiness {
 
     /**
      * 地址转账
-     * @param outMap
+     * @param outMap <address,amount>
      * @param listener
      */
     public void transferAddress(ArrayList<String> listAddress, HashMap<String,Long> outMap, final WalletListener listener){
+        transactionType = 1;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.TransferRequest.Builder builder = WalletOuterClass.TransferRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
@@ -154,10 +162,11 @@ public class BaseBusiness {
 
     /**
      * Connect用户转账
-     * @param outMap
+     * @param outMap <pubKey,amount>
      * @param listener
      */
     public void transferConnectUser(ArrayList<String> listAddress, HashMap<String,Long> outMap, final WalletListener listener){
+        transactionType = 1;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.ConnectTransferRequest.Builder builder = WalletOuterClass.ConnectTransferRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
@@ -240,11 +249,12 @@ public class BaseBusiness {
      *             TransactionTypeURLTransfer = 6
      */
     public void typePayment(String hash,int type, final WalletListener listener) {
+        transactionType = type;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.Payment payment = WalletOuterClass.Payment.newBuilder()
                 .setHashId(hash)
                 .setFee(0L)
-                .setPayType(type).build();
+                .setPayType(transactionType).build();
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_PAYMENT, payment, new ResultCall<Connect.HttpResponse>() {
             @Override
@@ -307,7 +317,7 @@ public class BaseBusiness {
      * @param listAddress
      * @param receiverIdentifier // group id or user pubkey
      * @param type // private group outer //0：内部 1：外部
-     * @param category //0：个人 1：群主
+     * @param category //0：个人 1：群
      * @param size
      * @param amount
      * @param tips
@@ -315,6 +325,7 @@ public class BaseBusiness {
      */
     public void luckyPacket(ArrayList<String> listAddress, String receiverIdentifier, int type, int category,
                             int size, long amount, String tips, final WalletListener listener){
+        transactionType = 3;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.LuckyPackageRequest.Builder builder = WalletOuterClass.LuckyPackageRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
@@ -354,6 +365,7 @@ public class BaseBusiness {
      * @param listener
      */
     public void outerTransfer(ArrayList<String> listAddress, long amount, final WalletListener listener){
+        transactionType = 6;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.OutTransfer.Builder builder = WalletOuterClass.OutTransfer.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
@@ -388,19 +400,17 @@ public class BaseBusiness {
                 .setCurrency(CurrencyEnum.BTC.getCode())
                 .setHashId(hashId)
                 .setTxHex(rawHex)
+                .setTransactionType(transactionType)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_PUBLISH, publishTransaction, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(final Connect.HttpResponse response) {
-                try {
-                    /*Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    WalletOuterClass.ResponsePublish responsePublish = WalletOuterClass.ResponsePublish.parseFrom(structData.getPlainData());*/
-                    listener.success(hashId);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadSuccess);
+                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
+                    @Override
+                    public void onComplete() {
+                        listener.success(hashId);
+                    }
+                });
             }
 
             @Override
@@ -496,7 +506,7 @@ public class BaseBusiness {
         if(addressList.size() == 0){
             return;
         }
-        final WalletListener walletListener = new WalletListener<ArrayList<String>>() {
+        final WalletListener pinListener = new WalletListener<ArrayList<String>>() {
             @Override
             public void success(ArrayList<String> priKeyList) {
                 String rawHex = NativeWallet.getInstance().initCurrency(currencyEnum).getSignRawTrans(priKeyList,
@@ -507,26 +517,25 @@ public class BaseBusiness {
                     publishTransfer(rawHex, transaction.getHashId(), listener);
                 }
             }
-
             @Override
-            public void fail(WalletError error) {
-                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-            }
+            public void fail(WalletError error) {}
         };
+
         List<CurrencyAddressEntity> list = CurrencyHelper.getInstance().loadCurrencyAddress(addressList);
         if(addressList.size() != list.size()){
             NativeWallet.getInstance().initAccount(CurrencyEnum.BTC).requestAddressList(new WalletListener<String>() {
                 @Override
                 public void success(String list) {
-                    decodePayload(activity, addressList, transaction, walletListener);
+                    decodePayload(activity, addressList, transaction, pinListener);
                 }
 
                 @Override
                 public void fail(WalletError error) {}
             });
         }else{
-            decodePayload(activity, addressList, transaction, walletListener);
+            decodePayload(activity, addressList, transaction, pinListener);
         }
+
         if(connectDialog != null)
             connectDialog.dismiss();
     }
@@ -539,17 +548,8 @@ public class BaseBusiness {
      */
     private void decodePayload(Activity activity, final ArrayList<String> addressList, WalletOuterClass.OriginalTransaction transaction,
                                final WalletListener listener){
-        String payload = "";
-        final ArrayList<Integer> indexList = new ArrayList<>();
-        /*for(String address : addressList){
-            // 获取输入地址对应的index
-            CurrencyAddressEntity addressEntity = CurrencyHelper.getInstance().loadCurrencyAddressFromAddress(address);
-            indexList.add(addressEntity.getIndex());
-        }*/
-        List<CurrencyAddressEntity> list = CurrencyHelper.getInstance().loadCurrencyAddress(currencyEnum.getCode());
-        indexList.add(list.get(0).getIndex());
-
         // 获取打款币种的加密payload
+        String payload = "";
         final CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
         if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY || currencyEntity.getCategory() == BaseCurrency.CATEGORY_SALT_SEED){
             payload = currencyEntity.getPayload();
@@ -557,19 +557,14 @@ public class BaseBusiness {
             WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
             payload = walletBean.getPayload();
         }
-        final ArrayList<String> priList = new ArrayList<>();
+        Long fee = ParamManager.getInstance().getPaySet().isAutoFee() ? transaction.getEstimateFee() : transaction.getFee();
+        // 解密payload
         pinTransferDialog = new PinTransferDialog();
-
-        Long fee;
-        if(ParamManager.getInstance().getPaySet().isAutoFee()){
-            fee = transaction.getEstimateFee();
-        }else{
-            fee = transaction.getFee();
-        }
-        pinTransferDialog.showPaymentPwd(activity, transaction.getTxOutsList(), fee, transaction.getCurrency(),
+        pinTransferDialog.showPaymentPwd(activity, addressList,transaction.getTxOutsList(), fee, transaction.getCurrency(),
                 payload, new PaymentPwd.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {
+                ArrayList<String> priList = new ArrayList<>();
                 if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY){
                     // 纯私钥
                     String priKey = new String(StringUtil.hexStringToBytes(decodeStr));
@@ -578,7 +573,13 @@ public class BaseBusiness {
                     // 导入第三方种子
 
                 }if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_BASESEED){
-                    // 原始种子，生成货币种子，再生成对应的私钥
+                    // 获取输入地址对应的index
+                    ArrayList<Integer> indexList = new ArrayList<>();
+                    for(String address : addressList){
+                        CurrencyAddressEntity addressEntity = CurrencyHelper.getInstance().loadCurrencyAddressFromAddress(address);
+                        indexList.add(addressEntity.getIndex());
+                    }
+                    // 根据index获取对应的私钥
                     for(Integer index : indexList){
                         String priKey = NativeWallet.getInstance().initCurrency(currencyEnum).ceaterPriKey(decodeStr,currencyEntity.getSalt(),index);
                         priList.add(priKey);

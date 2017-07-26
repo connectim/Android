@@ -197,7 +197,7 @@ public class TransferToActivity extends BaseActivity {
 
     private void requestSingleSend() {
         HashMap<String,Long> outMap = new HashMap();
-        outMap.put(friendEntity.getAddress(),transferEditView.getCurrentBtcLong());
+        outMap.put(friendEntity.getPub_key(),transferEditView.getCurrentBtcLong());
         baseBusiness.transferConnectUser(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {

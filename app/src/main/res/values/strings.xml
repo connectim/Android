@@ -572,6 +572,8 @@
     <string name="Set_you_can_login_mobile_number_link_one_account">After changing, you can login with new number\n one mobile number can only be linked to one account</string>
     <string name="Wallet">Wallet</string>
     <string name="Wallet_Detail">detail</string>
+    <string name="Wallet_not_create_wallet">You haven\'t create the purse</string>
+    <string name="Wallet_Immediately_create">Immediately create</string>
     <string name="Wallet_Packet_Send_User_Connect">Send the lucky packet via Connect</string>
     <string name="Wallet_Scan_to_pay_me">Scan to pay me</string>
     <string name="Wallet_Transfer_Count">Transfer(%d)</string>

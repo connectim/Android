@@ -20,6 +20,7 @@ import connect.utils.LoginPassCheckUtil;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
@@ -76,19 +77,24 @@ public class SafetyActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_Account_security);
 
         userBean = SharedPreferenceUtil.getInstance().getUser();
-        /*MemoryDataManager.getInstance().getPriKey();
+        MemoryDataManager.getInstance().getPriKey();
         CurrencyEntity ccc = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
         WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
         if(TextUtils.isEmpty(walletBean.getPayload())){
 
         }else{
-            String aaa = SupportKeyUril.decodePinDefult(walletBean.getPayload(),"1234");
-            String currencySeend = SupportKeyUril.xor(aaa, ccc.getSalt(), 64);
-            String priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(currencySeend,44,0,0,0,0);
+            String baseSeed = SupportKeyUril.decodePinDefult(walletBean.getPayload(),"1234");
+            String currencySeend = SupportKeyUril.xor(baseSeed, ccc.getSalt(), 64);
 
-            String pubKey = AllNativeMethod.cdGetPubKeyFromSeedBIP44(aaa,44,0,0,0,0);
+            String priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(currencySeend,44,0,0,0,0);
+            String pubKey = AllNativeMethod.cdGetPubKeyFromSeedBIP44(currencySeend,44,0,0,0,0);
             String address = AllNativeMethod.cdGetBTCAddrFromPubKey(pubKey);
-        }*/
+
+            NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).ceaterAddress(currencySeend);
+            NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).ceaterPriKey(baseSeed,ccc.getSalt(),0);
+        }
+
+
 
         if(userBean != null && TextUtils.isEmpty(userBean.getPhone())){
             phoneTv.setText(R.string.Set_Phone_unbinded);
