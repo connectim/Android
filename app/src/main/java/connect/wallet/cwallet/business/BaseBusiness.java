@@ -523,9 +523,9 @@ public class BaseBusiness {
 
         List<CurrencyAddressEntity> list = CurrencyHelper.getInstance().loadCurrencyAddress(addressList);
         if(addressList.size() != list.size()){
-            NativeWallet.getInstance().initAccount(CurrencyEnum.BTC).requestAddressList(new WalletListener<String>() {
+            NativeWallet.getInstance().initAccount(CurrencyEnum.BTC).requestAddressList(new WalletListener<WalletOuterClass.Coin>() {
                 @Override
-                public void success(String list) {
+                public void success(WalletOuterClass.Coin coin) {
                     decodePayload(activity, addressList, transaction, pinListener);
                 }
 

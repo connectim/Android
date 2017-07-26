@@ -47,7 +47,8 @@ public class BtcCoinAccount implements CoinAccount {
                     WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
                     List<WalletOuterClass.CoinInfo> list = coinsDetail.getCoinInfosList();
                     CurrencyHelper.getInstance().insertCurrencyAddressListCoinInfo(list,CurrencyEnum.BTC.getCode());
-                    listener.success(WalletListener.success);
+                    CurrencyHelper.getInstance().insertCurrencyCoin(coinsDetail.getCoin());
+                    listener.success(coinsDetail.getCoin());
                 }catch (Exception e){
                     e.printStackTrace();
                 }
