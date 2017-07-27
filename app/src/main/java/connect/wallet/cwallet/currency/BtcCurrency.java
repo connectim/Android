@@ -37,11 +37,6 @@ public class BtcCurrency extends BaseCurrency {
     public static final String PATTERN_BTC = "##0.00000000";
 
     @Override
-    public void createAddress() {
-
-    }
-
-    @Override
     public void fee() {
 
     }
@@ -52,13 +47,13 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     @Override
-    public String ceaterAddress(String currencySeed){
+    public String createAddress(String currencySeed){
         String pubKey = AllNativeMethod.cdGetPubKeyFromSeedBIP44(currencySeed,44,0,0,0,0);
         return AllNativeMethod.cdGetBTCAddrFromPubKey(pubKey);
     }
 
     @Override
-    public String ceaterPriKey(String baseSeed, String salt,int index){
+    public String createPriKey(String baseSeed, String salt,int index){
         String currencySeend = SupportKeyUril.xor(baseSeed, salt, 64);
         String priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(currencySeend,44,0,0,0,index);
         return priKey;

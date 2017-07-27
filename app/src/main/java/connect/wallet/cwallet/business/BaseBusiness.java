@@ -578,7 +578,7 @@ public class BaseBusiness {
                     }
                     // 根据index获取对应的私钥
                     for(Integer index : indexList){
-                        String priKey = NativeWallet.getInstance().initCurrency(currencyEnum).ceaterPriKey(decodeStr,currencyEntity.getSalt(),index);
+                        String priKey = NativeWallet.getInstance().initCurrency(currencyEnum).createPriKey(decodeStr,currencyEntity.getSalt(),index);
                         priList.add(priKey);
                     }
                 }

@@ -33,11 +33,6 @@ public abstract class BaseCurrency {
     }
 
     /**
-     * 创建地址
-     */
-    public abstract void createAddress();
-
-    /**
      * 获取币种信息
      */
     public abstract void requestCoinInfo(WalletListener listener);
@@ -60,12 +55,12 @@ public abstract class BaseCurrency {
     /**
      * 获取货币地址
      */
-    public abstract String ceaterAddress(String currencySeed);
+    public abstract String createAddress(String currencySeed);
 
     /**
      * 获取货币私钥
      */
-    public abstract String ceaterPriKey(String baseSeed, String salt,int index);
+    public abstract String createPriKey(String baseSeed, String salt,int index);
 
     /**
      * 签名交易

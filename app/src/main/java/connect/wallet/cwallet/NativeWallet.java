@@ -282,7 +282,7 @@ public class NativeWallet {
             case BaseCurrency.CATEGORY_BASESEED:
                 salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
                 String currencySeend = SupportKeyUril.xor(value, salt, 64);
-                masterAddress = initCurrency(currencyEnum).ceaterAddress(currencySeend);
+                masterAddress = initCurrency(currencyEnum).createAddress(currencySeend);
                 break;
             case BaseCurrency.CATEGORY_SALT_SEED:
                 break;
@@ -300,15 +300,6 @@ public class NativeWallet {
                 listener.fail(error);
             }
         });
-    }
-
-    /**
-     * 创建地址
-     * @param currencyEnum
-     */
-    public void createAddress(CurrencyEnum currencyEnum){
-        BaseCurrency baseCurrency = initCurrency(currencyEnum);
-        baseCurrency.createAddress();
     }
 
     /**

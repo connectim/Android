@@ -20,6 +20,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.exts.RedPacketActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.common.selefriend.SeleUsersActivity;
+import connect.activity.home.view.LineDecoration;
 import connect.activity.wallet.adapter.LatelyTransferAdapter;
 import connect.activity.wallet.bean.TransferBean;
 import connect.database.green.DaoHelper.ParamManager;
@@ -72,6 +73,7 @@ public class TransferActivity extends BaseActivity {
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new LatelyTransferAdapter(mActivity);
         recyclerview.setAdapter(adapter);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
         adapter.setItemClickListener(new LatelyTransferAdapter.OnItemClickListener() {
             @Override
             public void itemClick(TransferBean transferBean) {

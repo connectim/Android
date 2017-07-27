@@ -15,7 +15,7 @@
             android:singleLine="true"
             android:ellipsize="middle"
             android:layout_toLeftOf="@+id/amount_tv"
-            android:text="sdasdasdasdasdasdasdasdasdas"/>
+            android:text=""/>
         <TextView
             style="@style/BaseTextStyle.14"
             android:id="@+id/amount_tv"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:layout_alignParentRight="true"
-            android:text="000.00000001BTC"/>
+            android:text=""/>
     </RelativeLayout>
 
     <TextView

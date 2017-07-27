@@ -608,6 +608,7 @@
     <string name="Wallet_Congratulations">Congratulations!</string>
     <string name="Wallet_Connect_Pay">Connect Pay</string>
     <string name="Wallet_Connect_term">Connect team</string>
+    <string name="Wallet_The_Connect_system_address">The Connect system address</string>
     <string name="Wallet_Could_not_get_himself_sent_money_transfer">Can\'t get the transfer from yourself</string>
     <string name="Wallet_Each">Each</string>
     <string name="Wallet_Enter_4_Digits">Enter 4 Digits</string>

@@ -147,7 +147,7 @@ public class WalletFragment extends BaseFragment{
     @OnClick(R.id.amount_tv)
     void switchAccount(View view) {
         String account = amountTv.getText().toString();
-        if(mActivity == null || !isAdded())
+        if(mActivity == null || !isAdded() || currencyEntity == null)
             return;
         if (account.contains(mActivity.getString(R.string.Set_BTC_symbol)) && rateBean != null && rateBean.getRate() != null) {
             amountTv.setText(rateBean.getSymbol() + " " +

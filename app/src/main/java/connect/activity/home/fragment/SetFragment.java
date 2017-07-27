@@ -13,7 +13,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,20 +30,30 @@ import connect.activity.set.ModifyInfoActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
+import connect.activity.wallet.bean.WalletBean;
 import connect.database.MemoryDataManager;
+import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.bean.CurrencyAddressEntity;
+import connect.database.green.bean.CurrencyEntity;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.StringUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
+import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.widget.payment.PinTransferDialog;
 import connect.widget.roundedimageview.RoundedImageView;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * setting

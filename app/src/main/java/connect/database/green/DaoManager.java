@@ -11,6 +11,7 @@ import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.MigrateOpenHelper;
 import connect.database.green.DaoHelper.ParamHelper;
@@ -176,5 +177,6 @@ public class DaoManager {
         ContactHelper.closeHelper();
         ParamHelper.closeHelper();
         TransactionHelper.closeHelper();
+        CurrencyHelper.closeHelper();
     }
 }
