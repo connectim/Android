@@ -2,6 +2,8 @@ package connect.utils;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +22,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,6 +31,7 @@ import java.util.TimerTask;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.adapter.DialogBottomAdapter;
 import connect.ui.activity.R;
+import connect.utils.glide.GlideUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.FrameAnimationDrawable;
@@ -324,7 +329,7 @@ public class DialogUtil {
         return dialog;
     }
 
-    public interface OnGifListener{
+    public interface OnGifListener {
         void click();
     }
 
@@ -343,7 +348,7 @@ public class DialogUtil {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(SystemDataUtil.getScreenWidth(), SystemDataUtil.getScreenHeight());
         view.setLayoutParams(layoutParams);
 
-        ImageView img = (ImageView) view.findViewById(R.id.img);
+        final ImageView img = (ImageView) view.findViewById(R.id.img);
         String title = 0 == state ? context.getString(R.string.Wallet_Unfortunately) : context.getString(R.string.Wallet_Congratulations);
         String subtitle = 0 == state ? context.getString(R.string.Wallet_Good_luck_next_time) : context.getString(R.string.Wallet_You_got_a_Lucky_Packet);
         (((TextView) (view.findViewById(R.id.txt1)))).setText(title);
@@ -362,7 +367,8 @@ public class DialogUtil {
                 dialog.dismiss();
             }
         });
-        FrameAnimationDrawable.animateDrawableLoad(state==0?R.drawable.anim_redpacket_fail:R.drawable.anim_redpacket_success, img, new FrameAnimationDrawable.OnDrawablesListener() {
+
+        FrameAnimationDrawable.animateDrawableLoad(state == 0 ? R.drawable.anim_redpacket_fail : R.drawable.anim_redpacket_success, img, new FrameAnimationDrawable.OnDrawablesListener() {
 
             @Override
             public void onDrawsStart() {

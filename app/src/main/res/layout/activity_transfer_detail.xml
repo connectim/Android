@@ -148,6 +148,7 @@
             android:id="@id/txt2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/color_black"
             android:textSize="@dimen/sp_12"/>
 
@@ -155,6 +156,7 @@
             android:id="@id/txt3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
             android:textSize="@dimen/sp_10"/>
 
         <TextView

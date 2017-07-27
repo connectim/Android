@@ -86,6 +86,7 @@ public class GroupGatherRecordsActivity extends BaseActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recordsAdapter = new GroupGatherRecordsAdapter(activity);
+        recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(recordsAdapter);
         recyclerview.addOnScrollListener(new EndlessScrollListener() {
             @Override

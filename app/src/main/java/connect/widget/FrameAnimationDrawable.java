@@ -94,7 +94,7 @@ public class FrameAnimationDrawable {
                                         int resId = Integer.parseInt(parser.getAttributeValue(i).substring(1));
                                         bytes = InputStreamToByte(context.getResources().openRawResource(resId));
                                     } else if (parser.getAttributeName(i).equals("duration")) {
-                                        duration = parser.getAttributeIntValue(i, 1000);
+                                        duration = parser.getAttributeIntValue(i, 500);
                                     }
                                 }
 

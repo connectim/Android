@@ -2,25 +2,19 @@ package connect.wallet.cwallet;
 
 import android.app.Activity;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import connect.activity.base.BaseApplication;
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyEntity;
 import connect.utils.StringUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncoPinBean;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.account.BtcCoinAccount;
 import connect.wallet.cwallet.account.CoinAccount;
 import connect.wallet.cwallet.bean.CurrencyEnum;
@@ -28,7 +22,6 @@ import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.currency.BtcCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.wallet.jni.AllNativeMethod;
-import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**

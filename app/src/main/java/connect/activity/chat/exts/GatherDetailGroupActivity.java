@@ -22,12 +22,19 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.ContainerBean;
+import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.RecExtBean;
+import connect.activity.chat.model.content.FriendChat;
+import connect.activity.chat.model.content.GroupChat;
+import connect.activity.chat.model.content.NormalChat;
 import connect.activity.wallet.BlockchainActivity;
 import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.CurrencyEntity;
+import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
@@ -44,10 +51,8 @@ import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.payment.PaymentPwd;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
-import wallet_gateway.WalletOuterClass;
 
 /**
  * Created by gtq on 2016/12/21.
@@ -82,7 +87,6 @@ public class GatherDetailGroupActivity extends BaseActivity {
     private static String GATHER_MSGID = "GATHER_MSGID";
 
     private PaymentAdapter paymentAdapter;
-    private PaymentPwd paymentPwd;
 
     private String msgId;
     private String hashid;
@@ -252,6 +256,13 @@ public class GatherDetailGroupActivity extends BaseActivity {
                 String noticeContent = getString(R.string.Chat_paid_the_crowd_founding_to, activity.getString(R.string.Chat_You), contactName);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NOTICE, noticeContent);
 
+                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(crowdfunding.getGroupHash());
+                if (groupEntity != null) {
+                    NormalChat normalChat = new GroupChat(groupEntity);
+                    MsgEntity msgEntity = normalChat.noticeMsg(noticeContent);
+                    MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+                }
+
                 String hashid = crowdfunding.getHashId();
                 int paycount = (int) (crowdfunding.getSize() - crowdfunding.getRemainSize());
                 int crowdcount = (int) crowdfunding.getSize();
@@ -339,7 +350,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
         }
     }
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void itemClick(Connect.CrowdfundingRecord record);
     }
 

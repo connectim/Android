@@ -1,6 +1,7 @@
 package connect.activity.chat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import connect.database.green.bean.GroupMemberEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.DialogUtil;
 import connect.utils.FileUtil;
 import connect.utils.MediaUtil;
 import connect.utils.TimeUtil;

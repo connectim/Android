@@ -1,6 +1,7 @@
 package connect.activity.chat.exts;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,10 +16,15 @@ import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
+import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.RecExtBean;
+import connect.activity.chat.model.content.BaseChat;
+import connect.activity.chat.model.content.FriendChat;
+import connect.activity.chat.model.content.NormalChat;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -113,7 +119,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
                         ActivityUtil.goBack(activity);
                         break;
                     case 1://Did not pay ,to pay
-                        String hashid=definBean.getContent();
+                        String hashid = definBean.getContent();
                         requestPayment(hashid);
                         break;
                     case 2:
@@ -208,6 +214,10 @@ public class GatherDetailSingleActivity extends BaseActivity {
                     String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
                     String noticeContent = getString(R.string.Chat_paid_the_bill_to, activity.getString(R.string.Chat_You), contactName);
                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NOTICE, noticeContent);
+
+                    NormalChat normalChat = new FriendChat(entity);
+                    MsgEntity msgEntity = normalChat.noticeMsg(noticeContent);
+                    MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
                 }
 
                 TransactionHelper.getInstance().updateTransEntity(billDetail.getHash(), msgId, 1);

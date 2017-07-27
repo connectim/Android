@@ -88,20 +88,21 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
 
     @Override
     public void onBindViewHolder(MsgBaseHolder holder, int position) {
-        long curtime = msgEntities.get(position).getMsgDefinBean().getSendtime();
+        MsgEntity msgEntity = msgEntities.get(position);
 
-        long nexttime = 0;
-        if (position == msgEntities.size() - 1) {//Slide to the last
-            if (position == 0) {//just only one message
-                nexttime = curtime - 4 * 60 * 1000;
-            } else {//
-                nexttime = msgEntities.get(position - 1).getMsgDefinBean().getSendtime();
+        long lasttime = 0;
+        if (position == 0) {
+            MessageEntity lastMsgEntity = MessageHelper.getInstance().loadMsgLessMsgid(msgEntity.getMsgid());
+            if (lastMsgEntity != null) {
+                lasttime = lastMsgEntity.getCreatetime();
             }
         } else {
-            nexttime = msgEntities.get(position + 1).getMsgDefinBean().getSendtime();
+            MsgEntity lastMsgEntity = msgEntities.get(position - 1);
+            lasttime = lastMsgEntity.getMsgDefinBean().getSendtime();
         }
 
-        holder.buildMsgTime(curtime, nexttime);
+        long curtime = msgEntity.getMsgDefinBean().getSendtime();
+        holder.buildMsgTime(lasttime, curtime);
         holder.buildRowData(holder, msgEntities.get(position));
     }
 

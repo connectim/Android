@@ -45,7 +45,7 @@ public class ConversionHelper extends BaseDao {
     public List<RoomAttrBean> loadRoomEnitites() {
         String sql = "SELECT R.*, S.DISTURB FROM CONVERSION_ENTITY R " +
                 " LEFT OUTER JOIN CONVERSION_SETTING_ENTITY S ON R.IDENTIFIER = S.IDENTIFIER " +
-                " GROUP BY R.IDENTIFIER ORDER BY R.TOP DESC,R.LAST_TIME DESC;";
+                " GROUP BY R.IDENTIFIER ORDER BY IFNULL(R.TOP, 0) DESC,IFNULL(R.LAST_TIME, 0) DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
 
         RoomAttrBean attrBean = null;

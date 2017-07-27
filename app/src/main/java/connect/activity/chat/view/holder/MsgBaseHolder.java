@@ -22,7 +22,7 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
     private TextView timeTxt;
 
     /** The message time interval */
-    private long MSG_TIMESPACE = 3 * 1000 * 60;
+    private long MSG_TIMESPACE = 5 * 1000 * 60;
 
     public MsgBaseHolder(View itemView) {
         super(itemView);
@@ -39,14 +39,14 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
      * Message display rules of time According to the current message time and interval between the time of the next message
      * If this is the last message, but also need to a message on its time to calculate
      *
-     * @param curtime
+     * @param lasttime
      * @param nexttime The next message on time or a time
      */
-    public void buildMsgTime(long curtime, long nexttime) {
+    public void buildMsgTime(long lasttime, long nexttime) {
         String showtime = "";
         try {
-            if (Math.abs(curtime - nexttime) > MSG_TIMESPACE) {
-                showtime = TimeUtil.getMsgTime(curtime, nexttime);
+            if (Math.abs(lasttime - nexttime) > MSG_TIMESPACE) {
+                showtime = TimeUtil.getMsgTime(lasttime, nexttime);
             }
             showTime(showtime);
         } catch (Exception e) {

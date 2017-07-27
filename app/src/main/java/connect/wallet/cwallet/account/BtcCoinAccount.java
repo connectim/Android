@@ -49,7 +49,7 @@ public class BtcCoinAccount implements CoinAccount {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
                     List<WalletOuterClass.CoinInfo> list = coinsDetail.getCoinInfosList();
-                    CurrencyHelper.getInstance().insertCurrencyAddressListCoinInfo(list,CurrencyEnum.BTC.getCode());
+                    CurrencyHelper.getInstance().insertCurrencyAddressListCoinInfo(list, CurrencyEnum.BTC.getCode());
 
                     WalletOuterClass.Coin.Builder coinBuilder = WalletOuterClass.Coin.newBuilder();
                     coinBuilder.setSalt(coinsDetail.getCoin().getSalt());
@@ -65,7 +65,7 @@ public class BtcCoinAccount implements CoinAccount {
                     WalletOuterClass.Coin localCoin = coinBuilder.build();
                     CurrencyHelper.getInstance().insertCurrencyCoin(localCoin);
                     listener.success(localCoin);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

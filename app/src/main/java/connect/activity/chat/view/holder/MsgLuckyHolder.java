@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.google.gson.Gson;
 
+import connect.activity.chat.bean.MsgDirect;
+import connect.activity.chat.bean.RoomType;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
@@ -44,7 +46,13 @@ public class MsgLuckyHolder extends MsgChatHolder {
             @Override
             public void onClick(View v) {
                 MsgDefinBean bean = entity.getMsgDefinBean();
-                requestLuckPacket(bean.getContent());
+
+                String hashid = bean.getContent();
+                if (bean.msgDirect() == MsgDirect.To && entity.getRoomType() == RoomType.FriendType) {
+                    startPacketDetail(hashid, 0);
+                } else {
+                    requestLuckPacket(hashid);
+                }
             }
         });
 

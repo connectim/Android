@@ -65,12 +65,10 @@ public class BaseBusiness {
     private final int UNSPENTDUST = 3006; // 找零太小
     private final int AUTOMAX = 3007; // 自动计算手续费大于最大阈值
     private Dialog connectDialog;
-    private String hashId;
 
     public BaseBusiness(Activity mActivity, CurrencyEnum currencyEnum) {
         this.mActivity = mActivity;
         this.currencyEnum = currencyEnum;
-        hashId = "";
     }
 
     /**
@@ -254,7 +252,7 @@ public class BaseBusiness {
                 .setHashId(hash)
                 .setFee(getFee())
                 .setPayType(transactionType).build();
-        hashId = hash;
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_PAYMENT, payment, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -511,14 +509,10 @@ public class BaseBusiness {
             public void success(ArrayList<String> priKeyList) {
                 String rawHex = NativeWallet.getInstance().initCurrency(currencyEnum).getSignRawTrans(priKeyList,
                         transaction.getVts(), transaction.getRawhex());
-                if(TextUtils.isEmpty(rawHex)){
+                if (TextUtils.isEmpty(rawHex)) {
                     pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                }else{
-                    if(TextUtils.isEmpty(hashId)){
-                        publishTransfer(rawHex, transaction.getHashId(), listener);
-                    }else{
-                        publishTransfer(rawHex, hashId, listener);
-                    }
+                } else {
+                    publishTransfer(rawHex, transaction.getHashId(), listener);
                 }
             }
             @Override
