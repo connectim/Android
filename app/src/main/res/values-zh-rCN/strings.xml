@@ -608,6 +608,7 @@
     <string name="Wallet_Congratulations">恭喜你!</string>
     <string name="Wallet_Connect_Pay">Connect 支付</string>
     <string name="Wallet_Connect_term">Connect团队</string>
+    <string name="Wallet_The_Connect_system_address">Connect系统地址</string>
     <string name="Wallet_Could_not_get_himself_sent_money_transfer">无法领取自己发送的转账</string>
     <string name="Wallet_Each">每人</string>
     <string name="Wallet_Enter_4_Digits">请输入4位数字</string>

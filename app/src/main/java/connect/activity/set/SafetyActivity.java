@@ -76,6 +76,7 @@ public class SafetyActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_Account_security);
 
+        userBean = SharedPreferenceUtil.getInstance().getUser();
         if(userBean != null && TextUtils.isEmpty(userBean.getPhone())){
             phoneTv.setText(R.string.Set_Phone_unbinded);
         }else{

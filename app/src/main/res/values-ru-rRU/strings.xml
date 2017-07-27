@@ -608,6 +608,7 @@
     <string name="Wallet_Congratulations">Поздравляем Вас!</string>
     <string name="Wallet_Connect_Pay">Оплата Connect</string>
     <string name="Wallet_Connect_term">Группа Connect</string>
+    <string name="Wallet_The_Connect_system_address">Подключите системный адрес</string>
     <string name="Wallet_Could_not_get_himself_sent_money_transfer">Нельзя сделать денежный перевод самому себе</string>
     <string name="Wallet_Each">Каждый человек  </string>
     <string name="Wallet_Enter_4_Digits">Просьба ввести 4 цифры</string>

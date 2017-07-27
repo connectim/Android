@@ -38,6 +38,10 @@ public class CurrencyHelper extends BaseDao{
         return currencyHelper;
     }
 
+    public static void closeHelper() {
+        currencyHelper = null;
+    }
+
     /*********************************  load ***********************************/
     /**
      * Query all currencies

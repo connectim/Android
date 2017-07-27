@@ -146,7 +146,7 @@ public class PinTransferDialog implements View.OnClickListener{
                 }
                 amount.setText(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(txout.getAmount()) + "BTC");
             }else{
-                address.setText(activity.getString(R.string.Wallet_Connect_term));
+                address.setText(activity.getString(R.string.Wallet_The_Connect_system_address));
                 amount.setText(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(txout.getAmount() - fixedFee) + "BTC");
             }
             detailLin.addView(detailView);

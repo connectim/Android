@@ -45,7 +45,6 @@ public class TransactionActivity extends BaseActivity {
     @Bind(R.id.refreshview)
     SwipeRefreshLayout refreshview;
 
-
     private TransactionActivity mActivity;
     private final int PAGESIZE_MAX = 10;
     private int page = 1;

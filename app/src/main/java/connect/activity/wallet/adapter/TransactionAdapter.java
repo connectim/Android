@@ -45,8 +45,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         int typeTx = mListData.get(position).getTxType();
         viewHolder.avatarGridview.setVisibility(View.GONE);
         viewHolder.avaterRimg.setVisibility(View.GONE);
-        switch (typeTx) {
-            case 0:
+        Connect.Transaction transaction = mListData.get(position);
+        switch (typeTx){
+            case 0:// 地址转账
+            case 6://outer transfer
                 viewHolder.avaterRimg.setVisibility(View.VISIBLE);
                 viewHolder.avaterRimg.setImageResource(R.mipmap.bitcoin_luckybag3x);
                 break;
@@ -73,22 +75,19 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 viewHolder.avaterRimg.setVisibility(View.VISIBLE);
                 viewHolder.avaterRimg.setImageResource(R.mipmap.luckpacket_record2x);
                 break;
-            case 6://outer transfer
-                viewHolder.avaterRimg.setVisibility(View.VISIBLE);
-                viewHolder.avaterRimg.setImageResource(R.mipmap.bitcoin_luckybag3x);
-                break;
             default:
                 break;
         }
-
         if(typeTx == 7) {
             viewHolder.nameTv.setText(R.string.Wallet_From_Connect_team);
-        }else if (mListData.get(position).getUserInfosList().size() > 0) {
-            if(TextUtils.isEmpty(mListData.get(position).getUserInfos(0).getAvatar())){
+        }else if (transaction.getUserInfosList().size() > 0) {
+            if(TextUtils.isEmpty(transaction.getUserInfos(0).getAvatar())){
                 viewHolder.nameTv.setText(mListData.get(position).getUserInfos(0).getAddress());
             }else{
                 viewHolder.nameTv.setText(mListData.get(position).getUserInfos(0).getUsername());
             }
+        } else if(transaction.getOutputsList().size() > 0){
+            viewHolder.nameTv.setText(transaction.getOutputs(0).getAddresses(0));
         } else {
             viewHolder.nameTv.setText("me");
         }
