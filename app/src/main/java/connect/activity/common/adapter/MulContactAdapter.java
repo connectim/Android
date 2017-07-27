@@ -118,33 +118,22 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
             ContactEntity index = friendEntities.get(posi);
             View secview = v.findViewById(R.id.select);
             String pubkey = index.getPub_key();
-            if (memberList.contains(pubkey)){
+            if (memberList.contains(pubkey)) {
                 memberList.remove(pubkey);
-                for(ContactEntity contactEntity : selectEntities){
-                    if(contactEntity.getPub_key().equals(index.getPub_key())){
+                for (ContactEntity contactEntity : selectEntities) {
+                    if (contactEntity.getPub_key().equals(index.getPub_key())) {
                         selectEntities.remove(contactEntity);
                         break;
                     }
                 }
                 secview.setSelected(false);
-            }else{
+            } else {
                 memberList.add(pubkey);
                 selectEntities.add(index);
                 secview.setSelected(true);
             }
-            /*String pubkey = index.getPub_key();
-            if (!memberList.contains(pubkey)) {
-                View secview = v.findViewById(R.id.select);
-                if (selectEntities.contains(index)) {
-                    selectEntities.remove(index);
-                    secview.setSelected(false);
-                } else {
-                    selectEntities.add(index);
-                    secview.setSelected(true);
-                }
-            }*/
 
-            if(onSeleFriendListence != null){
+            if (onSeleFriendListence != null) {
                 onSeleFriendListence.seleFriend(selectEntities);
             }
 

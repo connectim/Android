@@ -192,14 +192,10 @@ public class ContactSelectActivity extends BaseActivity {
                             }
 
                             if (0 == roomTag) {
-                                ContactEntity newentity = ContactHelper.getInstance().loadFriendEntity(roomKey);
-                                selectEntities.add(0, newentity);
-
                                 createNewGroup();
                             } else {
                                 sendGroupToFriend();
                             }
-
                             toolbar.setRightClickable(false);
                             Message message = new Message();
                             message.what = 100;
