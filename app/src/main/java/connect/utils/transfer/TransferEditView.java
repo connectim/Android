@@ -35,6 +35,7 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.RegularUtil;
@@ -337,22 +338,35 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                         }
                         break;
                     case 1:
-                        NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
-                            @Override
-                            public void success(String pin) {
-                                NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_PRIKEY,
-                                        MemoryDataManager.getInstance().getPriKey(), pin,
-                                        MemoryDataManager.getInstance().getAddress(),
-                                        new WalletListener<CurrencyEntity>() {
+                        DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
+                                mActivity.getString(R.string.Wallet_not_update_wallet), "",
+                                mActivity.getString(R.string.Wallet_Immediately_update),
+                                false, new DialogUtil.OnItemClickListener() {
+                                    @Override
+                                    public void confirm(String value) {
+                                        NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
                                             @Override
-                                            public void success(CurrencyEntity currencyEntity) {}
+                                            public void success(String pin) {
+                                                NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_PRIKEY,
+                                                        MemoryDataManager.getInstance().getPriKey(), pin,
+                                                        MemoryDataManager.getInstance().getAddress(),
+                                                        new WalletListener<CurrencyEntity>() {
+                                                            @Override
+                                                            public void success(CurrencyEntity currencyEntity) {}
+                                                            @Override
+                                                            public void fail(WalletError error) {}
+                                                        });
+                                            }
                                             @Override
                                             public void fail(WalletError error) {}
                                         });
-                            }
-                            @Override
-                            public void fail(WalletError error) {}
-                        });
+                                    }
+
+                                    @Override
+                                    public void cancel() {
+                                        ActivityUtil.goBack(mActivity);
+                                    }
+                                });
                         break;
                     case 2:
                         DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
@@ -368,7 +382,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
                                     @Override
                                     public void cancel() {
-
+                                        ActivityUtil.goBack(mActivity);
                                     }
                                 });
                         break;
@@ -450,7 +464,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         findViewById(R.id.linearlayout).setVisibility(visibility);
     }
 
-    public void createrWallet(Intent data){
+    public void createWallet(Intent data){
         final String baseSend = data.getExtras().getString("random");
         NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
             @Override

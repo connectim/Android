@@ -146,7 +146,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
         if(resultCode == RESULT_OK){
             switch (requestCode){
                 case RandomVoiceActivity.REQUEST_CODE:
-                    transferEditView.createrWallet(data);
+                    transferEditView.createWallet(data);
                     break;
                 default:
                     break;

@@ -138,8 +138,7 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
-                connectDialog.dismiss();
+                showErrorToast(response);
             }
         });
     }
@@ -178,8 +177,7 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
-                connectDialog.dismiss();
+                showErrorToast(response);
             }
         });
     }
@@ -248,8 +246,7 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
-                connectDialog.dismiss();
+                showErrorToast(response);
             }
         });
     }
@@ -337,8 +334,7 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
-                connectDialog.dismiss();
+                showErrorToast(response);
             }
         });
     }
@@ -370,8 +366,7 @@ public class BaseBusiness {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
-                connectDialog.dismiss();
+                showErrorToast(response);
             }
         });
 
@@ -404,6 +399,15 @@ public class BaseBusiness {
                 pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadFail);
             }
         });
+    }
+
+    private void showErrorToast(Connect.HttpResponse response){
+        if(response.getCode() == 2400){
+            ToastEUtil.makeText(mActivity,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
+        }else{
+            ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
+        }
+        connectDialog.dismiss();
     }
 
     private void dealTransferResult(final Activity activity, Connect.HttpResponse response, final WalletListener listener){

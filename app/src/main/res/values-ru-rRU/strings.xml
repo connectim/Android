@@ -574,6 +574,8 @@
     <string name="Wallet_Detail">Подробности</string>
     <string name="Wallet_not_create_wallet">Вы не создали кошелек</string>
     <string name="Wallet_Immediately_create">Создать сейчас</string>
+    <string name="Wallet_not_update_wallet">Вы не обновили свой кошелек</string>
+    <string name="Wallet_Immediately_update">обновить сейчас</string>
     <string name="Wallet_Packet_Send_User_Connect">Отправить этот "Денежный подарок" используя Connect</string>
     <string name="Wallet_Scan_to_pay_me">Отсканировать код для передачи мне оплаты</string>
     <string name="Wallet_Transfer_Count">Денежный перевод (%dчеловек)</string>

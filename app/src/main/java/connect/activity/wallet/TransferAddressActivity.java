@@ -152,7 +152,7 @@ public class TransferAddressActivity extends BaseActivity {
         if (resultCode == RESULT_OK && requestCode == BOOK_CODE) {
             addressTv.setText(data.getExtras().getString("address",""));
         }else if(resultCode == RESULT_OK && requestCode == RandomVoiceActivity.REQUEST_CODE){
-            transferEditView.createrWallet(data);
+            transferEditView.createWallet(data);
         }
     }
 

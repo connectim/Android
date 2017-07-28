@@ -52,7 +52,7 @@ public class BaseWallet {
     private void setPin(final Activity mActivity, final WalletListener listener) {
         Integer title;
         if (TextUtils.isEmpty(payPass)) {
-            title = R.string.Set_Enter_new_password;
+            title = R.string.Set_Payment_Password;
         } else {
             title = R.string.Wallet_Confirm_PIN;
         }
@@ -66,6 +66,7 @@ public class BaseWallet {
                     //设置密码完成
                     listener.success(value);
                 } else {
+                    showSetNewPin(mActivity,listener);
                     ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
                 }
             }
