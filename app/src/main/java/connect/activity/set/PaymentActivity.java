@@ -18,6 +18,7 @@ import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -120,7 +121,8 @@ public class PaymentActivity extends BaseActivity {
         NativeWallet.getInstance().checkPin(mActivity,new WalletListener<String>() {
             @Override
             public void success(String seed) {
-                NativeWallet.getInstance().setPin(mActivity,seed, new WalletListener<String>() {
+                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+                NativeWallet.getInstance().setPin(mActivity, currencyEntity.getCategory() ,seed, new WalletListener<String>() {
                     @Override
                     public void success(String o) {
                         ToastEUtil.makeText(mActivity,R.string.Set_Set_success).show();

@@ -26,6 +26,7 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
 import protos.Connect;
 import wallet_gateway.WalletOuterClass;
@@ -79,14 +80,14 @@ public class BaseWallet {
     /**
      * 校验密码
      */
-    public void checkPwd(Activity activity,final String payload, final WalletListener listener) {
+    public void checkPwd(Activity activity, final int category, final String payload, final WalletListener listener) {
         DialogUtil.showPayEditView(activity, R.string.Wallet_Enter_your_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(final String value) {
                 new AsyncTask<Void,Void,String>(){
                     @Override
                     protected String doInBackground(Void... params) {
-                        String baseSeed = SupportKeyUril.decodePinDefult(payload, value);
+                        String baseSeed = SupportKeyUril.decodePinDefult(category,payload, value);
                         if (TextUtils.isEmpty(baseSeed)) {
                             return "";
                         } else {
@@ -120,7 +121,7 @@ public class BaseWallet {
      */
     public void createWallet(String baseseed, String pwd, final WalletListener listener) {
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
-        final EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(baseseed, pwd);
+        final EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(BaseCurrency.CATEGORY_BASESEED,baseseed, pwd);
         final String checkSum = StringUtil.cdHash256(SupportKeyUril.PIN_VERSION + "" + encoPinBean.getPayload());
         builder.setPayload(encoPinBean.getPayload());
         builder.setCheckSum(checkSum);

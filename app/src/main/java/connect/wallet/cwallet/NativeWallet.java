@@ -101,16 +101,16 @@ public class NativeWallet {
      * @param listener
      */
     public void checkPin(Activity mActivity, final WalletListener listener){
-        final WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-        if(walletBean != null){
-            String payload = "";
-            if(!TextUtils.isEmpty(walletBean.getPayload())){
+        String payload = "";
+        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+        if(currencyEntity != null){
+            if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_BASESEED){
+                WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
                 payload = walletBean.getPayload();
             }else{
-                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
                 payload = currencyEntity.getPayload();
             }
-            baseWallet.checkPwd(mActivity,payload, new WalletListener<String>() {
+            baseWallet.checkPwd(mActivity, currencyEntity.getCategory(), payload, new WalletListener<String>() {
                 @Override
                 public void success(String seed) {
                     listener.success(seed);
@@ -147,12 +147,12 @@ public class NativeWallet {
     /**
      * 重置支付密码
      */
-    public void setPin(Activity mActivity,final String seed, final WalletListener listener) {
+    public void setPin(Activity mActivity, final int category, final String seed, final WalletListener listener) {
         baseWallet.showSetNewPin(mActivity,new WalletListener<String>() {
             @Override
             public void success(String pin) {
                 WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
-                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(seed,pin);
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(category,seed,pin);
                 if(!TextUtils.isEmpty(walletBean.getPayload())){
                     // baseSeed的方式需要同步钱包信息
                     walletBean.setPayload(encoPinBean.getPayload());
@@ -275,8 +275,7 @@ public class NativeWallet {
         String salt = "";
         switch (category){
             case BaseCurrency.CATEGORY_PRIKEY:
-                String valueHex = StringUtil.bytesToHexString(value.getBytes());
-                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(valueHex,pin);
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(BaseCurrency.CATEGORY_PRIKEY,value,pin);
                 payload = encoPinBean.getPayload();
                 break;
             case BaseCurrency.CATEGORY_BASESEED:

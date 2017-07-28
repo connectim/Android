@@ -18,6 +18,7 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.im.bean.Session;
 import connect.activity.base.BaseApplication;
 import connect.utils.StringUtil;
+import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
@@ -202,16 +203,17 @@ public class SupportKeyUril {
         return null;
     }
 
-
-
     /**
      * 加密支付密码
      */
-    public static EncoPinBean encoPinDefult(String value, String pass){
-        return encoPin(value,pass,CRYPTION_N);
+    public static EncoPinBean encoPinDefult(int category,String value, String pass){
+        return encoPin(category,value,pass,CRYPTION_N);
     }
 
-    public static EncoPinBean encoPin(String value, String pass,int n){
+    public static EncoPinBean encoPin(int category, String value, String pass,int n){
+        if(BaseCurrency.CATEGORY_PRIKEY == category){
+            value = StringUtil.bytesToHexString(value.getBytes());
+        }
         EncoPinBean encoPinBean = new EncoPinBean();
         String payload = AllNativeMethod.connectWalletKeyEncrypt(value,pass,n,PIN_VERSION);
         encoPinBean.setPayload(payload);
@@ -229,12 +231,15 @@ public class SupportKeyUril {
     /**
      * 解密支付密码
      */
-    public static String decodePinDefult(String value, String pass){
-        return decodePin(value, pass, PIN_VERSION);
+    public static String decodePinDefult(int category, String value, String pass){
+        return decodePin(category ,value, pass, PIN_VERSION);
     }
 
-    public static String decodePin(String value, String pass,int verPin){
+    public static String decodePin(int category, String value, String pass,int verPin){
         String seed = AllNativeMethod.connectWalletKeyDecrypt(value,pass,verPin);
+        if(BaseCurrency.CATEGORY_PRIKEY == category){
+            seed = new String(StringUtil.hexStringToBytes(seed));
+        }
         if(seed.equals("error")){
             seed = "";
         }

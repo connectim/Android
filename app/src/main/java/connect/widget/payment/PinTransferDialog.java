@@ -28,8 +28,10 @@ import connect.activity.set.bean.PaySetBean;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
@@ -207,7 +209,8 @@ public class PinTransferDialog implements View.OnClickListener{
             new AsyncTask<Void,Void,String>(){
                 @Override
                 protected String doInBackground(Void... params) {
-                    String decodeStr = SupportKeyUril.decodePinDefult(payload,pass);
+                    CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
+                    String decodeStr = SupportKeyUril.decodePinDefult(currencyEntity.getCategory() ,payload ,pass);
                     return decodeStr;
                 }
 
