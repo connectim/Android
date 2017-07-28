@@ -18,6 +18,7 @@ import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -61,9 +62,7 @@ public class PaymentActivity extends BaseActivity {
     LinearLayout minerLl;
 
     private PaymentActivity mActivity;
-    private UserBean userBean;
     private PaySetBean paySetBean;
-    private String payPass = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +84,6 @@ public class PaymentActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_Payment);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         paySetBean = ParamManager.getInstance().getPaySet();
         if (paySetBean != null) {
             updataView();
@@ -120,7 +118,8 @@ public class PaymentActivity extends BaseActivity {
         NativeWallet.getInstance().checkPin(mActivity,new WalletListener<String>() {
             @Override
             public void success(String seed) {
-                NativeWallet.getInstance().setPin(mActivity,seed, new WalletListener<String>() {
+                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+                NativeWallet.getInstance().setPin(mActivity, currencyEntity.getCategory() ,seed, new WalletListener<String>() {
                     @Override
                     public void success(String o) {
                         ToastEUtil.makeText(mActivity,R.string.Set_Set_success).show();
@@ -172,33 +171,6 @@ public class PaymentActivity extends BaseActivity {
         PayFeeActivity.startActivity(mActivity);
     }
 
-    private void setPatpass() {
-        Integer title;
-        if(TextUtils.isEmpty(payPass)){
-            title = R.string.Set_Payment_Password;
-        }else {
-            title = R.string.Wallet_Confirm_PIN;
-        }
-        DialogUtil.showPayEditView(mActivity, title, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
-            @Override
-            public void confirm(String value) {
-                if(TextUtils.isEmpty(payPass)){
-                    payPass = value;
-                    setPatpass();
-                }else if(payPass.equals(value)){
-                    requestSetPay(value);
-                }else{
-                    ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
-                }
-            }
-
-            @Override
-            public void cancel() {
-
-            }
-        });
-    }
-
     private void requestSetpay() {
         Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.newBuilder()
                 .setFee(paySetBean.getFee())
@@ -219,44 +191,4 @@ public class PaymentActivity extends BaseActivity {
             }
         });
     }
-
-    private void requestSetPay(String pass){
-        // Access to the database corresponding to the currency seed, encrypted in turn, and uploaded to the server and updated to the local
-        byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),userBean.getPubKey());
-        try {
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, ecdh, pass.getBytes("UTF-8"));
-            byte[] gcmDataByte = gcmData.toByteArray();
-            final String encryPass = StringUtil.bytesToHexString(gcmDataByte);
-            Connect.PayPin payPin = Connect.PayPin.newBuilder()
-                    .setPayPin(encryPass)
-                    .build();
-            OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_PIN_SETTING, payPin, new ResultCall<Connect.HttpResponse>() {
-                @Override
-                public void onResponse(Connect.HttpResponse response) {
-                    try {
-                        Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                        Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
-                            paySetBean.setPayPin(encryPass);
-                            paySetBean.setVersionPay(payPinVersion.getVersion());
-                            ParamManager.getInstance().putPaySet(paySetBean);
-                            ToastEUtil.makeText(mActivity, R.string.Wallet_Set_Payment_Password_Successful).show();
-                            updataView();
-                        }
-                    } catch (InvalidProtocolBufferException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onError(Connect.HttpResponse response) {
-
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }

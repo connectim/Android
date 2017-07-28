@@ -215,7 +215,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                 numberTv.setText(getString(R.string.Wallet_transfer_man, friendList.size()));
                 presenter.checkBtnEnable();
             } else if(requestCode == RandomVoiceActivity.REQUEST_CODE){
-                transferEditView.createrWallet(data);
+                transferEditView.createWallet(data);
             }
         }
     }

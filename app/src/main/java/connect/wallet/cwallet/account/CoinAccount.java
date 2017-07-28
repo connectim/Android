@@ -13,11 +13,23 @@ import connect.wallet.cwallet.inter.WalletListener;
 
 public interface CoinAccount {
 
+    /**
+     * Balance
+     */
     public void balance();
 
+    /**
+     * Hide the address
+     */
     public void hideAddress(String address);
 
+    /**
+     * Get the address list
+     */
     public void requestAddressList(WalletListener listener);
 
+    /**
+     * transfer
+     */
     public void transfer(String url, GeneratedMessageV3 body, WalletListener listener);
 }

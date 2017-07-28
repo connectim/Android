@@ -129,7 +129,6 @@ public class TransferAddressActivity extends BaseActivity {
         baseBusiness.transferAddress(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {
-                // Store the last 10 transfer records
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
                 List<Activity> list = BaseApplication.getInstance().getActivityList();
                 for (Activity activity : list) {
@@ -153,7 +152,7 @@ public class TransferAddressActivity extends BaseActivity {
         if (resultCode == RESULT_OK && requestCode == BOOK_CODE) {
             addressTv.setText(data.getExtras().getString("address",""));
         }else if(resultCode == RESULT_OK && requestCode == RandomVoiceActivity.REQUEST_CODE){
-            transferEditView.createrWallet(data);
+            transferEditView.createWallet(data);
         }
     }
 

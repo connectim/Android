@@ -18,6 +18,7 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.im.bean.Session;
 import connect.activity.base.BaseApplication;
 import connect.utils.StringUtil;
+import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
@@ -29,7 +30,6 @@ import protos.Connect;
 public class SupportKeyUril {
 
     private static String Tag = "SupportKeyUril";
-
     /** Key number expansion */
     public static final int CRYPTION_N = 17;
     /** Pin Version */
@@ -59,16 +59,6 @@ public class SupportKeyUril {
      */
     public static String getPubKeyFromPriKey(String priKey) {
         return AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
-    }
-
-    /**
-     * private key to public key
-     *
-     * @return
-     */
-    public static String getPubKeyFromPriKey() {
-        String prikey = MemoryDataManager.getInstance().getPriKey();
-        return AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
     }
 
     public static String getAddressFromPubkey(String pubkey) {
@@ -154,55 +144,11 @@ public class SupportKeyUril {
         return AllNativeMethod.checkAddressJ(address) > -1;
     }
 
-    /**
-     * The two hash transform for the PriKey (internal + external method)
-     *
-     * @param prikey
-     * @return
-     */
-    public static String cdEncryPayPasswordKey(String prikey) {
-        String key = AllNativeMethod.cdGetHash256(prikey);
-        return AllNativeMethod.cdGetHash256(key);
-    }
-
     public static String localHashKey() {
         String key = AllNativeMethod.cdGetHash256(MemoryDataManager.getInstance().getPriKey());
         key = AllNativeMethod.cdGetHash256(key);
         return key;
     }
-
-    /**
-     * Generate encrypted TalkKey (encrypted private key, n = 17 for key expansion)
-     */
-    public static String createTalkKey(String priKey, String address, String passWord) {
-        /*if (!SupportKeyUril.checkPrikey(priKey)) {
-            priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(priKey, 44, 0, 0, 0, 0);
-        }*/
-        String priKey_16 = AllNativeMethod.cdgetRawPrivateKey(priKey);
-        String talkKey = AllNativeMethod.cdxTalkKeyEncrypt(address, priKey_16, passWord, CRYPTION_N, CRYPTION_TALKKEY_VER);
-        return talkKey;
-    }
-
-    /**
-     * Decryption TalkKey
-     *
-     * @param talkKey
-     * @param pass
-     * @return
-     */
-    public static String decodeTalkKey(String talkKey, String pass) {
-        String addressandpriKey_16 = AllNativeMethod.cdxTalkKeyDecrypt(talkKey, pass, CRYPTION_TALKKEY_VER);
-        try {
-            String priKey_16 = addressandpriKey_16.split("@")[1];
-            String prikey = AllNativeMethod.cdgetRawToPrivateKey(priKey_16);
-            return prikey;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
 
     /**
      * Encrypted payment password
@@ -236,6 +182,8 @@ public class SupportKeyUril {
     }
 
     /**
+=======
+>>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * Generate ECDH cooperative key
      *
      * @param priKey
@@ -309,6 +257,116 @@ public class SupportKeyUril {
     }
 
     /**
+     * ecdhkey extension
+     */
+    public static synchronized byte[] ecdhKeyExtends(EcdhExts exts, byte[] ecdhkey) {
+        byte[] salts = null;
+        switch (exts) {
+            case NONE:
+                break;
+            case EMPTY:
+                salts = new byte[64];
+                ecdhkey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdhkey, ecdhkey.length, salts, salts.length, 12, 32);
+                break;
+            case SALT:
+                String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
+                salts = StringUtil.hexStringToBytes(index);
+                ecdhkey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdhkey, ecdhkey.length, salts, salts.length, 12, 32);
+                break;
+            case OTHER:
+                salts = exts.getBytes();
+                ecdhkey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdhkey, ecdhkey.length, salts, salts.length, 12, 32);
+                break;
+        }
+        return ecdhkey;
+    }
+
+    /**
+     * ecdh Extension type
+     */
+    public enum EcdhExts {
+        NONE,//Don't need to extension
+        EMPTY,//Empty salt extension
+        SALT,//token salt
+        OTHER;//other extension
+
+        byte[] bytes;
+
+        public byte[] getBytes() {
+            return bytes;
+        }
+
+        public void setBytes(byte[] bytes) {
+            this.bytes = bytes;
+        }
+    }
+
+    /**
+     * Generate encrypted TalkKey (encrypted private key, n = 17 for key expansion)
+     */
+    public static String createTalkKey(String priKey, String address, String passWord) {
+        String priKey_16 = AllNativeMethod.cdgetRawPrivateKey(priKey);
+        String talkKey = AllNativeMethod.cdxTalkKeyEncrypt(address, priKey_16, passWord, CRYPTION_N, CRYPTION_TALKKEY_VER);
+        return talkKey;
+    }
+
+    /**
+     * Decryption TalkKey
+     *
+     * @param talkKey
+     * @param pass
+     * @return
+     */
+    public static String decodeTalkKey(String talkKey, String pass) {
+        String addressandpriKey_16 = AllNativeMethod.cdxTalkKeyDecrypt(talkKey, pass, CRYPTION_TALKKEY_VER);
+        try {
+            String priKey_16 = addressandpriKey_16.split("@")[1];
+            String prikey = AllNativeMethod.cdgetRawToPrivateKey(priKey_16);
+            return prikey;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Pay password encryption
+     */
+    public static EncoPinBean encoPinDefult(int category,String value, String pass){
+        return encoPin(category,value,pass,CRYPTION_N);
+    }
+
+    public static EncoPinBean encoPin(int category, String value, String pass,int n){
+        if(BaseCurrency.CATEGORY_PRIKEY == category){
+            value = StringUtil.bytesToHexString(value.getBytes());
+        }
+        EncoPinBean encoPinBean = new EncoPinBean();
+        String payload = AllNativeMethod.connectWalletKeyEncrypt(value,pass,n,PIN_VERSION);
+        encoPinBean.setPayload(payload);
+        encoPinBean.setVersion(PIN_VERSION);
+        encoPinBean.setN(n);
+        return encoPinBean;
+    }
+
+    /**
+     * Pay decryption password
+     */
+    public static String decodePinDefult(int category, String value, String pass){
+        return decodePin(category ,value, pass, PIN_VERSION);
+    }
+
+    public static String decodePin(int category, String value, String pass,int verPin){
+        String seed = AllNativeMethod.connectWalletKeyDecrypt(value,pass,verPin);
+        if(BaseCurrency.CATEGORY_PRIKEY == category){
+            seed = new String(StringUtil.hexStringToBytes(seed));
+        }
+        if(seed.equals("error")){
+            seed = "";
+        }
+        return seed;
+    }
+
+    /**
      * Password encryption private key, gestures
      */
     public static String encodePri(String value, String salt, String pass) {
@@ -356,48 +414,4 @@ public class SupportKeyUril {
         return null;
     }
 
-    /**
-     * ecdhkey extension
-     */
-    public static synchronized byte[] ecdhKeyExtends(EcdhExts exts, byte[] ecdhkey) {
-        byte[] salts = null;
-        switch (exts) {
-            case NONE:
-                break;
-            case EMPTY:
-                salts = new byte[64];
-                ecdhkey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdhkey, ecdhkey.length, salts, salts.length, 12, 32);
-                break;
-            case SALT:
-                String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
-                salts = StringUtil.hexStringToBytes(index);
-                ecdhkey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdhkey, ecdhkey.length, salts, salts.length, 12, 32);
-                break;
-            case OTHER:
-                salts = exts.getBytes();
-                ecdhkey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdhkey, ecdhkey.length, salts, salts.length, 12, 32);
-                break;
-        }
-        return ecdhkey;
-    }
-
-    /**
-     * ecdh Extension type
-     */
-    public enum EcdhExts {
-        NONE,//Don't need to extension
-        EMPTY,//Empty salt extension
-        SALT,//token salt
-        OTHER;//other extension
-
-        byte[] bytes;
-
-        public byte[] getBytes() {
-            return bytes;
-        }
-
-        public void setBytes(byte[] bytes) {
-            this.bytes = bytes;
-        }
-    }
 }

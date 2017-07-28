@@ -27,6 +27,7 @@ import wallet_gateway.WalletOuterClass;
 /**
  * Wallet management tools
  * Created by Administrator on 2017/7/18.
+ * The wallet management tools
  */
 public class NativeWallet {
 
@@ -53,7 +54,7 @@ public class NativeWallet {
     }
 
     /**
-     * Get the specified account
+     * Access to designated account
      * @param currencyEnum
      * @return
      */
@@ -76,6 +77,7 @@ public class NativeWallet {
 
     /**
      * Gets the specified currency
+     * Access to specified currency
      * @param currencyEnum
      * @return
      */
@@ -97,19 +99,20 @@ public class NativeWallet {
     }
 
     /**
+     * Check the password
      * @param listener
      */
     public void checkPin(Activity mActivity, final WalletListener listener){
-        final WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-        if(walletBean != null){
-            String payload = "";
-            if(!TextUtils.isEmpty(walletBean.getPayload())){
+        String payload = "";
+        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
+        if(currencyEntity != null){
+            if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_BASESEED){
+                WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
                 payload = walletBean.getPayload();
             }else{
-                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
                 payload = currencyEntity.getPayload();
             }
-            baseWallet.checkPwd(mActivity,payload, new WalletListener<String>() {
+            baseWallet.checkPwd(mActivity, currencyEntity.getCategory(), payload, new WalletListener<String>() {
                 @Override
                 public void success(String seed) {
                     listener.success(seed);
@@ -127,6 +130,7 @@ public class NativeWallet {
 
     /**
      * Display new password
+     * Set a new password
      * @param listen
      */
     public void showSetPin(Activity mActivity, final WalletListener listen){
@@ -145,15 +149,16 @@ public class NativeWallet {
 
     /**
      * Reset payment password
+     * Pay to reset the password
      */
-    public void setPin(Activity mActivity,final String seed, final WalletListener listener) {
+    public void setPin(Activity mActivity, final int category, final String seed, final WalletListener listener) {
         baseWallet.showSetNewPin(mActivity,new WalletListener<String>() {
             @Override
             public void success(String pin) {
                 WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
-                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(seed,pin);
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(category,seed,pin);
                 if(!TextUtils.isEmpty(walletBean.getPayload())){
-                    // BaseSeed requires synchronization of wallet information
+                    // Synchronous wallet information
                     walletBean.setPayload(encoPinBean.getPayload());
                     walletBean.setVer(SupportKeyUril.PIN_VERSION);
                     baseWallet.updateWallet(walletBean, new WalletListener<WalletBean>() {
@@ -168,7 +173,7 @@ public class NativeWallet {
                         }
                     });
                 }else{
-                    // PriKey encryption requires synchronizing currency information
+                    // Synchronous currency information
                     BaseCurrency baseCurrency = initCurrency(CurrencyEnum.BTC);
                     CurrencyEntity currencyEntity = baseCurrency.getCurrencyData();
                     currencyEntity.setPayload(encoPinBean.getPayload());
@@ -202,7 +207,7 @@ public class NativeWallet {
             @Override
             public void success(List<WalletOuterClass.Coin> list) {
                 if(list == null){
-                    //The user has not created the currency
+                    // Users do not have to create a currency
                     baseWallet.requestUserStatus(new WalletListener<Integer>() {
                         @Override
                         public void success(Integer category) {
@@ -224,11 +229,12 @@ public class NativeWallet {
     }
 
     /**
-     * @param baseseed
+     * Create a wallet
+     * @param baseSeed
      * @param pwd
      */
-    public void createWallet(String baseseed, String pwd, final WalletListener listener) {
-        baseWallet.createWallet(baseseed, pwd, new WalletListener<WalletBean>() {
+    public void createWallet(String baseSeed, String pwd, final WalletListener listener) {
+        baseWallet.createWallet(baseSeed, pwd, new WalletListener<WalletBean>() {
             @Override
             public void success(WalletBean walletBean) {
                 listener.success(walletBean);
@@ -242,7 +248,7 @@ public class NativeWallet {
     }
 
     /**
-     *
+     * Update the purse
      * @param payload
      * @param ver
      */
@@ -265,7 +271,13 @@ public class NativeWallet {
 
     /**
      * (priKey\baseSeed\salt+seed)
+     * Create a currency
      * @param currencyEnum
+     * @param category (priKey\baseSeed\salt+seed)
+     * @param value
+     * @param pin
+     * @param masterAddress
+     * @param listener
      */
     public void createCurrency(CurrencyEnum currencyEnum, int category, String value, String pin, String masterAddress,
                                final WalletListener listener) {
@@ -273,8 +285,7 @@ public class NativeWallet {
         String salt = "";
         switch (category){
             case BaseCurrency.CATEGORY_PRIKEY:
-                String valueHex = StringUtil.bytesToHexString(value.getBytes());
-                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(valueHex,pin);
+                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(BaseCurrency.CATEGORY_PRIKEY,value,pin);
                 payload = encoPinBean.getPayload();
                 break;
             case BaseCurrency.CATEGORY_BASESEED:
@@ -301,7 +312,7 @@ public class NativeWallet {
     }
 
     /**
-     * Total currency balance
+     * Currency total balance
      * @param currencyEnum
      */
     public void balance(CurrencyEnum currencyEnum) {
@@ -311,6 +322,7 @@ public class NativeWallet {
 
     /**
      * Hidden address
+     * Hide the address
      * @param currencyEnum
      * @param address
      */
@@ -318,8 +330,6 @@ public class NativeWallet {
         CoinAccount coinAccount = initAccount (currencyEnum);
         coinAccount.hideAddress(address);
     }
-
-
 
     /**
      * Transfer accounts

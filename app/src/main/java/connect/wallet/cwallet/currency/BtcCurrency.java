@@ -17,7 +17,6 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.wallet.jni.AllNativeMethod;
@@ -60,7 +59,7 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     /**
-     * Set currency information
+     * Set the currency information
      */
     @Override
     public void setCurrencyInfo(final CurrencyEntity currencyEntity, final WalletListener listener){
@@ -113,9 +112,9 @@ public class BtcCurrency extends BaseCurrency {
 
     /**
      * Signature transaction
-     * @param priList
-     * @param tvs
-     * @param rowhex
+     * @param priList PriKey array
+     * @param tvs input string
+     * @param rowhex The original transaction
      * @return
      */
     @Override
@@ -140,6 +139,18 @@ public class BtcCurrency extends BaseCurrency {
         DecimalFormat myformat = new DecimalFormat(PATTERN_BTC);
         String format = myformat.format(value / BTC_TO_LONG);
         return format.replace(",", ".");
+    }
+
+    /**
+     * Determine whether the amount is dirty
+     */
+    private static boolean isHaveDustWithAmount(long amount) {
+        EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
+        if(feeBean == null || TextUtils.isEmpty(feeBean.getData())){
+            return false;
+        }else{
+            return (amount * 1000 / (3 * 182)) < Double.valueOf(feeBean.getData()) * Math.pow(10, 8) / 10;
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 package connect.wallet.cwallet.bean;
 
 /**
- * Created by Administrator on 2017/7/18.
+ * type of currency
  */
 
 public enum CurrencyEnum {

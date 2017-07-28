@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,17 +37,25 @@ import connect.database.MemoryDataManager;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
+import connect.database.green.bean.MessageEntity;
 import connect.im.bean.UserOrderBean;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
+import connect.utils.ToastEUtil;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.inter.WalletListener;
@@ -54,6 +64,7 @@ import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.widget.payment.PinTransferDialog;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**

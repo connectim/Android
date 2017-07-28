@@ -28,7 +28,7 @@ public class JniNativeTest {
         String prikey = "L58QekqQYviopx1uLxm6rj5Lpbn6i9meP8895rPcMZvrbjkYwsU1";
         byte[] prikeyBytes = prikey.getBytes();
         String prikeyHex = StringUtil.bytesToHexString(prikeyBytes);
-        EncoPinBean aa = SupportKeyUril.encoPinDefult(prikeyHex, "1234");
+        EncoPinBean aa = SupportKeyUril.encoPinDefult(2,prikeyHex, "1234");
         LogManager.getLogger().d(Tag, aa.getPayload());
     }
 

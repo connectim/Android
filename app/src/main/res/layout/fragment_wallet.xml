@@ -58,6 +58,7 @@
         android:background="@color/color_trans_80_black">
 
         <TextView
+            android:id="@id/txt1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -67,7 +68,7 @@
             android:textSize="@dimen/sp_24"/>
 
         <TextView
-            android:id="@id/txt1"
+            android:id="@id/txt2"
             style="@style/ButtonLongStyle"
             android:layout_width="@dimen/dp_180"
             android:layout_height="@dimen/dp_45"

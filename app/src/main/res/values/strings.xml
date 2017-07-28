@@ -574,6 +574,8 @@
     <string name="Wallet_Detail">detail</string>
     <string name="Wallet_not_create_wallet">You haven\'t create the purse</string>
     <string name="Wallet_Immediately_create">Immediately create</string>
+    <string name="Wallet_not_update_wallet">You haven\'t updated your wallet</string>
+    <string name="Wallet_Immediately_update">Update now</string>
     <string name="Wallet_Packet_Send_User_Connect">Send the lucky packet via Connect</string>
     <string name="Wallet_Scan_to_pay_me">Scan to pay me</string>
     <string name="Wallet_Transfer_Count">Transfer(%d)</string>
