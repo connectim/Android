@@ -17,14 +17,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.set.manager.EditInputFilterPrice;
-import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.ui.activity.R;
@@ -69,6 +66,7 @@ public class RequestActivity extends BaseActivity {
 
     private CurrencyEnum currencyBean = CurrencyEnum.BTC;
     private CurrencyAddressEntity addressEntity;
+    private String currencyAddress="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,25 +96,30 @@ public class RequestActivity extends BaseActivity {
         CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
         if(entity != null){
             addressEntity = entity;
-            scanHead = transferHeader(currencyBean) + addressEntity.getAddress() + "?" + "amount=";
-            addressTv.setText(addressEntity.getAddress());
-            showScanView(transferHeader(currencyBean) + addressEntity.getAddress());
-
+            currencyAddress=addressEntity.getAddress();
+            scanHead = transferHeader(currencyBean) +currencyAddress + "?" + "amount=";
+            addressTv.setText(currencyAddress);
+            showScanView(transferHeader(currencyBean) + currencyAddress);
         }else{
             NativeWallet.getInstance().initAccount(currencyBean).requestAddressList(new WalletListener<String>() {
                 @Override
                 public void success(String list) {
                     CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
-                    if(entity != null){
+                    if (entity == null) {
+                        ActivityUtil.goBack(mActivity);
+                    } else {
                         addressEntity = entity;
-                        scanHead = transferHeader(currencyBean) + addressEntity.getAddress() + "?" + "amount=";
-                        addressTv.setText(addressEntity.getAddress());
-                        showScanView(transferHeader(currencyBean) + addressEntity.getAddress());
+                        currencyAddress=addressEntity.getAddress();
+                        scanHead = transferHeader(currencyBean) +currencyAddress + "?" + "amount=";
+                        addressTv.setText(currencyAddress);
+                        showScanView(transferHeader(currencyBean) + currencyAddress);
                     }
                 }
 
                 @Override
-                public void fail(WalletError error) {}
+                public void fail(WalletError error) {
+
+                }
             });
         }
     }
@@ -129,13 +132,17 @@ public class RequestActivity extends BaseActivity {
     @OnClick(R.id.address_lin)
     void goCopy(View view) {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        cm.setText(addressEntity.getAddress());
+        cm.setText(currencyAddress);
         ToastEUtil.makeText(mActivity, R.string.Set_Copied).show();
     }
 
     @OnClick(R.id.right_lin)
     void goshare(View view) {
-        String url = shareUrl + addressEntity.getAddress();
+        if (TextUtils.isEmpty(currencyAddress)) {
+            return;
+        }
+
+        String url = shareUrl + currencyAddress;
         if (!TextUtils.isEmpty(amountEt.getText().toString())) {
             url = url + "&amount=" + amountEt.getText().toString();
         }
@@ -175,7 +182,7 @@ public class RequestActivity extends BaseActivity {
         public void afterTextChanged(Editable s) {
             String scanUrl;
             if (TextUtils.isEmpty(s.toString())) {
-                scanUrl = transferHeader(currencyBean) + addressEntity.getAddress();
+                scanUrl = transferHeader(currencyBean) + currencyAddress;
             } else {
                 scanUrl = scanHead + s.toString();
             }

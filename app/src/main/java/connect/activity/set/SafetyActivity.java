@@ -81,9 +81,11 @@ public class SafetyActivity extends BaseActivity {
             phoneTv.setText(R.string.Set_Phone_unbinded);
         }else{
             try {
-                String phone = userBean.getPhone().split("-")[1];
-                phoneTv.setText(phone);
-            }catch (Exception e){
+                String phoneNum = userBean.getPhone();
+                String[] spliteArr = phoneNum.split("-");
+                String showpPhone = spliteArr == null || spliteArr.length <= 1 ? phoneNum : spliteArr[1];
+                phoneTv.setText(showpPhone);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

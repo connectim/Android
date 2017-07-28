@@ -27,6 +27,7 @@ import connect.activity.chat.bean.MsgSend;
 import connect.activity.wallet.PacketHistoryActivity;
 import connect.activity.wallet.bean.TransferBean;
 import connect.utils.ProtoBufUtil;
+import connect.utils.RegularUtil;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.activity.set.PayFeeActivity;
@@ -181,9 +182,17 @@ public class RedPacketActivity extends BaseActivity {
     }
 
     private void sendRedPacket() {
-        baseBusiness.luckyPacket(null, redKey, 0, redType, redType == 0 ? 1 : Integer.valueOf(edit.getText().toString()),
-                transferEditView.getCurrentBtcLong(), transferEditView.getNote(), new WalletListener<String>() {
-                    @Override
+        int size = 1;
+        if (redType == 0) {
+            size = 1;
+        } else {
+            String sizeString = edit.getText().toString();
+            if (RegularUtil.matches(sizeString, RegularUtil.ALL_NUMBER)) {
+                size = Integer.valueOf(sizeString);
+            }
+        }
+        baseBusiness.luckyPacket(null, redKey, 0, redType, size, transferEditView.getCurrentBtcLong(), transferEditView.getNote(), new WalletListener<String>() {
+            @Override
                     public void success(String hashId) {
                         if (redType == 0) {
                             ParamManager.getInstance().putLatelyTransfer(new TransferBean(5, friendEntity.getAvatar(),

@@ -73,7 +73,6 @@ public class ContactSelectActivity extends BaseActivity {
     private String groupEcdh = null;
     private int roomTag;
     private String roomKey;
-    private List<String> oldMembers = null;
     private GroupEntity groupEntity = null;
     private List<ContactEntity> selectEntities = new ArrayList<>();
     private List<GroupMemberEntity> memEntities = null;
@@ -135,22 +134,20 @@ public class ContactSelectActivity extends BaseActivity {
         });
 
         linearLayoutManager = new LinearLayoutManager(activity);
-        List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend();
-        Collections.sort(friendEntities, friendCompara);
-
         roomTag = getIntent().getIntExtra(ROOM_TAG, 0);
         roomKey = getIntent().getStringExtra(ROOM_KEYS);
         groupEntity = ContactHelper.getInstance().loadGroupEntity(roomKey);
 
-        oldMembers = new ArrayList<>();
+        List<String> oldMembers = new ArrayList<>();
         if (0 == roomTag) {//create group
-            oldMembers.add(roomKey);
         } else {//Invite friends to join in the group
             memEntities = ContactHelper.getInstance().loadGroupMemEntity(roomKey);
             for (GroupMemberEntity memEntity : memEntities) {
                 oldMembers.add(memEntity.getPub_key());
             }
         }
+        List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend();
+        Collections.sort(friendEntities, friendCompara);
 
         adapter = new MulContactAdapter(activity, oldMembers, friendEntities,null);
         recyclerview.setLayoutManager(linearLayoutManager);

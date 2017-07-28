@@ -111,7 +111,11 @@ public class TransferDetailActivity extends BaseActivity {
         hashId = getIntent().getStringExtra("Hash");
         msgId = getIntent().getStringExtra("Msgid");
 
-        requestTransferDetail(transferType, hashId);
+        if (transferType == 0) {
+            requestInnerTransferDetail(hashId);
+        } else if (transferType == 1) {
+            requestOuterTransferDetail(hashId);
+        }
         loadSenderInfo(senderKey);
         loadReceiverInfo(receiverKey);
     }
@@ -128,12 +132,76 @@ public class TransferDetailActivity extends BaseActivity {
     /**
      * Request to transfer details
      *
-     * @param transtype 0:outer 1:inner
      * @param hashid
      */
-    public void requestTransferDetail(int transtype, final String hashid) {
+    public void requestInnerTransferDetail(final String hashid) {
         Connect.BillHashId hashId = Connect.BillHashId.newBuilder().setHash(hashid).build();
-        OkHttpUtil.getInstance().postEncrySelf(0 == transtype ? UriUtil.TRANSFER_INNER : UriUtil.TRANSFER_OUTER, hashId,
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.TRANSFER_INNER, hashId, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
+                        throw new Exception("Validation fails");
+                    }
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
+                        if (TextUtils.isEmpty(bill.getTips())) {
+                            txt7.setVisibility(View.GONE);
+                        } else {
+                            txt7.setText(bill.getTips());
+                        }
+
+                        txt1.setText(getString(R.string.Set_BTC_symbol) + "" + RateFormatUtil.longToDoubleBtc(bill.getAmount()));
+                        txt2.setText(bill.getTxid());
+                        linearlayout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, bill.getTxid());
+                            }
+                        });
+                        txt3.setText(TimeUtil.getTime(bill.getCreatedAt() * 1000, TimeUtil.DEFAULT_DATE_FORMAT));
+                        String state = "";
+                        switch (bill.getStatus()) {
+                            case 0://do not pay
+                                state = getString(R.string.Chat_Unpaid);
+                                txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                                break;
+                            case 1://do not confirm
+                                state = getString(R.string.Wallet_Unconfirmed);
+                                txt4.setBackgroundResource(R.drawable.shape_stroke_red);
+                                break;
+                            case 2://confirm
+                                state = getString(R.string.Wallet_Confirmed);
+                                txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                                break;
+                        }
+                        txt4.setText(state);
+                        TransactionHelper.getInstance().updateTransEntity(hashid, msgId, bill.getStatus());
+                        ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.TRANSFER_STATE, msgId, hashid);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+
+            }
+        });
+    }
+
+
+    /**
+     * Request to transfer details
+     *
+     * @param hashid
+     */
+    public void requestOuterTransferDetail(final String hashid) {
+        Connect.BillHashId hashId = Connect.BillHashId.newBuilder().setHash(hashid).build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.TRANSFER_OUTER, hashId,
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
@@ -143,25 +211,25 @@ public class TransferDetailActivity extends BaseActivity {
                                 throw new Exception("Validation fails");
                             }
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
-                            if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
-                                if (TextUtils.isEmpty(bill.getTips())) {
+                            final Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData().toByteArray());
+                            if (ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)) {
+                                if (TextUtils.isEmpty(billingInfo.getTips())) {
                                     txt7.setVisibility(View.GONE);
                                 } else {
-                                    txt7.setText(bill.getTips());
+                                    txt7.setText(billingInfo.getTips());
                                 }
 
-                                txt1.setText(getString(R.string.Set_BTC_symbol) + "" + RateFormatUtil.longToDoubleBtc(bill.getAmount()));
-                                txt2.setText(bill.getTxid());
+                                txt1.setText(getString(R.string.Set_BTC_symbol) + "" + RateFormatUtil.longToDoubleBtc(billingInfo.getAmount()));
+                                txt2.setText(billingInfo.getTxid());
                                 linearlayout.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, bill.getTxid());
+                                        BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, billingInfo.getTxid());
                                     }
                                 });
-                                txt3.setText(TimeUtil.getTime(bill.getCreatedAt() * 1000, TimeUtil.DEFAULT_DATE_FORMAT));
+                                txt3.setText(TimeUtil.getTime(billingInfo.getCreatedAt() * 1000, TimeUtil.DEFAULT_DATE_FORMAT));
                                 String state = "";
-                                switch (bill.getStatus()) {
+                                switch (billingInfo.getStatus()) {
                                     case 0://do not pay
                                         state = getString(R.string.Chat_Unpaid);
                                         txt4.setBackgroundResource(R.drawable.shape_stroke_green);
@@ -176,7 +244,7 @@ public class TransferDetailActivity extends BaseActivity {
                                         break;
                                 }
                                 txt4.setText(state);
-                                TransactionHelper.getInstance().updateTransEntity(hashid, msgId, bill.getStatus());
+                                TransactionHelper.getInstance().updateTransEntity(hashid, msgId, billingInfo.getStatus());
                                 ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.TRANSFER_STATE, msgId, hashid);
                             }
                         } catch (Exception e) {

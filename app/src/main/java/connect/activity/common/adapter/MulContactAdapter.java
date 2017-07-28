@@ -23,6 +23,7 @@ import connect.widget.roundedimageview.RoundedImageView;
 public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.MulHolder> {
 
     private LayoutInflater inflater;
+    private ArrayList<String> oldMemberList = new ArrayList<>();
     private ArrayList<String> memberList = new ArrayList<>();
     private List<ContactEntity> friendEntities;
 
@@ -32,7 +33,9 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
     public MulContactAdapter(Context context, List<String> members, List<ContactEntity> entities,ArrayList<ContactEntity> seledFriend) {
         this.inflater = LayoutInflater.from(context);
         this.friendEntities = entities;
-        if(members != null){
+
+        if (members != null) {
+            oldMemberList.addAll(members);
             memberList.addAll(members);
         }
         if(seledFriend != null){
@@ -118,6 +121,11 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
             ContactEntity index = friendEntities.get(posi);
             View secview = v.findViewById(R.id.select);
             String pubkey = index.getPub_key();
+            if (oldMemberList.contains(pubkey)) {
+                secview.setSelected(true);
+                return;
+            }
+
             if (memberList.contains(pubkey)) {
                 memberList.remove(pubkey);
                 for (ContactEntity contactEntity : selectEntities) {
@@ -136,7 +144,6 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
             if (onSeleFriendListence != null) {
                 onSeleFriendListence.seleFriend(selectEntities);
             }
-
         }
     };
 

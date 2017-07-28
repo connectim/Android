@@ -1,11 +1,10 @@
 package connect.activity.chat.view.holder;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,21 +12,22 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
+import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.view.BubbleImg;
-import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.common.bean.ConverType;
-import connect.activity.base.BaseApplication;
+import connect.activity.common.selefriend.ConversationActivity;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
+import connect.utils.ToastEUtil;
 
 /**
  * Created by gtq on 2016/11/23.
@@ -101,8 +101,18 @@ public class MsgImgHolder extends MsgChatHolder {
                 try {
                     MediaStore.Images.Media.insertImage(context.getContentResolver(), filePath, "", null);
                     scanner.connect();
+                    ToastEUtil.makeText(context, R.string.Login_Save_successful).show();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                String errorMsg = e.getMessage();
+                if (!TextUtils.isEmpty(errorMsg)) {
+                    ToastEUtil.makeText(context,errorMsg).show();
                 }
             }
         });

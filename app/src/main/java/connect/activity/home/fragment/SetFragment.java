@@ -38,6 +38,7 @@ import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.im.bean.UserOrderBean;
+import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -173,6 +174,7 @@ public class SetFragment extends BaseFragment {
                         ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
                         HomeAction.sendTypeMsg(HomeAction.HomeType.DELAY_EXIT);
 
+                        FailMsgsManager.getInstance().removeAllFailMsg();
                         UserOrderBean userOrderBean = new UserOrderBean();
                         userOrderBean.connectLogout();
                     }
