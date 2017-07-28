@@ -129,7 +129,7 @@ public class TransferAddressActivity extends BaseActivity {
         baseBusiness.transferAddress(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {
-                // 存储最近10条转账记录
+                // Store the last 10 transfer records
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));
                 List<Activity> list = BaseApplication.getInstance().getActivityList();
                 for (Activity activity : list) {

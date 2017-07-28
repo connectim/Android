@@ -133,32 +133,25 @@ public class UriUtil {
     public static String WALLET_V2_SERVICE_TRANSFER = "/wallet/v2/service/transfer";
     /** coins addresses */
     public static String WALLET_V2_COINS_ADDRESS_LIST = "/wallet/v2/coins/addresses/list";
-    /** 获取钱包货币状态 */
+    /** Get currency status of purse */
     public static String WALLET_V2_SERVICE_USER_STATUS = "/wallet/v2/service/user_status";
-    /** 收款 (不属于钱包基础功能)*/
+    /** Collection (not part of purse basic function)*/
     public static String WALLET_V2_SERVICE_RECEIVE = "/wallet/v2/service/receive";
-    /*resquest:ReceiveRequest  resp:Bill*/
-    /** 支付 */
+    /** payment */
     public static String WALLET_V2_SERVICE_PAYMENT = "/wallet/v2/service/payment";
-    /*req:Payment  resp:OriginalTransactionResponse*/
-    /** 红包 */
+    /** Redpacket */
     public static String WALLET_V2_SERVICE_LUCKPACKAGE = "/wallet/v2/service/luckpackage";
-    /*req:LuckyPackageRequest  resp:OriginalTransactionResponse*/
-    /** 外部转账 */
+    /** external transfer */
     public static String WALLET_V2_SERVICE_EXTERNAL = "/wallet/v2/service/external";
-    /*req:OutTransfer  resp:ExternalBillingInfo*/
-    /** 众筹 */
+    /** Crowd-funding */
     public static String WALLET_V2_SERVICE_CROWDFUNING = "/wallet/v2/service/crowdfuning";
-    /*req:CrowdfundingRequest  resp:Crowdfunding*/
-    /** 广播 */
+    /** Radio broadcast */
     public static String WALLET_V2_SERVICE_PUBLISH = "/wallet/v2/service/publish";
-    /*req:PublishTransaction  resp:ResponsePublish*/
-    /** 转账到地址 */
+    /** Transfer to address */
     public static String WALLET_V2_SERVICE_TRANSFER_ADDRESS= "/wallet/v2/service/transfer_to_address";
-    /*req:PublishTransaction  resp:ResponsePublish*/
-    /** 获取地址交易流水 */
+    /** Get address transaction stream */
     public static String WALLET_V2_COINS_ADDRESSES_TX = "/wallet/v2/coins/addresses/tx";
-    /** 获取币种信息 */
+    /** Get currency information */
     public static String WALLET_V2_COINS_INFO = "/wallet/v2/coins/info";
 
 

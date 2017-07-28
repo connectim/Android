@@ -1,7 +1,7 @@
 package connect.wallet.cwallet.inter;
 
 /**
- * 提供给外部的
+ * Provided to external
  * Created by Administrator on 2017/7/18.
  */
 public interface WalletListener<T> {
@@ -9,9 +9,9 @@ public interface WalletListener<T> {
     String success = "success";
 
     enum WalletError {
-        DBError,//数据异常
-        NETError,//网络异常
-        ACCOUNTError,//账户异常
+        DBError,
+        NETError,
+        ACCOUNTError,
     }
 
     void success(T t);

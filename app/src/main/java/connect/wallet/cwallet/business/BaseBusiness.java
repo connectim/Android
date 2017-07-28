@@ -39,7 +39,7 @@ import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**
- * 具体业务层接口
+ * Specific business layer interface
  * Created by Administrator on 2017/7/18.
  */
 public class BaseBusiness {
@@ -55,15 +55,15 @@ public class BaseBusiness {
                 TransactionTypeLuckypackage = 3,
                 TransactionTypeURLTransfer = 6,
     }*/
-    private final int TRANSFER_SUUESS = 0; // 转账参数正确
-    private final int FEETOSAMLL = 3000; // 手续费太小
-    private final int FEEEMPTY = 3001; // 手续费为空
-    private final int UNSPENTTOOLARGE = 3002; // 交易笔数太多
+    private final int TRANSFER_SUUESS = 0; // The transfer parameter is correct
+    private final int FEETOSAMLL = 3000; // The service charge is too small
+    private final int FEEEMPTY = 3001; // The fee is null
+    private final int UNSPENTTOOLARGE = 3002; // There are too many transactions
     private final int UNSPENTERROR = 3003;  //
-    private final int UNSPENTNOTENOUGH = 3004; // 余额不足
-    private final int OUTPUTDUST = 3005; // 输出金额太小（肮脏）
-    private final int UNSPENTDUST = 3006; // 找零太小
-    private final int AUTOMAX = 3007; // 自动计算手续费大于最大阈值
+    private final int UNSPENTNOTENOUGH = 3004; // credit is running low
+    private final int OUTPUTDUST = 3005; // The output is too small (dirty)
+    private final int UNSPENTDUST = 3006; // The change is too small
+    private final int AUTOMAX = 3007; // he automatic calculation fee is greater than the maximum threshold
     private Dialog connectDialog;
 
     public BaseBusiness(Activity mActivity, CurrencyEnum currencyEnum) {
@@ -72,7 +72,7 @@ public class BaseBusiness {
     }
 
     /**
-     * 组装输入Txin
+     * Assembly input Txin
      * @param listAddress
      * @return
      */
@@ -88,7 +88,7 @@ public class BaseBusiness {
     }
 
     /**
-     * 组装输出Txouts
+     * Assembly output Txouts
      * @param outMap
      * @return
      */
@@ -106,7 +106,6 @@ public class BaseBusiness {
     }
 
     /**
-     * 获取手续费
      * @return
      */
     private Long getFee(){
@@ -119,7 +118,7 @@ public class BaseBusiness {
     }
 
     /**
-     * 地址转账
+     * Address transfer
      * @param outMap <address,amount>
      * @param listener
      */
@@ -128,19 +127,16 @@ public class BaseBusiness {
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.TransferRequest.Builder builder = WalletOuterClass.TransferRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
-        // 组装输入
         WalletOuterClass.Txin txin = getTxin(listAddress);
         if(getTxin(listAddress) != null){
             builderSend.setTxin(txin);
         }
         builderSend.setCurrency(currencyEnum.getCode());
         builder.setSpentCurrency(builderSend.build());
-        // 组装输出
         ArrayList<WalletOuterClass.Txout> txoutList = getTxOut(outMap);
         for(WalletOuterClass.Txout txout : txoutList){
             builder.addTxOut(txout);
         }
-        // 手续费
         builder.setFee(getFee());
         builder.setTips("");
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_TRANSFER_ADDRESS, builder.build(), new ResultCall<Connect.HttpResponse>() {
@@ -158,7 +154,7 @@ public class BaseBusiness {
     }
 
     /**
-     * Connect用户转账
+     * Connect user transfer
      * @param outMap <pubKey,amount>
      * @param listener
      */
@@ -167,14 +163,12 @@ public class BaseBusiness {
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.ConnectTransferRequest.Builder builder = WalletOuterClass.ConnectTransferRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
-        // 组装输入
         WalletOuterClass.Txin txin = getTxin(listAddress);
         if(getTxin(listAddress) != null){
             builderSend.setTxin(txin);
         }
         builderSend.setCurrency(currencyEnum.getCode());
         builder.setSpentCurrency(builderSend.build());
-        // 组装输出
         for (HashMap.Entry<String, Long> entry : outMap.entrySet()) {
             WalletOuterClass.ConnectTxout txout = WalletOuterClass.ConnectTxout.newBuilder()
                     .setUid(entry.getKey())
@@ -182,7 +176,6 @@ public class BaseBusiness {
                     .build();
             builder.addTxOut(txout);
         }
-        // 手续费
         builder.setFee(getFee());
         builder.setTips("");
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_TRANSFER, builder.build(), new ResultCall<Connect.HttpResponse>() {
@@ -200,7 +193,7 @@ public class BaseBusiness {
     }
 
     /**
-     * 单人收款
+     * Individual collection
      */
     public void friendReceiver(long amount, String senderaddress, String tips, final WalletListener listener) {
         WalletOuterClass.ReceiveRequest receiveRequest = WalletOuterClass.ReceiveRequest.newBuilder()
@@ -237,7 +230,7 @@ public class BaseBusiness {
     }
 
     /**
-     * 支付
+     * payment
      * @param hash payment hash
      * @param type TransactionTypeBill = 1
      *             TransactionTypePayCrowding = 2
@@ -268,7 +261,6 @@ public class BaseBusiness {
     }
 
     /**
-     * 众筹
      * @param groupkey
      * @param amount
      * @param size
@@ -310,11 +302,10 @@ public class BaseBusiness {
     }
 
     /**
-     * 红包
      * @param listAddress
      * @param receiverIdentifier // group id or user pubkey
-     * @param type // private group outer //0：内部 1：外部
-     * @param category //0：个人 1：群
+     * @param type // private group outer //0：inner 1：outer
+     * @param category //0：persional 1：group
      * @param size
      * @param amount
      * @param tips
@@ -326,7 +317,6 @@ public class BaseBusiness {
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.LuckyPackageRequest.Builder builder = WalletOuterClass.LuckyPackageRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
-        // 组装输入
         WalletOuterClass.Txin txin = getTxin(listAddress);
         if(getTxin(listAddress) != null){
             builderSend.setTxin(txin);
@@ -355,7 +345,7 @@ public class BaseBusiness {
     }
 
     /**
-     * 外部转账
+     * external transfer
      *
      * @param listAddress
      * @param amount
@@ -366,7 +356,6 @@ public class BaseBusiness {
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.OutTransfer.Builder builder = WalletOuterClass.OutTransfer.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
-        // 组装输入
         WalletOuterClass.Txin txin = getTxin(listAddress);
         if(getTxin(listAddress) != null){
             builderSend.setTxin(txin);
@@ -390,7 +379,7 @@ public class BaseBusiness {
     }
 
     /**
-     * 广播交易
+     * Broadcast Trading
      */
     private void publishTransfer(String rawHex, final String hashId, final WalletListener<String> listener){
         WalletOuterClass.PublishTransaction publishTransaction = WalletOuterClass.PublishTransaction.newBuilder()
@@ -419,7 +408,7 @@ public class BaseBusiness {
     }
 
     /**
-     * 处理转账结果
+     * Handling transfer results
      * @param activity
      * @param response
      * @param listener
@@ -493,9 +482,6 @@ public class BaseBusiness {
     }
 
 
-    /**
-     * 检查交易密码,返回私钥数组
-     */
     private void checkPin(final Activity activity, final WalletOuterClass.OriginalTransaction transaction, final WalletListener listener){
         final ArrayList<String> addressList = new ArrayList<>();
         for(String address : transaction.getAddressesList()){
@@ -539,14 +525,14 @@ public class BaseBusiness {
     }
 
     /**
-     * 解密私钥
+     * Decrypt private key
      * @param activity
      * @param addressList
      * @param listener
      */
     private void decodePayload(Activity activity, final ArrayList<String> addressList, WalletOuterClass.OriginalTransaction transaction,
                                final WalletListener listener){
-        // 获取打款币种的加密payload
+        // Gets the encrypted payload for the currency of the call
         String payload = "";
         final CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
         if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY || currencyEntity.getCategory() == BaseCurrency.CATEGORY_SALT_SEED){
@@ -555,7 +541,7 @@ public class BaseBusiness {
             WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
             payload = walletBean.getPayload();
         }
-        // 解密payload
+
         pinTransferDialog = new PinTransferDialog();
         pinTransferDialog.showPaymentPwd(activity, addressList,transaction.getTxOutsList(), transaction.getFee(), transaction.getFixedFee(), transaction.getCurrency(),
                 payload, new PaymentPwd.OnTrueListener() {
@@ -563,20 +549,16 @@ public class BaseBusiness {
             public void onTrue(String decodeStr) {
                 ArrayList<String> priList = new ArrayList<>();
                 if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY){
-                    // 纯私钥
                     String priKey = new String(StringUtil.hexStringToBytes(decodeStr));
                     priList.add(priKey);
                 }else if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_SALT_SEED){
-                    // 导入第三方种子
 
                 }if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_BASESEED){
-                    // 获取输入地址对应的index
                     ArrayList<Integer> indexList = new ArrayList<>();
                     for(String address : addressList){
                         CurrencyAddressEntity addressEntity = CurrencyHelper.getInstance().loadCurrencyAddressFromAddress(address);
                         indexList.add(addressEntity.getIndex());
                     }
-                    // 根据index获取对应的私钥
                     for(Integer index : indexList){
                         String priKey = NativeWallet.getInstance().initCurrency(currencyEnum).createPriKey(decodeStr,currencyEntity.getSalt(),index);
                         priList.add(priKey);

@@ -221,8 +221,7 @@ public class PaymentActivity extends BaseActivity {
     }
 
     private void requestSetPay(String pass){
-        // 获取数据库里币种对应的seed依次加密，并上传到服务器并更新到本地
-        String encodeStr = SupportKeyUril.encodePri("aaaa","salt",pass);
+        // Access to the database corresponding to the currency seed, encrypted in turn, and uploaded to the server and updated to the local
         byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),userBean.getPubKey());
         try {
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, ecdh, pass.getBytes("UTF-8"));

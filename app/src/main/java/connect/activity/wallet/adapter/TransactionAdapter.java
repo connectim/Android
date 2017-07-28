@@ -47,7 +47,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         viewHolder.avaterRimg.setVisibility(View.GONE);
         Connect.Transaction transaction = mListData.get(position);
         switch (typeTx){
-            case 0:// 地址转账
+            case 0:// Address transfer
             case 6://outer transfer
                 viewHolder.avaterRimg.setVisibility(View.VISIBLE);
                 viewHolder.avaterRimg.setImageResource(R.mipmap.bitcoin_luckybag3x);

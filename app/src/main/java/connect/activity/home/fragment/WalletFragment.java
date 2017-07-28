@@ -172,7 +172,7 @@ public class WalletFragment extends BaseFragment {
     }
 
     /**
-     * 同步钱包信息
+     * Synchronous wallet information
      */
     private void syncWallet() {
         relativelayout1.setVisibility(View.GONE);
@@ -180,12 +180,12 @@ public class WalletFragment extends BaseFragment {
             @Override
             public void success(Integer status) {
                 switch (status) {
-                    case 0:// 有钱包数据
+                    case 0:// Wallet data
                         long balance = currencyEntity.getBalance() == null ? 0 : currencyEntity.getBalance();
                         currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
                         amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(balance));
                         break;
-                    case 1:// 用户为老用户需要迁移
+                    case 1:// Users need to migrate for older users
                         NativeWallet.getInstance().showSetPin(mActivity, new WalletListener<String>() {
                             @Override
                             public void success(String pin) {
@@ -208,7 +208,7 @@ public class WalletFragment extends BaseFragment {
                             }
                         });
                         break;
-                    case 2:// 用户没有钱包数据,需要创建（新用户）
+                    case 2:// The user does not have wallet data and needs to be created (new users)
                         if (relativelayout1 != null) {
                             relativelayout1.setVisibility(View.VISIBLE);
                         }
@@ -226,7 +226,7 @@ public class WalletFragment extends BaseFragment {
     }
 
     /**
-     * 获取钱包余额
+     * Get wallet balance
      */
     private void requestCurrencyCoin() {
         NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).requestCoinInfo(new WalletListener<WalletOuterClass.Coin>() {
@@ -249,7 +249,7 @@ public class WalletFragment extends BaseFragment {
     }
 
     /**
-     * 请求汇率
+     * Asking rate
      */
     private void requestRate() {
         if (rateBean == null || TextUtils.isEmpty(rateBean.getUrl()))
@@ -274,7 +274,7 @@ public class WalletFragment extends BaseFragment {
     }
 
     /**
-     * 收集随机数返回
+     * Collect random numbers to return
      *
      * @param bundle
      */
@@ -293,7 +293,7 @@ public class WalletFragment extends BaseFragment {
     }
 
     /**
-     * 创建钱包
+     * Create Wallet
      *
      * @param baseSend
      * @param pin

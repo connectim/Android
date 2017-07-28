@@ -25,7 +25,7 @@ import connect.wallet.jni.AllNativeMethod;
 import wallet_gateway.WalletOuterClass;
 
 /**
- * 钱包管理工具类
+ * Wallet management tools
  * Created by Administrator on 2017/7/18.
  */
 public class NativeWallet {
@@ -53,7 +53,7 @@ public class NativeWallet {
     }
 
     /**
-     * 获取指定账户
+     * Get the specified account
      * @param currencyEnum
      * @return
      */
@@ -75,7 +75,7 @@ public class NativeWallet {
     }
 
     /**
-     * 获取指定币种
+     * Gets the specified currency
      * @param currencyEnum
      * @return
      */
@@ -97,7 +97,6 @@ public class NativeWallet {
     }
 
     /**
-     * 检查密码
      * @param listener
      */
     public void checkPin(Activity mActivity, final WalletListener listener){
@@ -127,7 +126,7 @@ public class NativeWallet {
     }
 
     /**
-     * 显示输入新密码
+     * Display new password
      * @param listen
      */
     public void showSetPin(Activity mActivity, final WalletListener listen){
@@ -145,7 +144,7 @@ public class NativeWallet {
     }
 
     /**
-     * 重置支付密码
+     * Reset payment password
      */
     public void setPin(Activity mActivity,final String seed, final WalletListener listener) {
         baseWallet.showSetNewPin(mActivity,new WalletListener<String>() {
@@ -154,7 +153,7 @@ public class NativeWallet {
                 WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
                 EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(seed,pin);
                 if(!TextUtils.isEmpty(walletBean.getPayload())){
-                    // baseSeed的方式需要同步钱包信息
+                    // BaseSeed requires synchronization of wallet information
                     walletBean.setPayload(encoPinBean.getPayload());
                     walletBean.setVer(SupportKeyUril.PIN_VERSION);
                     baseWallet.updateWallet(walletBean, new WalletListener<WalletBean>() {
@@ -169,7 +168,7 @@ public class NativeWallet {
                         }
                     });
                 }else{
-                    // priKey加密方式需要同步货币信息
+                    // PriKey encryption requires synchronizing currency information
                     BaseCurrency baseCurrency = initCurrency(CurrencyEnum.BTC);
                     CurrencyEntity currencyEntity = baseCurrency.getCurrencyData();
                     currencyEntity.setPayload(encoPinBean.getPayload());
@@ -195,7 +194,7 @@ public class NativeWallet {
     }
 
     /**
-     * 同步钱包信息
+     * Synchronous wallet information
      * @param listener
      */
     public void syncWalletInfo(final WalletListener listener){
@@ -203,7 +202,7 @@ public class NativeWallet {
             @Override
             public void success(List<WalletOuterClass.Coin> list) {
                 if(list == null){
-                    //用户没有创建过币种
+                    //The user has not created the currency
                     baseWallet.requestUserStatus(new WalletListener<Integer>() {
                         @Override
                         public void success(Integer category) {
@@ -225,9 +224,8 @@ public class NativeWallet {
     }
 
     /**
-     * 创建钱包
-     * @param baseseed 种子
-     * @param pwd 密码
+     * @param baseseed
+     * @param pwd
      */
     public void createWallet(String baseseed, String pwd, final WalletListener listener) {
         baseWallet.createWallet(baseseed, pwd, new WalletListener<WalletBean>() {
@@ -244,9 +242,9 @@ public class NativeWallet {
     }
 
     /**
-     * 更新钱包
-     * @param payload 加密种子
-     * @param ver 加密版本号
+     *
+     * @param payload
+     * @param ver
      */
     public void updateWallet(String payload, int ver) {
         WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
@@ -266,7 +264,7 @@ public class NativeWallet {
     }
 
     /**
-     * 创建币种(priKey\baseSeed\salt+seed)
+     * (priKey\baseSeed\salt+seed)
      * @param currencyEnum
      */
     public void createCurrency(CurrencyEnum currencyEnum, int category, String value, String pin, String masterAddress,
@@ -303,7 +301,7 @@ public class NativeWallet {
     }
 
     /**
-     * 币种总余额
+     * Total currency balance
      * @param currencyEnum
      */
     public void balance(CurrencyEnum currencyEnum) {
@@ -312,7 +310,7 @@ public class NativeWallet {
     }
 
     /**
-     * 隐藏地址
+     * Hidden address
      * @param currencyEnum
      * @param address
      */
@@ -324,11 +322,11 @@ public class NativeWallet {
 
 
     /**
-     * 转账
-     * @param currencyEnum 币种类型
-     * @param amount 金额
-     * @param fromAddress 输入地址列表
-     * @param toAddress 输出地址列表
+     * Transfer accounts
+     * @param currencyEnum
+     * @param amount
+     * @param fromAddress
+     * @param toAddress
      */
     public void transfer(CurrencyEnum currencyEnum, double amount, List<String> fromAddress, List<String> toAddress, WalletListener walletListener) {
         CoinAccount coinAccount = initAccount(currencyEnum);

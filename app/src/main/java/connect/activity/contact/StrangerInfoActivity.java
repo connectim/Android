@@ -81,7 +81,6 @@ public class StrangerInfoActivity extends BaseActivity {
 
     @Override
     protected void onStart() {
-        // TODO: 2017/6/30 0030 为什么会加在 onStart里面
         super.onStart();
         Bundle bundle = getIntent().getExtras();
         address = bundle.getString("address");

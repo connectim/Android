@@ -41,7 +41,7 @@ public class BaseWallet {
     private String payPass;
 
     /**
-     * 设置钱包密码,修改钱包密码后 需要同步下更新下钱包接口，重新加密baseSsed上传
+     * Set the wallet password, modify the wallet password, you need to update the wallet under the synchronization interface, re encryption baseSsed upload
      */
     public void showSetNewPin(Activity mActivity,WalletListener listener) {
         payPass = "";
@@ -62,7 +62,7 @@ public class BaseWallet {
                     payPass = value;
                     setPin(mActivity,listener);
                 } else if (payPass.equals(value)) {
-                    //设置密码完成
+                    //Set password complete
                     listener.success(value);
                 } else {
                     ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
@@ -77,7 +77,7 @@ public class BaseWallet {
     }
 
     /**
-     * 校验密码
+     * check pwd
      */
     public void checkPwd(Activity activity,final String payload, final WalletListener listener) {
         DialogUtil.showPayEditView(activity, R.string.Wallet_Enter_your_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
@@ -116,7 +116,7 @@ public class BaseWallet {
     }
 
     /**
-     * 创建钱包
+     * create wallet
      */
     public void createWallet(String baseseed, String pwd, final WalletListener listener) {
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
@@ -146,7 +146,7 @@ public class BaseWallet {
     }
 
     /**
-     * 更新钱包
+     * Update Wallet
      */
     public void updateWallet(final WalletBean walletBean, final WalletListener listener) {
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
@@ -171,7 +171,7 @@ public class BaseWallet {
     }
 
     /**
-     * 获取用户身份状态
+     * Get user status
      */
     public void requestUserStatus(final WalletListener listener) {
         WalletOuterClass.RequestUserInfo requestUserInfo = WalletOuterClass.RequestUserInfo.newBuilder()
@@ -201,7 +201,7 @@ public class BaseWallet {
     }
 
     /**
-     * 更新钱包信息
+     * Update wallet information
      */
     public void syncWallet(final WalletListener listener) {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SYNC, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
@@ -212,14 +212,14 @@ public class BaseWallet {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     WalletOuterClass.RespSyncWallet respSyncWallet = WalletOuterClass.RespSyncWallet.parseFrom(structData.getPlainData());
                     if (respSyncWallet.getCoinsList() != null && respSyncWallet.getCoinsList().size() > 0) {
-                        // 更新钱包数据
+                        // Update wallet data
                         WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
                         WalletBean walletBean = new WalletBean(wallet.getPayLoad(), wallet.getVer(),
                                 wallet.getVersion(), wallet.getCheckSum());
-                        //保存钱包账户信息
+                        //Save wallet account information
                         SharePreferenceUser.getInstance().putWalletInfo(walletBean);
                         List<WalletOuterClass.Coin> list = respSyncWallet.getCoinsList();
-                        //保存货币信息
+                        //Save currency information
                         CurrencyHelper.getInstance().insertCurrencyListCoin(list);
                         listener.success(list);
                     } else {
@@ -241,8 +241,8 @@ public class BaseWallet {
     }
 
     /**
-     * 创建币种
-     * @param category 1:纯私钥，2:baseSeed，3:salt+seed
+     * create wallet
+     * @param category 1:Pure private key，2:baseSeed，3:salt+seed
      */
     public void createCurrency(final CurrencyEnum currencyEnum, final String payload, final String salt,
                                final int category, final String masterAddress, final WalletListener listener){
@@ -255,7 +255,7 @@ public class BaseWallet {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_CREATE, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                // 保存货币信息
+                // Save currency information
                 CurrencyEntity currencyEntity = new CurrencyEntity();
                 currencyEntity.setSalt(salt);
                 currencyEntity.setBalance(0L);
@@ -267,7 +267,7 @@ public class BaseWallet {
                 currencyEntity.setAmount(0L);
                 CurrencyHelper.getInstance().insertCurrency(currencyEntity);
 
-                // 保存默认货币地址信息
+                // Save default currency address information
                 CurrencyAddressEntity addressEntity = new CurrencyAddressEntity();
                 addressEntity.setBalance(0L);
                 addressEntity.setStatus(1);

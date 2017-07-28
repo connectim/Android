@@ -205,7 +205,7 @@ public class SupportKeyUril {
 
 
     /**
-     * 加密支付密码
+     * Encrypted payment password
      */
     public static EncoPinBean encoPinDefult(String value, String pass){
         return encoPin(value,pass,CRYPTION_N);
@@ -217,17 +217,11 @@ public class SupportKeyUril {
         encoPinBean.setPayload(payload);
         encoPinBean.setVersion(PIN_VERSION);
         encoPinBean.setN(n);
-        /**
-         * L58QekqQYviQVx1uLxm6rj5Lpwr6i9meP8HF5rPcMZvrbjkYwsU1
-         * 1234
-         * 17
-         * error wallet lenght
-         */
         return encoPinBean;
     }
 
     /**
-     * 解密支付密码
+     * Decrypt payment password
      */
     public static String decodePinDefult(String value, String pass){
         return decodePin(value, pass, PIN_VERSION);

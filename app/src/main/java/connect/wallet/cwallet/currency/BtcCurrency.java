@@ -25,7 +25,7 @@ import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**
- * BTC 币种管理
+ * BTC Currency management
  * Created by Administrator on 2017/7/18.
  */
 
@@ -60,7 +60,7 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     /**
-     * 设置币种信息
+     * Set currency information
      */
     @Override
     public void setCurrencyInfo(final CurrencyEntity currencyEntity, final WalletListener listener){
@@ -112,11 +112,11 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     /**
-     * 签名交易
-     * @param priList 签名交易的PriKey数组
-     * @param tvs 所有输入地址的Unspent字符串集合
-     * @param rowhex 原始交易
-     * @return 签名交易
+     * Signature transaction
+     * @param priList
+     * @param tvs
+     * @param rowhex
+     * @return
      */
     @Override
     public String getSignRawTrans(ArrayList<String> priList, String tvs, String rowhex) {
@@ -143,19 +143,7 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     /**
-     * 判断金额是否肮脏
-     */
-    private static boolean isHaveDustWithAmount(long amount) {
-        EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
-        if(feeBean == null || TextUtils.isEmpty(feeBean.getData())){
-            return false;
-        }else{
-            return (amount * 1000 / (3 * 182)) < Double.valueOf(feeBean.getData()) * Math.pow(10, 8) / 10;
-        }
-    }
-
-    /**
-     * 自动计算手续费
+     * Automatic calculation fee
      */
     private static long getAutoFeeWithUnspentLength(boolean isAddChangeAddress,int txs_length, int sentToLength) {
         if(isAddChangeAddress){ // the change of address
