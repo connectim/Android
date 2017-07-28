@@ -1,6 +1,7 @@
 package connect.activity.wallet;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -38,6 +39,7 @@ import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
+import connect.widget.random.RandomVoiceActivity;
 import protos.Connect;
 
 /**
@@ -159,6 +161,20 @@ public class TransferOutViaActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            switch (requestCode){
+                case RandomVoiceActivity.REQUEST_CODE:
+                    transferEditView.createrWallet(data);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
 }

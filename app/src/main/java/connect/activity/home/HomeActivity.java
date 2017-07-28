@@ -370,7 +370,6 @@ public class HomeActivity extends BaseFragmentActivity {
                         break;
                 }
         }
-
     }
 
     @Override

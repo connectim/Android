@@ -41,6 +41,7 @@ import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
+import connect.widget.random.RandomVoiceActivity;
 
 /**
  * Transfer to friend
@@ -213,6 +214,8 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                 friendGridAdapter.setNotifyData(friendList);
                 numberTv.setText(getString(R.string.Wallet_transfer_man, friendList.size()));
                 presenter.checkBtnEnable();
+            } else if(requestCode == RandomVoiceActivity.REQUEST_CODE){
+                transferEditView.createrWallet(data);
             }
         }
     }

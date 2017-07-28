@@ -2,6 +2,7 @@ package connect.utils.transfer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -27,6 +28,7 @@ import connect.activity.home.bean.HomeAction;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.manager.EditInputFilterPrice;
 import connect.activity.wallet.bean.RateBean;
+import connect.activity.wallet.bean.WalletBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -143,6 +145,9 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
             }
         });
+        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                RateFormatUtil.longToDoubleBtc(0L)));
+        requestWallet();
     }
 
     /**
@@ -166,7 +171,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         }
         editTitleTv.setText(context.getString(R.string.Wallet_Amount_BTC));
         editSymbolTv.setText(btcBean.getSymbol());
-        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit, RateFormatUtil.longToDoubleBtc(0)));
         amoutinputEt.addTextChangedListener(textWatcher);
         amoutinputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
         amoutinputEt.setFilters(btcInputFilters);
@@ -175,9 +179,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         }else{
             feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
         }
-        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                RateFormatUtil.longToDoubleBtc(0L)));
-        requestWallet();
         requestRate();
     }
 
@@ -447,6 +448,38 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
      */
     public void setFeeVisibility(int visibility){
         findViewById(R.id.linearlayout).setVisibility(visibility);
+    }
+
+    public void createrWallet(Intent data){
+        final String baseSend = data.getExtras().getString("random");
+        NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
+            @Override
+            public void success(final String pin) {
+
+                NativeWallet.getInstance().createWallet(baseSend, pin, new WalletListener<WalletBean>() {
+                    @Override
+                    public void success(WalletBean walletBean) {
+
+                        NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_BASESEED, baseSend, pin, "",
+                                new WalletListener<CurrencyEntity>() {
+                                    @Override
+                                    public void success(CurrencyEntity currencyEntity) {
+
+                                    }
+
+                                    @Override
+                                    public void fail(WalletError error) {}
+                                });
+
+                    }
+                    @Override
+                    public void fail(WalletError error) {}
+                });
+            }
+
+            @Override
+            public void fail(WalletError error) {}
+        });
     }
 
     public CurrencyEnum getCurrencyEnum() {

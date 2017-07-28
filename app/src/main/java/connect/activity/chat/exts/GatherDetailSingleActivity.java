@@ -2,6 +2,7 @@ package connect.activity.chat.exts;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -43,6 +44,7 @@ import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
+import connect.widget.random.RandomVoiceActivity;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 import wallet_gateway.WalletOuterClass;

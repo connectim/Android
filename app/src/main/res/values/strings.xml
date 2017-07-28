@@ -726,6 +726,5 @@
     <string name="Wallet_Create_wallet_failed">create wallet failed</string>
     <string name="Wallet_synchronization_data_failed">synchronization data failed</string>
     <string name="Set_please_enter_the_original_password">Enter the original password</string>
-    <string name="Wallet_Failed_to_get_the_default_address">Failed to get the default address</string>
     <string name="Wallet_Failed_to_get_the_list_address">Failed to get the list address</string>
 </resources>

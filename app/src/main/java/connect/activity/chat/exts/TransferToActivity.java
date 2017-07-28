@@ -1,6 +1,7 @@
 package connect.activity.chat.exts;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -52,6 +53,7 @@ import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
+import connect.widget.random.RandomVoiceActivity;
 import connect.widget.roundedimageview.RoundedImageView;
 import connect.utils.transfer.TransferEditView;
 import protos.Connect;
@@ -267,5 +269,19 @@ public class TransferToActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            switch (requestCode){
+                case RandomVoiceActivity.REQUEST_CODE:
+                    transferEditView.createrWallet(data);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

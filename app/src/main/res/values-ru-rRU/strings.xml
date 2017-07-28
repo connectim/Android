@@ -726,6 +726,5 @@
     <string name="Wallet_Create_wallet_failed">Не удалось создать кошелек</string>
     <string name="Wallet_synchronization_data_failed">Синхронные данные не удалось</string>
     <string name="Set_please_enter_the_original_password">Пожалуйста введите оригинальный пароль</string>
-    <string name="Wallet_Failed_to_get_the_default_address">Получить адрес по умолчанию не удалось</string>
     <string name="Wallet_Failed_to_get_the_list_address">Не удалось получить список адресов</string>
 </resources>

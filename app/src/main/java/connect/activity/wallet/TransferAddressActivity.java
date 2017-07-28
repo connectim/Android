@@ -33,6 +33,7 @@ import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
+import connect.widget.random.RandomVoiceActivity;
 import wallet_gateway.WalletOuterClass;
 
 /**
@@ -151,6 +152,8 @@ public class TransferAddressActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == BOOK_CODE) {
             addressTv.setText(data.getExtras().getString("address",""));
+        }else if(resultCode == RESULT_OK && requestCode == RandomVoiceActivity.REQUEST_CODE){
+            transferEditView.createrWallet(data);
         }
     }
 
