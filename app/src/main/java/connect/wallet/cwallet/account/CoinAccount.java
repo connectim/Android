@@ -14,22 +14,22 @@ import connect.wallet.cwallet.inter.WalletListener;
 public interface CoinAccount {
 
     /**
-     * 余额
+     * Balance
      */
     public void balance();
 
     /**
-     * 隐藏地址
+     * Hide the address
      */
     public void hideAddress(String address);
 
     /**
-     * 获取地址列表
+     * Get the address list
      */
     public void requestAddressList(WalletListener listener);
 
     /**
-     * 转账
+     * transfer
      */
     public void transfer(String url, GeneratedMessageV3 body, WalletListener listener);
 }

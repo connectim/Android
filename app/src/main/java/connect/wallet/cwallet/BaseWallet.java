@@ -42,7 +42,7 @@ public class BaseWallet {
     private String payPass;
 
     /**
-     * 设置钱包密码,修改钱包密码后 需要同步下更新下钱包接口，重新加密baseSsed上传
+     * Set the wallet password
      */
     public void showSetNewPin(Activity mActivity,WalletListener listener) {
         payPass = "";
@@ -78,7 +78,7 @@ public class BaseWallet {
     }
 
     /**
-     * 校验密码
+     * Check the password
      */
     public void checkPwd(Activity activity, final int category, final String payload, final WalletListener listener) {
         DialogUtil.showPayEditView(activity, R.string.Wallet_Enter_your_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
@@ -105,19 +105,14 @@ public class BaseWallet {
                         }
                     }
                 }.execute();
-
-
             }
-
             @Override
-            public void cancel() {
-
-            }
+            public void cancel() {}
         });
     }
 
     /**
-     * 创建钱包
+     * Create a wallet
      */
     public void createWallet(String baseseed, String pwd, final WalletListener listener) {
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
@@ -147,7 +142,7 @@ public class BaseWallet {
     }
 
     /**
-     * 更新钱包
+     * Update the wallet
      */
     public void updateWallet(final WalletBean walletBean, final WalletListener listener) {
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
@@ -172,7 +167,7 @@ public class BaseWallet {
     }
 
     /**
-     * 获取用户身份状态
+     * Get the user identity status
      */
     public void requestUserStatus(final WalletListener listener) {
         WalletOuterClass.RequestUserInfo requestUserInfo = WalletOuterClass.RequestUserInfo.newBuilder()
@@ -202,7 +197,7 @@ public class BaseWallet {
     }
 
     /**
-     * 更新钱包信息
+     * Update the wallet information
      */
     public void syncWallet(final WalletListener listener) {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SYNC, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
@@ -213,14 +208,13 @@ public class BaseWallet {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     WalletOuterClass.RespSyncWallet respSyncWallet = WalletOuterClass.RespSyncWallet.parseFrom(structData.getPlainData());
                     if (respSyncWallet.getCoinsList() != null && respSyncWallet.getCoinsList().size() > 0) {
-                        // 更新钱包数据
+                        // Save the wallet information
                         WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
                         WalletBean walletBean = new WalletBean(wallet.getPayLoad(), wallet.getVer(),
                                 wallet.getVersion(), wallet.getCheckSum());
-                        //保存钱包账户信息
+                        // Save the currency information
                         SharePreferenceUser.getInstance().putWalletInfo(walletBean);
                         List<WalletOuterClass.Coin> list = respSyncWallet.getCoinsList();
-                        //保存货币信息
                         CurrencyHelper.getInstance().insertCurrencyListCoin(list);
                         listener.success(list);
                     } else {
@@ -242,8 +236,14 @@ public class BaseWallet {
     }
 
     /**
-     * 创建币种
-     * @param category 1:纯私钥，2:baseSeed，3:salt+seed
+     * Create a currency
+     *
+     * @param currencyEnum
+     * @param payload
+     * @param salt
+     * @param category 1:prikey，2:baseSeed，3:salt+seed
+     * @param masterAddress
+     * @param listener
      */
     public void createCurrency(final CurrencyEnum currencyEnum, final String payload, final String salt,
                                final int category, final String masterAddress, final WalletListener listener){
@@ -256,7 +256,7 @@ public class BaseWallet {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_CREATE, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                // 保存货币信息
+                // Save the currency information
                 CurrencyEntity currencyEntity = new CurrencyEntity();
                 currencyEntity.setSalt(salt);
                 currencyEntity.setBalance(0L);
@@ -268,7 +268,7 @@ public class BaseWallet {
                 currencyEntity.setAmount(0L);
                 CurrencyHelper.getInstance().insertCurrency(currencyEntity);
 
-                // 保存默认货币地址信息
+                // Save the address information
                 CurrencyAddressEntity addressEntity = new CurrencyAddressEntity();
                 addressEntity.setBalance(0L);
                 addressEntity.setStatus(1);

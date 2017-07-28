@@ -56,7 +56,6 @@ import wallet_gateway.WalletOuterClass;
 
 /**
  * wallet
- * Created by Administrator on 2016/12/1.
  */
 public class WalletFragment extends BaseFragment{
 
@@ -166,11 +165,11 @@ public class WalletFragment extends BaseFragment{
             @Override
             public void success(Integer status) {
                 switch (status){
-                    case 0:// 有钱包数据
+                    case 0:// Have wallet data
                         currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
                         amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(currencyEntity.getBalance()));
                         break;
-                    case 1:// 用户为老用户需要迁移
+                    case 1:// The user needs to create a currency for the old user
                         NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
                             @Override
                             public void success(String pin) {
@@ -188,7 +187,7 @@ public class WalletFragment extends BaseFragment{
                             public void fail(WalletError error) {}
                         });
                         break;
-                    case 2:// 用户没有钱包数据,需要创建（新用户）
+                    case 2:// The user does not have a wallet and needs to create a wallet
                         DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
                                 mActivity.getString(R.string.Wallet_not_create_wallet), "",
                                 mActivity.getString(R.string.Wallet_Immediately_create),
@@ -213,7 +212,7 @@ public class WalletFragment extends BaseFragment{
     }
 
     /**
-     * 获取钱包余额
+     * Get the wallet balance
      */
     private void requestCurrencyCoin(){
         NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).requestCoinInfo(new WalletListener<WalletOuterClass.Coin>() {
@@ -234,7 +233,7 @@ public class WalletFragment extends BaseFragment{
     }
 
     /**
-     * 请求汇率
+     * Request exchange rate
      */
     private void requestRate() {
         if(rateBean == null || TextUtils.isEmpty(rateBean.getUrl()))
@@ -257,7 +256,8 @@ public class WalletFragment extends BaseFragment{
     }
 
     /**
-     * 收集随机数返回
+     * Get the collected random number
+     *
      * @param bundle
      */
     public void callBaseSeed(Bundle bundle){
@@ -274,7 +274,8 @@ public class WalletFragment extends BaseFragment{
     }
 
     /**
-     * 创建钱包
+     * Create a wallet
+     *
      * @param baseSend
      * @param pin
      */

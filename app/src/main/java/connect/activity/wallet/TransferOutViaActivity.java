@@ -44,7 +44,6 @@ import protos.Connect;
 
 /**
  * Transfer to outer APP
- * Created by Administrator on 2016/12/20.
  */
 public class TransferOutViaActivity extends BaseActivity {
 

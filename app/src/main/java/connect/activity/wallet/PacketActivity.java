@@ -48,7 +48,6 @@ import protos.Connect;
 
 /**
  * lucky packet
- * Created by Administrator on 2016/12/10.
  */
 public class PacketActivity extends BaseActivity implements PacketContract.View{
 

@@ -62,9 +62,7 @@ public class PaymentActivity extends BaseActivity {
     LinearLayout minerLl;
 
     private PaymentActivity mActivity;
-    private UserBean userBean;
     private PaySetBean paySetBean;
-    private String payPass = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +84,6 @@ public class PaymentActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_Payment);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
         paySetBean = ParamManager.getInstance().getPaySet();
         if (paySetBean != null) {
             updataView();
@@ -174,33 +171,6 @@ public class PaymentActivity extends BaseActivity {
         PayFeeActivity.startActivity(mActivity);
     }
 
-    private void setPatpass() {
-        Integer title;
-        if(TextUtils.isEmpty(payPass)){
-            title = R.string.Set_Payment_Password;
-        }else {
-            title = R.string.Wallet_Confirm_PIN;
-        }
-        DialogUtil.showPayEditView(mActivity, title, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
-            @Override
-            public void confirm(String value) {
-                if(TextUtils.isEmpty(payPass)){
-                    payPass = value;
-                    setPatpass();
-                }else if(payPass.equals(value)){
-                    requestSetPay(value);
-                }else{
-                    ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
-                }
-            }
-
-            @Override
-            public void cancel() {
-
-            }
-        });
-    }
-
     private void requestSetpay() {
         Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.newBuilder()
                 .setFee(paySetBean.getFee())
@@ -220,46 +190,6 @@ public class PaymentActivity extends BaseActivity {
 
             }
         });
-    }
-
-    private void requestSetPay(String pass){
-        // 获取数据库里币种对应的seed依次加密，并上传到服务器并更新到本地
-        String encodeStr = SupportKeyUril.encodePri("aaaa","salt",pass);
-        byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),userBean.getPubKey());
-        try {
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, ecdh, pass.getBytes("UTF-8"));
-            byte[] gcmDataByte = gcmData.toByteArray();
-            final String encryPass = StringUtil.bytesToHexString(gcmDataByte);
-            Connect.PayPin payPin = Connect.PayPin.newBuilder()
-                    .setPayPin(encryPass)
-                    .build();
-            OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_PIN_SETTING, payPin, new ResultCall<Connect.HttpResponse>() {
-                @Override
-                public void onResponse(Connect.HttpResponse response) {
-                    try {
-                        Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                        Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
-                            paySetBean.setPayPin(encryPass);
-                            paySetBean.setVersionPay(payPinVersion.getVersion());
-                            ParamManager.getInstance().putPaySet(paySetBean);
-                            ToastEUtil.makeText(mActivity, R.string.Wallet_Set_Payment_Password_Successful).show();
-                            updataView();
-                        }
-                    } catch (InvalidProtocolBufferException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onError(Connect.HttpResponse response) {
-
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

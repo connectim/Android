@@ -16,8 +16,7 @@ import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**
- * BTC 币种账户
- * Created by Administrator on 2017/7/18.
+ * BTC Currency account
  */
 
 public class BtcCoinAccount implements CoinAccount {

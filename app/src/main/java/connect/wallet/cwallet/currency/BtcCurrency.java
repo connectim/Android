@@ -17,7 +17,6 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.wallet.jni.AllNativeMethod;
@@ -25,8 +24,7 @@ import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**
- * BTC 币种管理
- * Created by Administrator on 2017/7/18.
+ * BTC currency management
  */
 
 public class BtcCurrency extends BaseCurrency {
@@ -60,7 +58,7 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     /**
-     * 设置币种信息
+     * Set the currency information
      */
     @Override
     public void setCurrencyInfo(final CurrencyEntity currencyEntity, final WalletListener listener){
@@ -112,11 +110,12 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     /**
-     * 签名交易
-     * @param priList 签名交易的PriKey数组
-     * @param tvs 所有输入地址的Unspent字符串集合
-     * @param rowhex 原始交易
-     * @return 签名交易
+     * Signature transaction
+     *
+     * @param priList PriKey array
+     * @param tvs input string
+     * @param rowhex The original transaction
+     * @return
      */
     @Override
     public String getSignRawTrans(ArrayList<String> priList, String tvs, String rowhex) {
@@ -143,7 +142,7 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     /**
-     * 判断金额是否肮脏
+     * Determine whether the amount is dirty
      */
     private static boolean isHaveDustWithAmount(long amount) {
         EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
@@ -155,7 +154,7 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     /**
-     * 自动计算手续费
+     * Automatic calculation fee
      */
     private static long getAutoFeeWithUnspentLength(boolean isAddChangeAddress,int txs_length, int sentToLength) {
         if(isAddChangeAddress){ // the change of address
