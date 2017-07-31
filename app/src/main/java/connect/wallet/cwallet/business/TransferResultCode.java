@@ -5,7 +5,7 @@ package connect.wallet.cwallet.business;
  */
 
 public enum  TransferResultCode {
-    TRANSFER_SUCCESS(0),         // success
+    TRANSFER_SUCCESS(0),        // success
     FEETOSAMLL(3000),           // The fee is too small
     FEEEMPTY(3001),             // The fee is empty
     UNSPENTTOOLARGE(3002),      // There are too many transactions

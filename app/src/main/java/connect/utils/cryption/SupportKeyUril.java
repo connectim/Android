@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.crypto.Mac;
@@ -81,11 +82,22 @@ public class SupportKeyUril {
     /**
      * def XOR string
      */
-    public static String xor(String str1, String str2, int length) {
-        StringBuffer str = new StringBuffer();
+    public static String xor(String strHex_X,String strHex_Y,int length){
+        String anotherBinary = StringUtil.StrToBinstr(strHex_X);
+        String thisBinary = StringUtil.StrToBinstr(strHex_Y);
+        String result = "";
+        for(int i=0;i< anotherBinary.length();i++){
+            if(anotherBinary.charAt(i) == thisBinary.charAt(i)){
+                result+="0";
+            }else{
+                result+="1";
+            }
+        }
 
-        for (int i = 0; i < length; i++) {
-            str.append(str1.charAt(i) ^ str2.charAt(i));
+        StringBuffer str = new StringBuffer();
+        for(int i = 0;i < result.length(); i = i+4){
+            String subStr = result.substring(i,i+4);
+            str.append(Integer.toHexString(Integer.parseInt(subStr, 2)));
         }
         return str.toString();
     }
