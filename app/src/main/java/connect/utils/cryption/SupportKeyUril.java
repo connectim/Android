@@ -182,8 +182,6 @@ public class SupportKeyUril {
     }
 
     /**
-=======
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * Generate ECDH cooperative key
      *
      * @param priKey

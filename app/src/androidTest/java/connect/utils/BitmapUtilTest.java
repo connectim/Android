@@ -20,6 +20,7 @@ public class BitmapUtilTest {
 
     @Test
     public void compressTest() throws Exception {
+        LogManager.getLogger().d(Tag, "compressTest");
         String path = "/mnt/sdcard/Ui.jpg";
         File file = BitmapUtil.getInstance().compress(path);
         assertTrue(file.length()>0);
@@ -27,6 +28,7 @@ public class BitmapUtilTest {
 
     @Test
     public void getImageSizeTest() throws Exception {
+        LogManager.getLogger().d(Tag, "getImageSizeTest");
         String path = "/mnt/sdcard/Ui.jpg";
         int[] size = BitmapUtil.getInstance().getImageSize(path);
         assertTrue(size[0] > 0 && size[1] > 0);

@@ -18,12 +18,12 @@ public class CurrencyAddressEntity implements Serializable{
 
     @Id(autoincrement = true)
     private Long _id;
-
     @NotNull
     private Integer currency;
     @Unique
     @NotNull
     private String address;
+
     private Integer index;
     private Long balance;
     private Long amount;

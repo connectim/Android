@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import org.greenrobot.greendao.database.Database;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +43,8 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.database.green.bean.MessageEntity;
+import connect.database.green.dao.DaoMaster;
+import connect.database.green.dao.DaoSession;
 import connect.im.bean.UserOrderBean;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;

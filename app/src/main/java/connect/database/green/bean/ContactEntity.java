@@ -15,19 +15,19 @@ public class ContactEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-
     @NotNull
     @Unique
     private String pub_key;
-
     @Unique
     private String address;
+
     private String username;
     private String avatar;
     private String remark;
     private Integer common;
     private Integer source;
     private Boolean blocked;
+
     @Generated(hash = 1202098558)
     public ContactEntity(Long _id, @NotNull String pub_key, String address,
             String username, String avatar, String remark, Integer common,

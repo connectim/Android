@@ -141,12 +141,16 @@ public class WalletFragment extends BaseFragment {
 
     @OnClick(R.id.right_lin)
     void goScan(View view) {
-        ActivityUtil.nextBottomToTop(mActivity, ScanTransferActivity.class, null, -1);
+        if (currencyEntity != null) {
+            ActivityUtil.nextBottomToTop(mActivity, ScanTransferActivity.class, null, -1);
+        }
     }
 
     @OnClick(R.id.left_img)
     void goback(View view) {
-        ActivityUtil.next(mActivity, TransactionActivity.class);
+        if (currencyEntity != null) {
+            ActivityUtil.next(mActivity, TransactionActivity.class);
+        }
     }
 
     @OnClick(R.id.amount_tv)
