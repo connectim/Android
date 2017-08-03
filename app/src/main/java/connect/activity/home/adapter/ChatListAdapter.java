@@ -183,7 +183,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     }
 
                     if (talker != null) {
-                        HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, talker);
+                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, talker);
                     }
                 }
             }

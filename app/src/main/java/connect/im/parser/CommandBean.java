@@ -815,7 +815,7 @@ public class CommandBean extends InterParse {
                             RobotChat.getInstance().address(), RobotChat.getInstance().headImg()));
                     MessageHelper.getInstance().insertFromMsg(BaseApplication.getInstance().getString(R.string.app_name), msgEntity.getMsgDefinBean());
                     RobotChat.getInstance().updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(2), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
-                    HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(2, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(2, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
                 } else {
                     Connect.UserInfo userInfo = packageInfo.getSender();
 
@@ -833,7 +833,7 @@ public class CommandBean extends InterParse {
                     msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAddress(), friendEntity.getAvatar()));
                     MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
                     normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
-                    HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
                 }
                 break;
             case 1:

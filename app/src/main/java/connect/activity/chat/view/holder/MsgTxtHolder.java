@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 
+import connect.activity.home.bean.HomeAction;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.view.EmoTextView;
 import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.common.bean.ConverType;
+import connect.utils.ActivityUtil;
 
 /**
  * Created by gtq on 2016/11/23.
