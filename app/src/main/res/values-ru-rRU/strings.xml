@@ -585,7 +585,8 @@
     <string name="Wallet_Amount">Денежная сумма</string>
     <string name="Wallet_Amount_BTC">Денежная сумма (BTC)</string>
     <string name="Wallet_Amount_Each">Денежная сумма денежного подарка</string>
-    <string name="Wallet_Amount_is_too_small">Денежная сумма слишком маленькая!</string>
+    <string name="Wallet_Amount_is_too_small">Упаковать сделки возникает ошибка, наработать сумма слишком мал</string>
+    <string name="Wallet_not_initialized_the_wallet_and_can_not_trade">Другая сторона не была инициализирована бумажник, а не торговля</string>
     <string name="Wallet_Amount_must_be_greater_than">Денежная сумма должна бытьбольше, чем %f</string>
     <string name="Wallet_Amount_must_be_less_than">Денежная сумма должна быть меньше, чем %f</string>
     <string name="Wallet_Amount_of_member">Количество людей краудфандинга</string>

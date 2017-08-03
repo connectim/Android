@@ -82,7 +82,7 @@ public class ShakeHandBean extends InterParse {
         ByteString salt = newConnection.getSalt();
         UserCookie tempCookie = Session.getInstance().getUserCookie("TEMPCOOKIE");
         byte[] saltXor = SupportKeyUril.xor(tempCookie.getSalt(),
-                salt.toByteArray(), salt.size());
+                salt.toByteArray());
         byte[] ecdHkey = SupportKeyUril.rawECDHkey(tempCookie.getPriKey(),
                 StringUtil.bytesToHexString(pubKey.toByteArray()));
         byte[] saltByte = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdHkey,

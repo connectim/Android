@@ -63,7 +63,7 @@ public class BackUpActivity extends BaseActivity implements BackUpContract.View{
         toolbarTop.setRightImg(R.mipmap.menu_white);
         userBean = SharedPreferenceUtil.getInstance().getUser();
         new BackUpPresenter(this).start();
-        switchPriKey(1);
+        switchPriKey(2);
     }
 
     @OnClick(R.id.left_img)

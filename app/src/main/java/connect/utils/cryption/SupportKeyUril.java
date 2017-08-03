@@ -40,20 +40,6 @@ public class SupportKeyUril {
     public static final int CRYPTION_TALKKEY_VER = 1;
 
     /**
-     * The secret key generating random number
-     * randomUUID(modify Random)
-     *
-     * @param value
-     * @return
-     */
-    public static String createrPriKeyRandom(String value) {
-        String hashForBmp = AllNativeMethod.cdGetHash256(value);
-        String hashForRandom = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-        String random = SupportKeyUril.xor(hashForBmp, hashForRandom, 64);
-        return random;
-    }
-
-    /**
      * Private key to public key
      *
      * @return
@@ -82,29 +68,22 @@ public class SupportKeyUril {
     /**
      * def XOR string
      */
-    public static String xor(String strHex_X,String strHex_Y,int length){
-        String anotherBinary = StringUtil.StrToBinstr(strHex_X);
-        String thisBinary = StringUtil.StrToBinstr(strHex_Y);
-        String result = "";
-        for(int i=0;i< anotherBinary.length();i++){
-            if(anotherBinary.charAt(i) == thisBinary.charAt(i)){
-                result+="0";
-            }else{
-                result+="1";
-            }
+    public static String xor(String strHex1,String strHex2){
+        if(strHex1.length() != strHex2.length()){
+            return "";
         }
-
-        StringBuffer str = new StringBuffer();
-        for(int i = 0;i < result.length(); i = i+4){
-            String subStr = result.substring(i,i+4);
-            str.append(Integer.toHexString(Integer.parseInt(subStr, 2)));
-        }
-        return str.toString();
+        byte[] byte1 = StringUtil.hexStringToBytes(strHex1);
+        byte[] byte2 = StringUtil.hexStringToBytes(strHex2);
+        byte[] valueByte = SupportKeyUril.xor(byte1, byte2);
+        return StringUtil.bytesToHexString(valueByte);
     }
 
-    public static byte[] xor(byte[] byte1, byte[] byte2, int length) {
-        byte[] index = new byte[length];
-        for (int i = 0; i < length; i++) {
+    public static byte[] xor(byte[] byte1, byte[] byte2) {
+        if(byte1.length != byte2.length){
+            return null;
+        }
+        byte[] index = new byte[byte1.length];
+        for (int i = 0; i < byte1.length; i++) {
             index[i] = (byte) (byte1[i] ^ byte2[i]);
         }
         return index;
@@ -163,39 +142,6 @@ public class SupportKeyUril {
     }
 
     /**
-     * Encrypted payment password
-     */
-    public static EncoPinBean encoPinDefult(String value, String pass){
-        return encoPin(value,pass,CRYPTION_N);
-    }
-
-    public static EncoPinBean encoPin(String value, String pass,int n){
-        EncoPinBean encoPinBean = new EncoPinBean();
-        String payload = AllNativeMethod.connectWalletKeyEncrypt(value,pass,n,PIN_VERSION);
-        encoPinBean.setPayload(payload);
-        encoPinBean.setVersion(PIN_VERSION);
-        encoPinBean.setN(n);
-        return encoPinBean;
-    }
-
-    /**
-     * Decrypt payment password
-     */
-    public static String decodePinDefult(String value, String pass){
-        return decodePin(value, pass, PIN_VERSION);
-    }
-
-    public static String decodePin(String value, String pass,int verPin){
-        String seed = AllNativeMethod.connectWalletKeyDecrypt(value,pass,verPin);
-        if(seed.equals("error")){
-            seed = "";
-        }
-        return seed;
-    }
-
-    /**
-=======
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * Generate ECDH cooperative key
      *
      * @param priKey
@@ -213,6 +159,19 @@ public class SupportKeyUril {
         MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
         sha256.update(bytes);
         sha256.update(sha256.digest());
+        return sha256.digest();
+    }
+
+    public static byte[] byteSHA512(byte[] bytes){
+        MessageDigest sha256;
+        try {
+            sha256 = MessageDigest.getInstance("SHA-512");
+            sha256.update(bytes);
+            sha256.update(sha256.digest());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
         return sha256.digest();
     }
 

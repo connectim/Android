@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.os.Message;
 
 import java.io.File;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import connect.activity.login.bean.UserBean;
@@ -158,8 +159,8 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
                     iMediaRecorder = null;
                 }
                 ArrayList arrayList = new ArrayList<String>();
-                String strForBmp = StringUtil.bytesToHexString(FileUtil.filePathToByteArray(file.getPath()));
-                String random = SupportKeyUril.createrPriKeyRandom(strForBmp);
+                byte[] valueByte = SupportKeyUril.byteSHA512(FileUtil.filePathToByteArray(file.getPath()));
+                String random = StringUtil.bytesToHexString(SupportKeyUril.xor(valueByte, SecureRandom.getSeed(64)));
                 String prikey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(random, 44, 0, 0, 0, 0);
                 arrayList.add(prikey);
 

@@ -91,29 +91,6 @@ public class StringUtil {
         return d;
     }
 
-    public static String StrToBinstr(String str) {
-        char[] strChar = str.toCharArray();
-        String result="";
-        for(int i=0;i<strChar.length;i++){
-            String binChar = Integer.toBinaryString(Integer.valueOf(String.valueOf(strChar[i]),16));
-            if(binChar.length() < 4){
-                switch (binChar.length()){
-                    case 1:
-                        binChar = "000" + binChar;
-                        break;
-                    case 2:
-                        binChar = "00" + binChar;
-                        break;
-                    case 3:
-                        binChar = "0" + binChar;
-                        break;
-                }
-            }
-            result += binChar+ "";
-        }
-        return result;
-    }
-
     /**
      * encrypt Base64
      * @param value

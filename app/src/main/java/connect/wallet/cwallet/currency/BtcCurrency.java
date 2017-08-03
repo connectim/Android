@@ -53,7 +53,7 @@ public class BtcCurrency extends BaseCurrency {
 
     @Override
     public String createPriKey(String baseSeed, String salt,int index){
-        String currencySeend = SupportKeyUril.xor(baseSeed, salt, 64);
+        String currencySeend = SupportKeyUril.xor(baseSeed, salt);
         String priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(currencySeend,44,0,0,0,index);
         return priKey;
     }
@@ -62,19 +62,27 @@ public class BtcCurrency extends BaseCurrency {
      * Set the currency information
      */
     @Override
-    public void setCurrencyInfo(final CurrencyEntity currencyEntity, final WalletListener listener){
+    public void setCurrencyInfo(String payload, Integer status, final WalletListener listener){
         WalletOuterClass.Coin.Builder builder = WalletOuterClass.Coin.newBuilder();
-        builder.setSalt(currencyEntity.getSalt());
-        builder.setCategory(currencyEntity.getCategory());
-        builder.setPayload(currencyEntity.getPayload());
-        builder.setCurrency(currencyEntity.getCurrency());
-        builder.setBalance(currencyEntity.getBalance());
-        builder.setStatus(currencyEntity.getStatus());
+        if(!TextUtils.isEmpty(payload)){
+            builder.setPayload(payload);
+        }
+        if(status != null){
+            builder.setStatus(status);
+        }
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_UPDATA, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                CurrencyHelper.getInstance().updateCurrency(currencyEntity);
-                listener.success(currencyEntity);
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
+                    WalletOuterClass.Coin coin = coinsDetail.getCoin();
+                    CurrencyHelper.getInstance().insertCurrencyCoin(coin);
+                    listener.success(coin);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

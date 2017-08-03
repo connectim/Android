@@ -26,6 +26,7 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.bean.PinBean;
 import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
 import protos.Connect;
@@ -53,7 +54,7 @@ public class BaseWallet {
     private void setPin(final Activity mActivity, final WalletListener listener) {
         Integer title;
         if (TextUtils.isEmpty(payPass)) {
-            title = R.string.Set_Payment_Password;
+            title = R.string.Set_Set_Payment_Password;
         } else {
             title = R.string.Wallet_Confirm_PIN;
         }
@@ -68,7 +69,7 @@ public class BaseWallet {
                     listener.success(value);
                 } else {
                     showSetNewPin(mActivity,listener);
-                    ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
+                    ToastUtil.getInstance().showToast(R.string.Wallet_Payment_Password_do_not_match);
                 }
             }
 
@@ -80,31 +81,33 @@ public class BaseWallet {
     }
 
     /**
-     * check pwd
      * Check the password
      */
     public void checkPwd(Activity activity, final int category, final String payload, final WalletListener listener) {
         DialogUtil.showPayEditView(activity, R.string.Wallet_Enter_your_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(final String value) {
-                new AsyncTask<Void,Void,String>(){
+                new AsyncTask<Void,Void,PinBean>(){
                     @Override
-                    protected String doInBackground(Void... params) {
+                    protected PinBean doInBackground(Void... params) {
                         String baseSeed = SupportKeyUril.decodePinDefult(category,payload, value);
                         if (TextUtils.isEmpty(baseSeed)) {
-                            return "";
+                            return null;
                         } else {
-                            return baseSeed;
+                            PinBean pinBean = new PinBean();
+                            pinBean.setPin(value);
+                            pinBean.setBaseSeed(baseSeed);
+                            return pinBean;
                         }
                     }
 
                     @Override
-                    protected void onPostExecute(String baseSeed) {
-                        super.onPostExecute(baseSeed);
-                        if (TextUtils.isEmpty(baseSeed)) {
+                    protected void onPostExecute(PinBean pinBean) {
+                        super.onPostExecute(pinBean);
+                        if (pinBean == null) {
                             ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
                         } else {
-                            listener.success(baseSeed);
+                            listener.success(pinBean);
                         }
                     }
                 }.execute();
@@ -242,10 +245,6 @@ public class BaseWallet {
     }
 
     /**
-<<<<<<< HEAD
-     * create wallet
-     * @param category 1:Pure private key，2:baseSeed，3:salt+seed
-=======
      * Create a currency
      *
      * @param currencyEnum
@@ -254,7 +253,6 @@ public class BaseWallet {
      * @param category 1:prikey，2:baseSeed，3:salt+seed
      * @param masterAddress
      * @param listener
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      */
     public void createCurrency(final CurrencyEnum currencyEnum, final String payload, final String salt,
                                final int category, final String masterAddress, final WalletListener listener){

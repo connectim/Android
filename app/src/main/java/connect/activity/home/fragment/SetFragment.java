@@ -38,6 +38,7 @@ import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.database.green.bean.MessageEntity;
@@ -58,6 +59,7 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
@@ -189,11 +191,8 @@ public class SetFragment extends BaseFragment {
                         UserOrderBean userOrderBean = new UserOrderBean();
                         userOrderBean.connectLogout();
                     }
-
                     @Override
-                    public void cancel() {
-
-                    }
+                    public void cancel() {}
                 });
     }
 

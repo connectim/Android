@@ -42,6 +42,7 @@ import connect.utils.RegularUtil;
 import connect.utils.data.RateDataUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
+import connect.wallet.cwallet.InitWalletManager;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.currency.BaseCurrency;
@@ -96,6 +97,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     private PaySetBean paySetBean;
     private CurrencyEnum currencyEnum = CurrencyEnum.BTC;
     private Activity mActivity;
+    private InitWalletManager initWalletManager;
 
     public TransferEditView(Context context) {
         this(context, null);
@@ -148,7 +150,25 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         });
         amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
                 RateFormatUtil.longToDoubleBtc(0L)));
-        requestWallet();
+        // requestWallet();
+        initWalletManager = new InitWalletManager(mActivity,currencyEnum);
+        initWalletManager.checkWallet(true, new WalletListener<CurrencyEntity>() {
+            @Override
+            public void success(CurrencyEntity currencyEntity) {
+                if(currencyEntity != null){
+                    amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                            RateFormatUtil.longToDoubleBtc(currencyEntity.getAmount())));
+                }else{
+                    amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                            RateFormatUtil.longToDoubleBtc(0L)));
+                }
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
+            }
+        });
     }
 
     /**
@@ -319,81 +339,10 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         });
     }
 
-    /**
-     * Get the wallet balance
-     */
-    private void requestWallet(){
-        NativeWallet.getInstance().syncWalletInfo(new WalletListener<Integer>() {
-            @Override
-            public void success(Integer status) {
-                switch (status){
-                    case 0:
-                        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
-                        if(currencyEntity != null){
-                            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                    RateFormatUtil.longToDoubleBtc(currencyEntity.getAmount())));
-                        }else{
-                            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                    RateFormatUtil.longToDoubleBtc(0L)));
-                        }
-                        break;
-                    case 1:
-                        DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
-                                mActivity.getString(R.string.Wallet_not_update_wallet), "",
-                                mActivity.getString(R.string.Wallet_Immediately_update),
-                                false, new DialogUtil.OnItemClickListener() {
-                                    @Override
-                                    public void confirm(String value) {
-                                        NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
-                                            @Override
-                                            public void success(String pin) {
-                                                NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_PRIKEY,
-                                                        MemoryDataManager.getInstance().getPriKey(), pin,
-                                                        MemoryDataManager.getInstance().getAddress(),
-                                                        new WalletListener<CurrencyEntity>() {
-                                                            @Override
-                                                            public void success(CurrencyEntity currencyEntity) {}
-                                                            @Override
-                                                            public void fail(WalletError error) {}
-                                                        });
-                                            }
-                                            @Override
-                                            public void fail(WalletError error) {}
-                                        });
-                                    }
-
-                                    @Override
-                                    public void cancel() {
-                                        ActivityUtil.goBack(mActivity);
-                                    }
-                                });
-                        break;
-                    case 2:
-                        DialogUtil.showAlertTextView(mActivity, mActivity.getString(R.string.Set_tip_title),
-                                mActivity.getString(R.string.Wallet_not_create_wallet), "",
-                                mActivity.getString(R.string.Wallet_Immediately_create),
-                                false, new DialogUtil.OnItemClickListener() {
-                                    @Override
-                                    public void confirm(String value) {
-                                        Bundle bundle = new Bundle();
-                                        bundle.putSerializable("type", CurrencyEnum.BTC);
-                                        RandomVoiceActivity.startActivity(mActivity,bundle);
-                                    }
-
-                                    @Override
-                                    public void cancel() {
-                                        ActivityUtil.goBack(mActivity);
-                                    }
-                                });
-                        break;
-                }
-            }
-
-            @Override
-            public void fail(WalletError error) {
-
-            }
-        });
+    public void createWallet(Intent data){
+        String baseSend = data.getExtras().getString("random");
+        String pin = data.getExtras().getString("pin");
+        initWalletManager.requestCreateWallet(baseSend, pin);
     }
 
     /**
@@ -462,38 +411,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
      */
     public void setFeeVisibility(int visibility){
         findViewById(R.id.linearlayout).setVisibility(visibility);
-    }
-
-    public void createWallet(Intent data){
-        final String baseSend = data.getExtras().getString("random");
-        NativeWallet.getInstance().showSetPin(mActivity,new WalletListener<String>() {
-            @Override
-            public void success(final String pin) {
-
-                NativeWallet.getInstance().createWallet(baseSend, pin, new WalletListener<WalletBean>() {
-                    @Override
-                    public void success(WalletBean walletBean) {
-
-                        NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_BASESEED, baseSend, pin, "",
-                                new WalletListener<CurrencyEntity>() {
-                                    @Override
-                                    public void success(CurrencyEntity currencyEntity) {
-
-                                    }
-
-                                    @Override
-                                    public void fail(WalletError error) {}
-                                });
-
-                    }
-                    @Override
-                    public void fail(WalletError error) {}
-                });
-            }
-
-            @Override
-            public void fail(WalletError error) {}
-        });
     }
 
     public CurrencyEnum getCurrencyEnum() {

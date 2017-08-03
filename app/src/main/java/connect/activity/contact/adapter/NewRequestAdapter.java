@@ -91,13 +91,14 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
                 if (menuIsOpen(scrollView)) {
                     closeMenu();
                 }
+                onAcceptListence.itemClick(position, friendRequestEntity);
             }
         });
 
         viewHolder.statusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAcceptListence.itemClick(position, friendRequestEntity);
+                onAcceptListence.accept(position, friendRequestEntity);
             }
         });
         viewHolder.deleteTv.setOnClickListener(new View.OnClickListener() {

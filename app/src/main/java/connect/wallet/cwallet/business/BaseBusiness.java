@@ -407,7 +407,9 @@ public class BaseBusiness {
     private void showErrorToast(Connect.HttpResponse response){
         if(response.getCode() == 2400){
             ToastEUtil.makeText(mActivity,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
-        }else{
+        } else if(response.getCode() == 2600){
+            ToastEUtil.makeText(mActivity,R.string.Wallet_not_initialized_the_wallet_and_can_not_trade,ToastEUtil.TOAST_STATUS_FAILE).show();
+        } else{
             ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
         }
         connectDialog.dismiss();

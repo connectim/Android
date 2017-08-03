@@ -23,6 +23,7 @@ import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.NewFriendContract;
 import connect.activity.contact.presenter.NewFriendPresenter;
 import connect.activity.home.bean.MsgNoticeBean;
+import connect.activity.home.view.LineDecoration;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
@@ -156,6 +157,7 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         requestAdapter = new NewRequestAdapter(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
         recyclerview.setAdapter(requestAdapter);
         requestAdapter.setOnAcceptListence(onAcceptListence);
         recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
