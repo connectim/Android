@@ -168,9 +168,6 @@ public class CommandBean extends InterParse {
                 switch ((byte) msgDetail.getType()) {
                     case 0x04://Offline command processing
                         Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(msgDetail.getData());
-                        if (!SupportKeyUril.verifySign(imTransferData.getSign(), imTransferData.getCipherData().toByteArray())) {
-                            throw new Exception("Validation fails");
-                        }
                         ByteString transferDataByte = imTransferData.getCipherData().toByteString();
                         switch (extension) {
                             case 0x01://contact list

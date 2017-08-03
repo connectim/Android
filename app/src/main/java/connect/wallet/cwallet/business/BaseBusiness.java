@@ -162,10 +162,6 @@ public class BaseBusiness {
 
     /**
      * Connect user transfer
-<<<<<<< HEAD
-=======
-     *
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * @param outMap <pubKey,amount>
      * @param listener
      */
@@ -203,16 +199,13 @@ public class BaseBusiness {
     }
 
     /**
-<<<<<<< HEAD
      * Individual collection
-=======
      * Single payment
      *
      * @param amount
      * @param senderaddress
      * @param tips
      * @param listener
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      */
     public void friendReceiver(long amount, String senderaddress, String tips, final WalletListener listener) {
         WalletOuterClass.ReceiveRequest receiveRequest = WalletOuterClass.ReceiveRequest.newBuilder()
