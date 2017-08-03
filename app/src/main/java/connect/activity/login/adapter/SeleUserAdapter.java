@@ -108,7 +108,7 @@ public class SeleUserAdapter extends RecyclerView.Adapter<SeleUserAdapter.UserHo
         for(int i = 0;i < msgRoomEntities.size();i ++){
             if(userBean.getPubKey().equals(msgRoomEntities.get(i).getPubKey())){
                 msgRoomEntities.remove(i);
-                notifyItemRemoved(i);
+                notifyDataSetChanged();
                 break;
             }
         }
