@@ -176,6 +176,7 @@ public class WalletFragment extends BaseFragment {
         userType = (int) txt2.getTag();
         Bundle bundle = new Bundle();
         bundle.putSerializable("type", CurrencyEnum.BTC);
+        bundle.putInt("status", userType);
         RandomVoiceActivity.startActivity(mActivity,bundle);
     }
 
@@ -224,9 +225,9 @@ public class WalletFragment extends BaseFragment {
     public void callBaseSeed(Bundle bundle) {
         final String baseSend = bundle.getString("random");
         final String pin = bundle.getString("pin");
+        int status = bundle.getInt("status");
 
         InitWalletManager walletManager = new InitWalletManager(mActivity, CurrencyEnum.BTC);
-        walletManager.setUSER_TYPE(userType);
         walletManager.setListener(new WalletListener<CurrencyEntity>() {
             @Override
             public void success(CurrencyEntity entity) {
@@ -236,7 +237,7 @@ public class WalletFragment extends BaseFragment {
             @Override
             public void fail(WalletError error) {}
         });
-        walletManager.requestCreateWallet(baseSend, pin);
+        walletManager.requestCreateWallet(baseSend, pin, status);
     }
 
     /**

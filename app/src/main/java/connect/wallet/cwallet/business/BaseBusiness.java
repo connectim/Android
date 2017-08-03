@@ -28,6 +28,7 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.InitWalletManager;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.currency.BaseCurrency;
@@ -39,7 +40,6 @@ import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**
- * Specific business layer interface
  * Connect the transfer business management
  */
 public class BaseBusiness {
@@ -410,6 +410,18 @@ public class BaseBusiness {
             ToastEUtil.makeText(mActivity,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
         } else if(response.getCode() == 2600){
             ToastEUtil.makeText(mActivity,R.string.Wallet_not_initialized_the_wallet_and_can_not_trade,ToastEUtil.TOAST_STATUS_FAILE).show();
+        } else if(response.getCode() == 2650){
+            new InitWalletManager(mActivity, currencyEnum).checkWallet(false, new WalletListener<CurrencyEntity>() {
+                @Override
+                public void success(CurrencyEntity entity) {
+
+                }
+
+                @Override
+                public void fail(WalletError error) {
+
+                }
+            });
         } else{
             ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
         }
