@@ -331,7 +331,7 @@ public class SupportKeyUril {
         if(BaseCurrency.CATEGORY_PRIKEY == category){
             seed = new String(StringUtil.hexStringToBytes(seed));
         }
-        if(seed.equals("error")){
+        if(seed.contains("error")){
             seed = "";
         }
         return seed;

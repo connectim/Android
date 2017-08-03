@@ -43,7 +43,6 @@ public class BaseWallet {
     private String payPass;
 
     /**
-     * Set the wallet password, modify the wallet password, you need to update the wallet under the synchronization interface, re encryption baseSsed upload
      * Set the wallet password
      */
     public void showSetNewPin(Activity mActivity,WalletListener listener) {
@@ -83,14 +82,14 @@ public class BaseWallet {
     /**
      * Check the password
      */
-    public void checkPwd(Activity activity, final int category, final String payload, final WalletListener listener) {
+    public void checkPwd(Activity activity, final String payload, final WalletListener listener) {
         DialogUtil.showPayEditView(activity, R.string.Wallet_Enter_your_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(final String value) {
                 new AsyncTask<Void,Void,PinBean>(){
                     @Override
                     protected PinBean doInBackground(Void... params) {
-                        String baseSeed = SupportKeyUril.decodePinDefult(category,payload, value);
+                        String baseSeed = SupportKeyUril.decodePinDefult(BaseCurrency.CATEGORY_BASESEED,payload, value);
                         if (TextUtils.isEmpty(baseSeed)) {
                             return null;
                         } else {
@@ -202,7 +201,6 @@ public class BaseWallet {
                 Toast.makeText(BaseApplication.getInstance().getAppContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     /**

@@ -1,7 +1,6 @@
 package connect.wallet.cwallet;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 
 import connect.activity.wallet.bean.WalletBean;

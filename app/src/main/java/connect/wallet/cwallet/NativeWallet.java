@@ -26,8 +26,6 @@ import wallet_gateway.WalletOuterClass;
 
 /**
  * Wallet management tools
- * Created by Administrator on 2017/7/18.
- * The wallet management tools
  */
 public class NativeWallet {
 
@@ -104,22 +102,17 @@ public class NativeWallet {
      */
     public void checkPin(Activity mActivity, final WalletListener listener){
         WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
-        if(currencyEntity != null){
-            baseWallet.checkPwd(mActivity, currencyEntity.getCategory(), walletBean.getPayload(), new WalletListener<PinBean>() {
-                @Override
-                public void success(PinBean pinBean) {
-                    listener.success(pinBean);
-                }
+        baseWallet.checkPwd(mActivity, walletBean.getPayload(), new WalletListener<PinBean>() {
+            @Override
+            public void success(PinBean pinBean) {
+                listener.success(pinBean);
+            }
 
-                @Override
-                public void fail(WalletError error) {
-                    listener.fail(error);
-                }
-            });
-        }else{
-            listener.fail(WalletListener.WalletError.DBError);
-        }
+            @Override
+            public void fail(WalletError error) {
+                listener.fail(error);
+            }
+        });
     }
 
     /**
