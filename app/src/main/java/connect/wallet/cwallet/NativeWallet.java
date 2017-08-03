@@ -233,8 +233,8 @@ public class NativeWallet {
                 break;
             case BaseCurrency.CATEGORY_BASESEED:
                 salt = StringUtil.bytesToHexString(SecureRandom.getSeed(64));
-                String currencySeend = SupportKeyUril.xor(value, salt);
-                masterAddress = initCurrency(currencyEnum).createAddress(currencySeend);
+                String currencySeed = SupportKeyUril.xor(value, salt);
+                masterAddress = initCurrency(currencyEnum).createAddress(currencySeed);
                 break;
             case BaseCurrency.CATEGORY_SALT_SEED:
                 break;

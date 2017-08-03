@@ -25,7 +25,6 @@ public class InitWalletManager {
     private Activity mActivity;
     private WalletListener listener;
     private final CurrencyEnum currencyEnum;
-    private int USER_TYPE = 0;
 
     public InitWalletManager(Activity mActivity, CurrencyEnum currencyEnum) {
         this.mActivity = mActivity;
@@ -53,8 +52,7 @@ public class InitWalletManager {
                         break;
                     case 1:
                     case 2:
-                        USER_TYPE = status;
-                        createWallet();
+                        createWallet(status);
                         break;
                     default:
                         break;
@@ -65,13 +63,13 @@ public class InitWalletManager {
         });
     }
 
-    private void createWallet(){
+    public void createWallet(final int status){
         String massage = "";
         String okMassage = "";
-        if(USER_TYPE == 1){
+        if(status == 1){
             massage = mActivity.getString(R.string.Wallet_not_update_wallet);
             okMassage = mActivity.getString(R.string.Wallet_Immediately_update);
-        }else if(USER_TYPE == 2){
+        }else if(status == 2){
             massage = mActivity.getString(R.string.Wallet_not_create_wallet);
             okMassage = mActivity.getString(R.string.Wallet_Immediately_create);
         }
@@ -81,6 +79,7 @@ public class InitWalletManager {
                     public void confirm(String value) {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("type", CurrencyEnum.BTC);
+                        bundle.putInt("status",status);
                         RandomVoiceActivity.startActivity(mActivity,bundle);
                     }
 
@@ -91,18 +90,18 @@ public class InitWalletManager {
                 });
     }
 
-    public void requestCreateWallet(final String baseSend, final String pin){
+    public void requestCreateWallet(final String baseSend, final String pin, final int status){
         NativeWallet.getInstance().createWallet(baseSend, pin, new WalletListener<WalletBean>() {
             @Override
             public void success(WalletBean walletBean) {
                 int category = 0;
                 String value = "";
                 String masterAddress = "";
-                if(USER_TYPE == 1){
+                if(status == 1){
                     category = BaseCurrency.CATEGORY_PRIKEY;
                     value = MemoryDataManager.getInstance().getPriKey();
                     masterAddress = MemoryDataManager.getInstance().getAddress();
-                }else if(USER_TYPE == 2){
+                }else if(status == 2){
                     category = BaseCurrency.CATEGORY_BASESEED;
                     value = baseSend;
                     masterAddress = "";
@@ -120,10 +119,6 @@ public class InitWalletManager {
             @Override
             public void fail(WalletError error) {}
         });
-    }
-
-    public void setUSER_TYPE(int userType){
-        USER_TYPE = userType;
     }
 
     public void setListener(WalletListener listener){

@@ -117,9 +117,7 @@ public class RequestActivity extends BaseActivity {
                 }
 
                 @Override
-                public void fail(WalletError error) {
-
-                }
+                public void fail(WalletError error) {}
             });
         }
     }

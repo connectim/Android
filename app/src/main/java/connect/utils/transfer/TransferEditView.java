@@ -342,7 +342,8 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     public void createWallet(Intent data){
         String baseSend = data.getExtras().getString("random");
         String pin = data.getExtras().getString("pin");
-        initWalletManager.requestCreateWallet(baseSend, pin);
+        int status = data.getExtras().getInt("status");
+        initWalletManager.requestCreateWallet(baseSend, pin, status);
     }
 
     /**
