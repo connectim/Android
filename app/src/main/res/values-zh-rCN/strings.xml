@@ -585,7 +585,8 @@
     <string name="Wallet_Amount">金额</string>
     <string name="Wallet_Amount_BTC">金额(BTC)</string>
     <string name="Wallet_Amount_Each">红包金额</string>
-    <string name="Wallet_Amount_is_too_small">金额太小!</string>
+    <string name="Wallet_Amount_is_too_small">打包交易时发生错误，转出金额太小</string>
+    <string name="Wallet_not_initialized_the_wallet_and_can_not_trade">对方还没有初始化钱包,不能交易</string>
     <string name="Wallet_Amount_must_be_greater_than">金额必须大于%f</string>
     <string name="Wallet_Amount_must_be_less_than">金额必须小于%f</string>
     <string name="Wallet_Amount_of_member">众筹人数</string>

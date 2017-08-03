@@ -292,10 +292,9 @@ public class HttpsService extends Service {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, prikey, imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
-                        byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray(), 64);
+                        byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray());
                         ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_SALT, StringUtil.bytesToHexString(salts));
                         ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_EXPIRED, String.valueOf(tokenResponse.getExpired()));
-
                         loginSuccessHttp();
                     }
                 } catch (Exception e) {

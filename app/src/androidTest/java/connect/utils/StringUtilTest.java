@@ -1,9 +1,13 @@
 package connect.utils;
 
+import android.text.TextUtils;
+
 import org.junit.Test;
 
 import connect.utils.log.LogManager;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -40,4 +44,31 @@ public class StringUtilTest {
         byte[] md5 = StringUtil.byteTomd5(bytes);
         assertTrue(bytes.length == 3);
     }
+
+    @Test
+    public void cdHash256() {
+        String value = StringUtil.cdHash256("123");
+        assertTrue(!TextUtils.isEmpty(value));
+    }
+
+    @Test
+    public void hexStringToBytes() {
+        String value = "123abc";
+        byte[] byteValue = StringUtil.hexStringToBytes(value);
+        if(byteValue.length != value.length()/2){
+            assertTrue(false);
+        }else{
+            String value1 = StringUtil.bytesToHexString(byteValue);
+            assertEquals(value1,value);
+        }
+    }
+
+    @Test
+    public void VersionComparison() {
+        String ver1 = "1.2.3";
+        String ver2 = "0.5.1";
+        int value = StringUtil.VersionComparison(ver1, ver2);
+        assertTrue(value == 1);
+    }
+
 }

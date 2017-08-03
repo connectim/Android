@@ -18,10 +18,10 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.wallet.cwallet.account.BtcCoinAccount;
 import connect.wallet.cwallet.account.CoinAccount;
 import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.bean.PinBean;
 import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.currency.BtcCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
-import connect.wallet.jni.AllNativeMethod;
 import wallet_gateway.WalletOuterClass;
 
 /**
@@ -103,19 +103,13 @@ public class NativeWallet {
      * @param listener
      */
     public void checkPin(Activity mActivity, final WalletListener listener){
-        String payload = "";
+        WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
         CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
         if(currencyEntity != null){
-            if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_BASESEED){
-                WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
-                payload = walletBean.getPayload();
-            }else{
-                payload = currencyEntity.getPayload();
-            }
-            baseWallet.checkPwd(mActivity, currencyEntity.getCategory(), payload, new WalletListener<String>() {
+            baseWallet.checkPwd(mActivity, currencyEntity.getCategory(), walletBean.getPayload(), new WalletListener<PinBean>() {
                 @Override
-                public void success(String seed) {
-                    listener.success(seed);
+                public void success(PinBean pinBean) {
+                    listener.success(pinBean);
                 }
 
                 @Override
@@ -138,57 +132,6 @@ public class NativeWallet {
             @Override
             public void success(String pin) {
                 listen.success(pin);
-            }
-
-            @Override
-            public void fail(WalletError error) {
-
-            }
-        });
-    }
-
-    /**
-     * Reset payment password
-     * Pay to reset the password
-     */
-    public void setPin(Activity mActivity, final int category, final String seed, final WalletListener listener) {
-        baseWallet.showSetNewPin(mActivity,new WalletListener<String>() {
-            @Override
-            public void success(String pin) {
-                WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
-                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(category,seed,pin);
-                if(!TextUtils.isEmpty(walletBean.getPayload())){
-                    // Synchronous wallet information
-                    walletBean.setPayload(encoPinBean.getPayload());
-                    walletBean.setVer(SupportKeyUril.PIN_VERSION);
-                    baseWallet.updateWallet(walletBean, new WalletListener<WalletBean>() {
-                        @Override
-                        public void success(WalletBean bean) {
-                            listener.success(WalletListener.success);
-                        }
-
-                        @Override
-                        public void fail(WalletError error) {
-                            listener.fail(error);
-                        }
-                    });
-                }else{
-                    // Synchronous currency information
-                    BaseCurrency baseCurrency = initCurrency(CurrencyEnum.BTC);
-                    CurrencyEntity currencyEntity = baseCurrency.getCurrencyData();
-                    currencyEntity.setPayload(encoPinBean.getPayload());
-                    baseCurrency.setCurrencyInfo(currencyEntity, new WalletListener<CurrencyEntity>() {
-                        @Override
-                        public void success(CurrencyEntity entity) {
-                            listener.success(WalletListener.success);
-                        }
-
-                        @Override
-                        public void fail(WalletError error) {
-                            listener.success(error);
-                        }
-                    });
-                }
             }
 
             @Override
@@ -252,19 +195,19 @@ public class NativeWallet {
      * @param payload
      * @param ver
      */
-    public void updateWallet(String payload, int ver) {
+    public void updateWallet(String payload, int ver, final WalletListener listener) {
         WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
         walletBean.setPayload(payload);
         walletBean.setVer(ver);
         baseWallet.updateWallet(walletBean, new WalletListener<WalletBean>() {
             @Override
             public void success(WalletBean bean) {
-
+                listener.success(bean);
             }
 
             @Override
             public void fail(WalletError error) {
-
+                listener.fail(error);
             }
         });
     }
@@ -289,8 +232,8 @@ public class NativeWallet {
                 payload = encoPinBean.getPayload();
                 break;
             case BaseCurrency.CATEGORY_BASESEED:
-                salt = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-                String currencySeend = SupportKeyUril.xor(value, salt, 64);
+                salt = StringUtil.bytesToHexString(SecureRandom.getSeed(64));
+                String currencySeend = SupportKeyUril.xor(value, salt);
                 masterAddress = initCurrency(currencyEnum).createAddress(currencySeend);
                 break;
             case BaseCurrency.CATEGORY_SALT_SEED:

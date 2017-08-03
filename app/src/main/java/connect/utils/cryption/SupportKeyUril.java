@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.crypto.Mac;
@@ -39,20 +40,6 @@ public class SupportKeyUril {
     public static final int CRYPTION_TALKKEY_VER = 1;
 
     /**
-     * The secret key generating random number
-     * randomUUID(modify Random)
-     *
-     * @param value
-     * @return
-     */
-    public static String createrPriKeyRandom(String value) {
-        String hashForBmp = AllNativeMethod.cdGetHash256(value);
-        String hashForRandom = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-        String random = SupportKeyUril.xor(hashForBmp, hashForRandom, 64);
-        return random;
-    }
-
-    /**
      * Private key to public key
      *
      * @return
@@ -81,18 +68,22 @@ public class SupportKeyUril {
     /**
      * def XOR string
      */
-    public static String xor(String str1, String str2, int length) {
-        StringBuffer str = new StringBuffer();
-
-        for (int i = 0; i < length; i++) {
-            str.append(str1.charAt(i) ^ str2.charAt(i));
+    public static String xor(String strHex1,String strHex2){
+        if(strHex1.length() != strHex2.length()){
+            return "";
         }
-        return str.toString();
+        byte[] byte1 = StringUtil.hexStringToBytes(strHex1);
+        byte[] byte2 = StringUtil.hexStringToBytes(strHex2);
+        byte[] valueByte = SupportKeyUril.xor(byte1, byte2);
+        return StringUtil.bytesToHexString(valueByte);
     }
 
-    public static byte[] xor(byte[] byte1, byte[] byte2, int length) {
-        byte[] index = new byte[length];
-        for (int i = 0; i < length; i++) {
+    public static byte[] xor(byte[] byte1, byte[] byte2) {
+        if(byte1.length != byte2.length){
+            return null;
+        }
+        byte[] index = new byte[byte1.length];
+        for (int i = 0; i < byte1.length; i++) {
             index[i] = (byte) (byte1[i] ^ byte2[i]);
         }
         return index;
@@ -182,6 +173,8 @@ public class SupportKeyUril {
     }
 
     /**
+=======
+>>>>>>> f91270b9c3f49ba3c8613331e268f289a0b6df69
      * Generate ECDH cooperative key
      *
      * @param priKey
@@ -199,6 +192,19 @@ public class SupportKeyUril {
         MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
         sha256.update(bytes);
         sha256.update(sha256.digest());
+        return sha256.digest();
+    }
+
+    public static byte[] byteSHA512(byte[] bytes){
+        MessageDigest sha256;
+        try {
+            sha256 = MessageDigest.getInstance("SHA-512");
+            sha256.update(bytes);
+            sha256.update(sha256.digest());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
         return sha256.digest();
     }
 

@@ -42,6 +42,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
+import connect.wallet.cwallet.InitWalletManager;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.currency.BaseCurrency;
@@ -74,6 +75,7 @@ public class WalletFragment extends BaseFragment {
     private FragmentActivity mActivity;
     private RateBean rateBean;
     private CurrencyEntity currencyEntity = null;
+    private int userType;
 
     public static WalletFragment startFragment() {
         WalletFragment walletFragment = new WalletFragment();
@@ -171,39 +173,10 @@ public class WalletFragment extends BaseFragment {
 
     @OnClick(R.id.txt2)
     void creatWalletClick() {
-        int state = (int) txt2.getTag();
-        switch (state) {
-            case 1:
-                NativeWallet.getInstance().showSetPin(mActivity, new WalletListener<String>() {
-                    @Override
-                    public void success(String pin) {
-                        NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_PRIKEY,
-                                MemoryDataManager.getInstance().getPriKey(), pin,
-                                MemoryDataManager.getInstance().getAddress(),
-                                new WalletListener<CurrencyEntity>() {
-                                    @Override
-                                    public void success(CurrencyEntity tempEntity) {
-                                        relativelayout1.setVisibility(View.GONE);
-                                        currencyEntity = tempEntity;
-                                    }
-
-                                    @Override
-                                    public void fail(WalletError error) {
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void fail(WalletError error) {
-                    }
-                });
-                break;
-            case 2:
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("type", CurrencyEnum.BTC);
-                RandomVoiceActivity.startActivity(mActivity, bundle);
-                break;
-        }
+        userType = (int) txt2.getTag();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("type", CurrencyEnum.BTC);
+        RandomVoiceActivity.startActivity(mActivity,bundle);
     }
 
     /**
@@ -239,17 +212,35 @@ public class WalletFragment extends BaseFragment {
                         break;
                 }
             }
-
             @Override
-            public void fail(WalletError error) {
-
-            }
+            public void fail(WalletError error) {}
         });
     }
 
     /**
+     * Collect random numbers to return
+     * @param bundle
+     */
+    public void callBaseSeed(Bundle bundle) {
+        final String baseSend = bundle.getString("random");
+        final String pin = bundle.getString("pin");
+
+        InitWalletManager walletManager = new InitWalletManager(mActivity, CurrencyEnum.BTC);
+        walletManager.setUSER_TYPE(userType);
+        walletManager.setListener(new WalletListener<CurrencyEntity>() {
+            @Override
+            public void success(CurrencyEntity entity) {
+                relativelayout1.setVisibility(View.GONE);
+                currencyEntity = entity;
+            }
+            @Override
+            public void fail(WalletError error) {}
+        });
+        walletManager.requestCreateWallet(baseSend, pin);
+    }
+
+    /**
      * Get wallet balance
-     * Get the wallet balance
      */
     private void requestCurrencyCoin() {
         NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).requestCoinInfo(new WalletListener<WalletOuterClass.Coin>() {
@@ -264,10 +255,8 @@ public class WalletFragment extends BaseFragment {
                     amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(0L));
                 }
             }
-
             @Override
-            public void fail(WalletError error) {
-            }
+            public void fail(WalletError error) {}
         });
     }
 
@@ -280,11 +269,6 @@ public class WalletFragment extends BaseFragment {
             return;
         HttpRequest.getInstance().get(rateBean.getUrl(), new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String data = response.body().string();
                 Type type = new TypeToken<RateBean>() {
@@ -294,59 +278,10 @@ public class WalletFragment extends BaseFragment {
                 rateBean.setDatetime(rate.getDatetime());
                 ParamManager.getInstance().putCountryRate(rateBean);
             }
+            @Override
+            public void onFailure(Call call, IOException e) {}
         });
     }
-
-    /**
-     * Collect random numbers to return
-     * Get the collected random number
-     *
-     * @param bundle
-     */
-    public void callBaseSeed(Bundle bundle) {
-        final String baseSend = bundle.getString("random");
-        NativeWallet.getInstance().showSetPin(mActivity, new WalletListener<String>() {
-            @Override
-            public void success(String pin) {
-                createWallet(baseSend, pin);
-            }
-
-            @Override
-            public void fail(WalletError error) {
-            }
-        });
-    }
-
-    /**
-     * Create a wallet
-     *
-     * @param baseSend
-     * @param pin
-     */
-    private void createWallet(final String baseSend, final String pin) {
-        NativeWallet.getInstance().createWallet(baseSend, pin, new WalletListener<WalletBean>() {
-            @Override
-            public void success(WalletBean walletBean) {
-                NativeWallet.getInstance().createCurrency(CurrencyEnum.BTC, BaseCurrency.CATEGORY_BASESEED, baseSend, pin, "",
-                        new WalletListener<CurrencyEntity>() {
-                            @Override
-                            public void success(CurrencyEntity tempEntity) {
-                                relativelayout1.setVisibility(View.GONE);
-                                currencyEntity = tempEntity;
-                            }
-
-                            @Override
-                            public void fail(WalletError error) {
-                            }
-                        });
-            }
-
-            @Override
-            public void fail(WalletError error) {
-            }
-        });
-    }
-
 
     @Override
     public void onDestroyView() {

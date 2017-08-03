@@ -585,7 +585,8 @@
     <string name="Wallet_Amount">Amount</string>
     <string name="Wallet_Amount_BTC">Amount(BTC)</string>
     <string name="Wallet_Amount_Each">Amount Each</string>
-    <string name="Wallet_Amount_is_too_small">Amount is too small!</string>
+    <string name="Wallet_Amount_is_too_small">When packing a transaction, an error occurs and the amount is too small</string>
+    <string name="Wallet_not_initialized_the_wallet_and_can_not_trade">The other party has not initialized the wallet and can not trade</string>
     <string name="Wallet_Amount_must_be_greater_than">Amount must be more than %f</string>
     <string name="Wallet_Amount_must_be_less_than">Amount must be less than %f</string>
     <string name="Wallet_Amount_of_member">Amount of member</string>

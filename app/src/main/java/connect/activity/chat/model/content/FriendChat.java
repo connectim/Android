@@ -126,7 +126,7 @@ public class FriendChat extends NormalChat {
                         return;
                     }
                     ecdhExts = SupportKeyUril.EcdhExts.OTHER;
-                    ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt, 64));
+                    ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt));
                     builder.setSalt(ByteString.copyFrom(randomSalt)).setChatPubKey(userCookie.getPubKey()).
                             setVer(ByteString.copyFrom(friendCookie.getSalt()));
                     break;

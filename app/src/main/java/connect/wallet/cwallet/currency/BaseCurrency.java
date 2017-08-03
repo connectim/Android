@@ -44,7 +44,7 @@ public abstract class BaseCurrency {
     /**
      * Set currency information
      */
-    public abstract void setCurrencyInfo(final CurrencyEntity currencyEntity, WalletListener listener);
+    public abstract void setCurrencyInfo(String payload, Integer status, WalletListener listener);
 
     /**
      * Get the currency address

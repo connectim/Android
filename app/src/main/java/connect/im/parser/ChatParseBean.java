@@ -104,7 +104,7 @@ public class ChatParseBean extends InterParse {
             priKey = toCookie.getPriKey();
             pubkey = messageData.getChatPubKey();
             ecdhExts = SupportKeyUril.EcdhExts.OTHER;
-            ecdhExts.setBytes(SupportKeyUril.xor(fromSalt.toByteArray(), toSalt.toByteArray(), 64));
+            ecdhExts.setBytes(SupportKeyUril.xor(fromSalt.toByteArray(), toSalt.toByteArray()));
         }
 
         byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, priKey, pubkey, gcmData);

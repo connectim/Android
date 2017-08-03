@@ -90,7 +90,7 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
     void goJump(View view) {
         HashMap<String, String> hashMap = new HashMap<>();
         String strForBmp = StringUtil.bytesToHexString(SecureRandom.getSeed(64));
-        String random = SupportKeyUril.createrPriKeyRandom(strForBmp);
+        String random = SupportKeyUril.xor(strForBmp, StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
         String prikey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(random, 44, 0, 0, 0, 0);
         String pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
         String address = AllNativeMethod.cdGetBTCAddrFromPubKey(pubKey);

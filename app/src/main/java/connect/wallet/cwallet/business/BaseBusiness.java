@@ -40,7 +40,6 @@ import wallet_gateway.WalletOuterClass;
 
 /**
  * Specific business layer interface
- * Created by Administrator on 2017/7/18.
  * Connect the transfer business management
  */
 public class BaseBusiness {
@@ -57,12 +56,8 @@ public class BaseBusiness {
     }
 
     /**
-<<<<<<< HEAD
-     * Assembly input Txin
-=======
      * Assemble input Txin
      *
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * @param listAddress
      * @return
      */
@@ -78,12 +73,8 @@ public class BaseBusiness {
     }
 
     /**
-<<<<<<< HEAD
-     * Assembly output Txouts
-=======
      * Assemble the output Txouts
      *
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * @param outMap
      * @return
      */
@@ -101,13 +92,9 @@ public class BaseBusiness {
     }
 
     /**
-<<<<<<< HEAD
-     * @return
-=======
      * Get a fee
      *
      * @return fee
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      */
     private Long getFee(){
         Long fee = 0L;
@@ -120,10 +107,7 @@ public class BaseBusiness {
 
     /**
      * Address transfer
-<<<<<<< HEAD
-=======
      *
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * @param outMap <address,amount>
      * @param listener
      */
@@ -162,6 +146,7 @@ public class BaseBusiness {
 
     /**
      * Connect user transfer
+     *
      * @param outMap <pubKey,amount>
      * @param listener
      */
@@ -242,12 +227,8 @@ public class BaseBusiness {
     }
 
     /**
-<<<<<<< HEAD
-     * payment
-=======
      * Pay the payment
      *
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * @param hash payment hash
      * @param type TransferType
      */
@@ -273,11 +254,8 @@ public class BaseBusiness {
     }
 
     /**
-<<<<<<< HEAD
-=======
      * All the money raised
      *
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * @param groupkey
      * @param amount
      * @param size
@@ -319,19 +297,10 @@ public class BaseBusiness {
     }
 
     /**
-<<<<<<< HEAD
      * @param listAddress
      * @param receiverIdentifier // group id or user pubkey
      * @param type // private group outer //0：inner 1：outer
      * @param category //0：persional 1：group
-=======
-     * Red envelopes
-     *
-     * @param listAddress
-     * @param receiverIdentifier group id or user pubkey
-     * @param type private group outer 0:in 1:out
-     * @param category 0:personal 1:group
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      * @param size
      * @param amount
      * @param tips
@@ -370,11 +339,7 @@ public class BaseBusiness {
     }
 
     /**
-<<<<<<< HEAD
      * external transfer
-=======
-     * External transfer
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      *
      * @param listAddress
      * @param amount
@@ -407,11 +372,7 @@ public class BaseBusiness {
     }
 
     /**
-<<<<<<< HEAD
      * Broadcast Trading
-=======
-     * Broadcast transfer transaction
->>>>>>> f02794c34f11533204f3e74bd6e7273a261dbf96
      */
     private void publishTransfer(String rawHex, final String hashId, final WalletListener<String> listener){
         WalletOuterClass.PublishTransaction publishTransaction = WalletOuterClass.PublishTransaction.newBuilder()
@@ -447,7 +408,9 @@ public class BaseBusiness {
     private void showErrorToast(Connect.HttpResponse response){
         if(response.getCode() == 2400){
             ToastEUtil.makeText(mActivity,R.string.Wallet_Amount_is_too_small,ToastEUtil.TOAST_STATUS_FAILE).show();
-        }else{
+        } else if(response.getCode() == 2600){
+            ToastEUtil.makeText(mActivity,R.string.Wallet_not_initialized_the_wallet_and_can_not_trade,ToastEUtil.TOAST_STATUS_FAILE).show();
+        } else{
             ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
         }
         connectDialog.dismiss();
@@ -618,7 +581,5 @@ public class BaseBusiness {
             }
         });
     }
-
-
 
 }

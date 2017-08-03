@@ -19,6 +19,8 @@ import connect.utils.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.permission.PermissionUtil;
+import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import connect.widget.camera.CricleProgressbar;
@@ -77,10 +79,8 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
 
     @OnClick(R.id.jump_tv)
     void goJump(View view) {
-        HashMap<String, String> hashMap = new HashMap<>();
         String strForBmp = StringUtil.bytesToHexString(SecureRandom.getSeed(64));
-        String hashForBmp = AllNativeMethod.cdGetHash256(strForBmp);
-        presenter.finishSuccess(hashForBmp);
+        presenter.finishSuccess(strForBmp);
     }
 
     @OnClick(R.id.start_img)
@@ -148,10 +148,21 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
     }
 
     @Override
-    public void successCollect(String random) {
-        Bundle bundle = mActivity.getIntent().getExtras();
-        bundle.putString("random", random);
-        ActivityUtil.goBackWithResult(mActivity,RESULT_OK,bundle);
+    public void successCollect(final String random) {
+        NativeWallet.getInstance().showSetPin(mActivity, new WalletListener<String>() {
+            @Override
+            public void success(String pin) {
+                Bundle bundle = mActivity.getIntent().getExtras();
+                bundle.putString("random", random);
+                bundle.putString("pin", pin);
+                ActivityUtil.goBackWithResult(mActivity,RESULT_OK,bundle);
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
+            }
+        });
     }
 
     @Override
