@@ -572,12 +572,11 @@ public class BaseBusiness {
                 ArrayList<String> priList = new ArrayList<>();
                 if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY){
                     // private key
-                    String priKey = new String(StringUtil.hexStringToBytes(decodeStr));
-                    priList.add(priKey);
+                    priList.add(decodeStr);
                 }else if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_SALT_SEED){
                     // Import third-party seeds
 
-                }if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_BASESEED){
+                }else if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_BASESEED){
                     // Gets the index corresponding to the input address
                     ArrayList<Integer> indexList = new ArrayList<>();
                     for(String address : addressList){

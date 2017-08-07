@@ -25,7 +25,6 @@ public class BtcCurrencyTest {
     public void getCurrencyData() throws Exception {
         BaseCurrency baseCurrency = NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC);
         baseCurrency.getCurrencyData();
-        //assertTrue(coinAccount instanceof CoinAccount);
     }
 
     @Test
