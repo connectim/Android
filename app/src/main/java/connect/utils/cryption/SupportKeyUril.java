@@ -328,11 +328,11 @@ public class SupportKeyUril {
 
     public static String decodePin(int category, String value, String pass,int verPin){
         String seed = AllNativeMethod.connectWalletKeyDecrypt(value,pass,verPin);
+        if(seed.contains("error")){
+            return  "";
+        }
         if(BaseCurrency.CATEGORY_PRIKEY == category){
             seed = new String(StringUtil.hexStringToBytes(seed));
-        }
-        if(seed.contains("error")){
-            seed = "";
         }
         return seed;
     }
