@@ -626,7 +626,7 @@ public class ImageWatcher extends FrameLayout implements GestureDetector.OnGestu
             FrameLayout itemView = new FrameLayout(container.getContext());
             container.addView(itemView);
             ImageView imageView = new ImageView(container.getContext());
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             itemView.addView(imageView);
             mImageSparseArray.put(position, imageView);
 

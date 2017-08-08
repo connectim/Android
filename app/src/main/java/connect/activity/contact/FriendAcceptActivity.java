@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.contact.bean.ContactNotice;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.im.bean.UserOrderBean;
@@ -102,6 +103,7 @@ public class FriendAcceptActivity extends BaseActivity {
                     requestEntity.setRead(1);
                     requestEntity.setStatus(2);
                     ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
+                    ContactNotice.receiverAddFriend();
                     ToastEUtil.makeText(mActivity,R.string.Link_Add_Successful).show();
                     ActivityUtil.goBack(mActivity);
                 }

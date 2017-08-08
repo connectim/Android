@@ -1,6 +1,7 @@
 package connect.activity.contact.presenter;
 
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -56,7 +57,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
     public void start() {
         vImageWatcher = ImageWatcher.Helper.with(mView.getActivity())
                 .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(mView.getActivity()))
-                .setErrorImageRes(R.mipmap.img_default)
+                .setErrorImageRes(R.mipmap.default_user_avatar)
                 .create();
     }
 
@@ -64,6 +65,9 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
     public void shareFriendCard(Intent data, ContactEntity friendEntity) {
         int type = data.getIntExtra("type", 0);
         String pubkey = data.getStringExtra("object");
+        if(TextUtils.isEmpty(pubkey)){
+            return;
+        }
 
         BaseChat baseChat = null;
         if (type == 0) {

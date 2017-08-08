@@ -81,7 +81,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         if(typeTx == 7) {
             viewHolder.nameTv.setText(R.string.Wallet_From_Connect_team);
         }else if (transaction.getUserInfosList().size() > 0) {
-            if(TextUtils.isEmpty(transaction.getUserInfos(0).getAvatar())){
+            if(TextUtils.isEmpty(transaction.getUserInfos(0).getUsername())){
                 viewHolder.nameTv.setText(mListData.get(position).getUserInfos(0).getAddress());
             }else{
                 viewHolder.nameTv.setText(mListData.get(position).getUserInfos(0).getUsername());

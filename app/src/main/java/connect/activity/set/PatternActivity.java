@@ -116,7 +116,7 @@ public class PatternActivity extends BaseActivity {
     void goback(View view) {
         List<Activity> list = BaseApplication.getInstance().getActivityList();
         if(list.size() == 1){
-            return;
+            goNext(view);
         }else{
             ActivityUtil.goBack(mActivity);
         }
