@@ -147,12 +147,14 @@ public class FriendChat extends NormalChat {
 
     @Override
     public String headImg() {
-        return contactEntity.getAvatar();
+        String avatar = TextUtils.isEmpty(contactEntity.getAvatar()) ? "" : contactEntity.getAvatar();
+        return avatar;
     }
 
     @Override
     public String nickName() {
-        return TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
+        String nickName = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
+        return TextUtils.isEmpty(nickName) ? "" : nickName;
     }
 
     @Override
@@ -170,7 +172,8 @@ public class FriendChat extends NormalChat {
 
     @Override
     public String roomKey() {
-        return contactEntity.getPub_key();
+        String pubKey = TextUtils.isEmpty(contactEntity.getPub_key()) ? "" : contactEntity.getPub_key();
+        return pubKey;
     }
 
     @Override
@@ -219,9 +222,5 @@ public class FriendChat extends NormalChat {
         if (friendCookie == null) {
             encryType = EncryType.NORMAL;
         }
-    }
-
-    public ContactEntity getContactEntity() {
-        return contactEntity;
     }
 }

@@ -8,15 +8,17 @@ import android.view.View;
 
 import com.google.gson.Gson;
 
+import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
+import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.RoomType;
+import connect.activity.chat.bean.TransferExt;
+import connect.activity.home.bean.HomeAction;
+import connect.activity.wallet.PacketDetailActivity;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.TransferExt;
-import connect.activity.wallet.PacketDetailActivity;
+import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
@@ -161,7 +163,12 @@ public class MsgLuckyHolder extends MsgChatHolder {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                switch (response.getCode()) {
+                    case 2650:
+                        ActivityUtil.goBack((Activity) context);
+                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.SWITCHFRAGMENT, 2);
+                        break;
+                }
             }
         });
     }

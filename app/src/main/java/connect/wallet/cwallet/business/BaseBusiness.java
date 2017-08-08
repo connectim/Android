@@ -184,6 +184,7 @@ public class BaseBusiness {
     }
 
     /**
+     * Individual collection
      * Single payment
      *
      * @param amount

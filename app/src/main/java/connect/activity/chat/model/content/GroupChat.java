@@ -112,25 +112,29 @@ public class GroupChat extends NormalChat {
     @Override
     public String headImg() {
         if (groupEntity == null) return "";
-        return groupEntity.getAvatar();
+        String groupAvatar = TextUtils.isEmpty(groupEntity.getAvatar()) ? "" : groupEntity.getAvatar();
+        return groupAvatar;
     }
 
     @Override
     public String nickName() {
         if (groupEntity == null) return "";
-        return groupEntity.getName();
+        String groupName = TextUtils.isEmpty(groupEntity.getName()) ? "" : groupEntity.getName();
+        return groupName;
     }
 
     @Override
     public String address() {
         if (groupEntity == null) return "";
-        return groupEntity.getIdentifier();
+        String groupAddress = TextUtils.isEmpty(groupEntity.getIdentifier()) ? "" : groupEntity.getIdentifier();
+        return groupAddress;
     }
 
     @Override
     public String roomKey() {
         if (groupEntity == null) return "";
-        return groupEntity.getIdentifier();
+        String groupKey = TextUtils.isEmpty(groupEntity.getIdentifier()) ? "" : groupEntity.getIdentifier();
+        return groupKey;
     }
 
     @Override
@@ -140,7 +144,8 @@ public class GroupChat extends NormalChat {
 
     public String groupEcdh() {
         if (groupEntity == null) return "";
-        return groupEntity.getEcdh_key();
+        String ecdh = TextUtils.isEmpty(groupEntity.getEcdh_key()) ? "" : groupEntity.getEcdh_key();
+        return ecdh;
     }
 
     public void setGroupEntity(GroupEntity groupEntity) {

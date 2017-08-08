@@ -14,18 +14,18 @@ public class FriendRequestEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-
     @NotNull
     private String pub_key;
-
     @NotNull
     private String address;
+
     private String avatar;
     private String username;
     private String tips;
     private Integer source;
     private Integer status;
     private Integer read;
+
     @Generated(hash = 1099393682)
     public FriendRequestEntity(Long _id, @NotNull String pub_key,
             @NotNull String address, String avatar, String username, String tips,

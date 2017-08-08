@@ -46,6 +46,14 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
                 memberList.add(contactEntity.getPub_key());
             }
         }
+
+        for (ContactEntity contactEntity : entities) {
+            String pubkey = contactEntity.getPub_key();
+            if (members.contains(pubkey)) {
+                selectEntities.add(contactEntity);
+                continue;
+            }
+        }
     }
 
     public ArrayList<ContactEntity> getSelectEntities() {
@@ -66,7 +74,6 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
         GlideUtil.loadAvater(holder.roundimg, entity.getAvatar());
         String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
         if (TextUtils.isEmpty(curName)) return;
-
         holder.name.setText(entity.getUsername());
 
         String curFirst = PinyinUtil.chatToPinyin(curName.charAt(0));
@@ -94,7 +101,6 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
         } else {
             holder.secView.setSelected(false);
         }
-
     }
 
     @Override

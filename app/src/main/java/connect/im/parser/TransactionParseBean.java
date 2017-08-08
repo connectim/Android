@@ -277,6 +277,6 @@ public class TransactionParseBean extends InterParse{
 
         String showTxt = msgEntity.getMsgDefinBean().showContentTxt(0);
         normalChat.updateRoomMsg(null, showTxt, TimeUtil.getCurrentTimeInLong(),-1,true);
-        HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
+        HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
     }
 }

@@ -15,16 +15,16 @@ public class TransactionEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-
     @NotNull
     private String message_id;
-
     @NotNull
     @Unique
     private String hashid;
+
     private Integer status;
     private Integer pay_count;
     private Integer crowd_count;
+
     @Generated(hash = 950792307)
     public TransactionEntity(Long _id, @NotNull String message_id,
             @NotNull String hashid, Integer status, Integer pay_count,

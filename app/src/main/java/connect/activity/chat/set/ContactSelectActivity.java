@@ -140,6 +140,7 @@ public class ContactSelectActivity extends BaseActivity {
 
         List<String> oldMembers = new ArrayList<>();
         if (0 == roomTag) {//create group
+            oldMembers.add(roomKey);
         } else {//Invite friends to join in the group
             memEntities = ContactHelper.getInstance().loadGroupMemEntity(roomKey);
             for (GroupMemberEntity memEntity : memEntities) {

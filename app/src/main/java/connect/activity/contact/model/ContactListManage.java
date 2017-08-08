@@ -109,11 +109,14 @@ public class ContactListManage {
     }
 
     public String checkShowFriendTop(ContactBean currBean,ContactBean lastBean){
+        char curFirstChar = TextUtils.isEmpty(currBean.getName()) ? '#' : currBean.getName().charAt(0);
+        char lastFirstChar = TextUtils.isEmpty(lastBean.getName()) ? '#' : lastBean.getName().charAt(0);
+
         if(lastBean == null){
             if(currBean.getStatus() == 2 || currBean.getStatus() == 3){
                 return "show";
             }else if(currBean.getStatus() == 4 || currBean.getStatus() == 6){
-                return PinyinUtil.chatToPinyin(currBean.getName().charAt(0));
+                return PinyinUtil.chatToPinyin(curFirstChar);
             }else{
                 return "";
             }
@@ -127,10 +130,10 @@ public class ContactListManage {
             }
         }else{ // Friend
             if(lastBean.getStatus() != 4 && lastBean.getStatus() != 6){
-                return PinyinUtil.chatToPinyin(currBean.getName().charAt(0));
+                return PinyinUtil.chatToPinyin(curFirstChar);
             }else{
-                String currLetter = PinyinUtil.chatToPinyin(currBean.getName().charAt(0));
-                String lastLetter = PinyinUtil.chatToPinyin(lastBean.getName().charAt(0));
+                String currLetter = PinyinUtil.chatToPinyin(curFirstChar);
+                String lastLetter = PinyinUtil.chatToPinyin(lastFirstChar);
                 if(currLetter.equals(lastLetter)){
                     return "";
                 }else{

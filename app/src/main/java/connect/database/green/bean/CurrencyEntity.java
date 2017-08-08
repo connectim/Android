@@ -18,28 +18,29 @@ public class CurrencyEntity implements Serializable{
 
     @Id(autoincrement = true)
     private Long _id;
-
     @Unique
     @NotNull
     private Integer currency;
-    private Integer category;
     @Unique
     @NotNull
     private String salt;
+
+    private Integer category;
     private String masterAddress;
     private String defaultAddress;
     private Integer status;
     private Long amount;
     private Long balance;
     private String payload;
-    @Generated(hash = 1237195953)
-    public CurrencyEntity(Long _id, @NotNull Integer currency, Integer category,
-            @NotNull String salt, String masterAddress, String defaultAddress,
+
+    @Generated(hash = 1518179129)
+    public CurrencyEntity(Long _id, @NotNull Integer currency, @NotNull String salt,
+            Integer category, String masterAddress, String defaultAddress,
             Integer status, Long amount, Long balance, String payload) {
         this._id = _id;
         this.currency = currency;
-        this.category = category;
         this.salt = salt;
+        this.category = category;
         this.masterAddress = masterAddress;
         this.defaultAddress = defaultAddress;
         this.status = status;

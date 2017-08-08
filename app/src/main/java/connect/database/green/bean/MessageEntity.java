@@ -15,19 +15,19 @@ public class MessageEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-
     @NotNull
     private String message_ower;
-
     @NotNull
     @Unique
     private String message_id;
+
     private String content;
     private Long read_time;
     private Integer state;
     private Integer send_status;
     private Long snap_time;
     private Long createtime;
+
     @Generated(hash = 467250247)
     public MessageEntity(Long _id, @NotNull String message_ower,
             @NotNull String message_id, String content, Long read_time,

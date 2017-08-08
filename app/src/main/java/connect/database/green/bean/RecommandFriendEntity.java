@@ -15,21 +15,19 @@ public class RecommandFriendEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-
     @NotNull
     @Unique
     private String pub_key;
-
     @NotNull
     private String username;
-
     @NotNull
     @Unique
     private String address;
-
     @NotNull
     private String avatar;
+
     private Integer status;
+
     @Generated(hash = 1185893177)
     public RecommandFriendEntity(Long _id, @NotNull String pub_key,
             @NotNull String username, @NotNull String address,

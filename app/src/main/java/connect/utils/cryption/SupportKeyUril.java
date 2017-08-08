@@ -142,6 +142,39 @@ public class SupportKeyUril {
     }
 
     /**
+     * Encrypted payment password
+     */
+    public static EncoPinBean encoPinDefult(String value, String pass){
+        return encoPin(value,pass,CRYPTION_N);
+    }
+
+    public static EncoPinBean encoPin(String value, String pass,int n){
+        EncoPinBean encoPinBean = new EncoPinBean();
+        String payload = AllNativeMethod.connectWalletKeyEncrypt(value,pass,n,PIN_VERSION);
+        encoPinBean.setPayload(payload);
+        encoPinBean.setVersion(PIN_VERSION);
+        encoPinBean.setN(n);
+        return encoPinBean;
+    }
+
+    /**
+     * Decrypt payment password
+     */
+    public static String decodePinDefult(String value, String pass){
+        return decodePin(value, pass, PIN_VERSION);
+    }
+
+    public static String decodePin(String value, String pass,int verPin){
+        String seed = AllNativeMethod.connectWalletKeyDecrypt(value,pass,verPin);
+        if(seed.equals("error")){
+            seed = "";
+        }
+        return seed;
+    }
+
+    /**
+=======
+>>>>>>> f91270b9c3f49ba3c8613331e268f289a0b6df69
      * Generate ECDH cooperative key
      *
      * @param priKey

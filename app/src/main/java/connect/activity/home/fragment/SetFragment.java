@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import org.greenrobot.greendao.database.Database;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +44,8 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.database.green.bean.MessageEntity;
+import connect.database.green.dao.DaoMaster;
+import connect.database.green.dao.DaoSession;
 import connect.im.bean.UserOrderBean;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
@@ -185,7 +189,7 @@ public class SetFragment extends BaseFragment {
                     @Override
                     public void confirm(String value) {
                         ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
-                        HomeAction.sendTypeMsg(HomeAction.HomeType.DELAY_EXIT);
+                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
 
                         FailMsgsManager.getInstance().removeAllFailMsg();
                         UserOrderBean userOrderBean = new UserOrderBean();

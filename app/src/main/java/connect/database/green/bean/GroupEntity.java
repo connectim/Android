@@ -15,10 +15,10 @@ public class GroupEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-
     @NotNull
     @Unique
     private String identifier;
+
     private String name;
     private String ecdh_key;
     private Integer common;
@@ -26,6 +26,7 @@ public class GroupEntity implements Serializable {
     private Integer pub;
     private String avatar;
     private String summary;
+
     @Generated(hash = 2034602142)
     public GroupEntity(Long _id, @NotNull String identifier, String name,
             String ecdh_key, Integer common, Integer verify, Integer pub,
