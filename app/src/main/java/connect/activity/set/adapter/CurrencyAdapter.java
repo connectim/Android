@@ -74,7 +74,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mDataList.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

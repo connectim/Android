@@ -100,6 +100,7 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 queryFriend();
+                ContactNotice.receiverAddFriend();
             }
         }.execute();
     }

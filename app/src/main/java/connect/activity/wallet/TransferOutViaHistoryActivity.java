@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.wallet.adapter.TransferOutAdapter;
+import connect.activity.wallet.bean.SendOutBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.UriUtil;
@@ -86,7 +87,11 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
         transferOutAdapter.setItemClickListener(new TransferOutAdapter.OnItemClickListener() {
             @Override
             public void itemClick(Connect.ExternalBillingInfo billingInfo) {
-
+                SendOutBean sendOutBean = new SendOutBean();
+                sendOutBean.setType(PacketSendActivity.OUT_VIA);
+                sendOutBean.setUrl(billingInfo.getUrl());
+                sendOutBean.setDeadline(billingInfo.getDeadline());
+                PacketSendActivity.startActivity(mActivity,sendOutBean);
             }
         });
 

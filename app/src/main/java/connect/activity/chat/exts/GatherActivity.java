@@ -170,7 +170,7 @@ public class GatherActivity extends BaseActivity {
             transferEditView.setAmountTvGone();
 
             int countMem = ContactHelper.getInstance().loadGroupMemEntity(gatherKey).size();
-            edit.setText(String.valueOf(countMem));
+            edit.setText(String.valueOf(countMem-1));
 
             txt2.setVisibility(View.VISIBLE);
             String amoutTxt = transferEditView.getCurrentBtc();

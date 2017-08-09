@@ -206,7 +206,6 @@ public class NativeWallet {
     }
 
     /**
-     * (priKey\baseSeed\salt+seed)
      * Create a currency
      * @param currencyEnum
      * @param category (priKey\baseSeed\salt+seed)

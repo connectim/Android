@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.NewRequestAdapter;
+import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.NewFriendContract;
@@ -129,6 +130,7 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
             } else {
                 ContactHelper.getInstance().deleteRequestEntity(entity.getPub_key());
                 presenter.queryFriend();
+                ContactNotice.receiverAddFriend();
             }
         }
     };

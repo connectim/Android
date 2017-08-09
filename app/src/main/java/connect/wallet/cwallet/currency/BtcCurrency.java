@@ -152,7 +152,7 @@ public class BtcCurrency extends BaseCurrency {
     /**
      * Determine whether the amount is dirty
      */
-    private static boolean isHaveDustWithAmount(long amount) {
+    public static boolean isHaveDustWithAmount(long amount) {
         EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
         if(feeBean == null || TextUtils.isEmpty(feeBean.getData())){
             return false;
@@ -164,7 +164,7 @@ public class BtcCurrency extends BaseCurrency {
     /**
      * Automatic calculation fee
      */
-    private static long getAutoFeeWithUnspentLength(boolean isAddChangeAddress,int txs_length, int sentToLength) {
+    public static long getAutoFeeWithUnspentLength(boolean isAddChangeAddress,int txs_length, int sentToLength) {
         if(isAddChangeAddress){ // the change of address
             sentToLength++;
         }

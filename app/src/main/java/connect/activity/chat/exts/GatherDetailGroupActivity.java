@@ -49,6 +49,7 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.business.TransferType;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
@@ -249,7 +250,7 @@ public class GatherDetailGroupActivity extends BaseActivity {
 
     protected void requestGatherPayment() {
         BaseBusiness baseBusiness = new BaseBusiness(activity,CurrencyEnum.BTC);
-        baseBusiness.typePayment(hashid, 2, new WalletListener<String>() {
+        baseBusiness.typePayment(hashid, TransferType.TransactionTypePayment.getType(), new WalletListener<String>() {
             @Override
             public void success(String hashId) {
                 String contactName = crowdfunding.getSender().getUsername();

@@ -44,7 +44,7 @@
             android:id="@+id/tips_tv"
             style="@style/BaseTextStyle.14"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/new_friend_name"
+            android:layout_toRightOf="@+id/name_tv"
             android:layout_toLeftOf="@+id/count_tv"
             android:lines="1"
             android:ellipsize="end"
