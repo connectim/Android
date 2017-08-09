@@ -11,6 +11,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.chat.set.contract.ContactCardContract;
+import connect.activity.chat.set.presenter.ContactCardPresenter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
@@ -27,7 +29,7 @@ import connect.widget.TopToolBar;
 /**
  * Created by gtq on 2016/12/13.
  */
-public class ContactCardActivity extends BaseActivity {
+public class ContactCardActivity extends BaseActivity implements ContactCardContract.BView {
 
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
@@ -37,12 +39,12 @@ public class ContactCardActivity extends BaseActivity {
     TopToolBar toolbar;
 
     private ContactCardActivity activity;
-    private FriendCompara friendCompara = new FriendCompara();
 
+    private String pubKey;
     private boolean move;
     private int topPosi;
     private LinearLayoutManager linearLayoutManager;
-    private ContactCardAdapter contactCardAdapter;
+    private ContactCardContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +54,10 @@ public class ContactCardActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity) {
-        startActivity(activity,null);
-    }
-
-    public static void startActivity(Activity activity,ContactEntity friendEntity) {
+    public static void startActivity(Activity activity, String pubkey) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("bean",friendEntity);
-        ActivityUtil.next(activity, ContactCardActivity.class,bundle);
+        bundle.putSerializable("PUBKEY", pubkey);
+        ActivityUtil.next(activity, ContactCardActivity.class, bundle);
     }
 
     @Override
@@ -74,14 +72,14 @@ public class ContactCardActivity extends BaseActivity {
                 ActivityUtil.goBack(activity);
             }
         });
-        String type = getIntent().getExtras().getString("type");
+
+        pubKey = getIntent().getStringExtra("PUBKEY");
 
         linearLayoutManager = new LinearLayoutManager(activity);
-
         List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend(RoomSession.getInstance().getRoomKey());
-        Collections.sort(friendEntities, friendCompara);
+        Collections.sort(friendEntities, new FriendCompara());
 
-        contactCardAdapter = new ContactCardAdapter(activity, friendEntities);
+        final ContactCardAdapter contactCardAdapter = new ContactCardAdapter(activity, friendEntities);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(contactCardAdapter);
         contactCardAdapter.setItemClickListener(new ContactCardAdapter.OnItemClickListener() {
@@ -119,6 +117,8 @@ public class ContactCardActivity extends BaseActivity {
                 moveToPosition(position);
             }
         });
+
+        new ContactCardPresenter(this).start();
     }
 
     private void moveToPosition(int posi) {
@@ -134,5 +134,20 @@ public class ContactCardActivity extends BaseActivity {
             recyclerview.scrollToPosition(posi);
             move = true;
         }
+    }
+
+    @Override
+    public String getRoomKey() {
+        return pubKey;
+    }
+
+    @Override
+    public void setPresenter(ContactCardContract.Presenter presenter) {
+
+    }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
     }
 }

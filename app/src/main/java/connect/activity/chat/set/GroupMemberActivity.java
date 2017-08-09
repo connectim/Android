@@ -11,6 +11,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.chat.set.contract.GroupMemberContract;
+import connect.activity.chat.set.presenter.GroupMemberPresenter;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
@@ -24,10 +26,10 @@ import connect.widget.SideBar;
 import connect.widget.TopToolBar;
 
 /**
- * remove Group member
+ * Group member list(remove member)
  * Created by gtq on 2016/12/15.
  */
-public class GroupMemberActivity extends BaseActivity {
+public class GroupMemberActivity extends BaseActivity implements GroupMemberContract.BView {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -39,13 +41,9 @@ public class GroupMemberActivity extends BaseActivity {
     SideBar siderbar;
     private String groupKey;
 
-    private GroupComPara groupComPara = new GroupComPara();
-
     private GroupMemberActivity activity;
     private LinearLayoutManager layoutManager;
-    private GroupMemberAdapter adapter;
-
-    private List<GroupMemberEntity> memEntities;
+    private GroupMemberContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +75,7 @@ public class GroupMemberActivity extends BaseActivity {
         toolbarTop.setRightListence(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContactSelectActivity.startInviteGroupActivity(activity, groupKey);
+                GroupInviteActivity.startActivity(activity, groupKey);
             }
         });
 
@@ -86,7 +84,7 @@ public class GroupMemberActivity extends BaseActivity {
 
         layoutManager = new LinearLayoutManager(activity);
         recordview.setLayoutManager(layoutManager);
-        adapter = new GroupMemberAdapter(activity, recordview);
+        final GroupMemberAdapter adapter = new GroupMemberAdapter(activity, recordview);
         adapter.setCanScroll(myMember.getRole() == 1);
         recordview.setAdapter(adapter);
         recordview.addItemDecoration(new LineDecoration(activity));
@@ -98,8 +96,8 @@ public class GroupMemberActivity extends BaseActivity {
             }
         });
 
-        memEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
-        Collections.sort(memEntities, groupComPara);
+        final List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
+        Collections.sort(memEntities, new GroupComPara());
         toolbarTop.setTitle(getString(R.string.Chat_Group_Members, memEntities.size()));
 
         adapter.setData(memEntities);
@@ -118,6 +116,8 @@ public class GroupMemberActivity extends BaseActivity {
                 moveToPosition(position);
             }
         });
+
+        new GroupMemberPresenter(this).start();
     }
 
     private void moveToPosition(int posi) {
@@ -131,5 +131,20 @@ public class GroupMemberActivity extends BaseActivity {
         } else {
             recordview.scrollToPosition(posi);
         }
+    }
+
+    @Override
+    public String getRoomKey() {
+        return groupKey;
+    }
+
+    @Override
+    public void setPresenter(GroupMemberContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
     }
 }

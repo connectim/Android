@@ -713,16 +713,6 @@ string sign = 2;
 MessageData msg_data = 3;
 }
 
-message MessageData {
-string receiver_address = 1;
-string msg_id = 2;
-GcmData cipher_data = 3;
-int32 typ = 4;
-bytes salt = 5;
-string chat_pub_key = 6;
-bytes ver = 7;
-}
-
 message MSMessage {
 string msg_id=1;
 bytes body=2;
@@ -1197,4 +1187,129 @@ message FriendChatCookie {
 message ChatCookie {
     string sign = 1;
     ChatCookieData data = 2;
+}
+
+
+message MessageUserInfo{
+string publickey=1;
+string username=2;
+string avatar=3;
+}
+
+enum ChatType {
+    PRIVATE= 0;
+    GROUPCHAT  = 1;
+    DISCUSSION = 2;
+}
+
+message MessageData {
+string msg_id = 1;
+string msg_time = 2;
+string from = 3;
+string to= 4;
+GcmData cipher_data = 5;
+ChatType chat_type=6;
+int32 typ = 7;
+bytes salt = 8;
+string ext= 9;
+}
+
+message TxtMessage{
+string content=1;
+MessageUserInfo sender =2;
+}
+
+message EmotionMessage{
+string content=1;
+MessageUserInfo sender =2;
+}
+
+message PhotoMessage{
+string url=1;
+string size=2;
+int32 image_width=3;
+int32 image_height=4;
+MessageUserInfo sender =5;
+}
+
+message VoiceMessage{
+string url=1;
+string time_length=2;
+string size=3;
+MessageUserInfo sender =4;
+}
+
+message VideoMessage{
+string url=1;
+string time_length=2;
+string size=3;
+MessageUserInfo sender =4;
+}
+
+message CardMessage{
+string publickey=1;
+string username=2;
+string avatar=3;
+MessageUserInfo sender =4;
+}
+
+message DestructMessage{
+int32 time=1;
+}
+
+message ReceiptMessage{
+string message_id=1;
+}
+
+message PaymentMessage{
+int32 is_crowd=1;
+string hash_id=2;
+int32 amount=3;
+int32 total_member=4;
+string note=5;
+MessageUserInfo sender =6;
+}
+
+message TransferMessage{
+int32  is_outer=1;
+string hash_id=2;
+int32 amount=3;
+string note=4;
+}
+
+message LocationMessage{
+float latitude=1;
+float longitude=2;
+string address=3;
+string url=4;
+int32 image_width=5;
+int32 image_height=6;
+MessageUserInfo sender =7;
+}
+
+message LuckPacketMessage{
+string hash_id=1;
+int32 is_outer=2;
+string note=3;
+MessageUserInfo sender =4;
+}
+
+message NotifyMessage{
+string content=1;
+}
+
+message JoinGroupMessage{
+string avatar=1;
+string group_name=2;
+string group_identifier=3;
+string invite_token=4;
+MessageUserInfo sender =5;
+}
+
+message WebsiteMessage{
+string url=1;
+string title=2;
+string subtitle=3;
+string img=4;
+MessageUserInfo sender =5;
 }

@@ -3,28 +3,23 @@ package connect.activity.chat.set;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.GroupEntity;
-import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.set.contract.GroupIntroduceContract;
+import connect.activity.chat.set.presenter.GroupIntroducePresenter;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.UriUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import protos.Connect;
 
 /**
  * Group introduce
  */
-public class GroupIntroduceActivity extends BaseActivity {
+public class GroupIntroduceActivity extends BaseActivity implements GroupIntroduceContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -34,7 +29,7 @@ public class GroupIntroduceActivity extends BaseActivity {
     private GroupIntroduceActivity activity;
     private static String GROUP_KEY = "GROUP_KEY";
     private String groupKey = null;
-    private GroupEntity groupEntity;
+    private GroupIntroduceContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,18 +61,6 @@ public class GroupIntroduceActivity extends BaseActivity {
         });
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
-        groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-        if (groupEntity == null) {
-            ActivityUtil.goBack(activity);
-            return;
-        }
-
-        String groupSummary = groupEntity.getSummary();
-        if (TextUtils.isEmpty(groupSummary)) {
-            groupSummary = groupEntity.getName();
-        }
-        edit.setText(groupSummary);
-        edit.setSelection(groupSummary.length());
         edit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -99,40 +82,35 @@ public class GroupIntroduceActivity extends BaseActivity {
                     toolbar.setRightListence(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            groupSetting(groupKey, edit.getText().toString());
+                            String introduce = edit.getText().toString();
+                            presenter.requestUpdateGroupSummary(introduce);
                         }
                     });
                 }
             }
         });
+
+        new GroupIntroducePresenter(this).start();
     }
 
-    protected void groupSetting(final String groupKey, final String summary) {
-        Connect.GroupSetting setting = Connect.GroupSetting.newBuilder()
-                .setIdentifier(groupKey)
-                .setSummary(summary)
-                .setPublic(true).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_SETTING, setting, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
-                    groupEntity.setSummary(summary);
+    @Override
+    public String getRoomKey() {
+        return groupKey;
+    }
 
-                    String groupname = groupEntity.getName();
-                    if (TextUtils.isEmpty(groupname)) {
-                        groupname = "groupname5";
-                    }
-                    groupEntity.setName(groupname);
-                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
-                }
-                GroupManageActivity.startActivity(activity, groupKey);
-            }
+    @Override
+    public void setPresenter(GroupIntroduceContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
 
-            @Override
-            public void onError(Connect.HttpResponse response) {
+    @Override
+    public Activity getActivity() {
+        return activity;
+    }
 
-            }
-        });
+    @Override
+    public void groupIntroduce(String introduce) {
+        edit.setText(introduce);
+        edit.setSelection(introduce.length());
     }
 }

@@ -3,7 +3,6 @@ package connect.activity.chat.set;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -11,21 +10,14 @@ import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.GroupMemberEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.RecExtBean;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.set.contract.GroupMyAliasContract;
+import connect.activity.chat.set.presenter.GroupMyAliasPresenter;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import protos.Connect;
 
-public class GroupMyNameActivity extends BaseActivity {
+public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasContract.BView{
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -37,7 +29,7 @@ public class GroupMyNameActivity extends BaseActivity {
     private Activity activity;
     private static String GROUP_KEY = "GROUP_KEY";
     private String groupKey = null;
-    private GroupMemberEntity groupMemEntity = null;
+    private GroupMyAliasContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +61,6 @@ public class GroupMyNameActivity extends BaseActivity {
         });
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
-        groupMemEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
-        if (null != groupMemEntity) {
-            edittxt2.setText(TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick());
-        }
         edittxt2.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -94,30 +82,34 @@ public class GroupMyNameActivity extends BaseActivity {
                     toolbar.setRightListence(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            updateMyName(edittxt2.getText().toString());
+                            String myalias = edittxt2.getText().toString();
+                            presenter.updateMyAliasInGroup(myalias);
                         }
                     });
                 }
             }
         });
+
+        new GroupMyAliasPresenter(this).start();
     }
 
-    private void updateMyName(final String myname) {
-        Connect.UpdateGroupMemberInfo memberInfo = Connect.UpdateGroupMemberInfo.newBuilder()
-                .setNick(myname).setIdentifier(groupKey).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_MEMUPDATE, memberInfo, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                groupMemEntity.setUsername(myname);
-                ContactHelper.getInstance().inserGroupMemEntity(groupMemEntity);
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATEMYNAME);
-                GroupSetActivity.startActivity(activity,groupKey);
-            }
+    @Override
+    public String getRoomKey() {
+        return groupKey;
+    }
 
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(activity,R.string.Link_An_error_occurred_change_nickname,ToastEUtil.TOAST_STATUS_FAILE).show();
-            }
-        });
+    @Override
+    public void setPresenter(GroupMyAliasContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
+    }
+
+    @Override
+    public void myNameInGroup(String myalias) {
+        edittxt2.setText(myalias);
     }
 }

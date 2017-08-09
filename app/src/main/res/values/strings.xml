@@ -730,4 +730,6 @@
     <string name="Wallet_synchronization_data_failed">synchronization data failed</string>
     <string name="Set_please_enter_the_original_password">Enter the original password</string>
     <string name="Wallet_Failed_to_get_the_list_address">Failed to get the list address</string>
+    <string name="title_activity_group_create">GroupCreateActivity</string>
+    <string name="title_activity_group_invite">GroupInviteActivity</string>
 </resources>

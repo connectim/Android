@@ -78,13 +78,6 @@ public class GroupChat extends NormalChat {
                 TextUtils.isEmpty(myGroupMember.getNick()) ? myGroupMember.getUsername() : myGroupMember.getNick(),
                 myGroupMember.getAddress(), MemoryDataManager.getInstance().getAvatar()));
 
-        long burntime = RoomSession.getInstance().getBurntime();
-        if (burntime > 0) {
-            ExtBean extBean = new ExtBean();
-            extBean.setLuck_delete(burntime);
-            msgDefinBean.setExt(new Gson().toJson(extBean));
-        }
-
         MsgEntity chatBean = new MsgEntity();
         chatBean.setMsgDefinBean(msgDefinBean);
         chatBean.setPubkey(groupEntity.getIdentifier());

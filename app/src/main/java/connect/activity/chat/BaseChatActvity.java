@@ -360,7 +360,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 GatherActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
                 break;
             case NAMECARD:
-                ContactCardActivity.startActivity(activity);
+                ContactCardActivity.startActivity(activity,talker.getTalkKey());
                 break;
             case MSGSTATE://message send state 0:sending 1:send success 2:send fail 3:send refuse
                 if (talker.getTalkKey().equals(objects[0])) {
