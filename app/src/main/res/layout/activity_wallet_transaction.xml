@@ -4,16 +4,20 @@
     android:layout_height="match_parent"
     android:background="@color/color_f0f0f6">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    
-    <connect.view.pullTorefresh.XListView
-        android:id="@+id/list_view"
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@id/refreshview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:listSelector="@android:color/transparent"
-        android:divider="@null"
-        android:dividerHeight="@dimen/dp_0"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

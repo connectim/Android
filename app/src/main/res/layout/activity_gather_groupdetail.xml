@@ -10,12 +10,12 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <connect.view.TopToolBar
+        <connect.widget.TopToolBar
             android:id="@id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <connect.view.roundedimageview.RoundedImageView
+        <connect.widget.roundedimageview.RoundedImageView
             android:id="@id/roundimg"
             android:layout_width="@dimen/dp_45"
             android:layout_height="@dimen/dp_45"
@@ -86,8 +86,8 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"/>
 
-        <ListView
-            android:id="@id/listview"
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_250"
             android:divider="@null"

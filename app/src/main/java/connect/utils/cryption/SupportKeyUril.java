@@ -5,21 +5,21 @@ import android.text.TextUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.ParamManager;
+import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.im.bean.Session;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 import connect.utils.StringUtil;
+import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
@@ -31,25 +31,13 @@ import protos.Connect;
 public class SupportKeyUril {
 
     private static String Tag = "SupportKeyUril";
-
     /** Key number expansion */
     public static final int CRYPTION_N = 17;
+    /** Pin Version */
+    public static final int PIN_VERSION = 1;
     /** hmac transform default salt */
     public static String HmacSalt = "49f41477fa1bfc3b4792d5233b6a659f4b";
-
-    /**
-     * The secret key generating random number
-     * randomUUID(modify Random)
-     *
-     * @param value
-     * @return
-     */
-    public static String createrPriKeyRandom(String value) {
-        String hashForBmp = AllNativeMethod.cdGetHash256(value);
-        String hashForRandom = AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-        String random = SupportKeyUril.xor(hashForBmp, hashForRandom, 64);
-        return random;
-    }
+    public static final int CRYPTION_TALKKEY_VER = 1;
 
     /**
      * Private key to public key
@@ -58,16 +46,6 @@ public class SupportKeyUril {
      */
     public static String getPubKeyFromPriKey(String priKey) {
         return AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
-    }
-
-    /**
-     * private key to public key
-     *
-     * @return
-     */
-    public static String getPubKeyFromPriKey() {
-        String prikey = MemoryDataManager.getInstance().getPriKey();
-        return AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
     }
 
     public static String getAddressFromPubkey(String pubkey) {
@@ -90,18 +68,22 @@ public class SupportKeyUril {
     /**
      * def XOR string
      */
-    public static String xor(String str1, String str2, int length) {
-        StringBuffer str = new StringBuffer();
-
-        for (int i = 0; i < length; i++) {
-            str.append(str1.charAt(i) ^ str2.charAt(i));
+    public static String xor(String strHex1,String strHex2){
+        if(strHex1.length() != strHex2.length()){
+            return "";
         }
-        return str.toString();
+        byte[] byte1 = StringUtil.hexStringToBytes(strHex1);
+        byte[] byte2 = StringUtil.hexStringToBytes(strHex2);
+        byte[] valueByte = SupportKeyUril.xor(byte1, byte2);
+        return StringUtil.bytesToHexString(valueByte);
     }
 
-    public static byte[] xor(byte[] byte1, byte[] byte2, int length) {
-        byte[] index = new byte[length];
-        for (int i = 0; i < length; i++) {
+    public static byte[] xor(byte[] byte1, byte[] byte2) {
+        if(byte1.length != byte2.length){
+            return null;
+        }
+        byte[] index = new byte[byte1.length];
+        for (int i = 0; i < byte1.length; i++) {
             index[i] = (byte) (byte1[i] ^ byte2[i]);
         }
         return index;
@@ -116,6 +98,9 @@ public class SupportKeyUril {
      */
     public static String hmacSHA512(String data, String key) {
         String result = "";
+        if(TextUtils.isEmpty(data) || TextUtils.isEmpty(key)){
+            return result;
+        }
         byte[] bytesKey = key.getBytes();
         final SecretKeySpec secretKey = new SecretKeySpec(bytesKey, "HmacSHA512");
         try {
@@ -124,9 +109,7 @@ public class SupportKeyUril {
             final byte[] macData = mac.doFinal(data.getBytes());
             result = StringUtil.bytesToHexString(macData);
             //result = new String(, "ISO-8859-1");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -136,6 +119,9 @@ public class SupportKeyUril {
      * def whether the private key
      */
     public static boolean checkPrikey(String prikey) {
+        if(TextUtils.isEmpty(prikey)){
+            return false;
+        }
         return AllNativeMethod.checkPrivateKeyJ(prikey) > -1;
     }
 
@@ -143,18 +129,10 @@ public class SupportKeyUril {
      * def  whether the bitcoin address
      */
     public static boolean checkAddress(String address) {
+        if(TextUtils.isEmpty(address)){
+            return false;
+        }
         return AllNativeMethod.checkAddressJ(address) > -1;
-    }
-
-    /**
-     * The two hash transform for the PriKey (internal + external method)
-     *
-     * @param prikey
-     * @return
-     */
-    public static String cdEncryPayPasswordKey(String prikey) {
-        String key = AllNativeMethod.cdGetHash256(prikey);
-        return AllNativeMethod.cdGetHash256(key);
     }
 
     public static String localHashKey() {
@@ -164,19 +142,39 @@ public class SupportKeyUril {
     }
 
     /**
-     * Generate encrypted TalkKey (encrypted private key, n = 17 for key expansion)
+     * Encrypted payment password
      */
-    public static String createTalkKey(String priKey, String address, String passWord) {
-        /*if (!SupportKeyUril.checkPrikey(priKey)) {
-            priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(priKey, 44, 0, 0, 0, 0);
-        }*/
-        String priKey_16 = AllNativeMethod.cdgetRawPrivateKey(priKey);
-        String talkKey = AllNativeMethod.cdxTalkKeyEncrypt(address, priKey_16, passWord, CRYPTION_N,
-                DecryptionUtil.CRYPTION_TALKKEY_VER);
-        return talkKey;
+    public static EncoPinBean encoPinDefult(String value, String pass){
+        return encoPin(value,pass,CRYPTION_N);
+    }
+
+    public static EncoPinBean encoPin(String value, String pass,int n){
+        EncoPinBean encoPinBean = new EncoPinBean();
+        String payload = AllNativeMethod.connectWalletKeyEncrypt(value,pass,n,PIN_VERSION);
+        encoPinBean.setPayload(payload);
+        encoPinBean.setVersion(PIN_VERSION);
+        encoPinBean.setN(n);
+        return encoPinBean;
     }
 
     /**
+     * Decrypt payment password
+     */
+    public static String decodePinDefult(String value, String pass){
+        return decodePin(value, pass, PIN_VERSION);
+    }
+
+    public static String decodePin(String value, String pass,int verPin){
+        String seed = AllNativeMethod.connectWalletKeyDecrypt(value,pass,verPin);
+        if(seed.equals("error")){
+            seed = "";
+        }
+        return seed;
+    }
+
+    /**
+=======
+>>>>>>> f91270b9c3f49ba3c8613331e268f289a0b6df69
      * Generate ECDH cooperative key
      *
      * @param priKey
@@ -194,6 +192,19 @@ public class SupportKeyUril {
         MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
         sha256.update(bytes);
         sha256.update(sha256.digest());
+        return sha256.digest();
+    }
+
+    public static byte[] byteSHA512(byte[] bytes){
+        MessageDigest sha256;
+        try {
+            sha256 = MessageDigest.getInstance("SHA-512");
+            sha256.update(bytes);
+            sha256.update(sha256.digest());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
         return sha256.digest();
     }
 
@@ -250,46 +261,6 @@ public class SupportKeyUril {
     }
 
     /**
-     * Password encryption private key, gestures
-     */
-    public static String encodePri(String value, String salt, String pass) {
-        byte[] passByte = pass.getBytes();
-        byte[] saltByte = salt.getBytes();
-        byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, 12, 32);
-        Connect.GcmData gcmData = null;
-        try {
-            gcmData = EncryptionUtil.encodeAESGCM(EcdhExts.NONE, pbkdf, value.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        String encryStr = StringUtil.bytesToHexString(gcmData.toByteArray());
-        return encryStr;
-    }
-
-    /**
-     * Password to decrypt the private key, gestures
-     */
-    public static String decodePri(String encryStr, String salt, String pass) {
-        try {
-            byte[] passByte = pass.getBytes();
-            byte[] saltByte = salt.getBytes();
-            byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, 12, 32);
-            Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(encryStr));
-            byte[] contant = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, pbkdf, gcmData);
-            String priKey = "";
-            try {
-                priKey = new String(contant,"UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            return priKey;
-        } catch (InvalidProtocolBufferException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
      * ecdhkey extension
      */
     public static synchronized byte[] ecdhKeyExtends(EcdhExts exts, byte[] ecdhkey) {
@@ -333,4 +304,118 @@ public class SupportKeyUril {
             this.bytes = bytes;
         }
     }
+
+    /**
+     * Generate encrypted TalkKey (encrypted private key, n = 17 for key expansion)
+     */
+    public static String createTalkKey(String priKey, String address, String passWord) {
+        String priKey_16 = AllNativeMethod.cdgetRawPrivateKey(priKey);
+        String talkKey = AllNativeMethod.cdxTalkKeyEncrypt(address, priKey_16, passWord, CRYPTION_N, CRYPTION_TALKKEY_VER);
+        return talkKey;
+    }
+
+    /**
+     * Decryption TalkKey
+     *
+     * @param talkKey
+     * @param pass
+     * @return
+     */
+    public static String decodeTalkKey(String talkKey, String pass) {
+        String addressandpriKey_16 = AllNativeMethod.cdxTalkKeyDecrypt(talkKey, pass, CRYPTION_TALKKEY_VER);
+        try {
+            String priKey_16 = addressandpriKey_16.split("@")[1];
+            String prikey = AllNativeMethod.cdgetRawToPrivateKey(priKey_16);
+            return prikey;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Pay password encryption
+     */
+    public static EncoPinBean encoPinDefult(int category,String value, String pass){
+        return encoPin(category,value,pass,CRYPTION_N);
+    }
+
+    public static EncoPinBean encoPin(int category, String value, String pass,int n){
+        if(BaseCurrency.CATEGORY_PRIKEY == category){
+            value = StringUtil.bytesToHexString(value.getBytes());
+        }
+        EncoPinBean encoPinBean = new EncoPinBean();
+        String payload = AllNativeMethod.connectWalletKeyEncrypt(value,pass,n,PIN_VERSION);
+        encoPinBean.setPayload(payload);
+        encoPinBean.setVersion(PIN_VERSION);
+        encoPinBean.setN(n);
+        return encoPinBean;
+    }
+
+    /**
+     * Pay decryption password
+     */
+    public static String decodePinDefult(int category, String value, String pass){
+        return decodePin(category ,value, pass, PIN_VERSION);
+    }
+
+    public static String decodePin(int category, String value, String pass,int verPin){
+        String seed = AllNativeMethod.connectWalletKeyDecrypt(value,pass,verPin);
+        if(seed.contains("error")){
+            return  "";
+        }
+        if(BaseCurrency.CATEGORY_PRIKEY == category){
+            seed = new String(StringUtil.hexStringToBytes(seed));
+        }
+        return seed;
+    }
+
+    /**
+     * Password encryption private key, gestures
+     */
+    public static String encodePri(String value, String salt, String pass) {
+        return encodePri(value,salt,pass,12);
+    }
+
+    public static String encodePri(String value, String salt, String pass,int n) {
+        byte[] passByte = pass.getBytes();
+        byte[] saltByte = salt.getBytes();
+        byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, n, 32);
+        Connect.GcmData gcmData = null;
+        try {
+            gcmData = EncryptionUtil.encodeAESGCM(EcdhExts.NONE, pbkdf, value.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String encryStr = StringUtil.bytesToHexString(gcmData.toByteArray());
+        return encryStr;
+    }
+
+    /**
+     * Password to decrypt the private key, gestures
+     */
+    public static String decodePri(String encryStr, String salt, String pass) {
+        return decodePri(encryStr,salt,pass,12);
+    }
+
+    public static String decodePri(String encryStr, String salt, String pass,int n) {
+        try {
+            byte[] passByte = pass.getBytes();
+            byte[] saltByte = salt.getBytes();
+            byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, n, 32);
+            Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(encryStr));
+            byte[] contant = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, pbkdf, gcmData);
+            String priKey = "";
+            try {
+                priKey = new String(contant,"UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return priKey;
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

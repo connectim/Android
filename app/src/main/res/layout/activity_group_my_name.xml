@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
-        android:id="@id/edittxt1"
+        android:id="@id/edittxt2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_10"

@@ -1,8 +1,8 @@
 package connect.utils.data;
 
 import connect.ui.activity.R;
-import connect.ui.activity.wallet.bean.RateBean;
-import connect.ui.base.BaseApplication;
+import connect.activity.wallet.bean.RateBean;
+import connect.activity.base.BaseApplication;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

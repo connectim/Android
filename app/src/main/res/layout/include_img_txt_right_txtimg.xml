@@ -43,9 +43,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_10"
+            android:maxLength="16"
+            android:lines="1"
             android:ellipsize="end"
-            android:maxLength="10"
-            android:maxLines="1"
             android:textColor="@color/color_9b9b9b"
             android:textSize="@dimen/sp_16"/>
 

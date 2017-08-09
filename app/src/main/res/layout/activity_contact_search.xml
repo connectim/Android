@@ -41,7 +41,7 @@
                 android:hint="@string/Link_Search"
                 android:textColorHint="@color/color_b3b5bc"
                 android:gravity="center_vertical"
-                android:singleLine="true"/>
+                android:maxLines="1"/>
             <ImageView
                 android:contentDescription="@string/app_name"
                 android:id="@+id/del_tv"
@@ -71,8 +71,8 @@
     </RelativeLayout>
 
 
-    <ListView
-        android:id="@id/list_view"
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:listSelector="@android:color/transparent"

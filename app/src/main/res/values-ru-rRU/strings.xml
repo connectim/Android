@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="Chat">Чат</string>
     <string name="Chat_Agree">Согласие</string>
     <string name="Chat_Album_Permission_Get">Недостаточно прав для считывания фотоальбома системы, пожалуйста щелкните на "Настройки" - "Права" для получения нужнвх прав</string>
@@ -66,6 +66,9 @@
     <string name="Chat_Failed_to_get_redpact">Неудалось получить денежный подарок, обновите страницу и поробуйте снова</string>
     <string name="Chat_Failed_to_get_transfer">Неудалось получить оплату, обновите страницу и поробуйте снова</string>
     <string name="Chat_Favorites">Избранное</string>
+    <string name="Link_Friend">друзья</string>
+    <string name="Wallet_Transfer_details">Передача детали</string>
+    <string name="Wallet_Confirm_transfer">Подтверждение передачи</string>
     <string name="Chat_Find_me_from_the_recommendation">Найти меня по рекомендации</string>
     <string name="Chat_Founded_complete">Краудфандинг завершен</string>
     <string name="Chat_Group_Members">Члены группы (%d человек)</string>
@@ -190,6 +193,10 @@
     <string name="ErrorCode_Create_error">Ошибка при создании</string>
     <string name="ErrorCode_Data_is_too_large">Слишком много данных</string>
     <string name="ErrorCode_DecodeRawTransaction_error">Ошибка при расшифровке первого денежного перевода</string>
+    <string name="ErrorCode_transaction_address_is_not_available">Торговый адрес не доступен</string>
+    <string name="ErrorCode_Transaction_information_is_incorrect">Информация о транзакциях неверна</string>
+    <string name="ErrorCode_Version_information_is_repeated">Информация о версии повтора</string>
+    <string name="ErrorCode_The_fee_is_too_low">Плата слишком низкая</string>
     <string name="ErrorCode_Double_flowers">Сбой при двойной операционной сделке</string>
     <string name="ErrorCode_Ecdh_generation_failed">Сбой при образовании Ecdh</string>
     <string name="ErrorCode_Error">Обнаружена ошибка</string>
@@ -370,7 +377,7 @@
     <string name="Login_Camera_guide_tip">Нажмите, чтобы сделать фотографию и удерживайте для записи видео</string>
     <string name="Login_Code">Код подтверждения</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">Собирание голосов как случайных чисел</string>
-    <string name="Login_Decrypted_private_key">Расшифрованый приватный ключ</string>
+    <string name="Login_Decrypted_private_key">частный ключ</string>
     <string name="Login_Edit">Редактирование</string>
     <string name="Login_Encrypted_private_key">Шифрование приватного ключа</string>
     <string name="Login_Generated_Failure">Сбой при создании, пожалуйста  убедитесь, что вы настроили звук микрофона</string>
@@ -452,7 +459,7 @@
     <string name="Set_BTC_symbol">฿</string>
     <string name="Set_Backup_Private_Key">Резервное копирование приватного ключа</string>
     <string name="Set_Backup_decrypted_private_key">Резервное копирование расшифрованного приватного ключа</string>
-    <string name="Set_Backup_encrypted_private_key">Резервное копирование закрытого ключа</string>
+    <string name="Set_Backup_encrypted_private_key">Резервное копирование зашифрованого приватного ключа</string>
     <string name="Set_CONNECT_ID_can_only_be_set_once">CONNECT ID  можно установить только один раз</string>
     <string name="Set_CONNECT_ID_set_success_no_set">После успешного завершения установки CONNECT ID , не возможно изменить </string>
     <string name="Set_Call_failed_please_check_system_mail_application">Сбой вызова, просьба проверить системные приложения электронной почты</string>
@@ -565,6 +572,10 @@
     <string name="Set_you_can_login_mobile_number_link_one_account">После внесения изменения, Вы можете войти через новый зарегистрированый телефонный номер/ n один новый телефонный номер может быть привязан к учетной записи один раз </string>
     <string name="Wallet">Модель кошелька</string>
     <string name="Wallet_Detail">Подробности</string>
+    <string name="Wallet_not_create_wallet">Вы не создали кошелек</string>
+    <string name="Wallet_Immediately_create">Создать сейчас</string>
+    <string name="Wallet_not_update_wallet">Вы не обновили свой кошелек</string>
+    <string name="Wallet_Immediately_update">обновить сейчас</string>
     <string name="Wallet_Packet_Send_User_Connect">Отправить этот "Денежный подарок" используя Connect</string>
     <string name="Wallet_Scan_to_pay_me">Отсканировать код для передачи мне оплаты</string>
     <string name="Wallet_Transfer_Count">Денежный перевод (%dчеловек)</string>
@@ -574,13 +585,14 @@
     <string name="Wallet_Amount">Денежная сумма</string>
     <string name="Wallet_Amount_BTC">Денежная сумма (BTC)</string>
     <string name="Wallet_Amount_Each">Денежная сумма денежного подарка</string>
-    <string name="Wallet_Amount_is_too_small">Денежная сумма слишком маленькая!</string>
+    <string name="Wallet_Amount_is_too_small">Упаковать сделки возникает ошибка, наработать сумма слишком мал</string>
+    <string name="Wallet_not_initialized_the_wallet_and_can_not_trade">Другая сторона не была инициализирована бумажник, а не торговля</string>
     <string name="Wallet_Amount_must_be_greater_than">Денежная сумма должна бытьбольше, чем %f</string>
     <string name="Wallet_Amount_must_be_less_than">Денежная сумма должна быть меньше, чем %f</string>
     <string name="Wallet_Amount_of_member">Количество людей краудфандинга</string>
     <string name="Wallet_Amount_Symbol">Денежная сумма (%s)</string>
     <string name="Wallet_Auto_Calculate_Miner_Fee">Автоматический расчет комиссионого сбора</string>
-    <string name="Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue">Автоматический расчеткомиссионого сбора (%sBTC) превышает максимальное значение, нужно ли исправить комиссионный сбор для максимального значения и дальше?</string>
+    <string name="Wallet_Auto_fees_greater_than_the_maximum_continue">Плата (% SBTC) автоматически вычисляет больше, чем максимальное значение, следует ли продолжать?</string>
     <string name="Wallet_BTC_Each">Каждый   %sBTC</string>
     <string name="Wallet_BTC_Total">Общая сумма краудфандинга :%s</string>
     <string name="Wallet_Balance">Баланс: ฿%s</string>
@@ -599,6 +611,7 @@
     <string name="Wallet_Congratulations">Поздравляем Вас!</string>
     <string name="Wallet_Connect_Pay">Оплата Connect</string>
     <string name="Wallet_Connect_term">Группа Connect</string>
+    <string name="Wallet_The_Connect_system_address">Подключите системный адрес</string>
     <string name="Wallet_Could_not_get_himself_sent_money_transfer">Нельзя сделать денежный перевод самому себе</string>
     <string name="Wallet_Each">Каждый человек  </string>
     <string name="Wallet_Enter_4_Digits">Просьба ввести 4 цифры</string>
@@ -712,4 +725,9 @@
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_system_luckypackage_have_been_frozen">Красный конверт подвешен системный администратор</string>
     <string name="Chat_one_device_can_only_grab_a_luckypackage">Устройство может только захватить красный конверт</string>
+    <string name="Wallet_create_currency_failed">Создание валюты не удалось</string>
+    <string name="Wallet_Create_wallet_failed">Не удалось создать кошелек</string>
+    <string name="Wallet_synchronization_data_failed">Синхронные данные не удалось</string>
+    <string name="Set_please_enter_the_original_password">Пожалуйста введите оригинальный пароль</string>
+    <string name="Wallet_Failed_to_get_the_list_address">Не удалось получить список адресов</string>
 </resources>

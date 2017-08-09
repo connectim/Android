@@ -16,12 +16,12 @@
             android:background="@mipmap/luckbag_backgroud3x"
             android:layout_marginBottom="@dimen/dp_25"/>
 
-        <connect.view.TopToolBar
+        <connect.widget.TopToolBar
             android:id="@id/toolbar_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <connect.view.roundedimageview.RoundedImageView
+        <connect.widget.roundedimageview.RoundedImageView
             android:id="@+id/avater_rimg"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -128,8 +128,8 @@
             android:textStyle="bold"
             android:textColor="@color/color_68656f"
             android:text=""/>
-        <ListView
-            android:id="@+id/list_view"
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/color_b3b5bc"

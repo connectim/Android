@@ -4,8 +4,7 @@ import com.google.protobuf.ByteString;
 
 import java.io.UnsupportedEncodingException;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
+import connect.database.MemoryDataManager;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.utils.TimeUtil;
@@ -143,7 +142,10 @@ public class UserOrderBean extends InterParse {
 
         String msgid = TimeUtil.timestampToMsgid();
         if (objects.length == 2) {
-            FailMsgsManager.getInstance().insertFailMsg("", msgid, null, null, objects[1]);
+            FailMsgsManager.getInstance().insertFailMsg("", msgid, SocketACK.OUTER_REDPACKET,
+                    Connect.Command.newBuilder().setMsgId(msgid).
+                            setDetail(billingToken.toByteString()).build().toByteString(),
+                    objects[1]);
         }
         commandToIMTransfer(msgid, SocketACK.OUTER_REDPACKET, billingToken.toByteString());
     }

@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
@@ -23,8 +22,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import connect.ui.activity.contact.bean.PhoneContactBean;
-import connect.ui.base.BaseApplication;
+import connect.activity.contact.bean.PhoneContactBean;
+import connect.activity.base.BaseApplication;
 import connect.utils.GlobalLanguageUtil;
 import connect.utils.log.LogManager;
 import connect.wallet.jni.AllNativeMethod;
@@ -110,12 +109,11 @@ public class SystemDataUtil {
             serial = "serial";
         }
         serial = new UUID(deviceID.hashCode(), serial.hashCode()).toString();
-        LogManager.getLogger().d(Tag, serial);
         return AllNativeMethod.cdGetHash256(serial);
     }
 
     /**
-     * Gets the current state
+     * Gets the current national code
      */
     public static String getCountry(){
         Locale locale = Locale.getDefault();
@@ -131,11 +129,17 @@ public class SystemDataUtil {
     }
 
     /**
-     * For country code
+     * Gets the current national currency code
      */
     public static String getCountryCode(){
         Locale locale = Locale.getDefault();
-        Currency currency = Currency.getInstance(locale);
+        Currency currency;
+        try {
+            currency = Currency.getInstance(locale);
+        }catch (Exception e){
+            // IllegalArgumentException:Unsupported ISO 3166 country: en
+            return "";
+        }
         return currency.getCurrencyCode();
     }
 
@@ -235,5 +239,4 @@ public class SystemDataUtil {
         }
         return loacList;
     }
-
 }

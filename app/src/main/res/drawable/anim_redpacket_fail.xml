@@ -1,40 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android"
                 android:oneshot="true">
-    <item android:drawable="@mipmap/dispoint0" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint1" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint2" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint3" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint4" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint5" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint6" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint7" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint8" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint9" android:duration="20"/>
-
-    <item android:drawable="@mipmap/dispoint10" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint11" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint12" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint13" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint14" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint15" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint16" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint17" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint18" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint19" android:duration="20"/>
-
-
-    <item android:drawable="@mipmap/dispoint20" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint21" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint22" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint23" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint24" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint25" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint26" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint27" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint28" android:duration="20"/>
-    <item android:drawable="@mipmap/dispoint29" android:duration="20"/>
-
 
     <item android:drawable="@mipmap/dispoint30" android:duration="20"/>
     <item android:drawable="@mipmap/dispoint31" android:duration="20"/>
@@ -58,7 +24,6 @@
     <item android:drawable="@mipmap/dispoint47" android:duration="20"/>
     <item android:drawable="@mipmap/dispoint48" android:duration="20"/>
     <item android:drawable="@mipmap/dispoint49" android:duration="20"/>
-
 
     <item android:drawable="@mipmap/dispoint50" android:duration="20"/>
     <item android:drawable="@mipmap/dispoint51" android:duration="20"/>

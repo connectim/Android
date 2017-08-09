@@ -13,12 +13,12 @@
         android:layout_marginRight="@dimen/dp_5"
         android:orientation="horizontal">
 
-        <connect.ui.activity.chat.view.MsgStateView
+        <connect.activity.chat.view.MsgStateView
             android:id="@id/msgstateview"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"/>
 
-        <connect.ui.activity.chat.view.BurnProBar
+        <connect.activity.chat.view.BurnProBar
             android:id="@id/burnprogressbar"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"/>
@@ -33,13 +33,14 @@
         android:paddingRight="@dimen/dp_2"
         android:paddingTop="@dimen/dp_2">
 
-        <connect.ui.activity.chat.view.BubbleImg
+        <connect.activity.chat.view.BubbleImg
             android:id="@id/videomsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="fitXY"/>
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"/>
 
-        <connect.ui.activity.chat.view.DVideoProView
+        <connect.activity.chat.view.DVideoProView
             android:id="@id/videoproview"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
@@ -76,7 +77,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"

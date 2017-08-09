@@ -6,32 +6,31 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharePreferenceUser;
-import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.MessageHelper;
-import connect.db.green.DaoHelper.ParamHelper;
-import connect.db.green.DaoHelper.ParamManager;
-import connect.db.green.bean.ParamEntity;
+import connect.database.MemoryDataManager;
+import connect.database.SharePreferenceUser;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.DaoHelper.ParamHelper;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.ParamEntity;
 import connect.im.bean.ConnectState;
 import connect.im.bean.Session;
 import connect.im.bean.SocketACK;
 import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.ChatSendManager;
-import connect.im.model.ConnectManager;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.MsgEntity;
-import connect.ui.activity.chat.bean.MsgSender;
-import connect.ui.activity.chat.model.ChatMsgUtil;
-import connect.ui.activity.chat.model.content.RobotChat;
-import connect.ui.activity.home.bean.MsgFragmReceiver;
-import connect.ui.base.BaseApplication;
+import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgSender;
+import connect.activity.chat.model.content.RobotChat;
+import connect.activity.base.BaseApplication;
+import connect.service.bean.PushMessage;
+import connect.service.bean.ServiceAck;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -83,7 +82,7 @@ public class ShakeHandBean extends InterParse {
         ByteString salt = newConnection.getSalt();
         UserCookie tempCookie = Session.getInstance().getUserCookie("TEMPCOOKIE");
         byte[] saltXor = SupportKeyUril.xor(tempCookie.getSalt(),
-                salt.toByteArray(), salt.size());
+                salt.toByteArray());
         byte[] ecdHkey = SupportKeyUril.rawECDHkey(tempCookie.getPriKey(),
                 StringUtil.bytesToHexString(pubKey.toByteArray()));
         byte[] saltByte = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdHkey,
@@ -96,12 +95,27 @@ public class ShakeHandBean extends InterParse {
         String deviceName = Build.DEVICE;
         String local = SystemDataUtil.getDeviceLanguage();
         String uuid=SystemDataUtil.getLocalUid();
-        Connect.DeviceInfo deviceInfo = Connect.DeviceInfo.newBuilder()
+
+        Connect.DeviceInfo.Builder deviceBuilder = Connect.DeviceInfo.newBuilder()
                 .setDeviceId(deviceId)
                 .setDeviceName(deviceName)
                 .setLocale(local)
                 .setCv(0)
-                .setUuid(uuid).build();
+                .setUuid(uuid);
+
+        String pubkey = MemoryDataManager.getInstance().getPubKey();
+        String cookieKey = "COOKIE:" + pubkey;
+        ParamEntity paramEntity = ParamHelper.getInstance().likeParamEntityDESC(cookieKey);//local cookie
+        if (paramEntity != null) {
+            UserCookie userCookie = new Gson().fromJson(paramEntity.getValue(), UserCookie.class);
+            Connect.ChatCookieData cookieData = Connect.ChatCookieData.newBuilder().
+                    setChatPubKey(userCookie.getPubKey()).
+                    setSalt(ByteString.copyFrom(userCookie.getSalt())).
+                    setExpired(userCookie.getExpiredTime()).build();
+            deviceBuilder.setChatCookieData(cookieData);
+        }
+
+        Connect.DeviceInfo deviceInfo = deviceBuilder.build();
         Connect.GcmData gcmDataTemp = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE, saltByte, deviceInfo.toByteString());
 
         //imTransferData
@@ -119,9 +133,11 @@ public class ShakeHandBean extends InterParse {
     private void connectSuccess() {
         ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.CONNECT);
 
-        ConnectManager.getInstance().connectSuccess();
+        PushMessage.pushMessage(ServiceAck.CONNECT_SUCCESS,new byte[0],ByteBuffer.allocate(0));
         String version = ParamManager.getInstance().getString(ParamManager.COUNT_FRIENDLIST);
         if (TextUtils.isEmpty(version)) {
+            requestFriendsByVersion();
+
             int vrsion = SharePreferenceUser.getInstance().getIntValue(SharePreferenceUser.CONTACT_VERSION);
             if (vrsion == 0) {//the first time login
                 SharePreferenceUser.getInstance().putInt(SharePreferenceUser.CONTACT_VERSION, 1);
@@ -129,7 +145,6 @@ public class ShakeHandBean extends InterParse {
             }
         }
 
-        requestFriendsByVersion();
         connectLogin();
         pullOffLineMsg();
         checkCurVersion();
@@ -137,12 +152,11 @@ public class ShakeHandBean extends InterParse {
     }
 
     private void welcomeRobotMsg() {
-        MsgEntity entity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
-        entity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
-        MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), entity.getMsgDefinBean());
+        MsgEntity msgEntity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
+        msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
+        MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), msgEntity.getMsgDefinBean());
 
-        ChatMsgUtil.updateRoomInfo(RobotChat.getInstance().roomKey(), 2, TimeUtil.getCurrentTimeInLong(), entity.getMsgDefinBean());
-        MsgFragmReceiver.refreshRoom(MsgFragmReceiver.FragRecType.ALL);
+        RobotChat.getInstance().updateRoomMsg(null,msgEntity.getMsgDefinBean().showContentTxt(2),msgEntity.getMsgDefinBean().getSendtime(),-1,true);
     }
 
     /**
@@ -203,5 +217,41 @@ public class ShakeHandBean extends InterParse {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * A shake hands for the first time
+     *
+     * @return
+     */
+    public void firstLoginShake() {
+        ConnectState.getInstance().sendEvent(ConnectState.ConnectType.REFRESH_ING);
+
+        String priKey = MemoryDataManager.getInstance().getPriKey();
+        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+
+        String cdSeed = AllNativeMethod.cdCreateSeed(16, 4);
+        Connect.NewConnection newConnection = Connect.NewConnection.newBuilder().
+                setPubKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey))).
+                setSalt(ByteString.copyFrom(cdSeed.getBytes())).build();
+
+        UserCookie tempCookie = new UserCookie();
+        tempCookie.setPriKey(randomPriKey);
+        tempCookie.setPubKey(randomPubKey);
+        tempCookie.setSalt(cdSeed.getBytes());
+        Session.getInstance().setUserCookie("TEMPCOOKIE", tempCookie);
+
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
+                priKey, ConfigUtil.getInstance().serverPubkey(), newConnection.toByteString());
+
+        String pukkey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
+        String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
+        Connect.IMRequest imRequest = Connect.IMRequest.newBuilder().
+                setSign(signHash).
+                setPubKey(pukkey).
+                setCipherData(gcmData).build();
+
+        ChatSendManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, imRequest.toByteString());
     }
 }

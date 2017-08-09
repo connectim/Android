@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_f0f0f6">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -22,7 +22,7 @@
         android:gravity="center"
         android:hint="@string/Link_Enter_Bitcoin_Address"/>
 
-    <connect.view.transferEdit.TransferEditView
+    <connect.utils.transfer.TransferEditView
         android:id="@+id/transfer_edit_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

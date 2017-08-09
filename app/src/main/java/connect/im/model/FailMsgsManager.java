@@ -11,13 +11,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import connect.db.green.DaoHelper.ContactHelper;
-import connect.db.green.DaoHelper.MessageHelper;
-import connect.db.green.bean.GroupEntity;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.GroupEntity;
 import connect.im.bean.SocketACK;
-import connect.ui.activity.chat.bean.MsgDefinBean;
-import connect.ui.activity.chat.model.ChatMsgUtil;
-import connect.ui.base.BaseApplication;
+import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.model.ChatMsgUtil;
+import connect.activity.chat.model.content.FriendChat;
+import connect.activity.chat.model.content.NormalChat;
+import connect.activity.base.BaseApplication;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -71,6 +75,38 @@ public class FailMsgsManager {
         sendFailMap.put(msgid, valueMap);
     }
 
+    public void insertFailMsg(String address, String msgid) {
+        if (sendFailMap == null) {
+            sendFailMap = new HashMap<>();
+        }
+        String expireUser = "USER:EXPIRE";
+        Map<String, Object> valueMap = sendFailMap.get(expireUser);
+        if (valueMap == null) {
+            valueMap = new HashMap<>();
+        }
+        valueMap.put("ADDRESS", address);
+        valueMap.put("MSGID", msgid);
+        sendFailMap.put(expireUser, valueMap);
+    }
+
+    public void sendExpireMsg() throws Exception {
+        if (sendFailMap == null) {
+            sendFailMap = new HashMap<>();
+        }
+
+        Map valueMap = getFailMap("USER:EXPIRE");
+        if (valueMap != null) {
+            String address = (String) valueMap.get("ADDRESS");
+            String msgid = (String) valueMap.get("MSGID");
+            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
+            if (friendEntity != null) {
+                FriendChat friendChat = new FriendChat(friendEntity);
+                MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
+                friendChat.sendPushMsg(baseEntity);
+            }
+        }
+    }
+
     public Map<String, Object> getFailMap(String msgid) {
         if (sendFailMap == null) {
             sendFailMap = new HashMap<>();
@@ -83,6 +119,13 @@ public class FailMsgsManager {
             sendFailMap = new HashMap<>();
         }
         sendFailMap.remove(msgid);
+    }
+
+    public void removeAllFailMsg(){
+        if (sendFailMap == null) {
+            sendFailMap = new HashMap<>();
+        }
+        sendFailMap.clear();
     }
 
     /**
@@ -129,7 +172,7 @@ public class FailMsgsManager {
     }
 
     /** Chat messages failure time */
-    private final long MSGTIME_CHAT = 10 * 1000;
+    private final long MSGTIME_CHAT = 20 * 1000;
     /** Other messages sent failure time */
     private final long MSGTIME_OTHER = 1000;
 
@@ -171,8 +214,6 @@ public class FailMsgsManager {
             receiveFailMap = new HashMap<>();
         }
 
-        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
-        if (groupEntity == null) return;
         Map<String, Object> objectMap = receiveFailMap.get(pubkey);
         if (objectMap == null) {
             return;
@@ -183,22 +224,30 @@ public class FailMsgsManager {
             Map.Entry<String, Object> entry = entries.next();
             Object object = entry.getValue();
 
-            if (object instanceof String) {
-                ChatMsgUtil.insertNoticeMsg(pubkey, (String) object);
-            } else if (object instanceof Connect.GcmData) {
-                byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,
-                        StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), (Connect.GcmData) object);
-                String content = new String(contents);
-                if (!TextUtils.isEmpty(content) && content.length() > 10) {//sometime parse error
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    gsonBuilder.registerTypeAdapter(MsgDefinBean.class, new MsgDefTypeAdapter());
-                    MsgDefinBean definBean = gsonBuilder.create().fromJson(content, MsgDefinBean.class);
+            NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
+            if (normalChat != null) {
+                if (object instanceof String) {
+                    MsgEntity noticeMsg = normalChat.noticeMsg((String) object);
+                    MessageHelper.getInstance().insertFromMsg(pubkey, noticeMsg.getMsgDefinBean());
+                    normalChat.updateRoomMsg(null, noticeMsg.getMsgDefinBean().showContentTxt(normalChat.roomType()), noticeMsg.getMsgDefinBean().getSendtime());
+                } else if (object instanceof Connect.GcmData) {
+                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
 
-                    MessageHelper.getInstance().insertFromMsg(pubkey, definBean);
-                    ChatMsgUtil.updateRoomInfo(pubkey, 1, definBean.getSendtime(), definBean);
+                    byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,
+                            StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), (Connect.GcmData) object);
+                    String content = new String(contents);
+
+                    if (!TextUtils.isEmpty(content) && content.length() > 10) {//sometime parse error
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        gsonBuilder.registerTypeAdapter(MsgDefinBean.class, new MsgDefTypeAdapter());
+                        MsgDefinBean definBean = gsonBuilder.create().fromJson(content, MsgDefinBean.class);
+
+                        MessageHelper.getInstance().insertFromMsg(pubkey, definBean);
+                        normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime(),-1,true);
+                    }
                 }
+                entries.remove();
             }
-            entries.remove();
         }
     }
 }

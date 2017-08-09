@@ -13,8 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.RoomSession;
-import connect.ui.base.BaseApplication;
+import connect.activity.chat.bean.RoomSession;
+import connect.activity.base.BaseApplication;
 
 /**
  * Created by Administrator on 2016/8/26.
@@ -175,6 +175,27 @@ public class FileUtil {
     public static String subExtentsion(String filename) {
         int dot = filename.lastIndexOf('.');
         return filename.substring(0, dot);
+    }
+
+    /**
+     * Get file
+     *
+     * @param data
+     * @param fileType
+     * @return
+     */
+    public static File byteArrayToFile(byte[] data,FileUtil.FileType fileType){
+        File imageFile = FileUtil.newTempFile(fileType);
+        if (null != imageFile) {
+            try {
+                FileOutputStream fos = new FileOutputStream(imageFile);
+                fos.write(data);
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imageFile;
     }
 
     /**

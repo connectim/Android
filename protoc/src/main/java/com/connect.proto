@@ -47,7 +47,16 @@ string latitude = 2;
 string address = 3;
 }
 
+message Pagination {  
+    int32 page = 1;
+    int32 size = 2;
+}
 
+message GetTx {  
+    int32 currency = 1;
+    string address = 2;
+    Pagination page = 3;
+}
 
 message SystemRedpackgeNotice {
 UserInfo receiver = 1;
@@ -388,6 +397,7 @@ string name =3;
 int32 count =4;
 string hash =5;
 bool   public=6;
+bool   joined=7;
 }
 message GroupInfoBaseShare {
 string avatar=1;
@@ -398,6 +408,7 @@ string hash =5;
 bool   public=6;
 string username = 7;
 string identifier = 8;
+bool   joined=9;
 }
 message GroupInfo {
 Group group=1;
@@ -570,12 +581,14 @@ message CommandDetail {
 int32 cmd_type=1;
 Command cmd=2;
 }
+
 message DeviceInfo {
-string deviceId=1;
-string deviceName=2;
-string locale = 3;
-int32 cv = 4;
-string uuid=5;
+    string deviceId = 1;
+    string deviceName = 2;
+    string locale = 3;
+    int32 cv = 4;
+    string uuid = 5;
+    ChatCookieData chatCookieData = 6;
 }
 
 message QuitMessage {
@@ -698,16 +711,6 @@ message MessagePost {
 string pub_key = 1;
 string sign = 2;
 MessageData msg_data = 3;
-}
-
-message MessageData {
-string receiver_address = 1;
-string msg_id = 2;
-GcmData cipher_data = 3;
-int32 typ = 4;
-bytes salt = 5;
-string chat_pub_key = 6;
-bytes ver = 7;
 }
 
 message MSMessage {
@@ -890,23 +893,25 @@ int32 type = 8;
 }
 
 message RedPackage {
-string hash_id=1;
-string send_address=2;
-int32 category=3;
-int32 size=4;
-int64 money=5;
-string tips=6;
-string send_tx=7;
-int32 status=8;
-string txid=9;
-int64 remain_size=10;
-bool  refund=11;
-bool expired =12;
-string url = 13;
-int64 deadline = 14;
-int32 typ = 15;
-int64 created_at=16;
-bool  system = 17;
+    string hash_id = 1;
+    string send_address = 2;
+    int32 category = 3;
+    int32 size = 4;
+    int64 money = 5;
+    string tips = 6;
+    string send_tx = 7;
+    int32 status = 8;
+    string txid = 9;
+    int64 remain_size = 10;
+    bool refund = 11;
+    bool expired = 12;
+    string url = 13;
+    int64 deadline = 14;
+    int32 typ = 15;
+    int64 created_at = 16;
+    bool system = 17;
+    bool pause = 18;
+    int32 currency = 19;
 }
 
 message RedPackageInfo {
@@ -1054,22 +1059,23 @@ int32 pageIndex = 2;
 
 
 message ExternalBillingInfo {
-string hash = 1;
-string sender = 2;
-string receiver = 3;
-uint64 amount = 4;
-string txid = 5;
-int32 status = 6;
-string tips = 7;
-bool received = 8;
-bool publish = 9;
-bool refund = 10;
-bool expired = 11;
-int64 created_at = 12;
-string url = 13;
-UserInfo receiverInfo = 14;
-int64 deadline = 15;
-bool cancelled = 16;
+    string hash = 1;
+    string sender = 2;
+    string receiver = 3;
+    uint64 amount = 4;
+    string txid = 5;
+    int32 status = 6;
+    string tips = 7;
+    bool received = 8;
+    bool publish = 9;
+    bool refund = 10;
+    bool expired = 11;
+    int64 created_at = 12;
+    string url = 13;
+    UserInfo receiverInfo = 14;
+    int64 deadline = 15;
+    bool cancelled = 16;
+    int32 currency = 17;
 }
 
 
@@ -1183,3 +1189,127 @@ message ChatCookie {
     ChatCookieData data = 2;
 }
 
+
+message MessageUserInfo{
+string publickey=1;
+string username=2;
+string avatar=3;
+}
+
+enum ChatType {
+    PRIVATE= 0;
+    GROUPCHAT  = 1;
+    DISCUSSION = 2;
+}
+
+message MessageData {
+string msg_id = 1;
+string msg_time = 2;
+string from = 3;
+string to= 4;
+GcmData cipher_data = 5;
+ChatType chat_type=6;
+int32 typ = 7;
+bytes salt = 8;
+string ext= 9;
+}
+
+message TxtMessage{
+string content=1;
+MessageUserInfo sender =2;
+}
+
+message EmotionMessage{
+string content=1;
+MessageUserInfo sender =2;
+}
+
+message PhotoMessage{
+string url=1;
+string size=2;
+int32 image_width=3;
+int32 image_height=4;
+MessageUserInfo sender =5;
+}
+
+message VoiceMessage{
+string url=1;
+string time_length=2;
+string size=3;
+MessageUserInfo sender =4;
+}
+
+message VideoMessage{
+string url=1;
+string time_length=2;
+string size=3;
+MessageUserInfo sender =4;
+}
+
+message CardMessage{
+string publickey=1;
+string username=2;
+string avatar=3;
+MessageUserInfo sender =4;
+}
+
+message DestructMessage{
+int32 time=1;
+}
+
+message ReceiptMessage{
+string message_id=1;
+}
+
+message PaymentMessage{
+int32 is_crowd=1;
+string hash_id=2;
+int32 amount=3;
+int32 total_member=4;
+string note=5;
+MessageUserInfo sender =6;
+}
+
+message TransferMessage{
+int32  is_outer=1;
+string hash_id=2;
+int32 amount=3;
+string note=4;
+}
+
+message LocationMessage{
+float latitude=1;
+float longitude=2;
+string address=3;
+string url=4;
+int32 image_width=5;
+int32 image_height=6;
+MessageUserInfo sender =7;
+}
+
+message LuckPacketMessage{
+string hash_id=1;
+int32 is_outer=2;
+string note=3;
+MessageUserInfo sender =4;
+}
+
+message NotifyMessage{
+string content=1;
+}
+
+message JoinGroupMessage{
+string avatar=1;
+string group_name=2;
+string group_identifier=3;
+string invite_token=4;
+MessageUserInfo sender =5;
+}
+
+message WebsiteMessage{
+string url=1;
+string title=2;
+string subtitle=3;
+string img=4;
+MessageUserInfo sender =5;
+}

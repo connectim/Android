@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="Chat">Chat</string>
     <string name="Chat_Agree">agree</string>
     <string name="Chat_Album_Permission_Get">Lack of reading system album permissions, click "Settings" - "permissions" grant application permissions</string>
@@ -54,6 +54,9 @@
     <string name="Chat_Crowd_funding">Crowd-funding</string>
     <string name="Chat_Crowd_funding_by_who">By %s</string>
     <string name="Chat_Crowdfoundind_History">History</string>
+    <string name="Link_Friend">Friend</string>
+    <string name="Wallet_Confirm_transfer">Confirm transfer</string>
+    <string name="Wallet_Transfer_details">Transfer details</string>
     <string name="Chat_Crowdfunding">Crowdfunding</string>
     <string name="Chat_Crowfunding">Create</string>
     <string name="Chat_Disable_self_destruct">Disable self-destruct</string>
@@ -190,6 +193,10 @@
     <string name="ErrorCode_Create_error">Create error</string>
     <string name="ErrorCode_Data_is_too_large">Data is too large</string>
     <string name="ErrorCode_DecodeRawTransaction_error">DecodeRawTransaction error</string>
+    <string name="ErrorCode_transaction_address_is_not_available">transaction address is not available</string>
+    <string name="ErrorCode_Transaction_information_is_incorrect">Transaction information is incorrect</string>
+    <string name="ErrorCode_Version_information_is_repeated">Version information is repeated</string>
+    <string name="ErrorCode_The_fee_is_too_low">The fee is too low</string>
     <string name="ErrorCode_Double_flowers">Double flowers</string>
     <string name="ErrorCode_Ecdh_generation_failed">Ecdh generation failed</string>
     <string name="ErrorCode_Error">Error</string>
@@ -370,7 +377,7 @@
     <string name="Login_Camera_guide_tip">Tap to take photo and hold to record vedio</string>
     <string name="Login_Code">CODE</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">Collecting Sounds as Random Seed...</string>
-    <string name="Login_Decrypted_private_key">Decrypted private key</string>
+    <string name="Login_Decrypted_private_key">Private key</string>
     <string name="Login_Edit">Edit</string>
     <string name="Login_Encrypted_private_key">Encrypted private key</string>
     <string name="Login_Generated_Failure">Create failed, please make sure you\'ve made sound/voice around the mic</string>
@@ -452,7 +459,7 @@
     <string name="Set_BTC_symbol">฿</string>
     <string name="Set_Backup_Private_Key">Backup Private Key</string>
     <string name="Set_Backup_decrypted_private_key">Backup decrypted private key</string>
-    <string name="Set_Backup_encrypted_private_key">Backup private key</string>
+    <string name="Set_Backup_encrypted_private_key">Backup encrypted private key</string>
     <string name="Set_CONNECT_ID_can_only_be_set_once">CONNECT ID can only be set once</string>
     <string name="Set_CONNECT_ID_set_success_no_set">CONNECT ID can\'t be modified after setting successfully</string>
     <string name="Set_Call_failed_please_check_system_mail_application">Call failed, please check system mail application</string>
@@ -565,6 +572,10 @@
     <string name="Set_you_can_login_mobile_number_link_one_account">After changing, you can login with new number\n one mobile number can only be linked to one account</string>
     <string name="Wallet">Wallet</string>
     <string name="Wallet_Detail">detail</string>
+    <string name="Wallet_not_create_wallet">You haven\'t create the purse</string>
+    <string name="Wallet_Immediately_create">Immediately create</string>
+    <string name="Wallet_not_update_wallet">You haven\'t updated your wallet</string>
+    <string name="Wallet_Immediately_update">Update now</string>
     <string name="Wallet_Packet_Send_User_Connect">Send the lucky packet via Connect</string>
     <string name="Wallet_Scan_to_pay_me">Scan to pay me</string>
     <string name="Wallet_Transfer_Count">Transfer(%d)</string>
@@ -574,13 +585,14 @@
     <string name="Wallet_Amount">Amount</string>
     <string name="Wallet_Amount_BTC">Amount(BTC)</string>
     <string name="Wallet_Amount_Each">Amount Each</string>
-    <string name="Wallet_Amount_is_too_small">Amount is too small!</string>
+    <string name="Wallet_Amount_is_too_small">When packing a transaction, an error occurs and the amount is too small</string>
+    <string name="Wallet_not_initialized_the_wallet_and_can_not_trade">The other party has not initialized the wallet and can not trade</string>
     <string name="Wallet_Amount_must_be_greater_than">Amount must be more than %f</string>
     <string name="Wallet_Amount_must_be_less_than">Amount must be less than %f</string>
     <string name="Wallet_Amount_of_member">Amount of member</string>
     <string name="Wallet_Amount_Symbol">Amount(%s)</string>
     <string name="Wallet_Auto_Calculate_Miner_Fee">Auto Calculate Transaction Fee</string>
-    <string name="Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue">Automatic calculation of fees(%sBTC) is greater than the maximum set, whether to need to modify the fees for maximum and continue?</string>
+    <string name="Wallet_Auto_fees_greater_than_the_maximum_continue">Automatic calculation of fee (% sBTC) is greater than the maximum set, whether or not to continue?</string>
     <string name="Wallet_BTC_Each">%s BTC Each</string>
     <string name="Wallet_BTC_Total">%s BTC Total</string>
     <string name="Wallet_Balance">Balance: ฿%s</string>
@@ -599,6 +611,7 @@
     <string name="Wallet_Congratulations">Congratulations!</string>
     <string name="Wallet_Connect_Pay">Connect Pay</string>
     <string name="Wallet_Connect_term">Connect team</string>
+    <string name="Wallet_The_Connect_system_address">The Connect system address</string>
     <string name="Wallet_Could_not_get_himself_sent_money_transfer">Can\'t get the transfer from yourself</string>
     <string name="Wallet_Each">Each</string>
     <string name="Wallet_Enter_4_Digits">Enter 4 Digits</string>
@@ -712,4 +725,11 @@
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_system_luckypackage_have_been_frozen">system luckypackage have been frozen</string>
     <string name="Chat_one_device_can_only_grab_a_luckypackage">one device can only grab a luckypackage</string>
+    <string name="Wallet_create_currency_failed">create currency failed</string>
+    <string name="Wallet_Create_wallet_failed">create wallet failed</string>
+    <string name="Wallet_synchronization_data_failed">synchronization data failed</string>
+    <string name="Set_please_enter_the_original_password">Enter the original password</string>
+    <string name="Wallet_Failed_to_get_the_list_address">Failed to get the list address</string>
+    <string name="title_activity_group_create">GroupCreateActivity</string>
+    <string name="title_activity_group_invite">GroupInviteActivity</string>
 </resources>

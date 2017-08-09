@@ -3,19 +3,18 @@ package connect.utils.scan;
 import android.app.Activity;
 import android.net.Uri;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.ContactHelper;
-import connect.db.green.bean.ContactEntity;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
+import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.exts.ApplyJoinGroupActivity;
-import connect.ui.activity.chat.exts.TransferToActivity;
-import connect.ui.activity.contact.FriendInfoActivity;
-import connect.ui.activity.contact.StrangerInfoActivity;
-import connect.ui.activity.contact.bean.MsgSendBean;
-import connect.ui.activity.contact.bean.SourceType;
-import connect.ui.activity.home.bean.MsgNoticeBean;
+import connect.activity.chat.exts.ApplyJoinGroupActivity;
+import connect.activity.chat.exts.TransferToActivity;
+import connect.activity.contact.FriendInfoActivity;
+import connect.activity.contact.StrangerInfoActivity;
+import connect.activity.contact.bean.MsgSendBean;
+import connect.activity.contact.bean.SourceType;
+import connect.activity.home.bean.MsgNoticeBean;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
@@ -33,7 +32,7 @@ public class ResolveUrlUtil {
     public static final String TYPE_WEB_GROUNP = "group";
     public static final String TYPE_OPEN_SCAN = "scan";
     public static final String TYPE_OPEN_WEB= "web";
-    public String Web_Url = "connectim://.*";
+    public static String Web_Url = "connectim://.*";
     private Activity activity;
 
     public ResolveUrlUtil(Activity activity) {
@@ -65,6 +64,7 @@ public class ResolveUrlUtil {
      * @param isCloseScan
      */
     public void dealResult(ScanResultBean resultBean,boolean isCloseScan){
+        UserOrderBean userOrderBean = null;
         switch (resultBean.getType()){
             case TYPE_WEB_FRIEND:
                 if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
@@ -96,13 +96,17 @@ public class ResolveUrlUtil {
                 MsgSendBean transferBean = new MsgSendBean();
                 transferBean.setType(MsgSendBean.SendType.TypeOutTransfer);
                 transferBean.setTips(resultBean.getTip());
-                SendMsgUtil.outerTransfer(resultBean.getToken(), transferBean);
+
+                userOrderBean = new UserOrderBean();
+                userOrderBean.outerTransfer(resultBean.getToken(), transferBean);
                 break;
             case TYPE_WEB_PACKET:
                 MsgSendBean packetBean = new MsgSendBean();
                 packetBean.setType(MsgSendBean.SendType.TypeOutPacket);
                 packetBean.setTips(resultBean.getTip());
-                SendMsgUtil.outerRedPacket(resultBean.getToken(), packetBean);
+
+                userOrderBean = new UserOrderBean();
+                userOrderBean.outerRedPacket(resultBean.getToken(), packetBean);
                 break;
             case TYPE_WEB_GROUNP:
                 ApplyJoinGroupActivity.startActivity(activity, ApplyJoinGroupActivity.EApplyGroup.TOKEN, resultBean.getToken());
@@ -143,6 +147,9 @@ public class ResolveUrlUtil {
                             break;
                         case 2:
                             ToastUtil.getInstance().showToast(R.string.Wallet_You_already_open_this_luckypacket);
+                            break;
+                        case 3:
+                            ToastUtil.getInstance().showToast(R.string.Chat_system_luckypackage_have_been_frozen);
                             break;
                     }
                 }else if(msgSendBean.getType() == MsgSendBean.SendType.TypeOutTransfer){

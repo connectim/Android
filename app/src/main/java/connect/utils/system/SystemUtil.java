@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Vibrator;
 import android.util.TypedValue;
@@ -17,7 +19,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -165,4 +167,16 @@ public class SystemUtil {
         }
         return false;
     }
+
+    /**
+     * Determine whether to open the Wifi
+     * @return
+     */
+    public static boolean isOpenWifi(){
+        Context context = BaseApplication.getInstance().getBaseContext();
+        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return networkInfo.isConnected();
+    }
+
 }

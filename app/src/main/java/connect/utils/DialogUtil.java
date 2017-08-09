@@ -2,37 +2,40 @@ package connect.utils;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import connect.ui.activity.R;
-import connect.ui.activity.chat.model.more.MorePagerAdapter;
-import connect.ui.activity.login.adapter.DialogBottomAdapter;
-import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
-import connect.view.FrameAnimationDrawable;
-import connect.view.payment.PayEditView;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import connect.activity.home.view.LineDecoration;
+import connect.activity.login.adapter.DialogBottomAdapter;
+import connect.ui.activity.R;
+import connect.utils.glide.GlideUtil;
+import connect.utils.system.SystemDataUtil;
+import connect.utils.system.SystemUtil;
+import connect.widget.FrameAnimationDrawable;
+import connect.widget.payment.PayEditView;
 
 /**
  * Dialog Tooltip tool
@@ -137,7 +140,9 @@ public class DialogUtil {
             edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         titleTv.setText(title);
-        if (!TextUtils.isEmpty(message)) {
+        if (TextUtils.isEmpty(message)) {
+            messageTv.setVisibility(View.GONE);
+        }else{
             messageTv.setText(message);
             messageTv.setVisibility(View.VISIBLE);
         }
@@ -279,154 +284,6 @@ public class DialogUtil {
     }
 
     /**
-     * ListView with Dialog (intermediate display)
-     *
-     * @param mContext
-     * @param title
-     * @param adapter
-     * @param itemClickListener
-     * @return
-     */
-    public static Dialog showAlertListView(Context mContext, Integer title, BaseAdapter adapter,
-                                           final DialogListItemLongClickListener itemClickListener) {
-        final Dialog dialog = new Dialog(mContext, R.style.Dialog);
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.view_listview, null);
-        dialog.setContentView(view);
-        TextView titleTextView = (TextView) view.findViewById(R.id.title_tv);
-        ListView listView = (ListView) view.findViewById(R.id.list_view);
-        LinearLayout list_lin = (LinearLayout) view.findViewById(R.id.list_lin);
-        if (adapter != null) {
-            list_lin.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.VISIBLE);
-            listView.setAdapter(adapter);
-        }
-
-        ViewGroup.LayoutParams layoutParams = null;
-        if (adapter.getCount() >= 5) {
-            layoutParams = new LinearLayout.LayoutParams(SystemDataUtil.getScreenWidth(),
-                    SystemUtil.dipToPx(450));
-        } else {
-            layoutParams = new LinearLayout.LayoutParams(SystemDataUtil.getScreenWidth(),
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        list_lin.setLayoutParams(layoutParams);
-
-        if (title != null) {
-            titleTextView.setText(title);
-        } else {
-            titleTextView.setVisibility(View.GONE);
-        }
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                itemClickListener.onClick(parent, view, position);
-                dialog.dismiss();
-            }
-        });
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                itemClickListener.onLongClick(parent, view, position);
-                return true;
-            }
-        });
-
-        Window mWindow = dialog.getWindow();
-        WindowManager.LayoutParams lp = mWindow.getAttributes();
-        lp.width = SystemDataUtil.getScreenWidth();
-        mWindow.setGravity(Gravity.BOTTOM);
-        mWindow.setWindowAnimations(R.style.DialogAnim);
-        mWindow.setAttributes(lp);
-        dialog.show();
-        dialog.setCanceledOnTouchOutside(true);
-        return dialog;
-    }
-
-    /**
-     * burn message dialog
-     */
-    public static Dialog showBurnDialog(final Context mContext, final long sectime, final MorePagerAdapter.OnTimerListener listener) {
-        final Dialog dialog = new Dialog(mContext, R.style.Dialog);
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.dialog_burn, null);
-        dialog.setContentView(view);
-
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.linearlayout);
-        ListView listView = (ListView) view.findViewById(R.id.listview);
-
-        ViewGroup.LayoutParams layoutParams = null;
-        layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        linearLayout.setLayoutParams(layoutParams);
-
-        final String[] strings = mContext.getResources().getStringArray(R.array.destruct_timer);
-        final int[] destimes = mContext.getResources().getIntArray(R.array.destruct_timer_long);
-        BaseAdapter adapter = new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return strings.length;
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return strings[position];
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.item_dialog_burn, null);
-                }
-                TextView time = (TextView) convertView.findViewById(R.id.txt);
-                ImageView img = (ImageView) convertView.findViewById(R.id.img);
-
-                time.setText(strings[position]);
-                if (position == strings.length - 1) {
-                    time.setTextColor(mContext.getResources().getColor(R.color.color_blue));
-                } else {
-                    time.setTextColor(mContext.getResources().getColor(R.color.color_black));
-                }
-
-                if (sectime == destimes[position]) {
-                    img.setVisibility(View.VISIBLE);
-                } else {
-                    img.setVisibility(View.GONE);
-                }
-                return convertView;
-            }
-        };
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listener.itemTimerClick(destimes[position]);
-                dialog.dismiss();
-            }
-        });
-        view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        Window mWindow = dialog.getWindow();
-        WindowManager.LayoutParams lp = mWindow.getAttributes();
-        lp.width = SystemDataUtil.getScreenWidth();
-        mWindow.setGravity(Gravity.BOTTOM);
-        mWindow.setWindowAnimations(R.style.DialogAnim);
-        mWindow.setAttributes(lp);
-        dialog.show();
-        return dialog;
-    }
-
-    /**
      * popup dialong
      *
      * @param mContext
@@ -434,20 +291,23 @@ public class DialogUtil {
      * @param itemClickListener
      * @return
      */
-    public static Dialog showBottomListView(Context mContext, ArrayList<String> list, final DialogListItemClickListener itemClickListener) {
+    public static Dialog showBottomView(Context mContext, ArrayList<String> list, final DialogListItemClickListener itemClickListener) {
         final Dialog dialog = new Dialog(mContext, R.style.Dialog);
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.dialog_bottom_listview, null);
+        View view = inflater.inflate(R.layout.dialog_bottomview, null);
         dialog.setContentView(view);
-        ListView listView = (ListView) view.findViewById(R.id.list_view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         TextView cancel = (TextView) view.findViewById(R.id.tv_popup_cancel);
-        DialogBottomAdapter dialogBottomAdapter = new DialogBottomAdapter(list);
-        listView.setAdapter(dialogBottomAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new LineDecoration(mContext));
+        DialogBottomAdapter dialogBottomAdapter = new DialogBottomAdapter(list);
+        recyclerView.setAdapter(dialogBottomAdapter);
+        dialogBottomAdapter.setItemClickListener(new DialogBottomAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                itemClickListener.confirm(parent, view, position);
+            public void itemClick(int position, String string) {
+                itemClickListener.confirm(position);
                 dialog.dismiss();
             }
         });
@@ -469,7 +329,7 @@ public class DialogUtil {
         return dialog;
     }
 
-    public interface OnGifListener{
+    public interface OnGifListener {
         void click();
     }
 
@@ -488,7 +348,7 @@ public class DialogUtil {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(SystemDataUtil.getScreenWidth(), SystemDataUtil.getScreenHeight());
         view.setLayoutParams(layoutParams);
 
-        ImageView img = (ImageView) view.findViewById(R.id.img);
+        final ImageView img = (ImageView) view.findViewById(R.id.img);
         String title = 0 == state ? context.getString(R.string.Wallet_Unfortunately) : context.getString(R.string.Wallet_Congratulations);
         String subtitle = 0 == state ? context.getString(R.string.Wallet_Good_luck_next_time) : context.getString(R.string.Wallet_You_got_a_Lucky_Packet);
         (((TextView) (view.findViewById(R.id.txt1)))).setText(title);
@@ -507,7 +367,8 @@ public class DialogUtil {
                 dialog.dismiss();
             }
         });
-        FrameAnimationDrawable.animateDrawableLoad(state==0?R.drawable.anim_redpacket_fail:R.drawable.anim_redpacket_success, img, new FrameAnimationDrawable.OnDrawablesListener() {
+
+        FrameAnimationDrawable.animateDrawableLoad(state == 0 ? R.drawable.anim_redpacket_fail : R.drawable.anim_redpacket_success, img, new FrameAnimationDrawable.OnDrawablesListener() {
 
             @Override
             public void onDrawsStart() {
@@ -526,7 +387,7 @@ public class DialogUtil {
 
     public interface DialogListItemClickListener {
 
-        void confirm(AdapterView<?> parent, View view, int position);
+        void confirm(int position);
 
     }
 

@@ -6,7 +6,7 @@
     android:background="@color/color_f0f0f6"
     android:fitsSystemWindows="true">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

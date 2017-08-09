@@ -3,7 +3,7 @@ package connect.im.parser;
 import java.nio.ByteBuffer;
 
 import connect.im.inter.InterParse;
-import connect.ui.activity.home.bean.HomeAction;
+import connect.activity.home.bean.HomeAction;
 
 /**
  * Created by pujin on 2017/4/18.
@@ -28,6 +28,6 @@ public class ExceptionBean extends InterParse{
      * Be offline
      */
    private void crowdedOffline() {
-        HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
+       HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
     }
 }

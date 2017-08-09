@@ -6,9 +6,37 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/top_title_rela"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/back_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dp_15"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10"
+            android:src="@mipmap/back_gray"/>
+        <TextView
+            style="@style/BaseTextStyle.16"
+            android:layout_margin="@dimen/dp_10"
+            android:textSize="@dimen/sp_18"
+            android:layout_centerInParent="true"
+            android:text="@string/Wallet_Enter_your_PIN"/>
+        <TextView
+            style="@style/BaseViewLine.d1d5da"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_below="@+id/back_img"/>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/rela_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/top_title_rela"
         android:layout_marginTop="@dimen/dp_40">
         <!--<ProgressBar
             android:id="@+id/progress"
@@ -19,7 +47,8 @@
             android:indeterminateTint="@color/color_007aff"
             android:indeterminateTintMode="src_atop"
             android:visibility="gone"/>-->
-        <connect.view.MdStyleProgress
+
+        <connect.widget.MdStyleProgress
             android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,7 +57,7 @@
             android:padding="5dp"
             android:visibility="gone"/>
 
-        <connect.view.payment.PayEditView
+        <connect.widget.payment.PayEditView
             android:id="@+id/pay_edit"
             android:layout_width="@dimen/dp_250"
             android:layout_height="@dimen/dp_30"
@@ -53,7 +82,7 @@
             android:text=""/>
     </RelativeLayout>
 
-    <connect.view.payment.VirtualKeyboardView
+    <connect.widget.payment.VirtualKeyboardView
         android:id="@+id/virtualKeyboardView"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"

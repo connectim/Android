@@ -3,7 +3,9 @@ package connect.utils.okhttp;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -32,38 +34,71 @@ public class DownLoadFile {
         HttpRequest.getInstance().mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                switchMain(1, 0, 0, null);
+                resultFail();
             }
 
             @Override
             public void onResponse(final Call call, final Response response) throws IOException {
                 if (response.code() == 200) {
-                    byte[] dataTemp = response.body().bytes();
-                    switchMain(2, 0, 0, dataTemp);
-                } else {
+                    InputStream inputStream = null;
+                    ByteArrayOutputStream outputStream = null;
+                    try {
+                        long current = 0;
+                        int length = 0;
+                        long total = response.body().contentLength();
+                        byte[] buffer = new byte[1024];
 
+                        outputStream = new ByteArrayOutputStream();
+                        inputStream = response.body().byteStream();
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            current += length;
+                            outputStream.write(buffer, 0, length);
+                            resultProgress(current, total);
+                        }
+                        outputStream.flush();
+                        resultSuccess(outputStream.toByteArray());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (inputStream != null) {
+                            inputStream.close();
+                            inputStream = null;
+                        }
+                        if (outputStream != null) {
+                            outputStream.close();
+                            outputStream = null;
+                        }
+                    }
+                } else {
+                    resultFail();
                 }
             }
         });
     }
 
-    private void switchMain(final int status, final long bytesRead, final long contentLength, final byte[] data) {
+    public void resultFail(){
         mDelivery.post(new Runnable() {
             @Override
             public void run() {
-                switch (status) {
-                    case 0:
-                        resultListener.update(bytesRead, contentLength);
-                        break;
-                    case 1:
-                        resultListener.fail();
-                        break;
-                    case 2:
-                        resultListener.success(data);
-                        break;
-                    default:
-                        break;
-                }
+                resultListener.fail();
+            }
+        });
+    }
+
+    public void resultSuccess(final byte[] bytes) {
+        mDelivery.post(new Runnable() {
+            @Override
+            public void run() {
+                resultListener.success(bytes);
+            }
+        });
+    }
+
+    public void resultProgress(final long current, final long total){
+        mDelivery.post(new Runnable() {
+            @Override
+            public void run() {
+                resultListener.update(current,total);
             }
         });
     }

@@ -26,6 +26,7 @@
     <item name="txt7" type="id"/>
     <item name="txt8" type="id"/>
     <item name="edittxt1" type="id"/>
+    <item name="edittxt2" type="id"/>
     <item name="img1" type="id"/>
     <item name="img2" type="id"/>
     <item name="img3" type="id"/>
@@ -54,6 +55,7 @@
     <item name="checkbox" type="id"/>
     <item name="surfaceview" type="id"/>
     <item name="upgradeview" type="id"/>
+    <item name="refreshview" type="id"/>
 
     <!-- TopToolBar -->
     <item name="left_img" type="id"/>
@@ -121,7 +123,6 @@
     <item name="contact" type="id"/>
     <item name="wallet" type="id"/>
     <item name="set" type="id"/>
-    <item name="listview" type="id"/>
 
     <item name="content_notice" type="id"/>
     <item name="content_layout" type="id"/>
@@ -198,4 +199,17 @@
     <!-- include -->
     <item name="group" type="id"/>
     <item name="friend" type="id"/>
+
+    <!-- image_watcher -->
+    <item name="image_orientation" type="id"/>
+    <item name="state_origin" type="id"/>
+    <item name="state_default" type="id"/>
+    <item name="state_current" type="id"/>
+    <item name="state_thumb" type="id"/>
+    <item name="state_temp" type="id"/>
+    <item name="state_touch_down" type="id"/>
+    <item name="state_touch_drag" type="id"/>
+    <item name="state_touch_scale_rotate" type="id"/>
+    <item name="view_image_watcher" type="id" />
+
 </resources>

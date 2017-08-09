@@ -15,13 +15,11 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
 import connect.ui.activity.R;
-import connect.ui.activity.home.bean.HttpRecBean;
-import connect.ui.base.BaseApplication;
+import connect.activity.home.bean.HttpRecBean;
+import connect.activity.base.BaseApplication;
 import connect.utils.ConfigUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
-import connect.utils.UriUtil;
 import connect.utils.log.LogManager;
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -46,6 +44,7 @@ public class HttpRequest {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
                 .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                .writeTimeout(10000L, TimeUnit.MILLISECONDS)
                 .addInterceptor(new LoggerInterceptor(false))
                 .hostnameVerifier(new HostnameVerifier() {
                     @Override
@@ -98,7 +97,8 @@ public class HttpRequest {
             @Override
             public void onFailure(Call call, IOException e) {
                 ProgressUtil.getInstance().dismissProgress();
-                ToastUtil.getInstance().showToast(e.toString());
+                String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
+                ToastUtil.getInstance().showToast(errorNet);
             }
 
             @Override
@@ -137,7 +137,7 @@ public class HttpRequest {
             @Override
             public void onFailure(Call call, IOException e) {
                 ProgressUtil.getInstance().dismissProgress();
-                ToastUtil.getInstance().showToast(e.toString());
+                dealOnFailure(call);
             }
 
             @Override
@@ -181,10 +181,8 @@ public class HttpRequest {
             @Override
             public void onFailure(Call call, IOException e) {
                 ProgressUtil.getInstance().dismissProgress();
-
                 resultCall.onError();
-                String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
-                ToastUtil.getInstance().showToast(errorNet);
+                dealOnFailure(call);
             }
 
             @Override
@@ -213,6 +211,26 @@ public class HttpRequest {
                 }
             }
         });
+    }
+
+    /**
+     * Network access failure
+     * @param call
+     */
+    private void dealOnFailure(Call call){
+        try {
+            switch (call.execute().code()){
+                case 404:
+                    ToastUtil.getInstance().showToast(BaseApplication.getInstance().getBaseContext().getString(R.string.Set_Load_failed_please_try_again_later));
+                    break;
+                default:
+                    String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
+                    ToastUtil.getInstance().showToast(errorNet);
+                    break;
+            }
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
     }
 
     /**

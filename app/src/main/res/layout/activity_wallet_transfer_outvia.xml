@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_f0f0f6">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -20,7 +20,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/Wallet_Transfer_via_other_APP_messges"/>
 
-    <connect.view.transferEdit.TransferEditView
+    <connect.utils.transfer.TransferEditView
         android:id="@+id/transfer_edit_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

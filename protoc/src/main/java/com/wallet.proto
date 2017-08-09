@@ -1,0 +1,191 @@
+syntax = "proto3";
+package wallet_gateway;
+
+message RequestWalletInfo {
+string payload = 1;
+string check_sum = 2;
+int32 ver = 3;
+int32 version = 4;
+}
+
+message RespSyncWallet {
+Wallet wallet = 1;
+repeated Coin coins = 2;
+}
+
+message Wallet {
+string pay_load = 1;
+int32 version = 2;
+int32 ver = 3;
+string check_sum = 4;
+}
+
+message Balance {
+int64 amount = 1;
+int64 pending = 2;
+}
+
+message CreateCoinRequest {
+int32 currency = 1;
+string master_address = 2;
+string payload = 3;
+int32 category = 4;
+string salt = 5;
+}
+
+message Coin {
+int32 status = 1;
+int32 currency = 2;
+int32 category = 3;
+string salt = 4;
+int64 balance = 5;
+string payload = 6;
+int64 amount = 7;
+}
+
+message Coins {
+repeated Coin Coins = 1;
+}
+
+message CoinsDetail {
+Coin coin = 1;
+repeated CoinInfo coinInfos = 2;
+}
+
+message CoinInfo {
+int32 index = 1;
+int32 status = 2;
+string address = 3;
+string label = 4;
+int64 balance = 5;
+int64 amount = 6;
+}
+
+message CreateCoinAccount {
+int32 index = 1;
+string address = 2;
+string label = 3;
+int32 status = 4;
+int32 currency = 5;
+}
+
+message Txin {
+repeated string addresses = 1;
+}
+
+message Txout {
+string address = 1;
+int64 amount = 2;
+}
+
+message SpentCurrency {
+int32 currency = 1;
+Txin txin = 2;
+}
+
+message LuckyPackageRequest {
+SpentCurrency spent_currency = 1;
+string receiver_identifier = 2; //group id or user pubkey(address)
+int32 typ = 3; // privte group outer
+int32 category = 5;
+int32 size = 4;
+int64 amount = 6;
+int64 fee = 7;
+string tips = 8;
+}
+
+message OutTransfer {
+SpentCurrency spent_currency = 1;
+int64 amount = 2;
+int64 fee = 3;
+string tips = 4;
+}
+
+message TransferRequest {
+SpentCurrency spent_currency = 1;
+repeated Txout tx_out = 2;
+int64 fee = 3;
+string tips = 4;
+}
+
+message CrowdfundingRequest {
+int32 currency = 1;
+string group_identifier = 2;
+int64 amount = 3;
+int32 size = 4;
+string tips = 5;
+}
+
+message ConnectTxout {
+string uid = 1;
+int64 amount = 2;
+}
+
+message ConnectTransferRequest {
+SpentCurrency spent_currency = 1;
+repeated ConnectTxout tx_out = 2;
+int64 fee = 3;
+string tips = 4;
+}
+
+message ReceiveRequest {
+string sender = 1;
+uint64 amount = 2;
+string tips = 3;
+int32 currency = 4;
+}
+
+message Payment {
+SpentCurrency spent_currency = 1;
+int32 pay_type = 2;
+string hash_id = 3;
+int64 fee = 4;
+}
+
+message HashIdResp {
+string hash_id = 1;
+}
+
+message OriginalTransaction {
+    string hash_id = 1;
+    string rawhex = 2;
+    string vts = 3;
+    int64 fee = 4;
+    repeated string addresses = 5;
+    int64 estimate_fee = 6;
+    int64 odd_change = 7;
+    repeated Txout tx_outs = 8;
+    int32 currency = 9;
+}
+
+message OriginalTransactionResponse {
+int32 code = 1;
+OriginalTransaction data = 2;
+string message = 3;
+}
+
+message PublishTransaction {
+int32 transaction_type = 1;
+string hash_id = 2;
+string tx_hex = 3;
+int32 currency = 4;
+}
+
+message ResponsePublish {
+string txid = 1;
+}
+message GetTx {
+int32 currency = 1;
+string address = 2;
+Pagination page = 3;
+}
+
+message Pagination {
+int32 page = 1;
+int32 size = 2;
+}
+
+message RequestUserInfo {
+string uid = 1;
+int32  currency = 2;
+}

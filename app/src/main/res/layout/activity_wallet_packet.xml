@@ -5,7 +5,7 @@
     android:background="@color/color_f0f0f6"
     android:orientation="vertical">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -45,7 +45,7 @@
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
 
-        <connect.view.transferEdit.TransferEditView
+        <connect.utils.transfer.TransferEditView
             android:id="@+id/transfer_edit_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

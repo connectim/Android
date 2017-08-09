@@ -3,12 +3,14 @@ package connect.utils;
 import android.content.Context;
 
 import connect.ui.activity.R;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -70,16 +72,6 @@ public class TimeUtil {
 
     /**
      * Timestamp to descriptive time
-     * @param msgtime
-     * @return
-     * @throws Exception
-     */
-    public static String getMsgTime(long msgtime) throws Exception {
-        return getMsgTime(TimeUtil.getCurrentTimeInLong() - 3 * 1000, msgtime);
-    }
-
-    /**
-     * Timestamp to descriptive time
      * @param lasttime
      * @param msgtime
      * @return
@@ -115,12 +107,12 @@ public class TimeUtil {
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgtime);
                         break;
-                    case 1:
+                    case -1:
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgtime);
-                        showTime = context.getString(R.string.Chat_Yesterday)+" "+showTime;
+                        showTime = context.getString(R.string.Chat_Yesterday) + " " + showTime;
                         break;
-                    case 2:
+                    case -2:
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgtime);
                         showTime = context.getString(R.string.Chat_the_day_before_yesterday_time, " " + showTime);
@@ -155,4 +147,25 @@ public class TimeUtil {
         return timeCount;
     }
 
+    private static Map<String, String> burnTimeMap=new HashMap<>();
+
+    /**
+     * Burn after reading time
+     *
+     * @param time
+     * @return
+     */
+    public static String parseBurnTime(String time) {
+        if (burnTimeMap == null || burnTimeMap.isEmpty()) {
+            burnTimeMap = new HashMap<>();
+
+            Context context = BaseApplication.getInstance().getBaseContext();
+            int[] destimes = context.getResources().getIntArray(R.array.destruct_timer_long);
+            String[] strtimes = context.getResources().getStringArray(R.array.destruct_timer);
+            for (int i = 0; i < destimes.length; i++) {
+                burnTimeMap.put(String.valueOf(destimes[i]), strtimes[i]);
+            }
+        }
+        return burnTimeMap.get(time);
+    }
 }

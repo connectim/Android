@@ -4,7 +4,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 
-import connect.ui.base.bean.BaseEvent;
+import connect.activity.base.bean.BaseEvent;
 
 /**
  * Created by pujin on 2017/2/6.
@@ -32,6 +32,7 @@ public class ConnectState extends BaseEvent {
         REFRESH_ING,
         REFRESH_SUCCESS,
         CONNECT,
+        OFFLINE_PULL,
     }
 
     private ConnectType type;

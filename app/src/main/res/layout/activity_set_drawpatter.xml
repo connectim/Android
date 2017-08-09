@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:background="@color/color_f1f1f1">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <connect.view.lockview.GestureTopView
+    <connect.widget.lockview.GestureTopView
         android:id="@+id/drawpatter_gestop"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
@@ -25,7 +25,7 @@
         android:text="@string/Set_Draw_your_pattern"
         />
     
-    <connect.view.lockview.GestureLockViewGroup
+    <connect.widget.lockview.GestureLockViewGroup
         android:id="@+id/id_gestureLockViewGroup"
         android:layout_width="@dimen/dp_260"
         android:layout_height="@dimen/dp_260"
@@ -39,6 +39,7 @@
         android:id="@+id/userpass_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/dp_30"
         android:padding="@dimen/dp_10"
         android:textSize="@dimen/sp_16"

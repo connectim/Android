@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:background="@color/color_ffffff">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -25,7 +24,7 @@
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:background="@drawable/selector_list_item_bg">
-        <connect.view.roundedimageview.RoundedImageView
+        <connect.widget.roundedimageview.RoundedImageView
             android:id="@id/userhead_img"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
@@ -41,8 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_10"
-            android:ellipsize="middle"
-            android:lines="1"/>
+            android:ellipsize="middle"/>
     </RelativeLayout>
     <View
         style="@style/BaseViewLine.d1d5da"
@@ -76,7 +74,7 @@
         <TextView
             android:id="@id/passwordhint_tv"
             style="@style/BaseTextStyle.14"
-            android:text="@string/Login_Password_Hint"/>
+            android:text=""/>
         <TextView
             android:id="@id/passwordedit_tv"
             style="@style/BaseTextStyle"
