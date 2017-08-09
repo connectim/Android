@@ -81,15 +81,17 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         if(typeTx == 7) {
             viewHolder.nameTv.setText(R.string.Wallet_From_Connect_team);
         }else if (transaction.getUserInfosList().size() > 0) {
-            if(TextUtils.isEmpty(transaction.getUserInfos(0).getUsername())){
-                viewHolder.nameTv.setText(mListData.get(position).getUserInfos(0).getAddress());
+            if(transaction.getUserInfosList().size() > 1){
+                viewHolder.nameTv.setText(R.string.Wallet_Multiple_transfers);
             }else{
                 viewHolder.nameTv.setText(mListData.get(position).getUserInfos(0).getUsername());
             }
-        } else if(transaction.getOutputsList().size() > 0){
-            viewHolder.nameTv.setText(transaction.getOutputs(0).getAddresses(0));
-        } else {
-            viewHolder.nameTv.setText("me");
+        }else {
+            if(mListData.get(position).getBalance() > 0){
+                viewHolder.nameTv.setText(transaction.getInputs(0).getPrevAddresses(0));
+            }else {
+                viewHolder.nameTv.setText(transaction.getOutputs(0).getAddresses(0));
+            }
         }
 
         if (mListData.get(position).getBalance() > 0) {

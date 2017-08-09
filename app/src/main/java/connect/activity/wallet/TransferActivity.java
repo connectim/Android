@@ -91,7 +91,7 @@ public class TransferActivity extends BaseActivity {
                         TransferToActivity.startActivity(mActivity, transferBean.getAddress());
                         break;
                     case 5:
-                        RedPacketActivity.startActivity(mActivity, 1, transferBean.getAddress());
+                        RedPacketActivity.startActivity(mActivity, 0, transferBean.getAddress());
                         break;
                     default:
                         break;

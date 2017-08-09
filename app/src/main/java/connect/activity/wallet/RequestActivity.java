@@ -96,7 +96,7 @@ public class RequestActivity extends BaseActivity {
         CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
         if(entity != null){
             addressEntity = entity;
-            currencyAddress=addressEntity.getAddress();
+            currencyAddress = addressEntity.getAddress();
             scanHead = transferHeader(currencyBean) +currencyAddress + "?" + "amount=";
             addressTv.setText(currencyAddress);
             showScanView(transferHeader(currencyBean) + currencyAddress);

@@ -41,6 +41,7 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.business.TransferType;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
@@ -208,7 +209,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
     protected void requestPayment(String hashid) {
         BaseBusiness baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
-        baseBusiness.typePayment(hashid, 8, new WalletListener<String>() {
+        baseBusiness.typePayment(hashid, TransferType.TransactionTypePayCrowding.getType(), new WalletListener<String>() {
             @Override
             public void success(String hashId) {
                 ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(definBean.getSenderInfoExt().getPublickey());
