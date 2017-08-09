@@ -128,8 +128,8 @@
             android:textStyle="bold"
             android:textColor="@color/color_68656f"
             android:text=""/>
-        <ListView
-            android:id="@+id/list_view"
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/color_b3b5bc"

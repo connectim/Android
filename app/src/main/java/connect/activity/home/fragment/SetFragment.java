@@ -12,12 +12,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
+import org.greenrobot.greendao.database.Database;
+
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.SharedPreferenceUtil;
-import connect.im.bean.UserOrderBean;
-import connect.ui.activity.R;
+import connect.activity.base.BaseFragment;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.AboutActivity;
@@ -27,13 +34,44 @@ import connect.activity.set.ModifyInfoActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
-import connect.activity.base.BaseFragment;
+import connect.activity.wallet.bean.WalletBean;
+import connect.database.MemoryDataManager;
+import connect.database.SharePreferenceUser;
+import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyAddressEntity;
+import connect.database.green.bean.CurrencyEntity;
+import connect.database.green.bean.MessageEntity;
+import connect.database.green.dao.DaoMaster;
+import connect.database.green.dao.DaoSession;
+import connect.im.bean.UserOrderBean;
+import connect.im.model.FailMsgsManager;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.ProtoBufUtil;
+import connect.utils.StringUtil;
+import connect.utils.ToastEUtil;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.currency.BaseCurrency;
+import connect.wallet.cwallet.inter.WalletListener;
+import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
+import connect.widget.payment.PaymentPwd;
+import connect.widget.payment.PinTransferDialog;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * setting
@@ -151,16 +189,14 @@ public class SetFragment extends BaseFragment {
                     @Override
                     public void confirm(String value) {
                         ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
-                        HomeAction.sendTypeMsg(HomeAction.HomeType.DELAY_EXIT);
+                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
 
+                        FailMsgsManager.getInstance().removeAllFailMsg();
                         UserOrderBean userOrderBean = new UserOrderBean();
                         userOrderBean.connectLogout();
                     }
-
                     @Override
-                    public void cancel() {
-
-                    }
+                    public void cancel() {}
                 });
     }
 

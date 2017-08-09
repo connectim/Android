@@ -43,7 +43,6 @@
                 android:textColor="@color/color_161A21"
                 android:textSize="@dimen/sp_18"
                 android:maxLength="15"
-                android:lines="1"
                 android:ellipsize="end"
                 android:text=""/>
             

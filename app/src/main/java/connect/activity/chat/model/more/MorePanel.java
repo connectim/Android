@@ -4,6 +4,8 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import connect.activity.chat.bean.RoomSession;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.BaseAction;
 import java.util.ArrayList;
@@ -15,15 +17,13 @@ import java.util.List;
  */
 public class MorePanel {
 
-    private int roomType;
-    private View view;
-
-    public void init() {
+    public void init(View view) {
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.more_pagerview);
         final ViewGroup indicator = (ViewGroup) view.findViewById(R.id.more_indicator);
 
         List<BaseAction> actionList = new ArrayList<>();
 
+        int roomType = RoomSession.getInstance().getRoomType();
         actionList.add(new BaseAction(R.mipmap.chat_bar_picture, R.string.Chat_Photo));
         actionList.add(new BaseAction(R.mipmap.chat_bar_camera, R.string.Chat_Sight));
 
@@ -100,14 +100,5 @@ public class MorePanel {
                 indicator.addView(img);
             }
         }
-    }
-
-    public void setView(View view) {
-        this.view = view;
-    }
-
-    public void setRoomType(int roomType) {
-        this.roomType = roomType;
-        init();
     }
 }

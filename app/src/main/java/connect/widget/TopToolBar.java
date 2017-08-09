@@ -77,6 +77,10 @@ public class TopToolBar extends LinearLayout{
         leftRela.setOnClickListener(onClickListener);
     }
 
+    public void setLeftEnable(boolean enable){
+        leftRela.setEnabled(enable);
+    }
+
     public void setTitle(String title) {
         titleImg.setVisibility(GONE);
         titleTv.setText(title);
@@ -142,6 +146,10 @@ public class TopToolBar extends LinearLayout{
 
     public void setRightListence(OnClickListener onClickListener){
         rightLayout.setOnClickListener(onClickListener);
+    }
+
+    public void setRightClickable(boolean clickable) {
+        rightLayout.setClickable(clickable);
     }
 
     public void setWindowStatusBarColor(Activity activity, int colorResId) {

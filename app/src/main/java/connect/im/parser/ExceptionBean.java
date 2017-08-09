@@ -28,6 +28,6 @@ public class ExceptionBean extends InterParse{
      * Be offline
      */
    private void crowdedOffline() {
-        HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
+       HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
     }
 }

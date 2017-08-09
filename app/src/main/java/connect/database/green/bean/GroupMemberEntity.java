@@ -6,6 +6,7 @@ import org.greenrobot.greendao.annotation.NotNull;
 
 import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
 public class GroupMemberEntity implements Serializable {
@@ -14,21 +15,19 @@ public class GroupMemberEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-
     @NotNull
     private String identifier;
-
     @NotNull
     private String username;
-
     @NotNull
     private String avatar;
-
     @NotNull
     private String address;
+
     private Integer role;
     private String nick;
     private String pub_key;
+
     @Generated(hash = 190136721)
     public GroupMemberEntity(Long _id, @NotNull String identifier,
             @NotNull String username, @NotNull String avatar,

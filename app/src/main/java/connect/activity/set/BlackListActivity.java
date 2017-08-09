@@ -1,8 +1,9 @@
 package connect.activity.set;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ListView;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -13,11 +14,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.set.adapter.BlackAdapter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.activity.set.adapter.BlackAdapter;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
@@ -34,8 +35,9 @@ public class BlackListActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.list_view)
-    ListView listView;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
+
 
     private BlackListActivity mActivity;
     private BlackAdapter adapter;
@@ -55,25 +57,27 @@ public class BlackListActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Link_Black_List);
 
-        adapter = new BlackAdapter();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        adapter = new BlackAdapter(mActivity);
         adapter.setOnItemChildListence(childClickListence);
-        listView.setAdapter(adapter);
+        recyclerview.setAdapter(adapter);
         requestList();
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view){
+    void goback(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
-    private BlackAdapter.OnItemChildClickListence childClickListence = new BlackAdapter.OnItemChildClickListence(){
+    private BlackAdapter.OnItemChildClickListence childClickListence = new BlackAdapter.OnItemChildClickListence() {
         @Override
         public void remove(int position, Connect.UserInfo userInfo) {
-            requestBlock(position,userInfo);
+            requestBlock(position, userInfo);
         }
     };
 
-    private void requestList(){
+    private void requestList() {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_LIST, ByteString.copyFrom(new byte[]{}),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
@@ -84,8 +88,8 @@ public class BlackListActivity extends BaseActivity {
                             Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
                             List<Connect.UserInfo> list = usersInfo.getUsersList();
                             ArrayList<Connect.UserInfo> listCheck = new ArrayList<>();
-                            for(Connect.UserInfo userInfo : list){
-                                if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                            for (Connect.UserInfo userInfo : list) {
+                                if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
                                     listCheck.add(userInfo);
                                 }
                             }
@@ -102,7 +106,7 @@ public class BlackListActivity extends BaseActivity {
                 });
     }
 
-    private void requestBlock(final int position, final Connect.UserInfo userInfo){
+    private void requestBlock(final int position, final Connect.UserInfo userInfo) {
         Connect.UserIdentifier userIdentifier = Connect.UserIdentifier.newBuilder()
                 .setAddress(userInfo.getAddress())
                 .build();
@@ -110,7 +114,7 @@ public class BlackListActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
-                if(null != friendEntity){
+                if (null != friendEntity) {
                     friendEntity.setBlocked(false);
                     ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
                 }

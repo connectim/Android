@@ -3,26 +3,26 @@ package connect.activity.wallet;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.wallet.bean.CurrencyBean;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.wallet.adapter.RedDerailAdapter;
 import connect.activity.wallet.contract.PacketDetailContract;
 import connect.activity.wallet.presenter.PacketDetailPresenter;
-import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
@@ -45,8 +45,6 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
     TextView openMoneyTitleTv;
     @Bind(R.id.open_detail_tv)
     TextView openDetailTv;
-    @Bind(R.id.list_view)
-    ListView listView;
     @Bind(R.id.content_lin)
     LinearLayout contentLin;
     @Bind(R.id.open_money_rela)
@@ -57,6 +55,8 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
     TextView overtimeTv;
     @Bind(R.id.note_tv)
     TextView noteTv;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
 
     private PacketDetailActivity mActivity;
     private PacketDetailContract.Presenter presenter;
@@ -97,7 +97,7 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
         if (0 != type) {
             GlideUtil.loadImage(avaterRimg, R.mipmap.connect_logo);
         }
-        presenter.requestRedDetail(hashId,type);
+        presenter.requestRedDetail(hashId, type);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
         contentLin.setVisibility(View.VISIBLE);
         openMoneyTitleTv.setText(RateFormatUtil.longToDoubleBtc(openMoney));
 
-        if(!TextUtils.isEmpty(redPackageInfo.getRedpackage().getTips())){
+        if (!TextUtils.isEmpty(redPackageInfo.getRedpackage().getTips())) {
             noteTv.setText(redPackageInfo.getRedpackage().getTips());
         }
         openMoneyRela.setVisibility(View.VISIBLE);
@@ -157,15 +157,17 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
                 redPackage.getSize() - redPackage.getRemainSize(),
                 redPackage.getSize()));
 
-        RedDerailAdapter redDerailAdapter = new RedDerailAdapter(redPackageInfo.getGradHistoryList(),bestAmount);
-        listView.setAdapter(redDerailAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        RedDerailAdapter redDerailAdapter = new RedDerailAdapter(mActivity, redPackageInfo.getGradHistoryList(), bestAmount);
+        recyclerview.setAdapter(redDerailAdapter);
         redDerailAdapter.notifyDataSetChanged();
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        redDerailAdapter.setItemClickListener(new RedDerailAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void itemClick(Connect.GradRedPackageHistroy histroy) {
                 String txId = redPackageInfo.getRedpackage().getTxid();
                 if (!TextUtils.isEmpty(txId)) {
-                    BlockchainActivity.startActivity(mActivity, CurrencyBean.BTC, txId);
+                    BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, txId);
                 }
             }
         });
@@ -184,5 +186,10 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
         shareIntent.putExtra(Intent.EXTRA_TEXT, url);
         shareIntent.setType("text/plain");
         startActivity(Intent.createChooser(shareIntent, "share to"));
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 }

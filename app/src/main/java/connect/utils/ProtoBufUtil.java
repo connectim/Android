@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import connect.activity.base.BaseApplication;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
@@ -112,16 +111,11 @@ public class ProtoBufUtil {
 
         boolean checkstate = true;
         if (protoBufMap == null) {
-            try {
-                xmlParser();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
+            protoBufUtil= new ProtoBufUtil();
         }
         Map<String, Map> attrMap = protoBufMap.get(nameTxt);
         if (attrMap == null) {
-            return false;
+            return true;
         }
 
         for (Map.Entry<String, Map> attr : attrMap.entrySet()) {

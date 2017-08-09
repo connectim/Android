@@ -4,11 +4,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -20,8 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.green.bean.GroupEntity;
-import connect.ui.activity.R;
+import connect.activity.base.BaseFragment;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
@@ -35,7 +34,8 @@ import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.model.ContactListManage;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.bean.ContactBean;
-import connect.activity.base.BaseFragment;
+import connect.database.green.bean.GroupEntity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
@@ -50,8 +50,8 @@ public class ContactFragment extends BaseFragment {
     TopToolBar toolbarTop;
     @Bind(R.id.siderbar)
     SideBar siderbar;
-    @Bind(R.id.list_view)
-    ListView listView;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
 
     private FragmentActivity mActivity;
     private ContactAdapter adapter;
@@ -88,17 +88,15 @@ public class ContactFragment extends BaseFragment {
         toolbarTop.setRightImg(R.mipmap.add_white3x);
         toolbarTop.setLeftImg(R.mipmap.search3x);
 
-        adapter = new ContactAdapter();
-        listView.setAdapter(adapter);
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        adapter = new ContactAdapter(mActivity);
+        recyclerview.setAdapter(adapter);
+        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
                 adapter.closeMenu();
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
             }
         });
 
@@ -106,8 +104,8 @@ public class ContactFragment extends BaseFragment {
             @Override
             public void onTouchingLetterChanged(String s) {
                 int position = adapter.getPositionForSection(s.charAt(0));
-                if(position >= 0){
-                    listView.setSelection(position);
+                if (position >= 0) {
+                    recyclerview.scrollToPosition(position);
                 }
             }
         });
@@ -121,31 +119,31 @@ public class ContactFragment extends BaseFragment {
     public void onEventMainThread(ContactNotice notice) {
         if (notice.getNotice() == ContactNotice.ConNotice.RecContact) {
             updataContact();
-        }else if (notice.getNotice() == ContactNotice.ConNotice.RecAddFriend) {
+        } else if (notice.getNotice() == ContactNotice.ConNotice.RecAddFriend) {
             updataRequest();
-        }else if(notice.getNotice() == ContactNotice.ConNotice.RecGroup){
+        } else if (notice.getNotice() == ContactNotice.ConNotice.RecGroup) {
             updataGroup();
-        }else if(notice.getNotice() == ContactNotice.ConNotice.RecFriend){
+        } else if (notice.getNotice() == ContactNotice.ConNotice.RecFriend) {
             updataFriend();
         }
     }
 
     @OnClick(R.id.left_img)
     void search(View view) {
-        ActivityUtil.next(mActivity, SearchActivity.class,android.R.anim.fade_in,android.R.anim.fade_out);
+        ActivityUtil.next(mActivity, SearchActivity.class, android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @OnClick(R.id.right_lin)
     void goAddFriend(View view) {
-        ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class,null,-1);
+        ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
     }
 
-    private ContactAdapter.OnItemChildListence onSideMenuListence = new ContactAdapter.OnItemChildListence(){
+    private ContactAdapter.OnItemChildListence onSideMenuListence = new ContactAdapter.OnItemChildListence() {
         @Override
         public void itemClick(int position, ContactBean entity) {
-            switch (entity.getStatus()){
+            switch (entity.getStatus()) {
                 case 1:
-                    ((HomeActivity)mActivity).setFragmentDot(1,0);
+                    ((HomeActivity) mActivity).setFragmentDot(1, 0);
                     ActivityUtil.next(mActivity, NewFriendActivity.class);
                     break;
                 case 6:
@@ -169,13 +167,13 @@ public class ContactFragment extends BaseFragment {
 
         @Override
         public void setFriend(int position, ContactBean entity) {
-            switch (entity.getStatus()){
+            switch (entity.getStatus()) {
                 case 2:
-                    GroupSetActivity.startActivity(mActivity,entity.getPub_key());
+                    GroupSetActivity.startActivity(mActivity, entity.getPub_key());
                     break;
                 case 3:
                 case 4:
-                    FriendSetAliasActivity.startActivity(mActivity,entity.getPub_key());
+                    FriendSetAliasActivity.startActivity(mActivity, entity.getPub_key());
                     break;
                 default:
                     break;
@@ -183,8 +181,8 @@ public class ContactFragment extends BaseFragment {
         }
     };
 
-    private void updataContact(){
-        new AsyncTask<Void,Void,Void>(){
+    private void updataContact() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 listRequest = contactManage.getContactRequest();
@@ -192,6 +190,7 @@ public class ContactFragment extends BaseFragment {
                 friendMap = contactManage.getFriendList();
                 return null;
             }
+
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -200,13 +199,14 @@ public class ContactFragment extends BaseFragment {
         }.execute();
     }
 
-    private void updataRequest(){
-        new AsyncTask<Void,Void,Void>(){
+    private void updataRequest() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 listRequest = contactManage.getContactRequest();
                 return null;
             }
+
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -215,13 +215,14 @@ public class ContactFragment extends BaseFragment {
         }.execute();
     }
 
-    private void updataGroup(){
-        new AsyncTask<Void,Void,Void>(){
+    private void updataGroup() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 groupList = contactManage.getGroupData();
                 return null;
             }
+
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -230,13 +231,14 @@ public class ContactFragment extends BaseFragment {
         }.execute();
     }
 
-    private void updataFriend(){
-        new AsyncTask<Void,Void,Void>(){
+    private void updataFriend() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 friendMap = contactManage.getFriendList();
                 return null;
             }
+
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -245,7 +247,7 @@ public class ContactFragment extends BaseFragment {
         }.execute();
     }
 
-    private void bindData(){
+    private void bindData() {
         ArrayList<ContactBean> finalList = new ArrayList<>();
         int friendSize = friendMap.get("friend").size() + friendMap.get("favorite").size();
         int groupSize = groupList.size();
@@ -256,14 +258,14 @@ public class ContactFragment extends BaseFragment {
         adapter.setStartPosition(finalList.size() - friendMap.get("friend").size());
 
         String bottomTxt = "";
-        if(friendSize > 0 && groupSize == 0){
-            bottomTxt = mActivity.getString(R.string.Link_contact_count,friendSize,"","");
-        }else if(friendSize == 0 && groupSize > 0){
-            bottomTxt = mActivity.getString(R.string.Link_group_count,groupSize);
-        }else if(friendSize > 0 && groupSize > 0){
+        if (friendSize > 0 && groupSize == 0) {
+            bottomTxt = mActivity.getString(R.string.Link_contact_count, friendSize, "", "");
+        } else if (friendSize == 0 && groupSize > 0) {
+            bottomTxt = mActivity.getString(R.string.Link_group_count, groupSize);
+        } else if (friendSize > 0 && groupSize > 0) {
             bottomTxt = String.format(mActivity.getString(R.string.Link_contact_count_group_count), friendSize, groupSize);
         }
-        adapter.setDataNotify(finalList,bottomTxt);
+        adapter.setDataNotify(finalList, bottomTxt);
     }
 
     @Override

@@ -32,6 +32,9 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 import connect.utils.transfer.TransferEditView;
@@ -121,7 +124,7 @@ public class GatherActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView();
+        transferEditView.initView(activity);
         transferEditView.setVisibilityAmount(View.GONE);
         transferEditView.setFeeVisibility(View.GONE);
         transferEditView.setEditListener(new TransferEditView.OnEditListener() {
@@ -167,7 +170,7 @@ public class GatherActivity extends BaseActivity {
             transferEditView.setAmountTvGone();
 
             int countMem = ContactHelper.getInstance().loadGroupMemEntity(gatherKey).size();
-            edit.setText(String.valueOf(countMem));
+            edit.setText(String.valueOf(countMem-1));
 
             txt2.setVisibility(View.VISIBLE);
             String amoutTxt = transferEditView.getCurrentBtc();
@@ -182,12 +185,10 @@ public class GatherActivity extends BaseActivity {
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.btn:
-                long amout = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
                 if (gatherType == 0) {
-                    requestSingleGather(amout);
+                    requestSingleGather();
                 } else if (gatherType == 1 && !TextUtils.isEmpty(edit.getText())) {
-                    int member = Integer.parseInt(edit.getText().toString());
-                    requestGroupGather(amout * member);
+                    requestGroupGather();
                 }
                 break;
         }
@@ -207,34 +208,24 @@ public class GatherActivity extends BaseActivity {
     /**
      * A single payment
      */
-    protected void requestSingleGather(final long amout) {
-        Connect.ReceiveBill receiveBill = Connect.ReceiveBill.newBuilder().setSender(friendEntity.getAddress())
-                .setAmount(amout).setTips(transferEditView.getNote()).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.BILLING_RECIVE, receiveBill, new ResultCall<Connect.HttpResponse>() {
+    protected void requestSingleGather() {
+        CurrencyEnum currencyEnum = transferEditView.getCurrencyEnum();
+        final long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
+        String senderAddress = friendEntity.getPub_key();
+        String tips = transferEditView.getNote();
+        BaseBusiness baseBusiness = new BaseBusiness(activity, currencyEnum);
+        baseBusiness.friendReceiver(amount, senderAddress, tips, new WalletListener<Connect.Bill>() {
+
             @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
-                    }
-
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.BillHashId hashId = Connect.BillHashId.parseFrom(structData.getPlainData());
-
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(hashId)){
-                        ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
-                        GatherBean gatherBean = new GatherBean(hashId.getHash(), amout, 1, false, transferEditView.getNote());
-                        MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
-                        ActivityUtil.goBack(activity);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            public void success(Connect.Bill bill) {
+                ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
+                GatherBean gatherBean = new GatherBean(bill.getHash(), amount, 1, false, bill.getTips());
+                MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+                ActivityUtil.goBack(activity);
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void fail(WalletError error) {
 
             }
         });
@@ -243,38 +234,26 @@ public class GatherActivity extends BaseActivity {
     /**
      * Group gathering
      */
-    protected void requestGroupGather(final long amout) {
-        Connect.LaunchCrowdfunding crowdfunding = Connect.LaunchCrowdfunding.newBuilder()
-                .setGroupHash(gatherKey)
-                .setTotal(amout)
-                .setTips(transferEditView.getNote())
-                .setSize(Integer.parseInt(edit.getText().toString())).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CROWDFUN_LAUNCH, crowdfunding, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    //check sign
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
-                    }
+    protected void requestGroupGather() {
+        long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
+        int member = Integer.parseInt(edit.getText().toString());
+        long totalAmount = amount * member;
+        String tips = transferEditView.getNote();
 
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.Crowdfunding funding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(funding)){
-                        int size = Integer.parseInt(edit.getText().toString());
-                        GatherBean gatherBean = new GatherBean(funding.getHashId(), amout / size, size, true, transferEditView.getNote());
-                        MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
-                        ActivityUtil.goBack(activity);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        BaseBusiness baseBusiness = new BaseBusiness(activity, transferEditView.getCurrencyEnum());
+        baseBusiness.crowdFuning(gatherKey, totalAmount, member, tips, new WalletListener<Connect.Crowdfunding>() {
+
+            @Override
+            public void success(Connect.Crowdfunding crowdfunding) {
+                int size = Integer.parseInt(edit.getText().toString());
+                GatherBean gatherBean = new GatherBean(crowdfunding.getHashId(), crowdfunding.getTotal() / size, size, true, crowdfunding.getTips());
+                MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+                ActivityUtil.goBack(activity);
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-                ToastUtil.getInstance().showToast(response.getCode() + response.getMessage());
+            public void fail(WalletError error) {
+
             }
         });
     }

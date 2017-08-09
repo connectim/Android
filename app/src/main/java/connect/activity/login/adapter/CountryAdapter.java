@@ -1,5 +1,7 @@
 package connect.activity.login.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.ui.activity.R;
 import connect.activity.login.bean.CountryBean;
 import connect.utils.PinyinUtil;
@@ -16,39 +19,30 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import protos.Connect;
 
 /**
  * Created by Administrator on 2017/1/5.
  */
-public class CountryAdapter extends BaseAdapter {
+public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHolder> {
 
+    private Activity activity;
     private ArrayList<CountryBean> mDataList = new ArrayList<>();
 
-    @Override
-    public int getCount() {
-        return mDataList.size();
+    public CountryAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mDataList.get(position);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_login_country, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_login_country, parent, false);
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         CountryBean countryBean = mDataList.get(position);
         holder.countryTv.setText("+" + countryBean.getCode() + " " + countryBean.getName());
 
@@ -63,9 +57,26 @@ public class CountryAdapter extends BaseAdapter {
             holder.topTv.setVisibility(View.VISIBLE);
             holder.topTv.setText(curName);
         }
-
-        return convertView;
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mDataList!=null&&position<=mDataList.size()){
+                    itemClickListener.itemClick(mDataList.get(position));
+                }
+            }
+        });
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mDataList.size();
+    }
+
 
     public void setDataNotify(List<CountryBean> list) {
         mDataList.clear();
@@ -73,14 +84,15 @@ public class CountryAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    static class ViewHolder {
-        @Bind(R.id.top_tv)
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
         TextView topTv;
-        @Bind(R.id.country_tv)
         TextView countryTv;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            topTv = (TextView) itemview.findViewById(R.id.top_tv);
+            countryTv = (TextView) itemview.findViewById(R.id.country_tv);
         }
     }
 
@@ -96,6 +108,16 @@ public class CountryAdapter extends BaseAdapter {
             }
         }
         return -1;
+    }
+
+    private OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void itemClick(CountryBean countryBean);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
 }

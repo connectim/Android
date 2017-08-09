@@ -21,7 +21,6 @@ import protos.Connect;
 public class PacketDetailPresenter implements PacketDetailContract.Presenter{
 
     private PacketDetailContract.View mView;
-    private Connect.RedPackageInfo redPackageInfo;
     private Connect.UserInfo sendUserInfo;
 
     public PacketDetailPresenter(PacketDetailContract.View mView) {
@@ -45,9 +44,9 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    redPackageInfo = Connect.RedPackageInfo.parseFrom(structData.getPlainData());
-                    requestUserInfo();
-                    getRedStatus();
+                    Connect.RedPackageInfo redPackageInfo = Connect.RedPackageInfo.parseFrom(structData.getPlainData());
+                    requestUserInfo(redPackageInfo);
+                    getRedStatus(redPackageInfo);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -60,7 +59,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
         });
     }
 
-    private void requestUserInfo() {
+    private void requestUserInfo(Connect.RedPackageInfo redPackageInfo) {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(redPackageInfo.getRedpackage().getSendAddress())
                 .build();
@@ -86,7 +85,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
         });
     }
 
-    private void getRedStatus() {
+    public void getRedStatus(Connect.RedPackageInfo redPackageInfo) {
         List<Connect.GradRedPackageHistroy> list = redPackageInfo.getGradHistoryList();
         Connect.RedPackage redPackage = redPackageInfo.getRedpackage();
         String address = MemoryDataManager.getInstance().getAddress();

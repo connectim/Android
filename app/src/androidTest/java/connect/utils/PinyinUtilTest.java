@@ -17,7 +17,7 @@ public class PinyinUtilTest {
 
     @Test
     public void isChineseTest() throws Exception {
-        assertTrue(PinyinUtil.isChinese("什"));
+        assertTrue(PinyinUtil.isChinese("中文"));
     }
 
     @Test

@@ -12,26 +12,29 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.wallet.bean.CurrencyBean;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.bean.ContainerBean;
+import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.bean.MsgDirect;
+import connect.activity.wallet.BlockchainActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.ContainerBean;
-import connect.activity.wallet.BlockchainActivity;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
-import connect.utils.data.RateFormatUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
@@ -65,7 +68,11 @@ public class TransferDetailActivity extends BaseActivity {
     LinearLayout linearlayout;
 
     private TransferDetailActivity activity;
-    private Object[] objects = null;
+    private int transferType;// 0:outer 1:inner
+    private String senderKey;
+    private String receiverKey;
+    private String hashId;
+    private String msgId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +82,13 @@ public class TransferDetailActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, Object... objects) {
+    public static void startActivity(Activity activity, int transferType, String sender, String receiver, String hashid, String msgid) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("objs", objects);
+        bundle.putInt("TransferType", transferType);
+        bundle.putString("Sender", sender);
+        bundle.putString("Receiver", receiver);
+        bundle.putString("Hash", hashid);
+        bundle.putString("Msgid", msgid);
         ActivityUtil.next(activity, TransferDetailActivity.class, bundle);
     }
 
@@ -94,15 +105,26 @@ public class TransferDetailActivity extends BaseActivity {
             }
         });
 
-        objects= (Object[]) getIntent().getSerializableExtra("objs");
-        requestTransferDetail((int)objects[0], (String)objects[1]);
+        transferType = getIntent().getIntExtra("TransferType", 0);
+        senderKey = getIntent().getStringExtra("Sender");
+        receiverKey = getIntent().getStringExtra("Receiver");
+        hashId = getIntent().getStringExtra("Hash");
+        msgId = getIntent().getStringExtra("Msgid");
+
+        if (transferType == 0) {
+            requestInnerTransferDetail(hashId);
+        } else if (transferType == 1) {
+            requestOuterTransferDetail(hashId);
+        }
+        loadSenderInfo(senderKey);
+        loadReceiverInfo(receiverKey);
     }
 
     @OnClick({R.id.linearlayout})
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.linearlayout:
-                BlockchainActivity.startActivity(activity, CurrencyBean.BTC, (String) objects[1]);
+                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, hashId);
                 break;
         }
     }
@@ -110,12 +132,76 @@ public class TransferDetailActivity extends BaseActivity {
     /**
      * Request to transfer details
      *
-     * @param transtype 0:outer 1:inner
      * @param hashid
      */
-    public void requestTransferDetail(int transtype, final String hashid) {
+    public void requestInnerTransferDetail(final String hashid) {
         Connect.BillHashId hashId = Connect.BillHashId.newBuilder().setHash(hashid).build();
-        OkHttpUtil.getInstance().postEncrySelf(0 == transtype ? UriUtil.TRANSFER_INNER : UriUtil.TRANSFER_OUTER, hashId,
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.TRANSFER_INNER, hashId, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
+                        throw new Exception("Validation fails");
+                    }
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
+                        if (TextUtils.isEmpty(bill.getTips())) {
+                            txt7.setVisibility(View.GONE);
+                        } else {
+                            txt7.setText(bill.getTips());
+                        }
+
+                        txt1.setText(getString(R.string.Set_BTC_symbol) + "" + RateFormatUtil.longToDoubleBtc(bill.getAmount()));
+                        txt2.setText(bill.getTxid());
+                        linearlayout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, bill.getTxid());
+                            }
+                        });
+                        txt3.setText(TimeUtil.getTime(bill.getCreatedAt() * 1000, TimeUtil.DEFAULT_DATE_FORMAT));
+                        String state = "";
+                        switch (bill.getStatus()) {
+                            case 0://do not pay
+                                state = getString(R.string.Chat_Unpaid);
+                                txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                                break;
+                            case 1://do not confirm
+                                state = getString(R.string.Wallet_Unconfirmed);
+                                txt4.setBackgroundResource(R.drawable.shape_stroke_red);
+                                break;
+                            case 2://confirm
+                                state = getString(R.string.Wallet_Confirmed);
+                                txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                                break;
+                        }
+                        txt4.setText(state);
+                        TransactionHelper.getInstance().updateTransEntity(hashid, msgId, bill.getStatus());
+                        ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.TRANSFER_STATE, msgId, hashid);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+
+            }
+        });
+    }
+
+
+    /**
+     * Request to transfer details
+     *
+     * @param hashid
+     */
+    public void requestOuterTransferDetail(final String hashid) {
+        Connect.BillHashId hashId = Connect.BillHashId.newBuilder().setHash(hashid).build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.TRANSFER_OUTER, hashId,
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
@@ -125,47 +211,42 @@ public class TransferDetailActivity extends BaseActivity {
                                 throw new Exception("Validation fails");
                             }
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
-                            if(!ProtoBufUtil.getInstance().checkProtoBuf(bill)){
-                                return;
-                            }
-
-                            loadSenderInfo(bill.getSender());
-                            loadReceiverInfo(bill.getReceiver());
-
-                            if (TextUtils.isEmpty(bill.getTips())) {
-                                txt7.setVisibility(View.GONE);
-                            } else {
-                                txt7.setText(bill.getTips());
-                            }
-
-                            txt1.setText(getString(R.string.Set_BTC_symbol) + "" + RateFormatUtil.longToDoubleBtc(bill.getAmount()));
-                            txt2.setText(bill.getTxid());
-                            linearlayout.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    BlockchainActivity.startActivity(activity,CurrencyBean.BTC, bill.getTxid());
+                            final Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData().toByteArray());
+                            if (ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)) {
+                                if (TextUtils.isEmpty(billingInfo.getTips())) {
+                                    txt7.setVisibility(View.GONE);
+                                } else {
+                                    txt7.setText(billingInfo.getTips());
                                 }
-                            });
-                            txt3.setText(TimeUtil.getTime(bill.getCreatedAt()*1000,TimeUtil.DEFAULT_DATE_FORMAT));
-                            String state = "";
-                            switch (bill.getStatus()) {
-                                case 0://do not pay
-                                    state = getString(R.string.Chat_Unpaid);
-                                    txt4.setBackgroundResource(R.drawable.shape_stroke_green);
-                                    break;
-                                case 1://do not confirm
-                                    state = getString(R.string.Wallet_Unconfirmed);
-                                    txt4.setBackgroundResource(R.drawable.shape_stroke_red);
-                                    break;
-                                case 2://confirm
-                                    state = getString(R.string.Wallet_Confirmed);
-                                    txt4.setBackgroundResource(R.drawable.shape_stroke_green);
-                                    break;
+
+                                txt1.setText(getString(R.string.Set_BTC_symbol) + "" + RateFormatUtil.longToDoubleBtc(billingInfo.getAmount()));
+                                txt2.setText(billingInfo.getTxid());
+                                linearlayout.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, billingInfo.getTxid());
+                                    }
+                                });
+                                txt3.setText(TimeUtil.getTime(billingInfo.getCreatedAt() * 1000, TimeUtil.DEFAULT_DATE_FORMAT));
+                                String state = "";
+                                switch (billingInfo.getStatus()) {
+                                    case 0://do not pay
+                                        state = getString(R.string.Chat_Unpaid);
+                                        txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                                        break;
+                                    case 1://do not confirm
+                                        state = getString(R.string.Wallet_Unconfirmed);
+                                        txt4.setBackgroundResource(R.drawable.shape_stroke_red);
+                                        break;
+                                    case 2://confirm
+                                        state = getString(R.string.Wallet_Confirmed);
+                                        txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                                        break;
+                                }
+                                txt4.setText(state);
+                                TransactionHelper.getInstance().updateTransEntity(hashid, msgId, billingInfo.getStatus());
+                                ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.TRANSFER_STATE, msgId, hashid);
                             }
-                            txt4.setText(state);
-                            TransactionHelper.getInstance().updateTransEntity(hashid, (String) objects[1], bill.getStatus());
-                            ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.TRANSFER_STATE, objects[2], hashid);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -180,21 +261,22 @@ public class TransferDetailActivity extends BaseActivity {
 
     /**
      * send information
-     * @param address
+     * @param pubkey
      */
-    protected void loadSenderInfo(String address) {
+    protected void loadSenderInfo(String pubkey) {
         String avatar = "";
         String name = "";
 
-        if (MemoryDataManager.getInstance().getAddress().equals(address)) {
+        if (MemoryDataManager.getInstance().getPubKey().equals(pubkey)) {
             avatar = MemoryDataManager.getInstance().getAvatar();
             name = MemoryDataManager.getInstance().getName();
         } else {
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
+            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
             if (friendEntity != null) {
                 avatar = friendEntity.getAvatar();
                 name = friendEntity.getUsername();
             } else {
+                String address = SupportKeyUril.getAddressFromPubkey(pubkey);
                 requestUserInfo(0, address);
             }
         }
@@ -211,21 +293,22 @@ public class TransferDetailActivity extends BaseActivity {
 
     /**
      * receiver information
-     * @param address
+     * @param pubkey
      */
-    protected void loadReceiverInfo(String address) {
+    protected void loadReceiverInfo(String pubkey) {
         String avatar = "";
         String name = "";
 
-        if (MemoryDataManager.getInstance().getAddress().equals(address)) {
+        if (MemoryDataManager.getInstance().getPubKey().equals(pubkey)) {
             avatar = MemoryDataManager.getInstance().getAvatar();
             name = MemoryDataManager.getInstance().getName();
         } else {
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
+            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
             if (friendEntity != null) {
                 avatar = friendEntity.getAvatar();
                 name = friendEntity.getUsername();
             } else {
+                String address = SupportKeyUril.getAddressFromPubkey(pubkey);
                 requestUserInfo(1, address);
             }
         }

@@ -88,64 +88,73 @@ public class FriendChat extends NormalChat {
 
     @Override
     public void sendPushMsg(Object bean) {
-        MsgDefinBean definBean = ((MsgEntity) bean).getMsgDefinBean();
-        String msgStr = new Gson().toJson(definBean);
+        try {
+            MsgDefinBean definBean = ((MsgEntity) bean).getMsgDefinBean();
+            String msgStr = new Gson().toJson(definBean);
 
-        String priKey = null;
-        byte[] randomSalt = null;
-        String friendKey = null;
+            String priKey = null;
+            byte[] randomSalt = null;
+            String friendKey = null;
 
-        loadUserCookie();
-        loadFriendCookie(definBean.getPublicKey());
-        SupportKeyUril.EcdhExts ecdhExts = null;
-        Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
+            loadUserCookie();
+            loadFriendCookie(definBean.getPublicKey());
+            SupportKeyUril.EcdhExts ecdhExts = null;
+            Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
 
-        switch (encryType) {
-            case NORMAL:
-                priKey = MemoryDataManager.getInstance().getPriKey();
-                friendKey = definBean.getPublicKey();
-                ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
-                break;
-            case HALF:
-                priKey = userCookie.getPriKey();
-                randomSalt = userCookie.getSalt();
+            switch (encryType) {
+                case NORMAL:
+                    priKey = MemoryDataManager.getInstance().getPriKey();
+                    friendKey = definBean.getPublicKey();
+                    ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
+                    break;
+                case HALF:
+                    priKey = userCookie.getPriKey();
+                    randomSalt = userCookie.getSalt();
 
-                friendKey = definBean.getPublicKey();
-                ecdhExts = SupportKeyUril.EcdhExts.OTHER;
-                ecdhExts.setBytes(randomSalt);
-                builder.setSalt(ByteString.copyFrom(randomSalt)).setChatPubKey(userCookie.getPubKey());
-                break;
-            case BOTH:
-                priKey = userCookie.getPriKey();
-                randomSalt = userCookie.getSalt();
+                    friendKey = definBean.getPublicKey();
+                    ecdhExts = SupportKeyUril.EcdhExts.OTHER;
+                    ecdhExts.setBytes(randomSalt);
+                    builder.setSalt(ByteString.copyFrom(randomSalt)).setChatPubKey(userCookie.getPubKey());
+                    break;
+                case BOTH:
+                    priKey = userCookie.getPriKey();
+                    randomSalt = userCookie.getSalt();
 
-                friendKey = friendCookie.getPubKey();
-                byte[] friendSalt = friendCookie.getSalt();
-                ecdhExts = SupportKeyUril.EcdhExts.OTHER;
-                ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt, 64));
-                builder.setSalt(ByteString.copyFrom(randomSalt)).setChatPubKey(userCookie.getPubKey()).
-                        setVer(ByteString.copyFrom(friendCookie.getSalt()));
-                break;
+                    friendKey = friendCookie.getPubKey();
+                    byte[] friendSalt = friendCookie.getSalt();
+                    if (friendCookie == null || friendSalt == null || friendSalt.length == 0) {
+                        return;
+                    }
+                    ecdhExts = SupportKeyUril.EcdhExts.OTHER;
+                    ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt));
+                    builder.setSalt(ByteString.copyFrom(randomSalt)).setChatPubKey(userCookie.getPubKey()).
+                            setVer(ByteString.copyFrom(friendCookie.getSalt()));
+                    break;
+            }
+
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, priKey, friendKey, msgStr.getBytes());
+            builder.setCipherData(gcmData).
+                    setMsgId(definBean.getMessage_id()).
+                    setTyp(definBean.getType()).
+                    setReceiverAddress(((MsgEntity) bean).getRecAddress());
+
+            Connect.MessageData messageData = builder.build();
+            ChatSendManager.getInstance().sendChatAckMsg(SocketACK.SINGLE_CHAT, definBean.getPublicKey(), messageData);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, priKey, friendKey, msgStr.getBytes());
-        builder.setCipherData(gcmData).
-                setMsgId(definBean.getMessage_id()).
-                setTyp(definBean.getType()).
-                setReceiverAddress(((MsgEntity) bean).getRecAddress());
-
-        Connect.MessageData messageData = builder.build();
-        ChatSendManager.getInstance().sendChatAckMsg(SocketACK.SINGLE_CHAT, definBean.getPublicKey(), messageData);
     }
 
     @Override
     public String headImg() {
-        return contactEntity.getAvatar();
+        String avatar = TextUtils.isEmpty(contactEntity.getAvatar()) ? "" : contactEntity.getAvatar();
+        return avatar;
     }
 
     @Override
     public String nickName() {
-        return TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
+        String nickName = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
+        return TextUtils.isEmpty(nickName) ? "" : nickName;
     }
 
     @Override
@@ -163,7 +172,8 @@ public class FriendChat extends NormalChat {
 
     @Override
     public String roomKey() {
-        return contactEntity.getPub_key();
+        String pubKey = TextUtils.isEmpty(contactEntity.getPub_key()) ? "" : contactEntity.getPub_key();
+        return pubKey;
     }
 
     @Override

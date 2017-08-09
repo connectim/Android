@@ -1,18 +1,28 @@
 package connect.activity.set;
 
 import android.app.Dialog;
+import android.app.WallpaperInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import connect.activity.wallet.bean.WalletBean;
+import connect.database.MemoryDataManager;
+import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.activity.login.bean.UserBean;
 import connect.utils.LoginPassCheckUtil;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.cryption.SupportKeyUril;
+import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 
 import butterknife.Bind;
@@ -71,9 +81,11 @@ public class SafetyActivity extends BaseActivity {
             phoneTv.setText(R.string.Set_Phone_unbinded);
         }else{
             try {
-                String phone = userBean.getPhone().split("-")[1];
-                phoneTv.setText(phone);
-            }catch (Exception e){
+                String phoneNum = userBean.getPhone();
+                String[] spliteArr = phoneNum.split("-");
+                String showpPhone = spliteArr == null || spliteArr.length <= 1 ? phoneNum : spliteArr[1];
+                phoneTv.setText(showpPhone);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

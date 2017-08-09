@@ -2,7 +2,6 @@ package connect.utils;
 
 import android.content.Context;
 
-import connect.ui.activity.Manifest;
 import connect.ui.activity.R;
 import connect.activity.base.BaseApplication;
 
@@ -73,16 +72,6 @@ public class TimeUtil {
 
     /**
      * Timestamp to descriptive time
-     * @param msgtime
-     * @return
-     * @throws Exception
-     */
-    public static String getMsgTime(long msgtime) throws Exception {
-        return getMsgTime(TimeUtil.getCurrentTimeInLong() - 3 * 1000, msgtime);
-    }
-
-    /**
-     * Timestamp to descriptive time
      * @param lasttime
      * @param msgtime
      * @return
@@ -118,12 +107,12 @@ public class TimeUtil {
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgtime);
                         break;
-                    case 1:
+                    case -1:
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgtime);
-                        showTime = context.getString(R.string.Chat_Yesterday)+" "+showTime;
+                        showTime = context.getString(R.string.Chat_Yesterday) + " " + showTime;
                         break;
-                    case 2:
+                    case -2:
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgtime);
                         showTime = context.getString(R.string.Chat_the_day_before_yesterday_time, " " + showTime);

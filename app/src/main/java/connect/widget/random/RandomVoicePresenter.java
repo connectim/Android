@@ -7,10 +7,12 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import java.io.File;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 
 import connect.utils.FileUtil;
 import connect.utils.StringUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.permission.PermissionUtil;
 import connect.wallet.jni.AllNativeMethod;
 
@@ -118,8 +120,10 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
                             iMediaRecorder.release();
                             iMediaRecorder = null;
                         }
-                        String strForBmp = StringUtil.bytesToHexString(FileUtil.filePathToByteArray(file.getPath()));
-                        random = AllNativeMethod.cdGetHash256(strForBmp);
+
+                        byte[] valueByte = SupportKeyUril.byteSHA512(FileUtil.filePathToByteArray(file.getPath()));
+                        String strForBmp = StringUtil.bytesToHexString(valueByte);
+                        random = strForBmp;
                     }
                 }
             }

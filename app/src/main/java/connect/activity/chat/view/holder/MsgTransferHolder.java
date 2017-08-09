@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import connect.activity.chat.bean.MsgDefinBean;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
@@ -48,14 +49,20 @@ public class MsgTransferHolder extends MsgChatHolder {
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TransferDetailActivity.startActivity((Activity) context, transferExt.getType(), entity.getMsgDefinBean().getContent(),entity.getMsgid());
+                MsgDefinBean definBean = entity.getMsgDefinBean();
+                int transferType = transferExt.getType();
+                String sender = definBean.getSenderInfoExt().getPublickey();
+                String receiver = definBean.getPublicKey();
+                String hashid = definBean.getContent();
+                String msgid = definBean.getMessage_id();
+                TransferDetailActivity.startActivity((Activity) context, transferType,sender,receiver,hashid,msgid);
             }
         });
 
-//        if (entity.getTransStatus() == 0) {
-//            String hashid = entity.getMsgDefinBean().getContent();
-//            String messageid = entity.getMsgid();
-//            TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 1);
-//        }
+        if (entity.getTransStatus() == 0) {
+            String hashid = entity.getMsgDefinBean().getContent();
+            String messageid = entity.getMsgid();
+            TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 1);
+        }
     }
 }

@@ -14,9 +14,9 @@ public class ConversionEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-
     @Unique
     private String identifier;
+
     private Integer type;
     private String name;
     private String avatar;
@@ -27,6 +27,7 @@ public class ConversionEntity implements Serializable {
     private Integer notice;
     private Integer stranger;
     private Long last_time;
+
     @Generated(hash = 2038489396)
     public ConversionEntity(Long _id, String identifier, Integer type, String name,
             String avatar, String draft, String content, Integer unread_count,

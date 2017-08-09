@@ -1,5 +1,7 @@
 package connect.activity.common.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,28 +13,51 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.ui.activity.R;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 /**
  * share card
  * Created by Administrator on 2017/2/20.
  */
 
-public class ConversationAdapter extends BaseAdapter {
+public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ViewHolder> {
 
+    private Activity activity;
     private List<RoomAttrBean> roomList = new ArrayList<>();
 
-    @Override
-    public int getCount() {
-        return roomList.size();
+    public ConversationAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
-    public Object getItem(int position) {
-        return roomList.get(position);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_contactcard, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        final RoomAttrBean roomAttrBean = roomList.get(position);
+        holder.txt.setVisibility(View.GONE);
+        holder.name.setText(roomAttrBean.getName());
+        GlideUtil.loadAvater(holder.roundimg,roomAttrBean.getAvatar());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (roomList != null && roomList.size() > position) {
+                    RoomAttrBean attrBean = roomList.get(position);
+                    itemClickListener.itemClick(attrBean);
+                }
+            }
+        });
     }
 
     @Override
@@ -41,22 +66,8 @@ public class ConversationAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contactcard, parent, false);
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        RoomAttrBean roomAttrBean = roomList.get(position);
-        holder.txt.setVisibility(View.GONE);
-        holder.name.setText(roomAttrBean.getName());
-        GlideUtil.loadAvater(holder.roundimg,roomAttrBean.getAvatar());
-
-        return convertView;
+    public int getItemCount() {
+        return roomList.size();
     }
 
     public void setDataNotify(List<RoomAttrBean> list) {
@@ -65,17 +76,28 @@ public class ConversationAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-    static class ViewHolder {
-        @Bind(R.id.txt)
         TextView txt;
-        @Bind(R.id.roundimg)
         RoundedImageView roundimg;
-        @Bind(R.id.tvName)
         TextView name;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            this.txt = (TextView) itemview.findViewById(R.id.txt);
+            this.roundimg = (RoundedImageView) itemview.findViewById(R.id.roundimg);
+            this.name = (TextView) itemview.findViewById(R.id.tvName);
+
         }
+    }
+
+    private OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void itemClick(RoomAttrBean attrBean);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 }

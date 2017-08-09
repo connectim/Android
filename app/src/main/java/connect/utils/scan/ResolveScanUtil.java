@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.net.URL;
-
 import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.chat.exts.TransferToActivity;
@@ -146,7 +145,7 @@ public class ResolveScanUtil {
             return;
         }
 
-        ToastEUtil.makeText(activity, R.string.Login_scan_string_error);
+        ToastEUtil.makeText(activity, R.string.Login_scan_string_error).show();
     }
 
     /**

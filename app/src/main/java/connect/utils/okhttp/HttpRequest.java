@@ -137,8 +137,7 @@ public class HttpRequest {
             @Override
             public void onFailure(Call call, IOException e) {
                 ProgressUtil.getInstance().dismissProgress();
-                String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
-                ToastUtil.getInstance().showToast(errorNet);
+                dealOnFailure(call);
             }
 
             @Override
@@ -182,10 +181,8 @@ public class HttpRequest {
             @Override
             public void onFailure(Call call, IOException e) {
                 ProgressUtil.getInstance().dismissProgress();
-
                 resultCall.onError();
-                String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
-                ToastUtil.getInstance().showToast(errorNet);
+                dealOnFailure(call);
             }
 
             @Override
@@ -214,6 +211,26 @@ public class HttpRequest {
                 }
             }
         });
+    }
+
+    /**
+     * Network access failure
+     * @param call
+     */
+    private void dealOnFailure(Call call){
+        try {
+            switch (call.execute().code()){
+                case 404:
+                    ToastUtil.getInstance().showToast(BaseApplication.getInstance().getBaseContext().getString(R.string.Set_Load_failed_please_try_again_later));
+                    break;
+                default:
+                    String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
+                    ToastUtil.getInstance().showToast(errorNet);
+                    break;
+            }
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
     }
 
     /**

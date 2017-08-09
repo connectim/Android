@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.login.StartActivity;
 import connect.database.MemoryDataManager;

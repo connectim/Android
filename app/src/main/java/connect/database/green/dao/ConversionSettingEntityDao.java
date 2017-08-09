@@ -44,7 +44,7 @@ public class ConversionSettingEntityDao extends AbstractDao<ConversionSettingEnt
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CONVERSION_SETTING_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
-                "\"IDENTIFIER\" TEXT," + // 1: identifier
+                "\"IDENTIFIER\" TEXT UNIQUE ," + // 1: identifier
                 "\"SNAP_TIME\" INTEGER," + // 2: snap_time
                 "\"DISTURB\" INTEGER);"); // 3: disturb
     }

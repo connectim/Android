@@ -12,28 +12,6 @@ import protos.Connect;
  */
 public class DecryptionUtil {
 
-
-    public static final int CRYPTION_TALKKEY_VER = 1;
-
-    /**
-     * Decryption TalkKey
-     *
-     * @param talkKey
-     * @param pass
-     * @return
-     */
-    public static String decodeTalkKey(String talkKey, String pass) {
-        String addressandpriKey_16 = AllNativeMethod.cdxTalkKeyDecrypt(talkKey, pass, CRYPTION_TALKKEY_VER);
-        try {
-            String priKey_16 = addressandpriKey_16.split("@")[1];
-            String prikey = AllNativeMethod.cdgetRawToPrivateKey(priKey_16);
-            return prikey;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     /**
      * Decryption Gcmdata returned to StructData
      *

@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -21,12 +22,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.set.manager.EditInputFilterPrice;
-import connect.activity.wallet.bean.CurrencyBean;
-import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.bean.CurrencyAddressEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.ToastEUtil;
+import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 
@@ -60,7 +64,9 @@ public class RequestActivity extends BaseActivity {
     public String scanHead;
     public String shareUrl = ConfigUtil.getInstance().sharePayAddress() + "?address=";
 
-    private CurrencyBean currencyBean = CurrencyBean.BTC;
+    private CurrencyEnum currencyBean = CurrencyEnum.BTC;
+    private CurrencyAddressEntity addressEntity;
+    private String currencyAddress="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,24 +85,40 @@ public class RequestActivity extends BaseActivity {
         mActivity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.close_white3x);
-
         toolbarTop.setTitle(null, R.string.Wallet_Receipt);
         toolbarTop.setRightImg(R.mipmap.wallet_share_payment2x);
 
-        scanHead = transferHeader(currencyBean) + MemoryDataManager.getInstance().getAddress() + "?" + "amount=";
-
-        addressTv.setText(MemoryDataManager.getInstance().getAddress());
         InputFilter[] inputFiltersBtc = {bitEditFilter};
         amountEt.setFilters(inputFiltersBtc);
         amountEt.addTextChangedListener(textWatcher);
-        CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(transferHeader(currencyBean) + MemoryDataManager.getInstance().getAddress());
-        scanImg.setImageBitmap(bitmap);
+        txt1.setText(getString(R.string.Wallet_Your_Bitcoin_Address_Title));
 
-        switch (currencyBean) {
-            case BTC:
-                txt1.setText(getString(R.string.Wallet_Your_Bitcoin_Address_Title));
-                break;
+        CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
+        if(entity != null){
+            addressEntity = entity;
+            currencyAddress = addressEntity.getAddress();
+            scanHead = transferHeader(currencyBean) +currencyAddress + "?" + "amount=";
+            addressTv.setText(currencyAddress);
+            showScanView(transferHeader(currencyBean) + currencyAddress);
+        }else{
+            NativeWallet.getInstance().initAccount(currencyBean).requestAddressList(new WalletListener<String>() {
+                @Override
+                public void success(String list) {
+                    CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
+                    if (entity == null) {
+                        ActivityUtil.goBack(mActivity);
+                    } else {
+                        addressEntity = entity;
+                        currencyAddress=addressEntity.getAddress();
+                        scanHead = transferHeader(currencyBean) +currencyAddress + "?" + "amount=";
+                        addressTv.setText(currencyAddress);
+                        showScanView(transferHeader(currencyBean) + currencyAddress);
+                    }
+                }
+
+                @Override
+                public void fail(WalletError error) {}
+            });
         }
     }
 
@@ -108,13 +130,17 @@ public class RequestActivity extends BaseActivity {
     @OnClick(R.id.address_lin)
     void goCopy(View view) {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        cm.setText(MemoryDataManager.getInstance().getAddress());
+        cm.setText(currencyAddress);
         ToastEUtil.makeText(mActivity, R.string.Set_Copied).show();
     }
 
     @OnClick(R.id.right_lin)
     void goshare(View view) {
-        String url = shareUrl + MemoryDataManager.getInstance().getAddress();
+        if (TextUtils.isEmpty(currencyAddress)) {
+            return;
+        }
+
+        String url = shareUrl + currencyAddress;
         if (!TextUtils.isEmpty(amountEt.getText().toString())) {
             url = url + "&amount=" + amountEt.getText().toString();
         }
@@ -154,17 +180,32 @@ public class RequestActivity extends BaseActivity {
         public void afterTextChanged(Editable s) {
             String scanUrl;
             if (TextUtils.isEmpty(s.toString())) {
-                scanUrl = transferHeader(currencyBean) + MemoryDataManager.getInstance().getAddress();
+                scanUrl = transferHeader(currencyBean) + currencyAddress;
             } else {
                 scanUrl = scanHead + s.toString();
             }
-            CreateScan createScan = new CreateScan();
-            Bitmap bitmap = createScan.generateQRCode(scanUrl);
-            scanImg.setImageBitmap(bitmap);
+            showScanView(scanUrl);
         }
     };
 
-    public String transferHeader(CurrencyBean bean) {
+    private void showScanView(final String scanUrl){
+        new AsyncTask<Void,Void,Bitmap>(){
+            @Override
+            protected Bitmap doInBackground(Void... params) {
+                CreateScan createScan = new CreateScan();
+                Bitmap bitmap = createScan.generateQRCode(scanUrl);
+                return bitmap;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                scanImg.setImageBitmap(bitmap);
+            }
+        }.execute();
+    }
+
+    public String transferHeader(CurrencyEnum bean) {
         String index = "bitcoin:";
         switch (bean) {
             case BTC:

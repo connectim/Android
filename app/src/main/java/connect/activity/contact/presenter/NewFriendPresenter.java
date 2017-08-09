@@ -12,6 +12,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.RecommandFriendEntity;
@@ -57,12 +58,12 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
 
         WalletMenuAdapter walletMenuAdapter = new WalletMenuAdapter(menuList, mView.getActivity());
         recycler.setLayoutManager(new GridLayoutManager(mView.getActivity(), 3));
+        recycler.addItemDecoration(new LineDecoration(mView.getActivity()));
         recycler.setAdapter(walletMenuAdapter);
-        walletMenuAdapter.setOnItemClickListence(new View.OnClickListener() {
+        walletMenuAdapter.setOnItemClickListener(new WalletMenuAdapter.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                int tag = (Integer) v.getTag();
-                mView.itemClick(tag);
+            public void itemClick(int position) {
+                mView.itemClick(position);
             }
         });
     }
@@ -99,6 +100,7 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 queryFriend();
+                ContactNotice.receiverAddFriend();
             }
         }.execute();
     }

@@ -54,6 +54,9 @@
     <string name="Chat_Crowd_funding">Crowd-funding</string>
     <string name="Chat_Crowd_funding_by_who">By %s</string>
     <string name="Chat_Crowdfoundind_History">History</string>
+    <string name="Link_Friend">Friend</string>
+    <string name="Wallet_Confirm_transfer">Confirm transfer</string>
+    <string name="Wallet_Transfer_details">Transfer details</string>
     <string name="Chat_Crowdfunding">Crowdfunding</string>
     <string name="Chat_Crowfunding">Create</string>
     <string name="Chat_Disable_self_destruct">Disable self-destruct</string>
@@ -569,6 +572,10 @@
     <string name="Set_you_can_login_mobile_number_link_one_account">After changing, you can login with new number\n one mobile number can only be linked to one account</string>
     <string name="Wallet">Wallet</string>
     <string name="Wallet_Detail">detail</string>
+    <string name="Wallet_not_create_wallet">You haven\'t create the purse</string>
+    <string name="Wallet_Immediately_create">Immediately create</string>
+    <string name="Wallet_not_update_wallet">You haven\'t updated your wallet</string>
+    <string name="Wallet_Immediately_update">Update now</string>
     <string name="Wallet_Packet_Send_User_Connect">Send the lucky packet via Connect</string>
     <string name="Wallet_Scan_to_pay_me">Scan to pay me</string>
     <string name="Wallet_Transfer_Count">Transfer(%d)</string>
@@ -578,13 +585,14 @@
     <string name="Wallet_Amount">Amount</string>
     <string name="Wallet_Amount_BTC">Amount(BTC)</string>
     <string name="Wallet_Amount_Each">Amount Each</string>
-    <string name="Wallet_Amount_is_too_small">Amount is too small!</string>
+    <string name="Wallet_Amount_is_too_small">When packing a transaction, an error occurs and the amount is too small</string>
+    <string name="Wallet_not_initialized_the_wallet_and_can_not_trade">The other party has not initialized the wallet and can not trade</string>
     <string name="Wallet_Amount_must_be_greater_than">Amount must be more than %f</string>
     <string name="Wallet_Amount_must_be_less_than">Amount must be less than %f</string>
     <string name="Wallet_Amount_of_member">Amount of member</string>
     <string name="Wallet_Amount_Symbol">Amount(%s)</string>
     <string name="Wallet_Auto_Calculate_Miner_Fee">Auto Calculate Transaction Fee</string>
-    <string name="Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue">Automatic calculation of fees(%sBTC) is greater than the maximum set, whether to need to modify the fees for maximum and continue?</string>
+    <string name="Wallet_Auto_fees_greater_than_the_maximum_continue">Automatic calculation of fee (% sBTC) is greater than the maximum set, whether or not to continue?</string>
     <string name="Wallet_BTC_Each">%s BTC Each</string>
     <string name="Wallet_BTC_Total">%s BTC Total</string>
     <string name="Wallet_Balance">Balance: ฿%s</string>
@@ -603,6 +611,7 @@
     <string name="Wallet_Congratulations">Congratulations!</string>
     <string name="Wallet_Connect_Pay">Connect Pay</string>
     <string name="Wallet_Connect_term">Connect team</string>
+    <string name="Wallet_The_Connect_system_address">The Connect system address</string>
     <string name="Wallet_Could_not_get_himself_sent_money_transfer">Can\'t get the transfer from yourself</string>
     <string name="Wallet_Each">Each</string>
     <string name="Wallet_Enter_4_Digits">Enter 4 Digits</string>
@@ -716,4 +725,11 @@
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_system_luckypackage_have_been_frozen">system luckypackage have been frozen</string>
     <string name="Chat_one_device_can_only_grab_a_luckypackage">one device can only grab a luckypackage</string>
+    <string name="Wallet_create_currency_failed">create currency failed</string>
+    <string name="Wallet_Create_wallet_failed">create wallet failed</string>
+    <string name="Wallet_synchronization_data_failed">synchronization data failed</string>
+    <string name="Set_please_enter_the_original_password">Enter the original password</string>
+    <string name="Wallet_Failed_to_get_the_list_address">Failed to get the list address</string>
+    <string name="title_activity_group_create">GroupCreateActivity</string>
+    <string name="title_activity_group_invite">GroupInviteActivity</string>
 </resources>

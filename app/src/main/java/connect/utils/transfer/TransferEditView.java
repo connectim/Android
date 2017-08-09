@@ -1,6 +1,9 @@
 package connect.utils.transfer;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -20,27 +23,35 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.ui.activity.R;
+import connect.activity.base.BaseApplication;
+import connect.activity.home.bean.HomeAction;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.manager.EditInputFilterPrice;
 import connect.activity.wallet.bean.RateBean;
-import connect.activity.wallet.bean.WalletAccountBean;
-import connect.activity.base.BaseApplication;
+import connect.activity.wallet.bean.WalletBean;
+import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.bean.CurrencyEntity;
+import connect.im.bean.UserOrderBean;
+import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.ProtoBufUtil;
+import connect.utils.ProgressUtil;
 import connect.utils.RegularUtil;
-import connect.utils.UriUtil;
 import connect.utils.data.RateDataUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.InitWalletManager;
+import connect.wallet.cwallet.NativeWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.currency.BaseCurrency;
+import connect.wallet.cwallet.inter.WalletListener;
+import connect.widget.random.RandomVoiceActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Transfer amount input
@@ -84,7 +95,9 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     private boolean isClickTransfer;
     private String note = "";
     private PaySetBean paySetBean;
-    private WalletAccountBean accountBean;
+    private CurrencyEnum currencyEnum = CurrencyEnum.BTC;
+    private Activity mActivity;
+    private InitWalletManager initWalletManager;
 
     public TransferEditView(Context context) {
         this(context, null);
@@ -135,16 +148,38 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
             }
         });
+        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                RateFormatUtil.longToDoubleBtc(0L)));
+        // requestWallet();
+        initWalletManager = new InitWalletManager(mActivity,currencyEnum);
+        initWalletManager.checkWallet(true, new WalletListener<CurrencyEntity>() {
+            @Override
+            public void success(CurrencyEntity currencyEntity) {
+                if(currencyEntity != null){
+                    amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                            RateFormatUtil.longToDoubleBtc(currencyEntity.getAmount())));
+                }else{
+                    amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                            RateFormatUtil.longToDoubleBtc(0L)));
+                }
+            }
+
+            @Override
+            public void fail(WalletError error) {
+
+            }
+        });
     }
 
     /**
      * Initialize the View must be called again
      */
-    public void initView(){
-        initView(null);
+    public void initView(Activity mActivity){
+        initView(null,mActivity);
     }
 
-    public void initView(Double amount){
+    public void initView(Double amount,Activity mActivity){
+        this.mActivity = mActivity;
         if(amount != null){
             editDefault = RateFormatUtil.doubleToLongBtc(amount);
         }
@@ -157,7 +192,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         }
         editTitleTv.setText(context.getString(R.string.Wallet_Amount_BTC));
         editSymbolTv.setText(btcBean.getSymbol());
-        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit, RateFormatUtil.longToDoubleBtc(0)));
         amoutinputEt.addTextChangedListener(textWatcher);
         amoutinputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
         amoutinputEt.setFilters(btcInputFilters);
@@ -167,7 +201,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
             feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
         }
         requestRate();
-        requestWallet();
     }
 
     @Override
@@ -306,35 +339,11 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         });
     }
 
-    /**
-     * Get the wallet balance
-     */
-    private void requestWallet(){
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
-        accountBean = new WalletAccountBean(0L,0L);
-        OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
-            @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                try {
-                    if (response.getCode() == 2000) {
-                        Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
-                            accountBean = new WalletAccountBean(unspentAmount.getAmount(),unspentAmount.getAvaliableAmount());
-                            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                    RateFormatUtil.longToDoubleBtc(accountBean.getAvaAmount())));
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-                amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                        RateFormatUtil.longToDoubleBtc(0)));
-            }
-        });
+    public void createWallet(Intent data){
+        String baseSend = data.getExtras().getString("random");
+        String pin = data.getExtras().getString("pin");
+        int status = data.getExtras().getInt("status");
+        initWalletManager.requestCreateWallet(baseSend, pin, status);
     }
 
     /**
@@ -345,13 +354,18 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         return currentBtc;
     }
 
+    public Long getCurrentBtcLong(){
+        long amount = RateFormatUtil.stringToLongBtc(currentBtc);
+        return amount;
+    }
+
     /**
      * available balance
      * @return
      */
-    public Long getAvaAmount(){
+    /*public Long getAvaAmount(){
         return null == accountBean.getAvaAmount() ? 0 : accountBean.getAvaAmount();
-    }
+    }*/
 
     /**
      * Hide it when you don't need to display the available amount
@@ -398,6 +412,13 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
      */
     public void setFeeVisibility(int visibility){
         findViewById(R.id.linearlayout).setVisibility(visibility);
+    }
+
+    public CurrencyEnum getCurrencyEnum() {
+        if (currencyEnum == null) {
+            currencyEnum = CurrencyEnum.BTC;
+        }
+        return currencyEnum;
     }
 
     public interface OnEditListener {

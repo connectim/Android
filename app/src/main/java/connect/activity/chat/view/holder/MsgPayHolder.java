@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import connect.activity.chat.bean.MsgDirect;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.TransactionEntity;
 import connect.ui.activity.R;
@@ -47,8 +48,9 @@ public class MsgPayHolder extends MsgChatHolder {
 
         if (!gatherBean.getIsCrowdfundRceipt()) {
             name.setVisibility(View.VISIBLE);
-            String paymentstr = "";
-            paymentstr = context.getString(R.string.Wallet_Payment_to_friend);
+            String paymentstr = definBean.msgDirect() == MsgDirect.From
+                    ? context.getString(R.string.Wallet_Receipt)
+                    : context.getString(R.string.Wallet_Payment_to_friend);
 
             btc.setText(String.format(context.getResources().getString(R.string.Chat_Enter_BTC), paymentstr, amout));
             if (entity.getTransStatus() == 0) {
@@ -78,9 +80,14 @@ public class MsgPayHolder extends MsgChatHolder {
                 GatherBean gather = new Gson().fromJson(bean.getExt1(), GatherBean.class);
                 if (!gather.getIsCrowdfundRceipt()) {
                     if (entity.getTransStatus() == 0) {
-                        GatherDetailSingleActivity.startActivity((Activity) context, bean.getContent(), bean.getMessage_id());
+                        GatherDetailSingleActivity.startActivity((Activity) context, bean);
                     } else {
-                        TransferDetailActivity.startActivity((Activity) context, 0, entity.getMsgDefinBean().getContent(), entity.getMsgid());
+                        int transferType = 0;
+                        String sender = bean.getPublicKey();
+                        String receiver = bean.getSenderInfoExt().getPublickey();
+                        String hashid = bean.getContent();
+                        String msgid = bean.getMessage_id();
+                        TransferDetailActivity.startActivity((Activity) context, transferType, sender, receiver, hashid, msgid);
                     }
                 } else {
                     GatherDetailGroupActivity.startActivity((Activity) context, bean.getContent(), bean.getMessage_id());
@@ -88,15 +95,15 @@ public class MsgPayHolder extends MsgChatHolder {
             }
         });
 
-//        String hashid = entity.getMsgDefinBean().getContent();
-//        TransactionEntity indexEntity = TransactionHelper.getInstance().loadTransEntity(hashid);
-//        if (indexEntity == null) {
-//            String messageid = entity.getMsgid();
-//            if (!gatherBean.getIsCrowdfundRceipt()) {
-//                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0);
-//            } else {
-//                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0, gatherBean.getTotalMember());
-//            }
-//        }
+        String hashid = entity.getMsgDefinBean().getContent();
+        TransactionEntity indexEntity = TransactionHelper.getInstance().loadTransEntity(hashid);
+        if (indexEntity == null) {
+            String messageid = entity.getMsgid();
+            if (!gatherBean.getIsCrowdfundRceipt()) {
+                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0);
+            } else {
+                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0, gatherBean.getTotalMember());
+            }
+        }
     }
 }

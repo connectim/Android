@@ -2,29 +2,31 @@ package connect.activity.contact;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.wallet.bean.CurrencyBean;
+import connect.activity.base.BaseActivity;
+import connect.activity.contact.adapter.FriendRecordAdapter;
+import connect.activity.wallet.BlockchainActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.activity.contact.adapter.FriendRecordAdapter;
-import connect.activity.wallet.BlockchainActivity;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
-import connect.widget.pullTorefresh.XListView;
+import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
 
 /**
@@ -35,8 +37,12 @@ public class FriendRecordActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.list_view)
-    XListView listView;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
+    @Bind(R.id.refreshview)
+    SwipeRefreshLayout refreshview;
+
+
     private FriendRecordActivity mActivity;
     private int page = 1;
     private int MAX_RECOMMEND_COUNT = 20;
@@ -67,26 +73,34 @@ public class FriendRecordActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         friendEntity = (ContactEntity) bundle.getSerializable("friend");
 
-        adapter = new FriendRecordAdapter(friendEntity);
-        listView.setPullRefreshEnable(false);
-        listView.setAdapter(adapter);
-        listView.setXListViewListener(new XListView.IXListViewListener() {
+        refreshview.setColorSchemeResources(
+                R.color.color_ebecee,
+                R.color.color_c8ccd5,
+                R.color.color_lightgray
+        );
+        refreshview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                refreshview.setRefreshing(false);
             }
+        });
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        adapter = new FriendRecordAdapter(mActivity, friendEntity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.setAdapter(adapter);
+        recyclerview.addOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore() {
                 page++;
                 requestRecord();
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        adapter.setItemClickListener(new FriendRecordAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Connect.FriendBill friendBill = (Connect.FriendBill) parent.getAdapter().getItem(position);
-                BlockchainActivity.startActivity(mActivity, CurrencyBean.BTC, friendBill.getTxId());
+            public void itemClick(Connect.FriendBill friendBill) {
+                BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, friendBill.getTxId());
             }
         });
 
@@ -113,17 +127,12 @@ public class FriendRecordActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.FriendBillsMessage friendBillsMessage = Connect.FriendBillsMessage.parseFrom(structData.getPlainData());
                     ArrayList<Connect.FriendBill> listBill = new ArrayList<>();
-                    for(Connect.FriendBill friendBill : friendBillsMessage.getFriendBillsList()){
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(friendBill)){
+                    for (Connect.FriendBill friendBill : friendBillsMessage.getFriendBillsList()) {
+                        if (ProtoBufUtil.getInstance().checkProtoBuf(friendBill)) {
                             listBill.add(friendBill);
                         }
                     }
 
-                    if (friendBillsMessage.getFriendBillsList().size() >= MAX_RECOMMEND_COUNT) {
-                        listView.setPullLoadEnable(true);
-                    } else {
-                        listView.setPullLoadEnable(false);
-                    }
                     if (page > 1) {
                         adapter.setNotifyData(listBill, false);
                     } else {

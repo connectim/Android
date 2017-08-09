@@ -91,6 +91,16 @@ public class MessageHelper extends BaseDao {
         return detailEntities.get(0);
     }
 
+    public MessageEntity loadMsgLessMsgid(String msgid) {
+        QueryBuilder<MessageEntity> queryBuilder = messageEntityDao.queryBuilder();
+        queryBuilder.where(MessageEntityDao.Properties.Message_id.le(msgid)).limit(1).build();
+        List<MessageEntity> detailEntities = queryBuilder.list();
+        if (detailEntities.size() == 0) {
+            return null;
+        }
+        return detailEntities.get(0);
+    }
+
     /********************************* add ***********************************/
     public void insertMsg(MessageEntity msgEntity) {
         messageEntityDao.insertOrReplace(msgEntity);

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -16,9 +15,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -98,6 +95,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         setContentView(R.layout.activity_contact_friend_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        mActivity = this;
         new FriendInfoPresenter(this).start();
     }
 
@@ -109,7 +107,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @Override
     public void initView() {
-        mActivity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Profile);
@@ -214,9 +211,9 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     void goDeleteFriend(View view) {
         ArrayList<String> list = new ArrayList<>();
         list.add(mActivity.getResources().getString(R.string.Link_Delete_This_Friend));
-        DialogUtil.showBottomListView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
+        DialogUtil.showBottomView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
             @Override
-            public void confirm(AdapterView<?> parent, View view, int position) {
+            public void confirm(int position) {
                 switch (position) {
                     case 0:
                         MsgSendBean msgSendBean = new MsgSendBean();

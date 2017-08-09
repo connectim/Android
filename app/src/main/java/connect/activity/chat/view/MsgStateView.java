@@ -48,7 +48,7 @@ public class MsgStateView extends RelativeLayout {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.RESEND, chatBean);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.RESEND, chatBean);
         }
     };
 

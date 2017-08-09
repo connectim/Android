@@ -9,15 +9,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import connect.activity.wallet.bean.CurrencyBean;
-import connect.ui.activity.R;
-import connect.activity.base.BaseActivity;
-import connect.utils.ActivityUtil;
-import connect.widget.TopToolBar;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.widget.TopToolBar;
 
 /**
  * Created by Administrator on 2016/12/14.
@@ -41,9 +40,9 @@ public class BlockchainActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, CurrencyBean currencyBean, String type) {
+    public static void startActivity(Activity activity, CurrencyEnum currencyBean, String type) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("CurrencyBean", currencyBean);
+        bundle.putSerializable("Currency", currencyBean);
         bundle.putString("id", type);
         ActivityUtil.next(activity, BlockchainActivity.class, bundle);
     }
@@ -56,7 +55,7 @@ public class BlockchainActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Wallet_Transaction_detail);
         Bundle bundle = getIntent().getExtras();
         String id = bundle.getString("id");
-        CurrencyBean currencyBean = (CurrencyBean) bundle.getSerializable("CurrencyBean");
+        CurrencyEnum currencyBean = (CurrencyEnum) bundle.getSerializable("Currency");
         String url = currencyUrl(currencyBean, id);
 
         webView.loadUrl(url);
@@ -106,7 +105,7 @@ public class BlockchainActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public String currencyUrl(CurrencyBean bean, String id) {
+    public String currencyUrl(CurrencyEnum bean, String id) {
         String url = "";
         switch (bean) {
             case BTC:

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,7 +63,7 @@ public class BackUpActivity extends BaseActivity implements BackUpContract.View{
         toolbarTop.setRightImg(R.mipmap.menu_white);
         userBean = SharedPreferenceUtil.getInstance().getUser();
         new BackUpPresenter(this).start();
-        switchPriKey(1);
+        switchPriKey(2);
     }
 
     @OnClick(R.id.left_img)
@@ -82,9 +81,9 @@ public class BackUpActivity extends BaseActivity implements BackUpContract.View{
         ArrayList<String> list = new ArrayList<>();
         list.add(mActivity.getResources().getString(R.string.Login_Encrypted_private_key));
         list.add(mActivity.getResources().getString(R.string.Login_Decrypted_private_key));
-        DialogUtil.showBottomListView(mActivity,list,new DialogUtil.DialogListItemClickListener(){
+        DialogUtil.showBottomView(mActivity,list,new DialogUtil.DialogListItemClickListener(){
             @Override
-            public void confirm(AdapterView<?> parent, View view, int position) {
+            public void confirm(int position) {
                 switch (position) {
                     case 0:
                         switchPriKey(2);

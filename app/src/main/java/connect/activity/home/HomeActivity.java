@@ -158,7 +158,7 @@ public class HomeActivity extends BaseFragmentActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case TIMEOUT_DELAYEXIT:
-                    HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
                     break;
             }
         }
@@ -195,6 +195,10 @@ public class HomeActivity extends BaseFragmentActivity {
                 break;
             case TOCHAT:
                 ChatActivity.startActivity(activity, (Talker) (objects[0]));
+                break;
+            case SWITCHFRAGMENT:
+                int fragmentCode = (Integer) objects[0];
+                switchFragment(fragmentCode);
                 break;
         }
     }
@@ -370,7 +374,6 @@ public class HomeActivity extends BaseFragmentActivity {
                         break;
                 }
         }
-
     }
 
     @Override

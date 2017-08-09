@@ -1,6 +1,8 @@
 package connect.activity.contact;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -8,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,11 +18,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.contact.adapter.SearchAdapter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.activity.contact.adapter.SearchAdapter;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.system.SystemUtil;
 
@@ -34,10 +35,12 @@ public class SearchActivity extends BaseActivity {
     EditText searchEdit;
     @Bind(R.id.del_tv)
     ImageView delTv;
-    @Bind(R.id.list_view)
-    ListView listView;
     @Bind(R.id.cancel_tv)
     TextView cancelTv;
+    @Bind(R.id.left_img)
+    ImageView leftImg;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
 
     private SearchActivity mActivity;
     private SearchAdapter adapter;
@@ -54,17 +57,24 @@ public class SearchActivity extends BaseActivity {
     public void initView() {
         mActivity = this;
         searchEdit.addTextChangedListener(textWatcher);
-        adapter = new SearchAdapter();
-        listView.setAdapter(adapter);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        adapter = new SearchAdapter(mActivity);
+        recyclerview.setAdapter(adapter);
         adapter.setOnItemClickListence(itemClickListence);
-        SystemUtil.showKeyBoard(mActivity,searchEdit);
+        SystemUtil.showKeyBoard(mActivity, searchEdit);
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
         @Override
         public void afterTextChanged(Editable s) {
             if (TextUtils.isEmpty(s.toString())) {
@@ -103,7 +113,7 @@ public class SearchActivity extends BaseActivity {
 
     @OnClick(R.id.cancel_tv)
     void goBack(View view) {
-        ActivityUtil.goBackWithResult(mActivity, 0,null,android.R.anim.fade_in,android.R.anim.fade_out);
+        ActivityUtil.goBackWithResult(mActivity, 0, null, android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @OnClick(R.id.del_tv)

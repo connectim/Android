@@ -68,7 +68,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                 @Override
                                 public void playFinish(String msgid, String filepath) {
                                     MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
-                                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
+                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
                                 }
                             });
                         }
@@ -94,7 +94,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                     @Override
                                     public void playFinish(String msgid, String filepath) {
                                         MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
-                                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
+                                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
                                     }
                                 });
                             }
@@ -115,7 +115,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                             @Override
                                             public void playFinish(String msgid, String filepath) {
                                                 MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
-                                                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
+                                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
                                             }
                                         });
                                     }

@@ -132,68 +132,7 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
     }
 
     @Override
-    public void requestSend(long amount, String samValue, final String note, final PaymentPwd paymentPwd) {
-        Connect.MuiltSendBill.Builder builder = Connect.MuiltSendBill.newBuilder();
-        for (ContactEntity friendEntity : list) {
-            builder.addAddresses(friendEntity.getAddress());
-        }
-        builder.setAmount(list.size() * amount);
-        if (!TextUtils.isEmpty(note)) {
-            builder.setTips(note);
-        }
-        builder.setTxData(samValue);
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_BILLING_MUILT_SEND, builder.build(),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            final Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
-                                @Override
-                                public void onComplete() {
-                                    try {
-                                        Connect.MuiltSendBillResp muiltSendBillResp = Connect.MuiltSendBillResp.parseFrom(structData.getPlainData());
-                                        List<Connect.Bill> bills = muiltSendBillResp.getBillsList();
-                                        for (Connect.Bill bill : bills) {
-                                            if(ProtoBufUtil.getInstance().checkProtoBuf(bill)){
-                                                transferToFriend(bill.getHash(), bill.getReceiver(),note);
-                                            }
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    for(ContactEntity friendEntity : list){
-                                        ParamManager.getInstance().putLatelyTransfer(new TransferBean(4,friendEntity.getAvatar(),
-                                                friendEntity.getUsername(),friendEntity.getAddress()));
-                                    }
-                                    List<Activity> list = BaseApplication.getInstance().getActivityList();
-                                    for (Activity activity : list) {
-                                        if (activity.getClass().getName().equals(TransferActivity.class.getName())) {
-                                            activity.finish();
-                                        }
-                                        /*if (activity.getClass().getName().equals(TransferFriendSeleActivity.class.getName())) {
-                                            activity.finish();
-                                        }*/
-                                    }
-                                    ActivityUtil.goBack(mView.getActivity());
-                                }
-                            });
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-                        paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                        TransferError.getInstance().showError(response.getCode(),response.getMessage());
-                    }
-                });
-    }
-
-    private void transferToFriend(String hashid, String address,String note) {
+    public void sendTransferMessage(String hashid, String address,String note) {
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
         if (friendEntity != null) {
             NormalChat friendChat = new FriendChat(friendEntity);

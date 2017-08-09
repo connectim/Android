@@ -18,28 +18,35 @@ public class CurrencyEntity implements Serializable{
 
     @Id(autoincrement = true)
     private Long _id;
-
     @Unique
     @NotNull
-    private String currency;
-    private Integer category;
+    private Integer currency;
     @Unique
     @NotNull
     private String salt;
+
+    private Integer category;
     private String masterAddress;
+    private String defaultAddress;
     private Integer status;
+    private Long amount;
     private Long balance;
-    @Generated(hash = 160433907)
-    public CurrencyEntity(Long _id, @NotNull String currency, Integer category,
-            @NotNull String salt, String masterAddress, Integer status,
-            Long balance) {
+    private String payload;
+
+    @Generated(hash = 1518179129)
+    public CurrencyEntity(Long _id, @NotNull Integer currency, @NotNull String salt,
+            Integer category, String masterAddress, String defaultAddress,
+            Integer status, Long amount, Long balance, String payload) {
         this._id = _id;
         this.currency = currency;
-        this.category = category;
         this.salt = salt;
+        this.category = category;
         this.masterAddress = masterAddress;
+        this.defaultAddress = defaultAddress;
         this.status = status;
+        this.amount = amount;
         this.balance = balance;
+        this.payload = payload;
     }
     @Generated(hash = 228156879)
     public CurrencyEntity() {
@@ -50,10 +57,10 @@ public class CurrencyEntity implements Serializable{
     public void set_id(Long _id) {
         this._id = _id;
     }
-    public String getCurrency() {
+    public Integer getCurrency() {
         return this.currency;
     }
-    public void setCurrency(String currency) {
+    public void setCurrency(Integer currency) {
         this.currency = currency;
     }
     public Integer getCategory() {
@@ -74,6 +81,12 @@ public class CurrencyEntity implements Serializable{
     public void setMasterAddress(String masterAddress) {
         this.masterAddress = masterAddress;
     }
+    public String getDefaultAddress() {
+        return this.defaultAddress;
+    }
+    public void setDefaultAddress(String defaultAddress) {
+        this.defaultAddress = defaultAddress;
+    }
     public Integer getStatus() {
         return this.status;
     }
@@ -86,6 +99,17 @@ public class CurrencyEntity implements Serializable{
     public void setBalance(Long balance) {
         this.balance = balance;
     }
+    public String getPayload() {
+        return this.payload;
+    }
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+    public Long getAmount() {
+        return this.amount;
+    }
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
     
-
 }

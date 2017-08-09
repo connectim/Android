@@ -149,9 +149,7 @@ public class CommandBean extends InterParse {
         ConnectState.getInstance().sendEvent(ConnectState.ConnectType.OFFLINE_PULL);
 
         Connect.StructData structData = imTransferToStructData(buffer);
-        //GZIP
         byte[] unGzip = unGZip(structData.getPlainData().toByteArray());
-
         //Whether offline news has been exhausted
         boolean offComplete = false;
         if (unGzip.length == 0 || unGzip.length < 20) {
@@ -169,24 +167,41 @@ public class CommandBean extends InterParse {
 
                 switch ((byte) msgDetail.getType()) {
                     case 0x04://Offline command processing
-                        if (extension == 0x08) {//Receipt of a request add buddy
-                            Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(msgDetail.getData());
-                            if (!SupportKeyUril.verifySign(imTransferData.getSign(), imTransferData.getCipherData().toByteArray())) {
-                                throw new Exception("Validation fails");
-                            }
-                            receiverAddFriendRequest(imTransferData.getCipherData().toByteString());
-                        } else if (extension == 0x09) {//Accept the other party agreed to a friend request
-                            Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(msgDetail.getData());
-                            if (!SupportKeyUril.verifySign(imTransferData.getSign(), imTransferData.getCipherData().toByteArray())) {
-                                throw new Exception("Validation fails");
-                            }
-                            receiverAcceptAddFriend(imTransferData.getCipherData().toByteString());
-                        } else if (extension == 0x0d) {//Group of related information changes
-                            Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(msgDetail.getData());
-                            if (!SupportKeyUril.verifySign(imTransferData.getSign(), imTransferData.getCipherData().toByteArray())) {
-                                throw new Exception("Validation fails");
-                            }
-                            updateGroupInfo(imTransferData.getCipherData().toByteString());
+                        Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(msgDetail.getData());
+                        ByteString transferDataByte = imTransferData.getCipherData().toByteString();
+                        switch (extension) {
+                            case 0x01://contact list
+                                syncContacts(transferDataByte);
+                                break;
+                            case 0x06://bind servicetoken
+                                break;
+                            case 0x07://login out success
+                                //HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
+                                break;
+                            case 0x08://receive add friend request
+                                receiverAddFriendRequest(transferDataByte);
+                                break;
+                            case 0x09://Accept agreed to be a friend request
+                                receiverAcceptAddFriend(transferDataByte);
+                                break;
+                            case 0x0a://delete friend
+                                receiverAcceptDelFriend(transferDataByte);
+                                break;
+                            case 0x0b://Modify the friends remark and common friends
+                                receiverSetUserInfo(transferDataByte);
+                                break;
+                            case 0x0d://modify group information
+                                updateGroupInfo(transferDataByte);
+                                break;
+                            case 0x11://outer translate
+                                handlerOuterTransfer(transferDataByte);
+                                break;
+                            case 0x12://outer red packet
+                                handlerOuterRedPacket(transferDataByte);
+                                break;
+                            case 0x15://Not interested in
+                                receiverInterested(transferDataByte);
+                                break;
                         }
                         break;
                     case 0x05://Offline notification
@@ -548,7 +563,7 @@ public class CommandBean extends InterParse {
                             MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
                             MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
 
-                            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
+                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
                             normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
                         }
                     }
@@ -596,7 +611,7 @@ public class CommandBean extends InterParse {
                         MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
                         MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
 
-                        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
                         normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
                     }
                 }
@@ -755,7 +770,7 @@ public class CommandBean extends InterParse {
         }
 
         Session.getInstance().setUserCookie(pubkey, friendCookie);
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.UNARRIVE_UPDATE, pubkey);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, pubkey);
     }
 
     /**
@@ -800,7 +815,7 @@ public class CommandBean extends InterParse {
                             RobotChat.getInstance().address(), RobotChat.getInstance().headImg()));
                     MessageHelper.getInstance().insertFromMsg(BaseApplication.getInstance().getString(R.string.app_name), msgEntity.getMsgDefinBean());
                     RobotChat.getInstance().updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(2), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
-                    HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(2, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(2, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
                 } else {
                     Connect.UserInfo userInfo = packageInfo.getSender();
 
@@ -818,7 +833,7 @@ public class CommandBean extends InterParse {
                     msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAddress(), friendEntity.getAvatar()));
                     MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
                     normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
-                    HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
                 }
                 break;
             case 1:

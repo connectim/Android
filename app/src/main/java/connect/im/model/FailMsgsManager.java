@@ -241,7 +241,9 @@ public class FailMsgsManager {
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         gsonBuilder.registerTypeAdapter(MsgDefinBean.class, new MsgDefTypeAdapter());
                         MsgDefinBean definBean = gsonBuilder.create().fromJson(content, MsgDefinBean.class);
-                        normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime());
+
+                        MessageHelper.getInstance().insertFromMsg(pubkey, definBean);
+                        normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime(),-1,true);
                     }
                 }
                 entries.remove();

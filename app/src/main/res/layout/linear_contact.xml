@@ -29,7 +29,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_8"
         android:ellipsize="end"
-        android:maxLength="4"
+        android:maxLength="6"
         android:maxLines="1"
         android:textColor="@color/color_161A21"
         android:textSize="@dimen/sp_12"/>

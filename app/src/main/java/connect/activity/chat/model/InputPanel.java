@@ -2,6 +2,7 @@ package connect.activity.chat.model;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputType;
@@ -74,8 +75,16 @@ public class InputPanel {
         inputVoice.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if( !((ChatActivity)context).isOpenRecord()){
+                if (!((ChatActivity) context).isOpenRecord()) {
                     return true;
+                }
+
+                if (isSoftShowing()) {
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm.isActive()) {
+                        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+                    return false;
                 }
 
                 inputView.setVisibility(View.INVISIBLE);
@@ -113,6 +122,13 @@ public class InputPanel {
         });
     }
 
+    private boolean isSoftShowing() {
+        int screenHeight = (((Activity) context).getWindow()).getDecorView().getHeight();
+        Rect rect = new Rect();
+        (((Activity) context).getWindow()).getDecorView().getWindowVisibleDisplayFrame(rect);
+        return screenHeight - rect.bottom != 0;
+    }
+
     protected void focusEdit() {
         inputEdit.requestFocus();
         inputEdit.setFocusableInTouchMode(true);
@@ -135,7 +151,7 @@ public class InputPanel {
 
                     InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(inputEdit, 0);
-                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.SCROLLBOTTOM);
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.SCROLLBOTTOM);
                 }
                 return false;
             }

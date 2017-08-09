@@ -239,7 +239,7 @@ public class ContactHelper extends BaseDao {
      * @return
      */
     public List<GroupMemberEntity> loadGroupMemEntity(String pukkey,String address) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY WHERE M.IDENTIFIER = ? AND M.ADDRESS != ? ORDER BY M.ROLE DESC;";
+        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY WHERE M.IDENTIFIER = ? AND M.ADDRESS != ? GROUP BY M.PUB_KEY ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{pukkey, address});
 
         GroupMemberEntity groupMemEntity = null;
@@ -277,7 +277,7 @@ public class ContactHelper extends BaseDao {
     public GroupMemberEntity loadGroupMemByAds(String pukkey, String address) {
         QueryBuilder<GroupMemberEntity> queryBuilder = groupMemberEntityDao.queryBuilder();
         queryBuilder.where(GroupMemberEntityDao.Properties.Identifier.eq(pukkey),
-                GroupMemberEntityDao.Properties.Address.eq(address)).build();
+                GroupMemberEntityDao.Properties.Address.eq(address)).limit(1).build();
         List<GroupMemberEntity> memEntities = queryBuilder.list();
         return (memEntities == null || memEntities.size() == 0) ? null : memEntities.get(0);
     }

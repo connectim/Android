@@ -10,6 +10,7 @@ import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.database.green.dao.CurrencyAddressEntityDao;
 import connect.database.green.dao.CurrencyEntityDao;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Currency database management
@@ -37,6 +38,10 @@ public class CurrencyHelper extends BaseDao{
         return currencyHelper;
     }
 
+    public static void closeHelper() {
+        currencyHelper = null;
+    }
+
     /*********************************  load ***********************************/
     /**
      * Query all currencies
@@ -51,7 +56,7 @@ public class CurrencyHelper extends BaseDao{
      * @param currency
      * @return
      */
-    public CurrencyEntity loadCurrency(String currency){
+    public CurrencyEntity loadCurrency(int currency){
         QueryBuilder<CurrencyEntity> queryBuilder = currencyEntityDao.queryBuilder();
         queryBuilder.where(CurrencyEntityDao.Properties.Currency.eq(currency)).limit(1).build();
         List<CurrencyEntity> currencyEntities = queryBuilder.list();
@@ -65,13 +70,23 @@ public class CurrencyHelper extends BaseDao{
      * Query all currency address
      * @return
      */
-    private List<CurrencyAddressEntity> loadCurrencyAddress(){
+    public List<CurrencyAddressEntity> loadCurrencyAddress(){
         return currencyAddressEntityDao.loadAll();
     }
 
-    public List<CurrencyAddressEntity> loadCurrencyAddress(String currency) {
+    public CurrencyAddressEntity loadCurrencyAddressFromAddress(String address) {
         QueryBuilder<CurrencyAddressEntity> queryBuilder = currencyAddressEntityDao.queryBuilder();
-        queryBuilder.where(CurrencyAddressEntityDao.Properties.Currency.eq(currency)).limit(1).build();
+        queryBuilder.where(CurrencyAddressEntityDao.Properties.Address.eq(address)).limit(1).build();
+        List<CurrencyAddressEntity> currencyAddressEntities = queryBuilder.list();
+        if (null == currencyAddressEntities || currencyAddressEntities.size() == 0) {
+            return null;
+        }
+        return currencyAddressEntities.get(0);
+    }
+
+    public List<CurrencyAddressEntity> loadCurrencyAddress(int currencyCode) {
+        QueryBuilder<CurrencyAddressEntity> queryBuilder = currencyAddressEntityDao.queryBuilder();
+        queryBuilder.where(CurrencyAddressEntityDao.Properties.Currency.eq(currencyCode)).limit(1).build();
         List<CurrencyAddressEntity> currencyAddressEntities = queryBuilder.list();
         if (null == currencyAddressEntities || currencyAddressEntities.size() == 0) {
             return null;
@@ -79,7 +94,50 @@ public class CurrencyHelper extends BaseDao{
         return currencyAddressEntities;
     }
 
+    public CurrencyAddressEntity loadCurrencyMasterAddress(int currencyCode) {
+        QueryBuilder<CurrencyAddressEntity> queryBuilder = currencyAddressEntityDao.queryBuilder();
+        queryBuilder.where(CurrencyAddressEntityDao.Properties.Currency.eq(currencyCode),
+                CurrencyAddressEntityDao.Properties.Index.eq(0)).build();
+        List<CurrencyAddressEntity> currencyAddressEntities = queryBuilder.list();
+        if (null == currencyAddressEntities || currencyAddressEntities.size() == 0) {
+            return null;
+        }
+        return currencyAddressEntities.get(0);
+    }
+
+    public List<CurrencyAddressEntity> loadCurrencyAddress(List<String> addressList){
+        QueryBuilder<CurrencyAddressEntity> qb = currencyAddressEntityDao.queryBuilder();
+        qb.where(CurrencyAddressEntityDao.Properties.Address.in(addressList.toArray()));
+        List<CurrencyAddressEntity> list = qb.list();
+        return list;
+    }
+
     /*********************************  insert ***********************************/
+    /**
+     * insert currencies
+     * @param list
+     */
+    public void insertCurrencyListCoin(List<WalletOuterClass.Coin> list){
+        for(WalletOuterClass.Coin coin : list){
+            insertCurrencyCoin(coin);
+        }
+    }
+
+    public void insertCurrencyCoin(WalletOuterClass.Coin coin){
+        CurrencyEntity currencyEntity = loadCurrency(coin.getCurrency());
+        if(currencyEntity == null){
+            currencyEntity = new CurrencyEntity();
+        }
+        currencyEntity.setSalt(coin.getSalt());
+        currencyEntity.setBalance(coin.getBalance());
+        currencyEntity.setAmount(coin.getAmount());
+        currencyEntity.setCurrency(coin.getCurrency());
+        currencyEntity.setCategory(coin.getCategory());
+        currencyEntity.setPayload(coin.getPayload());
+        currencyEntity.setStatus(coin.getStatus());
+        currencyEntityDao.insertOrReplace(currencyEntity);
+    }
+
     /**
      * insert currencies
      * @param list
@@ -106,6 +164,24 @@ public class CurrencyHelper extends BaseDao{
      * insert currencies address
      * @param list
      */
+    public void insertCurrencyAddressListCoinInfo(List<WalletOuterClass.CoinInfo> list,int currencyCode){
+
+        for(WalletOuterClass.CoinInfo coinInfo : list){
+            CurrencyAddressEntity addressEntity = loadCurrencyAddressFromAddress(coinInfo.getAddress());
+            if(addressEntity == null){
+                addressEntity = new CurrencyAddressEntity();
+            }
+            addressEntity.setIndex(coinInfo.getIndex());
+            addressEntity.setAddress(coinInfo.getAddress());
+            addressEntity.setLabel(coinInfo.getLabel());
+            addressEntity.setStatus(coinInfo.getStatus());
+            addressEntity.setBalance(coinInfo.getBalance());
+            addressEntity.setAmount(coinInfo.getAmount());
+            addressEntity.setCurrency(currencyCode);
+            insertCurrencyAddress(addressEntity);
+        }
+    }
+
     public void insertCurrencyAddressList(List<CurrencyAddressEntity> list){
         currencyAddressEntityDao.insertOrReplaceInTx(list);
     }
@@ -145,7 +221,7 @@ public class CurrencyHelper extends BaseDao{
      * Removing a single currency
      * @param currency
      */
-    public void deleteCurrencyEntity(String currency) {
+    public void deleteCurrencyEntity(int currency) {
         QueryBuilder<CurrencyEntity> qb = currencyEntityDao.queryBuilder();
         DeleteQuery<CurrencyEntity> bd = qb.where(CurrencyEntityDao.Properties.Currency.eq(currency))
                 .buildDelete();

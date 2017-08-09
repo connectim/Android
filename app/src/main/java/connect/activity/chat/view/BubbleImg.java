@@ -9,11 +9,11 @@ import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
+import connect.activity.chat.bean.RoomType;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.RoomType;
 import connect.utils.FileUtil;
 import connect.utils.glide.BlurMaskTransformation;
 import connect.utils.system.SystemUtil;
@@ -27,6 +27,7 @@ public class BubbleImg extends RelativeLayout {
     private MsgDirect msgDirect;
     private ProgressBar progressBar;
     private ImageView imageView;
+    private String localPath=null;
 
     public BubbleImg(Context context) {
         super(context);
@@ -81,26 +82,29 @@ public class BubbleImg extends RelativeLayout {
 
     public void loadUri(final MsgDirect direct, final RoomType roomType, final String pukkey, final String msgid, final String url, final float imgwidth, final float imgheight) {
         msgDirect = direct;
-        final String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
 
-        if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(localPath)) {
+        imageView.setImageBitmap(null);
+        String msgidToLocal = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
+
+        if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(msgidToLocal)) {
             progressBar.setVisibility(GONE);
-            String local = FileUtil.islocalFile(url) ? url : localPath;
+            localPath = FileUtil.islocalFile(url) ? url : msgidToLocal;
             calculateSize(imgwidth,imgheight);
 
             Glide.with(BaseApplication.getInstance())
-                    .load(local)
+                    .load(localPath)
                     .override(imgWidth, imgHeight)
                     .crossFade(1000)
                     .bitmapTransform(new CenterCrop(context), new BlurMaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x, (openBurn && msgDirect == MsgDirect.From) ? 16 : 0))
                     .into(imageView);
         } else {
-            FileDownLoad.getInstance().downChatFile(roomType,url, pukkey, new FileDownLoad.IFileDownLoad() {
+            FileDownLoad.getInstance().downChatFile(roomType,url,pukkey, new FileDownLoad.IFileDownLoad() {
                 @Override
                 public void successDown(byte[] bytes) {
                     progressBar.setVisibility(GONE);
+                    String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
                     FileUtil.byteArrToFilePath(bytes, localPath);
-                    loadUri(direct, roomType,pukkey, msgid, localPath,imgwidth,imgheight);
+                    loadUri(direct,roomType, pukkey, msgid, localPath,imgwidth,imgheight);
                 }
 
                 @Override
@@ -124,5 +128,9 @@ public class BubbleImg extends RelativeLayout {
 
     public void setOpenBurn(boolean openBurn) {
         this.openBurn = openBurn;
+    }
+
+    public String getLocalPath() {
+        return localPath;
     }
 }

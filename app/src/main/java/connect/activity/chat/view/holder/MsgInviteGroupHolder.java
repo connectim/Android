@@ -28,7 +28,6 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
 
     private GroupExt1Bean ext1Bean;
     private int applyState = 0;
-    private GroupExt1Bean reviewBean;
 
     public MsgInviteGroupHolder(View itemView) {
         super(itemView);
@@ -48,7 +47,7 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
                 context.getString(R.string.Link_Invite_friend_to_join, ext1Bean.getGroupname());
         txt1.setText(showTxt);
 
-        reviewBean = new Gson().fromJson(definBean.getExt1(), GroupExt1Bean.class);
+        GroupExt1Bean reviewBean = new Gson().fromJson(definBean.getExt1(), GroupExt1Bean.class);
         applyState = ParamManager.getInstance().loadGroupApplyMember(reviewBean.getGroupidentifier(), definBean.getMessage_id());
         String statestr = "";
         switch (applyState) {

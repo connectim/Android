@@ -1,18 +1,15 @@
 package connect.activity.chat.view.holder;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
 import java.io.File;
-
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.model.EmoManager;
+import connect.ui.activity.R;
 /**
  * Created by gtq on 2016/11/23.
  */

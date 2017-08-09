@@ -1,5 +1,7 @@
 package connect.activity.contact.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,25 +18,25 @@ import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
 
+import static connect.activity.contact.adapter.SearchAdapter.ViewType.VIEW_TYP_NOSEARCHS;
+
 /**
  * Created by Administrator on 2017/1/3.
  */
-public class SearchAdapter extends BaseAdapter {
+public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private Activity activity;
     private ArrayList<ContactEntity> mDataList = new ArrayList<>();
-    private final int VIEW_TYP_NOSEARCHS = 100;
-    private final int VIEW_TYP_SERVER = 101;
-    private final int VIEW_TYP_LOCAL = 102;
     private OnItemClickListence onItemClickListence;
 
-    @Override
-    public int getCount() {
-        return mDataList.size();
+    public enum ViewType {
+        VIEW_TYP_NOSEARCHS,
+        VIEW_TYP_SERVER,
+        VIEW_TYP_LOCAL
     }
 
-    @Override
-    public Object getItem(int position) {
-        return mDataList.get(position);
+    public SearchAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
@@ -43,90 +45,106 @@ public class SearchAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (!TextUtils.isEmpty(mDataList.get(position).getUsername())) {
-            return VIEW_TYP_LOCAL;
-        } else if (!TextUtils.isEmpty(mDataList.get(position).getAddress())) {
-            return VIEW_TYP_SERVER;
-        } else {
-            return VIEW_TYP_NOSEARCHS;
+    public int getItemCount() {
+        return mDataList.size();
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = null;
+        RecyclerView.ViewHolder viewHolder = null;
+        if (viewType == ViewType.VIEW_TYP_NOSEARCHS.ordinal()) {
+            view = inflater.inflate(R.layout.item_contact_search_default, parent, false);
+            viewHolder = new NosearchHolder(view);
+        } else if (viewType == ViewType.VIEW_TYP_SERVER.ordinal()) {
+            view = inflater.inflate(R.layout.item_contact_search_server, parent, false);
+            viewHolder = new ServerHolder(view);
+        } else if (viewType == ViewType.VIEW_TYP_LOCAL.ordinal()) {
+            view = inflater.inflate(R.layout.item_contact_search_local, parent, false);
+            viewHolder = new LocalHolder(view);
+        }
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        int viewType = getItemViewType(position);
+        if (mDataList != null && mDataList.size() > 0) {
+            final ContactEntity friendEntity = mDataList.get(position);
+            if (viewType == ViewType.VIEW_TYP_NOSEARCHS.ordinal()) {
+
+            } else if (viewType == ViewType.VIEW_TYP_SERVER.ordinal()) {
+                ((ServerHolder)holder).nameTv.setText(friendEntity.getAddress());
+                ((ServerHolder)holder).contentRela.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemClickListence.itemClick(position, mDataList.get(position), 1);
+                    }
+                });
+            } else if (viewType == ViewType.VIEW_TYP_LOCAL.ordinal()) {
+                if (position > 0 && TextUtils.isEmpty(mDataList.get(position - 1).getUsername())) {
+                    ((LocalHolder)holder).txt.setVisibility(View.VISIBLE);
+                    ((LocalHolder)holder).txt.setText(R.string.Link_Contacts);
+                } else {
+                    ((LocalHolder)holder).txt.setVisibility(View.GONE);
+                }
+                GlideUtil.loadAvater(((LocalHolder)holder).avater, mDataList.get(position).getAvatar());
+                ((LocalHolder)holder).nameTv.setText(mDataList.get(position).getUsername());
+                ((LocalHolder)holder).contentRela.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemClickListence.itemClick(position, mDataList.get(position), 2);
+                    }
+                });
+            }
         }
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        int type = getItemViewType(position);
-        int tmp = 0;
-        if (convertView != null) {
-            tmp = (Integer) convertView.getTag(R.id.status_key);
-        }
-        if (convertView == null || tmp != type) {
-            holder = new ViewHolder();
-            switch (type) {
-                case VIEW_TYP_NOSEARCHS:
-                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_search_default, parent, false);
-                    break;
-                case VIEW_TYP_SERVER:
-                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_search_server, parent, false);
-                    holder.contentRela = (RelativeLayout)convertView.findViewById(R.id.content_rela);
-                    holder.nameTv = (TextView)convertView.findViewById(R.id.name_tv);
-                    break;
-                case VIEW_TYP_LOCAL:
-                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_search_local, parent, false);
-                    holder.contentRela = (RelativeLayout)convertView.findViewById(R.id.content_rela);
-                    holder.nameTv = (TextView)convertView.findViewById(R.id.name_tv);
-                    holder.txt = (TextView)convertView.findViewById(R.id.txt);
-                    holder.avater = (RoundedImageView)convertView.findViewById(R.id.avatar_rimg);
-                    break;
-            }
-            convertView.setTag(holder);
-            convertView.setTag(R.id.status_key, type);
+    public int getItemViewType(int position) {
+        if (!TextUtils.isEmpty(mDataList.get(position).getUsername())) {
+            return ViewType.VIEW_TYP_LOCAL.ordinal();
+        } else if (!TextUtils.isEmpty(mDataList.get(position).getAddress())) {
+            return ViewType.VIEW_TYP_SERVER.ordinal();
         } else {
-            holder = (ViewHolder) convertView.getTag();
+            return VIEW_TYP_NOSEARCHS.ordinal();
         }
-
-        if (mDataList != null && mDataList.size() > 0) {
-            final ContactEntity friendEntity = mDataList.get(position);
-            switch (type) {
-                case VIEW_TYP_NOSEARCHS:
-                    break;
-                case VIEW_TYP_SERVER:
-                    holder.nameTv.setText(friendEntity.getAddress());
-                    holder.contentRela.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onItemClickListence.itemClick(position,mDataList.get(position),1);
-                        }
-                    });
-                    break;
-                case VIEW_TYP_LOCAL:
-                    if(position > 0 && TextUtils.isEmpty(mDataList.get(position-1).getUsername())){
-                        holder.txt.setVisibility(View.VISIBLE);
-                        holder.txt.setText(R.string.Link_Contacts);
-                    }else{
-                        holder.txt.setVisibility(View.GONE);
-                    }
-                    GlideUtil.loadAvater(holder.avater,mDataList.get(position).getAvatar());
-                    holder.nameTv.setText(mDataList.get(position).getUsername());
-                    holder.contentRela.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onItemClickListence.itemClick(position,mDataList.get(position),2);
-                        }
-                    });
-                    break;
-            }
-        }
-
-        return convertView;
     }
 
-    private static class ViewHolder {
+    class NosearchHolder extends RecyclerView.ViewHolder {
+
+        public NosearchHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    class ServerHolder extends RecyclerView.ViewHolder {
+
+        TextView nameTv;
+        RelativeLayout contentRela;
+
+        public ServerHolder(View itemView) {
+            super(itemView);
+            contentRela = (RelativeLayout) itemView.findViewById(R.id.content_rela);
+            nameTv = (TextView) itemView.findViewById(R.id.name_tv);
+        }
+    }
+
+    class LocalHolder extends RecyclerView.ViewHolder {
+
         TextView nameTv;
         TextView txt;
         RoundedImageView avater;
         RelativeLayout contentRela;
+
+        public LocalHolder(View itemView) {
+            super(itemView);
+            contentRela = (RelativeLayout) itemView.findViewById(R.id.content_rela);
+            nameTv = (TextView) itemView.findViewById(R.id.name_tv);
+            txt = (TextView) itemView.findViewById(R.id.txt);
+            avater = (RoundedImageView) itemView.findViewById(R.id.avatar_rimg);
+        }
     }
 
     public void setDataNotify(List<ContactEntity> list) {

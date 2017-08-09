@@ -75,8 +75,6 @@ public class UriUtil {
     /**======================================================================================
      *                                wallet
      * ====================================================================================== */
-    /** Check account balances */
-    public static String BLOCKCHAIN_UNSPENT_INFO = "/blockchain/v1/unspent/%s/info";
     /** Query the address all of the transactions */
     public static String BLOCKCHAIN_ADDRESS_TX = "/blockchain/v1/address/%s/tx?page=%d&pagesize=%d";
     /** Fundamental information for sending a red envelope */
@@ -113,6 +111,50 @@ public class UriUtil {
     public static String WALLET_ADDRESS_BOOK_REMOVE = "/wallet/v1/address_book/remove";
     /** Many people transfer */
     public static String WALLET_BILLING_MUILT_SEND = "/wallet/v1/billing/muilt_send";
+    /** create wallet */
+    public static String WALLET_V2_CREATE = "/wallet/v2/create";
+    /** sync wallet */
+    public static String WALLET_V2_SYNC = "/wallet/v2/sync";
+    /** create coin */
+    public static String WALLET_V2_COINS_CREATE = "/wallet/v2/coins/create";
+    /** update wallet */
+    public static String WALLET_V2_UPDATA = "/wallet/v2/update";
+    /** coin list */
+    public static String WALLET_V2_COINS_LIST = "/wallet/v2/coins/list";
+    /** update coin */
+    public static String WALLET_V2_COINS_UPDATA = "/wallet/v2/coins/update";
+    /** address default */
+    public static String WALLET_V2_COINS_ADDRESS_DEFAULT = "/wallet/v2/coins/addresses/default";
+    /** update coin */
+    public static String WALLET_V2_COINS_ADDRESS_GET_DEFAULT = "/wallet/v2/coins/addresses/get_default";
+    /** update coin */
+    public static String WALLET_V2_COINS_CURRENCY_SET = "/wallet/v2/coins/update";
+    /** service transfer */
+    public static String WALLET_V2_SERVICE_TRANSFER = "/wallet/v2/service/transfer";
+    /** coins addresses */
+    public static String WALLET_V2_COINS_ADDRESS_LIST = "/wallet/v2/coins/addresses/list";
+    /** Get currency status of purse */
+    public static String WALLET_V2_SERVICE_USER_STATUS = "/wallet/v2/service/user_status";
+    /** Collection (not part of purse basic function)*/
+    public static String WALLET_V2_SERVICE_RECEIVE = "/wallet/v2/service/receive";
+    /** payment */
+    public static String WALLET_V2_SERVICE_PAYMENT = "/wallet/v2/service/payment";
+    /** Redpacket */
+    public static String WALLET_V2_SERVICE_LUCKPACKAGE = "/wallet/v2/service/luckpackage";
+    /** external transfer */
+    public static String WALLET_V2_SERVICE_EXTERNAL = "/wallet/v2/service/external";
+    /** Crowd-funding */
+    public static String WALLET_V2_SERVICE_CROWDFUNING = "/wallet/v2/service/crowdfuning";
+    /** Radio broadcast */
+    public static String WALLET_V2_SERVICE_PUBLISH = "/wallet/v2/service/publish";
+    /** Transfer to address */
+    public static String WALLET_V2_SERVICE_TRANSFER_ADDRESS= "/wallet/v2/service/transfer_to_address";
+    /** Get address transaction stream */
+    public static String WALLET_V2_COINS_ADDRESSES_TX = "/wallet/v2/coins/addresses/tx";
+    /** Get currency information */
+    public static String WALLET_V2_COINS_INFO = "/wallet/v2/coins/info";
+
+
 
     /**======================================================================================
      *                                contact

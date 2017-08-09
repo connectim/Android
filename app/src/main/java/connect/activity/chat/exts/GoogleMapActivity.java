@@ -195,7 +195,7 @@ public class GoogleMapActivity extends BaseActivity {
                 return;
             }
             try {
-                File file = FileUtil.newTempFile(FileUtil.FileType.IMG);
+                File file = FileUtil.newContactFile(FileUtil.FileType.IMG);
                 FileOutputStream fos = new FileOutputStream(file);
                 bitmap = Bitmap.createBitmap(bitmap, 0, SystemDataUtil.getScreenHeight() / 2 - 200, bitmap.getWidth(), SystemUtil.dipToPx(200));
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);

@@ -1,65 +1,55 @@
 package connect.activity.wallet.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import connect.ui.activity.R;
+import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.activity.wallet.bean.TransferBean;
+import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 /**
  *
  * Created by Administrator on 2017/1/22.
  */
 
-public class LatelyTransferAdapter extends BaseAdapter {
+public class LatelyTransferAdapter extends RecyclerView.Adapter<LatelyTransferAdapter.ViewHolder> {
 
+    private Activity activity;
     private ArrayList<TransferBean> mDataList = new ArrayList<>();
 
-    @Override
-    public int getCount() {
-        return mDataList.size();
+    public LatelyTransferAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mDataList.get(position);
+    public LatelyTransferAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_wallet_lately_transaction, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet_lately_transaction, parent, false);
-            viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         TransferBean transEntity = mDataList.get(position);
         switch (transEntity.getType()){
             case 1:
                 viewHolder.avaterRimg.setBackgroundResource(R.mipmap.luckpacket_record2x);
-                viewHolder.nameTv.setText(transEntity.getName());
+                viewHolder.nameTv.setText(R.string.Wallet_Sent_via_link_luck_packet);
                 break;
             case 2:
                 viewHolder.avaterRimg.setBackgroundResource(R.mipmap.bitcoin_luckybag3x);
-                viewHolder.nameTv.setText(transEntity.getName());
+                viewHolder.nameTv.setText(R.string.Wallet_Transfer_via_other_APP_messges);
                 break;
             case 3:
                 viewHolder.avaterRimg.setBackgroundResource(R.mipmap.bitcoin_luckybag3x);
@@ -76,7 +66,24 @@ public class LatelyTransferAdapter extends BaseAdapter {
             default:
                 break;
         }
-        return convertView;
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDataList != null && mDataList.size() >= position) {
+                    itemClickListener.itemClick(mDataList.get(position));
+                }
+            }
+        });
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mDataList.size();
     }
 
     public void setDataNotigy(List<TransferBean> list) {
@@ -87,14 +94,25 @@ public class LatelyTransferAdapter extends BaseAdapter {
         }
     }
 
-    static class ViewHolder {
-        @Bind(R.id.avater_rimg)
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
         RoundedImageView avaterRimg;
-        @Bind(R.id.name_tv)
         TextView nameTv;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
+            nameTv = (TextView) itemview.findViewById(R.id.name_tv);
         }
+    }
+
+    private OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void itemClick(TransferBean transferBean);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 }

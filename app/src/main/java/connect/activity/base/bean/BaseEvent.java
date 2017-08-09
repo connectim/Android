@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-
 import java.io.Serializable;
 
 /**
@@ -36,7 +35,6 @@ public abstract class BaseEvent {
     }
 
     public void sendEventDelay(Serializable type, long delaytime, Serializable... objects) {
-
         Message message = new Message();
         message.what = 120;
         Bundle bundle = new Bundle();

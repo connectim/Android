@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -20,8 +19,8 @@ import connect.activity.login.presenter.LoginPhonePresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.StringUtil;
-import connect.utils.data.PhoneDataUtil;
 import connect.utils.permission.PermissionUtil;
+import connect.utils.data.PhoneDataUtil;
 
 
 /**

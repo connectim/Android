@@ -1,8 +1,8 @@
 package connect.activity.chat.inter;
 
+import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.RoomType;
 import connect.database.MemoryDataManager;
-import connect.activity.chat.bean.RoomSession;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;

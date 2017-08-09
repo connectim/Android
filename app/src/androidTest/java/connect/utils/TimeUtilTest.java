@@ -41,7 +41,7 @@ public class TimeUtilTest {
 
     @Test
     public void getMsgTimeTest() throws Exception {
-        String timeString = TimeUtil.getMsgTime(1499738873);
+        String timeString = TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong() - 3 * 1000,1499738873);
         assertTrue(timeString.length() > 6);
     }
 

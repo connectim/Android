@@ -20,11 +20,10 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2016/12/10.
  */
-public class WalletMenuAdapter extends RecyclerView.Adapter {
+public class WalletMenuAdapter extends RecyclerView.Adapter<WalletMenuAdapter.WalletMenuItem> {
 
     private ArrayList<WalletMenuBean> mDates;
     private Activity mActivity;
-    private View.OnClickListener mClickListener;
 
     public WalletMenuAdapter(ArrayList<WalletMenuBean> mDates, Activity mActivity) {
         this.mDates = mDates;
@@ -32,20 +31,23 @@ public class WalletMenuAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WalletMenuAdapter.WalletMenuItem onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.wallet_menu_item, null);
         return new WalletMenuItem(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        WalletMenuItem viewHolder = (WalletMenuItem) holder;
+    public void onBindViewHolder(WalletMenuAdapter.WalletMenuItem holder, final int position) {
         WalletMenuBean menuBean = mDates.get(position);
 
-        viewHolder.iconImg.setImageResource(menuBean.getIconID());
-        viewHolder.nameTv.setText(menuBean.getNameID());
-        viewHolder.mContentLinearLayout.setTag(position);
-        viewHolder.mContentLinearLayout.setOnClickListener(mClickListener);
+        holder.iconImg.setImageResource(menuBean.getIconID());
+        holder.nameTv.setText(menuBean.getNameID());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.itemClick(position);
+            }
+        });
     }
 
     @Override
@@ -69,8 +71,13 @@ public class WalletMenuAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void setOnItemClickListence(View.OnClickListener mClickListener){
-        this.mClickListener = mClickListener;
+    private OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void itemClick(int position);
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 }

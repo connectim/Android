@@ -15,7 +15,6 @@ public class HttpRecBean implements Serializable {
         GroupInfo,//group information
         PaySet,//pay setting
         PrivateSet,//private setting
-        WalletAccount,//wallet account
         BlackList,//black list
         Estimate,//fee
         UpLoadBackUp,//upload backup
@@ -24,6 +23,8 @@ public class HttpRecBean implements Serializable {
         SOUNDPOOL,//system voice
         SYSTEM_VIBRATION,//system vibrate
         GroupNotificaton,//Mute Notification
+        WALLET_DEFAULT_ADDRESS,//default wallet address
+        WALLET_CURRENCY_SET,//update currency
     }
 
     public HttpRecType httpRecType;

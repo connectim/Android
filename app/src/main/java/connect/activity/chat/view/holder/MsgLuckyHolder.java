@@ -1,17 +1,24 @@
 package connect.activity.chat.view.holder;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 
 import com.google.gson.Gson;
 
+import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.bean.MsgDirect;
+import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.RoomType;
+import connect.activity.chat.bean.TransferExt;
+import connect.activity.home.bean.HomeAction;
+import connect.activity.wallet.PacketDetailActivity;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.TransferExt;
-import connect.activity.wallet.PacketDetailActivity;
+import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
@@ -29,7 +36,6 @@ public class MsgLuckyHolder extends MsgChatHolder {
 
     /** check is group lucky packet */
     private boolean systemPacket = false;
-    private TransferExt transferExt;
 
     public MsgLuckyHolder(View itemView) {
         super(itemView);
@@ -42,19 +48,37 @@ public class MsgLuckyHolder extends MsgChatHolder {
             @Override
             public void onClick(View v) {
                 MsgDefinBean bean = entity.getMsgDefinBean();
-                requestLuckPacket(bean.getContent());
+
+                String hashid = bean.getContent();
+                if (bean.msgDirect() == MsgDirect.To && entity.getRoomType() == RoomType.FriendType) {
+                    startPacketDetail(hashid, 0);
+                } else {
+                    requestLuckPacket(hashid);
+                }
             }
         });
 
         if (entity.getReadstate() == 0) {//do not click
-            transferExt = new Gson().fromJson(entity.getMsgDefinBean().getExt1(), TransferExt.class);
+            TransferExt transferExt = new Gson().fromJson(entity.getMsgDefinBean().getExt1(), TransferExt.class);
             if (transferExt != null && transferExt.getType() == 1) {//outer lucky packet
                 contentLayout.performClick();
             }
         }
     }
 
-    private boolean playAnim = false;
+    private Handler handler = new Handler(Looper.myLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 100:
+                    contentLayout.setClickable(true);
+                    break;
+                case 120:
+                    contentLayout.setClickable(false);
+            }
+        }
+    };
 
     /**
      * request to get the lucky packet
@@ -85,44 +109,38 @@ public class MsgLuckyHolder extends MsgChatHolder {
                         throw new Exception("Validation fails");
                     }
 
-                    if (playAnim) {
-                        return;
-                    }
-
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GrabRedPackageResp packageResp = Connect.GrabRedPackageResp.parseFrom(structData.getPlainData());
-                    if(!ProtoBufUtil.getInstance().checkProtoBuf(packageResp)){
-                        return;
+                    if (!ProtoBufUtil.getInstance().checkProtoBuf(packageResp)) {//state default 0
+                        packageResp = Connect.GrabRedPackageResp.newBuilder().setStatus(0).build();
                     }
                     switch (packageResp.getStatus()) {
                         case 0://fail
-                            playAnim=true;
+                            handler.sendEmptyMessage(120);
                             DialogUtil.showRedPacketState(context, 0, new DialogUtil.OnGifListener() {
                                 @Override
                                 public void click() {
                                     startPacketDetail(hashid, systemPacket ? 1 : 0);
-                                    playAnim=false;
+                                    handler.sendEmptyMessage(100);
                                 }
                             });
                             break;
                         case 1://get it
-                            playAnim=true;
+                            handler.sendEmptyMessage(120);
                             DialogUtil.showRedPacketState(context, 1, new DialogUtil.OnGifListener() {
                                 @Override
                                 public void click() {
                                     startPacketDetail(hashid, systemPacket ? 1 : 0);
-                                    playAnim=false;
+                                    handler.sendEmptyMessage(100);
                                 }
                             });
                             break;
                         case 2://Have got it , display  the details
-                            playAnim=false;
                             startPacketDetail(hashid, systemPacket ? 1 : 0);
                             break;
                         case 3://fail
                             break;
                         case 4://have no lucky packet
-                            playAnim=false;
                             startPacketDetail(hashid, systemPacket ? 1 : 0);
                             break;
                         case 5://Mobile phone is not bound
@@ -145,7 +163,12 @@ public class MsgLuckyHolder extends MsgChatHolder {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                switch (response.getCode()) {
+                    case 2650:
+                        ActivityUtil.goBack((Activity) context);
+                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.SWITCHFRAGMENT, 2);
+                        break;
+                }
             }
         });
     }

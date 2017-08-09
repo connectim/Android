@@ -83,7 +83,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
         holder.directTxt.showText(roomAttr.getAt(),roomAttr.getDraft(), TextUtils.isEmpty(roomAttr.getContent()) ? "" : roomAttr.getContent());
         try {
             long sendtime = roomAttr.getTimestamp();
-            holder.timeTxt.setText(0 == sendtime ? "" : TimeUtil.getMsgTime(sendtime));
+            holder.timeTxt.setText(0 == sendtime ? "" : TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), sendtime));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -183,7 +183,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     }
 
                     if (talker != null) {
-                        HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, talker);
+                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, talker);
                     }
                 }
             }

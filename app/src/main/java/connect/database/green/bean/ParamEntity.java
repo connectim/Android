@@ -14,11 +14,12 @@ public class ParamEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-
     @Unique
     private String key;
+
     private String value;
     private String ext;
+
     @Generated(hash = 60211512)
     public ParamEntity(Long _id, String key, String value, String ext) {
         this._id = _id;
@@ -26,6 +27,7 @@ public class ParamEntity implements Serializable {
         this.value = value;
         this.ext = ext;
     }
+
     @Generated(hash = 587332873)
     public ParamEntity() {
     }

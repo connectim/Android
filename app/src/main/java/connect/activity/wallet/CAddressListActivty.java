@@ -13,11 +13,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.wallet.adapter.CAddressAdapter;
-import connect.activity.wallet.bean.CurrencyBean;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
+import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 
 /**
@@ -31,6 +32,8 @@ public class CAddressListActivty extends BaseActivity {
     RecyclerView recyclerview;
 
     private CAddressListActivty activity;
+    private CurrencyEnum currencyBean;
+    private CurrencyEntity currencyEntity;
     private List<CurrencyAddressEntity> currencyAddressEntities = new ArrayList<>();
 
     @Override
@@ -40,7 +43,7 @@ public class CAddressListActivty extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    public static void startActivity(Activity activity, CurrencyBean bean) {
+    public static void startActivity(Activity activity, CurrencyEnum bean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("Currency", bean);
         ActivityUtil.next(activity, CAddressListActivty.class, bundle);
@@ -59,7 +62,10 @@ public class CAddressListActivty extends BaseActivity {
             }
         });
 
-        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress("BTC");
+        currencyBean = (CurrencyEnum) getIntent().getSerializableExtra("Currency");
+        currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyBean.getCode());
+        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(currencyBean.getCode());
+        currencyAddressEntities = CurrencyHelper.getInstance().loadCurrencyAddress(0);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         CAddressAdapter cAddressAdapter = new CAddressAdapter(activity, currencyAddressEntities);
         recyclerview.setLayoutManager(linearLayoutManager);
@@ -73,7 +79,32 @@ public class CAddressListActivty extends BaseActivity {
         });
     }
 
-    public void updateDefaultAddress(CurrencyAddressEntity addressEntity){
-
+    public void updateDefaultAddress(final CurrencyAddressEntity addressEntity) {
+//        WalletOuterClass.RequestCreateCoinInfo history = WalletOuterClass.RequestCreateCoinInfo.newBuilder()
+//                .setCurrency(currencyEntity.getCurrency())
+//                .setAddress(addressEntity.getAddress())
+//                .build();
+//
+//        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_DEFAULT, history, new ResultCall<Connect.HttpResponse>() {
+//            @Override
+//            public void onResponse(Connect.HttpResponse response) {
+//                try {
+//                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+//                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+//                    WalletOuterClass.RequestCreateCoinInfo createCoinInfo = WalletOuterClass.RequestCreateCoinInfo.parseFrom(structData.getPlainData());
+//                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
+//                        currencyEntity.setMasterAddress(addressEntity.getAddress());
+//                        CurrencyHelper.getInstance().updateCurrency(currencyEntity);
+//                    }
+//                } catch (InvalidProtocolBufferException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Connect.HttpResponse response) {
+//
+//            }
+//        });
     }
 }

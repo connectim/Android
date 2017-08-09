@@ -16,6 +16,7 @@ import connect.activity.wallet.contract.PacketContract;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.transfer.TransferError;
@@ -31,16 +32,12 @@ import protos.Connect;
 public class PacketPresenter implements PacketContract.Presenter{
 
     PacketContract.View mView;
-    private Connect.PendingRedPackage pendingRedPackage;
-
     public PacketPresenter(PacketContract.View mView) {
         this.mView = mView;
     }
 
     @Override
-    public void start() {
-        getPaddingInfo();
-    }
+    public void start() {}
 
     @Override
     public TextWatcher getNumberWatcher() {
@@ -50,81 +47,6 @@ public class PacketPresenter implements PacketContract.Presenter{
     @Override
     public TransferEditView.OnEditListener getEditListener() {
         return onEditListener;
-    }
-
-    @Override
-    public Connect.PendingRedPackage getPendingPackage() {
-        return pendingRedPackage;
-    }
-
-    private void getPaddingInfo() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_PACKAGE_PENDING, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
-                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
-                                pendingRedPackage = pending;
-                            }
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
-                });
-    }
-
-    @Override
-    public void sendPacket(long amount, String siginRaw, String note, final PaymentPwd paymentPwd) {
-        Connect.OrdinaryRedPackage.Builder builder = Connect.OrdinaryRedPackage.newBuilder();
-        builder.setHashId(pendingRedPackage.getHashId());
-        builder.setMoney(amount);
-        if (!TextUtils.isEmpty(note))
-            builder.setTips(note);
-        builder.setSize(Integer.valueOf(mView.getPacketNumber()));
-        builder.setRawTx(siginRaw);
-        builder.setCategory(2);//1 ：friend  2： group
-        builder.setType(1);
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_PACKAGE_SEND, builder.build(), new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(final Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
-                    @Override
-                    public void onComplete() {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
-
-                            SendOutBean sendOutBean = new SendOutBean();
-                            sendOutBean.setType(PacketSendActivity.RED_PACKET);
-                            sendOutBean.setUrl(redPackage.getUrl());
-                            sendOutBean.setNumber(Integer.valueOf(mView.getPacketNumber()));
-                            sendOutBean.setDeadline(redPackage.getDeadline());
-
-                            ParamManager.getInstance().putLatelyTransfer(new TransferBean(1,
-                                    mView.getActivity().getResources().getString(R.string.Wallet_Sent_via_link_luck_packet)));
-                            mView.goinPacketSend(sendOutBean);
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                TransferError.getInstance().showError(response.getCode(),response.getMessage());
-            }
-        });
     }
 
     private TextWatcher textWatcherNumber = new TextWatcher() {
@@ -159,5 +81,38 @@ public class PacketPresenter implements PacketContract.Presenter{
             mView.setPayBtnEnable(false);
         }
     }
+
+    @Override
+    public void getPacketDetail(String hashId) {
+        Connect.RedPackageHash redPackageHash = Connect.RedPackageHash.newBuilder()
+                .setId(hashId)
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_PACKAGE_INFO, redPackageHash, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.RedPackageInfo redPackageInfo = Connect.RedPackageInfo.parseFrom(structData.getPlainData());
+                    SendOutBean sendOutBean = new SendOutBean();
+                    sendOutBean.setType(PacketSendActivity.RED_PACKET);
+                    sendOutBean.setUrl(redPackageInfo.getRedpackage().getUrl());
+                    sendOutBean.setNumber(Integer.valueOf(mView.getPacketNumber()));
+                    sendOutBean.setDeadline(redPackageInfo.getRedpackage().getDeadline());
+                    mView.goPacketView(sendOutBean);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+
+            }
+        });
+
+    }
+
+
 
 }

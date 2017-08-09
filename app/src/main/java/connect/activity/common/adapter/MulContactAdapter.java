@@ -23,6 +23,7 @@ import connect.widget.roundedimageview.RoundedImageView;
 public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.MulHolder> {
 
     private LayoutInflater inflater;
+    private ArrayList<String> oldMemberList = new ArrayList<>();
     private ArrayList<String> memberList = new ArrayList<>();
     private List<ContactEntity> friendEntities;
 
@@ -32,7 +33,9 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
     public MulContactAdapter(Context context, List<String> members, List<ContactEntity> entities,ArrayList<ContactEntity> seledFriend) {
         this.inflater = LayoutInflater.from(context);
         this.friendEntities = entities;
-        if(members != null){
+
+        if (members != null) {
+            oldMemberList.addAll(members);
             memberList.addAll(members);
         }
         if(seledFriend != null){
@@ -41,6 +44,14 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
             selectEntities.addAll(seledFriend);
             for(ContactEntity contactEntity : seledFriend){
                 memberList.add(contactEntity.getPub_key());
+            }
+        }
+
+        for (ContactEntity contactEntity : entities) {
+            String pubkey = contactEntity.getPub_key();
+            if (members.contains(pubkey)) {
+                selectEntities.add(contactEntity);
+                continue;
             }
         }
     }
@@ -63,7 +74,6 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
         GlideUtil.loadAvater(holder.roundimg, entity.getAvatar());
         String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
         if (TextUtils.isEmpty(curName)) return;
-
         holder.name.setText(entity.getUsername());
 
         String curFirst = PinyinUtil.chatToPinyin(curName.charAt(0));
@@ -91,7 +101,6 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
         } else {
             holder.secView.setSelected(false);
         }
-
     }
 
     @Override
@@ -118,36 +127,29 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
             ContactEntity index = friendEntities.get(posi);
             View secview = v.findViewById(R.id.select);
             String pubkey = index.getPub_key();
-            if (memberList.contains(pubkey)){
+            if (oldMemberList.contains(pubkey)) {
+                secview.setSelected(true);
+                return;
+            }
+
+            if (memberList.contains(pubkey)) {
                 memberList.remove(pubkey);
-                for(ContactEntity contactEntity : selectEntities){
-                    if(contactEntity.getPub_key().equals(index.getPub_key())){
+                for (ContactEntity contactEntity : selectEntities) {
+                    if (contactEntity.getPub_key().equals(index.getPub_key())) {
                         selectEntities.remove(contactEntity);
                         break;
                     }
                 }
                 secview.setSelected(false);
-            }else{
+            } else {
                 memberList.add(pubkey);
                 selectEntities.add(index);
                 secview.setSelected(true);
             }
-            /*String pubkey = index.getPub_key();
-            if (!memberList.contains(pubkey)) {
-                View secview = v.findViewById(R.id.select);
-                if (selectEntities.contains(index)) {
-                    selectEntities.remove(index);
-                    secview.setSelected(false);
-                } else {
-                    selectEntities.add(index);
-                    secview.setSelected(true);
-                }
-            }*/
 
-            if(onSeleFriendListence != null){
+            if (onSeleFriendListence != null) {
                 onSeleFriendListence.seleFriend(selectEntities);
             }
-
         }
     };
 

@@ -2,8 +2,6 @@ package connect.activity.login.presenter;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
-import android.widget.AdapterView;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -107,9 +105,9 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter{
         ArrayList<String> list = new ArrayList<>();
         list.add(mView.getActivity().getString(R.string.Login_Scan_your_backup_for_login));
         list.add(mView.getActivity().getString(R.string.Login_Sign_In_Up_Local_account));
-        DialogUtil.showBottomListView(mView.getActivity(), list, new DialogUtil.DialogListItemClickListener() {
+        DialogUtil.showBottomView(mView.getActivity(), list, new DialogUtil.DialogListItemClickListener() {
             @Override
-            public void confirm(AdapterView<?> parent, View view, int position) {
+            public void confirm(int position) {
                 switch (position) {
                     case 0://Scan the backup log in
                         mView.scanPermission();

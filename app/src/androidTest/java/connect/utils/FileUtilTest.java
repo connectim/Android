@@ -2,8 +2,6 @@ package connect.utils;
 
 import org.junit.Test;
 
-import java.io.File;
-
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -21,12 +19,6 @@ public class FileUtilTest {
     public void randomFileNameTest() throws Exception {
         String name = FileUtil.randomFileName();
         assertTrue(name.length() > 0);
-    }
-
-    @Test
-    public void newContactFile() throws Exception {
-        File file = FileUtil.newContactFile(FileUtil.FileType.IMG);
-        assertTrue(file.length() > 0);
     }
 
     @Test

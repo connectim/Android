@@ -1,20 +1,21 @@
 package connect.activity.set;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.set.adapter.CurrencyAdapter;
 import connect.activity.wallet.bean.RateBean;
-import connect.activity.base.BaseActivity;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateDataUtil;
 import connect.widget.TopToolBar;
@@ -27,8 +28,9 @@ public class CurrencyActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.list_view)
-    ListView listView;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
+
 
     private CurrencyActivity mActivity;
     private CurrencyAdapter adapter;
@@ -49,17 +51,18 @@ public class CurrencyActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_Currency);
 
         List<RateBean> list = RateDataUtil.getInstance().getRateData();
-        adapter = new CurrencyAdapter();
+        adapter = new CurrencyAdapter(mActivity);
 
         RateBean rateBean = ParamManager.getInstance().getCountryRate();
         adapter.setSeleCurrency(rateBean == null ? "" : rateBean.getCode());
 
-        listView.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.setAdapter(adapter);
         adapter.setDataNotify(list);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        adapter.setItemClickListener(new CurrencyAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RateBean rateBean = (RateBean)parent.getAdapter().getItem(position);
+            public void itemClick(RateBean rateBean) {
                 ParamManager.getInstance().putCountryRate(rateBean);
                 adapter.setSeleCurrency(rateBean.getCode());
                 adapter.notifyDataSetChanged();
@@ -68,7 +71,7 @@ public class CurrencyActivity extends BaseActivity {
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view){
+    void goback(View view) {
         ActivityUtil.goBack(mActivity);
     }
 

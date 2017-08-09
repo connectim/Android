@@ -3,7 +3,6 @@ package connect.activity.chat.set;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -11,21 +10,14 @@ import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.GroupEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.RecExtBean;
-import connect.activity.contact.bean.ContactNotice;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.set.contract.GroupNameContract;
+import connect.activity.chat.set.presenter.GroupNamePresenter;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import protos.Connect;
 
-public class GroupNameActivity extends BaseActivity {
+public class GroupNameActivity extends BaseActivity implements GroupNameContract.BView{
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -37,7 +29,7 @@ public class GroupNameActivity extends BaseActivity {
     private Activity activity;
     private static String GROUP_KEY = "GROUP_KEY";
     private String groupKey = null;
-    private GroupEntity groupEntity;
+    private GroupNameContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +61,6 @@ public class GroupNameActivity extends BaseActivity {
         toolbar.setRightTextColor(R.color.color_68656f);
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
-        groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-        if(groupEntity==null){
-            ActivityUtil.goBack(activity);
-            return;
-        }
-        edittxt1.setText(groupEntity.getName());
         edittxt1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -96,42 +82,34 @@ public class GroupNameActivity extends BaseActivity {
                     toolbar.setRightListence(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            updateGroupName(groupKey);
+                            String groupName = edittxt1.getText().toString();
+                            presenter.updateGroupName(groupName);
                         }
                     });
                 }
             }
         });
+
+        new GroupNamePresenter(this).start();
     }
 
-    protected void updateGroupName(final String groupKey) {
-        final Connect.UpdateGroupInfo groupInfo = Connect.UpdateGroupInfo.newBuilder()
-                .setName(edittxt1.getText().toString()).setIdentifier(groupEntity.getIdentifier()).build();
+    @Override
+    public String getRoomKey() {
+        return groupKey;
+    }
 
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_UPDATE, groupInfo, new ResultCall<Connect.HttpResponse>() {
+    @Override
+    public void setPresenter(GroupNameContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
 
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                String groupName = edittxt1.getText().toString();
+    @Override
+    public Activity getActivity() {
+        return activity;
+    }
 
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                if (!(groupEntity == null || TextUtils.isEmpty(groupName) || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
-                    if (TextUtils.isEmpty(groupName)) {
-                        groupName = "groupname7";
-                    }
-                    groupEntity.setName(groupName);
-                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
-
-                    ContactNotice.receiverGroup();
-                    RecExtBean.sendRecExtMsg(RecExtBean.ExtType.GROUP_UPDATENAME, groupName);
-                }
-                GroupSetActivity.startActivity(activity,groupKey);
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(activity,R.string.Link_Update_Group_Name_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
-            }
-        });
+    @Override
+    public void groupName(String groupname) {
+        edittxt1.setText(groupname);
     }
 }

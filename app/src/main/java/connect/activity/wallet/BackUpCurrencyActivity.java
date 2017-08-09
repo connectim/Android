@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -18,7 +15,6 @@ import connect.activity.base.BaseActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.contract.BackUpContract;
 import connect.activity.set.presenter.BackUpPresenter;
-import connect.activity.wallet.bean.CurrencyBean;
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
@@ -27,10 +23,11 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 
-public class BackUpCurrencyActivity extends BaseActivity implements BackUpContract.View{
+public class BackUpCurrencyActivity extends BaseActivity implements BackUpContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -48,7 +45,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
     private UserBean userBean;
     private Bitmap bitmap;
 
-    private CurrencyBean currencyBean;
+    private CurrencyEnum currencyBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +55,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         initView();
     }
 
-    public static void startActivity(Activity activity, CurrencyBean currencyBean) {
+    public static void startActivity(Activity activity, CurrencyEnum currencyBean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("Currency", currencyBean);
         ActivityUtil.next(activity, BackUpCurrencyActivity.class, bundle);
@@ -73,7 +70,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         toolbarTop.setRightImg(R.mipmap.menu_white);
         userBean = SharedPreferenceUtil.getInstance().getUser();
 
-        currencyBean= (CurrencyBean) getIntent().getSerializableExtra("Currency");
+        currencyBean= (CurrencyEnum) getIntent().getSerializableExtra("Currency");
         new BackUpPresenter(this).start();
         switchPriKey(1);
     }
@@ -93,9 +90,9 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         ArrayList<String> list = new ArrayList<>();
         list.add(mActivity.getResources().getString(R.string.Login_Encrypted_private_key));
         list.add(mActivity.getResources().getString(R.string.Login_Decrypted_private_key));
-        DialogUtil.showBottomListView(mActivity,list,new DialogUtil.DialogListItemClickListener(){
+        DialogUtil.showBottomView(mActivity,list,new DialogUtil.DialogListItemClickListener(){
             @Override
-            public void confirm(AdapterView<?> parent, View view, int position) {
+            public void confirm(int position) {
                 switch (position) {
                     case 0:
                         switchPriKey(2);
@@ -146,12 +143,12 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         }
     }
 
-    public String currencyName(CurrencyBean bean) {
+    public String currencyName(CurrencyEnum bean) {
         String name = "";
         switch (bean) {
             case BTC:
                 name = "BTC";
-                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(name);
+                CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(0);
                 if (currencyEntity == null) {
                     break;
                 }
@@ -166,9 +163,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
         stringBuffer.append("Payload:" + walletBean.getPayload());
         stringBuffer.append(",");
-        stringBuffer.append("Salt:" + walletBean.getSalt());
         stringBuffer.append(",");
-        stringBuffer.append("N:" + walletBean.getN());
         stringBuffer.append(";");
 
         List<CurrencyEntity> currencyList = CurrencyHelper.getInstance().loadCurrencyList();

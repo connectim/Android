@@ -1,5 +1,7 @@
 package connect.activity.wallet.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.ui.activity.R;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.TimeUtil;
@@ -22,18 +25,38 @@ import protos.Connect;
 /**
  * Created by pujin on 2017/2/14.
  */
-public class GroupGatherRecordsAdapter extends BaseAdapter {
+public class GroupGatherRecordsAdapter extends RecyclerView.Adapter<GroupGatherRecordsAdapter.ViewHolder> {
 
+    private Activity activity;
     private ArrayList<Connect.Crowdfunding> mListData = new ArrayList();
 
-    @Override
-    public int getCount() {
-        return mListData.size();
+    public GroupGatherRecordsAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mListData.get(position);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_wallet_groupgather_records, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        Connect.Crowdfunding crowdfunding = mListData.get(position);
+
+        GlideUtil.loadAvater(viewHolder.avaterRimg, crowdfunding.getSender().getAvatar());
+        viewHolder.nameTv.setText(activity.getString(R.string.Common_In, crowdfunding.getGroupName()));
+        viewHolder.timeTv.setText(TimeUtil.getTime(crowdfunding.getCreatedAt() * 1000, TimeUtil.DATE_FORMAT_MONTH_HOUR));
+        viewHolder.balanceTv.setText(activity.getString(R.string.Set_BTC_symbol) + RateFormatUtil.longToDoubleBtc(crowdfunding.getTotal()));
+        if (crowdfunding.getStatus() == 0) {
+            viewHolder.statusTv.setText(activity.getString(R.string.Chat_Crowd_founding_in_progress));
+            viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_6d6e75));
+        } else if (crowdfunding.getStatus() == 1) {
+            viewHolder.statusTv.setText(activity.getString(R.string.Common_Completed));
+            viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_37c65c));
+        }
     }
 
     @Override
@@ -42,47 +65,26 @@ public class GroupGatherRecordsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        GroupGatherRecordsAdapter.ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet_groupgather_records, parent, false);
-            viewHolder = new GroupGatherRecordsAdapter.ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (GroupGatherRecordsAdapter.ViewHolder) convertView.getTag();
-        }
-        Connect.Crowdfunding crowdfunding = (Connect.Crowdfunding) getItem(position);
-
-        GlideUtil.loadAvater(viewHolder.avaterRimg, crowdfunding.getSender().getAvatar());
-        viewHolder.nameTv.setText(convertView.getContext().getString(R.string.Common_In, crowdfunding.getGroupName()));
-        viewHolder.timeTv.setText(TimeUtil.getTime(crowdfunding.getCreatedAt() * 1000, TimeUtil.DATE_FORMAT_MONTH_HOUR));
-        viewHolder.balanceTv.setText(parent.getContext().getString(R.string.Set_BTC_symbol) + RateFormatUtil.longToDoubleBtc(crowdfunding.getTotal()));
-        if (crowdfunding.getStatus() == 0) {
-            viewHolder.statusTv.setText(convertView.getContext().getString(R.string.Chat_Crowd_founding_in_progress));
-            viewHolder.statusTv.setTextColor(convertView.getContext().getResources().getColor(R.color.color_6d6e75));
-        } else if (crowdfunding.getStatus() == 1) {
-            viewHolder.statusTv.setText(convertView.getContext().getString(R.string.Common_Completed));
-            viewHolder.statusTv.setTextColor(convertView.getContext().getResources().getColor(R.color.color_37c65c));
-        }
-        return convertView;
+    public int getItemCount() {
+        return mListData.size();
     }
 
-    class ViewHolder {
-        @Bind(R.id.avater_rimg)
+    class ViewHolder extends RecyclerView.ViewHolder {
         RoundedImageView avaterRimg;
-        @Bind(R.id.left_rela)
         RelativeLayout leftRela;
-        @Bind(R.id.name_tv)
         TextView nameTv;
-        @Bind(R.id.balance_tv)
         TextView balanceTv;
-        @Bind(R.id.time_tv)
         TextView timeTv;
-        @Bind(R.id.status_tv)
         TextView statusTv;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
+            leftRela = (RelativeLayout) itemview.findViewById(R.id.left_rela);
+            nameTv = (TextView) itemview.findViewById(R.id.name_tv);
+            balanceTv = (TextView) itemview.findViewById(R.id.balance_tv);
+            timeTv = (TextView) itemview.findViewById(R.id.time_tv);
+            statusTv = (TextView) itemview.findViewById(R.id.status_tv);
         }
     }
 
@@ -93,4 +95,14 @@ public class GroupGatherRecordsAdapter extends BaseAdapter {
         mListData.addAll(list);
         notifyDataSetChanged();
     }
+    private GroupGatherRecordsAdapter.OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void itemClick(Connect.Crowdfunding crowdfunding);
+    }
+
+    public void setItemClickListener(GroupGatherRecordsAdapter.OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
 }

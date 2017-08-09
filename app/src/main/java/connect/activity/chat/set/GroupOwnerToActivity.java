@@ -11,26 +11,24 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.adapter.GroupMemberSelectAdapter;
+import connect.activity.chat.model.GroupMemberCompara;
+import connect.activity.chat.set.contract.GroupOwnerContract;
+import connect.activity.chat.set.presenter.GroupOwnerPresenter;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.model.GroupMemberCompara;
-import connect.activity.chat.adapter.GroupMemberSelectAdapter;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.UriUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
-import protos.Connect;
 
 /**
  * Select New Group Owner
  */
-public class GroupOwnerToActivity extends BaseActivity {
+public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerContract.BView{
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -44,13 +42,12 @@ public class GroupOwnerToActivity extends BaseActivity {
     private static String GROUP_KEY = "GROUP_KEY";
     private GroupOwnerToActivity activity;
     private String groupKey = null;
+    private GroupOwnerContract.Presenter presenter;
 
     private boolean move;
     private int topPosi;
     private LinearLayoutManager linearLayoutManager;
     private GroupMemberSelectAdapter adapter;
-
-    private GroupMemberCompara compara = new GroupMemberCompara();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +79,7 @@ public class GroupOwnerToActivity extends BaseActivity {
         groupKey = getIntent().getStringExtra(GROUP_KEY);
 
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey, MemoryDataManager.getInstance().getAddress());
-        Collections.sort(groupMemEntities, compara);
+        Collections.sort(groupMemEntities, new GroupMemberCompara());
 
         adapter = new GroupMemberSelectAdapter(activity, groupMemEntities);
         linearLayoutManager = new LinearLayoutManager(activity);
@@ -116,7 +113,9 @@ public class GroupOwnerToActivity extends BaseActivity {
                         "", "", false, new DialogUtil.OnItemClickListener() {
                             @Override
                             public void confirm(String value) {
-                                groupOwnerTransferTo(memEntity);
+                                String memberKey = memEntity.getIdentifier();
+                                String address = memEntity.getAddress();
+                                presenter.groupOwnerTo(memberKey, address);
                             }
 
                             @Override
@@ -134,6 +133,8 @@ public class GroupOwnerToActivity extends BaseActivity {
                 moveToPosition(position);
             }
         });
+
+        new GroupOwnerPresenter(this).start();
     }
 
     private void moveToPosition(int posi) {
@@ -151,31 +152,18 @@ public class GroupOwnerToActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Group manager change
-     */
-    protected void groupOwnerTransferTo(final GroupMemberEntity memEntity) {
-        Connect.GroupAttorn attorn = Connect.GroupAttorn.newBuilder()
-                .setIdentifier(memEntity.getIdentifier())
-                .setAddress(memEntity.getAddress()).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_ATTORN, attorn, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
-                myMember.setRole(0);
-                ContactHelper.getInstance().inserGroupMemEntity(myMember);
+    @Override
+    public String getRoomKey() {
+        return groupKey;
+    }
 
-                GroupMemberEntity ownerMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, memEntity.getAddress());
-                ownerMember.setRole(1);
-                ContactHelper.getInstance().inserGroupMemEntity(ownerMember);
+    @Override
+    public void setPresenter(GroupOwnerContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
 
-                GroupSetActivity.startActivity(activity,groupKey);
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
-        });
+    @Override
+    public Activity getActivity() {
+        return activity;
     }
 }

@@ -97,10 +97,13 @@ public class TransactionParseBean extends InterParse{
         MsgEntity msgEntity = normalChat.transferMsg(notice.getHashId(), notice.getAmount(), notice.getTips(), 0);
         MsgSender msgSender = new MsgSender(stranger.getPub_key(), stranger.getUsername(), stranger.getAddress(), stranger.getAvatar());
         msgEntity.getMsgDefinBean().setSenderInfoExt(msgSender);
+        msgEntity.getMsgDefinBean().setPublicKey(MemoryDataManager.getInstance().getPubKey());
+        msgEntity.getMsgDefinBean().setUser_name(MemoryDataManager.getInstance().getName());
+        msgEntity.getMsgDefinBean().setUser_id(MemoryDataManager.getInstance().getAddress());
         MessageHelper.getInstance().insertFromMsg(senderPubkey, msgEntity.getMsgDefinBean());
         normalChat.updateRoomMsg(null,  msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
 
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,normalChat.roomKey(),msgEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,normalChat.roomKey(),msgEntity);
     }
 
     /**
@@ -156,7 +159,7 @@ public class TransactionParseBean extends InterParse{
 
         MsgEntity msgEntity = normalChat.noticeMsg(content);
         MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,normalChat.roomKey(),msgEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,normalChat.roomKey(),msgEntity);
 
         normalChat.updateRoomMsg(null,msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()),msgEntity.getMsgDefinBean().getSendtime(),-1,true);
     }
@@ -180,7 +183,7 @@ public class TransactionParseBean extends InterParse{
             MessageHelper.getInstance().insertFromMsg(pubkey, msgEntity.getMsgDefinBean());
             normalChat.updateRoomMsg(null,  msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
 
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
         }
     }
 
@@ -226,7 +229,7 @@ public class TransactionParseBean extends InterParse{
                 MessageHelper.getInstance().insertFromMsg(groupid, msgEntity.getMsgDefinBean());
                 normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
 
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,groupid,msgEntity);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,groupid,msgEntity);
             }
 
             if (transEntity.getPay_count() == transEntity.getCrowd_count()) {
@@ -234,7 +237,7 @@ public class TransactionParseBean extends InterParse{
                 MessageHelper.getInstance().insertFromMsg(groupid, msgEntity.getMsgDefinBean());
                 normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(),-1,true);
 
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupid, msgEntity);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupid, msgEntity);
             }
         }
     }
@@ -267,9 +270,13 @@ public class TransactionParseBean extends InterParse{
         NormalChat normalChat = new FriendChat(friendEntity);
         MsgEntity msgEntity = normalChat.transferMsg(notice.getHashId(), notice.getAmount(), notice.getTips(), 1);
         msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAddress(), friendEntity.getAvatar()));
+        msgEntity.getMsgDefinBean().setPublicKey(MemoryDataManager.getInstance().getPubKey());
+        msgEntity.getMsgDefinBean().setUser_name(MemoryDataManager.getInstance().getName());
+        msgEntity.getMsgDefinBean().setUser_id(MemoryDataManager.getInstance().getAddress());
         MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
+
         String showTxt = msgEntity.getMsgDefinBean().showContentTxt(0);
         normalChat.updateRoomMsg(null, showTxt, TimeUtil.getCurrentTimeInLong(),-1,true);
-        HomeAction.sendTypeMsg(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
+        HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
     }
 }

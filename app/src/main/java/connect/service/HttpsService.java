@@ -43,7 +43,6 @@ import connect.activity.home.bean.HttpRecBean;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.bean.PrivateSetBean;
 import connect.activity.wallet.bean.RateBean;
-import connect.activity.wallet.bean.WalletAccountBean;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
@@ -63,6 +62,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * Background processing HTTP requests
@@ -142,7 +142,6 @@ public class HttpsService extends Service {
             HttpsService.sendPrivateSet();
         }
 
-        HttpsService.sendWalletAmount();
         HttpsService.sendEstimatefee();
 
         if (ParamHelper.getInstance().loadParamEntity(ParamManager.COUNTRY_RATE) == null) {
@@ -183,9 +182,6 @@ public class HttpsService extends Service {
             case BlackList://black list
                 requestBlackList();
                 break;
-            case WalletAccount://wallet account
-                requestWallet();
-                break;
             case Estimate://fee
                 requestEstimatefee();
                 break;
@@ -203,6 +199,12 @@ public class HttpsService extends Service {
                 break;
             case GroupNotificaton:
                 updateGroupMute((String) objects[0], (Integer) objects[1]);
+                break;
+            case WALLET_DEFAULT_ADDRESS:
+                getCurrencyDefaultAddress();
+                break;
+            case WALLET_CURRENCY_SET:
+                updateCurrency();
                 break;
         }
     }
@@ -229,10 +231,6 @@ public class HttpsService extends Service {
 
     public static void sendPrivateSet() {
         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PrivateSet, "");
-    }
-
-    public static void sendWalletAmount() {
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.WalletAccount, "");
     }
 
     public static void sendBlackList() {
@@ -294,10 +292,9 @@ public class HttpsService extends Service {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, prikey, imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
-                        byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray(), 64);
+                        byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray());
                         ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_SALT, StringUtil.bytesToHexString(salts));
                         ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_EXPIRED, String.valueOf(tokenResponse.getExpired()));
-
                         loginSuccessHttp();
                     }
                 } catch (Exception e) {
@@ -581,32 +578,6 @@ public class HttpsService extends Service {
                 });
     }
 
-    private void requestWallet() {
-        String url = String.format(UriUtil.BLOCKCHAIN_UNSPENT_INFO, MemoryDataManager.getInstance().getAddress());
-        OkHttpUtil.getInstance().get(url, new ResultCall<Connect.HttpNotSignResponse>() {
-            @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                try {
-                    if (response.getCode() == 2000) {
-                        Connect.UnspentAmount unspentAmount = Connect.UnspentAmount.parseFrom(response.getBody());
-                        if(ProtoBufUtil.getInstance().checkProtoBuf(unspentAmount)){
-                            WalletAccountBean accountBean = new WalletAccountBean(unspentAmount.getAmount(), unspentAmount.getAvaliableAmount());
-                            ParamManager.getInstance().putWalletAmount(accountBean);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-                WalletAccountBean accountBean = new WalletAccountBean(0L, 0L);
-                ParamManager.getInstance().putWalletAmount(accountBean);
-            }
-        });
-    }
-
     public void requestEstimatefee() {
         HttpRequest.getInstance().get(UriUtil.CONNECT_V1_ESTIMATEFEE, new Callback() {
             @Override
@@ -676,6 +647,56 @@ public class HttpsService extends Service {
 
             @Override
             public void onError(Connect.HttpResponse response) {
+            }
+        });
+    }
+
+    private void getCurrencyDefaultAddress() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_GET_DEFAULT, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+//                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
+//                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
+//
+//                    }
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+
+            }
+        });
+    }
+
+    private void updateCurrency() {
+        WalletOuterClass.Coin coin = WalletOuterClass.Coin.newBuilder()
+                .setCurrency(0)
+                .setStatus(0).build();
+
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_CURRENCY_SET, coin, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+//                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
+//                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
+//
+//                    }
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+
             }
         });
     }

@@ -2,25 +2,26 @@ package connect.activity.contact;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ListView;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.MemoryDataManager;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.AddPhoneAdapter;
+import connect.activity.contact.bean.PhoneContactBean;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.FriendAddContract;
 import connect.activity.contact.presenter.FriendAddPresenter;
-import connect.activity.base.BaseActivity;
+import connect.database.MemoryDataManager;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemUtil;
-import connect.activity.contact.bean.PhoneContactBean;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
 
@@ -32,11 +33,12 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
-    @Bind(R.id.list_view)
-    ListView listView;
     @Bind(R.id.siderbar)
     SideBar siderbar;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
 
+    private LinearLayoutManager linearLayoutManager;
     private FriendAddPhoneActivity mActivity;
     private FriendAddContract.Presenter presenter;
     private AddPhoneAdapter adapter;
@@ -65,33 +67,35 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
         toolbar.setRightTextEnable(false);
         new FriendAddPresenter(this).start();
 
-        adapter = new AddPhoneAdapter();
+        linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        adapter = new AddPhoneAdapter(mActivity);
         adapter.setOnSeleListence(onSeleListence);
-        listView.setAdapter(adapter);
+        recyclerview.setAdapter(adapter);
         siderbar.setOnTouchingLetterChangedListener(letterChangedListener);
-        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_CONTACTS},permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_CONTACTS}, permissomCallBack);
     }
 
     SideBar.OnTouchingLetterChangedListener letterChangedListener = new SideBar.OnTouchingLetterChangedListener() {
         @Override
         public void onTouchingLetterChanged(String s) {
             int position = adapter.getPositionForSection(s.charAt(0));
-            if(position >= 0){
-                listView.setSelection(position);
+            if (position >= 0) {
+                linearLayoutManager.scrollToPosition(position);
             }
         }
     };
 
-    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack() {
         @Override
         public void granted(String[] permissions) {
-            if(permissions != null && permissions.length > 0){
-                if(permissions[0].equals(PermissionUtil.PERMISSIM_CONTACTS)){
+            if (permissions != null && permissions.length > 0) {
+                if (permissions[0].equals(PermissionUtil.PERMISSIM_CONTACTS)) {
                     presenter.requestContact();
-                }else if(permissions[0].equals(PermissionUtil.PERMISSIM_SMS)){
+                } else if (permissions[0].equals(PermissionUtil.PERMISSIM_SMS)) {
                     String numbers = "";
                     List<PhoneContactBean> seleList = adapter.getSeleList();
-                    for(PhoneContactBean contactBean : seleList){
+                    for (PhoneContactBean contactBean : seleList) {
                         numbers = numbers + contactBean.getPhone() + ";";
                     }
                     SystemUtil.sendPhoneSMS(mActivity, numbers, getString(R.string.Link_invite_encrypted_chat_with_APP_Download,
@@ -112,13 +116,13 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
 
     @OnClick(R.id.right_text)
     void goinvite(View view) {
-        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_SMS},permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_SMS}, permissomCallBack);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissomCallBack);
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
     }
 
     private AddPhoneAdapter.OnSeleListence onSeleListence = new AddPhoneAdapter.OnSeleListence() {

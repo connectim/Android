@@ -1,6 +1,7 @@
 package connect.activity.chat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import butterknife.ButterKnife;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgSend;
+import connect.activity.chat.bean.MsgSender;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
@@ -35,6 +37,7 @@ import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.SingleSetActivity;
 import connect.activity.chat.view.ExBottomLayout;
+import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -45,6 +48,7 @@ import connect.database.green.bean.GroupMemberEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.DialogUtil;
 import connect.utils.FileUtil;
 import connect.utils.MediaUtil;
 import connect.utils.TimeUtil;
@@ -79,6 +83,7 @@ public class ChatActivity extends BaseChatActvity {
     }
 
     public static void startActivity(Activity activity, Talker talker) {
+        RoomSession.getInstance().setRoomType(talker.getTalkType());
         RoomSession.getInstance().setRoomKey(talker.getTalkKey());
 
         Bundle bundle = new Bundle();
@@ -111,8 +116,6 @@ public class ChatActivity extends BaseChatActvity {
                 }
             }
         });
-        layoutExbottom.getMorePanel().setRoomType(talker.getTalkType());
-
         // robot/stranger donot show setting
         if (!(talker.getTalkType() == 2 || baseChat.isStranger())) {
             toolbar.setRightImg(R.mipmap.menu_white);
@@ -134,7 +137,6 @@ public class ChatActivity extends BaseChatActvity {
                 return false;
             }
         });
-        ((DefaultItemAnimator)recyclerChat.getItemAnimator()).setSupportsChangeAnimations(false);
 
         scrollHelper.attachToRecycleView(recyclerChat);
         loadChatInfor();
@@ -239,8 +241,8 @@ public class ChatActivity extends BaseChatActvity {
     @Override
     public void adapterInsetItem(MsgEntity bean) {
         chatAdapter.insertItem(bean);
-        if (scrollHelper.isScrollBottom() || !talker.getTalkKey().equals(bean.getMsgDefinBean().getPublicKey())) {
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.SCROLLBOTTOM);
+        if (scrollHelper.isScrollBottom()) {
+            RecExtBean.getInstance().sendEventDelay(RecExtBean.ExtType.SCROLLBOTTOM);
         }
     }
 

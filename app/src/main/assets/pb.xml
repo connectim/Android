@@ -79,7 +79,6 @@
 
     <Bill>
         <attr name='hash' type='string'></attr>
-        <attr name='receiver' type='string'></attr>
     </Bill>
 
     <FriendRecords>
@@ -395,6 +394,8 @@
     </GenerateTokenResponse>
 
     <VersionResponse>
+        <attr name='version' type='string'></attr>
+        <attr name='upgradeUrl' type='string'></attr>
     </VersionResponse>
 
     <PaymentSetting>
@@ -425,5 +426,4 @@
     <RedPackageInfos>
         <attr name='redPackageInfos' type='list'></attr>
     </RedPackageInfos>
-
 </PBRule>

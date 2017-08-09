@@ -1,8 +1,10 @@
 package connect.activity.wallet;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -11,16 +13,17 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.ui.activity.R;
-import connect.activity.wallet.adapter.TransferOutAdapter;
 import connect.activity.base.BaseActivity;
+import connect.activity.wallet.adapter.TransferOutAdapter;
+import connect.activity.wallet.bean.SendOutBean;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import connect.widget.pullTorefresh.XListView;
+import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
 
 /**
@@ -31,8 +34,10 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.list_view)
-    XListView listView;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
+    @Bind(R.id.refreshview)
+    SwipeRefreshLayout refreshview;
 
     private TransferOutViaHistoryActivity mActivity;
     private final int PAGESIZE_MAX = 10;
@@ -54,25 +59,39 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Chat_History);
 
-        transferOutAdapter = new TransferOutAdapter();
-        listView.setAdapter(transferOutAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
-        listView.setXListViewListener(new XListView.IXListViewListener() {
+        refreshview.setColorSchemeResources(
+                R.color.color_ebecee,
+                R.color.color_c8ccd5,
+                R.color.color_lightgray
+        );
+        refreshview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                refreshview.setRefreshing(false);
                 page = 1;
                 requestHostory();
             }
+        });
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        transferOutAdapter = new TransferOutAdapter(mActivity);
+        recyclerview.setAdapter(transferOutAdapter);
+        recyclerview.addOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore() {
-                page ++;
+                page++;
                 requestHostory();
+            }
+        });
+        transferOutAdapter.setItemClickListener(new TransferOutAdapter.OnItemClickListener() {
+            @Override
+            public void itemClick(Connect.ExternalBillingInfo billingInfo) {
+                SendOutBean sendOutBean = new SendOutBean();
+                sendOutBean.setType(PacketSendActivity.OUT_VIA);
+                sendOutBean.setUrl(billingInfo.getUrl());
+                sendOutBean.setDeadline(billingInfo.getDeadline());
+                PacketSendActivity.startActivity(mActivity,sendOutBean);
             }
         });
 
@@ -84,7 +103,7 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
         ActivityUtil.goBack(mActivity);
     }
 
-    private void requestHostory(){
+    private void requestHostory() {
         Connect.History history = Connect.History.newBuilder()
                 .setPageIndex(page)
                 .setPageSize(PAGESIZE_MAX)
@@ -98,19 +117,12 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
                     Connect.ExternalBillingInfos externalBillingInfos = Connect.ExternalBillingInfos.parseFrom(structData.getPlainData());
                     List<Connect.ExternalBillingInfo> list = externalBillingInfos.getExternalBillingInfosList();
 
-                    if(page > 1){
-                        transferOutAdapter.setNotifyData(list,false);
-                    }else{
-                        transferOutAdapter.setNotifyData(list,true);
+                    if (page > 1) {
+                        transferOutAdapter.setNotifyData(list, false);
+                    } else {
+                        transferOutAdapter.setNotifyData(list, true);
                     }
-
-                    listView.stopRefresh();
-                    listView.stopLoadMore();
-                    if(list.size() == PAGESIZE_MAX){
-                        listView.setPullLoadEnable(true);
-                    }else{
-                        listView.setPullLoadEnable(false);
-                    }
+                    refreshview.setRefreshing(false);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

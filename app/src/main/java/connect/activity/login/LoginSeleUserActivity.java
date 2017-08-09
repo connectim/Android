@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.activity.home.view.LineDecoration;
@@ -16,6 +17,7 @@ import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -95,6 +97,12 @@ public class LoginSeleUserActivity extends BaseActivity {
             UserBean userBean = (UserBean)object;
             listUser.remove(userBean);
             SharedPreferenceUtil.getInstance().putUserList(userBean,SharedPreferenceUtil.USER_LIST_DEL);
+
+            mActivity.deleteDatabase("connect_"+userBean.getPubKey()+".db");
+            File file= new File("/data/data/"+getPackageName().toString()+"/shared_prefs", "sp_"+userBean.getPubKey()+".xml");
+            if(file.exists()){
+                file.delete();
+            }
         }
     };
 }

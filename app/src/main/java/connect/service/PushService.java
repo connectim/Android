@@ -246,7 +246,7 @@ public class PushService extends Service {
             bootstrap.group(loopGroup);//java.lang.OutOfMemoryError: Could not allocate JNI Env
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);//TCP协议
+            bootstrap.option(ChannelOption.TCP_NODELAY, true);//TCP
             bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000);
 
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {

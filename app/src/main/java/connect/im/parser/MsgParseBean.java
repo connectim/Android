@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.AdBean;
 import connect.activity.chat.bean.ApplyGroupBean;
@@ -284,7 +283,7 @@ public class MsgParseBean extends InterParse {
                         removeGroup.getName()));
 
                 ContactHelper.getInstance().removeGroupInfos(removeGroup.getGroupId());
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.GROUP_REMOVE, removeGroup.getGroupId());
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_REMOVE, removeGroup.getGroupId());
                 break;
             case 200://External address transfer to Connect account, system notification
                 Connect.AddressNotify addressNotify = Connect.AddressNotify.parseFrom(message.getBody().toByteArray());
@@ -313,7 +312,7 @@ public class MsgParseBean extends InterParse {
             MsgEntity msgEntity = normalChat.strangerNotice();
 
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
         }
     }
 
@@ -329,7 +328,7 @@ public class MsgParseBean extends InterParse {
             MsgEntity msgEntity = normalChat.blackFriendNotice();
 
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgEntity);
         }
     }
 
@@ -345,7 +344,7 @@ public class MsgParseBean extends InterParse {
             MsgEntity msgEntity = normalChat.notMemberNotice();
 
             MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.MESSAGE_RECEIVE, groupkey, msgEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupkey, msgEntity);
         }
     }
 
@@ -392,7 +391,7 @@ public class MsgParseBean extends InterParse {
             indexEntity.setValue(new Gson().toJson(userCookie));
             ParamHelper.getInstance().insertOrReplaceParamEntity(indexEntity);
 
-            RecExtBean.sendRecExtMsg(RecExtBean.ExtType.UNARRIVE_UPDATE, friendEntity.getPub_key());
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, friendEntity.getPub_key());
         }
 
         MessageEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
@@ -411,7 +410,7 @@ public class MsgParseBean extends InterParse {
             return;
         }
 
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.UNARRIVE_HALF, friendEntity.getPub_key());
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_HALF, friendEntity.getPub_key());
 
         MessageEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity != null) {

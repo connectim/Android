@@ -1,5 +1,7 @@
 package connect.activity.set.adapter;
 
+import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.ui.activity.R;
 import connect.activity.wallet.bean.RateBean;
 
@@ -16,24 +19,52 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import protos.Connect;
 
 /**
  * Created by Administrator on 2017/1/12.
  */
 
-public class CurrencyAdapter extends BaseAdapter {
+public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHolder> {
 
+    private Activity activity;
     private ArrayList<RateBean> mDataList = new ArrayList<>();
     private String currency = "";
 
-    @Override
-    public int getCount() {
-        return mDataList.size();
+    public CurrencyAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
-    public Object getItem(int position) {
-        return mDataList.get(position);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.item_currency, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+        RateBean rateBean = mDataList.get(position);
+        if (TextUtils.isEmpty(rateBean.getName())) {
+            viewHolder.text.setText(rateBean.getSymbol() + " " + rateBean.getCode());
+        } else {
+            viewHolder.text.setText(rateBean.getName());
+        }
+        if (currency.equals(rateBean.getCode())) {
+            viewHolder.img.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.img.setVisibility(View.GONE);
+        }
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mDataList!=null&&mDataList.size()>=position){
+                    itemClickListener.itemClick(mDataList.get(position));
+                }
+            }
+        });
     }
 
     @Override
@@ -42,37 +73,20 @@ public class CurrencyAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_currency, parent, false);
-            viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-        RateBean rateBean = mDataList.get(position);
-        if(TextUtils.isEmpty(rateBean.getName())){
-            viewHolder.text.setText(rateBean.getSymbol() + " " + rateBean.getCode());
-        }else{
-            viewHolder.text.setText(rateBean.getName());
-        }
-        if(currency.equals(rateBean.getCode())){
-            viewHolder.img.setVisibility(View.VISIBLE);
-        }else{
-            viewHolder.img.setVisibility(View.GONE);
-        }
-        return convertView;
+    public int getItemCount() {
+        return mDataList.size();
     }
 
-    static class ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.text)
         TextView text;
         @Bind(R.id.img)
         ImageView img;
 
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+        ViewHolder(View itemview) {
+            super(itemview);
+            text = (TextView) itemview.findViewById(R.id.text);
+            img = (ImageView) itemview.findViewById(R.id.img);
         }
     }
 
@@ -88,6 +102,16 @@ public class CurrencyAdapter extends BaseAdapter {
 
     public String getSeleCurrency(){
         return currency;
+    }
+
+    private OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void itemClick(RateBean rateBean);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
 }

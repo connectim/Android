@@ -1,6 +1,7 @@
 package connect.activity.wallet;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,6 +20,8 @@ import connect.activity.set.PayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
 import connect.activity.wallet.bean.TransferBean;
 import connect.utils.ProtoBufUtil;
+import connect.utils.ToastEUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.transfer.TransferError;
 import connect.utils.transfer.TransferUtil;
 import connect.activity.base.BaseActivity;
@@ -28,15 +31,19 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.BaseWallet;
+import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
 import connect.widget.payment.PaymentPwd;
 import connect.utils.transfer.TransferEditView;
+import connect.widget.random.RandomVoiceActivity;
 import protos.Connect;
 
 /**
  * Transfer to outer APP
- * Created by Administrator on 2016/12/20.
  */
 public class TransferOutViaActivity extends BaseActivity {
 
@@ -48,9 +55,7 @@ public class TransferOutViaActivity extends BaseActivity {
     Button okBtn;
 
     private TransferOutViaActivity mActivity;
-    private Connect.PendingRedPackage pendingRedPackage;
-    private TransferUtil transaUtil;
-    private PaymentPwd paymentPwd;
+    private BaseBusiness baseBusiness;
 
     public static void startActivity(Activity activity) {
         ActivityUtil.next(activity, TransferOutViaActivity.class);
@@ -67,7 +72,7 @@ public class TransferOutViaActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView();
+        transferEditView.initView(mActivity);
     }
 
     @Override
@@ -78,34 +83,8 @@ public class TransferOutViaActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Wallet_Transfer);
         toolbarTop.setRightText(R.string.Chat_History);
         transferEditView.setEditListener(onEditListener);
-        getPaddingInfo();
-        transaUtil = new TransferUtil();
-        paymentPwd = new PaymentPwd();
-    }
 
-    @OnClick(R.id.left_img)
-    void goback(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.right_lin)
-    void goHistory(View view) {
-        ActivityUtil.next(mActivity, TransferOutViaHistoryActivity.class);
-    }
-
-    @OnClick(R.id.ok_btn)
-    void goTransferOut(View view) {
-        final long amount = RateFormatUtil.stringToLongBtc(transferEditView.getCurrentBtc());
-        if(null == pendingRedPackage){
-            return;
-        }
-        transaUtil.getOutputTran(mActivity, MemoryDataManager.getInstance().getAddress(), true, pendingRedPackage.getAddress(),
-                transferEditView.getAvaAmount(),amount, new TransferUtil.OnResultCall(){
-            @Override
-            public void result(String inputString, String outputString) {
-                checkPayPassword(amount, inputString, outputString);
-            }
-        });
+        baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
     }
 
     private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
@@ -125,88 +104,76 @@ public class TransferOutViaActivity extends BaseActivity {
         }
     };
 
-    private void checkPayPassword(final long amount, final String inputString, final String outputString) {
-        if (!TextUtils.isEmpty(outputString)) {
-            paymentPwd.showPaymentPwd(mActivity, new PaymentPwd.OnTrueListener() {
-                @Override
-                public void onTrue() {
-                    String samValue = transaUtil.getSignRawTrans(MemoryDataManager.getInstance().getPriKey(), inputString, outputString);
-                    sendExternal(amount, samValue);
-                }
-            });
-        }
+    @OnClick(R.id.left_img)
+    void goback(View view) {
+        ActivityUtil.goBack(mActivity);
     }
 
-    private void sendExternal(final long amount, String rawStr) {
-        Connect.OrdinaryBilling.Builder builder = Connect.OrdinaryBilling.newBuilder();
-        builder.setMoney(amount);
-        builder.setRawTx(rawStr);
-        builder.setHashId(pendingRedPackage.getHashId());
-        if (!TextUtils.isEmpty(transferEditView.getNote())) {
-            builder.setHashId(transferEditView.getNote());
-        }
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_BILLING_EXTERNAL_SEND, builder.build(),
-                new ResultCall<Connect.HttpResponse>() {
+    @OnClick(R.id.right_lin)
+    void goHistory(View view) {
+        ActivityUtil.next(mActivity, TransferOutViaHistoryActivity.class);
+    }
+
+    @OnClick(R.id.ok_btn)
+    void goTransferOut(View view) {
+        baseBusiness.outerTransfer(null, transferEditView.getCurrentBtcLong(), new WalletListener<String>() {
+            @Override
+            public void success(String value) {
+                ParamManager.getInstance().putLatelyTransfer(new TransferBean(2,"","",""));
+                requestTransferDetail(value);
+            }
+
+            @Override
+            public void fail(WalletError error) {
+                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
+            }
+        });
+    }
+
+    private void requestTransferDetail(String hashId){
+        Connect.BillHashId billHashId = Connect.BillHashId.newBuilder().setHash(hashId).build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.TRANSFER_OUTER, billHashId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData());
-
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)){
-                        final SendOutBean sendOutBean = new SendOutBean();
-                        sendOutBean.setType(PacketSendActivity.OUT_VIA);
-                        sendOutBean.setUrl(billingInfo.getUrl());
-                        sendOutBean.setDeadline(billingInfo.getDeadline());
-                        sendOutBean.setHashId(billingInfo.getHash());
-
-                        ParamManager.getInstance().putLatelyTransfer(new TransferBean(2,
-                                getResources().getString(R.string.Wallet_Transfer)));
-                        paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
-                            @Override
-                            public void onComplete() {
-                                PacketSendActivity.startActivity(mActivity, sendOutBean);
-                                finish();
-                            }
-                        });
+                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
+                        throw new Exception("Validation fails");
                     }
-                } catch (InvalidProtocolBufferException e) {
-                    paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    final Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData().toByteArray());
+                    if(!ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)){
+                        return;
+                    }
+                    SendOutBean sendOutBean = new SendOutBean();
+                    sendOutBean.setType(PacketSendActivity.OUT_VIA);
+                    sendOutBean.setUrl(billingInfo.getUrl());
+                    sendOutBean.setDeadline(billingInfo.getDeadline());
+                    PacketSendActivity.startActivity(mActivity,sendOutBean);
+                }catch (Exception e){
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                paymentPwd.closeStatusDialog(MdStyleProgress.Status.LoadFail);
-                TransferError.getInstance().showError(response.getCode(),response.getMessage());
+
             }
         });
     }
 
-    private void getPaddingInfo() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_EXTERNAL_PENDING, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            Connect.PendingRedPackage pending = Connect.PendingRedPackage.parseFrom(structData.getPlainData());
-                            if(ProtoBufUtil.getInstance().checkProtoBuf(pending)){
-                                pendingRedPackage = pending;
-                            }
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
-                });
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            switch (requestCode){
+                case RandomVoiceActivity.REQUEST_CODE:
+                    transferEditView.createWallet(data);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
 }

@@ -40,7 +40,7 @@ public class MediaUtil {
         } else {
             mediaPlayer.reset();
             if (!filePath.equals(path)) {//Close the last playback state
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.VOICE_RELEASE, filePath);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.VOICE_RELEASE, filePath);
             }
         }
 
@@ -49,7 +49,7 @@ public class MediaUtil {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {//Play to the full
             @Override
             public void onCompletion(MediaPlayer mp) {
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.VOICE_COMPLETE, filePath);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.VOICE_COMPLETE, filePath);
             }
         });
         try {
@@ -71,7 +71,7 @@ public class MediaUtil {
             mediaPlayer = null;
         }
         //stop play voice
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.VOICE_RELEASE, filePath);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.VOICE_RELEASE, filePath);
     }
 
     public boolean isPlayVoive() {

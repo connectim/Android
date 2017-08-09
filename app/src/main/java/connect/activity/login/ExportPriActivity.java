@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.home.HomeActivity;
 import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
@@ -145,7 +146,8 @@ public class ExportPriActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
+            HomeActivity.startActivity(mActivity);
+            mActivity.finish();
             return true;
         }
         return super.onKeyDown(keyCode, event);
