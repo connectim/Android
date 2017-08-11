@@ -298,10 +298,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="connect.activity.chat.set.ContactSelectActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
             android:name="connect.activity.chat.set.GroupMemberActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
@@ -407,11 +403,15 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name="connect.activity.wallet.CAddressListActivty">
+        <activity android:name="connect.activity.wallet.CAddressListActivty">
+        </activity>
+        <activity android:name="connect.activity.wallet.BackUpCurrencyActivity">
         </activity>
         <activity
-            android:name="connect.activity.wallet.BackUpCurrencyActivity">
+            android:name="connect.activity.chat.set.GroupCreateActivity">
+        </activity>
+        <activity
+            android:name="connect.activity.chat.set.GroupInviteActivity">
         </activity>
     </application>
 

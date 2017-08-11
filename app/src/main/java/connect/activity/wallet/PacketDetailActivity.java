@@ -189,4 +189,9 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
         shareIntent.setType("text/plain");
         startActivity(Intent.createChooser(shareIntent, "share to"));
     }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
 }

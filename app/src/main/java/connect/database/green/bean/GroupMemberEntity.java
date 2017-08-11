@@ -6,6 +6,7 @@ import org.greenrobot.greendao.annotation.NotNull;
 
 import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
 public class GroupMemberEntity implements Serializable {

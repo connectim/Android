@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.HashMap;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
