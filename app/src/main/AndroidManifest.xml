@@ -302,7 +302,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="connect.activity.chat.exts.GatherActivity"
+            android:name="connect.activity.chat.exts.PaymentActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity

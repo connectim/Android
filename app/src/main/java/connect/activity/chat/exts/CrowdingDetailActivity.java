@@ -71,7 +71,6 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
 
     private String msgId;
     private String hashid;
-    private Connect.Crowdfunding crowdfunding = null;
     private CrowdingDetailContract.Presenter presenter;
 
     @Override

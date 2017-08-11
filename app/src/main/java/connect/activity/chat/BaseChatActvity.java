@@ -42,7 +42,7 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.bean.WebsiteExt1Bean;
-import connect.activity.chat.exts.GatherActivity;
+import connect.activity.chat.exts.PaymentActivity;
 import connect.activity.chat.exts.LuckyPacketActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.inter.FileUpLoad;
@@ -359,7 +359,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 LuckyPacketActivity.startActivity(activity, talktype, talkkey);
                 break;
             case GATHER:
-                GatherActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
+                PaymentActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
                 break;
             case NAMECARD:
                 ContactCardActivity.startActivity(activity,talker.getTalkKey());

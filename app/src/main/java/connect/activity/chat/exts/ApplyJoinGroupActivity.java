@@ -16,6 +16,8 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
+import connect.activity.chat.exts.contract.JoinGroupContract;
+import connect.activity.chat.exts.presenter.JoinGroupPresenter;
 import connect.activity.home.bean.HttpRecBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -23,13 +25,7 @@ import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.ProtoBufUtil;
-import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
@@ -37,7 +33,7 @@ import protos.Connect;
 /**
  * apply to join in group
  */
-public class ApplyJoinGroupActivity extends BaseActivity {
+public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -72,6 +68,8 @@ public class ApplyJoinGroupActivity extends BaseActivity {
     private String[] groupKey;
     private Connect.GroupInfoBase infoBase = null;
 
+    private JoinGroupContract.Presenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,15 +101,20 @@ public class ApplyJoinGroupActivity extends BaseActivity {
         applyType = (EApplyGroup) getIntent().getSerializableExtra(APPLYTYPE);
         groupKey = getIntent().getStringArrayExtra(GROUPKEY);
 
+        new JoinGroupPresenter(this).start();
         switch (applyType) {
             case TOKEN:
-                requestInfoByToken();
+                String token = groupKey[0];
+                presenter.requestByToken(token);
                 break;
             case GROUPKEY:
-                requestInfoByKey();
+                String groupkey = groupKey[0];
+                presenter.requestByGroupkey(groupkey);
                 break;
             case QRSCAN:
-                requestInfoByScan();
+                String identify = groupKey[0];
+                String hash = groupKey[1].split("/")[1];
+                presenter.requestByLink(identify, hash);
                 break;
         }
     }
@@ -123,104 +126,6 @@ public class ApplyJoinGroupActivity extends BaseActivity {
                 applyJoinDialog();
                 break;
         }
-    }
-
-    /**
-     * query group public information
-     */
-    protected void requestInfoByKey() {
-        Connect.GroupId groupId = Connect.GroupId.newBuilder()
-                .setIdentifier(groupKey[0]).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PUBLIC_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)){
-                        infoBase = groupInfoBase;
-                        requestBaseInfoSucces();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                requestBaseInfoFail();
-            }
-        });
-    }
-
-    /**
-     * query group public information
-     */
-    protected void requestInfoByToken() {
-        Connect.GroupToken token = Connect.GroupToken.newBuilder()
-                .setToken(groupKey[0]).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_INFOTOKEN, token, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.GroupInfoBaseShare baseShare = Connect.GroupInfoBaseShare.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(baseShare)){
-                        groupKey[0] = baseShare.getIdentifier();
-                        infoBase = Connect.GroupInfoBase.newBuilder()
-                                .setAvatar(baseShare.getAvatar())
-                                .setHash(baseShare.getHash())
-                                .setCount(baseShare.getCount())
-                                .setName(baseShare.getName())
-                                .setPublic(baseShare.getPublic())
-                                .setJoined(baseShare.getJoined())
-                                .setSummary(baseShare.getSummary()).build();
-
-                        requestBaseInfoSucces();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                requestBaseInfoFail();
-            }
-        });
-    }
-
-    /**
-     * query group public information
-     */
-    protected void requestInfoByScan() {
-        String hash = groupKey[1].split("/")[1];
-        Connect.GroupScan groupId = Connect.GroupScan.newBuilder()
-                .setIdentifier(groupKey[0])
-                .setHash(hash).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PUBLIC_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)){
-                        infoBase = groupInfoBase;
-                        requestBaseInfoSucces();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                requestBaseInfoFail();
-            }
-        });
     }
 
     protected void requestBaseInfoSucces() {
@@ -260,10 +165,19 @@ public class ApplyJoinGroupActivity extends BaseActivity {
                             value = sayHelloStr;
                         }
 
+                        String groupkey = groupKey[0];
                         if (applyType == EApplyGroup.GROUPKEY) {
-                            cardJoinGroup(value);
+                            if (null == groupKey[0] || null == groupKey[1] || null == groupKey[2]) {
+                                return;
+                            }
+
+                            String inviteby = groupKey[1];
+                            String token = groupKey[2];
+                            presenter.requestJoinByInvite(groupkey, inviteby, value, token);
                         } else {
-                            applyJoinGroup(value);
+                            String hash = applyType == EApplyGroup.QRSCAN ? groupKey[1] : infoBase.getHash();
+                            int source = applyType.ordinal();
+                            presenter.requestJoinByLink(groupkey, hash, value, source);
                         }
                     }
 
@@ -272,61 +186,6 @@ public class ApplyJoinGroupActivity extends BaseActivity {
 
                     }
                 });
-    }
-
-    /**
-     * group member inivite to join
-     */
-    protected void cardJoinGroup(String tips) {
-        if (null == groupKey[0] || null == groupKey[1] || null == groupKey[2]) {
-            return;
-        }
-        Connect.GroupInvite invite = Connect.GroupInvite.newBuilder()
-                .setIdentifier(groupKey[0])
-                .setInviteBy(groupKey[1])
-                .setTips(tips)
-                .setToken(groupKey[2]).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_INVITE, invite, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                ActivityUtil.goBack(activity);
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                if(response.getCode() == 2430){
-                    ToastEUtil.makeText(activity,R.string.Link_Qr_code_is_invalid,ToastEUtil.TOAST_STATUS_FAILE).show();
-                }
-            }
-        });
-    }
-
-    protected void applyJoinGroup(String tips) {
-        String hash = "";
-        if (applyType == EApplyGroup.QRSCAN) {
-            hash = groupKey[1];
-        } else {
-            hash = infoBase.getHash();
-        }
-
-        Connect.GroupApply apply = Connect.GroupApply.newBuilder()
-                .setIdentifier(groupKey[0])
-                .setHash(hash)
-                .setTips(tips)
-                .setSource(applyType.ordinal()).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_APPLY, apply, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                ActivityUtil.goBack(activity);
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                if(response.getCode() == 2403){
-                    ToastEUtil.makeText(activity,R.string.Link_have_joined_the_group,ToastEUtil.TOAST_STATUS_FAILE).show();
-                }
-            }
-        });
     }
 
     private Handler handler = new Handler() {
@@ -347,4 +206,39 @@ public class ApplyJoinGroupActivity extends BaseActivity {
             }
         }
     };
+
+    @Override
+    public void setPresenter(JoinGroupContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
+    }
+
+    @Override
+    public void showTokenInfo(String groupkey, Connect.GroupInfoBase infoBase) {
+        groupKey[0] = groupkey;
+        this.infoBase = infoBase;
+        requestBaseInfoSucces();
+    }
+
+    @Override
+    public void showGroupkeyInfo(Connect.GroupInfoBase infoBase) {
+        this.infoBase=infoBase;
+        requestBaseInfoSucces();
+    }
+
+    @Override
+    public void showLinkInfo(Connect.GroupInfoBase infoBase) {
+        this.infoBase=infoBase;
+        requestBaseInfoSucces();
+    }
+
+    @Override
+    public void showFailInfo() {
+        btn.setVisibility(View.GONE);
+        txt4.setVisibility(View.VISIBLE);
+    }
 }
