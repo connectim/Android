@@ -1,8 +1,6 @@
 package connect.activity.chat.exts;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,18 +11,16 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.model.content.BaseChat;
+import connect.activity.chat.exts.contract.PaymentDetailContract;
+import connect.activity.chat.exts.presenter.PaymentDetailPresenter;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.NormalChat;
-import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
@@ -44,17 +40,14 @@ import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.business.TransferType;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.payment.PaymentPwd;
-import connect.widget.random.RandomVoiceActivity;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
-import wallet_gateway.WalletOuterClass;
 
 /**
  * private chat gather
  * Created by gtq on 2016/12/22.
  */
-public class GatherDetailSingleActivity extends BaseActivity {
+public class PaymentDetailActivity extends BaseActivity implements PaymentDetailContract.BView{
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -71,13 +64,14 @@ public class GatherDetailSingleActivity extends BaseActivity {
     @Bind(R.id.btn)
     Button btn;
 
-    private GatherDetailSingleActivity activity;
+    private PaymentDetailActivity activity;
 
     private int state;
     private Connect.Bill billDetail = null;
 
     private MsgDefinBean definBean;
     private String msgId;
+    private PaymentDetailContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +84,7 @@ public class GatherDetailSingleActivity extends BaseActivity {
     public static void startActivity(Activity activity, MsgDefinBean definBean) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("MsgDefinBean",definBean);
-        ActivityUtil.next(activity, GatherDetailSingleActivity.class, bundle);
+        ActivityUtil.next(activity, PaymentDetailActivity.class, bundle);
     }
 
     @Override
@@ -110,6 +104,8 @@ public class GatherDetailSingleActivity extends BaseActivity {
         msgId = definBean.getMessage_id();
         String hashid = definBean.getContent();
         requestGatherDetail(hashid);
+
+        new PaymentDetailPresenter(this).start();
     }
 
     @OnClick({R.id.btn})
@@ -233,5 +229,15 @@ public class GatherDetailSingleActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    public void setPresenter(PaymentDetailContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
     }
 }

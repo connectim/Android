@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * video player tool
@@ -23,13 +24,12 @@ public class VideoPlayerUtil implements OnPreparedListener,
     private int mVideoWidth;
     private int mVideoHeight;
 
-    private OnVideoPreparedListener preparedListener;
-    private OnVideoPlayFinishListener finishListener;
+    private VideoPlayListener videoPlayListener;
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         surfaceHolder = holder;
-        preparedListener.onVideoPrepared();
+        videoPlayListener.onVideoPrepared();
     }
 
     @Override
@@ -42,14 +42,6 @@ public class VideoPlayerUtil implements OnPreparedListener,
 
     }
 
-    public interface OnVideoPlayFinishListener {
-        void onVidePlayFinish();
-    }
-
-    public interface OnVideoPreparedListener {
-        void onVideoPrepared();
-    }
-
     public static VideoPlayerUtil getInstance() {
         if (null == mVideoUtil) {
             mVideoUtil = new VideoPlayerUtil();
@@ -57,9 +49,8 @@ public class VideoPlayerUtil implements OnPreparedListener,
         return mVideoUtil;
     }
 
-    public void init(SurfaceView sf, OnVideoPreparedListener prepare, OnVideoPlayFinishListener finish) {
-        this.preparedListener = prepare;
-        this.finishListener = finish;
+    public void init(SurfaceView sf, VideoPlayListener listener) {
+        this.videoPlayListener = listener;
 
         surfaceHolder = sf.getHolder();
         surfaceHolder.addCallback(this);
@@ -120,7 +111,7 @@ public class VideoPlayerUtil implements OnPreparedListener,
 
     @Override
     public void onCompletion(MediaPlayer arg0) {
-        finishListener.onVidePlayFinish();
+        videoPlayListener.onVidePlayFinish();
         freeMediaPlayerResource();
     }
 
@@ -157,5 +148,12 @@ public class VideoPlayerUtil implements OnPreparedListener,
             surfaceHolder.setFixedSize(mVideoWidth, mVideoHeight);
             mediaPlayer.start();
         }
+    }
+
+    public interface VideoPlayListener extends Serializable{
+
+        void onVideoPrepared();
+
+        void onVidePlayFinish();
     }
 }

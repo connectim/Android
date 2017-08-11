@@ -310,11 +310,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="connect.activity.chat.exts.GatherDetailSingleActivity"
+            android:name="connect.activity.chat.exts.PaymentDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="connect.activity.chat.exts.GatherDetailGroupActivity"
+            android:name="connect.activity.chat.exts.CrowdingDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
@@ -322,7 +322,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="connect.activity.chat.exts.RedPacketActivity"
+            android:name="connect.activity.chat.exts.LuckyPacketActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
@@ -361,7 +361,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
 
-        <activity android:name="connect.activity.chat.exts.TransferDetailActivity"/>
+        <activity android:name="connect.activity.chat.exts.TransferSingleDetailActivity"/>
         <activity android:name="connect.activity.chat.set.GroupNameActivity">
         </activity>
         <activity android:name="connect.activity.chat.set.GroupMyNameActivity">
@@ -374,9 +374,9 @@
         </activity>
         <activity android:name="connect.activity.chat.set.GroupOwnerToActivity">
         </activity>
-        <activity android:name="connect.activity.chat.exts.HandleJoinGroupActivity">
+        <activity android:name="connect.activity.chat.exts.HandleGroupRequestActivity">
         </activity>
-        <activity android:name="connect.activity.chat.exts.GroupGatherRecordsActivity">
+        <activity android:name="connect.activity.chat.exts.GroupCrowdingRecordsActivity">
         </activity>
         <activity android:name="connect.activity.chat.exts.ApplyJoinGroupActivity">
         </activity>
@@ -407,13 +407,12 @@
         </activity>
         <activity android:name="connect.activity.wallet.BackUpCurrencyActivity">
         </activity>
-        <activity
-            android:name="connect.activity.chat.set.GroupCreateActivity"
-            android:label="@string/title_activity_group_create">
+        <activity android:name="connect.activity.chat.set.GroupCreateActivity">
+        </activity>
+        <activity android:name="connect.activity.chat.set.GroupInviteActivity">
         </activity>
         <activity
-            android:name="connect.activity.chat.set.GroupInviteActivity"
-            android:label="@string/title_activity_group_invite">
+            android:name="connect.activity.chat.exts.TransferMutiDetailActivity">
         </activity>
     </application>
 

@@ -13,31 +13,24 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.bean.GatherBean;
+import connect.activity.chat.bean.MsgSend;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.GatherBean;
-import connect.activity.chat.bean.MsgSend;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
-import connect.utils.data.RateFormatUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.ToastUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
+import connect.utils.transfer.TransferEditView;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
-import connect.utils.transfer.TransferEditView;
 import protos.Connect;
 
 /**
@@ -115,7 +108,7 @@ public class GatherActivity extends BaseActivity {
             toolbar.setRightListence(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    GroupGatherRecordsActivity.startActivity(activity);
+                    GroupCrowdingRecordsActivity.startActivity(activity);
                 }
             });
         }

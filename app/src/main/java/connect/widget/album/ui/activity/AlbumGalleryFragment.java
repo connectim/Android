@@ -19,6 +19,7 @@ import java.util.Locale;
 import connect.ui.activity.R;
 
 import connect.activity.chat.exts.VideoPlayerActivity;
+import connect.utils.VideoPlayerUtil;
 import connect.widget.album.adapter.AlbumGalleryAdp;
 import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.ui.activity.PhotoAlbumActivity;
@@ -162,8 +163,20 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
                 break;
             case R.id.img2:
                 ImageInfo imageInfo = (ImageInfo) v.getTag();
-                int length = (int) (imageInfo.getImageFile().getVideoLength() / 1000);
-                VideoPlayerActivity.startActivity(activity, imageInfo.getImageFile().getAbsolutePath(), length);
+                int videolength = (int) (imageInfo.getImageFile().getVideoLength() / 1000);
+                String filepath = imageInfo.getImageFile().getAbsolutePath();
+                String length = String.valueOf(videolength);
+                VideoPlayerActivity.startActivity(activity, filepath, length, new VideoPlayerUtil.VideoPlayListener() {
+                    @Override
+                    public void onVideoPrepared() {
+
+                    }
+
+                    @Override
+                    public void onVidePlayFinish() {
+
+                    }
+                });
                 break;
         }
     }

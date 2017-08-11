@@ -1,5 +1,7 @@
 package connect.wallet;
 
+import android.app.Activity;
+
 import org.junit.Test;
 
 import connect.activity.wallet.contract.PacketDetailContract;
@@ -55,6 +57,11 @@ public class PackDetailTest {
         @Override
         public void setPresenter(PacketDetailContract.Presenter presenter) {
 
+        }
+
+        @Override
+        public Activity getActivity() {
+            return null;
         }
     };
 

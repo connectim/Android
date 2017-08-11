@@ -21,7 +21,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.chat.exts.BaseListener;
+import connect.activity.chat.bean.BaseListener;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -43,7 +43,7 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.bean.WebsiteExt1Bean;
 import connect.activity.chat.exts.GatherActivity;
-import connect.activity.chat.exts.RedPacketActivity;
+import connect.activity.chat.exts.LuckyPacketActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.inter.FileUpLoad;
 import connect.activity.chat.model.InputPanel;
@@ -354,7 +354,9 @@ public abstract class BaseChatActvity extends BaseActivity {
                 }
                 break;
             case REDPACKET:
-                RedPacketActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
+                int talktype = talker.getTalkType();
+                String talkkey = talker.getTalkKey();
+                LuckyPacketActivity.startActivity(activity, talktype, talkkey);
                 break;
             case GATHER:
                 GatherActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());

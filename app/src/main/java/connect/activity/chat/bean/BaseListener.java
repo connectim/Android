@@ -1,4 +1,4 @@
-package connect.activity.chat.exts;
+package connect.activity.chat.bean;
 
 /**
  * Created by Administrator on 2017/7/5.

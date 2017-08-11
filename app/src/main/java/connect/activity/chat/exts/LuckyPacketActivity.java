@@ -10,52 +10,30 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.GroupEntity;
-import connect.im.bean.MsgType;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgSend;
-import connect.activity.wallet.PacketHistoryActivity;
-import connect.activity.wallet.bean.TransferBean;
-import connect.utils.ProtoBufUtil;
-import connect.utils.RegularUtil;
-import connect.utils.transfer.TransferError;
-import connect.utils.transfer.TransferUtil;
-import connect.activity.set.PayFeeActivity;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.exts.contract.LuckyPacketContract;
+import connect.activity.chat.exts.presenter.LuckyPacketPresenter;
+import connect.activity.set.PayFeeActivity;
+import connect.activity.wallet.PacketHistoryActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.data.RateFormatUtil;
-import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
+import connect.utils.RegularUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
+import connect.utils.transfer.TransferEditView;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.inter.WalletListener;
-import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
-import connect.widget.payment.PaymentPwd;
 import connect.widget.random.RandomVoiceActivity;
 import connect.widget.roundedimageview.RoundedImageView;
-import connect.utils.transfer.TransferEditView;
-import protos.Connect;
 
 /**
  * send lucky packet
  * Created by gtq on 2016/12/28.
  */
-public class RedPacketActivity extends BaseActivity {
+public class LuckyPacketActivity extends BaseActivity implements LuckyPacketContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -74,16 +52,16 @@ public class RedPacketActivity extends BaseActivity {
     @Bind(R.id.btn)
     Button btn;
 
-    private RedPacketActivity activity;
+    private LuckyPacketActivity activity;
     private static String RED_TYPE = "RED_TYPE";
     private static String RED_KEY = "RED_KEY";
     /** packet type 1:private 2:group */
     private int redType;
     /** packet address */
     private String redKey;
-    private ContactEntity friendEntity;
-    private GroupEntity groupEntity;
     private BaseBusiness baseBusiness;
+
+    private LuckyPacketContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +75,7 @@ public class RedPacketActivity extends BaseActivity {
         Bundle bundle = new Bundle();
         bundle.putInt(RED_TYPE, type);
         bundle.putString(RED_KEY, roomkey);
-        ActivityUtil.next(activity, RedPacketActivity.class, bundle);
+        ActivityUtil.next(activity, LuckyPacketActivity.class, bundle);
     }
 
     @Override
@@ -126,37 +104,14 @@ public class RedPacketActivity extends BaseActivity {
         if (redType == 0) {
             layoutFirst.setVisibility(View.VISIBLE);
             layoutSecond.setVisibility(View.GONE);
-
-            friendEntity = ContactHelper.getInstance().loadFriendEntity(redKey);
-            if (friendEntity == null) {
-                if (MemoryDataManager.getInstance().getPubKey().equals(redKey)) {
-                    friendEntity = new ContactEntity();
-                    friendEntity.setAvatar(MemoryDataManager.getInstance().getAvatar());
-                    friendEntity.setUsername(MemoryDataManager.getInstance().getName());
-                    friendEntity.setAddress(MemoryDataManager.getInstance().getAddress());
-                } else {
-                    ActivityUtil.goBack(activity);
-                    return;
-                }
-            }
-
-            GlideUtil.loadAvater(roundimg, friendEntity.getAvatar());
-            String nameTxt = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
-            txt1.setText(getString(R.string.Wallet_Send_Lucky_Packet_to, nameTxt));
         } else if (redType == 1) {
             layoutFirst.setVisibility(View.GONE);
             layoutSecond.setVisibility(View.VISIBLE);
-
-            groupEntity = ContactHelper.getInstance().loadGroupEntity(redKey);
-            if (groupEntity == null) {
-                ActivityUtil.goBack(activity);
-                return;
-            }
-            int countMem = ContactHelper.getInstance().loadGroupMemEntity(redKey).size();
-            edit.setText(String.valueOf(countMem));
         }
-
         baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
+
+        new LuckyPacketPresenter(this).start();
+        presenter.requestRoomEntity(redType);
     }
 
     @Override
@@ -181,41 +136,23 @@ public class RedPacketActivity extends BaseActivity {
         });
     }
 
-    private void sendRedPacket() {
-        int size = 1;
-        if (redType == 0) {
-            size = 1;
-        } else {
-            String sizeString = edit.getText().toString();
-            if (RegularUtil.matches(sizeString, RegularUtil.ALL_NUMBER)) {
-                size = Integer.valueOf(sizeString);
-            }
-        }
-        baseBusiness.luckyPacket(null, redKey, 0, redType, size, transferEditView.getCurrentBtcLong(), transferEditView.getNote(), new WalletListener<String>() {
-            @Override
-                    public void success(String hashId) {
-                        if (redType == 0) {
-                            ParamManager.getInstance().putLatelyTransfer(new TransferBean(5, friendEntity.getAvatar(),
-                                    friendEntity.getUsername(), friendEntity.getAddress()));
-                        }
-
-                        MsgSend.sendOuterMsg(MsgType.Lucky_Packet, hashId, transferEditView.getNote());
-                        ToastEUtil.makeText(activity, R.string.Link_Send_successful).show();
-                        ActivityUtil.goBack(activity);
-                    }
-
-                    @Override
-                    public void fail(WalletError error) {
-                        ToastEUtil.makeText(activity,R.string.Login_Send_failed).show();
-                    }
-                });
-    }
-
     @OnClick({R.id.btn})
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.btn:
-                sendRedPacket();
+                int packetcount = 1;
+                if (redType == 1) {
+                    String sizeString = edit.getText().toString();
+                    if (RegularUtil.matches(sizeString, RegularUtil.ALL_NUMBER)) {
+                        packetcount = Integer.valueOf(sizeString);
+                    } else {
+                        return;
+                    }
+                }
+
+                long amount = transferEditView.getCurrentBtcLong();
+                String note = transferEditView.getNote();
+                presenter.sendLuckyPacket(redType, packetcount, amount, note);
                 break;
         }
     }
@@ -232,5 +169,36 @@ public class RedPacketActivity extends BaseActivity {
                     break;
             }
         }
+    }
+
+    @Override
+    public String getRoomKey() {
+        return redKey;
+    }
+
+    @Override
+    public void setPresenter(LuckyPacketContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
+    }
+
+    @Override
+    public void showUserInfo(String avatar, String name) {
+        GlideUtil.loadAvater(roundimg, name);
+        txt1.setText(getString(R.string.Wallet_Send_Lucky_Packet_to, name));
+    }
+
+    @Override
+    public void showGroupInfo(int count) {
+        edit.setText(String.valueOf(count));
+    }
+
+    @Override
+    public BaseBusiness getBusiness() {
+        return baseBusiness;
     }
 }

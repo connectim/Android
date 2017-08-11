@@ -14,9 +14,9 @@ import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.GatherBean;
 import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.exts.GatherDetailGroupActivity;
-import connect.activity.chat.exts.GatherDetailSingleActivity;
-import connect.activity.chat.exts.TransferDetailActivity;
+import connect.activity.chat.exts.CrowdingDetailActivity;
+import connect.activity.chat.exts.PaymentDetailActivity;
+import connect.activity.chat.exts.TransferSingleDetailActivity;
 import connect.utils.data.RateFormatUtil;
 
 /**
@@ -80,17 +80,17 @@ public class MsgPayHolder extends MsgChatHolder {
                 GatherBean gather = new Gson().fromJson(bean.getExt1(), GatherBean.class);
                 if (!gather.getIsCrowdfundRceipt()) {
                     if (entity.getTransStatus() == 0) {
-                        GatherDetailSingleActivity.startActivity((Activity) context, bean);
+                        PaymentDetailActivity.startActivity((Activity) context, bean);
                     } else {
                         int transferType = 0;
                         String sender = bean.getPublicKey();
                         String receiver = bean.getSenderInfoExt().getPublickey();
                         String hashid = bean.getContent();
                         String msgid = bean.getMessage_id();
-                        TransferDetailActivity.startActivity((Activity) context, transferType, sender, receiver, hashid, msgid);
+                        TransferSingleDetailActivity.startActivity((Activity) context, transferType, sender, receiver, hashid, msgid);
                     }
                 } else {
-                    GatherDetailGroupActivity.startActivity((Activity) context, bean.getContent(), bean.getMessage_id());
+                    CrowdingDetailActivity.startActivity((Activity) context, bean.getContent(), bean.getMessage_id());
                 }
             }
         });

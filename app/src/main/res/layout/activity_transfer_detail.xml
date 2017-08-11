@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:background="@color/color_bg_activity"
               android:orientation="vertical"
-              tools:context="connect.activity.chat.exts.TransferDetailActivity">
+              tools:context="connect.activity.chat.exts.TransferSingleDetailActivity">
 
     <connect.widget.TopToolBar
         android:id="@id/toolbar"

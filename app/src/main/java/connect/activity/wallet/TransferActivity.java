@@ -17,7 +17,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.exts.RedPacketActivity;
+import connect.activity.chat.exts.LuckyPacketActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.home.view.LineDecoration;
@@ -91,7 +91,7 @@ public class TransferActivity extends BaseActivity {
                         TransferToActivity.startActivity(mActivity, transferBean.getAddress());
                         break;
                     case 5:
-                        RedPacketActivity.startActivity(mActivity, 0, transferBean.getAddress());
+                        LuckyPacketActivity.startActivity(mActivity, 0, transferBean.getAddress());
                         break;
                     default:
                         break;

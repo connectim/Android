@@ -7,12 +7,13 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.exts.TransferMutiDetailActivity;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.TransferExt;
-import connect.activity.chat.exts.TransferDetailActivity;
+import connect.activity.chat.exts.TransferSingleDetailActivity;
 import connect.utils.data.RateFormatUtil;
 
 /**
@@ -50,12 +51,17 @@ public class MsgTransferHolder extends MsgChatHolder {
             @Override
             public void onClick(View v) {
                 MsgDefinBean definBean = entity.getMsgDefinBean();
-                int transferType = transferExt.getType();
                 String sender = definBean.getSenderInfoExt().getPublickey();
                 String receiver = definBean.getPublicKey();
                 String hashid = definBean.getContent();
                 String msgid = definBean.getMessage_id();
-                TransferDetailActivity.startActivity((Activity) context, transferType,sender,receiver,hashid,msgid);
+
+                int transferType = transferExt.getType();
+                if (transferType == 0 || transferType == 1) {
+                    TransferSingleDetailActivity.startActivity((Activity) context, transferType, sender, receiver, hashid, msgid);
+                } else if (transferType == 2) {
+                    TransferMutiDetailActivity.startActivity((Activity) context, hashid, msgid);
+                }
             }
         });
 

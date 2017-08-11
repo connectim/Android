@@ -13,9 +13,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.chat.exts.contract.VideoPlayContract;
+import connect.activity.chat.exts.presenter.VideoPlayPresenter;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgDirect;
@@ -31,7 +35,7 @@ import connect.widget.TopToolBar;
 /**
  * play Local video files
  */
-public class VideoPlayerActivity extends BaseActivity {
+public class VideoPlayerActivity extends BaseActivity implements VideoPlayContract.BView{
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -49,13 +53,14 @@ public class VideoPlayerActivity extends BaseActivity {
     private VideoPlayerActivity activity;
 
     private Object[] objs = null;
-    private String filePath;
     private int voiceLength;
     private String burnTime = "";
-
-    private VideoPrepared videoPrepared;
-    private VideoPlayFinish videoPlayFinish;
     private VideoPlayerUtil videoPlayerUtil;
+
+    private VideoPlayContract.Presenter presenter;
+    private String filePath;
+    private String length;
+    private VideoPlayerUtil.VideoPlayListener callBackListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,9 +75,11 @@ public class VideoPlayerActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, Object... objects) {
+    public static void startActivity(Activity activity, String filepath, String length, VideoPlayerUtil.VideoPlayListener listener) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("Serializable", objects);
+        bundle.putString("PATH", filepath);
+        bundle.putString("LENGTH", length);
+        bundle.putSerializable("LISTENER", listener);
         ActivityUtil.next(activity, VideoPlayerActivity.class, bundle);
     }
 
@@ -88,49 +95,24 @@ public class VideoPlayerActivity extends BaseActivity {
             }
         });
 
-        objs = (Object[]) getIntent().getSerializableExtra("Serializable");
-        filePath = (String) objs[0];
-        voiceLength = (int) objs[1];
-        voiceLength *= 1000;
-        if (objs.length != 2) {
-            burnTime = (String) objs[2];
-        }
+        filePath = getIntent().getStringExtra("PATH");
+        length = getIntent().getStringExtra("LENGTH");
+        callBackListener = (VideoPlayerUtil.VideoPlayListener) getIntent().getSerializableExtra("LISTENER");
 
-        MediaMetadataRetriever retr = new MediaMetadataRetriever();
-        retr.setDataSource(filePath);
-
-        float width = 0;
-        float height = 0;
-
-        if (Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)) == 90) {
-            height = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-            width = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-        } else {
-            width = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-            height = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-        }
-
-        if (width != 0 && height != 0) {
-            float scale = 1;
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) surfaceview.getLayoutParams();
-            if (width > height) {
-                scale = SystemDataUtil.getScreenWidth() / width;
-                params.width = SystemDataUtil.getScreenWidth();
-                params.height = (int) (height * scale);
-            } else {
-                scale = SystemDataUtil.getScreenHeight() / height;
-                params.height = SystemDataUtil.getScreenHeight();
-                params.width = (int) (width * scale);
-            }
-            surfaceview.setLayoutParams(params);
-        }
-
-
-        videoPrepared = new VideoPrepared();
-        videoPlayFinish = new VideoPlayFinish();
-        txt2.setText(TimeUtil.getTime(voiceLength,TimeUtil.DATE_FORMAT_SECOND));
         videoPlayerUtil = VideoPlayerUtil.getInstance();
-        videoPlayerUtil.init(surfaceview, videoPrepared, videoPlayFinish);
+        videoPlayerUtil.init(surfaceview, new VideoPlayerUtil.VideoPlayListener() {
+            @Override
+            public void onVideoPrepared() {
+                playVideoFile();
+            }
+
+            @Override
+            public void onVidePlayFinish() {
+                callBackListener.onVidePlayFinish();
+            }
+        });
+
+        new VideoPlayPresenter(this).start();
     }
 
     @OnClick({R.id.surfaceview, R.id.img2})
@@ -142,11 +124,11 @@ public class VideoPlayerActivity extends BaseActivity {
                 break;
             case R.id.img2:
                 if (videoPlayerUtil.isPlay()) {
-                    downTimer.pause();
+                    presenter.pauseCountDownTimer();
                     videoPlayerUtil.pauseVideo();
                 } else {
                     if (videoPlayerUtil.isPrePare()) {
-                        downTimer.resume();
+                        presenter.resumeCountDownTimer();
                         videoPlayerUtil.continuePlay();
                     } else {
                         playVideoFile();
@@ -154,36 +136,6 @@ public class VideoPlayerActivity extends BaseActivity {
                 }
                 break;
         }
-    }
-
-    private ExCountDownTimer downTimer;
-    protected void startCountTimer() {
-        if (downTimer != null) {
-            downTimer.cancel();
-            downTimer = null;
-        }
-
-        downTimer = new ExCountDownTimer(voiceLength, 30) {
-            @Override
-            public void onTick(long millisUntilFinished, int percent) {
-                probar2.setProgress(percent);
-                img2.setSelected(true);
-                txt1.setText(TimeUtil.getTime(voiceLength - millisUntilFinished,TimeUtil.DATE_FORMAT_SECOND));
-            }
-
-            @Override
-            public void onPause() {
-                img2.setSelected(false);
-            }
-
-            @Override
-            public void onFinish() {
-                probar2.setProgress(100);
-                img2.setSelected(false);
-                txt1.setText(TimeUtil.getTime(voiceLength,TimeUtil.DATE_FORMAT_SECOND));
-            }
-        };
-        downTimer.start();
     }
 
     @Override
@@ -194,26 +146,48 @@ public class VideoPlayerActivity extends BaseActivity {
 
     private void playVideoFile() {
         videoPlayerUtil.playVideo(filePath);
-        startCountTimer();
+        presenter.startCountDownTimer();
     }
 
-    private class VideoPrepared implements VideoPlayerUtil.OnVideoPreparedListener {
-
-        @Override
-        public void onVideoPrepared() {
-            playVideoFile();
-        }
+    @Override
+    public String getFilePath() {
+        return filePath;
     }
 
-    private class VideoPlayFinish implements VideoPlayerUtil.OnVideoPlayFinishListener {
+    @Override
+    public String getFileLength() {
+        return length;
+    }
 
-        @Override
-        public void onVidePlayFinish() {
-            if (!TextUtils.isEmpty(burnTime)) {
-                String msgid = (String) objs[3];
-                MessageHelper.getInstance().updateMsgState(msgid, 2);
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, MsgDirect.From);
-            }
-        }
+    @Override
+    public void setPresenter(VideoPlayContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
+    }
+
+    @Override
+    public VideoPlayerUtil.VideoPlayListener getVideoListener() {
+        return callBackListener;
+    }
+
+    @Override
+    public void calculateParamlayout(RelativeLayout.LayoutParams params) {
+        surfaceview.setLayoutParams(params);
+    }
+
+    @Override
+    public void videoTotalLength(String lengthformat) {
+        txt2.setText(lengthformat);
+    }
+
+    @Override
+    public void playBackProgress(int percent, boolean select, String lengthformat) {
+        probar2.setProgress(percent);
+        img2.setSelected(select);
+        txt1.setText(lengthformat);
     }
 }

@@ -27,7 +27,7 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.activity.chat.exts.BaseListener;
+import connect.activity.chat.bean.BaseListener;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
 

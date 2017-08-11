@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
+import connect.activity.chat.bean.RecExtBean;
+import connect.activity.chat.model.fileload.PhotoUpload;
+import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgDefinBean;
@@ -18,6 +21,7 @@ import connect.activity.chat.view.DVideoProView;
 import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.common.bean.ConverType;
 import connect.utils.FileUtil;
+import connect.utils.VideoPlayerUtil;
 
 /**
  * Created by gtq on 2016/11/23.
@@ -61,7 +65,7 @@ public class MsgVideoHolder extends MsgChatHolder {
             public void onClick(View v) {
                 String url = bean.getUrl();
                 if (FileUtil.islocalFile(url)) {
-                    startPlayVideo(url, bean.getSize());
+                    startPlayVideo(url, bean.getSize(),"");
                     return;
                 }
 
@@ -69,14 +73,14 @@ public class MsgVideoHolder extends MsgChatHolder {
                 if (FileUtil.isExistFilePath(localPath)) {
                     String burntime = TextUtils.isEmpty(definBean.getExt()) ? "" : definBean.getExt();
                     if (TextUtils.isEmpty(burntime)) {
-                        startPlayVideo(localPath, bean.getSize());
+                        startPlayVideo(localPath, bean.getSize(),"");
                     } else {
                         if (entity instanceof MsgEntity) {
                             if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                                startPlayVideo(localPath, bean.getSize(), burntime, entity.getMsgDefinBean().getMessage_id());
+                                startPlayVideo(localPath, bean.getSize(), entity.getMsgDefinBean().getMessage_id());
                             }
                         } else {
-                            startPlayVideo(localPath, bean.getSize());
+                            startPlayVideo(localPath, bean.getSize(),"");
                         }
                     }
                 } else {
@@ -91,14 +95,14 @@ public class MsgVideoHolder extends MsgChatHolder {
 
                             String burntime = TextUtils.isEmpty(definBean.getExt()) ? "" : definBean.getExt();
                             if (TextUtils.isEmpty(burntime)) {
-                                startPlayVideo(localPath, bean.getSize());
+                                startPlayVideo(localPath, bean.getSize(),"");
                             } else {
                                 if (entity instanceof MsgEntity) {
                                     if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                                        startPlayVideo(localPath, bean.getSize(), burntime, entity.getMsgDefinBean().getMessage_id());
+                                        startPlayVideo(localPath, bean.getSize(), entity.getMsgDefinBean().getMessage_id());
                                     }
                                 } else {
-                                    startPlayVideo(localPath, bean.getSize());
+                                    startPlayVideo(localPath, bean.getSize(),"");
                                 }
                             }
                         }
@@ -128,8 +132,21 @@ public class MsgVideoHolder extends MsgChatHolder {
         }
     }
 
-    public void startPlayVideo(Object... objects) {
-        VideoPlayerActivity.startActivity((Activity) context,objects);
+    public void startPlayVideo(String filepath, int videolength, final String messageid) {
+        VideoPlayerActivity.startActivity((Activity) context, filepath, String.valueOf(videolength), new VideoPlayerUtil.VideoPlayListener() {
+            @Override
+            public void onVideoPrepared() {
+
+            }
+
+            @Override
+            public void onVidePlayFinish() {
+                if (!TextUtils.isEmpty(messageid)) {
+                    MessageHelper.getInstance().updateMsgState(messageid, 2);
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, messageid, MsgDirect.From);
+                }
+            }
+        });
     }
 
     public boolean hasDownLoad() {

@@ -11,14 +11,16 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.adapter.GroupMemberSelectAdapter;
+import connect.activity.chat.bean.RecExtBean;
+import connect.activity.chat.exts.contract.GroupAtContract;
+import connect.activity.chat.exts.presenter.GroupAtPresenter;
+import connect.activity.chat.model.GroupMemberCompara;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.model.GroupMemberCompara;
-import connect.activity.chat.adapter.GroupMemberSelectAdapter;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
@@ -26,7 +28,7 @@ import connect.widget.TopToolBar;
 /**
  * group At ,select group member
  */
-public class GroupAtActivity extends BaseActivity {
+public class GroupAtActivity extends BaseActivity implements GroupAtContract.BView{
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -44,8 +46,7 @@ public class GroupAtActivity extends BaseActivity {
     private int topPosi;
     private LinearLayoutManager linearLayoutManager;
     private GroupMemberSelectAdapter adapter;
-
-    private GroupMemberCompara compara = new GroupMemberCompara();
+    private GroupAtContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,7 @@ public class GroupAtActivity extends BaseActivity {
         groupKey = getIntent().getStringExtra("GROUP_KEY");
         linearLayoutManager = new LinearLayoutManager(activity);
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey, MemoryDataManager.getInstance().getAddress());
-        Collections.sort(groupMemEntities, compara);
+        Collections.sort(groupMemEntities, new GroupMemberCompara());
 
         adapter = new GroupMemberSelectAdapter(activity, groupMemEntities);
         recyclerview.setLayoutManager(linearLayoutManager);
@@ -104,7 +105,8 @@ public class GroupAtActivity extends BaseActivity {
         adapter.setTransferToListener(new GroupMemberSelectAdapter.GroupTransferToListener() {
             @Override
             public void transferTo(GroupMemberEntity memEntity) {
-                groupAtMember(memEntity);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_AT, memEntity);
+                ActivityUtil.goBack(activity);
             }
         });
 
@@ -115,6 +117,8 @@ public class GroupAtActivity extends BaseActivity {
                 moveToPosition(position);
             }
         });
+
+        new GroupAtPresenter(this).start();
     }
 
     private void moveToPosition(int posi) {
@@ -132,8 +136,18 @@ public class GroupAtActivity extends BaseActivity {
         }
     }
 
-    public void groupAtMember(GroupMemberEntity groupMemEntity) {
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_AT, groupMemEntity);
-        ActivityUtil.goBack(activity);
+    @Override
+    public String getGroupKey() {
+        return groupKey;
+    }
+
+    @Override
+    public void setPresenter(GroupAtContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
     }
 }

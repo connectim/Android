@@ -13,7 +13,7 @@ import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.CardExt1Bean;
 import connect.activity.chat.bean.GroupReviewBean;
 import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.exts.HandleJoinGroupActivity;
+import connect.activity.chat.exts.HandleGroupRequestActivity;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
 
@@ -70,7 +70,12 @@ public class MsgHandleJoinGroupHolder extends MsgChatHolder {
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HandleJoinGroupActivity.startActivity((Activity) context, baseEntity);
+                MsgDefinBean definBean = baseEntity.getMsgDefinBean();
+                String content = definBean.getContent();
+                String ext1 = definBean.getExt1();
+                String messageid = definBean.getMessage_id();
+
+                HandleGroupRequestActivity.startActivity((Activity) context, content, ext1, messageid);
                 if (applyGroupBean.getState() == -1) {
                     txt3.setText("");
                     ParamManager.getInstance().updateGroupApply(groupApplyKey, applyGroupBean.getTips(), applyGroupBean.getSource(), 0, applyGroupBean.getMsgid());
