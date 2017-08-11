@@ -45,7 +45,7 @@
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
 
-        <connect.utils.transfer.TransferEditView
+        <connect.wallet.cwallet.business.TransferEditView
             android:id="@+id/transfer_edit_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

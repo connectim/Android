@@ -110,8 +110,6 @@ public class ContactListManage {
 
     public String checkShowFriendTop(ContactBean currBean,ContactBean lastBean){
         char curFirstChar = TextUtils.isEmpty(currBean.getName()) ? '#' : currBean.getName().charAt(0);
-        char lastFirstChar = TextUtils.isEmpty(lastBean.getName()) ? '#' : lastBean.getName().charAt(0);
-
         if(lastBean == null){
             if(currBean.getStatus() == 2 || currBean.getStatus() == 3){
                 return "show";
@@ -121,6 +119,7 @@ public class ContactListManage {
                 return "";
             }
         }
+        char lastFirstChar = TextUtils.isEmpty(lastBean.getName()) ? '#' : lastBean.getName().charAt(0);
 
         if(currBean.getStatus() == 2 || currBean.getStatus() == 3){ // Group and Frequent contacts
             if(lastBean.getStatus() != currBean.getStatus()){

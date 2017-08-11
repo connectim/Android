@@ -65,7 +65,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Chat_Contact_card"
+                android:text="@string/Chat_Recommend_business_CARDS_to_friends"
                 android:textSize="@dimen/sp_12"/>
         </RelativeLayout>
     </RelativeLayout>

@@ -48,7 +48,7 @@ public class RedHistoryAdapter extends RecyclerView.Adapter<RedHistoryAdapter.Vi
         if(redPackage.getTyp() == 1){
             viewHolder.statusTv.setText(R.string.Wallet_Sent_via_link);
         }else{
-            if(redPackage.getCategory() == 2){
+            if(redPackage.getCategory() == 1){
                 viewHolder.statusTv.setText(R.string.Wallet_Sent_to_group);
             }else{
                 viewHolder.statusTv.setText(R.string.Wallet_Sent_to_friend);

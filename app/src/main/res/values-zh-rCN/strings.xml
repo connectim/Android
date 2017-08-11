@@ -599,6 +599,10 @@
     <string name="Wallet_Balance_Credit">可用余额:฿%s</string>
     <string name="Wallet_Best_wishes">恭喜发财</string>
     <string name="Wallet_Canceled">已取消</string>
+    <string name="Wallet_Expired">已过期</string>
+    <string name="Wallet_Get">已领取</string>
+    <string name="Chat_Recommend_business_CARDS_to_friends">向好友推荐名片</string>
+    <string name="Chat_Recommend_your_business_card">向你推荐名片</string>
     <string name="Wallet_Charge_small_calculate_to_the_poundage">找零地址金额太小，金额为:%sBTC，是否需要将找零计算到手续费中?</string>
     <string name="Wallet_Clear">清除金额</string>
     <string name="Wallet_Click_to_open_lucky_packet">点击领取红包</string>

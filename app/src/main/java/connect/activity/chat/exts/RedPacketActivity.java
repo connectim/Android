@@ -10,12 +10,14 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.bean.MsgSend;
+import connect.activity.set.PayFeeActivity;
+import connect.activity.wallet.PacketHistoryActivity;
+import connect.activity.wallet.bean.TransferBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -23,33 +25,17 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgSend;
-import connect.activity.wallet.PacketHistoryActivity;
-import connect.activity.wallet.bean.TransferBean;
-import connect.utils.ProtoBufUtil;
-import connect.utils.RegularUtil;
-import connect.utils.transfer.TransferError;
-import connect.utils.transfer.TransferUtil;
-import connect.activity.set.PayFeeActivity;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.data.RateFormatUtil;
+import connect.utils.RegularUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
+import connect.wallet.cwallet.business.TransferEditView;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.inter.WalletListener;
-import connect.widget.MdStyleProgress;
 import connect.widget.TopToolBar;
-import connect.widget.payment.PaymentPwd;
 import connect.widget.random.RandomVoiceActivity;
 import connect.widget.roundedimageview.RoundedImageView;
-import connect.utils.transfer.TransferEditView;
-import protos.Connect;
 
 /**
  * send lucky packet

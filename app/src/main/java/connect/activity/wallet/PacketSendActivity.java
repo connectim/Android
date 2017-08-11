@@ -3,10 +3,12 @@ package connect.activity.wallet;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,10 +16,10 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.wallet.bean.SendOutBean;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
-import connect.activity.wallet.bean.SendOutBean;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ExCountDownTimer;
@@ -56,6 +58,8 @@ public class PacketSendActivity extends BaseActivity {
     TextView describeTv;
     @Bind(R.id.hint_tv)
     TextView hintTv;
+    @Bind(R.id.bottom_lin)
+    LinearLayout bottomLin;
 
     private PacketSendActivity mActivity;
     public static final String RED_PACKET = "red";
@@ -81,6 +85,7 @@ public class PacketSendActivity extends BaseActivity {
         mActivity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
+        toolbarTop.setRightClickable(false);
 
         Bundle bundle = getIntent().getExtras();
         sendOutBean = (SendOutBean) bundle.getSerializable("send");
@@ -94,16 +99,42 @@ public class PacketSendActivity extends BaseActivity {
             leftSendImg.setImageResource(R.mipmap.bitcoin_message3x);
             describeTv.setText(R.string.Wallet_Transfer_Out_Send_User_Connect);
             hintTv.setText(R.string.Wallet_Wallet_Out_Send_Share);
-            toolbarTop.setRightImg(R.mipmap.menu_white);
+            if(sendOutBean.getStatus() == 0){
+                toolbarTop.setRightImg(R.mipmap.menu_white);
+                toolbarTop.setRightClickable(true);
+            }
         }
 
         GlideUtil.loadAvater(avaterRimg, MemoryDataManager.getInstance().getAvatar());
         nameTv.setText(MemoryDataManager.getInstance().getName());
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(sendOutBean.getUrl());
-        scanImg.setImageBitmap(bitmap);
-
-        bangPunchTimer(sendOutBean.getDeadline() * 1000);
+        if(sendOutBean.getStatus() == 1){
+            bottomLin.setVisibility(View.GONE);
+            Drawable drawable= getResources().getDrawable(R.mipmap.attention_message3x);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            hintTv.setText(R.string.Wallet_Canceled);
+            hintTv.setCompoundDrawables(drawable,null,null,null);
+            hintTv.setCompoundDrawablePadding(10);
+        }else if(sendOutBean.getStatus() == 2){
+            bottomLin.setVisibility(View.GONE);
+            Drawable drawable= getResources().getDrawable(R.mipmap.attention_message3x);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            hintTv.setText(R.string.Wallet_Expired);
+            hintTv.setCompoundDrawables(drawable,null,null,null);
+            hintTv.setCompoundDrawablePadding(10);
+        }else if(sendOutBean.getStatus() == 3){
+            bottomLin.setVisibility(View.GONE);
+            hintTv.setText(R.string.Wallet_Get);
+            Drawable drawable= getResources().getDrawable(R.mipmap.success_message3x);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            hintTv.setText(R.string.Wallet_Get);
+            hintTv.setCompoundDrawables(drawable,null,null,null);
+            hintTv.setCompoundDrawablePadding(10);
+        }else{
+            Bitmap bitmap = createScan.generateQRCode(sendOutBean.getUrl());
+            scanImg.setImageBitmap(bitmap);
+            bangPunchTimer(sendOutBean.getDeadline() * 1000);
+        }
     }
 
     @OnClick(R.id.left_img)
@@ -133,14 +164,14 @@ public class PacketSendActivity extends BaseActivity {
         startActivity(Intent.createChooser(shareIntent, "share to"));
     }
 
-    private void request(){
+    private void request() {
         Connect.BillHashId billHashId = Connect.BillHashId.newBuilder()
                 .setHash(sendOutBean.getHashId())
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_BILLING_EXTERNAL_CANCLE, billHashId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity,R.string.Wallet_transferOutVia_return_Success);
+                ToastEUtil.makeText(mActivity, R.string.Wallet_transferOutVia_return_Success);
                 ActivityUtil.goBack(mActivity);
             }
 
@@ -152,7 +183,7 @@ public class PacketSendActivity extends BaseActivity {
     }
 
     public void bangPunchTimer(final long leavetime) {
-        ExCountDownTimer exCountDownTimer = new ExCountDownTimer(leavetime,1000){
+        ExCountDownTimer exCountDownTimer = new ExCountDownTimer(leavetime, 1000) {
             @Override
             public void onTick(long millisUntilFinished, int percent) {
                 timeTv.setText(TimeUtil.showTimeCount(millisUntilFinished));

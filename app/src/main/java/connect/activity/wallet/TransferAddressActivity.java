@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,13 +27,12 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.transfer.TransferEditView;
+import connect.wallet.cwallet.business.TransferEditView;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
-import wallet_gateway.WalletOuterClass;
 
 /**
  * Transfer to BTC address

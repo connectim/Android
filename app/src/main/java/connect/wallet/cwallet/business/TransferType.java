@@ -6,10 +6,10 @@ package connect.wallet.cwallet.business;
 
 public enum TransferType{
     TransactionTypeBill(1),
-    TransactionTypePayCrowding(8),
     TransactionTypePayment(2),
     TransactionTypeLuckypackage(3),
-    TransactionTypeURLTransfer(6);
+    TransactionTypeURLTransfer(6),
+    TransactionTypePayCrowding(8);
 
     private int type;
 
@@ -27,12 +27,12 @@ public enum TransferType{
                 return TransactionTypeBill;
             case 2:
                 return TransactionTypePayment;
-            case 8:
-                return TransactionTypePayCrowding;
             case 3:
                 return TransactionTypeLuckypackage;
             case 6:
                 return TransactionTypeURLTransfer;
+            case 8:
+                return TransactionTypePayCrowding;
             default:
                 break;
         }

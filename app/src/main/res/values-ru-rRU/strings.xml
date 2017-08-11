@@ -599,6 +599,10 @@
     <string name="Wallet_Balance_Credit">Остаток средств на счете:฿%s</string>
     <string name="Wallet_Best_wishes">Желаю Вам огромного богатства!</string>
     <string name="Wallet_Canceled">Отменено</string>
+    <string name="Wallet_Expired">уже просрочен</string>
+    <string name="Wallet_Get">Уже открыт</string>
+    <string name="Chat_Recommend_business_CARDS_to_friends">Друзьям рекомендуется визитная карточка</string>
+    <string name="Chat_Recommend_your_business_card">Вам рекомендовать визитная карточка</string>
     <string name="Wallet_Charge_small_calculate_to_the_poundage">Слишком маленькая сумма для сдачи , сумма: :%sBTC, нужно ли дать мелочю сдачу на комиссионный сбор?</string>
     <string name="Wallet_Clear">Очистеть указаную сумму</string>
     <string name="Wallet_Click_to_open_lucky_packet">Кликните для получения денежного подарка</string>
