@@ -280,7 +280,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 TransactionHelper.getInstance().updateTransEntity(gatherBean.getHashid(), bean.getMsgid(), 0, gatherBean.getTotalMember());
                 break;
             case Transfer:
-                bean = (MsgEntity) baseChat.transferMsg((String) objects[0], (long) objects[1], (String) objects[2], 0);
+                bean = (MsgEntity) baseChat.transferMsg((String) objects[0], (long) objects[1], (String) objects[2], objects.length == 3 ? 0 : (int) (objects[3]));
                 sendNormalMsg(true,bean);
 
                 //add payment information
@@ -362,7 +362,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 PaymentActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
                 break;
             case NAMECARD:
-                ContactCardActivity.startActivity(activity,talker.getTalkKey());
+                ContactCardActivity.startActivity(activity);
                 break;
             case MSGSTATE://message send state 0:sending 1:send success 2:send fail 3:send refuse
                 if (talker.getTalkKey().equals(objects[0])) {
@@ -609,15 +609,6 @@ public abstract class BaseChatActvity extends BaseActivity {
             }
         }
     };
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == SeleUsersActivity.CODE_REQUEST){
-            ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
-            TransferFriendActivity.startActivity(activity, friendList,baseChat.roomKey());
-        }
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

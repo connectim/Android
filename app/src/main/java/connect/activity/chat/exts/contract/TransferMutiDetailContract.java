@@ -11,10 +11,15 @@ public interface TransferMutiDetailContract {
 
     interface BView extends BaseView<TransferMutiDetailContract.Presenter> {
 
-        String getRoomKey();
+        void showTransferDetail(String sender,String[] receivers,String tips,long amount,int transferstate,long createtime);
+
+            void showSenderInfo(String avatar,String name);
     }
 
     interface Presenter extends BasePresenter {
 
+        void requestTransferDetail(String hashid);
+
+        void requestSenderInfo(String address);
     }
 }

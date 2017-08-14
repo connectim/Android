@@ -9,8 +9,7 @@ import java.util.List;
 import connect.database.green.bean.ContactEntity;
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
-import connect.widget.payment.PaymentPwd;
-import connect.utils.transfer.TransferEditView;
+import connect.wallet.cwallet.business.TransferEditView;
 
 /**
  * Created by Administrator on 2017/4/18 0018.

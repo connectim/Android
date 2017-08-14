@@ -599,6 +599,10 @@
     <string name="Wallet_Balance_Credit">Available balance:฿%s</string>
     <string name="Wallet_Best_wishes">Good luck</string>
     <string name="Wallet_Canceled">Canceled</string>
+    <string name="Wallet_Expired">Expired</string>
+    <string name="Wallet_Get">Opened</string>
+    <string name="Chat_Recommend_business_CARDS_to_friends">Recommend business card to friend</string>
+    <string name="Chat_Recommend_your_business_card">Recommend your business card</string>
     <string name="Wallet_Charge_small_calculate_to_the_poundage">Charge address amount is too small! Amount:%sBTC,Whether you need to change to calculate to the poundage?</string>
     <string name="Wallet_Clear">Clear</string>
     <string name="Wallet_Click_to_open_lucky_packet">Click to open lucky packet</string>

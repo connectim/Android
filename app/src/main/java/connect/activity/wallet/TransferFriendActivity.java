@@ -17,9 +17,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgSend;
-import connect.database.MemoryDataManager;
 import connect.database.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
@@ -27,20 +27,15 @@ import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.set.PayFeeActivity;
 import connect.activity.wallet.adapter.FriendGridAdapter;
 import connect.activity.wallet.bean.FriendSeleBean;
-import connect.activity.wallet.bean.TranAddressBean;
 import connect.activity.wallet.contract.TransferFriendContract;
 import connect.activity.wallet.presenter.TransferFriendPresenter;
-import connect.utils.ToastEUtil;
-import connect.utils.transfer.TransferUtil;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.data.RateFormatUtil;
+import connect.utils.ToastEUtil;
+import connect.wallet.cwallet.business.TransferEditView;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.payment.PaymentPwd;
-import connect.utils.transfer.TransferEditView;
 import connect.widget.random.RandomVoiceActivity;
 
 /**
@@ -174,11 +169,12 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
             public void success(String value) {
                 ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
 
-                MsgSend.sendOuterMsg(MsgType.Transfer, value, transferEditView.getCurrentBtcLong(), "");
-                for(HashMap.Entry<String, Long> entry : outMap.entrySet()){
-                    presenter.sendTransferMessage(value,entry.getKey(),"");
+                if (!TextUtils.isEmpty(pubGroup)) {
+                    MsgSend.sendOuterMsg(MsgType.Transfer, value, transferEditView.getCurrentBtcLong(), transferEditView.getNote(), 2);
                 }
-
+                for (HashMap.Entry<String, Long> entry : outMap.entrySet()) {
+                    presenter.sendTransferMessage(value, entry.getKey(), "");
+                }
                 List<Activity> list = BaseApplication.getInstance().getActivityList();
                 for (Activity activity : list) {
                     if (activity.getClass().getName().equals(TransferActivity.class.getName())) {
@@ -219,5 +215,4 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
             }
         }
     }
-
 }

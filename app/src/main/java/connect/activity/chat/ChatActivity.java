@@ -37,6 +37,8 @@ import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.SingleSetActivity;
 import connect.activity.chat.view.ExBottomLayout;
+import connect.activity.common.selefriend.SeleUsersActivity;
+import connect.activity.wallet.TransferFriendActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -285,6 +287,9 @@ public class ChatActivity extends BaseChatActvity {
             }
         } else if (requestCode == CODE_REQUEST && resultCode == CODE_REQUEST) {//relay the message
             transpondTo(data);
+        } else if (resultCode == RESULT_OK && requestCode == SeleUsersActivity.CODE_REQUEST) {
+            ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
+            TransferFriendActivity.startActivity(activity, friendList, baseChat.roomKey());
         }
     }
 

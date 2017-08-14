@@ -123,6 +123,8 @@ public class FriendChat extends NormalChat {
                     friendKey = friendCookie.getPubKey();
                     byte[] friendSalt = friendCookie.getSalt();
                     if (friendCookie == null || friendSalt == null || friendSalt.length == 0) {
+                        encryType = EncryType.HALF;
+                        sendPushMsg(bean);
                         return;
                     }
                     ecdhExts = SupportKeyUril.EcdhExts.OTHER;

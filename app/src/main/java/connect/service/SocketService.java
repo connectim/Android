@@ -91,7 +91,7 @@ public class SocketService extends Service {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PushMessage pushMessage) {
-        LogManager.getLogger().d(Tag, "send ack:" + pushMessage.getServiceAck().getAck());
+        LogManager.getLogger().i(Tag, "send ack:" + pushMessage.getServiceAck().getAck());
         ByteBuffer byteBuffer = pushMessage.getByteBuffer();
         try {
             pushBinder.connectMessage(pushMessage.getServiceAck().getAck(), pushMessage.getbAck(), byteBuffer.array());

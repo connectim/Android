@@ -1,6 +1,5 @@
 package connect.activity.chat.exts.presenter;
 
-import android.app.Activity;
 import android.text.TextUtils;
 
 import com.google.protobuf.InvalidProtocolBufferException;

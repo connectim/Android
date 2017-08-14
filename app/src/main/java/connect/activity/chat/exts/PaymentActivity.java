@@ -21,7 +21,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.RegularUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.transfer.TransferEditView;
+import connect.wallet.cwallet.business.TransferEditView;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;

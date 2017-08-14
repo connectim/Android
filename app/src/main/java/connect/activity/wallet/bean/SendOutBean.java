@@ -12,6 +12,7 @@ public class SendOutBean implements Serializable{
     private String url;
     private long deadline;
     private String hashId;
+    private int status = 0; // 1:cancel 2:past due
 
     public String getType() {
         return type;
@@ -51,5 +52,13 @@ public class SendOutBean implements Serializable{
 
     public void setHashId(String hashId) {
         this.hashId = hashId;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
