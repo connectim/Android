@@ -18,7 +18,7 @@ import protos.Connect;
  * robot message
  * Created by pujin on 2017/1/19.
  */
-public class RobotChat extends NormalChat {
+public class RobotChat extends NormalChat{
 
     private static RobotChat robotChat;
 

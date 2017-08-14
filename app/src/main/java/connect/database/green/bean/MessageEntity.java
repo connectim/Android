@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import java.io.Serializable;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
@@ -210,5 +211,23 @@ public class MessageEntity implements Serializable {
                 break;
         }
         return content;
+    }
+
+    public MsgExtEntity transToExtEntity() {
+        MsgExtEntity extEntity = new MsgExtEntity();
+        extEntity.set_id(get_id());
+        extEntity.setMessage_id(getMessage_id());
+        extEntity.setChatType(getChatType());
+        extEntity.setMessage_ower(getMessage_ower());
+        extEntity.setMessageType(getMessageType());
+        extEntity.setFrom(getFrom());
+        extEntity.setTo(getTo());
+        extEntity.setContent(getContent());
+        extEntity.setCreatetime(getCreatetime());
+        extEntity.setRead_time(getRead_time());
+        extEntity.setSend_status(getSend_status());
+        extEntity.setSnap_time(getSnap_time());
+        extEntity.setState(getState());
+        return extEntity;
     }
 }

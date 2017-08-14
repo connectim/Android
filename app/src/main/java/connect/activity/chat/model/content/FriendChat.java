@@ -59,31 +59,41 @@ public class FriendChat extends NormalChat {
     }
 
     @Override
-    public MsgEntity createBaseChat(MsgType type) {
-        MsgDefinBean msgDefinBean = new MsgDefinBean();
-        msgDefinBean.setType(type.type);
-        msgDefinBean.setUser_name(contactEntity.getUsername());
-        msgDefinBean.setSendtime(TimeUtil.getCurrentTimeInLong());
-        msgDefinBean.setMessage_id(TimeUtil.timestampToMsgid());
-        msgDefinBean.setPublicKey(contactEntity.getPub_key());
-        msgDefinBean.setUser_id(address());
-        msgDefinBean.setSenderInfoExt(new MsgSender(MemoryDataManager.getInstance().getPubKey(),
-                MemoryDataManager.getInstance().getName(),
-                MemoryDataManager.getInstance().getAddress(),
-                MemoryDataManager.getInstance().getAvatar()));
+    public Connect.ChatMessage.Builder createBaseChat(MsgType type) {
+//        MsgDefinBean msgDefinBean = new MsgDefinBean();
+//        msgDefinBean.setType(type.type);
+//        msgDefinBean.setUser_name(contactEntity.getUsername());
+//        msgDefinBean.setSendtime(TimeUtil.getCurrentTimeInLong());
+//        msgDefinBean.setMessage_id(TimeUtil.timestampToMsgid());
+//        msgDefinBean.setPublicKey(contactEntity.getPub_key());
+//        msgDefinBean.setUser_id(address());
+//        msgDefinBean.setSenderInfoExt(new MsgSender(MemoryDataManager.getInstance().getPubKey(),
+//                MemoryDataManager.getInstance().getName(),
+//                MemoryDataManager.getInstance().getAddress(),
+//                MemoryDataManager.getInstance().getAvatar()));
+//
+//        long burntime = RoomSession.getInstance().getBurntime();
+//        if (burntime > 0) {
+//            ExtBean extBean = new ExtBean();
+//            extBean.setLuck_delete(burntime);
+//            msgDefinBean.setExt(new Gson().toJson(extBean));
+//        }
+//        MsgEntity chatBean = new MsgEntity();
+//        chatBean.setMsgDefinBean(msgDefinBean);
+//        chatBean.setPubkey(contactEntity.getPub_key());
+//        chatBean.setRecAddress(address());
+//        chatBean.setSendstate(0);
 
-        long burntime = RoomSession.getInstance().getBurntime();
-        if (burntime > 0) {
-            ExtBean extBean = new ExtBean();
-            extBean.setLuck_delete(burntime);
-            msgDefinBean.setExt(new Gson().toJson(extBean));
-        }
-        MsgEntity chatBean = new MsgEntity();
-        chatBean.setMsgDefinBean(msgDefinBean);
-        chatBean.setPubkey(contactEntity.getPub_key());
-        chatBean.setRecAddress(address());
-        chatBean.setSendstate(0);
-        return chatBean;
+        //// TODO: 17-8-14 添加 阅后即焚 时间
+        String mypublickey = MemoryDataManager.getInstance().getPubKey();
+        Connect.ChatMessage.Builder messageBuilder = Connect.ChatMessage.newBuilder()
+                .setMsgId(TimeUtil.timestampToMsgid())
+                .setChatType(Connect.ChatType.PRIVATE)
+                .setFrom(mypublickey)
+                .setTo(identify())
+                .setMsgType(type.type)
+                .setMsgTime(TimeUtil.getCurrentTimeInLong());
+        return messageBuilder;
     }
 
     @Override
@@ -170,6 +180,12 @@ public class FriendChat extends NormalChat {
             }
         }
         return address;
+    }
+
+    @Override
+    public String identify() {
+        String pubKey = TextUtils.isEmpty(contactEntity.getPub_key()) ? "" : contactEntity.getPub_key();
+        return pubKey;
     }
 
     @Override

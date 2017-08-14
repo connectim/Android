@@ -12,7 +12,7 @@ import java.util.List;
 
 import connect.database.green.BaseDao;
 import connect.database.green.bean.MessageEntity;
-import connect.activity.chat.bean.MessageExtEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.database.green.dao.MessageEntityDao;
 import connect.utils.StringUtil;
@@ -51,16 +51,16 @@ public class MessageHelper extends BaseDao {
     }
 
     /********************************* select ***********************************/
-    public List<MessageExtEntity> loadMoreMsgEntities(String pubkey, long firsttime) {
+    public List<MsgExtEntity> loadMoreMsgEntities(String pubkey, long firsttime) {
         String sql = "SELECT * FROM (SELECT C.* ,S.STATUS AS TRANS_STATUS,HASHID,PAY_COUNT,CROWD_COUNT FROM MESSAGE_ENTITY C LEFT OUTER JOIN TRANSACTION_ENTITY S ON C.MESSAGE_ID = S.MESSAGE_ID WHERE C.MESSAGE_OWER = ? " +
                 ((firsttime == 0) ? "" : " AND C.CREATETIME < " + firsttime) +//load more message
                 " ORDER BY C.CREATETIME DESC LIMIT 20) ORDER BY CREATETIME ASC;";
 
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{pubkey});
-        MessageExtEntity msgEntity = null;
-        List<MessageExtEntity> msgEntities = new ArrayList();
+        MsgExtEntity msgEntity = null;
+        List<MsgExtEntity> msgEntities = new ArrayList();
         while (cursor.moveToNext()) {
-            msgEntity = new MessageExtEntity();
+            msgEntity = new MsgExtEntity();
             msgEntity.setMessage_ower(cursorGetString(cursor, "MESSAGE_OWER"));
             msgEntity.setMessage_id(cursorGetString(cursor, "MESSAGE_ID"));
             msgEntity.setContent(cursorGetString(cursor, "CONTENT"));

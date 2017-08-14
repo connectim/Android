@@ -1,26 +1,18 @@
 package connect.activity.chat.model.content;
-
 import android.text.TextUtils;
-
-import com.google.gson.Gson;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-
+import connect.activity.chat.bean.GatherBean;
+import connect.activity.chat.bean.GeoAddressBean;
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.WebsiteExt1Bean;
+import connect.activity.home.bean.MsgFragmReceiver;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
-import connect.activity.chat.bean.GatherBean;
-import connect.activity.chat.bean.MessageExtEntity;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.WebsiteExt1Bean;
-import connect.activity.home.bean.MsgFragmReceiver;
-import connect.activity.chat.bean.GeoAddressBean;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -140,35 +132,19 @@ public abstract class BaseChat<T> implements Serializable {
         isStranger = stranger;
     }
 
-    public List<MsgEntity> loadMoreEntities(long firstmsgtime) {
-        List<MsgEntity> localBeans = new ArrayList();
-        List<MessageExtEntity> detailEntities = MessageHelper.getInstance().loadMoreMsgEntities(roomKey(), firstmsgtime);
+    public List<MsgExtEntity> loadMoreEntities(long firstmsgtime) {
+        List<MsgExtEntity> detailEntities = MessageHelper.getInstance().loadMoreMsgEntities(roomKey(), firstmsgtime);
         byte[] localHashKeys = SupportKeyUril.localHashKey().getBytes();
-        for (MessageExtEntity detailEntity : detailEntities) {
+        for (MsgExtEntity detailEntity : detailEntities) {
             try {
                 Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(detailEntity.getContent()));
                 byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, localHashKeys, gcmData);
-                MsgDefinBean definBean = new Gson().fromJson(new String(contents), MsgDefinBean.class);
-
-                MsgEntity msgEntity = new MsgEntity();
-                msgEntity.setPubkey(roomKey());
-                msgEntity.setMsgDefinBean(definBean);
-                msgEntity.setReadstate(detailEntity.getState());
-                msgEntity.setSendstate(detailEntity.getSend_status());
-                msgEntity.setRecAddress(address());
-                msgEntity.setHashid(detailEntity.getHashid());
-                msgEntity.setTransStatus(detailEntity.getTransStatus());
-                msgEntity.setPayCount(detailEntity.getPayCount());
-                msgEntity.setCrowdCount(detailEntity.getCrowdCount());
-                long burnstart = (null == detailEntity.getSnap_time()) ? 0 : detailEntity.getSnap_time();
-                msgEntity.setBurnstarttime(burnstart);
-
-                localBeans.add(msgEntity);
+                detailEntity.setContents(contents);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return localBeans;
+        return detailEntities;
     }
 
     /**
@@ -177,7 +153,7 @@ public abstract class BaseChat<T> implements Serializable {
      * @param msgid
      * @return
      */
-    public MsgEntity loadEntityByMsgid(String msgid) throws Exception {
+    public MsgExtEntity loadEntityByMsgid(String msgid) throws Exception {
         MessageEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity == null) {
             return null;
@@ -186,16 +162,9 @@ public abstract class BaseChat<T> implements Serializable {
         byte[] localHashKeys = SupportKeyUril.localHashKey().getBytes();
         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(messageEntity.getContent()));
         byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, localHashKeys, gcmData);
-        MsgDefinBean definBean = new Gson().fromJson(new String(contents), MsgDefinBean.class);
 
-        MsgEntity chatBean = new MsgEntity();
-        chatBean.setPubkey(roomKey());
-        chatBean.setMsgDefinBean(definBean);
-        chatBean.setSendstate(messageEntity.getSend_status());
-        chatBean.setRecAddress(address());
-
-        long burnstart = (null == messageEntity.getSnap_time()) ? 0 : messageEntity.getSnap_time();
-        chatBean.setBurnstarttime(burnstart);
-        return chatBean;
+        MsgExtEntity msgExtEntity = messageEntity.transToExtEntity();
+        msgExtEntity.setContents(contents);
+        return msgExtEntity;
     }
 }

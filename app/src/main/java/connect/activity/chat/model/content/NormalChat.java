@@ -15,12 +15,13 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
+import protos.Connect;
 
 /**
  * public methods to extract
  * Created by gtq on 2016/12/19.
  */
-public abstract class NormalChat extends BaseChat {
+public abstract class NormalChat extends BaseChat<Connect.ChatMessage> {
 
     public static NormalChat loadBaseChat(String pubkey) {
         NormalChat normalChat = null;
@@ -193,6 +194,8 @@ public abstract class NormalChat extends BaseChat {
     public abstract String headImg();
 
     public abstract String nickName();
+
+    public abstract String identify();
 
     public abstract String address();
 }

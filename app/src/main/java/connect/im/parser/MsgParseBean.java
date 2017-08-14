@@ -179,9 +179,9 @@ public class MsgParseBean extends InterParse {
         Connect.MessageData messageData = messagePost.getMsgData();
 
         if (ext == 0) {
-            backOffLineAck(5, messageData.getMsgId());
+            backOffLineAck(5, messageData.getChatMsg().getMsgId());
         } else {
-            backOnLineAck(5, messageData.getMsgId());
+            backOnLineAck(5, messageData.getChatMsg().getMsgId());
         }
 
         ChatParseBean parseBean = new ChatParseBean(ackByte, messagePost);

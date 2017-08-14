@@ -1,16 +1,16 @@
 package connect.im.parser;
 
-import android.os.Message;
 import android.text.TextUtils;
-
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.protobuf.ByteString;
-
 import java.nio.ByteBuffer;
-
+import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.GroupChat;
+import connect.activity.chat.model.content.NormalChat;
+import connect.activity.home.bean.HttpRecBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -25,17 +25,10 @@ import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.model.content.NormalChat;
-import connect.activity.home.bean.HttpRecBean;
-import connect.activity.base.BaseApplication;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.okhttp.adapter.MsgDefTypeAdapter;
 import protos.Connect;
 
 /**
@@ -72,18 +65,18 @@ public class ChatParseBean extends InterParse {
     }
 
     public synchronized void singleChat(Connect.MessagePost msgpost) throws Exception {
+        Connect.MessageData messageData = msgpost.getMsgData();
+        Connect.ChatSession chatSession = messageData.getChatSession();
+        Connect.ChatMessage chatMessage = messageData.getChatMsg();
+
         String friendPubKey = msgpost.getPubKey();
         String priKey = null;
         String pubkey = null;
 
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(friendPubKey);
+        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
         if (friendEntity == null) {
             requestFriendsByVersion();
         }
-
-        Connect.MessageData messageData = msgpost.getMsgData();
-        Connect.ChatSession chatSession = messageData.getChatSession();
-        Connect.ChatMessage chatMessage = messageData.getChatMsg();
 
         SupportKeyUril.EcdhExts ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
         if (TextUtils.isEmpty(chatSession.getPubKey())) {//old protocol
@@ -102,7 +95,6 @@ public class ChatParseBean extends InterParse {
 
             ParamEntity toSaltEntity = ParamHelper.getInstance().likeParamEntity(StringUtil.bytesToHexString(toSalt.toByteArray()));
             if (toSaltEntity == null) {
-                msgParseException(friendPubKey);
                 return;
             }
 
@@ -115,7 +107,15 @@ public class ChatParseBean extends InterParse {
 
         byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, priKey, pubkey, messageData.getChatMsg().getCipherData());
         if (contents.length <= 10) {
-            msgParseException(friendPubKey);
+            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
+            if (contactEntity != null) {
+                NormalChat normalChat = new FriendChat(contactEntity);
+                String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
+                MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
+                normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime(), -1, true);
+                MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgEntity);
+            }
         } else {
             MessageEntity messageEntity = MessageHelper.getInstance().insertFromMsg(chatMessage.getMsgId(), chatMessage.getFrom(),
                     chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
@@ -201,16 +201,5 @@ public class ChatParseBean extends InterParse {
 
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData());
         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupMessage.getIdentifier());
-    }
-
-    protected void msgParseException(String pubkey) {
-        NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
-        if (normalChat != null) {
-            String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
-            MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
-            normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime(),-1,true);
-            MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgEntity);
-        }
     }
 }
