@@ -20,6 +20,7 @@ public class TransferMutiDetailPresenter implements TransferMutiDetailContract.P
 
     private TransferMutiDetailContract.BView view;
     private Activity activity;
+    private Connect.Bill bill;
 
     public TransferMutiDetailPresenter(TransferMutiDetailContract.BView view) {
         this.view = view;
@@ -43,7 +44,7 @@ public class TransferMutiDetailPresenter implements TransferMutiDetailContract.P
                         throw new Exception("Validation fails");
                     }
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
+                    bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
                         String sender = bill.getSender();
                         String[] receivers = bill.getReceiver().split(",");
@@ -94,5 +95,10 @@ public class TransferMutiDetailPresenter implements TransferMutiDetailContract.P
                         ToastUtil.getInstance().showToast(response.getCode() + response.getMessage());
                     }
                 });
+    }
+
+    @Override
+    public String getTransferTxtid() {
+        return bill.getTxid();
     }
 }

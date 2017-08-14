@@ -15,6 +15,7 @@ import connect.activity.chat.adapter.TransferMutiDetailAdapter;
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.exts.contract.TransferMutiDetailContract;
 import connect.activity.chat.exts.presenter.TransferMutiDetailPresenter;
+import connect.activity.home.view.LineDecoration;
 import connect.activity.wallet.BlockchainActivity;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.ui.activity.R;
@@ -82,11 +83,12 @@ public class TransferMutiDetailActivity extends BaseActivity implements Transfer
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         mutiDetailAdapter = new TransferMutiDetailAdapter(new String[]{},0L);
         recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.addItemDecoration(new LineDecoration(activity));
         recyclerview.setAdapter(mutiDetailAdapter);
         mutiDetailAdapter.setItemClickListener(new TransferMutiDetailAdapter.OnItemClickListener() {
             @Override
             public void onClick(View v) {
-                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, hashId);
+                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, presenter.getTransferTxtid());
             }
         });
     }

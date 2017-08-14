@@ -21,5 +21,7 @@ public interface TransferMutiDetailContract {
         void requestTransferDetail(String hashid);
 
         void requestSenderInfo(String address);
+
+        String getTransferTxtid();
     }
 }

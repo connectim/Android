@@ -2,19 +2,19 @@ package connect.activity.chat.model.content;
 
 import com.google.gson.Gson;
 
+import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.CardExt1Bean;
+import connect.activity.chat.bean.GatherBean;
+import connect.activity.chat.bean.GeoAddressBean;
+import connect.activity.chat.bean.GroupExt1Bean;
+import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.TransferExt;
+import connect.activity.chat.bean.WebsiteExt1Bean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.CardExt1Bean;
-import connect.activity.chat.bean.GatherBean;
-import connect.activity.chat.bean.GroupExt1Bean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.TransferExt;
-import connect.activity.chat.bean.WebsiteExt1Bean;
-import connect.activity.chat.bean.GeoAddressBean;
-import connect.activity.base.BaseApplication;
 
 /**
  * public methods to extract

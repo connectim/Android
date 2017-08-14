@@ -67,27 +67,11 @@ public class NotificationManager {
             super.handleMessage(msg);
             TIME_SENDNOTIFY = TimeUtil.getCurrentTimeInLong();
 
-            Bundle bundle=msg.getData();
+            Bundle bundle = msg.getData();
             int type = bundle.getInt("TYPE");
-            String pubkey = bundle.getString("KEY");
-            MsgEntity msgEntity = (MsgEntity) bundle.getSerializable("CONTENT");
-            MsgDefinBean definBean=msgEntity.getMsgDefinBean();
-
-            boolean isAt = false;
-            if (definBean.getType() == 1 && !TextUtils.isEmpty(definBean.getExt1())) {
-                List<String> addressList = new Gson().fromJson(definBean.getExt1(), new TypeToken<List<String>>() {
-                }.getType());
-
-                String myAddress = MemoryDataManager.getInstance().getAddress();
-                if (addressList.contains(myAddress)) { // at me
-                    isAt = true;
-                }
-            }
-            showNotification(pubkey, type, isAt ?
-                    BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me) :
-                    definBean.showContentTxt(type)
-            );
-
+            String identify = bundle.getString("KEY");
+            String content = bundle.getString("CONTENT");
+            showNotification(identify, type, content);
             MsgFragmReceiver.refreshRoom();
         }
     };
@@ -101,6 +85,24 @@ public class NotificationManager {
         bundle.putString("KEY", pubkey);
         bundle.putInt("TYPE", type);
         bundle.putSerializable("CONTENT", msgEntity);
+        message.setData(bundle);
+
+        if (TimeUtil.getCurrentTimeInLong() - TIME_SENDNOTIFY < MSG_DELAYMILLIS) {
+            mHandler.sendMessage(message);
+        } else {
+            mHandler.sendMessageDelayed(message, MSG_DELAYMILLIS);
+        }
+    }
+
+    /*** Refresh a message time recently */
+    public void pushNoticeMsg(String identify, int chattype, String content) {
+        mHandler.removeMessages(MSG_NOTICE);
+
+        android.os.Message message = mHandler.obtainMessage(MSG_NOTICE);
+        Bundle bundle = new Bundle();
+        bundle.putString("KEY", identify);
+        bundle.putInt("TYPE", chattype);
+        bundle.putSerializable("CONTENT", content);
         message.setData(bundle);
 
         if (TimeUtil.getCurrentTimeInLong() - TIME_SENDNOTIFY < MSG_DELAYMILLIS) {

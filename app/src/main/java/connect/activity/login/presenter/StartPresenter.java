@@ -194,5 +194,4 @@ public class StartPresenter implements StartContract.Presenter{
             SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.WEB_OPEN_APP,uri.toString());
         }
     }
-
 }

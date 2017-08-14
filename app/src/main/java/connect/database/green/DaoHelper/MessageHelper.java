@@ -128,6 +128,23 @@ public class MessageHelper extends BaseDao {
         insertMsg(detailEntity);
     }
 
+    public MessageEntity insertFromMsg(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, SupportKeyUril.localHashKey().getBytes(), contents);
+
+        MessageEntity messageEntity = new MessageEntity();
+        messageEntity.setMessage_id(messageid);
+        messageEntity.setMessage_ower(messageowner);
+        messageEntity.setChatType(chattype);
+        messageEntity.setMessageType(messagetype);
+        messageEntity.setFrom(from);
+        messageEntity.setTo(to);
+        messageEntity.setContent(StringUtil.bytesToHexString(gcmData.toByteArray()));
+        messageEntity.setCreatetime(createtime);
+        messageEntity.setSend_status(sendstate);
+        insertMsg(messageEntity);
+        return messageEntity;
+    }
+
     /********************************* delete ***********************************/
     public void deleteRoomMsg(String pukkey) {
         QueryBuilder<MessageEntity> qb = messageEntityDao.queryBuilder();

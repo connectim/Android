@@ -12,10 +12,6 @@ string desc = 6;
 string covers_url = 7;
 }
 
-message TextMessage {
-string content = 1;
-}
-
 message SystemRedPackage {
 int64 amount = 1;
 string hashId = 2;
@@ -713,16 +709,6 @@ string sign = 2;
 MessageData msg_data = 3;
 }
 
-message MessageData {
-string receiver_address = 1;
-string msg_id = 2;
-GcmData cipher_data = 3;
-int32 typ = 4;
-bytes salt = 5;
-string chat_pub_key = 6;
-bytes ver = 7;
-}
-
 message MSMessage {
 string msg_id=1;
 bytes body=2;
@@ -1200,3 +1186,165 @@ message ChatCookie {
     string sign = 1;
     ChatCookieData data = 2;
 }
+
+
+
+
+message MessageUserInfo{
+    string uid=1;
+    string username=2;
+    string avatar=3;
+}
+
+enum ChatType {
+    PRIVATE= 0;
+    GROUPCHAT  = 1;
+    CONNECT_SYSTEM = 3;
+}
+
+message ChatSession {
+    bytes salt = 1;
+    bytes ver = 2;
+    string pubKey = 3;
+}
+
+message ChatMessage {
+    string msg_id = 1;
+    int64 msg_time = 2;
+    string from = 3;
+    string to= 4;
+    GcmData cipher_data = 5;
+    ChatType chat_type=6;
+    int32 msg_type = 7;
+    string ext= 8;
+}
+
+message MessageData {
+    ChatMessage chat_msg = 1;
+    ChatSession chat_session = 2;
+}
+
+message TextMessage{
+    string content=1;
+    repeated string at_addresses=2;
+    int64 snap_time = 3;
+    MessageUserInfo sender =4;
+}
+
+message EmotionMessage{
+    string content=1;
+    int64 snap_time = 3;
+    MessageUserInfo sender =4;
+}
+
+message PhotoMessage{
+    string url=1;
+    string thum=2;
+    string size=3;
+    int32 image_width=4;
+    int32 image_height=5;
+    int64 snap_time = 6;
+    MessageUserInfo sender =7;
+}
+
+message VoiceMessage{
+    string url=1;
+    string time_length=2;
+    string size=3;
+    int64 snap_time = 4;
+    MessageUserInfo sender =5;
+}
+
+message VideoMessage{
+    string url=1;
+    string cover=2;
+    string time_length=3;
+    string size=4;
+    int64 snap_time = 5;
+    MessageUserInfo sender =6;
+}
+
+message CardMessage{
+    string uid=1;
+    string username=2;
+    string avatar=3;
+    MessageUserInfo sender =4;
+}
+
+message DestructMessage{
+    int32 time=1;
+}
+
+message ReadReceiptMessage{
+    string message_id=1;
+}
+
+message PaymentMessage{
+    int32 payment_type=1;
+    string hash_id=2;
+    int64 amount=3;
+    int32 member_size =4;
+    string tips =5;
+    MessageUserInfo sender =6;
+}
+
+message TransferMessage{
+    int32  transfer_type=1;
+    string hash_id=2;
+    int64 amount=3;
+    string tips =4;
+    MessageUserInfo sender =5;
+}
+
+message LocationMessage{
+    float latitude=1;
+    float longitude=2;
+    string address=3;
+    string screen_shot=4;
+    int32 image_width=5;
+    int32 image_height=6;
+    MessageUserInfo sender =7;
+}
+
+message LuckPacketMessage{
+    string hash_id=1;
+    int32 lucky_type=2;
+    string tips =3;
+    int64 amount=4;
+    MessageUserInfo sender =5;
+}
+
+message NotifyMessage{
+    string content=1;
+}
+
+message JoinGroupMessage{
+    string avatar=1;
+    string group_name=2;
+    string group_id=3;
+    string token=4;
+    MessageUserInfo sender =5;
+}
+
+message WebsiteMessage{
+    string url=1;
+    string title=2;
+    string subtitle=3;
+    string img=4;
+    MessageUserInfo sender =5;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

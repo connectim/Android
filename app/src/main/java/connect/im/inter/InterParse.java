@@ -160,6 +160,10 @@ public abstract class InterParse {
         NotificationManager.getInstance().pushNoticeMsg(pubkey,type,msgEntity);
     }
 
+    protected void pushNoticeMsg(String pubkey, int type, String content) {
+        NotificationManager.getInstance().pushNoticeMsg(pubkey, type, content);
+    }
+
     protected void commandToIMTransfer(String msgid, SocketACK ack, ByteString byteString) {
         Connect.Command command = Connect.Command.newBuilder().setMsgId(msgid).
                 setDetail(byteString).build();

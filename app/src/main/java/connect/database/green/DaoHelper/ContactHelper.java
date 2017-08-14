@@ -238,8 +238,8 @@ public class ContactHelper extends BaseDao {
      * @param pukkey
      * @return
      */
-    public List<GroupMemberEntity> loadGroupMemEntity(String pukkey,String address) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY WHERE M.IDENTIFIER = ? AND M.ADDRESS != ? GROUP BY M.PUB_KEY ORDER BY M.ROLE DESC;";
+    public List<GroupMemberEntity> loadGroupMemEntities(String pukkey,String address) {
+        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY WHERE M.IDENTIFIER = ? AND ( M.ADDRESS == ? OR M.PUB_KEY ==? ) GROUP BY M.PUB_KEY ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{pukkey, address});
 
         GroupMemberEntity groupMemEntity = null;
@@ -265,6 +265,11 @@ public class ContactHelper extends BaseDao {
             cursor.close();
         }
         return groupMemEntities;
+    }
+
+    public GroupMemberEntity loadGroupMemberEntity(String pukkey, String address) {
+        List<GroupMemberEntity> entities = loadGroupMemEntities(pukkey, address);
+        return entities == null || entities.size() == 0 ? null : entities.get(0);
     }
 
     /**
