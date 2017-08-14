@@ -4,25 +4,17 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 
-import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.database.green.DaoHelper.ParamManager;
-import connect.ui.activity.R;
 import connect.activity.wallet.PacketSendActivity;
 import connect.activity.wallet.bean.SendOutBean;
-import connect.activity.wallet.bean.TransferBean;
 import connect.activity.wallet.contract.PacketContract;
-import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.utils.transfer.TransferError;
-import connect.widget.MdStyleProgress;
-import connect.widget.payment.PaymentPwd;
-import connect.utils.transfer.TransferEditView;
+import connect.wallet.cwallet.business.TransferEditView;
 import protos.Connect;
 
 /**

@@ -115,12 +115,14 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
     public void updataView(int status, long openMoney, long bestAmount, final Connect.RedPackageInfo redPackageInfo) {
         this.redPackageInfo = redPackageInfo;
         contentLin.setVisibility(View.VISIBLE);
-        openMoneyTitleTv.setText(RateFormatUtil.longToDoubleBtc(openMoney));
+        if(openMoney > 0){
+            openMoneyRela.setVisibility(View.VISIBLE);
+            openMoneyTitleTv.setText(RateFormatUtil.longToDoubleBtc(openMoney));
+        }
 
         if (!TextUtils.isEmpty(redPackageInfo.getRedpackage().getTips())) {
             noteTv.setText(redPackageInfo.getRedpackage().getTips());
         }
-        openMoneyRela.setVisibility(View.VISIBLE);
         switch (status) {
             case 1: // Bitcoin has been return to your wallet
                 overtimeTv.setVisibility(View.VISIBLE);

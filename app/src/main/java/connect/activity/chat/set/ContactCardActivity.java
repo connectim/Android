@@ -39,7 +39,6 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
     TopToolBar toolbar;
 
     private ContactCardActivity activity;
-
     private String pubKey;
     private boolean move;
     private int topPosi;
@@ -54,7 +53,11 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
         initView();
     }
 
-    public static void startActivity(Activity activity, String pubkey) {
+    public static void startActivity(Activity activity) {
+        startActivity(activity,null);
+    }
+
+    public static void startActivity(Activity activity,String pubkey) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("PUBKEY", pubkey);
         ActivityUtil.next(activity, ContactCardActivity.class, bundle);
@@ -72,6 +75,7 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
                 ActivityUtil.goBack(activity);
             }
         });
+        String type = getIntent().getExtras().getString("type");
 
         pubKey = getIntent().getStringExtra("PUBKEY");
 

@@ -3,48 +3,30 @@ package connect.activity.wallet;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.HashMap;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.wallet.bean.TransferBean;
-import connect.activity.wallet.bean.WalletBean;
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.CurrencyEntity;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.set.PayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
+import connect.activity.wallet.bean.TransferBean;
 import connect.activity.wallet.contract.PacketContract;
 import connect.activity.wallet.presenter.PacketPresenter;
-import connect.utils.ProtoBufUtil;
-import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
-import connect.utils.transfer.TransferUtil;
-import connect.activity.base.BaseActivity;
+import connect.database.green.DaoHelper.ParamManager;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.data.RateFormatUtil;
-import connect.wallet.cwallet.NativeWallet;
+import connect.utils.ToastEUtil;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.currency.BaseCurrency;
+import connect.wallet.cwallet.business.TransferEditView;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.payment.PaymentPwd;
-import connect.utils.transfer.TransferEditView;
 import connect.widget.random.RandomVoiceActivity;
-import protos.Connect;
 
 /**
  * lucky packet

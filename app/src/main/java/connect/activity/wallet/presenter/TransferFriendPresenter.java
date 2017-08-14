@@ -1,45 +1,28 @@
 package connect.activity.wallet.presenter;
 
-import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import java.util.List;
 
+import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.model.content.FriendChat;
+import connect.activity.chat.model.content.NormalChat;
+import connect.activity.wallet.contract.TransferFriendContract;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.NormalChat;
-import connect.activity.wallet.TransferActivity;
-import connect.activity.wallet.bean.TransferBean;
-import connect.activity.wallet.contract.TransferFriendContract;
-import connect.activity.base.BaseApplication;
-import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
+import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.system.SystemUtil;
-import connect.utils.TimeUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
-import connect.utils.transfer.TransferError;
-import connect.widget.MdStyleProgress;
-import connect.widget.payment.PaymentPwd;
-import connect.utils.transfer.TransferEditView;
-import protos.Connect;
+import connect.wallet.cwallet.business.TransferEditView;
 
 /**
  * Created by Administrator on 2017/4/18 0018.

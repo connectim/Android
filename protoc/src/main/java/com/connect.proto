@@ -1188,6 +1188,8 @@ message ChatCookie {
     string sign = 1;
     ChatCookieData data = 2;
 }
+<<<<<<< HEAD
+=======
 
 
 message MessageUserInfo{
@@ -1313,3 +1315,4 @@ string subtitle=3;
 string img=4;
 MessageUserInfo sender =5;
 }
+>>>>>>> pujinlong/develop

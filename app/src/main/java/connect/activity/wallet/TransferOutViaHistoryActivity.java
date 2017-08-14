@@ -91,6 +91,14 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
                 sendOutBean.setType(PacketSendActivity.OUT_VIA);
                 sendOutBean.setUrl(billingInfo.getUrl());
                 sendOutBean.setDeadline(billingInfo.getDeadline());
+                if(billingInfo.getCancelled()){
+                    sendOutBean.setStatus(1);
+                }else if(billingInfo.getExpired()){
+                    sendOutBean.setStatus(2);
+                }else if(billingInfo.getReceived()){
+                    sendOutBean.setStatus(3);
+                }
+
                 PacketSendActivity.startActivity(mActivity,sendOutBean);
             }
         });

@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,10 +20,10 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.transfer.TransferEditView;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
 import connect.widget.roundedimageview.RoundedImageView;
+import connect.wallet.cwallet.business.TransferEditView;
 
 /**
  * transaction

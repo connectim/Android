@@ -158,9 +158,7 @@ public class NativeWallet {
             }
 
             @Override
-            public void fail(WalletError error) {
-
-            }
+            public void fail(WalletError error) {}
         });
     }
 

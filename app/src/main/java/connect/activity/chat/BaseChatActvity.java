@@ -362,7 +362,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 PaymentActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
                 break;
             case NAMECARD:
-                ContactCardActivity.startActivity(activity,talker.getTalkKey());
+                ContactCardActivity.startActivity(activity);
                 break;
             case MSGSTATE://message send state 0:sending 1:send success 2:send fail 3:send refuse
                 if (talker.getTalkKey().equals(objects[0])) {
