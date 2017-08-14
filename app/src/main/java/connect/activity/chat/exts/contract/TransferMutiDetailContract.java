@@ -10,11 +10,14 @@ import connect.activity.base.contract.BaseView;
 public interface TransferMutiDetailContract {
 
     interface BView extends BaseView<TransferMutiDetailContract.Presenter> {
-
-        String getRoomKey();
+            void showSenderInfo(String avatar,String name);
     }
 
     interface Presenter extends BasePresenter {
+
+        void requestSenderInfo(String address);
+
+        void requestTransferDetail(String hashid);
 
     }
 }
