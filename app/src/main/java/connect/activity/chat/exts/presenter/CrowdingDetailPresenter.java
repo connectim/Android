@@ -6,6 +6,7 @@ import java.util.List;
 
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
 import connect.activity.chat.model.content.GroupChat;
@@ -132,8 +133,8 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(crowdfunding.getGroupHash());
                 if (groupEntity != null) {
                     NormalChat normalChat = new GroupChat(groupEntity);
-                    MsgEntity msgEntity = normalChat.noticeMsg(noticeContent);
-                    MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+                    MsgExtEntity msgExtEntity = normalChat.noticeMsg(noticeContent);
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                 }
 
                 String hashid = crowdfunding.getHashId();

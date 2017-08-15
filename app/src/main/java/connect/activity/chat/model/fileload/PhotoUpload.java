@@ -8,6 +8,7 @@ import com.google.protobuf.ByteString;
 
 import java.io.File;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.MemoryDataManager;
 import connect.im.bean.MsgType;
 import connect.activity.chat.bean.MsgDefinBean;
@@ -27,7 +28,7 @@ public class PhotoUpload extends FileUpLoad {
 
     private String Tag = "PhotoUpload";
 
-    public PhotoUpload(Context context, BaseChat baseChat, MsgDefinBean bean, FileUpListener listener) {
+    public PhotoUpload(Context context, BaseChat baseChat, MsgExtEntity bean, FileUpListener listener) {
         this.context = context;
         this.baseChat = baseChat;
         this.bean = bean;

@@ -1,6 +1,7 @@
 package connect.activity.chat.bean;
 
 import connect.database.green.bean.MessageEntity;
+import protos.Connect;
 
 /**
  * Message extensions such as transfer information
@@ -70,5 +71,16 @@ public class MsgExtEntity extends MessageEntity {
         messageEntity.setSnap_time(getSnap_time());
         messageEntity.setState(getState());
         return messageEntity;
+    }
+
+    public Connect.ChatMessage.Builder transToChatMessageBuilder() {
+        Connect.ChatMessage.Builder builder = Connect.ChatMessage.newBuilder()
+                .setMsgId(getMessage_id())
+                .setChatType(Connect.ChatType.forNumber(getChatType()))
+                .setMsgType(getMessageType())
+                .setFrom(getFrom())
+                .setTo(getTo())
+                .setMsgTime(getCreatetime());
+        return builder;
     }
 }

@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.ContainerBean;
@@ -58,7 +59,7 @@ public class BaseContainer extends RelativeLayout {
     }
 
     private Context context;
-    private MsgEntity baseEntity;
+    private MsgExtEntity baseEntity;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ContainerBean bean) {
@@ -67,7 +68,7 @@ public class BaseContainer extends RelativeLayout {
             objects = (Object[]) bean.getObj();
         }
 
-        if (!((objects[0]).equals(baseEntity.getMsgDefinBean().getMessage_id()))) {
+        if (!((objects[0]).equals(baseEntity.getMessage_id()))) {
             return;
         }
 
@@ -113,7 +114,7 @@ public class BaseContainer extends RelativeLayout {
         EventBus.getDefault().unregister(this);
     }
 
-    public void setBaseEntity(MsgEntity baseEntity) {
+    public void setBaseEntity(MsgExtEntity baseEntity) {
         this.baseEntity = baseEntity;
     }
 

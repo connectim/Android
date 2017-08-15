@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
@@ -35,23 +36,12 @@ public class ChatMsgUtil {
 
     /**
      * sender, get the message sender direction
-     *
-     * @param definBean
+     * @param from
      * @return
      */
-    public static MsgDirect parseMsgDirect(MsgDefinBean definBean) {
-        MsgDirect direct = null;
-        MsgSender sender = definBean.getSenderInfoExt();
-        if (sender == null) {
-            direct = (definBean.getPublicKey() == null || MemoryDataManager.getInstance().getPubKey().equals(definBean.getPublicKey())) ? MsgDirect.From : MsgDirect.To;
-        } else {
-            if (TextUtils.isEmpty(sender.publickey)) {
-                direct = MemoryDataManager.getInstance().getAddress().equals(sender.address) ? MsgDirect.To : MsgDirect.From;
-            } else {
-                direct = MemoryDataManager.getInstance().getPubKey().equals(sender.publickey) ? MsgDirect.To : MsgDirect.From;
-            }
-        }
-        return direct;
+    public static MsgDirect parseMsgDirect(String from) {
+        String mypubkey = MemoryDataManager.getInstance().getPubKey();
+        return mypubkey.equals(from) ? MsgDirect.To : MsgDirect.From;
     }
 
     /**

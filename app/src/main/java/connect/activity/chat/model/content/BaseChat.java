@@ -1,15 +1,15 @@
 package connect.activity.chat.model.content;
+
 import android.text.TextUtils;
+
 import java.io.Serializable;
 import java.util.List;
+
 import connect.activity.chat.bean.GatherBean;
-import connect.activity.chat.bean.GeoAddressBean;
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.chat.bean.WebsiteExt1Bean;
 import connect.activity.home.bean.MsgFragmReceiver;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
@@ -35,31 +35,31 @@ public abstract class BaseChat<T> implements Serializable {
 
     public abstract T txtMsg(String string);
 
-    public abstract T photoMsg(String string, String ext1);
+    public abstract T photoMsg(String thum, String url, String filesize, int width, int height);
 
-    public abstract T videoMsg(String string, int length, String ext1);
+    public abstract T voiceMsg(String string, String length, int filesize);
+
+    public abstract T videoMsg(String thum,String url, String length, int filesize,int width,int height);
 
     public abstract T emotionMsg(String string);
 
-    public abstract T voiceMsg(String string, int size, String ext1);
+    public abstract T cardMsg(String pubkey, String name, String avatar);
 
-    public abstract T transferMsg(String hashid, long amout, String note, int type);
+    public abstract T transferMsg(int type, String hashid, long amout, String tips);
 
-    public abstract T locationMsg(String address, GeoAddressBean location);
+    public abstract T locationMsg(long latitude,long longitude,String address,String thum,int width,int height);
 
-    public abstract T luckPacketMsg(String string, String tips, int type);
+    public abstract T luckPacketMsg(int type, String hashid, String tips, long amount);
 
     public abstract T noticeMsg(String string);
 
-    public abstract T cardMsg(ContactEntity entity);
+    public abstract T destructMsg(int time);
 
-    public abstract T destructMsg(long time);
+    public abstract T receiptMsg(String messageid);
 
-    public abstract T receiptMsg(String string);
+    public abstract T paymentMsg(GatherBean bean, String hashid, long amount, int membersize, String tips);
 
-    public abstract T paymentMsg(GatherBean bean);
-
-    public abstract T outerWebsiteMsg(String string, WebsiteExt1Bean bean);
+    public abstract T outerWebsiteMsg(String url, String title, String subtitle, String img);
 
     public abstract T encryptChatMsg();
 
@@ -116,7 +116,7 @@ public abstract class BaseChat<T> implements Serializable {
         }
     }
 
-    public abstract void sendPushMsg(T bean);
+    public abstract void sendPushMsg(MsgExtEntity msgExtEntity);
 
     /** Roomkey */
     public abstract String roomKey();

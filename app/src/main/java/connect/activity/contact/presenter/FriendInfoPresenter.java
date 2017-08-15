@@ -7,9 +7,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.model.content.BaseChat;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.GroupChat;
+import connect.activity.chat.model.content.NormalChat;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -65,11 +67,11 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
     public void shareFriendCard(Intent data, ContactEntity friendEntity) {
         int type = data.getIntExtra("type", 0);
         String pubkey = data.getStringExtra("object");
-        if(TextUtils.isEmpty(pubkey)){
+        if (TextUtils.isEmpty(pubkey)) {
             return;
         }
 
-        BaseChat baseChat = null;
+        NormalChat baseChat = null;
         if (type == 0) {
             ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubkey);
             baseChat = new FriendChat(acceptFriend);
@@ -77,10 +79,10 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
             baseChat = new GroupChat(groupEntity);
         }
-        MsgEntity msgEntity = (MsgEntity) baseChat.cardMsg(friendEntity);
-        baseChat.sendPushMsg(msgEntity);
-        MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-        baseChat.updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgEntity.getMsgDefinBean().getSendtime());
+        MsgExtEntity msgExtEntity = baseChat.cardMsg(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAvatar());
+        baseChat.sendPushMsg(msgExtEntity);
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+        baseChat.updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgExtEntity.getCreatetime());
     }
 
     @Override

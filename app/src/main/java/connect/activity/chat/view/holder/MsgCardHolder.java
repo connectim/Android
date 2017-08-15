@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -35,7 +36,7 @@ public class MsgCardHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity baseEntity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity baseEntity) {
         super.buildRowData(msgBaseHolder, baseEntity);
         MsgDefinBean definBean = baseEntity.getMsgDefinBean();
         cardExt1Bean = new Gson().fromJson(definBean.getExt1(), CardExt1Bean.class);

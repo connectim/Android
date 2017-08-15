@@ -102,33 +102,11 @@ public class MessageHelper extends BaseDao {
     }
 
     /********************************* add ***********************************/
-    public void insertMsg(MessageEntity msgEntity) {
+    public void insertMessageEntity(MessageEntity msgEntity) {
         messageEntityDao.insertOrReplace(msgEntity);
     }
 
-    public void insertFromMsg(String roomid, MsgDefinBean bean) {
-        insertMsg(roomid, bean, 1);
-    }
-
-    public void insertToMsg(MsgDefinBean bean) {
-        insertMsg(bean.getPublicKey(), bean, 1);
-    }
-
-    public void insertMsg(String roomid, MsgDefinBean bean, int sendstate) {
-        String content = new Gson().toJson(bean);
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, SupportKeyUril.localHashKey().getBytes(), content.getBytes());
-
-        MessageEntity detailEntity = new MessageEntity();
-        detailEntity.setMessage_ower(roomid);
-        detailEntity.setMessage_id(bean.getMessage_id());
-        detailEntity.setContent(StringUtil.bytesToHexString(gcmData.toByteArray()));
-        detailEntity.setSend_status(sendstate);
-        detailEntity.setCreatetime(bean.getSendtime());
-
-        insertMsg(detailEntity);
-    }
-
-    public MessageEntity insertFromMsg(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
+    public MessageEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, SupportKeyUril.localHashKey().getBytes(), contents);
 
         MessageEntity messageEntity = new MessageEntity();
@@ -141,8 +119,13 @@ public class MessageHelper extends BaseDao {
         messageEntity.setContent(StringUtil.bytesToHexString(gcmData.toByteArray()));
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
-        insertMsg(messageEntity);
+        insertMessageEntity(messageEntity);
         return messageEntity;
+    }
+
+    public void insertMsgExtEntity(MsgExtEntity msgExtEntity) {
+        MessageEntity messageEntity = msgExtEntity.transToMessageEntity();
+        insertMessageEntity(messageEntity);
     }
 
     /********************************* delete ***********************************/

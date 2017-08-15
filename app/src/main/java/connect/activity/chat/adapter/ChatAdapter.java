@@ -20,6 +20,7 @@ import connect.activity.chat.bean.ItemViewType;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.model.ChatMsgUtil;
 import connect.activity.chat.view.holder.MsgBaseHolder;
 import connect.activity.chat.view.row.MsgBaseRow;
@@ -39,10 +40,10 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     private LayoutInflater inflater;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
-    protected List<MsgEntity> msgEntities = new ArrayList<>();
+    protected List<MsgExtEntity> msgEntities = new ArrayList<>();
 
     /** mapping msgid，MsgEntity ,quickly query msgid and Message Entities */
-    private Map<String, MsgEntity> msgEntityMap = new HashMap<>();
+    private Map<String, MsgExtEntity> msgEntityMap = new HashMap<>();
 
     public ChatAdapter(Activity activity, RecyclerView recycler, LinearLayoutManager manager) {
         this.inflater = LayoutInflater.from(activity);
@@ -50,7 +51,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         this.layoutManager = manager;
     }
 
-    public List<MsgEntity> getMsgEntities() {
+    public List<MsgExtEntity> getMsgEntities() {
         return msgEntities;
     }
 
@@ -67,9 +68,9 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
      */
     @Override
     public int getItemViewType(int position) {
-        MsgDefinBean definBean = msgEntities.get(position).getMsgDefinBean();
-        MsgDirect dirct = ChatMsgUtil.parseMsgDirect(definBean);
-        return definBean.getType() * dirct.dirct;
+        MsgExtEntity msgExtEntity = msgEntities.get(position);
+        MsgDirect dirct = ChatMsgUtil.parseMsgDirect(msgExtEntity.getFrom());
+        return msgExtEntity.getMessageType() * dirct.dirct;
     }
 
     @Override
@@ -88,22 +89,22 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
 
     @Override
     public void onBindViewHolder(MsgBaseHolder holder, int position) {
-        MsgEntity msgEntity = msgEntities.get(position);
+        MsgExtEntity msgExtEntity = msgEntities.get(position);
 
         long lasttime = 0;
         if (position == 0) {
-            MessageEntity lastMsgEntity = MessageHelper.getInstance().loadMsgLessMsgid(msgEntity.getMsgid());
+            MessageEntity lastMsgEntity = MessageHelper.getInstance().loadMsgLessMsgid(msgExtEntity.getMessage_id());
             if (lastMsgEntity != null) {
                 lasttime = lastMsgEntity.getCreatetime();
             }
         } else {
-            MsgEntity lastMsgEntity = msgEntities.get(position - 1);
-            lasttime = lastMsgEntity.getMsgDefinBean().getSendtime();
+            MsgExtEntity lastMsgEntity = msgEntities.get(position - 1);
+            lasttime = lastMsgEntity.getCreatetime();
         }
 
-        long curtime = msgEntity.getMsgDefinBean().getSendtime();
+        long curtime = msgExtEntity.getCreatetime();
         holder.buildMsgTime(lasttime, curtime);
-        holder.buildRowData(holder, msgEntities.get(position));
+        holder.buildRowData(holder, msgExtEntity);
     }
 
     private Handler itemsUpdateHandler = new Handler(Looper.myLooper()) {
@@ -122,7 +123,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         }
     };
 
-    public void insertItem(final MsgEntity t) {
+    public void insertItem(final MsgExtEntity t) {
         BaseListener listener = new BaseListener() {
             @Override
             public void Success(Object ts) {
@@ -130,7 +131,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
                 msgEntities.add(posi, t);
                 notifyItemInserted(posi);
 
-                msgEntityMap.put(t.getMsgid(), t);
+                msgEntityMap.put(t.getMessage_id(), t);
             }
 
             @Override

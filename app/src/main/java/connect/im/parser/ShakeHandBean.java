@@ -11,6 +11,7 @@ import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.MemoryDataManager;
 import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -152,11 +153,13 @@ public class ShakeHandBean extends InterParse {
     }
 
     private void welcomeRobotMsg() {
-        MsgEntity msgEntity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
-        msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
-        MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), msgEntity.getMsgDefinBean());
+        String mypublickey = MemoryDataManager.getInstance().getPubKey();
+        MsgExtEntity msgExtEntity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
+        msgExtEntity.setFrom(RobotChat.getInstance().nickName());
+        msgExtEntity.setTo(mypublickey);
 
-        RobotChat.getInstance().updateRoomMsg(null,msgEntity.getMsgDefinBean().showContentTxt(2),msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+        RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
     }
 
     /**

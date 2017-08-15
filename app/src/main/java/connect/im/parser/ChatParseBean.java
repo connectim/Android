@@ -6,6 +6,7 @@ import com.google.protobuf.ByteString;
 import java.nio.ByteBuffer;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.GroupChat;
@@ -111,13 +112,14 @@ public class ChatParseBean extends InterParse {
             if (contactEntity != null) {
                 NormalChat normalChat = new FriendChat(contactEntity);
                 String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
-                MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
-                normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime(), -1, true);
-                MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgEntity);
+                MsgExtEntity msgExtEntity = normalChat.noticeMsg(showTxt);
+                normalChat.updateRoomMsg(null, showTxt, msgExtEntity.getCreatetime(), -1, true);
+
+                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgExtEntity);
             }
         } else {
-            MessageEntity messageEntity = MessageHelper.getInstance().insertFromMsg(chatMessage.getMsgId(), chatMessage.getFrom(),
+            MessageEntity messageEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
                     chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
                     chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
 
@@ -159,14 +161,14 @@ public class ChatParseBean extends InterParse {
         Connect.GcmData gcmData = chatMessage.getCipherData();
 
         if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {//group backup
-            FailMsgsManager.getInstance().insertReceiveMsg(pubkey, chatMessage.getMsgId(), gcmData);
+            FailMsgsManager.getInstance().insertReceiveMsg(pubkey, chatMessage.getMsgId(), chatMessage);
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, pubkey);
         } else {
             byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
             if (contents.length < 10) {
                 HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, pubkey);
             } else {
-                MessageEntity messageEntity = MessageHelper.getInstance().insertFromMsg(chatMessage.getMsgId(), chatMessage.getFrom(),
+                MessageEntity messageEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
                         chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
                         chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
 

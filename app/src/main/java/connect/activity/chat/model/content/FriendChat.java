@@ -1,14 +1,9 @@
 package connect.activity.chat.model.content;
 
 import android.text.TextUtils;
-
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
-
-import connect.activity.chat.bean.ExtBean;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgSender;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RoomSession;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -35,7 +30,7 @@ public class FriendChat extends NormalChat {
     private String Tag = "FriendChat";
     private ContactEntity contactEntity = null;
 
-    /**  user Cookie */
+    /** user Cookie */
     private UserCookie userCookie = null;
     /** friend Cookie */
     private UserCookie friendCookie = null;
@@ -59,72 +54,50 @@ public class FriendChat extends NormalChat {
     }
 
     @Override
-    public Connect.ChatMessage.Builder createBaseChat(MsgType type) {
-//        MsgDefinBean msgDefinBean = new MsgDefinBean();
-//        msgDefinBean.setType(type.type);
-//        msgDefinBean.setUser_name(contactEntity.getUsername());
-//        msgDefinBean.setSendtime(TimeUtil.getCurrentTimeInLong());
-//        msgDefinBean.setMessage_id(TimeUtil.timestampToMsgid());
-//        msgDefinBean.setPublicKey(contactEntity.getPub_key());
-//        msgDefinBean.setUser_id(address());
-//        msgDefinBean.setSenderInfoExt(new MsgSender(MemoryDataManager.getInstance().getPubKey(),
-//                MemoryDataManager.getInstance().getName(),
-//                MemoryDataManager.getInstance().getAddress(),
-//                MemoryDataManager.getInstance().getAvatar()));
-//
-//        long burntime = RoomSession.getInstance().getBurntime();
-//        if (burntime > 0) {
-//            ExtBean extBean = new ExtBean();
-//            extBean.setLuck_delete(burntime);
-//            msgDefinBean.setExt(new Gson().toJson(extBean));
-//        }
-//        MsgEntity chatBean = new MsgEntity();
-//        chatBean.setMsgDefinBean(msgDefinBean);
-//        chatBean.setPubkey(contactEntity.getPub_key());
-//        chatBean.setRecAddress(address());
-//        chatBean.setSendstate(0);
-
-        //// TODO: 17-8-14 添加 阅后即焚 时间
+    public MsgExtEntity createBaseChat(MsgType type) {
         String mypublickey = MemoryDataManager.getInstance().getPubKey();
-        Connect.ChatMessage.Builder messageBuilder = Connect.ChatMessage.newBuilder()
-                .setMsgId(TimeUtil.timestampToMsgid())
-                .setChatType(Connect.ChatType.PRIVATE)
-                .setFrom(mypublickey)
-                .setTo(identify())
-                .setMsgType(type.type)
-                .setMsgTime(TimeUtil.getCurrentTimeInLong());
-        return messageBuilder;
+
+        MsgExtEntity msgExtEntity = new MsgExtEntity();
+        msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());
+        msgExtEntity.setChatType(Connect.ChatType.PRIVATE.getNumber());
+        msgExtEntity.setFrom(mypublickey);
+        msgExtEntity.setTo(identify());
+        msgExtEntity.setMessageType(type.type);
+        msgExtEntity.setCreatetime(TimeUtil.getCurrentTimeInLong());
+        msgExtEntity.setSend_status(0);
+        return msgExtEntity;
     }
 
     @Override
-    public void sendPushMsg(Object bean) {
+    public void sendPushMsg(MsgExtEntity msgExtEntity) {
         try {
-            MsgDefinBean definBean = ((MsgEntity) bean).getMsgDefinBean();
-            String msgStr = new Gson().toJson(definBean);
+            Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
 
             String priKey = null;
             byte[] randomSalt = null;
             String friendKey = null;
 
             loadUserCookie();
-            loadFriendCookie(definBean.getPublicKey());
+            loadFriendCookie(roomKey());
             SupportKeyUril.EcdhExts ecdhExts = null;
+            Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
             Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
 
             switch (encryType) {
                 case NORMAL:
                     priKey = MemoryDataManager.getInstance().getPriKey();
-                    friendKey = definBean.getPublicKey();
+                    friendKey = roomKey();
                     ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
                     break;
                 case HALF:
                     priKey = userCookie.getPriKey();
                     randomSalt = userCookie.getSalt();
 
-                    friendKey = definBean.getPublicKey();
+                    friendKey = roomKey();
                     ecdhExts = SupportKeyUril.EcdhExts.OTHER;
                     ecdhExts.setBytes(randomSalt);
-                    builder.setSalt(ByteString.copyFrom(randomSalt)).setChatPubKey(userCookie.getPubKey());
+                    sessionBuilder.setSalt(ByteString.copyFrom(randomSalt))
+                            .setPubKey(userCookie.getPubKey());
                     break;
                 case BOTH:
                     priKey = userCookie.getPriKey();
@@ -134,24 +107,24 @@ public class FriendChat extends NormalChat {
                     byte[] friendSalt = friendCookie.getSalt();
                     if (friendCookie == null || friendSalt == null || friendSalt.length == 0) {
                         encryType = EncryType.HALF;
-                        sendPushMsg(bean);
+                        sendPushMsg(msgExtEntity);
                         return;
                     }
                     ecdhExts = SupportKeyUril.EcdhExts.OTHER;
                     ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt));
-                    builder.setSalt(ByteString.copyFrom(randomSalt)).setChatPubKey(userCookie.getPubKey()).
+                    sessionBuilder.setSalt(ByteString.copyFrom(randomSalt)).
+                            setPubKey(userCookie.getPubKey()).
                             setVer(ByteString.copyFrom(friendCookie.getSalt()));
                     break;
             }
 
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, priKey, friendKey, msgStr.getBytes());
-            builder.setCipherData(gcmData).
-                    setMsgId(definBean.getMessage_id()).
-                    setTyp(definBean.getType()).
-                    setReceiverAddress(((MsgEntity) bean).getRecAddress());
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, priKey, friendKey, msgExtEntity.getContents());
+            chatMessageBuilder.setCipherData(gcmData);
+            builder.setChatMsg(chatMessageBuilder)
+                    .setChatSession(sessionBuilder);
 
             Connect.MessageData messageData = builder.build();
-            ChatSendManager.getInstance().sendChatAckMsg(SocketACK.SINGLE_CHAT, definBean.getPublicKey(), messageData);
+            ChatSendManager.getInstance().sendChatAckMsg(SocketACK.SINGLE_CHAT, roomKey(), messageData);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -192,6 +165,26 @@ public class FriendChat extends NormalChat {
     public String roomKey() {
         String pubKey = TextUtils.isEmpty(contactEntity.getPub_key()) ? "" : contactEntity.getPub_key();
         return pubKey;
+    }
+
+    @Override
+    public long destructReceipt() {
+        return RoomSession.getInstance().getBurntime();
+    }
+
+    public MsgExtEntity strangerNotice() {
+        MsgExtEntity msgExtEntity = createBaseChat(MsgType.NOTICE_STRANGER);
+        return msgExtEntity;
+    }
+
+    public MsgExtEntity blackFriendNotice() {
+        MsgExtEntity msgExtEntity = createBaseChat(MsgType.NOTICE_BLACK);
+        return msgExtEntity;
+    }
+
+    @Override
+    public Connect.MessageUserInfo senderInfo() {
+        return null;
     }
 
     @Override
@@ -240,5 +233,17 @@ public class FriendChat extends NormalChat {
         if (friendCookie == null) {
             encryType = EncryType.NORMAL;
         }
+    }
+
+    public MsgExtEntity inviteJoinGroupMsg(String avatar, String name, String id, String token) {
+        MsgExtEntity msgExtEntity = createBaseChat(MsgType.INVITE_GROUP);
+        Connect.JoinGroupMessage.Builder builder = Connect.JoinGroupMessage.newBuilder()
+                .setAvatar(avatar)
+                .setGroupName(name)
+                .setGroupId(id)
+                .setToken(token);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
     }
 }

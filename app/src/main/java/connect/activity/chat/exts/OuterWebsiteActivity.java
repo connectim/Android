@@ -25,6 +25,8 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.model.content.NormalChat;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
@@ -280,8 +282,7 @@ public class OuterWebsiteActivity extends BaseActivity {
 
             WebsiteExt1Bean ext1Bean = new WebsiteExt1Bean(title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
 
-            BaseChat baseChat = null;
-            MsgEntity msgEntity = null;
+            NormalChat baseChat = null;
 
             if (RoomSession.getInstance().getRoomKey().equals(pubkey)) {
                 MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, inUrl, ext1Bean);
@@ -297,10 +298,10 @@ public class OuterWebsiteActivity extends BaseActivity {
                         break;
                 }
 
-                msgEntity = (MsgEntity) baseChat.outerWebsiteMsg(inUrl, ext1Bean);
-                baseChat.sendPushMsg(msgEntity);
-                MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-                baseChat.updateRoomMsg(null, getString(R.string.Chat_Sharelink), msgEntity.getMsgDefinBean().getSendtime());
+                MsgExtEntity msgExtEntity = baseChat.outerWebsiteMsg(inUrl, title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
+                baseChat.sendPushMsg(msgExtEntity);
+                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                baseChat.updateRoomMsg(null, getString(R.string.Chat_Sharelink), msgExtEntity.getCreatetime());
             }
         }
     }

@@ -12,8 +12,10 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.MemoryHandler;
 import java.util.zip.GZIPInputStream;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -356,6 +358,7 @@ public class CommandBean extends InterParse {
             Connect.ChangeRecords changeRecords = Connect.ChangeRecords.parseFrom(buffer);
             version = changeRecords.getVersion();
 
+            String mypublickey = MemoryDataManager.getInstance().getPubKey();
             List<Connect.ChangeRecord> recordsList = changeRecords.getChangeRecordsList();
             for (Connect.ChangeRecord record : recordsList) {
                 switch (record.getCategory()) {
@@ -380,12 +383,13 @@ public class CommandBean extends InterParse {
 
                         if (newFriend) { // Add a welcome message
                             NormalChat normalChat = new FriendChat(entity);
-                            MsgSender msgSender = new MsgSender(entity.getPub_key(), entity.getUsername(), entity.getAddress(), entity.getAvatar());
                             String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, entity.getUsername());
-                            MsgEntity msgEntity = normalChat.txtMsg(content);
-                            msgEntity.getMsgDefinBean().setSenderInfoExt(msgSender);
-                            MessageHelper.getInstance().insertFromMsg(entity.getPub_key(), msgEntity.getMsgDefinBean());
-                            normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
+                            MsgExtEntity msgExtEntity = normalChat.txtMsg(content);
+                            msgExtEntity.setFrom(pubKey);
+                            msgExtEntity.setTo(mypublickey);
+
+                            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                            normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
                         }
                         FailMsgsManager.getInstance().receiveFailMsgs(pubKey);
                         break;
@@ -560,11 +564,11 @@ public class CommandBean extends InterParse {
                         if (normalChat == null) {
                             FailMsgsManager.getInstance().insertReceiveMsg(groupKey, TimeUtil.timestampToMsgid(), noticeStr);
                         } else {
-                            MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
-                            MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
+                            MsgExtEntity msgExtEntity = normalChat.noticeMsg(noticeStr);
+                            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
-                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
-                            normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
+                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgExtEntity);
+                            normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
                         }
                     }
                 }
@@ -608,11 +612,11 @@ public class CommandBean extends InterParse {
                         noticeStr = context.getString(R.string.Link_become_new_group_owner, showName);
 
                         normalChat = new GroupChat(groupEntity);
-                        MsgEntity msgEntity = normalChat.noticeMsg(noticeStr);
-                        MessageHelper.getInstance().insertFromMsg(groupKey, msgEntity.getMsgDefinBean());
+                        MsgExtEntity msgExtEntity = normalChat.noticeMsg(noticeStr);
+                        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
-                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgEntity);
-                        normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgExtEntity);
+                        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
                     }
                 }
                 break;
@@ -803,18 +807,18 @@ public class CommandBean extends InterParse {
      * @throws Exception
      */
     private void handlerOuterRedPacket(ByteString buffer, Object... objs) throws Exception {
+        String mypublickey = MemoryDataManager.getInstance().getPubKey();
         Connect.ExternalRedPackageInfo packageInfo = null;
         switch ((int) objs[1]) {
             case 0://Get the success
                 packageInfo = Connect.ExternalRedPackageInfo.parseFrom(buffer);
                 if (packageInfo.getSystem()) {
-                    MsgEntity msgEntity = RobotChat.getInstance().luckPacketMsg(packageInfo.getHashId(), packageInfo.getTips(), 1);
-                    msgEntity.getMsgDefinBean().setMessage_id(packageInfo.getMsgId());
-                    msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().roomKey(),
-                            BaseApplication.getInstance().getString(R.string.app_name),
-                            RobotChat.getInstance().address(), RobotChat.getInstance().headImg()));
-                    MessageHelper.getInstance().insertFromMsg(BaseApplication.getInstance().getString(R.string.app_name), msgEntity.getMsgDefinBean());
-                    RobotChat.getInstance().updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(2), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
+                    MsgExtEntity msgExtEntity = RobotChat.getInstance().luckPacketMsg(1,packageInfo.getHashId(), packageInfo.getTips(),0L);
+                    msgExtEntity.setFrom(BaseApplication.getInstance().getString(R.string.app_name));
+                    msgExtEntity.setTo(mypublickey);
+
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                    RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
                     HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(2, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
                 } else {
                     Connect.UserInfo userInfo = packageInfo.getSender();
@@ -829,10 +833,12 @@ public class CommandBean extends InterParse {
                     }
 
                     NormalChat normalChat = new FriendChat(friendEntity);
-                    MsgEntity msgEntity = normalChat.luckPacketMsg(packageInfo.getHashId(), packageInfo.getTips(), 1);
-                    msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAddress(), friendEntity.getAvatar()));
-                    MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
-                    normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(normalChat.roomType()), msgEntity.getMsgDefinBean().getSendtime(), -1, true);
+                    MsgExtEntity msgExtEntity = normalChat.luckPacketMsg(1, packageInfo.getHashId(), packageInfo.getTips(), 0L);
+                    msgExtEntity.setFrom(friendEntity.getPub_key());
+                    msgExtEntity.setTo(mypublickey);
+
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                    normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
                     HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
                 }
                 break;

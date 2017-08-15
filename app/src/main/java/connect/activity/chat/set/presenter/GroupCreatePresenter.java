@@ -8,6 +8,7 @@ import java.util.List;
 
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.set.contract.GroupCreateContract;
@@ -167,8 +168,8 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         GroupChat groupChat = new GroupChat(groupEntity);
         stringMems = String.format(activity.getString(R.string.Link_enter_the_group), stringMems);
 
-        MsgEntity invite = groupChat.inviteNotice(stringMems);
-        MessageHelper.getInstance().insertToMsg(invite.getMsgDefinBean());
+        MsgExtEntity invite = groupChat.inviteNotice(stringMems);
+        MessageHelper.getInstance().insertMsgExtEntity(invite);
 
         ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
             @Override

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.bean.BaseListener;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -183,7 +184,7 @@ public abstract class BaseChatActvity extends BaseActivity {
     public synchronized void onEventMainThread(MsgSend msgSend) {
         MsgDefinBean contentBean;
         String filePath = null;
-        MsgEntity bean = null;
+        MsgExtEntity bean = null;
         FileUpLoad upLoad = null;
 
         Object[] objects = null;
@@ -401,8 +402,8 @@ public abstract class BaseChatActvity extends BaseActivity {
                 chatAdapter.unReadVoice((String) objects[0]);
                 break;
             case NOTICE_NOTFRIEND://not friend
-                MsgEntity tempEntity = ((FriendChat) baseChat).strangerNotice();
-                MessageHelper.getInstance().insertToMsg(tempEntity.getMsgDefinBean());
+                MsgExtEntity tempEntity = ((FriendChat) baseChat).strangerNotice();
+                MessageHelper.getInstance().insertMsgExtEntity(tempEntity);
                 adapterInsetItem(tempEntity);
                 break;
             case BURNSTATE://burn message state
@@ -561,8 +562,8 @@ public abstract class BaseChatActvity extends BaseActivity {
         }
     }
 
-    public void sendNormalMsg(boolean needSend, MsgEntity bean) {
-        MessageHelper.getInstance().insertToMsg(bean.getMsgDefinBean());
+    public void sendNormalMsg(boolean needSend, MsgExtEntity bean) {
+        MessageHelper.getInstance().insertMsgExtEntity(bean);
         adapterInsetItem(bean);
         if (needSend) {
             Message message = new Message();
@@ -642,7 +643,7 @@ public abstract class BaseChatActvity extends BaseActivity {
     public abstract void saveRoomInfo();
 
     /** insert item into adapter */
-    public abstract void adapterInsetItem(MsgEntity bean);
+    public abstract void adapterInsetItem(MsgExtEntity bean);
 
     /** update title bar */
     public abstract void updateBurnState(int state);

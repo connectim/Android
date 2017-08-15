@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.view.BaseContainer;
@@ -31,7 +32,7 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
         timeTxt = (TextView) itemView.findViewById(R.id.showtime);
     }
 
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgEntity baseEntity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity baseEntity) {
         baseContainer.setBaseEntity(baseEntity);
     }
 

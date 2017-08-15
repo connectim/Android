@@ -15,6 +15,7 @@ import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.PaymentDetailContract;
 import connect.activity.chat.exts.presenter.PaymentDetailPresenter;
@@ -215,8 +216,8 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NOTICE, noticeContent);
 
                     NormalChat normalChat = new FriendChat(entity);
-                    MsgEntity msgEntity = normalChat.noticeMsg(noticeContent);
-                    MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+                    MsgExtEntity msgExtEntity = normalChat.noticeMsg(noticeContent);
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                 }
 
                 TransactionHelper.getInstance().updateTransEntity(billDetail.getHash(), msgId, 1);

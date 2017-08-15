@@ -23,6 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.MsgSender;
 import connect.activity.chat.bean.RecExtBean;
@@ -241,7 +242,7 @@ public class ChatActivity extends BaseChatActvity {
      * @param bean
      */
     @Override
-    public void adapterInsetItem(MsgEntity bean) {
+    public void adapterInsetItem(MsgExtEntity bean) {
         chatAdapter.insertItem(bean);
         if (scrollHelper.isScrollBottom()) {
             RecExtBean.getInstance().sendEventDelay(RecExtBean.ExtType.SCROLLBOTTOM);
@@ -304,7 +305,7 @@ public class ChatActivity extends BaseChatActvity {
         Serializable serializables = data.getSerializableExtra("Serializable");
         Object[] objects = (Object[]) serializables;
 
-        MsgEntity msgEntity = null;
+        MsgExtEntity msgExtEntity = null;
         NormalChat normalChat = null;
         switch (roomType) {
             case 0:
@@ -325,14 +326,14 @@ public class ChatActivity extends BaseChatActvity {
         MsgType msgType = MsgType.toMsgType(Integer.parseInt((String) objects[0]));
         switch (msgType) {
             case Text:
-                msgEntity = normalChat.txtMsg(content);
-                MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-                normalChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(0), msgEntity.getMsgDefinBean().getSendtime());
-                normalChat.sendPushMsg(msgEntity);
+                msgExtEntity = normalChat.txtMsg(content);
+                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
+                normalChat.sendPushMsg(msgExtEntity);
                 break;
             case Photo:
-                msgEntity = normalChat.photoMsg(content, FileUtil.fileSize(content));
-                fileUpLoad = new PhotoUpload(activity, normalChat, msgEntity.getMsgDefinBean(), new FileUpLoad.FileUpListener() {
+                msgExtEntity = normalChat.photoMsg(content,content, FileUtil.fileSize(content),0,0);
+                fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -340,8 +341,8 @@ public class ChatActivity extends BaseChatActvity {
                 fileUpLoad.fileHandle();
                 break;
             case Video:
-                msgEntity = normalChat.videoMsg(content, (Integer) objects[2], FileUtil.fileSize(content));
-                fileUpLoad = new PhotoUpload(activity, normalChat, msgEntity.getMsgDefinBean(), new FileUpLoad.FileUpListener() {
+                msgExtEntity = normalChat.videoMsg(content,content, (Integer) objects[2], FileUtil.fileSize(content));
+                fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(String msgid) {
                   }
@@ -355,14 +356,14 @@ public class ChatActivity extends BaseChatActvity {
     public void saveRoomInfo() {
         String draft = inputPanel.getDraft();
         if (chatAdapter.getMsgEntities().size() != 0) {
-            MsgEntity lastmsg = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
-            if (lastmsg != null) {
+            MsgExtEntity lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
+            if (lastExtEntity != null) {
                 String showtxt = "";
                 long sendtime = 0;
 
-                if (lastmsg.getMsgDefinBean().getType() != -500) {
-                    showtxt = lastmsg.getMsgDefinBean().showContentTxt(talker.getTalkType());
-                    sendtime = lastmsg.getMsgDefinBean().getSendtime();
+                if (lastExtEntity.getMessageType() != -500) {
+                    showtxt = lastExtEntity.showContent();
+                    sendtime = lastExtEntity.getCreatetime();
                 }
                 baseChat.updateRoomMsg(draft, showtxt, sendtime, 0);
             }

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.im.model.FailMsgsManager;
@@ -31,7 +32,7 @@ import protos.Connect;
 public abstract class FileUpLoad {
 
     protected Context context;
-    protected MsgEntity msgEntity;
+    protected MsgExtEntity msgEntity;
     protected BaseChat baseChat;
     protected MsgDefinBean bean;
     protected Connect.MediaFile mediaFile;
@@ -93,11 +94,11 @@ public abstract class FileUpLoad {
 
     /**
      * saves Local encryption information
-     * @param msgEntity
+     * @param msgExtEntity
      */
-    public void localEncryptionSuccess(MsgEntity msgEntity) {
-        MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-        baseChat.updateRoomMsg(null, msgEntity.getMsgDefinBean().showContentTxt(0), msgEntity.getMsgDefinBean().getSendtime());
+    public void localEncryptionSuccess(MsgExtEntity msgExtEntity) {
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+        baseChat.updateRoomMsg(null,msgExtEntity.showContent(), msgExtEntity.getCreatetime());
     }
 
     /**

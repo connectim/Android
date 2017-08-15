@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.model.content.GroupChat;
+import connect.activity.chat.model.content.RobotChat;
+import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
@@ -22,6 +26,8 @@ import connect.activity.chat.model.ChatMsgUtil;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.NormalChat;
 import connect.activity.base.BaseApplication;
+import connect.im.parser.ChatParseBean;
+import connect.ui.activity.R;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -101,8 +107,8 @@ public class FailMsgsManager {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
             if (friendEntity != null) {
                 FriendChat friendChat = new FriendChat(friendEntity);
-                MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
-                friendChat.sendPushMsg(baseEntity);
+                MsgExtEntity msgExtEntity = friendChat.loadEntityByMsgid(msgid);
+                friendChat.sendPushMsg(msgExtEntity);
             }
         }
     }
@@ -224,30 +230,45 @@ public class FailMsgsManager {
             Map.Entry<String, Object> entry = entries.next();
             Object object = entry.getValue();
 
-            NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
+            NormalChat normalChat = loadBaseChat(pubkey);
             if (normalChat != null) {
                 if (object instanceof String) {
-                    MsgEntity noticeMsg = normalChat.noticeMsg((String) object);
-                    MessageHelper.getInstance().insertFromMsg(pubkey, noticeMsg.getMsgDefinBean());
-                    normalChat.updateRoomMsg(null, noticeMsg.getMsgDefinBean().showContentTxt(normalChat.roomType()), noticeMsg.getMsgDefinBean().getSendtime());
-                } else if (object instanceof Connect.GcmData) {
-                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+                    String mypublickey = MemoryDataManager.getInstance().getPubKey();
+                    MsgExtEntity msgExtEntity = normalChat.noticeMsg((String) object);
+                    msgExtEntity.setFrom(pubkey);
+                    msgExtEntity.setTo(mypublickey);
 
-                    byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,
-                            StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), (Connect.GcmData) object);
-                    String content = new String(contents);
-
-                    if (!TextUtils.isEmpty(content) && content.length() > 10) {//sometime parse error
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        gsonBuilder.registerTypeAdapter(MsgDefinBean.class, new MsgDefTypeAdapter());
-                        MsgDefinBean definBean = gsonBuilder.create().fromJson(content, MsgDefinBean.class);
-
-                        MessageHelper.getInstance().insertFromMsg(pubkey, definBean);
-                        normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime(),-1,true);
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                    normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
+                } else if (object instanceof Connect.MessagePost) {
+                    try {
+                        ChatParseBean chatParseBean = new ChatParseBean((byte) (0x04), (Connect.MessagePost) object);
+                        chatParseBean.msgParse();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
                 entries.remove();
             }
         }
+    }
+
+    public NormalChat loadBaseChat(String pubkey) {
+        NormalChat normalChat = null;
+
+        if ((BaseApplication.getInstance().getString(R.string.app_name)).equals(pubkey)) {
+            normalChat = RobotChat.getInstance();
+        } else {
+            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+            if (groupEntity != null) {
+                normalChat = new GroupChat(groupEntity);
+            } else {
+                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
+                if (friendEntity != null) {
+                    normalChat = new FriendChat(friendEntity);
+                }
+            }
+        }
+        return normalChat;
     }
 }

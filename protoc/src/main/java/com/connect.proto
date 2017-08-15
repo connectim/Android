@@ -1190,24 +1190,25 @@ message ChatCookie {
 
 
 
+//用户信息
 message MessageUserInfo{
     string uid=1;
     string username=2;
     string avatar=3;
 }
-
+//聊天类型
 enum ChatType {
-    PRIVATE= 0;
-    GROUPCHAT  = 1;
-    CONNECT_SYSTEM = 3;
+    PRIVATE= 0; // 个人聊天
+    GROUPCHAT  = 1;  //群组聊天
+    CONNECT_SYSTEM = 3; // Connect
 }
-
+//临时协同密钥
 message ChatSession {
     bytes salt = 1;
     bytes ver = 2;
     string pubKey = 3;
 }
-
+//消息体
 message ChatMessage {
     string msg_id = 1;
     int64 msg_time = 2;
@@ -1218,25 +1219,25 @@ message ChatMessage {
     int32 msg_type = 7;
     string ext= 8;
 }
-
+//传输层模型
 message MessageData {
     ChatMessage chat_msg = 1;
     ChatSession chat_session = 2;
 }
-
+//文本消息
 message TextMessage{
     string content=1;
     repeated string at_addresses=2;
     int64 snap_time = 3;
     MessageUserInfo sender =4;
 }
-
+//emoj表情
 message EmotionMessage{
     string content=1;
-    int64 snap_time = 3;
-    MessageUserInfo sender =4;
+    int64 snap_time = 2;
+    MessageUserInfo sender =3;
 }
-
+//图片消息
 message PhotoMessage{
     string url=1;
     string thum=2;
@@ -1246,39 +1247,41 @@ message PhotoMessage{
     int64 snap_time = 6;
     MessageUserInfo sender =7;
 }
-
+//音频消息
 message VoiceMessage{
     string url=1;
     string time_length=2;
-    string size=3;
+    int32 size=3;
     int64 snap_time = 4;
     MessageUserInfo sender =5;
 }
-
+//视频消息
 message VideoMessage{
     string url=1;
     string cover=2;
     string time_length=3;
-    string size=4;
-    int64 snap_time = 5;
-    MessageUserInfo sender =6;
+    int32 size=4;
+    int32 image_width=5;
+    int32 image_height=6;
+    int64 snap_time = 7;
+    MessageUserInfo sender =8;
 }
-
+//名片消息
 message CardMessage{
     string uid=1;
     string username=2;
     string avatar=3;
     MessageUserInfo sender =4;
 }
-
+//开始阅后即焚
 message DestructMessage{
     int32 time=1;
 }
-
+//阅后即焚已读消息
 message ReadReceiptMessage{
     string message_id=1;
 }
-
+//收款消息
 message PaymentMessage{
     int32 payment_type=1;
     string hash_id=2;
@@ -1287,7 +1290,7 @@ message PaymentMessage{
     string tips =5;
     MessageUserInfo sender =6;
 }
-
+//转账消息
 message TransferMessage{
     int32  transfer_type=1;
     string hash_id=2;
@@ -1295,7 +1298,7 @@ message TransferMessage{
     string tips =4;
     MessageUserInfo sender =5;
 }
-
+//位置消息
 message LocationMessage{
     float latitude=1;
     float longitude=2;
@@ -1305,7 +1308,7 @@ message LocationMessage{
     int32 image_height=6;
     MessageUserInfo sender =7;
 }
-
+//红包消息
 message LuckPacketMessage{
     string hash_id=1;
     int32 lucky_type=2;
@@ -1313,11 +1316,11 @@ message LuckPacketMessage{
     int64 amount=4;
     MessageUserInfo sender =5;
 }
-
+//提示消息
 message NotifyMessage{
     string content=1;
 }
-
+//加入群组消息
 message JoinGroupMessage{
     string avatar=1;
     string group_name=2;
@@ -1325,7 +1328,7 @@ message JoinGroupMessage{
     string token=4;
     MessageUserInfo sender =5;
 }
-
+//外部链接消息
 message WebsiteMessage{
     string url=1;
     string title=2;

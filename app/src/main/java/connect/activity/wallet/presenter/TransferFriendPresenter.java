@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import java.util.List;
 
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.NormalChat;
 import connect.activity.wallet.contract.TransferFriendContract;
@@ -120,10 +121,10 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
         if (friendEntity != null) {
             NormalChat friendChat = new FriendChat(friendEntity);
             long amount = RateFormatUtil.stringToLongBtc(mView.getCurrentBtc());
-            MsgEntity msgEntity = friendChat.transferMsg(hashid, amount, note,0);
-            MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+            MsgExtEntity msgExtEntity = friendChat.transferMsg(0,hashid, amount, note);
+            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
-            friendChat.sendPushMsg(msgEntity);
+            friendChat.sendPushMsg(msgExtEntity);
 
             ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
             if (roomEntity == null) {
@@ -138,7 +139,7 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
             roomEntity.setLast_time(TimeUtil.getCurrentTimeInLong());
             ConversionHelper.getInstance().insertRoomEntity(roomEntity);
 
-            TransactionHelper.getInstance().updateTransEntity(hashid, msgEntity.getMsgid(), 1);
+            TransactionHelper.getInstance().updateTransEntity(hashid, msgExtEntity.getMessage_id(), 1);
         }
     }
 

@@ -3,6 +3,7 @@ package connect.activity.chat.model.fileload;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.activity.chat.bean.MsgDefinBean;
@@ -19,7 +20,7 @@ import protos.Connect;
  */
 public class VoiceUpload extends FileUpLoad {
 
-    public VoiceUpload(Context context, BaseChat baseChat, MsgDefinBean bean, FileUpListener listener) {
+    public VoiceUpload(Context context, BaseChat baseChat, MsgExtEntity bean, FileUpListener listener) {
         this.context = context;
         this.context = context;
         this.baseChat = baseChat;
@@ -35,7 +36,7 @@ public class VoiceUpload extends FileUpLoad {
             protected Void doInBackground(Void... params) {
                 try {
                     bean.setExt1(FileUtil.fileSize(bean.getContent()));
-                    MessageHelper.getInstance().insertToMsg(bean);
+                    MessageHelper.getInstance().insertMsgExtEntity(msgEntity);
 
                     String pubkey = SupportKeyUril.getPubKeyFromPriKey(MemoryDataManager.getInstance().getPriKey());
                     String priKey = MemoryDataManager.getInstance().getPriKey();

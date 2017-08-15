@@ -7,6 +7,7 @@ import java.util.List;
 
 import connect.activity.chat.bean.GroupExt1Bean;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.set.contract.GroupInviteContract;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -73,19 +74,17 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
                             String adddress = res.getAddress();
                             String token = res.getToken();
 
-                            GroupExt1Bean ext1Bean = new GroupExt1Bean();
-                            ext1Bean.setAvatar(groupEntity.getAvatar());
-                            ext1Bean.setGroupidentifier(groupEntity.getIdentifier());
-                            ext1Bean.setGroupname(groupEntity.getName());
-                            ext1Bean.setInviteToken(token);
-
                             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(adddress);
-                            FriendChat friendChat = new FriendChat(friendEntity);
-                            MsgEntity msgEntity = friendChat.joinGroupMsg(ext1Bean);
+                            if (friendEntity != null) {
+                                FriendChat friendChat = new FriendChat(friendEntity);
+                                MsgExtEntity msgExtEntity = friendChat.inviteJoinGroupMsg(groupEntity.getAvatar(), groupEntity.getName(),
+                                        groupEntity.getIdentifier(), token);
 
-                            friendChat.sendPushMsg(msgEntity);
-                            MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-                            friendChat.updateRoomMsg(null, "[" + activity.getString(R.string.Link_Join_Group) + "]", msgEntity.getMsgDefinBean().getSendtime());
+                                friendChat.sendPushMsg(msgExtEntity);
+                                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                                friendChat.updateRoomMsg(null, "[" + activity.getString(R.string.Link_Join_Group) + "]", msgExtEntity.getCreatetime());
+
+                            }
                         }
                     }
 
