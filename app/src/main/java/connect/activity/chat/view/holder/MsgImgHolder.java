@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.view.BubbleImg;
 import connect.activity.common.bean.ConverType;
@@ -44,7 +45,7 @@ public class MsgImgHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean bean = entity.getMsgDefinBean();
         String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();

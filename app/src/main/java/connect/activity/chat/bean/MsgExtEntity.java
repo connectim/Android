@@ -1,6 +1,7 @@
 package connect.activity.chat.bean;
 
 import connect.database.green.bean.MessageEntity;
+import connect.im.bean.MsgType;
 import protos.Connect;
 
 /**
@@ -82,5 +83,40 @@ public class MsgExtEntity extends MessageEntity {
                 .setTo(getTo())
                 .setMsgTime(getCreatetime());
         return builder;
+    }
+
+    public long parseDestructTime() {
+        long destructtime = 0;
+        try {
+            Connect.ChatType chatType = Connect.ChatType.forNumber(getChatType());
+            if (chatType == Connect.ChatType.PRIVATE) {
+                MsgType msgType = MsgType.toMsgType(getMessageType());
+                switch (msgType) {
+                    case Text:
+                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(getContents());
+                        destructtime = textMessage.getSnapTime();
+                        break;
+                    case Photo:
+                        Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(getContents());
+                        destructtime = photoMessage.getSnapTime();
+                        break;
+                    case Voice:
+                        Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(getContents());
+                        destructtime = voiceMessage.getSnapTime();
+                        break;
+                    case Video:
+                        Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(getContents());
+                        destructtime = videoMessage.getSnapTime();
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return destructtime;
+    }
+
+    public Connect.MessageUserInfo getUserInfo(){
+        return Connect.MessageUserInfo.newBuilder().build();
     }
 }

@@ -80,7 +80,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         });
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, MemoryDataManager.getInstance().getAddress());
 
         layoutManager = new LinearLayoutManager(activity);
         recordview.setLayoutManager(layoutManager);

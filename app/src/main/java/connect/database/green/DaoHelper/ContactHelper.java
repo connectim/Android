@@ -273,21 +273,6 @@ public class ContactHelper extends BaseDao {
     }
 
     /**
-     * group member
-     *
-     * @param pukkey
-     * @param address
-     * @return
-     */
-    public GroupMemberEntity loadGroupMemByAds(String pukkey, String address) {
-        QueryBuilder<GroupMemberEntity> queryBuilder = groupMemberEntityDao.queryBuilder();
-        queryBuilder.where(GroupMemberEntityDao.Properties.Identifier.eq(pukkey),
-                GroupMemberEntityDao.Properties.Address.eq(address)).limit(1).build();
-        List<GroupMemberEntity> memEntities = queryBuilder.list();
-        return (memEntities == null || memEntities.size() == 0) ? null : memEntities.get(0);
-    }
-
-    /**
      * query recommand friend
      *
      * @return

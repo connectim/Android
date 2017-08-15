@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.BurnNotice;
@@ -38,7 +39,7 @@ public class BurnProBar extends View {
 
     private BurnCountTimer burnTimer = null;
     private ExtBean extBean;
-    private MsgEntity entity;
+    private MsgExtEntity msgExtEntity;
 
     public BurnProBar(Context context) {
         super(context);
@@ -69,9 +70,9 @@ public class BurnProBar extends View {
         invalidate();
     }
 
-    public void initBurnMsg(MsgEntity entity) {
+    public void initBurnMsg(MsgExtEntity entity) {
         setValue(ROUND_DIRECT);
-        this.entity = entity;
+        this.msgExtEntity = entity;
         cancelTimer();
 
         MsgDefinBean definBean = entity.getMsgDefinBean();

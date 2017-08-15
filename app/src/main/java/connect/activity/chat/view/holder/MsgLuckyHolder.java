@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RoomType;
 import connect.activity.chat.bean.TransferExt;
 import connect.activity.home.bean.HomeAction;
@@ -42,7 +43,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

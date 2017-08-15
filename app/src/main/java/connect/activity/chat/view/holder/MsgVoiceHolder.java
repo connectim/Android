@@ -6,6 +6,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
@@ -38,7 +39,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
+    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean bean = entity.getMsgDefinBean();
 

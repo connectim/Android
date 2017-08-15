@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.home.bean.HomeAction;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgEntity;
@@ -26,7 +27,7 @@ public class MsgTxtHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean definBean = entity.getMsgDefinBean();
         String content = definBean.getContent();
@@ -46,5 +47,10 @@ public class MsgTxtHolder extends MsgChatHolder {
     @Override
     public void transPondTo() {
         ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(definBean.getType()), definBean.getContent());
+    }
+
+    @Override
+    public String getCopyTxt() {
+        return txtmsg.getText().toString();
     }
 }

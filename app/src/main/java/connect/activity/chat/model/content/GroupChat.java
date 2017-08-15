@@ -40,7 +40,7 @@ public class GroupChat extends NormalChat {
             RoomSession.getInstance().setGroupEcdh(groupEntity.getEcdh_key());
         }
 
-        myGroupMember = ContactHelper.getInstance().loadGroupMemByAds(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
+        myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
         if (myGroupMember == null) {
             myGroupMember = new GroupMemberEntity();
             myGroupMember.setPub_key(MemoryDataManager.getInstance().getPubKey());
@@ -144,7 +144,7 @@ public class GroupChat extends NormalChat {
     }
 
     public void updateMyNickName(){
-        myGroupMember = ContactHelper.getInstance().loadGroupMemByAds(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
+        myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
     }
 
     private Map<String, GroupMemberEntity> memEntityMap = null;

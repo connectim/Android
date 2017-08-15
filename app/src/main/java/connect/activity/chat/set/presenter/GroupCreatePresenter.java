@@ -149,7 +149,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         String stringMems = "";
         List<GroupMemberEntity> memEntities = new ArrayList<>();
         for (Connect.GroupMember member : groupInfo.getMembersList()) {
-            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, member.getAddress());
+            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, member.getAddress());
             if (memEntity == null) {
                 memEntity = new GroupMemberEntity();
             }

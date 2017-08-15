@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgDefinBean;
@@ -43,7 +44,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean definBean = entity.getMsgDefinBean();
         final String content = definBean.getContent();

@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.GroupExt1Bean;
@@ -37,7 +38,7 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity baseEntity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, baseEntity);
         final MsgDefinBean definBean = baseEntity.getMsgDefinBean();
         ext1Bean = new Gson().fromJson(String.valueOf(definBean.getExt1()), GroupExt1Bean.class);

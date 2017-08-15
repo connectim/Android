@@ -6,10 +6,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.view.BaseContainer;
+import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 
 /**
@@ -24,6 +25,7 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
 
     /** The message time interval */
     private long MSG_TIMESPACE = 5 * 1000 * 60;
+    private MsgExtEntity msgExtEntity;
 
     public MsgBaseHolder(View itemView) {
         super(itemView);
@@ -32,8 +34,9 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
         timeTxt = (TextView) itemView.findViewById(R.id.showtime);
     }
 
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity baseEntity) {
-        baseContainer.setBaseEntity(baseEntity);
+    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity msgExtEntity) throws Exception {
+        this.msgExtEntity = msgExtEntity;
+        baseContainer.setBaseEntity(msgExtEntity);
     }
 
     /**
@@ -76,5 +79,9 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
      */
     public String[] longPressPrompt() {
         return context.getResources().getStringArray(R.array.prompt_delete);
+    }
+
+    public MsgExtEntity getMsgExtEntity() {
+        return msgExtEntity;
     }
 }

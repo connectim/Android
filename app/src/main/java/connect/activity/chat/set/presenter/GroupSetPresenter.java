@@ -109,7 +109,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         view.groupName(groupEntity.getName());
 
         String myAddress = MemoryDataManager.getInstance().getAddress();
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(roomKey, myAddress);
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myAddress);
         String myAlias = "";
         if (myMember != null) {
             myAlias = TextUtils.isEmpty(myMember.getUsername()) ? myMember.getNick() : myMember.getUsername();
@@ -160,7 +160,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
 
                         if (settingInfo.getPublic()) {
                             String myAddress = MemoryDataManager.getInstance().getAddress();
-                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(roomKey, myAddress);
+                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myAddress);
                             if (myMember == null || myMember.getRole() == 0) {
                                 view.groupNameClickable(false);
                             } else {

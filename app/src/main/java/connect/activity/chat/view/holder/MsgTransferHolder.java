@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.TransferMutiDetailActivity;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.ui.activity.R;
@@ -34,7 +35,7 @@ public class MsgTransferHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         if (entity.getTransStatus() <= 1) {
             stateTxt.setText(context.getString(R.string.Wallet_Unconfirmed));

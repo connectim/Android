@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -42,7 +43,7 @@ public class MsgVideoHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
+    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         final MsgDefinBean bean = entity.getMsgDefinBean();
         String url = bean.getContent();

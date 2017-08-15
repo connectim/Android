@@ -337,7 +337,7 @@ public class CommandBean extends InterParse {
                 List<Connect.GroupMember> members = groupInfo.getMembersList();
                 List<GroupMemberEntity> memberEntities = new ArrayList<>();
                 for (Connect.GroupMember member : members) {
-                    GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, member.getAddress());
+                    GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, member.getAddress());
                     if (memberEntity == null) {
                         memberEntity = new GroupMemberEntity();
                         memberEntity.setIdentifier(groupKey);
@@ -530,7 +530,7 @@ public class CommandBean extends InterParse {
                 List<Connect.UserInfo> userInfos = usersInfo.getUsersList();
                 List<GroupMemberEntity> memEntities = new ArrayList<>();
                 for (Connect.UserInfo info : userInfos) {
-                    GroupMemberEntity groupMemEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, info.getAddress());
+                    GroupMemberEntity groupMemEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, info.getAddress());
                     if (groupMemEntity == null) {
                         groupMemEntity = new GroupMemberEntity();
                         groupMemEntity.setIdentifier(groupKey);
@@ -583,7 +583,7 @@ public class CommandBean extends InterParse {
             case 3://Group of personal information changes
                 groupKey = groupChange.getIdentifier();
                 Connect.ChangeGroupNick groupNick = Connect.ChangeGroupNick.parseFrom(groupChange.getDetail());
-                GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, groupNick.getAddress());
+                GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, groupNick.getAddress());
                 memEntity.setNick(groupNick.getNick());
                 ContactHelper.getInstance().inserGroupMemEntity(memEntity);
                 break;

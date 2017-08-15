@@ -144,7 +144,7 @@ public class TransactionParseBean extends InterParse {
             if (isFriendNotice) {
                 receiverName = friend.getUsername();
             } else {
-                GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(group.getIdentifier(), receiverAddress);
+                GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(group.getIdentifier(), receiverAddress);
                 if (memEntity != null) {
                     receiverName = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
                 }
@@ -193,7 +193,7 @@ public class TransactionParseBean extends InterParse {
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupid);
 
         String receiverName = "";
-        GroupMemberEntity receiverEntity = ContactHelper.getInstance().loadGroupMemByAds(groupid, crowdfundingNotice.getReceiver());
+        GroupMemberEntity receiverEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupid, crowdfundingNotice.getReceiver());
         if (receiverEntity != null) {
             receiverName = TextUtils.isEmpty(receiverEntity.getNick()) ? receiverEntity.getUsername() : receiverEntity.getNick();
         }
@@ -202,7 +202,7 @@ public class TransactionParseBean extends InterParse {
         if (MemoryDataManager.getInstance().getAddress().equals(crowdfundingNotice.getSender())) {
             senderName = context.getString(R.string.Chat_You);
         } else {
-            GroupMemberEntity senderEntity = ContactHelper.getInstance().loadGroupMemByAds(groupid, crowdfundingNotice.getReceiver());
+            GroupMemberEntity senderEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupid, crowdfundingNotice.getReceiver());
             if (senderEntity != null) {
                 senderName = TextUtils.isEmpty(senderEntity.getNick()) ? senderEntity.getUsername() : senderEntity.getNick();
             }

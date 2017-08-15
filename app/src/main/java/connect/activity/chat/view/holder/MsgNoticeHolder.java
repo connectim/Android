@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSender;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
@@ -36,7 +37,7 @@ public class MsgNoticeHolder extends MsgBaseHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         SpannableStringBuilder builder = null;
         SpannableStringBuilder colorBuilder = null;

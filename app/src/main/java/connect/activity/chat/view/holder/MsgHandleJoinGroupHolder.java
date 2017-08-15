@@ -4,18 +4,14 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
+import connect.activity.chat.bean.ApplyGroupBean;
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.exts.HandleGroupRequestActivity;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.ApplyGroupBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.CardExt1Bean;
-import connect.activity.chat.bean.GroupReviewBean;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.exts.HandleGroupRequestActivity;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 /**
  * Created by pujin on 2017/1/21.
@@ -27,7 +23,6 @@ public class MsgHandleJoinGroupHolder extends MsgChatHolder {
     private TextView txt1;
     private TextView txt3;
 
-    private CardExt1Bean cardExt1Bean;
     private String groupApplyKey = null;
     private ApplyGroupBean applyGroupBean;
 
@@ -35,20 +30,20 @@ public class MsgHandleJoinGroupHolder extends MsgChatHolder {
         super(itemView);
         roundedImageView = (RoundedImageView) itemView.findViewById(R.id.roundimg1);
         txt1 = (TextView) itemView.findViewById(R.id.txt1);
-        txt3= (TextView) itemView.findViewById(R.id.txt3);
+        txt3 = (TextView) itemView.findViewById(R.id.txt3);
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity baseEntity) {
-        super.buildRowData(msgBaseHolder, baseEntity);
-        final MsgDefinBean definBean = baseEntity.getMsgDefinBean();
-        cardExt1Bean = new Gson().fromJson(String.valueOf(definBean.getExt1()), CardExt1Bean.class);
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        Connect.Reviewed reviewed = Connect.Reviewed.parseFrom(msgExtEntity.getContents());
 
-        GlideUtil.loadAvater(roundedImageView, cardExt1Bean.getAvatar());
-        GroupReviewBean reviewBean = new Gson().fromJson(definBean.getContent(), GroupReviewBean.class);
-        txt1.setText(context.getString(R.string.Link_apply_to_join_group_chat, cardExt1Bean.getUsername(), reviewBean.getGroupName()));
+        Connect.UserInfo userInfo = reviewed.getUserInfo();
 
-        groupApplyKey = reviewBean.getGroupKey() + cardExt1Bean.getPub_key();
+        GlideUtil.loadAvater(roundedImageView, userInfo.getAvatar());
+        txt1.setText(context.getString(R.string.Link_apply_to_join_group_chat, userInfo.getUsername(), reviewed.getName()));
+
+        groupApplyKey = reviewed.getIdentifier() + userInfo.getPubKey();
         applyGroupBean = ParamManager.getInstance().loadGroupApply(groupApplyKey);
         String statestr = "";
         switch (applyGroupBean.getState()) {
@@ -66,16 +61,13 @@ public class MsgHandleJoinGroupHolder extends MsgChatHolder {
                 break;
         }
         txt3.setText(statestr);
-
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MsgDefinBean definBean = baseEntity.getMsgDefinBean();
-                String content = definBean.getContent();
-                String ext1 = definBean.getExt1();
-                String messageid = definBean.getMessage_id();
+                byte[] reviewbytes = msgExtEntity.getContents();
+                String messageid = msgExtEntity.getMessage_id();
 
-                HandleGroupRequestActivity.startActivity((Activity) context, content, ext1, messageid);
+                HandleGroupRequestActivity.startActivity((Activity) context, reviewbytes, messageid);
                 if (applyGroupBean.getState() == -1) {
                     txt3.setText("");
                     ParamManager.getInstance().updateGroupApply(groupApplyKey, applyGroupBean.getTips(), applyGroupBean.getSource(), 0, applyGroupBean.getMsgid());

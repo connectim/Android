@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import connect.activity.chat.bean.MsgDirect;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.TransactionEntity;
 import connect.ui.activity.R;
@@ -39,7 +40,7 @@ public class MsgPayHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         MsgDefinBean definBean = entity.getMsgDefinBean();
 

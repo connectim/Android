@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.AdBean;
 import connect.activity.chat.bean.MsgEntity;
@@ -41,7 +42,7 @@ public class MsgSysAdHolder extends MsgBaseHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
         super.buildRowData(msgBaseHolder, entity);
         adBean = new Gson().fromJson(entity.getMsgDefinBean().getContent(), AdBean.class);
 

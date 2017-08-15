@@ -76,6 +76,7 @@ import connect.widget.camera.CameraTakeActivity;
 import connect.widget.imagewatcher.ImageWatcher;
 import connect.widget.imagewatcher.ImageWatcherUtil;
 import connect.widget.imagewatcher.ImageViewerActivity;
+import protos.Connect;
 
 /**
  * Created by pujin on 2017/1/19.
@@ -118,7 +119,12 @@ public abstract class BaseChatActvity extends BaseActivity {
         switch (talker.getTalkType()) {
             case 0:
                 roomSession.setRoomName(talker.getTalkName());
-                roomSession.setFriendAvatar(talker.getFriendEntity().getAvatar());
+                Connect.MessageUserInfo userInfo = Connect.MessageUserInfo.newBuilder()
+                        .setUid(talker.getFriendEntity().getPub_key())
+                        .setUsername(talker.getFriendEntity().getUsername())
+                        .setAvatar(talker.getFriendEntity().getAvatar()).build();
+
+                roomSession.setUserInfo(userInfo);
                 baseChat = new FriendChat(talker.getFriendEntity());
 
                 if (!TextUtils.isEmpty(baseChat.address())) {

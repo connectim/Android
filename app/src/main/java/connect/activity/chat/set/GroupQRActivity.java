@@ -81,7 +81,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
         toolbar.setRightListence(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(groupKey, MemoryDataManager.getInstance().getAddress());
+                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, MemoryDataManager.getInstance().getAddress());
                 final ArrayList<String> list = new ArrayList<>();
                 if (myMember.getRole() == 1) {
                     list.add(activity.getResources().getString(R.string.Link_Refresh_QR_Code));
