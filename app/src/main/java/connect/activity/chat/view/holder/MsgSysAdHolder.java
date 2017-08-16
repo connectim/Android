@@ -6,17 +6,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.AdBean;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.set.AboutActivity;
+import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 /**
  * Created by pujin on 2017/3/24.
@@ -30,8 +27,6 @@ public class MsgSysAdHolder extends MsgBaseHolder {
     private RoundedImageView converImg;
     private TextView contentTxt;
 
-    private AdBean adBean = null;
-
     public MsgSysAdHolder(View itemView) {
         super(itemView);
         sysAdLayout = (LinearLayout) itemView.findViewById(R.id.linearlayout);
@@ -42,37 +37,41 @@ public class MsgSysAdHolder extends MsgBaseHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
-        super.buildRowData(msgBaseHolder, entity);
-        adBean = new Gson().fromJson(entity.getMsgDefinBean().getContent(), AdBean.class);
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        final Connect.Announcement announcement = Connect.Announcement.parseFrom(msgExtEntity.getContents());
 
-        titleTxt.setText(String.valueOf(adBean.getTitle()));
+        titleTxt.setText(String.valueOf(announcement.getTitle()));
         try {
-            timeTxt.setText(TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), adBean.getCreateTime() * 1000));
+            timeTxt.setText(TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), (long) (announcement.getCreatedAt() * 1000)));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (TextUtils.isEmpty(adBean.getConversUrl())) {
+
+        String conversurl = announcement.getCoversUrl();
+        if (TextUtils.isEmpty(conversurl)) {
             converImg.setVisibility(View.GONE);
         } else {
             converImg.setVisibility(View.VISIBLE);
-            GlideUtil.loadImage(converImg, adBean.getConversUrl());
+            GlideUtil.loadImage(converImg, conversurl);
         }
-        if (TextUtils.isEmpty(adBean.getContent())) {
+
+        String content = announcement.getContent();
+        if (TextUtils.isEmpty(content)) {
             contentTxt.setVisibility(View.GONE);
         } else {
             contentTxt.setVisibility(View.VISIBLE);
-            contentTxt.setText(String.valueOf(adBean.getContent()));
+            contentTxt.setText(String.valueOf(content));
         }
 
         sysAdLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (adBean.getCategory()) {
+                switch (announcement.getCategory()) {
                     case 0://link
-                        String url=adBean.getUrl();
+                        String url = announcement.getUrl();
                         if (!TextUtils.isEmpty(url)) {
-                            OuterWebsiteActivity.startActivity((Activity) context, adBean.getUrl());
+                            OuterWebsiteActivity.startActivity((Activity) context, announcement.getUrl());
                         }
                         break;
                     case 1://update

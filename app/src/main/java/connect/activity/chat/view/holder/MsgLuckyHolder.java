@@ -22,6 +22,7 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
+import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -43,28 +44,28 @@ public class MsgLuckyHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
-        super.buildRowData(msgBaseHolder, entity);
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        final Connect.LuckPacketMessage packetMessage = Connect.LuckPacketMessage.parseFrom(msgExtEntity.getContents());
+
+        if (msgExtEntity.getRead_time() == 0) {//do not click
+            if (packetMessage.getLuckyType() == 1) {//outer lucky packet
+                contentLayout.performClick();
+            }
+        }
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MsgDefinBean bean = entity.getMsgDefinBean();
+                String hashid = packetMessage.getHashId();
+                Connect.ChatType chatType= Connect.ChatType.forNumber(msgExtEntity.getChatType());
 
-                String hashid = bean.getContent();
-                if (bean.msgDirect() == MsgDirect.To && entity.getRoomType() == RoomType.FriendType) {
+                if (msgExtEntity.parseDirect() == MsgDirect.To && chatType == Connect.ChatType.PRIVATE) {
                     startPacketDetail(hashid, 0);
                 } else {
                     requestLuckPacket(hashid);
                 }
             }
         });
-
-        if (entity.getReadstate() == 0) {//do not click
-            TransferExt transferExt = new Gson().fromJson(entity.getMsgDefinBean().getExt1(), TransferExt.class);
-            if (transferExt != null && transferExt.getType() == 1) {//outer lucky packet
-                contentLayout.performClick();
-            }
-        }
     }
 
     private Handler handler = new Handler(Looper.myLooper()) {
@@ -87,16 +88,17 @@ public class MsgLuckyHolder extends MsgChatHolder {
      * @param hashid
      */
     private void requestLuckPacket(final String hashid) {
-        baseEntity.setReadstate(1);
-        MessageEntity msgEntity = MessageHelper.getInstance().loadMsgByMsgid(baseEntity.getMsgDefinBean().getMessage_id());
+        MsgExtEntity msgExtEntity = getMsgExtEntity();
+        msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
+
+        MessageEntity msgEntity = MessageHelper.getInstance().loadMsgByMsgid(msgExtEntity.getMessage_id());
         if (msgEntity != null) {
             msgEntity.setState(1);
             MessageHelper.getInstance().updateMsg(msgEntity);
         }
 
         Connect.RedPackageHash packageHash = Connect.RedPackageHash.newBuilder().setId(hashid).build();
-
-        if (context.getString(R.string.app_name).equals(baseEntity.getMsgDefinBean().getPublicKey())) {
+        if (context.getString(R.string.app_name).equals(msgExtEntity.getMessage_ower())) {
             systemPacket = true;
         }
 

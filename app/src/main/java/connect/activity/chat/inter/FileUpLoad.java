@@ -6,14 +6,12 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.model.content.BaseChat;
+import connect.activity.chat.model.content.GroupChat;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.model.content.BaseChat;
-import connect.activity.chat.model.content.GroupChat;
 import connect.utils.FileUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
@@ -32,14 +30,13 @@ import protos.Connect;
 public abstract class FileUpLoad {
 
     protected Context context;
-    protected MsgExtEntity msgEntity;
+    protected MsgExtEntity msgExtEntity;
     protected BaseChat baseChat;
-    protected MsgDefinBean bean;
     protected Connect.MediaFile mediaFile;
 
     public void fileHandle() {
         if (baseChat.roomType() != 2) {
-            FailMsgsManager.getInstance().sendDelayFailMsg(bean.getPublicKey(), bean.getMessage_id(), null, null);
+            FailMsgsManager.getInstance().sendDelayFailMsg(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), null, null);
         }
     }
 
@@ -60,7 +57,7 @@ public abstract class FileUpLoad {
         if (baseChat.roomType() == 0) {
             gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, priKey, baseChat.roomKey(), ByteString.copyFrom(fileSie));
         } else if (baseChat.roomType() == 1) {
-            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(((GroupChat)baseChat).groupEcdh()), ByteString.copyFrom(fileSie));
+            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), ByteString.copyFrom(fileSie));
         }
         return gcmData;
     }
@@ -73,7 +70,7 @@ public abstract class FileUpLoad {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.FileData fileData = Connect.FileData.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(fileData)){
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(fileData)) {
                         fileResult.resultUpUrl(fileData);
                     }
                 } catch (InvalidProtocolBufferException e) {
@@ -94,28 +91,30 @@ public abstract class FileUpLoad {
 
     /**
      * saves Local encryption information
+     *
      * @param msgExtEntity
      */
     public void localEncryptionSuccess(MsgExtEntity msgExtEntity) {
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-        baseChat.updateRoomMsg(null,msgExtEntity.showContent(), msgExtEntity.getCreatetime());
+        baseChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
     }
 
     /**
      * Send upload successful file information
-     * @param msgEntity
+     *
+     * @param msgExtEntity
      */
-    public void uploadSuccess(MsgEntity msgEntity) {
-        baseChat.sendPushMsg(msgEntity);
-        fileUpListener.upSuccess(bean.getMessage_id());
+    public void uploadSuccess(MsgExtEntity msgExtEntity) {
+        baseChat.sendPushMsg(msgExtEntity);
+        fileUpListener.upSuccess(msgExtEntity.getMessage_id());
     }
 
     protected String getThumbUrl(String url, String token) {
-        return url + "/thumb?pub_key=" + bean.getPublicKey() + "&token=" + token;
+        return url + "/thumb?pub_key=" + msgExtEntity.getMessage_ower() + "&token=" + token;
     }
 
     protected String getUrl(String url, String token) {
-        return url + "?pub_key=" + bean.getPublicKey() + "&token=" + token;
+        return url + "?pub_key=" + msgExtEntity.getMessage_ower() + "&token=" + token;
     }
 
     protected FileUpListener fileUpListener;

@@ -3,6 +3,7 @@ package connect.im.bean;
 import java.util.HashMap;
 import java.util.Map;
 
+import connect.activity.chat.view.row.MsgEncryptRow;
 import connect.activity.chat.view.row.MsgSysAdRow;
 import connect.activity.chat.view.row.MsgBaseRow;
 import connect.activity.chat.view.row.MsgCardRow;
@@ -28,7 +29,7 @@ import connect.activity.chat.view.row.MsgluckRow;
 public enum MsgType {
     GROUP_INVITE(-6, new MsgNoticeRow()),
     NOTICE(7, new MsgNoticeRow()),
-    NOTICE_ENCRYPTCHAT(-500, new MsgDestructRow()),
+    NOTICE_ENCRYPTCHAT(-500, new MsgEncryptRow()),
     NOTICE_CLICKRECEIVEPACKET(-501, new MsgNoticeRow()),
     GETPACKET_FROM(-8, new MsgNoticeRow()),
     GETPACEKT_TO(8, new MsgNoticeRow()),
@@ -42,7 +43,7 @@ public enum MsgType {
     Photo(3, new MsgImgRow()),
     Video(4, new MsgVideoRow()),
     Emotion(5, new MsgEmotionRow()),
-    Self_destruct_Notice(11, new MsgNoticeRow()),
+    Self_destruct_Notice(11, new MsgDestructRow()),
     Self_destruct_Receipt(12, new MsgNoticeRow()),
     Request_Payment(14, new MsgPayRow()),
     Transfer(15, new MsgTransfer()),

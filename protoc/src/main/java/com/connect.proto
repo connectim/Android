@@ -1189,154 +1189,143 @@ message ChatCookie {
 
 
 
-
-//ÓÃ»§ĞÅÏ¢
+//ç”¨æˆ·ä¿¡æ¯
 message MessageUserInfo{
-    string uid=1;
-    string username=2;
-    string avatar=3;
+	string uid=1;
+	string username=2;
+	string avatar=3;
 }
-//ÁÄÌìÀàĞÍ
+//èŠå¤©ç±»å‹
 enum ChatType {
-    PRIVATE= 0; // ¸öÈËÁÄÌì
-    GROUPCHAT  = 1;  //Èº×éÁÄÌì
-    CONNECT_SYSTEM = 3; // Connect
+	PRIVATE= 0; // ä¸ªäººèŠå¤©
+	GROUPCHAT  = 1;  //ç¾¤ç»„èŠå¤©
+	CONNECT_SYSTEM = 3; // Connect
 }
-//ÁÙÊ±Ğ­Í¬ÃÜÔ¿
+//ä¸´æ—¶ååŒå¯†é’¥
 message ChatSession {
-    bytes salt = 1;
-    bytes ver = 2;
-    string pubKey = 3;
+	bytes salt = 1;
+	bytes ver = 2;
+	string pubKey = 3;
 }
-//ÏûÏ¢Ìå
+//æ¶ˆæ¯ä½“
 message ChatMessage {
-    string msg_id = 1;
-    int64 msg_time = 2;
-    string from = 3;
-    string to= 4;
-    GcmData cipher_data = 5;
-    ChatType chat_type=6;
-    int32 msg_type = 7;
-    string ext= 8;
+	string msg_id = 1;
+	int64 msg_time = 2;
+	string from = 3;
+	string to= 4;
+	GcmData cipher_data = 5;
+	ChatType chat_type=6;
+	int32 msg_type = 7;
+	string ext= 8;
 }
-//´«Êä²ãÄ£ĞÍ
+//ä¼ è¾“å±‚æ¨¡å‹
 message MessageData {
-    ChatMessage chat_msg = 1;
-    ChatSession chat_session = 2;
+	ChatMessage chat_msg = 1;
+	ChatSession chat_session = 2;
 }
-//ÎÄ±¾ÏûÏ¢
+//æ–‡æœ¬æ¶ˆæ¯
 message TextMessage{
-    string content=1;
-    repeated string at_addresses=2;
-    int64 snap_time = 3;
-    MessageUserInfo sender =4;
+	string content=1;
+	repeated string at_addresses=2;
+	int64 snap_time = 3;
 }
-//emoj±íÇé
+//emojè¡¨æƒ…
 message EmotionMessage{
-    string content=1;
-    int64 snap_time = 2;
-    MessageUserInfo sender =3;
+	string content=1;
+	int64 snap_time = 2;
 }
-//Í¼Æ¬ÏûÏ¢
+//å›¾ç‰‡æ¶ˆæ¯
 message PhotoMessage{
-    string url=1;
-    string thum=2;
-    string size=3;
-    int32 image_width=4;
-    int32 image_height=5;
-    int64 snap_time = 6;
-    MessageUserInfo sender =7;
+	string url=1;
+	string thum=2;
+	string size=3;
+	int32 image_width=4;
+	int32 image_height=5;
+	int64 snap_time = 6;
 }
-//ÒôÆµÏûÏ¢
+//éŸ³é¢‘æ¶ˆæ¯
 message VoiceMessage{
-    string url=1;
-    string time_length=2;
-    int32 size=3;
-    int64 snap_time = 4;
-    MessageUserInfo sender =5;
+	string url=1;
+	int32 time_length=2;
+	int64 snap_time = 3;
 }
-//ÊÓÆµÏûÏ¢
+//è§†é¢‘æ¶ˆæ¯
 message VideoMessage{
-    string url=1;
-    string cover=2;
-    string time_length=3;
-    int32 size=4;
-    int32 image_width=5;
-    int32 image_height=6;
-    int64 snap_time = 7;
-    MessageUserInfo sender =8;
+	string url=1;
+	string cover=2;
+	int32 time_length=3;
+	int32 size=4;
+	int32 image_width=5;
+	int32 image_height=6;
+	int64 snap_time = 7;
 }
-//ÃûÆ¬ÏûÏ¢
+//åç‰‡æ¶ˆæ¯
 message CardMessage{
-    string uid=1;
-    string username=2;
-    string avatar=3;
-    MessageUserInfo sender =4;
+	string uid=1;
+	string username=2;
+	string avatar=3;
 }
-//¿ªÊ¼ÔÄºó¼´·Ù
+//å¼€å§‹é˜…åå³ç„š
 message DestructMessage{
-    int32 time=1;
+	int32 time=1;
 }
-//ÔÄºó¼´·ÙÒÑ¶ÁÏûÏ¢
+//é˜…åå³ç„šå·²è¯»æ¶ˆæ¯
 message ReadReceiptMessage{
-    string message_id=1;
+	string message_id=1;
 }
-//ÊÕ¿îÏûÏ¢
+//æ”¶æ¬¾æ¶ˆæ¯
 message PaymentMessage{
-    int32 payment_type=1;
-    string hash_id=2;
-    int64 amount=3;
-    int32 member_size =4;
-    string tips =5;
-    MessageUserInfo sender =6;
+	int32 payment_type=1;// 0:å•äººæ”¶æ¬¾ 1:ä¼—ç­¹
+	string hash_id=2;
+	int64 amount=3;
+	int32 member_size =4;
+	string tips =5;
 }
-//×ªÕËÏûÏ¢
+//è½¬è´¦æ¶ˆæ¯
 message TransferMessage{
-    int32  transfer_type=1;
-    string hash_id=2;
-    int64 amount=3;
-    string tips =4;
-    MessageUserInfo sender =5;
-}
-//Î»ÖÃÏûÏ¢
-message LocationMessage{
-    float latitude=1;
-    float longitude=2;
-    string address=3;
-    string screen_shot=4;
-    int32 image_width=5;
-    int32 image_height=6;
-    MessageUserInfo sender =7;
-}
-//ºì°üÏûÏ¢
-message LuckPacketMessage{
-    string hash_id=1;
-    int32 lucky_type=2;
-    string tips =3;
-    int64 amount=4;
-    MessageUserInfo sender =5;
-}
-//ÌáÊ¾ÏûÏ¢
-message NotifyMessage{
-    string content=1;
-}
-//¼ÓÈëÈº×éÏûÏ¢
-message JoinGroupMessage{
-    string avatar=1;
-    string group_name=2;
-    string group_id=3;
-    string token=4;
-    MessageUserInfo sender =5;
-}
-//Íâ²¿Á´½ÓÏûÏ¢
-message WebsiteMessage{
-    string url=1;
-    string title=2;
-    string subtitle=3;
-    string img=4;
-    MessageUserInfo sender =5;
+	int32  transfer_type=1;//0:å•äººè½¬è´¦ 1:å¤–éƒ¨è½¬è´¦  2:å¤–éƒ¨è½¬è´¦
+	string hash_id=2;
+	int64 amount=3;
+	string tips =4;
 }
 
+//çº¢åŒ…æ¶ˆæ¯
+message LuckPacketMessage{
+	string hash_id=1;
+	int32 lucky_type=2;//0:å†…éƒ¨çº¢åŒ… 1:å¤–éƒ¨çº¢åŒ… 2:ç³»ç»Ÿçº¢åŒ…
+	string tips =3;
+	int64 amount=4;
+}
+
+//ä½ç½®æ¶ˆæ¯
+message LocationMessage{
+	float latitude=1;
+	float longitude=2;
+	string address=3;
+	string screen_shot=4;
+	int32 image_width=5;
+	int32 image_height=6;
+}
+
+//æç¤ºæ¶ˆæ¯
+message NotifyMessage{
+	string content=1;
+	string extion=2;
+}
+//åŠ å…¥ç¾¤ç»„æ¶ˆæ¯
+message JoinGroupMessage{
+	string avatar=1;
+	string group_name=2;
+	string group_id=3;
+	string token=4;
+}
+//å¤–éƒ¨é“¾æ¥æ¶ˆæ¯
+message WebsiteMessage{
+	string url=1;
+	string title=2;
+	string subtitle=3;
+	string img=4;
+}
 
 
 

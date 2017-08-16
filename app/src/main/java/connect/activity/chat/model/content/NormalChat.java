@@ -1,6 +1,5 @@
 package connect.activity.chat.model.content;
 
-import connect.activity.chat.bean.GatherBean;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.im.bean.MsgType;
 import protos.Connect;
@@ -27,8 +26,6 @@ public abstract class NormalChat extends BaseChat {
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);
             }
-        } else if (roomType() == 1) {
-            builder.setSender(senderInfo());
         }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
@@ -49,35 +46,30 @@ public abstract class NormalChat extends BaseChat {
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);
             }
-        } else if (roomType() == 1) {
-            builder.setSender(senderInfo());
         }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
 
     @Override
-    public MsgExtEntity voiceMsg(String string, String length, int filesize) {
+    public MsgExtEntity voiceMsg(String string, int length) {
         MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Voice);
         Connect.VoiceMessage.Builder builder = Connect.VoiceMessage.newBuilder()
                 .setUrl(string)
-                .setTimeLength(length)
-                .setSize(filesize);
+                .setTimeLength(length);
 
         if (roomType() == 0) {
             long destructtime = destructReceipt();
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);
             }
-        } else if (roomType() == 1) {
-            builder.setSender(senderInfo());
         }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
 
     @Override
-    public MsgExtEntity videoMsg(String thum, String url, String length, int filesize, int width, int height) {
+    public MsgExtEntity videoMsg(String thum, String url, int length, int filesize, int width, int height) {
         MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Video);
         Connect.VideoMessage.Builder builder = Connect.VideoMessage.newBuilder()
                 .setCover(thum)
@@ -92,8 +84,6 @@ public abstract class NormalChat extends BaseChat {
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);
             }
-        } else if (roomType() == 1) {
-            builder.setSender(senderInfo());
         }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
@@ -110,8 +100,6 @@ public abstract class NormalChat extends BaseChat {
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);
             }
-        } else if (roomType() == 1) {
-            builder.setSender(senderInfo());
         }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
@@ -125,9 +113,6 @@ public abstract class NormalChat extends BaseChat {
                 .setUsername(name)
                 .setAvatar(avatar);
 
-        if (roomType() == 1) {
-            builder.setSender(senderInfo());
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
@@ -153,18 +138,15 @@ public abstract class NormalChat extends BaseChat {
     }
 
     @Override
-    public MsgExtEntity paymentMsg(GatherBean bean, String hashid, long amount, int membersize, String tips) {
+    public MsgExtEntity paymentMsg(int paymenttype,String hashid, long amount, int membersize, String tips) {
         MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Request_Payment);
         Connect.PaymentMessage.Builder builder = Connect.PaymentMessage.newBuilder()
-                .setPaymentType(roomType())
+                .setPaymentType(paymenttype)
                 .setHashId(hashid)
                 .setAmount(amount)
                 .setMemberSize(membersize)
                 .setTips(tips);
 
-        if (roomType() == 1) {
-            builder.setSender(senderInfo());
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
@@ -178,15 +160,12 @@ public abstract class NormalChat extends BaseChat {
                 .setAmount(amout)
                 .setTips(tips);
 
-        if (roomType() == 1) {
-            builder.setSender(senderInfo());
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
 
     @Override
-    public MsgExtEntity locationMsg(long latitude, long longitude, String address, String thum, int width, int height) {
+    public MsgExtEntity locationMsg(float latitude, float longitude, String address, String thum, int width, int height) {
         MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Location);
         Connect.LocationMessage.Builder builder = Connect.LocationMessage.newBuilder()
                 .setLatitude(latitude)
@@ -196,10 +175,6 @@ public abstract class NormalChat extends BaseChat {
                 .setImageWidth(width)
                 .setImageHeight(height);
 
-
-        if (roomType() == 1) {
-            builder.setSender(senderInfo());
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
@@ -213,16 +188,13 @@ public abstract class NormalChat extends BaseChat {
                 .setAmount(amount)
                 .setTips(hashid);
 
-        if (roomType() == 1) {
-            builder.setSender(senderInfo());
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
 
     @Override
     public MsgExtEntity noticeMsg(String string) {
-        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Lucky_Packet);
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.NOTICE);
         Connect.NotifyMessage.Builder builder = Connect.NotifyMessage.newBuilder()
                 .setContent(string);
 

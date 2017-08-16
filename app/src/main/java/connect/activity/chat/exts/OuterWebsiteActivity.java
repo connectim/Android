@@ -279,13 +279,9 @@ public class OuterWebsiteActivity extends BaseActivity {
             int type = data.getIntExtra("type", 0);
             String pubkey = data.getStringExtra("object");
 
-
-            WebsiteExt1Bean ext1Bean = new WebsiteExt1Bean(title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
-
             NormalChat baseChat = null;
-
             if (RoomSession.getInstance().getRoomKey().equals(pubkey)) {
-                MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, inUrl, ext1Bean);
+                MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, inUrl, title,TextUtils.isEmpty(subtitle) ? inUrl : subtitle,imgUrl);
             } else {
                 switch (type) {
                     case 0:

@@ -78,8 +78,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
             @Override
             public void success(Connect.Bill bill) {
                 ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
-                GatherBean gatherBean = new GatherBean(bill.getHash(), amount, 1, false, bill.getTips());
-                MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+                MsgSend.sendOuterMsg(MsgType.Request_Payment, 0, bill.getHash(), amount, 1, bill.getTips());
                 ActivityUtil.goBack(activity);
             }
 

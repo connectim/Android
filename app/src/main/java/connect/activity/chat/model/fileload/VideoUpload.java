@@ -4,17 +4,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.netcompss.ffmpeg4android.CommandValidationException;
 import com.netcompss.ffmpeg4android.GeneralUtils;
 import com.netcompss.loader.LoadJNI;
 
 import java.io.File;
 
-import connect.database.MemoryDataManager;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileUpLoad;
 import connect.activity.chat.model.content.BaseChat;
+import connect.database.MemoryDataManager;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.cryption.EncryptionUtil;
@@ -26,11 +26,11 @@ import protos.Connect;
  */
 public class VideoUpload extends FileUpLoad {
 
-    public VideoUpload(Context context, BaseChat baseChat, MsgDefinBean bean, FileUpListener listener) {
+    public VideoUpload(Context context, BaseChat baseChat, MsgExtEntity entity, FileUpListener listener) {
         this.context = context;
         this.context = context;
         this.baseChat = baseChat;
-        this.bean = bean;
+        this.msgExtEntity = entity;
         this.fileUpListener = listener;
     }
 
@@ -41,14 +41,14 @@ public class VideoUpload extends FileUpLoad {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    String filePath = bean.getContent();
+                    Connect.VideoMessage videoMessage= Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
+
+                    String filePath = videoMessage.getUrl();
                     Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
 
                     filePath = videoCompress(filePath);
                     File thumbFile = BitmapUtil.getInstance().bitmapSavePath(thumbBitmap);
                     String comFist = thumbFile.getAbsolutePath();
-                    bean.setImageOriginWidth(thumbBitmap.getWidth());
-                    bean.setImageOriginHeight(thumbBitmap.getHeight());
 
                     String priKey = MemoryDataManager.getInstance().getPriKey();
                     String pubkey = MemoryDataManager.getInstance().getPubKey();
@@ -73,12 +73,7 @@ public class VideoUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                msgEntity = (MsgEntity) baseChat.videoMsg(bean.getContent(), bean.getSize(), bean.getExt1());
-                msgEntity.getMsgDefinBean().setMessage_id(bean.getMessage_id());
-                msgEntity.getMsgDefinBean().setImageOriginWidth(bean.getImageOriginWidth());
-                msgEntity.getMsgDefinBean().setImageOriginHeight(bean.getImageOriginHeight());
-                localEncryptionSuccess(msgEntity);
-
+                localEncryptionSuccess(msgExtEntity);
                 if (mediaFile != null) {
                     fileUp();
                 }
@@ -91,16 +86,19 @@ public class VideoUpload extends FileUpLoad {
         resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
-                String content = getThumbUrl(mediaFile.getUrl(), mediaFile.getToken());
+                String thumb = getThumbUrl(mediaFile.getUrl(), mediaFile.getToken());
                 String url = getUrl(mediaFile.getUrl(), mediaFile.getToken());
 
-                MsgEntity index = (MsgEntity) baseChat.videoMsg(content, bean.getSize(), bean.getExt1());
-                index.getMsgDefinBean().setMessage_id(bean.getMessage_id());
-                index.getMsgDefinBean().setUrl(url);
-                index.getMsgDefinBean().setImageOriginWidth(bean.getImageOriginWidth());
-                index.getMsgDefinBean().setImageOriginHeight(bean.getImageOriginHeight());
+                try {
+                    Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
+                    videoMessage.toBuilder().setCover(thumb)
+                            .setUrl(url);
 
-                uploadSuccess(index);
+                    msgExtEntity.setContents(videoMessage.toByteArray());
+                    uploadSuccess(msgExtEntity);
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

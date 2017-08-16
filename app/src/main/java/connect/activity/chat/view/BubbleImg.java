@@ -17,6 +17,7 @@ import connect.activity.base.BaseApplication;
 import connect.utils.FileUtil;
 import connect.utils.glide.BlurMaskTransformation;
 import connect.utils.system.SystemUtil;
+import protos.Connect;
 
 public class BubbleImg extends RelativeLayout {
 
@@ -80,7 +81,7 @@ public class BubbleImg extends RelativeLayout {
     }
 
 
-    public void loadUri(final MsgDirect direct, final RoomType roomType, final String pukkey, final String msgid, final String url, final float imgwidth, final float imgheight) {
+    public void loadUri(final MsgDirect direct, final Connect.ChatType chatType, final String pukkey, final String msgid, final String url, final float imgwidth, final float imgheight) {
         msgDirect = direct;
 
         imageView.setImageBitmap(null);
@@ -98,13 +99,13 @@ public class BubbleImg extends RelativeLayout {
                     .bitmapTransform(new CenterCrop(context), new BlurMaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x, (openBurn && msgDirect == MsgDirect.From) ? 16 : 0))
                     .into(imageView);
         } else {
-            FileDownLoad.getInstance().downChatFile(roomType,url,pukkey, new FileDownLoad.IFileDownLoad() {
+            FileDownLoad.getInstance().downChatFile(chatType,url,pukkey, new FileDownLoad.IFileDownLoad() {
                 @Override
                 public void successDown(byte[] bytes) {
                     progressBar.setVisibility(GONE);
                     String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
                     FileUtil.byteArrToFilePath(bytes, localPath);
-                    loadUri(direct,roomType, pukkey, msgid, localPath,imgwidth,imgheight);
+                    loadUri(direct,chatType, pukkey, msgid, localPath,imgwidth,imgheight);
                 }
 
                 @Override

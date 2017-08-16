@@ -3,19 +3,14 @@ package connect.activity.chat.view.holder;
 import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
-
+import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.GroupExt1Bean;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 /**
  * Created by pujin on 2017/1/21.
@@ -27,7 +22,6 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
     private TextView txt1;
     private TextView txt2;
 
-    private GroupExt1Bean ext1Bean;
     private int applyState = 0;
 
     public MsgInviteGroupHolder(View itemView) {
@@ -38,18 +32,16 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
-        super.buildRowData(msgBaseHolder, baseEntity);
-        final MsgDefinBean definBean = baseEntity.getMsgDefinBean();
-        ext1Bean = new Gson().fromJson(String.valueOf(definBean.getExt1()), GroupExt1Bean.class);
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        final Connect.JoinGroupMessage joinGroupMessage = Connect.JoinGroupMessage.parseFrom(msgExtEntity.getContents());
 
-        GlideUtil.loadAvater(cardHead, ext1Bean.getAvatar());
-        String showTxt = direct == MsgDirect.From ? context.getString(R.string.Link_Invite_you_to_join, ext1Bean.getGroupname()) :
-                context.getString(R.string.Link_Invite_friend_to_join, ext1Bean.getGroupname());
+        GlideUtil.loadAvater(cardHead, joinGroupMessage.getAvatar());
+        String showTxt = msgExtEntity.parseDirect() == MsgDirect.From ? context.getString(R.string.Link_Invite_you_to_join, joinGroupMessage.getGroupName()) :
+                context.getString(R.string.Link_Invite_friend_to_join, joinGroupMessage.getGroupName());
         txt1.setText(showTxt);
 
-        GroupExt1Bean reviewBean = new Gson().fromJson(definBean.getExt1(), GroupExt1Bean.class);
-        applyState = ParamManager.getInstance().loadGroupApplyMember(reviewBean.getGroupidentifier(), definBean.getMessage_id());
+        applyState = ParamManager.getInstance().loadGroupApplyMember(joinGroupMessage.getGroupId(), msgExtEntity.getMessage_id());
         String statestr = "";
         switch (applyState) {
             case 0://Has not to apply
@@ -65,9 +57,9 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (direct == MsgDirect.From) {
+                if (msgExtEntity.parseDirect() == MsgDirect.From) {
                     if (applyState == 0) {
-                        ApplyJoinGroupActivity.startActivity((Activity) context, ApplyJoinGroupActivity.EApplyGroup.GROUPKEY, ext1Bean.getGroupidentifier(), baseEntity.getMsgDefinBean().getSenderInfoExt().address, ext1Bean.getInviteToken());
+                        ApplyJoinGroupActivity.startActivity((Activity) context, ApplyJoinGroupActivity.EApplyGroup.GROUPKEY, joinGroupMessage.getGroupId(), getMsgExtEntity().getMessage_ower(), joinGroupMessage.getToken());
                     }
                 }
             }

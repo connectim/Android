@@ -193,7 +193,7 @@ public class MsgParseBean extends InterParse {
                 break;
             case 2://voice message
                 Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(message.getBody().toByteArray());
-                entity = RobotChat.getInstance().voiceMsg(voiceMessage.getUrl(), voiceMessage.getTimeLength(), voiceMessage.getSize());
+                entity = RobotChat.getInstance().voiceMsg(voiceMessage.getUrl(), voiceMessage.getTimeLength());
                 break;
             case 3://picture message
                 Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(message.getBody().toByteArray());

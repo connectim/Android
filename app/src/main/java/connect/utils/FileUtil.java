@@ -255,6 +255,30 @@ public class FileUtil {
         return fileSize(FileSizeType.KB, path)+" KB";
     }
 
+    public static int fileSizeOf(String path) {
+        if (path == null)
+            return 0;
+        File file = new File(path);
+        if (!file.exists()) {
+            return 0;
+        }
+        return (int)file.length() / 1024;
+    }
+
+    public static String fileSize(int length) {
+        String size = "";
+        FileSizeType sizeType = length < 1024 ? FileSizeType.KB : FileSizeType.M;
+        switch (sizeType) {
+            case KB:
+                size = length / 1024 + " KB";
+                break;
+            case M:
+                size = length / (1024 * 1024) + " M";
+                break;
+        }
+        return size;
+    }
+
     public enum FileSizeType{
         KB,
         M,

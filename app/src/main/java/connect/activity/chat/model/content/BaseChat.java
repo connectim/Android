@@ -37,19 +37,15 @@ public abstract class BaseChat<T> implements Serializable {
 
     public abstract T photoMsg(String thum, String url, String filesize, int width, int height);
 
-    public abstract T voiceMsg(String string, String length, int filesize);
+    public abstract T voiceMsg(String string, int length);
 
-    public abstract T videoMsg(String thum,String url, String length, int filesize,int width,int height);
+    public abstract T videoMsg(String thum,String url, int length,int filesize,int width,int height);
 
     public abstract T emotionMsg(String string);
 
     public abstract T cardMsg(String pubkey, String name, String avatar);
 
-    public abstract T transferMsg(int type, String hashid, long amout, String tips);
-
-    public abstract T locationMsg(long latitude,long longitude,String address,String thum,int width,int height);
-
-    public abstract T luckPacketMsg(int type, String hashid, String tips, long amount);
+    public abstract T locationMsg(float latitude,float longitude,String address,String thum,int width,int height);
 
     public abstract T noticeMsg(String string);
 
@@ -57,7 +53,33 @@ public abstract class BaseChat<T> implements Serializable {
 
     public abstract T receiptMsg(String messageid);
 
-    public abstract T paymentMsg(GatherBean bean, String hashid, long amount, int membersize, String tips);
+    /**
+     * @param type 0:inner 1:outer
+     * @param hashid
+     * @param amout
+     * @param tips
+     * @return
+     */
+    public abstract T transferMsg(int type, String hashid, long amout, String tips);
+
+    /**
+     * @param type 0:inner 1:outer
+     * @param hashid
+     * @param tips
+     * @param amount
+     * @return
+     */
+    public abstract T luckPacketMsg(int type, String hashid, String tips, long amount);
+
+    /**
+     * @param paymenttype 0: private 1:crowding
+     * @param hashid
+     * @param amount
+     * @param membersize
+     * @param tips
+     * @return
+     */
+    public abstract T paymentMsg(int paymenttype,String hashid, long amount, int membersize, String tips);
 
     public abstract T outerWebsiteMsg(String url, String title, String subtitle, String img);
 

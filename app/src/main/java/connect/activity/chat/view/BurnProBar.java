@@ -14,18 +14,17 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import connect.activity.chat.bean.MsgExtEntity;
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.ui.activity.R;
 import connect.activity.chat.bean.BurnNotice;
 import connect.activity.chat.bean.ExtBean;
 import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.model.ChatMsgUtil;
-import connect.utils.system.SystemUtil;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.ui.activity.R;
 import connect.utils.TimeUtil;
+import connect.utils.system.SystemUtil;
 
 /**
  * Created by gtq on 2016/12/13.
@@ -75,18 +74,15 @@ public class BurnProBar extends View {
         this.msgExtEntity = entity;
         cancelTimer();
 
-        MsgDefinBean definBean = entity.getMsgDefinBean();
-        extBean = new Gson().fromJson(definBean.getExt(), ExtBean.class);
-        long burnstart = entity.getBurnstarttime();
-
+        long burnstart = entity.parseDestructTime();
         if (burnstart > 0) {
             startBurnRead();
         }
     }
 
     public void startBurnRead() {
-        long burnstart = entity.getBurnstarttime();
-        MsgDirect direct = ChatMsgUtil.parseMsgDirect(entity.getMsgDefinBean());
+        long burnstart = msgExtEntity.getRead_time();
+        MsgDirect direct = msgExtEntity.parseDirect();
 
         if (burnstart > 0 || direct == MsgDirect.From) {
             long remainTime = extBean.getLuck_delete() - (TimeUtil.getCurrentTimeInLong() - burnstart);
@@ -99,7 +95,7 @@ public class BurnProBar extends View {
     public void onEventMainThread(BurnNotice notice) {
         Object[] objects = (Object[]) notice.getObjs();
         if (notice.getBurnType() == BurnNotice.BurnType.BURN_READ) {
-            if (entity != null && objects[0].equals(entity.getMsgDefinBean().getMessage_id())) {
+            if (objects[0].equals(msgExtEntity.getMessage_id())) {
                 startBurnRead();
             }
         }
@@ -116,11 +112,7 @@ public class BurnProBar extends View {
             case MSGSTATEVIEW:
                 String msgid = (String) objects[0];
                 int state = (int) objects[1];
-                if (entity == null || entity.getMsgDefinBean() == null || entity.getMsgDefinBean().getMessage_id() == null) {
-                    return;
-                }
-
-                String curMsgid = entity.getMsgDefinBean().getMessage_id();
+                String curMsgid = msgExtEntity.getMessage_id();
                 if (msgid.equals(curMsgid)) {
                     switch (state) {
                         case 0://sending
@@ -177,8 +169,8 @@ public class BurnProBar extends View {
             value = 0;
             invalidate();
 
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.DELMSG, entity);
-            MessageHelper.getInstance().deleteMsgByid(entity.getMsgDefinBean().getMessage_id());
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.DELMSG, msgExtEntity);
+            MessageHelper.getInstance().deleteMsgByid(msgExtEntity.getMessage_id());
         }
 
         @Override

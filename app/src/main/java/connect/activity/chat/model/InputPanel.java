@@ -185,7 +185,7 @@ public class InputPanel {
 
                 String string = s.toString();
                 if (isGroupAt && count == 1 && "@".equals(string.substring(start))) {
-                    GroupAtActivity.startActivity((Activity) context, ((ChatActivity) context).getBaseChat().roomKey());
+                    GroupAtActivity.startActivity((Activity) context, ((ChatActivity) context).getNormalChat().roomKey());
                 }
             }
         });

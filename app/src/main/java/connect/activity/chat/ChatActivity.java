@@ -1,8 +1,8 @@
 package connect.activity.chat;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,10 +22,8 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.chat.adapter.ChatAdapter;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
-import connect.activity.chat.bean.MsgSender;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
@@ -35,12 +33,12 @@ import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.model.content.NormalChat;
 import connect.activity.chat.model.content.RobotChat;
 import connect.activity.chat.model.fileload.PhotoUpload;
+import connect.activity.chat.model.fileload.VideoUpload;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.SingleSetActivity;
 import connect.activity.chat.view.ExBottomLayout;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.wallet.TransferFriendActivity;
-import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -51,10 +49,9 @@ import connect.database.green.bean.GroupMemberEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.MediaUtil;
-import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
@@ -120,7 +117,7 @@ public class ChatActivity extends BaseChatActvity {
             }
         });
         // robot/stranger donot show setting
-        if (!(talker.getTalkType() == 2 || baseChat.isStranger())) {
+        if (!(talker.getTalkType() == 2 || normalChat.isStranger())) {
             toolbar.setRightImg(R.mipmap.menu_white);
         }
 
@@ -152,21 +149,18 @@ public class ChatActivity extends BaseChatActvity {
     @Override
     public void loadChatInfor() {
         LogManager.getLogger().d(Tag, "loadChatInfor()");
-        new AsyncTask<Void, Void, List<MsgEntity>>() {
+        new AsyncTask<Void, Void, List<MsgExtEntity>>() {
 
             @Override
-            protected List<MsgEntity> doInBackground(Void... params) {
-                return baseChat.loadMoreEntities(0);
+            protected List<MsgExtEntity> doInBackground(Void... params) {
+                return normalChat.loadMoreEntities(0);
             }
 
             @Override
-            protected void onPostExecute(List<MsgEntity> entities) {
+            protected void onPostExecute(List<MsgExtEntity> entities) {
                 super.onPostExecute(entities);
-                MsgEntity encryEntity = (MsgEntity) baseChat.encryptChatMsg();
+                MsgExtEntity encryEntity =  normalChat.encryptChatMsg();
                 if (entities.size() < 20 && encryEntity != null) {
-                    long sendtime = entities.size() == 0 ? TimeUtil.getCurrentTimeInLong() :
-                            entities.get(0).getMsgDefinBean().getSendtime();
-                    encryEntity.getMsgDefinBean().setSendtime(sendtime);
                     entities.add(0, encryEntity);
                 }
 
@@ -178,15 +172,15 @@ public class ChatActivity extends BaseChatActvity {
     @Override
     public void loadMoreMsgs() {
         LogManager.getLogger().d(Tag, "loadMoreMsgs()");
-        new AsyncTask<Void, Void, List<MsgEntity>>() {
+        new AsyncTask<Void, Void, List<MsgExtEntity>>() {
             @Override
-            protected List<MsgEntity> doInBackground(Void... params) {
-                MsgEntity baseEntity = chatAdapter.getMsgEntities().get(0);
-                return baseChat.loadMoreEntities(baseEntity.getMsgDefinBean().getSendtime());
+            protected List<MsgExtEntity> doInBackground(Void... params) {
+                MsgExtEntity baseEntity = chatAdapter.getMsgEntities().get(0);
+                return normalChat.loadMoreEntities(baseEntity.getCreatetime());
             }
 
             @Override
-            protected void onPostExecute(List<MsgEntity> msgEntities) {
+            protected void onPostExecute(List<MsgExtEntity> msgEntities) {
                 super.onPostExecute(msgEntities);
                 if (msgEntities.size() > 0) {
                     View firstChild = recyclerChat.getChildAt(0);
@@ -204,20 +198,20 @@ public class ChatActivity extends BaseChatActvity {
         String titleName = "";
         switch (state) {
             case 0:// not start
-                titleName = baseChat.nickName();
+                titleName = normalChat.nickName();
                 if (titleName.length() > 15) {
                     titleName = titleName.substring(0, 12);
                     titleName += "...";
                 }
-                if (baseChat.roomType() == 0 || baseChat.roomType() == 2) {
+                if (normalChat.roomType() == 0 || normalChat.roomType() == 2) {
                     toolbar.setTitle(titleName);
                 } else {
-                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(baseChat.roomKey());
+                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.roomKey());
                     toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
                 }
                 break;
             case 1://have started
-                String name = baseChat.nickName();
+                String name = normalChat.nickName();
                 StringBuffer indexName = new StringBuffer();
                 indexName.append(name.charAt(0));
                 if (name.length() > 2) {
@@ -226,10 +220,10 @@ public class ChatActivity extends BaseChatActvity {
                     }
                 }
                 indexName.append(name.charAt(name.length() - 1));
-                if (baseChat.roomType() == 0 || baseChat.roomType() == 2) {
+                if (normalChat.roomType() == 0 || normalChat.roomType() == 2) {
                     toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
                 } else {
-                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(baseChat.roomKey());
+                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.roomKey());
                     toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
                 }
                 break;
@@ -290,7 +284,7 @@ public class ChatActivity extends BaseChatActvity {
             transpondTo(data);
         } else if (resultCode == RESULT_OK && requestCode == SeleUsersActivity.CODE_REQUEST) {
             ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
-            TransferFriendActivity.startActivity(activity, friendList, baseChat.roomKey());
+            TransferFriendActivity.startActivity(activity, friendList, normalChat.roomKey());
         }
     }
 
@@ -341,11 +335,20 @@ public class ChatActivity extends BaseChatActvity {
                 fileUpLoad.fileHandle();
                 break;
             case Video:
-                msgExtEntity = normalChat.videoMsg(content,content, (Integer) objects[2], FileUtil.fileSize(content));
-                fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                String videoPath = content;
+                int videoTimeLength = (int) objects[2];
+                int videoSize = FileUtil.fileSizeOf(videoPath);
+
+                Bitmap thumbBitmap = BitmapUtil.thumbVideo(videoPath);
+                File thumbFile = BitmapUtil.getInstance().bitmapSavePath(thumbBitmap);
+                String thumbPath = thumbFile.getAbsolutePath();
+
+                msgExtEntity = normalChat.videoMsg(thumbPath, videoPath, videoTimeLength,
+                        videoSize, thumbBitmap.getWidth(), thumbBitmap.getHeight());
+                fileUpLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(String msgid) {
-                  }
+                    }
                 });
                 fileUpLoad.fileHandle();
                 break;
@@ -365,7 +368,7 @@ public class ChatActivity extends BaseChatActvity {
                     showtxt = lastExtEntity.showContent();
                     sendtime = lastExtEntity.getCreatetime();
                 }
-                baseChat.updateRoomMsg(draft, showtxt, sendtime, 0);
+                normalChat.updateRoomMsg(draft, showtxt, sendtime, 0);
             }
         }
     }

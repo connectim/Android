@@ -1,17 +1,14 @@
 package connect.activity.chat.view.holder;
 
 import android.app.Activity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.view.BubbleImg;
 import connect.activity.chat.exts.GoogleMapActivity;
-import connect.activity.chat.bean.GeoAddressBean;
+import connect.activity.chat.view.BubbleImg;
+import connect.ui.activity.R;
+import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/23.
@@ -27,18 +24,18 @@ public class MsgLocationHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
-        super.buildRowData(msgBaseHolder, entity);
-        MsgDefinBean bean = entity.getMsgDefinBean();
-        final GeoAddressBean geoAddres = bean.getLocationExt();
-        String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        final Connect.LocationMessage locationMessage = Connect.LocationMessage.parseFrom(msgExtEntity.getContents());
 
-        textView.setText(geoAddres.getAddress());
-        imgmsg.loadUri(direct, entity.getRoomType(), entity.getPubkey(), bean.getMessage_id(), url, definBean.getImageOriginWidth(), definBean.getImageOriginHeight());
+        textView.setText(locationMessage.getAddress());
+        String url = locationMessage.getScreenShot();
+        Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
+        imgmsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), url, locationMessage.getImageWidth(), locationMessage.getImageHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GoogleMapActivity.startActivity((Activity) context, geoAddres.getLocationLatitude(), geoAddres.getLocationLongitude());
+                GoogleMapActivity.startActivity((Activity) context, locationMessage.getLatitude(), locationMessage.getLongitude());
             }
         });
     }

@@ -4,21 +4,16 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
-
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.database.green.DaoHelper.TransactionHelper;
-import connect.database.green.bean.TransactionEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.GatherBean;
-import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.exts.CrowdingDetailActivity;
 import connect.activity.chat.exts.PaymentDetailActivity;
 import connect.activity.chat.exts.TransferSingleDetailActivity;
+import connect.database.green.DaoHelper.TransactionHelper;
+import connect.database.green.bean.TransactionEntity;
+import connect.ui.activity.R;
 import connect.utils.data.RateFormatUtil;
+import protos.Connect;
 
 /**
  * gather
@@ -40,29 +35,27 @@ public class MsgPayHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
-        super.buildRowData(msgBaseHolder, entity);
-        MsgDefinBean definBean = entity.getMsgDefinBean();
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        final Connect.PaymentMessage paymentMessage = Connect.PaymentMessage.parseFrom(msgExtEntity.getContents());
 
-        GatherBean gatherBean = new Gson().fromJson(String.valueOf(definBean.getExt1()), GatherBean.class);
-        String amout = RateFormatUtil.longToDoubleBtc(gatherBean.getAmount());
-
-        if (!gatherBean.getIsCrowdfundRceipt()) {
+        String amout = RateFormatUtil.longToDoubleBtc(paymentMessage.getAmount());
+        if (paymentMessage.getPaymentType()==0) {
             name.setVisibility(View.VISIBLE);
-            String paymentstr = definBean.msgDirect() == MsgDirect.From
+            String paymentstr = msgExtEntity.parseDirect() == MsgDirect.From
                     ? context.getString(R.string.Wallet_Receipt)
                     : context.getString(R.string.Wallet_Payment_to_friend);
 
             btc.setText(String.format(context.getResources().getString(R.string.Chat_Enter_BTC), paymentstr, amout));
-            if (entity.getTransStatus() == 0) {
+            if (msgExtEntity.getTransStatus() == 0) {
                 pay.setText(context.getResources().getString(R.string.Chat_Unpaid));
-            } else if (entity.getTransStatus() == 1) {
+            } else if (msgExtEntity.getTransStatus() == 1) {
                 pay.setText(context.getResources().getString(R.string.Wallet_Unconfirmed));
-            }else if(entity.getTransStatus() == 2){
+            }else if(msgExtEntity.getTransStatus() == 2){
                 pay.setText(context.getResources().getString(R.string.Wallet_Confirmed));
             }
         } else {
-            String note = gatherBean.getNote();
+            String note = paymentMessage.getTips();
             if (TextUtils.isEmpty(note)) {
                 name.setVisibility(View.GONE);
             } else {
@@ -71,39 +64,37 @@ public class MsgPayHolder extends MsgChatHolder {
             }
             btc.setText(context.getResources().getString(R.string.Chat_Crowd_funding) +
                     context.getResources().getString(R.string.Wallet_crowdfunding_each, amout));
-            pay.setText(String.format(context.getResources().getString(R.string.Chat_founded), entity.getPayCount(), gatherBean.getTotalMember()));
+            pay.setText(String.format(context.getResources().getString(R.string.Chat_founded), msgExtEntity.getPayCount(), msgExtEntity.getCrowdCount()));
         }
 
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MsgDefinBean bean = entity.getMsgDefinBean();
-                GatherBean gather = new Gson().fromJson(bean.getExt1(), GatherBean.class);
-                if (!gather.getIsCrowdfundRceipt()) {
-                    if (entity.getTransStatus() == 0) {
-                        PaymentDetailActivity.startActivity((Activity) context, bean);
+                if (paymentMessage.getPaymentType() == 0) {
+                    if (msgExtEntity.getTransStatus() == 0) {
+                        PaymentDetailActivity.startActivity((Activity) context, msgExtEntity);
                     } else {
                         int transferType = 0;
-                        String sender = bean.getPublicKey();
-                        String receiver = bean.getSenderInfoExt().getPublickey();
-                        String hashid = bean.getContent();
-                        String msgid = bean.getMessage_id();
+                        String sender = msgExtEntity.getFrom();
+                        String receiver = msgExtEntity.getTo();
+                        String hashid = paymentMessage.getHashId();
+                        String msgid = msgExtEntity.getMessage_id();
                         TransferSingleDetailActivity.startActivity((Activity) context, transferType, sender, receiver, hashid, msgid);
                     }
                 } else {
-                    CrowdingDetailActivity.startActivity((Activity) context, bean.getContent(), bean.getMessage_id());
+                    CrowdingDetailActivity.startActivity((Activity) context, paymentMessage.getHashId(), msgExtEntity.getMessage_id());
                 }
             }
         });
 
-        String hashid = entity.getMsgDefinBean().getContent();
+        String hashid = paymentMessage.getHashId();
         TransactionEntity indexEntity = TransactionHelper.getInstance().loadTransEntity(hashid);
         if (indexEntity == null) {
-            String messageid = entity.getMsgid();
-            if (!gatherBean.getIsCrowdfundRceipt()) {
+            String messageid = msgExtEntity.getMessage_id();
+            if (paymentMessage.getPaymentType() == 0) {
                 TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0);
             } else {
-                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0, gatherBean.getTotalMember());
+                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, 0, paymentMessage.getMemberSize());
             }
         }
     }

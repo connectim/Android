@@ -10,14 +10,11 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import connect.activity.chat.BaseChatActvity;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.model.ChatMsgUtil;
 import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.view.BurnProBar;
 import connect.activity.chat.view.MsgStateView;
@@ -44,7 +41,6 @@ import protos.Connect;
  */
 public abstract class MsgChatHolder extends MsgBaseHolder {
 
-    protected MsgDirect direct;
     protected ChatHeadImg headImg;
     protected TextView memberTxt;
     protected BurnProBar burnProBar;
@@ -87,8 +83,8 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
     @Override
     public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
+        final MsgDirect direct=msgExtEntity.parseDirect();
         try {
-            direct = ChatMsgUtil.parseMsgDirect(msgExtEntity.getFrom());
             if (direct == MsgDirect.To && msgStateView != null) {
                 msgStateView.setMsgEntity(msgExtEntity);
                 msgStateView.updateMsgState(msgExtEntity.getSend_status());
@@ -170,7 +166,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     memberTxt.setVisibility(View.GONE);
                 } else if (direct == MsgDirect.From) {
                     memberTxt.setVisibility(View.VISIBLE);
-                    String showName = ((GroupChat) ((BaseChatActvity) context).getBaseChat()).nickName(userInfo.getUid());
+                    String showName = ((GroupChat) ((BaseChatActvity) context).getNormalChat()).nickName(userInfo.getUid());
                     if (TextUtils.isEmpty(showName)) {
                         showName = userInfo.getUsername();
                     }

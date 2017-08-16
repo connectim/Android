@@ -16,9 +16,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.view.BubbleImg;
@@ -29,6 +27,7 @@ import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.ToastEUtil;
+import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/23.
@@ -39,33 +38,33 @@ public class MsgImgHolder extends MsgChatHolder {
     private String filePath;
     private MediaScannerConnection scanner = null;
 
+    private Connect.PhotoMessage photoMessage;
+
     public MsgImgHolder(View itemView) {
         super(itemView);
         imgmsg = (BubbleImg) itemView.findViewById(R.id.imgmsg);
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
-        super.buildRowData(msgBaseHolder, entity);
-        MsgDefinBean bean = entity.getMsgDefinBean();
-        String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        photoMessage = Connect.PhotoMessage.parseFrom(msgExtEntity.getContents());
 
-        imgmsg.setOpenBurn(TextUtils.isEmpty(definBean.getExt())?false:true);
-        imgmsg.loadUri(direct, entity.getRoomType(),entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
+        Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
+        String url = TextUtils.isEmpty(photoMessage.getThum()) ? photoMessage.getThum() : photoMessage.getUrl();
+        imgmsg.setOpenBurn(photoMessage.getSnapTime() > 0);
+        imgmsg.loadUri(msgExtEntity.parseDirect(), chatType,msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), url,photoMessage.getImageWidth(),photoMessage.getImageHeight());
 
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MsgDefinBean bean = entity.getMsgDefinBean();
-                String thumb = bean.getContent();
-                String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(entity.getPubkey(), bean.getMessage_id(), FileUtil.FileType.IMG);
+                String thumb = photoMessage.getThum();
+                String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.IMG);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.IMGVIEWER, path);
 
-                if (entity instanceof MsgEntity) {
-                    if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, entity.getMsgDefinBean().getMessage_id(), direct);
-                        MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
-                    }
+                if (msgExtEntity.getRead_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgExtEntity.getMessage_id(), msgExtEntity.parseDirect());
+                    MessageHelper.getInstance().updateMsgState(msgExtEntity.getMessage_id(), 2);
                 }
             }
         });
@@ -122,13 +121,13 @@ public class MsgImgHolder extends MsgChatHolder {
     @Override
     public void transPondTo() {
         super.transPondTo();
-        MsgDefinBean bean = baseEntity.getMsgDefinBean();
-        String url = TextUtils.isEmpty(bean.getContent()) ? bean.getUrl() : bean.getContent();
-        String localPath = FileUtil.newContactFileName(baseEntity.getPubkey(), bean.getMessage_id(), FileUtil.FileType.IMG);
+        String url = TextUtils.isEmpty(photoMessage.getThum()) ? photoMessage.getThum() : photoMessage.getUrl();
+        String localPath = FileUtil.newContactFileName(getMsgExtEntity().getMessage_ower(),
+                getMsgExtEntity().getMessage_id(), FileUtil.FileType.IMG);
 
         if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(localPath)) {
             String local = FileUtil.islocalFile(url) ? url : localPath;
-            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(bean.getType()), local);
+            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(getMsgExtEntity().getMessageType()), local);
         }
     }
 }

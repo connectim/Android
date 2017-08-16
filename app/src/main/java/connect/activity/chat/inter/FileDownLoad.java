@@ -22,7 +22,7 @@ public class FileDownLoad {
         return fileDownLoad;
     }
 
-    public void downChatFile(final RoomType roomType, String url, final String pukkey, final IFileDownLoad fileDownLoad) {
+    public void downChatFile(final Connect.ChatType roomType, String url, final String pukkey, final IFileDownLoad fileDownLoad) {
         DownLoadFile downLoadFile = new DownLoadFile(url, new DownLoadFile.ResultListener() {
             @Override
             public void update(long bytesRead, long contentLength) {
@@ -37,14 +37,14 @@ public class FileDownLoad {
             @Override
             public void success(byte[] data) {
                 try {
-                    if (roomType == RoomType.RobotType) {
+                    if (roomType == Connect.ChatType.CONNECT_SYSTEM) {
                         fileDownLoad.successDown(data);
                     } else {
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(data);
                         Connect.StructData structData = null;
-                        if (roomType == RoomType.FriendType) {//private chat
+                        if (roomType == Connect.ChatType.PRIVATE) {//private chat
                             structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, MemoryDataManager.getInstance().getPriKey(), pukkey, gcmData);
-                        } else if (roomType == RoomType.GroupType) {//group chat
+                        } else if (roomType == Connect.ChatType.GROUPCHAT) {//group chat
                             structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(RoomSession.getInstance().getGroupEcdh()), gcmData);
                         }
                         byte[] dataFile = structData.getPlainData().toByteArray();

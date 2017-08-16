@@ -9,7 +9,9 @@ import org.greenrobot.greendao.annotation.Unique;
 import java.io.Serializable;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
+import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
@@ -229,5 +231,10 @@ public class MessageEntity implements Serializable {
         extEntity.setSnap_time(getSnap_time());
         extEntity.setState(getState());
         return extEntity;
+    }
+
+    public MsgDirect parseDirect() {
+        String mypubkey = MemoryDataManager.getInstance().getPubKey();
+        return mypubkey.equals(getFrom()) ? MsgDirect.To : MsgDirect.From;
     }
 }

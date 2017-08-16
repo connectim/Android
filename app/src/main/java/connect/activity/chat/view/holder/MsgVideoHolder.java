@@ -7,27 +7,26 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
+import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.model.fileload.PhotoUpload;
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.exts.VideoPlayerActivity;
 import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.chat.view.BubbleImg;
 import connect.activity.chat.view.DVideoProView;
-import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.common.bean.ConverType;
+import connect.activity.common.selefriend.ConversationActivity;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.VideoPlayerUtil;
+import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/23.
  */
 public class MsgVideoHolder extends MsgChatHolder {
+
     private BubbleImg videomsg;
     private DVideoProView videoProView;
 
@@ -43,68 +42,56 @@ public class MsgVideoHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
-        super.buildRowData(msgBaseHolder, entity);
-        final MsgDefinBean bean = entity.getMsgDefinBean();
-        String url = bean.getContent();
+    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        final Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
 
-        long videoTime = entity.getMsgDefinBean().getSize();
-        timeTxt.setText(String.format(Locale.ENGLISH,"%1$02d:%2$02d", videoTime / 60, videoTime % 60));
-        sizeTxt.setText(entity.getMsgDefinBean().getExt1());
+        int videoTime = videoMessage.getTimeLength();
+        timeTxt.setText(String.format(Locale.ENGLISH, "%1$02d:%2$02d", videoTime / 60, videoTime % 60));
+        sizeTxt.setText(FileUtil.fileSize(videoMessage.getSize()));
 
-        if (!TextUtils.isEmpty(definBean.getExt())) {
-            videomsg.setOpenBurn(true);
+        if (videoMessage.getSnapTime() == 0) {
+            videomsg.setOpenBurn(false);
         } else if (!hasDownLoad()) {
             videomsg.setOpenBurn(true);
         } else {
-            videomsg.setOpenBurn(false);
+            videomsg.setOpenBurn(true);
         }
 
-        videomsg.loadUri(direct, entity.getRoomType(),entity.getPubkey(), bean.getMessage_id(), url,definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
+        final Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
+        videomsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),
+                videoMessage.getCover(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = bean.getUrl();
+                String url = videoMessage.getUrl();
                 if (FileUtil.islocalFile(url)) {
-                    startPlayVideo(url, bean.getSize(),"");
+                    startPlayVideo(url, videoMessage.getSize(), "");
                     return;
                 }
 
-                final String localPath = FileUtil.newContactFileName(entity.getPubkey(), bean.getMessage_id(), FileUtil.FileType.VIDEO);
+                final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(),
+                        msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
                 if (FileUtil.isExistFilePath(localPath)) {
-                    String burntime = TextUtils.isEmpty(definBean.getExt()) ? "" : definBean.getExt();
-                    if (TextUtils.isEmpty(burntime)) {
-                        startPlayVideo(localPath, bean.getSize(),"");
+                    if (videoMessage.getSnapTime() == 0) {
+                        startPlayVideo(localPath, videoMessage.getSize(), "");
                     } else {
-                        if (entity instanceof MsgEntity) {
-                            if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                                startPlayVideo(localPath, bean.getSize(), entity.getMsgDefinBean().getMessage_id());
-                            }
-                        } else {
-                            startPlayVideo(localPath, bean.getSize(),"");
-                        }
+                        startPlayVideo(localPath, videoMessage.getSize(), msgExtEntity.getMessage_id());
                     }
                 } else {
-                    FileDownLoad.getInstance().downChatFile(entity.getRoomType(),url, entity.getPubkey(), new FileDownLoad.IFileDownLoad() {
+                    FileDownLoad.getInstance().downChatFile(chatType, url, msgExtEntity.getMessage_ower(), new FileDownLoad.IFileDownLoad() {
                         @Override
                         public void successDown(byte[] bytes) {
                             videoProView.loadState(true, 0);
                             videomsg.setOpenBurn(false);
-                            videomsg.loadUri(direct,entity.getRoomType(), entity.getPubkey(), bean.getMessage_id(), definBean.getUrl(),definBean.getImageOriginWidth(),definBean.getImageOriginHeight());
+                            videomsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),
+                                    videoMessage.getUrl(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
 
                             FileUtil.byteArrToFilePath(bytes, localPath);
-
-                            String burntime = TextUtils.isEmpty(definBean.getExt()) ? "" : definBean.getExt();
-                            if (TextUtils.isEmpty(burntime)) {
-                                startPlayVideo(localPath, bean.getSize(),"");
+                            if (videoMessage.getSnapTime() == 0) {
+                                startPlayVideo(localPath, videoMessage.getSize(), "");
                             } else {
-                                if (entity instanceof MsgEntity) {
-                                    if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                                        startPlayVideo(localPath, bean.getSize(), entity.getMsgDefinBean().getMessage_id());
-                                    }
-                                } else {
-                                    startPlayVideo(localPath, bean.getSize(),"");
-                                }
+                                startPlayVideo(localPath, videoMessage.getSize(), msgExtEntity.getMessage_id());
                             }
                         }
 
@@ -124,8 +111,8 @@ public class MsgVideoHolder extends MsgChatHolder {
         });
 
         if (videoProView != null) {
-            String localPath = FileUtil.newContactFileName(entity.getPubkey(), bean.getMessage_id(), FileUtil.FileType.VIDEO);
-            if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(localPath)) {
+            String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
+            if (FileUtil.islocalFile(videoMessage.getUrl()) || FileUtil.isExistFilePath(localPath)) {
                 videoProView.loadState(true, 0);
             } else {
                 videoProView.loadState(false, 0);
@@ -151,13 +138,19 @@ public class MsgVideoHolder extends MsgChatHolder {
     }
 
     public boolean hasDownLoad() {
+        MsgExtEntity msgExtEntity = getMsgExtEntity();
         boolean isDown = false;
-        String url = definBean.getUrl();
-        if (FileUtil.islocalFile(url)) {
-            isDown = true;
-        } else {
-            final String localPath = FileUtil.newContactFileName(baseEntity.getPubkey(), definBean.getMessage_id(), FileUtil.FileType.VIDEO);
-            isDown = FileUtil.isExistFilePath(localPath);
+        try {
+            Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
+            String url = videoMessage.getUrl();
+            if (FileUtil.islocalFile(url)) {
+                isDown = true;
+            } else {
+                final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
+                isDown = FileUtil.isExistFilePath(localPath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return isDown;
     }
@@ -170,34 +163,40 @@ public class MsgVideoHolder extends MsgChatHolder {
     @Override
     public void transPondTo() {
         super.transPondTo();
-        final MsgDefinBean bean = baseEntity.getMsgDefinBean();
-        String url = bean.getUrl();
-        final String localPath = FileUtil.newContactFileName(baseEntity.getPubkey(), bean.getMessage_id(), FileUtil.FileType.VIDEO);
+        final MsgExtEntity msgExtEntity = getMsgExtEntity();
+        try {
+            final Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
+            String url = videoMessage.getUrl();
+            final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
 
-        if (FileUtil.islocalFile(url)) {
-            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND,String.valueOf(bean.getType()), url,bean.getSize());
-        } else if (FileUtil.isExistFilePath(localPath)) {
-            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND,String.valueOf(bean.getType()), localPath,bean.getSize());
-        } else {
-            FileDownLoad.getInstance().downChatFile(baseEntity.getRoomType(),url, baseEntity.getPubkey(), new FileDownLoad.IFileDownLoad() {
-                @Override
-                public void successDown(byte[] bytes) {
-                    videoProView.loadState(true, 0);
-                    FileUtil.byteArrToFilePath(bytes, localPath);
-                    ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(bean.getType()), localPath,bean.getSize());
-                }
+            if (FileUtil.islocalFile(url)) {
+                ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), url, videoMessage.getTimeLength());
+            } else if (FileUtil.isExistFilePath(localPath)) {
+                ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
+            } else {
+                Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
+                FileDownLoad.getInstance().downChatFile(chatType, url, msgExtEntity.getMessage_ower(), new FileDownLoad.IFileDownLoad() {
+                    @Override
+                    public void successDown(byte[] bytes) {
+                        videoProView.loadState(true, 0);
+                        FileUtil.byteArrToFilePath(bytes, localPath);
+                        ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
+                    }
 
-                @Override
-                public void failDown() {
+                    @Override
+                    public void failDown() {
 
-                }
+                    }
 
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    int progress = (int) (bytesWritten * 100 / totalSize);
-                    videoProView.loadState(false, progress);
-                }
-            });
+                    @Override
+                    public void onProgress(long bytesWritten, long totalSize) {
+                        int progress = (int) (bytesWritten * 100 / totalSize);
+                        videoProView.loadState(false, progress);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

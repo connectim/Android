@@ -5,19 +5,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.im.bean.UserOrderBean;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.WebsiteExt1Bean;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.wallet.PacketDetailActivity;
+import connect.im.bean.UserOrderBean;
+import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
@@ -32,6 +28,7 @@ import protos.Connect;
  * Created by pujin on 2017/2/20.
  */
 public class MsgWebsiteHolder extends MsgChatHolder {
+
     private TextView titleTxt;
     private TextView contentTxt;
     private RoundedImageView typeImg;
@@ -44,14 +41,14 @@ public class MsgWebsiteHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) {
-        super.buildRowData(msgBaseHolder, entity);
-        MsgDefinBean definBean = entity.getMsgDefinBean();
-        final String content = definBean.getContent();
-        WebsiteExt1Bean ext1Bean = new Gson().fromJson(definBean.getExt1(), WebsiteExt1Bean.class);
-        titleTxt.setText(ext1Bean.getLinkTitle());
-        contentTxt.setText(ext1Bean.getLinkSubtitle());
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        Connect.WebsiteMessage websiteMessage = Connect.WebsiteMessage.parseFrom(msgExtEntity.getContents());
 
+        titleTxt.setText(websiteMessage.getTitle());
+        contentTxt.setText(websiteMessage.getSubtitle());
+
+        String content = websiteMessage.getUrl();
         if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE)) {
             if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE_TRANSFER)) {//outer transfer
                 GlideUtil.loadImage(typeImg, R.mipmap.message_send_bitcoin2x);
@@ -61,7 +58,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                 GlideUtil.loadImage(typeImg, R.mipmap.message_send_payment2x);
             }
         } else {//outer link
-            String imgUrl = TextUtils.isEmpty(ext1Bean.getLinkImg()) ? "" : ext1Bean.getLinkImg();
+            String imgUrl = TextUtils.isEmpty(websiteMessage.getImg()) ? "" : websiteMessage.getImg();
             if (TextUtils.isEmpty(imgUrl)) {
                 GlideUtil.loadImage(typeImg, R.mipmap.message_link2x);
             } else {
@@ -115,9 +112,10 @@ public class MsgWebsiteHolder extends MsgChatHolder {
 
     /**
      * token query detail
+     *
      * @param token
      */
-    private void avaliableOuterRedPacket(final String token){
+    private void avaliableOuterRedPacket(final String token) {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_PACKAGE_INFO + "/" + token, ByteString.copyFrom(new byte[]{}),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
@@ -126,7 +124,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
-                            if(ProtoBufUtil.getInstance().checkProtoBuf(redPackage)){
+                            if (ProtoBufUtil.getInstance().checkProtoBuf(redPackage)) {
                                 if (redPackage.getRemainSize() == 0) {//lucky packet is brought out
                                     String hashid = redPackage.getHashId();
                                     int type = redPackage.getSystem() ? 1 : 0;
