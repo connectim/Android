@@ -11,18 +11,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import connect.activity.chat.bean.MsgExtEntity;
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.MessageEntity;
-import connect.im.model.FailMsgsManager;
-import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgSender;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.StickerCategory;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.MsgNoticeBean;
+import connect.database.MemoryDataManager;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.MessageEntity;
+import connect.im.model.FailMsgsManager;
 import connect.utils.RegularUtil;
 import connect.utils.data.ResourceUtil;
 

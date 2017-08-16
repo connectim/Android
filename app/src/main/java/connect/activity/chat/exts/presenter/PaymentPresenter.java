@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-import connect.activity.chat.bean.GatherBean;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.contract.PaymentContract;
 import connect.database.MemoryDataManager;
@@ -97,8 +96,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
 
             @Override
             public void success(Connect.Crowdfunding crowdfunding) {
-                GatherBean gatherBean = new GatherBean(crowdfunding.getHashId(), crowdfunding.getTotal() / size, size, true, crowdfunding.getTips());
-                MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+                MsgSend.sendOuterMsg(MsgType.Request_Payment, 1,crowdfunding.getHashId(),crowdfunding.getTotal(),size,crowdfunding.getTips());
                 ActivityUtil.goBack(activity);
             }
 

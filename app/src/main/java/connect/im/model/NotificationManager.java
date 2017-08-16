@@ -12,19 +12,12 @@ import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.util.List;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.MsgFragmReceiver;
 import connect.broadcast.NotificationBroadcastReceiver;
-import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -75,24 +68,6 @@ public class NotificationManager {
             MsgFragmReceiver.refreshRoom();
         }
     };
-
-    /*** Refresh a message time recently */
-    public void pushNoticeMsg(String pubkey, int type, MsgEntity msgEntity) {
-        mHandler.removeMessages(MSG_NOTICE);
-
-        android.os.Message message = mHandler.obtainMessage(MSG_NOTICE);
-        Bundle bundle = new Bundle();
-        bundle.putString("KEY", pubkey);
-        bundle.putInt("TYPE", type);
-        bundle.putSerializable("CONTENT", msgEntity);
-        message.setData(bundle);
-
-        if (TimeUtil.getCurrentTimeInLong() - TIME_SENDNOTIFY < MSG_DELAYMILLIS) {
-            mHandler.sendMessage(message);
-        } else {
-            mHandler.sendMessageDelayed(message, MSG_DELAYMILLIS);
-        }
-    }
 
     /*** Refresh a message time recently */
     public void pushNoticeMsg(String identify, int chattype, String content) {

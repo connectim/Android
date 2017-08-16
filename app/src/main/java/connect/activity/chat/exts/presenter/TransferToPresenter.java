@@ -7,7 +7,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.HashMap;
 
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.TransferToActivity;

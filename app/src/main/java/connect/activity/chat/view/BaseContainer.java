@@ -13,10 +13,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.ContainerBean;
 import connect.utils.system.SystemUtil;
 
 /**

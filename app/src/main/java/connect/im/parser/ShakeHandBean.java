@@ -11,7 +11,9 @@ import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.model.content.RobotChat;
 import connect.database.MemoryDataManager;
 import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -25,13 +27,9 @@ import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.ChatSendManager;
 import connect.im.model.FailMsgsManager;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgSender;
-import connect.activity.chat.model.content.RobotChat;
-import connect.activity.base.BaseApplication;
 import connect.service.bean.PushMessage;
 import connect.service.bean.ServiceAck;
+import connect.ui.activity.R;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;

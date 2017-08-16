@@ -1,11 +1,13 @@
 package connect.im.parser;
 
 import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
+
 import java.nio.ByteBuffer;
+
 import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.model.content.FriendChat;
@@ -116,7 +118,7 @@ public class ChatParseBean extends InterParse {
                 normalChat.updateRoomMsg(null, showTxt, msgExtEntity.getCreatetime(), -1, true);
 
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgExtEntity);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.chatKey(), msgExtEntity);
             }
         } else {
             MessageEntity messageEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),

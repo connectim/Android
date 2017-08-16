@@ -8,19 +8,14 @@ import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.google.gson.Gson;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import connect.activity.chat.bean.BurnNotice;
-import connect.activity.chat.bean.ExtBean;
-import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.model.ChatMsgUtil;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
@@ -37,7 +32,6 @@ public class BurnProBar extends View {
     private Paint paint;
 
     private BurnCountTimer burnTimer = null;
-    private ExtBean extBean;
     private MsgExtEntity msgExtEntity;
 
     public BurnProBar(Context context) {
@@ -85,7 +79,7 @@ public class BurnProBar extends View {
         MsgDirect direct = msgExtEntity.parseDirect();
 
         if (burnstart > 0 || direct == MsgDirect.From) {
-            long remainTime = extBean.getLuck_delete() - (TimeUtil.getCurrentTimeInLong() - burnstart);
+            long remainTime = msgExtEntity.parseDestructTime() - (TimeUtil.getCurrentTimeInLong() - burnstart);
             burnTimer = new BurnCountTimer(remainTime, 500);
             burnTimer.start();
         }
@@ -175,7 +169,7 @@ public class BurnProBar extends View {
 
         @Override
         public void onTick(long millisUntilFinished) {
-            value = millisUntilFinished * ROUND_DIRECT / extBean.getLuck_delete();
+            value = millisUntilFinished * ROUND_DIRECT / msgExtEntity.parseDestructTime();
             invalidate();
         }
     }

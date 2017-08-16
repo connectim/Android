@@ -4,15 +4,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.google.gson.GsonBuilder;
 import com.google.protobuf.ByteString;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.model.ChatMsgUtil;
+import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.GroupChat;
+import connect.activity.chat.model.content.NormalChat;
 import connect.activity.chat.model.content.RobotChat;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -20,19 +23,9 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.im.bean.SocketACK;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.model.ChatMsgUtil;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.NormalChat;
-import connect.activity.base.BaseApplication;
 import connect.im.parser.ChatParseBean;
 import connect.ui.activity.R;
-import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
-import connect.utils.okhttp.adapter.MsgDefTypeAdapter;
 import protos.Connect;
 
 /**

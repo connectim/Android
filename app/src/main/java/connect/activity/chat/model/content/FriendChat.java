@@ -78,7 +78,7 @@ public class FriendChat extends NormalChat {
             String friendKey = null;
 
             loadUserCookie();
-            loadFriendCookie(roomKey());
+            loadFriendCookie(chatKey());
             SupportKeyUril.EcdhExts ecdhExts = null;
             Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
             Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
@@ -86,14 +86,14 @@ public class FriendChat extends NormalChat {
             switch (encryType) {
                 case NORMAL:
                     priKey = MemoryDataManager.getInstance().getPriKey();
-                    friendKey = roomKey();
+                    friendKey = chatKey();
                     ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
                     break;
                 case HALF:
                     priKey = userCookie.getPriKey();
                     randomSalt = userCookie.getSalt();
 
-                    friendKey = roomKey();
+                    friendKey = chatKey();
                     ecdhExts = SupportKeyUril.EcdhExts.OTHER;
                     ecdhExts.setBytes(randomSalt);
                     sessionBuilder.setSalt(ByteString.copyFrom(randomSalt))
@@ -124,7 +124,7 @@ public class FriendChat extends NormalChat {
                     .setChatSession(sessionBuilder);
 
             Connect.MessageData messageData = builder.build();
-            ChatSendManager.getInstance().sendChatAckMsg(SocketACK.SINGLE_CHAT, roomKey(), messageData);
+            ChatSendManager.getInstance().sendChatAckMsg(SocketACK.SINGLE_CHAT, chatKey(), messageData);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -146,10 +146,10 @@ public class FriendChat extends NormalChat {
     public String address() {
         String address = contactEntity.getAddress();
         if (TextUtils.isEmpty(address)) {
-            if (TextUtils.isEmpty(roomKey())) {
+            if (TextUtils.isEmpty(chatKey())) {
                 address = "";
             } else {
-                address = AllNativeMethod.cdGetBTCAddrFromPubKey(roomKey());
+                address = AllNativeMethod.cdGetBTCAddrFromPubKey(chatKey());
             }
         }
         return address;
@@ -162,7 +162,7 @@ public class FriendChat extends NormalChat {
     }
 
     @Override
-    public String roomKey() {
+    public String chatKey() {
         String pubKey = TextUtils.isEmpty(contactEntity.getPub_key()) ? "" : contactEntity.getPub_key();
         return pubKey;
     }
@@ -188,7 +188,7 @@ public class FriendChat extends NormalChat {
     }
 
     @Override
-    public int roomType() {
+    public int chatType() {
         return 0;
     }
 

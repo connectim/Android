@@ -59,12 +59,12 @@ public class RobotChat extends NormalChat{
     }
 
     @Override
-    public String roomKey() {
+    public String chatKey() {
         return BaseApplication.getInstance().getString(R.string.app_name);
     }
 
     @Override
-    public int roomType() {
+    public int chatType() {
         return 2;
     }
 

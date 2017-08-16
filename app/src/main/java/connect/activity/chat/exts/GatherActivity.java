@@ -13,24 +13,23 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.bean.MsgSend;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.GatherBean;
-import connect.activity.chat.bean.MsgSend;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.data.RateFormatUtil;
 import connect.utils.ToastEUtil;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.business.TransferEditView;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
-import connect.wallet.cwallet.business.TransferEditView;
 import protos.Connect;
 
 /**

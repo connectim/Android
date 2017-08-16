@@ -100,7 +100,7 @@ public class TransactionParseBean extends InterParse {
 
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgExtEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.chatKey(), msgExtEntity);
     }
 
     /**
@@ -156,7 +156,7 @@ public class TransactionParseBean extends InterParse {
 
         MsgExtEntity msgExtEntity = normalChat.noticeMsg(content);
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgExtEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.chatKey(), msgExtEntity);
         normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
     }
 

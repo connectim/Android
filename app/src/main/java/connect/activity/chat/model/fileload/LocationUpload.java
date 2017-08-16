@@ -52,7 +52,7 @@ public class LocationUpload extends FileUpLoad {
 
                     Connect.GcmData gcmData = null;
                     Connect.RichMedia richMedia = null;
-                    if (baseChat.roomType() == 2) {
+                    if (baseChat.chatType() == 2) {
                         richMedia = Connect.RichMedia.newBuilder().
                                 setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(firstPath))).
                                 setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(secondPath))).build();

@@ -12,19 +12,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.ApplyGroupBean;
-import connect.activity.chat.bean.CardExt1Bean;
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.GroupReviewBean;
-import connect.activity.chat.bean.Talker;
 import connect.activity.chat.exts.contract.HandleGroupRequestContract;
 import connect.activity.chat.exts.presenter.HandleGroupRequestPresenter;
 import connect.activity.contact.FriendInfoActivity;

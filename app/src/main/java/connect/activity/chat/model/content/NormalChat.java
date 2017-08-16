@@ -21,7 +21,7 @@ public abstract class NormalChat extends BaseChat {
         Connect.TextMessage.Builder builder = Connect.TextMessage.newBuilder()
                 .setContent(string);
 
-        if (roomType() == 0) {
+        if (chatType() == 0) {
             long destructtime = destructReceipt();
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);
@@ -41,7 +41,7 @@ public abstract class NormalChat extends BaseChat {
                 .setImageHeight(width)
                 .setImageHeight(height);
 
-        if (roomType() == 0) {
+        if (chatType() == 0) {
             long destructtime = destructReceipt();
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);
@@ -58,7 +58,7 @@ public abstract class NormalChat extends BaseChat {
                 .setUrl(string)
                 .setTimeLength(length);
 
-        if (roomType() == 0) {
+        if (chatType() == 0) {
             long destructtime = destructReceipt();
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);
@@ -79,7 +79,7 @@ public abstract class NormalChat extends BaseChat {
                 .setImageWidth(width)
                 .setImageHeight(height);
 
-        if (roomType() == 0) {
+        if (chatType() == 0) {
             long destructtime = destructReceipt();
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);
@@ -95,7 +95,7 @@ public abstract class NormalChat extends BaseChat {
         Connect.EmotionMessage.Builder builder = Connect.EmotionMessage.newBuilder()
                 .setContent(string);
 
-        if (roomType() == 0) {
+        if (chatType() == 0) {
             long destructtime = destructReceipt();
             if (destructtime > 0) {
                 builder.setSnapTime(destructtime);

@@ -108,14 +108,14 @@ public class GroupChat extends NormalChat {
     }
 
     @Override
-    public String roomKey() {
+    public String chatKey() {
         if (groupEntity == null) return "";
         String groupKey = TextUtils.isEmpty(groupEntity.getIdentifier()) ? "" : groupEntity.getIdentifier();
         return groupKey;
     }
 
     @Override
-    public int roomType() {
+    public int chatType() {
         return 1;
     }
 
@@ -152,7 +152,7 @@ public class GroupChat extends NormalChat {
     public GroupMemberEntity loadGroupMember(String memberkey) {
         if (memEntityMap == null) {
             memEntityMap = new HashMap<>();
-            List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(roomKey());
+            List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(chatKey());
             for (GroupMemberEntity memEntity : groupMemEntities) {
                 memEntityMap.put(memEntity.getPub_key(), memEntity);
             }

@@ -21,7 +21,6 @@ import java.util.Map;
 import connect.activity.chat.bean.BaseListener;
 import connect.activity.chat.bean.ItemViewType;
 import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.view.holder.MsgBaseHolder;
 import connect.activity.chat.view.row.MsgBaseRow;
@@ -42,7 +41,6 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     private LinearLayoutManager layoutManager;
     protected List<MsgExtEntity> msgEntities = new ArrayList<>();
 
-    /** mapping msgid，MsgEntity ,quickly query msgid and Message Entities */
     private Map<String, MsgExtEntity> msgEntityMap = new HashMap<>();
 
     public ChatAdapter(Activity activity, RecyclerView recycler, LinearLayoutManager manager) {

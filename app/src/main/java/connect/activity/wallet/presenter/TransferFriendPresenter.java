@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 
 import java.util.List;
 
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.NormalChat;

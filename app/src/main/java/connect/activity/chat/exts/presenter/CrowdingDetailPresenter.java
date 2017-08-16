@@ -5,7 +5,6 @@ import android.app.Activity;
 import java.util.List;
 
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;

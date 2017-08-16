@@ -25,7 +25,6 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.BaseListener;
 import connect.activity.chat.bean.BurnNotice;
-import connect.activity.chat.bean.ExtBean;
 import connect.activity.chat.bean.GeoAddressBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
@@ -123,7 +122,7 @@ public abstract class BaseChatActvity extends BaseActivity {
 
                 if (!TextUtils.isEmpty(normalChat.address())) {
                     UserOrderBean userOrderBean = new UserOrderBean();
-                    userOrderBean.friendChatCookie(normalChat.roomKey());
+                    userOrderBean.friendChatCookie(normalChat.chatKey());
                 }
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, roomSession.getBurntime() == 0 ? 0 : 1);
                 break;
@@ -356,9 +355,9 @@ public abstract class BaseChatActvity extends BaseActivity {
                 MessageHelper.getInstance().deleteRoomMsg(talker.getTalkKey());
                 break;
             case TRANSFER:
-                if (normalChat.roomType() == 0) {
+                if (normalChat.chatType() == 0) {
                     TransferToActivity.startActivity(activity, normalChat.address());
-                } else if (normalChat.roomType() == 1) {
+                } else if (normalChat.chatType() == 1) {
                     SeleUsersActivity.startActivity(activity, SeleUsersActivity.SOURCE_GROUP, talker.getTalkKey(), null);
                 }
                 break;
@@ -443,19 +442,19 @@ public abstract class BaseChatActvity extends BaseActivity {
                 sendNormalMsg(false, msgExtEntity);
                 break;
             case GROUP_REMOVE://dissolute group
-                if (normalChat.roomKey().equals(objects[0])) {
+                if (normalChat.chatKey().equals(objects[0])) {
                     ((GroupChat) normalChat).setGroupEntity(null);
                     ActivityUtil.backActivityWithClearTop(activity, HomeActivity.class);
                 }
                 break;
             case UNARRIVE_UPDATE://update chat Cookie
-                if (normalChat.roomKey().equals(objects[0])) {
+                if (normalChat.chatKey().equals(objects[0])) {
                     ((FriendChat) normalChat).setFriendCookie(null);
-                    ((FriendChat) normalChat).loadFriendCookie(normalChat.roomKey());
+                    ((FriendChat) normalChat).loadFriendCookie(normalChat.chatKey());
                 }
                 break;
             case UNARRIVE_HALF:
-                if (normalChat.roomKey().equals(objects[0])) {
+                if (normalChat.chatKey().equals(objects[0])) {
                     ((FriendChat) normalChat).setEncryType(FriendChat.EncryType.HALF);
                 }
                 break;
@@ -464,7 +463,6 @@ public abstract class BaseChatActvity extends BaseActivity {
                     msgExtEntity = (MsgExtEntity) objects[1];
                     int time = 0;
                     String msgid = null;
-                    ExtBean extBean = null;
 
                     switch (MsgType.toMsgType(msgExtEntity.getMessageType())) {
                         case Self_destruct_Notice://Accept each other send after reading

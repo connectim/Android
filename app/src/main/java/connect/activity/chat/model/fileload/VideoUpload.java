@@ -52,7 +52,7 @@ public class VideoUpload extends FileUpLoad {
 
                     String priKey = MemoryDataManager.getInstance().getPriKey();
                     String pubkey = MemoryDataManager.getInstance().getPubKey();
-                    if (baseChat.roomType() != 2) {
+                    if (baseChat.chatType() != 2) {
                         Connect.GcmData firstGcmData = encodeAESGCMStructData(comFist);
                         Connect.GcmData secondGcmData = encodeAESGCMStructData(filePath);
 

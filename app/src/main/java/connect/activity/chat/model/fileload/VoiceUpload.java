@@ -36,7 +36,7 @@ public class VoiceUpload extends FileUpLoad {
                     String pubkey = SupportKeyUril.getPubKeyFromPriKey(MemoryDataManager.getInstance().getPriKey());
                     String priKey = MemoryDataManager.getInstance().getPriKey();
 
-                    if (baseChat.roomType() != 2) {
+                    if (baseChat.chatType() != 2) {
                         Connect.GcmData gcmData = encodeAESGCMStructData(voiceMessage.getUrl());
                         Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
                                 setEntity(gcmData.toByteString()).build();

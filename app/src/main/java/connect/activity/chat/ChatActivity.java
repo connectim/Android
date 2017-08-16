@@ -203,10 +203,10 @@ public class ChatActivity extends BaseChatActvity {
                     titleName = titleName.substring(0, 12);
                     titleName += "...";
                 }
-                if (normalChat.roomType() == 0 || normalChat.roomType() == 2) {
+                if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
                     toolbar.setTitle(titleName);
                 } else {
-                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.roomKey());
+                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
                     toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
                 }
                 break;
@@ -220,10 +220,10 @@ public class ChatActivity extends BaseChatActvity {
                     }
                 }
                 indexName.append(name.charAt(name.length() - 1));
-                if (normalChat.roomType() == 0 || normalChat.roomType() == 2) {
+                if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
                     toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
                 } else {
-                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.roomKey());
+                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
                     toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
                 }
                 break;
@@ -284,7 +284,7 @@ public class ChatActivity extends BaseChatActvity {
             transpondTo(data);
         } else if (resultCode == RESULT_OK && requestCode == SeleUsersActivity.CODE_REQUEST) {
             ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
-            TransferFriendActivity.startActivity(activity, friendList, normalChat.roomKey());
+            TransferFriendActivity.startActivity(activity, friendList, normalChat.chatKey());
         }
     }
 

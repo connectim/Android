@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import java.io.Serializable;
 import java.util.List;
 
-import connect.activity.chat.bean.GatherBean;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.home.bean.MsgFragmReceiver;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -102,19 +101,19 @@ public abstract class BaseChat<T> implements Serializable {
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at, boolean newmsg,boolean broad) {
-        if (TextUtils.isEmpty(roomKey())) {
+        if (TextUtils.isEmpty(chatKey())) {
             return;
         }
 
-        ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(roomKey());
+        ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(chatKey());
         if (roomEntity == null) {
             roomEntity = new ConversionEntity();
-            roomEntity.setIdentifier(roomKey());
+            roomEntity.setIdentifier(chatKey());
         }
 
         roomEntity.setName(nickName());
         roomEntity.setAvatar(headImg());
-        roomEntity.setType(roomType());
+        roomEntity.setType(chatType());
         if (!TextUtils.isEmpty(showText)) {
             roomEntity.setContent(showText);
         }
@@ -140,11 +139,9 @@ public abstract class BaseChat<T> implements Serializable {
 
     public abstract void sendPushMsg(MsgExtEntity msgExtEntity);
 
-    /** Roomkey */
-    public abstract String roomKey();
+    public abstract String chatKey();
 
-    /** RoomType */
-    public abstract int roomType();
+    public abstract int chatType();
 
     public boolean isStranger() {
         return isStranger;
@@ -155,7 +152,7 @@ public abstract class BaseChat<T> implements Serializable {
     }
 
     public List<MsgExtEntity> loadMoreEntities(long firstmsgtime) {
-        List<MsgExtEntity> detailEntities = MessageHelper.getInstance().loadMoreMsgEntities(roomKey(), firstmsgtime);
+        List<MsgExtEntity> detailEntities = MessageHelper.getInstance().loadMoreMsgEntities(chatKey(), firstmsgtime);
         byte[] localHashKeys = SupportKeyUril.localHashKey().getBytes();
         for (MsgExtEntity detailEntity : detailEntities) {
             try {

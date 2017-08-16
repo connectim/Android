@@ -9,11 +9,10 @@ import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
-import connect.activity.chat.bean.RoomType;
-import connect.ui.activity.R;
+import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.inter.FileDownLoad;
-import connect.activity.base.BaseApplication;
+import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.glide.BlurMaskTransformation;
 import connect.utils.system.SystemUtil;

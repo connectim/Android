@@ -16,9 +16,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
 import connect.activity.chat.bean.RecExtBean;
+import connect.ui.activity.R;
 
 /**
  * State news component

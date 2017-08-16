@@ -35,7 +35,7 @@ public abstract class FileUpLoad {
     protected Connect.MediaFile mediaFile;
 
     public void fileHandle() {
-        if (baseChat.roomType() != 2) {
+        if (baseChat.chatType() != 2) {
             FailMsgsManager.getInstance().sendDelayFailMsg(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), null, null);
         }
     }
@@ -54,9 +54,9 @@ public abstract class FileUpLoad {
         String priKey = MemoryDataManager.getInstance().getPriKey();
 
         byte[] fileSie = FileUtil.filePathToByteArray(filePath);
-        if (baseChat.roomType() == 0) {
-            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, priKey, baseChat.roomKey(), ByteString.copyFrom(fileSie));
-        } else if (baseChat.roomType() == 1) {
+        if (baseChat.chatType() == 0) {
+            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, priKey, baseChat.chatKey(), ByteString.copyFrom(fileSie));
+        } else if (baseChat.chatType() == 1) {
             gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), ByteString.copyFrom(fileSie));
         }
         return gcmData;

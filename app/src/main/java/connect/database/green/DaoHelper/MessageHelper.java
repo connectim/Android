@@ -2,18 +2,15 @@ package connect.database.green.DaoHelper;
 
 import android.database.Cursor;
 
-import com.google.gson.Gson;
-
 import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.BaseDao;
 import connect.database.green.bean.MessageEntity;
-import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.chat.bean.MsgDefinBean;
 import connect.database.green.dao.MessageEntityDao;
 import connect.utils.StringUtil;
 import connect.utils.cryption.EncryptionUtil;
