@@ -95,8 +95,8 @@ public class TransactionParseBean extends InterParse {
 
         FriendChat normalChat = new FriendChat(stranger);
         MsgExtEntity msgExtEntity = normalChat.transferMsg(0, notice.getHashId(), notice.getAmount(), notice.getTips());
-        msgExtEntity.setFrom(senderPubkey);
-        msgExtEntity.setTo(receiverInfo.getPubKey());
+        msgExtEntity.setMessage_from(senderPubkey);
+        msgExtEntity.setMessage_to(receiverInfo.getPubKey());
 
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
@@ -265,8 +265,8 @@ public class TransactionParseBean extends InterParse {
 
         NormalChat normalChat = new FriendChat(friendEntity);
         MsgExtEntity msgExtEntity = normalChat.transferMsg(1, notice.getHashId(), notice.getAmount(), notice.getTips());
-        msgExtEntity.setFrom(friendEntity.getPub_key());
-        msgExtEntity.setTo(mypublickey);
+        msgExtEntity.setMessage_from(friendEntity.getPub_key());
+        msgExtEntity.setMessage_to(mypublickey);
 
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);

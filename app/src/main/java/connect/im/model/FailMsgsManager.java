@@ -228,8 +228,8 @@ public class FailMsgsManager {
                 if (object instanceof String) {
                     String mypublickey = MemoryDataManager.getInstance().getPubKey();
                     MsgExtEntity msgExtEntity = normalChat.noticeMsg((String) object);
-                    msgExtEntity.setFrom(pubkey);
-                    msgExtEntity.setTo(mypublickey);
+                    msgExtEntity.setMessage_from(pubkey);
+                    msgExtEntity.setMessage_to(mypublickey);
 
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                     normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());

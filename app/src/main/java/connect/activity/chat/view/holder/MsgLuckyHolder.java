@@ -87,8 +87,8 @@ public class MsgLuckyHolder extends MsgChatHolder {
 
         MessageEntity msgEntity = MessageHelper.getInstance().loadMsgByMsgid(msgExtEntity.getMessage_id());
         if (msgEntity != null) {
-            msgEntity.setState(1);
-            MessageHelper.getInstance().updateMsg(msgEntity);
+            msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
+            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         }
 
         Connect.RedPackageHash packageHash = Connect.RedPackageHash.newBuilder().setId(hashid).build();

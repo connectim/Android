@@ -153,8 +153,8 @@ public class ShakeHandBean extends InterParse {
     private void welcomeRobotMsg() {
         String mypublickey = MemoryDataManager.getInstance().getPubKey();
         MsgExtEntity msgExtEntity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
-        msgExtEntity.setFrom(RobotChat.getInstance().nickName());
-        msgExtEntity.setTo(mypublickey);
+        msgExtEntity.setMessage_from(RobotChat.getInstance().nickName());
+        msgExtEntity.setMessage_to(mypublickey);
 
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);

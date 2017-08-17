@@ -266,8 +266,8 @@ public class MsgParseBean extends InterParse {
 
         entity.setSend_status(1);
         String mypublickey = MemoryDataManager.getInstance().getPubKey();
-        entity.setFrom(BaseApplication.getInstance().getString(R.string.app_name));
-        entity.setTo(mypublickey);
+        entity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));
+        entity.setMessage_to(mypublickey);
         return entity;
     }
 

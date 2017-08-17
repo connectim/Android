@@ -1,7 +1,13 @@
 package connect.activity.chat.bean;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
+import connect.activity.base.BaseApplication;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.GroupMemberEntity;
 import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
+import connect.ui.activity.R;
 import protos.Connect;
 
 /**
@@ -63,14 +69,13 @@ public class MsgExtEntity extends MessageEntity {
         messageEntity.setChatType(getChatType());
         messageEntity.setMessage_ower(getMessage_ower());
         messageEntity.setMessageType(getMessageType());
-        messageEntity.setFrom(getFrom());
-        messageEntity.setTo(getTo());
+        messageEntity.setMessage_from(getMessage_from());
+        messageEntity.setMessage_to(getMessage_to());
         messageEntity.setContent(getContent());
         messageEntity.setCreatetime(getCreatetime());
         messageEntity.setRead_time(getRead_time());
         messageEntity.setSend_status(getSend_status());
         messageEntity.setSnap_time(getSnap_time());
-        messageEntity.setState(getState());
         return messageEntity;
     }
 
@@ -79,8 +84,8 @@ public class MsgExtEntity extends MessageEntity {
                 .setMsgId(getMessage_id())
                 .setChatType(Connect.ChatType.forNumber(getChatType()))
                 .setMsgType(getMessageType())
-                .setFrom(getFrom())
-                .setTo(getTo())
+                .setFrom(getMessage_from())
+                .setTo(getMessage_to())
                 .setMsgTime(getCreatetime());
         return builder;
     }
@@ -114,6 +119,85 @@ public class MsgExtEntity extends MessageEntity {
             e.printStackTrace();
         }
         return destructtime;
+    }
+
+    /**
+     * Display the list in the session
+     *
+     * @return
+     */
+    public String showContent() {
+        String content = "";
+        MsgType msgType = MsgType.toMsgType(getMessageType());
+        switch (msgType) {
+            case Text://text
+                if (contents != null) {
+                    try {
+                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);
+                        content = textMessage.getContent();
+                    } catch (InvalidProtocolBufferException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            case Voice://voice
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Audio);
+                break;
+            case Photo://picture
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Picture);
+                break;
+            case Video://video
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Video);
+                break;
+            case Emotion://expression
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Expression);
+                break;
+            case Self_destruct_Notice://burn message
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Snapchat);
+                break;
+            case Self_destruct_Receipt://burn back
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Snapchat);
+                break;
+            case Request_Payment:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Funding);
+                break;
+            case Transfer:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Transfer);
+                break;
+            case Lucky_Packet:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Red_packet);
+                break;
+            case Location:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Location);
+                break;
+            case Name_Card:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card);
+                break;
+            case INVITE_GROUP:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Group_Namecard);
+                break;
+            case OUTER_WEBSITE:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Group_certification);
+                break;
+            default:
+                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Tips);
+                break;
+        }
+
+        Connect.ChatType chatType = Connect.ChatType.forNumber(getChatType());
+        switch (chatType) {
+            case PRIVATE:
+                break;
+            case GROUPCHAT://show group member nickname
+                GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(getMessage_to(), getMessage_from());
+                if (memberEntity != null) {
+                    content = memberEntity.getUsername() + ": " + content;
+                }
+                break;
+            case CONNECT_SYSTEM:
+                break;
+        }
+        return content;
     }
 
     public Connect.MessageUserInfo getUserInfo(){

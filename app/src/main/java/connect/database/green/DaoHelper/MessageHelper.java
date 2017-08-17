@@ -58,14 +58,19 @@ public class MessageHelper extends BaseDao {
         List<MsgExtEntity> msgEntities = new ArrayList();
         while (cursor.moveToNext()) {
             msgEntity = new MsgExtEntity();
+            msgEntity.set_id(cursorGetLong(cursor, "_id"));
             msgEntity.setMessage_ower(cursorGetString(cursor, "MESSAGE_OWER"));
             msgEntity.setMessage_id(cursorGetString(cursor, "MESSAGE_ID"));
+            msgEntity.setChatType(cursorGetInt(cursor, "CHAT_TYPE"));
+            msgEntity.setMessage_from(cursorGetString(cursor, "MESSAGE_FROM"));
+            msgEntity.setMessage_to(cursorGetString(cursor, "MESSAGE_TO"));
+            msgEntity.setMessageType(cursorGetInt(cursor, "MESSAGE_TYPE"));
             msgEntity.setContent(cursorGetString(cursor, "CONTENT"));
-            msgEntity.setCreatetime(cursorGetLong(cursor, "CREATETIME"));
             msgEntity.setSnap_time(cursorGetLong(cursor, "SNAP_TIME"));
             msgEntity.setSend_status(cursorGetInt(cursor, "SEND_STATUS"));
-            msgEntity.setState(cursorGetInt(cursor, "STATE"));
             msgEntity.setRead_time(cursorGetLong(cursor, "READ_TIME"));
+            msgEntity.setCreatetime(cursorGetLong(cursor, "CREATETIME"));
+
             msgEntity.setTransStatus(cursorGetInt(cursor, "TRANS_STATUS"));
             msgEntity.setHashid(cursorGetString(cursor, "HASHID"));
             msgEntity.setPayCount(cursorGetInt(cursor, "PAY_COUNT"));
@@ -103,7 +108,7 @@ public class MessageHelper extends BaseDao {
         messageEntityDao.insertOrReplace(msgEntity);
     }
 
-    public MessageEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
+    public MsgExtEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, SupportKeyUril.localHashKey().getBytes(), contents);
 
         MessageEntity messageEntity = new MessageEntity();
@@ -111,13 +116,16 @@ public class MessageHelper extends BaseDao {
         messageEntity.setMessage_ower(messageowner);
         messageEntity.setChatType(chattype);
         messageEntity.setMessageType(messagetype);
-        messageEntity.setFrom(from);
-        messageEntity.setTo(to);
+        messageEntity.setMessage_from(from);
+        messageEntity.setMessage_to(to);
         messageEntity.setContent(StringUtil.bytesToHexString(gcmData.toByteArray()));
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
         insertMessageEntity(messageEntity);
-        return messageEntity;
+
+        MsgExtEntity msgExtEntity = messageEntity.transToExtEntity();
+        msgExtEntity.setContents(contents);
+        return msgExtEntity;
     }
 
     public void insertMsgExtEntity(MsgExtEntity msgExtEntity) {
@@ -155,16 +163,6 @@ public class MessageHelper extends BaseDao {
 
     public void updateMsg(List<MessageEntity> msgEntities) {
         messageEntityDao.updateInTx(msgEntities);
-    }
-
-    public void updateMsgState(String msgid, int state) {
-        QueryBuilder<MessageEntity> queryBuilder = messageEntityDao.queryBuilder();
-        queryBuilder.where(MessageEntityDao.Properties.Message_id.eq(msgid)).build();
-        List<MessageEntity> detailEntities = queryBuilder.list();
-        for (MessageEntity entity : detailEntities) {
-            entity.setState(state);
-        }
-        messageEntityDao.updateInTx(detailEntities);
     }
 
     public void updateBurnMsg(String msgid, long time) {

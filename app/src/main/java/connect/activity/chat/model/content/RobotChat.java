@@ -40,8 +40,8 @@ public class RobotChat extends NormalChat{
 
         MsgExtEntity msgExtEntity = new MsgExtEntity();
         msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());
-        msgExtEntity.setFrom(mypublickey);
-        msgExtEntity.setTo(identify());
+        msgExtEntity.setMessage_from(mypublickey);
+        msgExtEntity.setMessage_to(identify());
         msgExtEntity.setMessageType(type.type);
         msgExtEntity.setCreatetime(TimeUtil.getCurrentTimeInLong());
         msgExtEntity.setSend_status(1);

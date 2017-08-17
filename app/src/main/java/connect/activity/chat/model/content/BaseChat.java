@@ -22,6 +22,7 @@ import protos.Connect;
  */
 
 public abstract class BaseChat<T> implements Serializable {
+
     private static String Tag = "BaseChat";
 
     protected boolean isStranger = false;
@@ -53,7 +54,7 @@ public abstract class BaseChat<T> implements Serializable {
     public abstract T receiptMsg(String messageid);
 
     /**
-     * @param type 0:inner 1:outer
+     * @param type 0:private  1:group  2:outer
      * @param hashid
      * @param amout
      * @param tips
@@ -62,7 +63,7 @@ public abstract class BaseChat<T> implements Serializable {
     public abstract T transferMsg(int type, String hashid, long amout, String tips);
 
     /**
-     * @param type 0:inner 1:outer
+     * @param type 0:inner 1:outer 2:system
      * @param hashid
      * @param tips
      * @param amount

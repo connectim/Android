@@ -382,8 +382,8 @@ public class CommandBean extends InterParse {
                             NormalChat normalChat = new FriendChat(entity);
                             String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, entity.getUsername());
                             MsgExtEntity msgExtEntity = normalChat.txtMsg(content);
-                            msgExtEntity.setFrom(pubKey);
-                            msgExtEntity.setTo(mypublickey);
+                            msgExtEntity.setMessage_from(pubKey);
+                            msgExtEntity.setMessage_to(mypublickey);
 
                             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                             normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
@@ -811,8 +811,8 @@ public class CommandBean extends InterParse {
                 packageInfo = Connect.ExternalRedPackageInfo.parseFrom(buffer);
                 if (packageInfo.getSystem()) {
                     MsgExtEntity msgExtEntity = RobotChat.getInstance().luckPacketMsg(1,packageInfo.getHashId(), packageInfo.getTips(),0L);
-                    msgExtEntity.setFrom(BaseApplication.getInstance().getString(R.string.app_name));
-                    msgExtEntity.setTo(mypublickey);
+                    msgExtEntity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));
+                    msgExtEntity.setMessage_to(mypublickey);
 
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                     RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
@@ -831,8 +831,8 @@ public class CommandBean extends InterParse {
 
                     NormalChat normalChat = new FriendChat(friendEntity);
                     MsgExtEntity msgExtEntity = normalChat.luckPacketMsg(1, packageInfo.getHashId(), packageInfo.getTips(), 0L);
-                    msgExtEntity.setFrom(friendEntity.getPub_key());
-                    msgExtEntity.setTo(mypublickey);
+                    msgExtEntity.setMessage_from(friendEntity.getPub_key());
+                    msgExtEntity.setMessage_to(mypublickey);
 
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                     normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);

@@ -50,7 +50,8 @@ public class MsgVoiceHolder extends MsgChatHolder {
             @Override
             public void onClick(View v) {
                 String url = voiceMessage.getUrl();
-                MessageHelper.getInstance().updateMsgState(msgExtEntity.getMessage_id(), 1);
+                msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
+                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
                 if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(url)) {
                     voiceImg.startPlay(url);
@@ -58,7 +59,8 @@ public class MsgVoiceHolder extends MsgChatHolder {
                         voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
                             @Override
                             public void playFinish(String msgid, String filepath) {
-                                MessageHelper.getInstance().updateMsgState(msgExtEntity.getMessage_id(), 2);
+                                msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
                             }
                         });
@@ -67,11 +69,6 @@ public class MsgVoiceHolder extends MsgChatHolder {
                     msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
                     if (view1 != null) {
                         view1.setVisibility(View.GONE);
-                    }
-                    MessageEntity msgEntity = MessageHelper.getInstance().loadMsgByMsgid(msgExtEntity.getMessage_id());
-                    if (msgEntity != null) {
-                        msgEntity.setState(1);
-                        MessageHelper.getInstance().updateMsg(msgEntity);
                     }
 
                     final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VOICE);
@@ -82,7 +79,8 @@ public class MsgVoiceHolder extends MsgChatHolder {
                             voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
                                 @Override
                                 public void playFinish(String msgid, String filepath) {
-                                    MessageHelper.getInstance().updateMsgState(msgExtEntity.getMessage_id(), 2);
+                                    msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
                                 }
                             });
@@ -103,7 +101,8 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                     voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
                                         @Override
                                         public void playFinish(String msgid, String filepath) {
-                                            MessageHelper.getInstance().updateMsgState(msgExtEntity.getMessage_id(), 2);
+                                            msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                                            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                                             RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
                                         }
                                     });

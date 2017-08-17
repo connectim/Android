@@ -121,7 +121,7 @@ public class ChatParseBean extends InterParse {
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.chatKey(), msgExtEntity);
             }
         } else {
-            MessageEntity messageEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
+            MsgExtEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
                     chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
                     chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
 
@@ -139,13 +139,13 @@ public class ChatParseBean extends InterParse {
                     ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
                     if (contactEntity != null) {
                         NormalChat normalChat = new FriendChat(contactEntity);
-                        normalChat.updateRoomMsg(null, messageEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
+                        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
                     }
                     break;
             }
 
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, messageEntity);
-            pushNoticeMsg(pubkey, 0, messageEntity.showContent());
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
+            pushNoticeMsg(pubkey, 0, msgExtEntity.showContent());
         }
     }
 
@@ -170,13 +170,13 @@ public class ChatParseBean extends InterParse {
             if (contents.length < 10) {
                 HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, pubkey);
             } else {
-                MessageEntity messageEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
+                MsgExtEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
                         chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
                         chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
 
                 NormalChat normalChat = new GroupChat(groupEntity);
-                normalChat.updateRoomMsg(null, messageEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, messageEntity);
+                normalChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
 
                 String content = "";
                 String myaddress = MemoryDataManager.getInstance().getAddress();
@@ -184,7 +184,7 @@ public class ChatParseBean extends InterParse {
                 if (ext.contains(myaddress)) {
                     content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
                 } else {
-                    content = messageEntity.showContent();
+                    content = msgExtEntity.showContent();
                 }
                 pushNoticeMsg(pubkey, 0, content);
             }

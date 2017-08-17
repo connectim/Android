@@ -19,6 +19,7 @@ import connect.activity.common.selefriend.ConversationActivity;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
+import connect.utils.TimeUtil;
 import connect.utils.VideoPlayerUtil;
 import protos.Connect;
 
@@ -130,7 +131,9 @@ public class MsgVideoHolder extends MsgChatHolder {
             @Override
             public void onVidePlayFinish() {
                 if (!TextUtils.isEmpty(messageid)) {
-                    MessageHelper.getInstance().updateMsgState(messageid, 2);
+                    MsgExtEntity msgExtEntity = getMsgExtEntity();
+                    msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, messageid, MsgDirect.From);
                 }
             }

@@ -44,8 +44,8 @@ public class MsgTransferHolder extends MsgChatHolder {
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String sender = msgExtEntity.getFrom();
-                String receiver = msgExtEntity.getTo();
+                String sender = msgExtEntity.getMessage_from();
+                String receiver = msgExtEntity.getMessage_to();
                 String hashid = transferMessage.getHashId();
                 String msgid = msgExtEntity.getMessage_id();
 

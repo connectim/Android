@@ -75,8 +75,8 @@ public class MsgPayHolder extends MsgChatHolder {
                         PaymentDetailActivity.startActivity((Activity) context, msgExtEntity);
                     } else {
                         int transferType = 0;
-                        String sender = msgExtEntity.getFrom();
-                        String receiver = msgExtEntity.getTo();
+                        String sender = msgExtEntity.getMessage_from();
+                        String receiver = msgExtEntity.getMessage_to();
                         String hashid = paymentMessage.getHashId();
                         String msgid = msgExtEntity.getMessage_id();
                         TransferSingleDetailActivity.startActivity((Activity) context, transferType, sender, receiver, hashid, msgid);

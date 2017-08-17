@@ -152,12 +152,12 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
                         String username = "";
                         ContactEntity entity = null;
                         if (msgExtEntity.parseDirect() == MsgDirect.To) {//I started gathering
-                            entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getTo());
+                            entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_to());
                             username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
                             txt1.setText(String.format(getString(R.string.Wallet_has_requested_to_payment), username));
                             txt4.setVisibility(View.INVISIBLE);
                         } else {//I received the payment
-                            entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getFrom());
+                            entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_from());
                             username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
                             txt1.setText(String.format(getString(R.string.Wallet_has_requested_for_payment), username));
                             txt4.setVisibility(View.VISIBLE);

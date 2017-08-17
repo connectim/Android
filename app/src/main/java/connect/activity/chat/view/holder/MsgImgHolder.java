@@ -26,6 +26,7 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
+import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import protos.Connect;
 
@@ -62,9 +63,10 @@ public class MsgImgHolder extends MsgChatHolder {
                 String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.IMG);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.IMGVIEWER, path);
 
-                if (msgExtEntity.getRead_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
+                if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
+                    msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgExtEntity.getMessage_id(), msgExtEntity.parseDirect());
-                    MessageHelper.getInstance().updateMsgState(msgExtEntity.getMessage_id(), 2);
                 }
             }
         });
