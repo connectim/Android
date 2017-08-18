@@ -1,6 +1,5 @@
 package connect.activity.login.presenter;
 
-import android.app.Activity;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.text.TextUtils;
@@ -9,12 +8,9 @@ import android.widget.Toast;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.File;
-import java.util.List;
 
-import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RegisterContract;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
@@ -29,12 +25,7 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-/**
- *
- * Created by john on 2016/11/27.
- */
-
-public class RegisterPresenter implements RegisterContract.Presenter{
+public class RegisterPresenter implements RegisterContract.Presenter {
 
     private RegisterContract.View mView;
     private String passwordHint = "";
@@ -47,26 +38,20 @@ public class RegisterPresenter implements RegisterContract.Presenter{
     }
 
     @Override
-    public void start() {
-
-    }
+    public void start() {}
 
     @Override
     public void setPasswordHintData(String passwordHint) {
         this.passwordHint = passwordHint;
     }
 
+    /**
+     * Upload the picture.
+     *
+     * @param pathLocal avatar path
+     */
     @Override
-    public void editChange(String passWord, String nick) {
-        if(!TextUtils.isEmpty(passWord) && !TextUtils.isEmpty(nick.trim())){
-            mView.setNextBtnEnable(true);
-        }else{
-            mView.setNextBtnEnable(false);
-        }
-    }
-
-    @Override
-    public void requestUserHead(final String pathLocal){
+    public void requestUserHead(final String pathLocal) {
         ProgressUtil.getInstance().showProgress(mView.getActivity());
         File file = BitmapUtil.getInstance().compress(pathLocal);
         String path = file.getAbsolutePath();
@@ -76,12 +61,14 @@ public class RegisterPresenter implements RegisterContract.Presenter{
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 ProgressUtil.getInstance().dismissProgress();
-                if(!TextUtils.isEmpty(pathLocal)){
+                // Delete the cropping images
+                if (!TextUtils.isEmpty(pathLocal)) {
                     FileUtil.deleteFile(pathLocal);
                 }
+                // After successful upload display image
                 try {
                     Connect.AvatarInfo userAvatar = Connect.AvatarInfo.parseFrom(response.getBody());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(userAvatar)){
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(userAvatar)) {
                         headPath = userAvatar.getUrl();
                         mView.showAvatar(headPath);
                     }
@@ -92,7 +79,7 @@ public class RegisterPresenter implements RegisterContract.Presenter{
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
-                if(!TextUtils.isEmpty(pathLocal)){
+                if (!TextUtils.isEmpty(pathLocal)) {
                     FileUtil.deleteFile(pathLocal);
                 }
                 ProgressUtil.getInstance().dismissProgress();
@@ -101,20 +88,29 @@ public class RegisterPresenter implements RegisterContract.Presenter{
         });
     }
 
+    /**
+     * Registered users.
+     *
+     * @param nicName
+     * @param password
+     * @param token Check the phone number of the token
+     * @param userBean
+     */
     @Override
-    public void registerUser(final String nicname, final String password,
-                              final String token, final UserBean userBean){
-        new AsyncTask<Void,Void,Connect.RegisterUser>(){
+    public void registerUser(final String nicName, final String password, final String token, final UserBean userBean) {
+        new AsyncTask<Void,Void,Connect.RegisterUser>() {
             @Override
             protected Connect.RegisterUser doInBackground(Void... params) {
                 Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder();
-                builder.setUsername(nicname);
+                builder.setUsername(nicName);
                 builder.setPasswordHint(passwordHint);
-                if(!TextUtils.isEmpty(token)){
+                // Determine whether the binding number
+                if (!TextUtils.isEmpty(token)) {
                     builder.setToken(token);
                     builder.setMobile(userBean.getPhone());
                 }
                 builder.setAvatar(headPath);
+                // Password encryption private key
                 talkKey = SupportKeyUril.createTalkKey(userBean.getPriKey(),userBean.getAddress(),password);
                 builder.setEncryptionPri(talkKey);
                 Connect.RegisterUser registerUser = builder.build();
@@ -124,13 +120,13 @@ public class RegisterPresenter implements RegisterContract.Presenter{
             @Override
             protected void onPostExecute(Connect.RegisterUser registerUser) {
                 super.onPostExecute(registerUser);
-                userBean.setName(nicname);
+                userBean.setName(nicName);
                 requestRegister(registerUser,userBean);
             }
         }.execute();
     }
 
-    private void requestRegister(Connect.RegisterUser registerUser, final UserBean userBean){
+    private void requestRegister(Connect.RegisterUser registerUser, final UserBean userBean) {
         OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_SIGN_UP,
                 registerUser,
                 SupportKeyUril.EcdhExts.EMPTY,
@@ -143,34 +139,23 @@ public class RegisterPresenter implements RegisterContract.Presenter{
                         userBean.setTalkKey(talkKey);
                         userBean.setAvatar(headPath);
                         userBean.setPassHint(passwordHint);
-
-                        saveUserBean(userBean);
+                        SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
+                        mView.complete(userBean.isBack());
                     }
 
                     @Override
                     public void onError(Connect.HttpResponse response) {
-                        if (response.getCode() == 2101){
-                            Toast.makeText(mView.getActivity(),R.string.Login_User_avatar_is_illegal,Toast.LENGTH_LONG).show();
-                        }else if(response.getCode() == 2102){
-                            Toast.makeText(mView.getActivity(),R.string.Login_username_already_exists,Toast.LENGTH_LONG).show();
-                        }else {
-                            Toast.makeText(mView.getActivity(),response.getMessage(),Toast.LENGTH_LONG).show();
+                        if (response.getCode() == 2101) {
+                            Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
+                        } else if(response.getCode() == 2102){
+                            Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
                         }
                         ProgressUtil.getInstance().dismissProgress();
                     }
                 });
     }
 
-    private void saveUserBean(UserBean userBean){
-        SharedPreferenceUtil.getInstance().putUser(userBean);
-        List<Activity> list = BaseApplication.getInstance().getActivityList();
-        for (Activity activity1 : list) {
-            if (!activity1.getClass().getName().equals(mView.getActivity().getClass().getName())){
-                activity1.finish();
-            }
-        }
-        MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
-        mView.complete(userBean.isBack());
-    }
 
 }

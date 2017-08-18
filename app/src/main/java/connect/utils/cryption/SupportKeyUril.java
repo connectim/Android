@@ -309,8 +309,9 @@ public class SupportKeyUril {
      * Generate encrypted TalkKey (encrypted private key, n = 17 for key expansion)
      */
     public static String createTalkKey(String priKey, String address, String passWord) {
-        String priKey_16 = AllNativeMethod.cdgetRawPrivateKey(priKey);
-        String talkKey = AllNativeMethod.cdxTalkKeyEncrypt(address, priKey_16, passWord, CRYPTION_N, CRYPTION_TALKKEY_VER);
+        // To obtain the original private key
+        String priKeyRaw = AllNativeMethod.cdgetRawPrivateKey(priKey);
+        String talkKey = AllNativeMethod.cdxTalkKeyEncrypt(address, priKeyRaw, passWord, CRYPTION_N, CRYPTION_TALKKEY_VER);
         return talkKey;
     }
 
@@ -324,9 +325,10 @@ public class SupportKeyUril {
     public static String decodeTalkKey(String talkKey, String pass) {
         String addressandpriKey_16 = AllNativeMethod.cdxTalkKeyDecrypt(talkKey, pass, CRYPTION_TALKKEY_VER);
         try {
-            String priKey_16 = addressandpriKey_16.split("@")[1];
-            String prikey = AllNativeMethod.cdgetRawToPrivateKey(priKey_16);
-            return prikey;
+            String priKeyRaw = addressandpriKey_16.split("@")[1];
+            // The original private key converted to compress the private key
+            String priKey = AllNativeMethod.cdgetRawToPrivateKey(priKeyRaw);
+            return priKey;
         } catch (Exception e) {
             e.printStackTrace();
         }

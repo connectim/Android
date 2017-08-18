@@ -26,7 +26,7 @@ import connect.widget.lockview.GestureLockViewGroup;
  * Login validation gestures or password
  * Created by Administrator on 2016/12/8.
  */
-public class LoginPatterActivity extends BaseActivity {
+public class LoginPatterActivity extends BaseActivity{
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -60,9 +60,7 @@ public class LoginPatterActivity extends BaseActivity {
         idGestureLockViewGroup.setAnswer(userBean.getPriKey(),userBean.getSalt());
         idGestureLockViewGroup.setOnGestureLockViewListener(new GestureLockViewGroup.OnGestureLockViewListener() {
             @Override
-            public void onBlockSelected(int cId) {
-
-            }
+            public void onBlockSelected(int cId) {}
 
             @Override
             public void onGestureEvent(boolean matched) {
@@ -95,9 +93,7 @@ public class LoginPatterActivity extends BaseActivity {
             }
 
             @Override
-            public void error() {
-
-            }
+            public void error() {}
         });
     }
 

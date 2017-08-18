@@ -211,6 +211,7 @@ public class GatherActivity extends BaseActivity {
             @Override
             public void success(Connect.Bill bill) {
                 ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
+
                 MsgSend.sendOuterMsg(MsgType.Request_Payment, 0, bill.getHash(), amount, 1, bill.getTips());
                 ActivityUtil.goBack(activity);
             }
@@ -237,6 +238,7 @@ public class GatherActivity extends BaseActivity {
             @Override
             public void success(Connect.Crowdfunding crowdfunding) {
                 int size = Integer.parseInt(edit.getText().toString());
+
                 MsgSend.sendOuterMsg(MsgType.Request_Payment, 1, crowdfunding.getHashId(), crowdfunding.getTotal() / size, size, crowdfunding.getTips());
                 ActivityUtil.goBack(activity);
             }

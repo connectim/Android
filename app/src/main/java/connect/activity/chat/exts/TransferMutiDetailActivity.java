@@ -47,6 +47,7 @@ public class TransferMutiDetailActivity extends BaseActivity implements Transfer
     private String messageId;
     private TransferMutiDetailAdapter mutiDetailAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +93,7 @@ public class TransferMutiDetailActivity extends BaseActivity implements Transfer
             }
         });
     }
+
 
     @Override
     public void setPresenter(TransferMutiDetailContract.Presenter presenter) {

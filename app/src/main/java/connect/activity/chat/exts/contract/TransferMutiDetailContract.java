@@ -11,9 +11,9 @@ public interface TransferMutiDetailContract {
 
     interface BView extends BaseView<TransferMutiDetailContract.Presenter> {
 
-        void showTransferDetail(String sender,String[] receivers,String tips,long amount,int transferstate,long createtime);
+        void showTransferDetail(String sender, String[] receivers, String tips, long amount, int transferstate, long createtime);
 
-            void showSenderInfo(String avatar,String name);
+        void showSenderInfo(String avatar, String name);
     }
 
     interface Presenter extends BasePresenter {
@@ -23,5 +23,6 @@ public interface TransferMutiDetailContract {
         void requestSenderInfo(String address);
 
         String getTransferTxtid();
+
     }
 }

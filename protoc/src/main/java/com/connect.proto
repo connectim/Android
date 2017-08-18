@@ -1328,16 +1328,3 @@ message WebsiteMessage{
 	string img=4;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-

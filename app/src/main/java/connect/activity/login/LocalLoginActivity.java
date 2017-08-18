@@ -56,7 +56,7 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
     private LocalLoginActivity mActivity;
     private LocalLoginContract.Presenter presenter;
     private UserBean userBean;
-    public static final int SELE_USER_CODE = 100;
+    public static final int SELECT_USER_CODE = 100;
 
 
     @Override
@@ -119,14 +119,14 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
     }
 
     @OnClick(R.id.nickname_rela)
-    void seleLocalAccount(View view){
-        LoginSeleUserActivity.startActivity(mActivity,userBean,SELE_USER_CODE);
+    void selectLocalAccount(View view){
+        LoginSelectUserActivity.startActivity(mActivity,userBean,SELECT_USER_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == SELE_USER_CODE && requestCode == SELE_USER_CODE){
+        if(resultCode == RESULT_OK && requestCode == SELECT_USER_CODE){
             Bundle bundle = data.getExtras();
             userBean = (UserBean)bundle.getSerializable("bean");
             nicknameTv.setText(userBean.getName());
@@ -136,22 +136,22 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
                 passwordhintTv.setText("");
             }
             GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
-        }else{
-            if(requestCode == SELE_USER_CODE){
-                List<UserBean> list = SharedPreferenceUtil.getInstance().getUserList();
-                if(list == null || list.size() == 0){
-                    ActivityUtil.goBack(mActivity);
-                }else {
-                    userBean = list.get(0);
-                    nicknameTv.setText(userBean.getName());
-                    if (!TextUtils.isEmpty(userBean.getPassHint())) {
-                        passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
-                    }else{
-                        passwordhintTv.setText("");
-                    }
-                    GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
+        }else if(requestCode == SELECT_USER_CODE){
+
+            List<UserBean> list = SharedPreferenceUtil.getInstance().getUserList();
+            if(list == null || list.size() == 0){
+                ActivityUtil.goBack(mActivity);
+            }else {
+                userBean = list.get(0);
+                nicknameTv.setText(userBean.getName());
+                if (!TextUtils.isEmpty(userBean.getPassHint())) {
+                    passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+                }else{
+                    passwordhintTv.setText("");
                 }
+                GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
             }
+
         }
     }
 

@@ -2,6 +2,8 @@ package connect.activity.login;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,11 +22,9 @@ import connect.utils.ToastEUtil;
 import connect.widget.TopToolBar;
 
 /**
- * Verify the sms
- * Created by john on 2016/11/22.
+ * Verify the sms.
  */
-
-public class SignInVerifyActivity extends BaseActivity implements SignInVerifyContract.View{
+public class SignInVerifyActivity extends BaseActivity implements SignInVerifyContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -42,9 +42,16 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
     private SignInVerifyActivity mActivity;
     private SignInVerifyContract.Presenter presenter;
 
-    public static void startActivity(Activity activity, String countrycode, String phone) {
+    /**
+     * Check the verification code into the interface, the incoming telephone number.
+     *
+     * @param activity context
+     * @param countryCode country code
+     * @param phone phone number
+     */
+    public static void startActivity(Activity activity, String countryCode, String phone) {
         Bundle bundle = new Bundle();
-        bundle.putString("countrycode", countrycode);
+        bundle.putString("countryCode", countryCode);
         bundle.putString("phone", phone);
         ActivityUtil.next(activity, SignInVerifyActivity.class, bundle);
     }
@@ -65,11 +72,11 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
 
         Bundle bundle = getIntent().getExtras();
         String phone = bundle.getString("phone");
-        String countryCode = bundle.getString("countrycode");
+        String countryCode = bundle.getString("countryCode");
         new SignInVerifyPresenter(this,countryCode,phone).start();
 
         phoneTv.setText("+" + countryCode + " " + phone);
-        codeEt.addTextChangedListener(presenter.getEditChange());
+        codeEt.addTextChangedListener(textWatcher);
         codeEt.requestFocus();
         ToastEUtil.makeText(mActivity,R.string.Login_SMS_code_has_been_send).show();
     }
@@ -99,6 +106,23 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
         this.presenter = presenter;
     }
 
+    public TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.toString().length() == 6) {
+                presenter.requestVerifyCode();
+            }
+            if (codeEt.getText().toString().length() == 6) {
+                nextBtn.setText(R.string.Login_Next);
+                nextBtn.setEnabled(true);
+            }
+        }
+    };
+
     @Override
     public Activity getActivity() {
         return mActivity;
@@ -123,14 +147,6 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
     @Override
     public void goinRandomSend(String phone, String token) {
         RandomSendActivity.startActivity(mActivity, phone, token);
-    }
-
-    @Override
-    public void changeBtnNext() {
-        if (codeEt.getText().toString().length() == 6) {
-            nextBtn.setText(R.string.Login_Next);
-            nextBtn.setEnabled(true);
-        }
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ import connect.widget.SideBar;
 import connect.widget.TopToolBar;
 
 /**
- * Created by Administrator on 2017/1/5.
+ * Choose the country code number.
  */
 public class CountryCodeActivity extends BaseActivity {
 
@@ -57,28 +56,38 @@ public class CountryCodeActivity extends BaseActivity {
         recyclerview.setAdapter(adapter);
         List<CountryBean> list = PhoneDataUtil.getInstance().getCountryData();
         adapter.setDataNotify(list);
-        adapter.setItemClickListener(new CountryAdapter.OnItemClickListener() {
-            @Override
-            public void itemClick(CountryBean countryBean) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("country", countryBean);
-                ActivityUtil.goBackWithResult(mActivity, Activity.RESULT_OK, bundle);
-            }
-        });
-
-        siderbar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
-            @Override
-            public void onTouchingLetterChanged(String s) {
-                int position = adapter.getPositionForSection(s.charAt(0));
-                if (position >= 0) {
-                    linearLayoutManager.scrollToPosition(position);
-                }
-            }
-        });
+        adapter.setItemClickListener(onItemClickListener);
+        siderbar.setOnTouchingLetterChangedListener(changedListener);
     }
 
     @OnClick(R.id.left_img)
     void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
+
+    /**
+     * Click the item back.
+     */
+    CountryAdapter.OnItemClickListener onItemClickListener = new CountryAdapter.OnItemClickListener() {
+        @Override
+        public void itemClick(CountryBean countryBean) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("country", countryBean);
+            ActivityUtil.goBackWithResult(mActivity, Activity.RESULT_OK, bundle);
+        }
+    };
+
+    /**
+     * Initials location click callback.
+     */
+    SideBar.OnTouchingLetterChangedListener changedListener = new SideBar.OnTouchingLetterChangedListener() {
+        @Override
+        public void onTouchingLetterChanged(String s) {
+            int position = adapter.getPositionForSection(s.charAt(0));
+            if (position >= 0) {
+                linearLayoutManager.scrollToPosition(position);
+            }
+        }
+    };
+
 }

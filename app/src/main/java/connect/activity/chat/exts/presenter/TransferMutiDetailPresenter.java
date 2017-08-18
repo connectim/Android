@@ -1,7 +1,9 @@
 package connect.activity.chat.exts.presenter;
 
 import android.app.Activity;
+
 import com.google.protobuf.InvalidProtocolBufferException;
+
 import connect.activity.chat.exts.contract.TransferMutiDetailContract;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastUtil;
@@ -22,6 +24,7 @@ public class TransferMutiDetailPresenter implements TransferMutiDetailContract.P
     private Activity activity;
     private Connect.Bill bill;
 
+
     public TransferMutiDetailPresenter(TransferMutiDetailContract.BView view) {
         this.view = view;
         view.setPresenter(this);
@@ -30,6 +33,36 @@ public class TransferMutiDetailPresenter implements TransferMutiDetailContract.P
     @Override
     public void start() {
         activity = view.getActivity();
+    }
+
+    @Override
+    public void requestSenderInfo(String address) {
+        Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
+                .setCriteria(address)
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser,
+                new ResultCall<Connect.HttpResponse>() {
+                    @Override
+                    public void onResponse(Connect.HttpResponse response) {
+                        try {
+                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+                            if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
+                                String avatar = userInfo.getAvatar();
+                                String name = userInfo.getUsername();
+                                view.showSenderInfo(avatar, name);
+                            }
+                        } catch (InvalidProtocolBufferException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Connect.HttpResponse response) {
+                        ToastUtil.getInstance().showToast(response.getCode() + response.getMessage());
+                    }
+                });
     }
 
     @Override
@@ -65,36 +98,6 @@ public class TransferMutiDetailPresenter implements TransferMutiDetailContract.P
 
             }
         });
-    }
-
-    @Override
-    public void requestSenderInfo(String address) {
-        Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
-                .setCriteria(address)
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser,
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                            if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
-                                String avatar = userInfo.getAvatar();
-                                String name = userInfo.getUsername();
-                                view.showSenderInfo(avatar, name);
-                            }
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-                        ToastUtil.getInstance().showToast(response.getCode() + response.getMessage());
-                    }
-                });
     }
 
     @Override

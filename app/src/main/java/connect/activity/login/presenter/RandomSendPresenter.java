@@ -2,7 +2,6 @@ package connect.activity.login.presenter;
 
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -12,7 +11,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.RendomSendContract;
+import connect.activity.login.contract.RandomSendContract;
 import connect.utils.FileUtil;
 import connect.utils.StringUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -20,23 +19,26 @@ import connect.utils.permission.PermissionUtil;
 import connect.wallet.jni.AllNativeMethod;
 
 /**
- * Created by Administrator on 2017/4/14 0014.
+ * Registered mobile phone number presenter.
  */
+public class RandomSendPresenter implements RandomSendContract.Presenter {
 
-public class RendomSendPresenter implements RendomSendContract.Presenter{
-
-    private RendomSendContract.View mView;
+    private RandomSendContract.View mView;
+    /** The longest collection time */
     private final int MAX_LENGTH = 5000;
     private Runnable runnable;
     private Handler handler = new Handler();
+    /** Collection time clock */
     private int videoLength;
-    private int rateTime = 10;
+    /** Update frequency interface */
+    private final int RATE_TIME = 10;
     private MediaRecorder iMediaRecorder;
     private File file;
+    /** Sound amplitude */
     private ArrayList<Double> dbArray;
     private HashMap<String, String> hashMap;
 
-    public RendomSendPresenter(RendomSendContract.View mView) {
+    public RandomSendPresenter(RandomSendContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
     }
@@ -46,17 +48,17 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
         chechPeission();
     }
 
-    private void chechPeission(){
-        PermissionUtil.getInstance().requestPermissom(mView.getActivity(),new String[]{PermissionUtil.PERMISSIM_RECORD_AUDIO,
-                PermissionUtil.PERMISSIM_STORAGE},permissomCallBack);
+    private void chechPeission() {
+        PermissionUtil.getInstance().requestPermissom(mView.getActivity(),
+                new String[]{PermissionUtil.PERMISSIM_RECORD_AUDIO, PermissionUtil.PERMISSIM_STORAGE},permissionCallBack);
     }
 
     @Override
     public PermissionUtil.ResultCallBack getPermissomCallBack() {
-        return permissomCallBack;
+        return permissionCallBack;
     }
 
-    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
         @Override
         public void granted(String[] permissions) {
             startRecorder();
@@ -93,35 +95,39 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
         }
     }
 
+    /**
+     * Collect voice countdown
+     */
     private void timing() {
         dbArray = new ArrayList<Double>();
         videoLength = 0;
         runnable = new Runnable() {
             @Override
             public void run() {
-                videoLength += rateTime;
+                videoLength += RATE_TIME;
                 if (videoLength > MAX_LENGTH) {
                     finishSuccess(hashMap);
                 } else {
                     mView.setProgressBar(videoLength * ((float) 360 / MAX_LENGTH));
-                    handler.postDelayed(this, rateTime);
+                    handler.postDelayed(this, RATE_TIME);
                 }
 
                 if (videoLength < 3000) {
                     int ratio = iMediaRecorder.getMaxAmplitude();
                     double db = 0;
-                    if (ratio > 1)
+                    if (ratio > 1) {
                         db = 20 * Math.log10((double) Math.abs(ratio));
+                    }
                     dbArray.add(db);
                 } else if (videoLength == 3000) {
                     mView.changeViewStatus(1);
-                    startCdPri();
+                    createPri();
                 } else if (videoLength == 4000) {
                     mView.changeViewStatus(2);
                 }
             }
         };
-        handler.postDelayed(runnable, rateTime);
+        handler.postDelayed(runnable, RATE_TIME);
     }
 
     @Override
@@ -144,7 +150,10 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
         }
     }
 
-    private void startCdPri() {
+    /**
+     * Voice of random Numbers generated the private key
+     */
+    private void createPri() {
         if (!checkVoice()) {
             mView.changeViewStatus(4);
             return;
@@ -153,7 +162,7 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
         new AsyncTask<Void, Void, ArrayList>() {
             @Override
             protected ArrayList doInBackground(Void... params) {
-                if(iMediaRecorder != null){
+                if (iMediaRecorder != null) {
                     iMediaRecorder.stop();
                     iMediaRecorder.release();
                     iMediaRecorder = null;
@@ -180,9 +189,13 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
                 hashMap.put("address", (String) arrayList.get(2));
             }
         }.execute();
-
     }
 
+    /**
+     * Check if the voice randomness enough
+     *
+     * @return Whether or not enough
+     */
     private boolean checkVoice() {
         ArrayList<Double> list = new ArrayList<Double>();
         for (Double db : dbArray) {
@@ -194,11 +207,11 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
             mView.changeViewStatus(4);
             return false;
         }
-        double Sum = 0;
+        double sum = 0;
         for (Double data : list) {
-            Sum = data + Sum;
+            sum = data + sum;
         }
-        if (Sum / list.size() > 35) {
+        if (sum / list.size() > 35) {
             return true;
         } else {
             return false;
@@ -206,7 +219,7 @@ public class RendomSendPresenter implements RendomSendContract.Presenter{
     }
 
     @Override
-    public void releaseResource(){
+    public void releaseResource() {
         try {
             if (handler != null && runnable != null) {
                 handler.removeCallbacks(runnable);

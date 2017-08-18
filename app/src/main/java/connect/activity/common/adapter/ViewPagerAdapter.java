@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 /**
- *
- * Created by Administrator on 2016/8/24.
+ * Viewpager universal adapter.
  */
 public class ViewPagerAdapter extends PagerAdapter {
 
