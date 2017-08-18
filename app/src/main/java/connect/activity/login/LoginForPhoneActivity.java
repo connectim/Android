@@ -2,17 +2,10 @@ package connect.activity.login;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,9 +14,6 @@ import android.widget.TextView;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,12 +24,9 @@ import connect.activity.login.contract.LoginPhoneContract;
 import connect.activity.login.presenter.LoginPhonePresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.BitmapUtil;
 import connect.utils.StringUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.data.PhoneDataUtil;
 import connect.utils.permission.PermissionUtil;
-import connect.utils.system.SystemDataUtil;
 
 /**
  * Login interface verify phone number.
