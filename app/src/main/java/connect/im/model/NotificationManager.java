@@ -29,6 +29,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.GlobalLanguageUtil;
 import connect.utils.TimeUtil;
 import connect.utils.system.SystemUtil;
+import protos.Connect;
 
 /**
  * notify bar
@@ -148,7 +149,7 @@ public class NotificationManager {
                 }
                 break;
             case 2:
-                talker = new Talker(2, BaseApplication.getInstance().getString(R.string.app_name));
+                talker = new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE, BaseApplication.getInstance().getString(R.string.app_name));
                 break;
         }
 

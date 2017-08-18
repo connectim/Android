@@ -109,8 +109,9 @@ public abstract class BaseChatActvity extends BaseActivity {
         roomSession.setRoomType(talker.getTalkType());
         roomSession.setRoomKey(talker.getTalkKey());
 
-        switch (talker.getTalkType()) {
-            case 0:
+        Connect.ChatType chatType = Connect.ChatType.forNumber(talker.getTalkType());
+        switch (chatType) {
+            case PRIVATE:
                 roomSession.setRoomName(talker.getTalkName());
                 Connect.MessageUserInfo userInfo = Connect.MessageUserInfo.newBuilder()
                         .setUid(talker.getFriendEntity().getPub_key())
@@ -124,14 +125,14 @@ public abstract class BaseChatActvity extends BaseActivity {
                     UserOrderBean userOrderBean = new UserOrderBean();
                     userOrderBean.friendChatCookie(normalChat.chatKey());
                 }
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, roomSession.getBurntime() == 0 ? 0 : 1);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, roomSession.getBurntime() <= 0 ? 0 : 1);
                 break;
-            case 1:
+            case GROUPCHAT:
                 roomSession.setRoomName(talker.getTalkName());
                 roomSession.setGroupEcdh(talker.getGroupEntity().getEcdh_key());
                 normalChat = new GroupChat(talker.getGroupEntity());
                 break;
-            case 2:
+            case CONNECT_SYSTEM:
                 normalChat = RobotChat.getInstance();
                 roomSession.setRoomName(normalChat.nickName());
                 break;
@@ -141,7 +142,7 @@ public abstract class BaseChatActvity extends BaseActivity {
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         linearLayoutManager.setStackFromEnd(true);
         inputPanel = new InputPanel(getWindow().getDecorView().findViewById(android.R.id.content));
-        inputPanel.isGroupAt(talker.getTalkType() == 1);
+        inputPanel.isGroupAt(talker.getTalkType() == Connect.ChatType.GROUPCHAT_VALUE);
         scrollHelper = new RecycleViewScrollHelper(new RecycleViewScrollHelper.OnScrollPositionChangedListener() {
 
             @Override
@@ -216,8 +217,9 @@ public abstract class BaseChatActvity extends BaseActivity {
                 }
                 break;
             case Video:
+                filePath = (String) objects[0];
                 Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
-                msgExtEntity = normalChat.videoMsg("", (String) objects[0], (int)objects[1],
+                msgExtEntity = normalChat.videoMsg("", filePath, (int) objects[1],
                         FileUtil.fileSizeOf(filePath), thumbBitmap.getWidth(), thumbBitmap.getHeight());
 
                 adapterInsetItem(msgExtEntity);
@@ -249,6 +251,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 break;
             case Self_destruct_Notice:
                 int time = (int) objects[0];
+                time = (time <= 0) ? -1 : time;
                 RoomSession.getInstance().setBurntime(time);
                 ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
 
@@ -473,7 +476,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                                     RoomSession.getInstance().setBurntime(time);
                                     ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
                                     BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
-                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
+                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time <= 0 ? 0 : 1);
                                 }
                                 adapterInsetItem(msgExtEntity);
                                 ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
@@ -497,7 +500,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                             if (time != RoomSession.getInstance().getBurntime()) {
                                 RoomSession.getInstance().setBurntime(time);
                                 BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
-                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
+                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time <= 0 ? 0 : 1);
                                 ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
 
                                 msgExtEntity = normalChat.destructMsg(time);

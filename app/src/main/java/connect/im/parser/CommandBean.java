@@ -816,7 +816,9 @@ public class CommandBean extends InterParse {
 
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                     RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
-                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(2, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT,
+                            new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE,
+                                    BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
                 } else {
                     Connect.UserInfo userInfo = packageInfo.getSender();
 

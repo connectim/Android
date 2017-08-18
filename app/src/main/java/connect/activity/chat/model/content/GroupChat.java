@@ -55,6 +55,7 @@ public class GroupChat extends NormalChat {
         MsgExtEntity msgExtEntity = new MsgExtEntity();
         msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());
         msgExtEntity.setChatType(Connect.ChatType.GROUPCHAT.getNumber());
+        msgExtEntity.setMessage_ower(identify());
         msgExtEntity.setMessage_from(mypublickey);
         msgExtEntity.setMessage_to(identify());
         msgExtEntity.setMessageType(type.type);

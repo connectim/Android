@@ -2,9 +2,7 @@ package connect.im.parser;
 
 import android.content.Context;
 import android.text.TextUtils;
-
 import com.google.protobuf.ByteString;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;

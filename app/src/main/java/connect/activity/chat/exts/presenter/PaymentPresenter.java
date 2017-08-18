@@ -29,13 +29,13 @@ public class PaymentPresenter implements PaymentContract.Presenter{
     private Activity activity;
 
     public PaymentPresenter(PaymentContract.BView view){
-        this.view=view;
+        this.view = view;
         view.setPresenter(this);
     }
 
     @Override
     public void start() {
-
+        activity=view.getActivity();
     }
 
     @Override

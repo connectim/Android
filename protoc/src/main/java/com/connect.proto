@@ -736,7 +736,7 @@ string secret_key = 2;
 }
 message RejectMessage {
 string msg_id = 1;
-string receiver_address = 2;
+string uid = 2;
 int32 status = 3;
 bytes data = 4;
 }
@@ -1179,7 +1179,7 @@ message ChatCookieData {
 }
 
 message FriendChatCookie {
-    string address = 1;
+    string uid = 1;
 }
 
 message ChatCookie {
@@ -1199,7 +1199,7 @@ message MessageUserInfo{
 enum ChatType {
 	PRIVATE= 0; // 个人聊天
 	GROUPCHAT  = 1;  //群组聊天
-	CONNECT_SYSTEM = 3; // Connect
+	CONNECT_SYSTEM = 2; // Connect
 }
 //临时协同密钥
 message ChatSession {
@@ -1309,8 +1309,9 @@ message LocationMessage{
 
 //提示消息
 message NotifyMessage{
-	string content=1;
-	string extion=2;
+        int32 notify_type = 1;
+	string content=2;
+	string extion=3;
 }
 //加入群组消息
 message JoinGroupMessage{

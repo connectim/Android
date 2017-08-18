@@ -97,17 +97,23 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
 
                 String connect = BaseApplication.getInstance().getString(R.string.app_name);
                 Connect.ChatType chatType = messageOwner.equals(connect) ? Connect.ChatType.CONNECT_SYSTEM :
-                        (messageOwner.length() == 66 ? Connect.ChatType.PRIVATE :
-                                Connect.ChatType.GROUPCHAT);
+                        (definBean.getUser_id().length() == 64 ? Connect.ChatType.GROUPCHAT :
+                                Connect.ChatType.PRIVATE);
 
                 String myPublickKey = MemoryDataManager.getInstance().getPubKey();
-                String definePublicKey = definBean.getPublicKey();
-                if (myPublickKey.equals(definBean.getPublicKey())) {
-                    from = definePublicKey;
-                    to = myPublickKey;
-                } else {
+                MsgSender msgSender = definBean.getSenderInfoExt();
+                if (definBean.getSenderInfoExt() == null) {
                     from = myPublickKey;
-                    to = definePublicKey;
+                    to = connect;
+                } else {
+                    String senderPublicKey = msgSender.getPublickey();
+                    if (myPublickKey.equals(msgSender.getPublickey())) {
+                        from = myPublickKey;
+                        to = senderPublicKey;
+                    } else {
+                        from = senderPublicKey;
+                        to = myPublickKey;
+                    }
                 }
 
                 MsgType msgType = MsgType.toMsgType(definBean.getType());
@@ -191,7 +197,7 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
                         GeoAddressBean addressBean = definBean.getLocationExt();
 
                         messageV3 = Connect.LocationMessage.newBuilder()
-                                .setAddress(definBean.getContent())
+                                .setAddress(addressBean.getAddress())
                                 .setScreenShot(addressBean.getPath())
                                 .setLatitude((float) addressBean.getLocationLatitude())
                                 .setLongitude((float) addressBean.getLocationLongitude())
@@ -258,6 +264,7 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
         private int size;
         private float imageOriginWidth;
         private float imageOriginHeight;
+        private MsgSender senderInfoExt;
 
         public int getType() {
             return type;
@@ -313,6 +320,10 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
 
         public float getImageOriginHeight() {
             return imageOriginHeight;
+        }
+
+        public MsgSender getSenderInfoExt() {
+            return senderInfoExt;
         }
     }
 
@@ -428,6 +439,30 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
 
         public String getLinkImg() {
             return linkImg;
+        }
+    }
+
+    class MsgSender implements Serializable {
+
+        public String publickey;
+        public String username;
+        public String address;
+        public String avatar;
+
+        public String getPublickey() {
+            return publickey;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public String getAvatar() {
+            return avatar;
         }
     }
 }

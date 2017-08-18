@@ -52,12 +52,14 @@ import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.MediaUtil;
+import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
 import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.ui.activity.PhotoAlbumActivity;
 import connect.widget.camera.CameraTakeActivity;
+import protos.Connect;
 
 /**
  * chat message
@@ -117,7 +119,7 @@ public class ChatActivity extends BaseChatActvity {
             }
         });
         // robot/stranger donot show setting
-        if (!(talker.getTalkType() == 2 || normalChat.isStranger())) {
+        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.isStranger())) {
             toolbar.setRightImg(R.mipmap.menu_white);
         }
 
@@ -153,14 +155,17 @@ public class ChatActivity extends BaseChatActvity {
 
             @Override
             protected List<MsgExtEntity> doInBackground(Void... params) {
-                return normalChat.loadMoreEntities(0);
+                return normalChat.loadMoreEntities(TimeUtil.getCurrentTimeInLong());
             }
 
             @Override
             protected void onPostExecute(List<MsgExtEntity> entities) {
                 super.onPostExecute(entities);
-                MsgExtEntity encryEntity =  normalChat.encryptChatMsg();
+                MsgExtEntity encryEntity = normalChat.encryptChatMsg();
                 if (entities.size() < 20 && encryEntity != null) {
+                    long lastTime = entities.size() <= 0 ? TimeUtil.getCurrentTimeInLong() :
+                            entities.get(0).getCreatetime();
+                    encryEntity.setCreatetime(lastTime);
                     entities.add(0, encryEntity);
                 }
 
@@ -175,8 +180,13 @@ public class ChatActivity extends BaseChatActvity {
         new AsyncTask<Void, Void, List<MsgExtEntity>>() {
             @Override
             protected List<MsgExtEntity> doInBackground(Void... params) {
-                MsgExtEntity baseEntity = chatAdapter.getMsgEntities().get(0);
-                return normalChat.loadMoreEntities(baseEntity.getCreatetime());
+                long lastCreateTime = 0;
+                List<MsgExtEntity> msgExtEntities = chatAdapter.getMsgEntities();
+                if (msgExtEntities.size() > 0) {
+                    MsgExtEntity baseEntity = msgExtEntities.get(0);
+                    lastCreateTime = baseEntity.getCreatetime();
+                }
+                return normalChat.loadMoreEntities(lastCreateTime);
             }
 
             @Override
@@ -326,7 +336,7 @@ public class ChatActivity extends BaseChatActvity {
                 normalChat.sendPushMsg(msgExtEntity);
                 break;
             case Photo:
-                msgExtEntity = normalChat.photoMsg(content,content, FileUtil.fileSize(content),0,0);
+                msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), 0, 0);
                 fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(String msgid) {
@@ -374,9 +384,9 @@ public class ChatActivity extends BaseChatActvity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,permissomCallBack);
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionUtil.getInstance().onRequestPermissionsResult(activity, requestCode, permissions, grantResults, permissomCallBack);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class MsgDestructHolder extends MsgBaseHolder{
         String content = "";
         String name = msgExtEntity.parseDirect() == MsgDirect.From ? RoomSession.getInstance().getUserInfo().getUsername() :
                 context.getResources().getString(R.string.Chat_You);
-        if (destructMessage.getTime() == 0) {
+        if (destructMessage.getTime() <= 0) {
             content = context.getResources().getString(R.string.Chat_disable_the_self_descruct, name);
         } else {
             content = context.getResources().getString(R.string.Chat_set_the_self_destruct_timer_to, name, TimeUtil.parseBurnTime(destructMessage.getTime()));

@@ -21,7 +21,6 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
-import connect.database.green.bean.MessageEntity;
 import connect.database.green.bean.ParamEntity;
 import connect.im.bean.MsgType;
 import connect.im.bean.UserCookie;
@@ -109,7 +108,7 @@ public class ChatParseBean extends InterParse {
         }
 
         byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, priKey, pubkey, messageData.getChatMsg().getCipherData());
-        if (contents.length <= 10) {
+        if (contents.length < 3) {
             ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
             if (contactEntity != null) {
                 NormalChat normalChat = new FriendChat(contactEntity);

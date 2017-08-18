@@ -74,7 +74,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 } else if (string.equals(strings[3])) {//copy
                     ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     cm.setText(getCopyTxt());
-                    ToastEUtil.makeText(context,R.string.Set_Copied).show();
+                    ToastEUtil.makeText(context, R.string.Set_Copied).show();
                 }
             }
         };
@@ -83,7 +83,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
     @Override
     public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
-        final MsgDirect direct=msgExtEntity.parseDirect();
+        final MsgDirect direct = msgExtEntity.parseDirect();
         try {
             if (direct == MsgDirect.To && msgStateView != null) {
                 msgStateView.setMsgEntity(msgExtEntity);
@@ -99,7 +99,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         pvHelper.addPrompt(longClickView());
         pvHelper.setOnItemClickListener(promptClickListener);
 
-        Connect.ChatType chatType= Connect.ChatType.forNumber(msgExtEntity.getChatType());
+        Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
         switch (chatType) {
             case PRIVATE:
                 userInfo = RoomSession.getInstance().getUserInfo();
@@ -125,7 +125,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 });
                 if (burnProBar != null) {
                     long destructtime = msgExtEntity.parseDestructTime();
-                    if (destructtime== 0) {
+                    if (destructtime == 0) {
                         burnProBar.setVisibility(View.GONE);
                     } else {
                         if (direct == MsgDirect.From || msgExtEntity.getRead_time() == 0) {
@@ -161,9 +161,10 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     }
                 });
 
-
                 if (direct == MsgDirect.To) {
-                    memberTxt.setVisibility(View.GONE);
+                    if (memberTxt != null) {
+                        memberTxt.setVisibility(View.GONE);
+                    }
                 } else if (direct == MsgDirect.From) {
                     memberTxt.setVisibility(View.VISIBLE);
                     String showName = ((GroupChat) ((BaseChatActvity) context).getNormalChat()).nickName(userInfo.getUid());

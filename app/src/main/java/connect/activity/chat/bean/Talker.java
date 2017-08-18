@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
+import protos.Connect;
 
 /**
  * chat talker
@@ -23,7 +24,7 @@ public class Talker implements Serializable{
 
     public Talker(ContactEntity entity) {
         this.friendEntity = entity;
-        this.talkType = 0;
+        this.talkType = Connect.ChatType.PRIVATE_VALUE;
         this.talkKey = friendEntity.getPub_key();
         this.talkAvatar = friendEntity.getAvatar();
         String username = TextUtils.isEmpty(friendEntity.getUsername()) ? friendEntity.getRemark() : friendEntity.getUsername();
@@ -33,7 +34,7 @@ public class Talker implements Serializable{
 
     public Talker(GroupEntity entity) {
         this.groupEntity = entity;
-        this.talkType = 1;
+        this.talkType = Connect.ChatType.GROUPCHAT_VALUE;
         this.talkKey = groupEntity.getIdentifier();
         this.talkAvatar = groupEntity.getAvatar();
         this.talkName = groupEntity.getName();

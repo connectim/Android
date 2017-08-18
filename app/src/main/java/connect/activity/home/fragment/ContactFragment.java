@@ -39,6 +39,7 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
 /**
  * The address book contacts
@@ -147,7 +148,7 @@ public class ContactFragment extends BaseFragment {
                     ActivityUtil.next(mActivity, NewFriendActivity.class);
                     break;
                 case 6:
-                    ChatActivity.startActivity(mActivity, new Talker(2, "Connect"));
+                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE, "Connect"));
                     break;
                 case 2:
                     GroupEntity groupEntity = new GroupEntity();

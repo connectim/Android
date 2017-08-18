@@ -114,7 +114,7 @@ public class MsgParseBean extends InterParse {
         }
 
         String msgid = rejectMessage.getMsgId();
-        String recAddress = rejectMessage.getReceiverAddress();
+        String recPublicKey = rejectMessage.getUid();
         switch (rejectMessage.getStatus()) {
             case 1://The user does not exist
             case 2://Is not a friend relationship
@@ -124,7 +124,7 @@ public class MsgParseBean extends InterParse {
                 }
                 break;
             case 3://in blakc list
-                blackFriendNotice(rejectMessage.getReceiverAddress());
+                blackFriendNotice(rejectMessage.getUid());
                 break;
             case 4://Not in the group
                 Map<String, Object> groupFail = FailMsgsManager.getInstance().getFailMap(msgid);
@@ -136,13 +136,13 @@ public class MsgParseBean extends InterParse {
             case 6://Error accessing chat information
             case 7://Chat messages do not match
                 Connect.ChatCookie chatCookie = Connect.ChatCookie.parseFrom(rejectMessage.getData());
-                saltNotMatch(msgid, recAddress, chatCookie);
+                saltNotMatch(msgid, recPublicKey, chatCookie);
                 break;
             case 8://The other cookies expire, single side
-                halfRandom(msgid, recAddress);
+                halfRandom(msgid, recPublicKey);
                 break;
             case 9://upload cookie expire
-                reloadUserCookie(msgid, recAddress);
+                reloadUserCookie(msgid, recPublicKey);
                 break;
         }
         receiptMsg(msgid, 3);
@@ -321,11 +321,11 @@ public class MsgParseBean extends InterParse {
 
     /**
      * salt not match
-     * @param address
+     * @param publickey
      * @param cookie
      */
-    private void saltNotMatch(String msgid, String address, Connect.ChatCookie cookie) throws Exception {
-        ContactEntity friendEntity= ContactHelper.getInstance().loadFriendEntity(address);
+    private void saltNotMatch(String msgid, String publickey, Connect.ChatCookie cookie) throws Exception {
+        ContactEntity friendEntity= ContactHelper.getInstance().loadFriendEntity(publickey);
         if (friendEntity == null) {
             return;
         }

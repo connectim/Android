@@ -1,5 +1,7 @@
 package connect.activity.chat.bean;
 
+import android.text.TextUtils;
+
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.base.BaseApplication;
@@ -8,6 +10,9 @@ import connect.database.green.bean.GroupMemberEntity;
 import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
+import connect.utils.StringUtil;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -63,6 +68,12 @@ public class MsgExtEntity extends MessageEntity {
     }
 
     public MessageEntity transToMessageEntity() {
+        String content = getContent();
+        if (TextUtils.isEmpty(content)) {
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, SupportKeyUril.localHashKey().getBytes(), getContents());
+            content = StringUtil.bytesToHexString(gcmData.toByteArray());
+        }
+
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.set_id(get_id());
         messageEntity.setMessage_id(getMessage_id());
@@ -71,7 +82,7 @@ public class MsgExtEntity extends MessageEntity {
         messageEntity.setMessageType(getMessageType());
         messageEntity.setMessage_from(getMessage_from());
         messageEntity.setMessage_to(getMessage_to());
-        messageEntity.setContent(getContent());
+        messageEntity.setContent(content);
         messageEntity.setCreatetime(getCreatetime());
         messageEntity.setRead_time(getRead_time());
         messageEntity.setSend_status(getSend_status());
