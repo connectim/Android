@@ -12,40 +12,35 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
+import connect.activity.login.bean.StartImagesBean;
+import connect.activity.login.bean.UserBean;
+import connect.activity.login.contract.StartContract;
+import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
+import connect.utils.RegularUtil;
+import connect.utils.UriUtil;
+import connect.utils.glide.GlideUtil;
+import connect.utils.glide.OnDownloadTarget;
+import connect.utils.okhttp.HttpRequest;
+import connect.utils.scan.ResolveUrlUtil;
+import connect.utils.system.SystemDataUtil;
+import connect.utils.system.SystemUtil;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Random;
 
-import connect.database.MemoryDataManager;
-import connect.database.SharedPreferenceUtil;
-import connect.activity.login.bean.StartImagesBean;
-import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.StartContract;
-import connect.utils.RegularUtil;
-import connect.utils.scan.ResolveUrlUtil;
-import connect.utils.system.SystemDataUtil;
-import connect.utils.UriUtil;
-import connect.utils.glide.GlideUtil;
-import connect.utils.glide.OnDownloadTarget;
-import connect.utils.okhttp.HttpRequest;
-import connect.utils.system.SystemUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-/**
- *
- */
-public class StartPresenter implements StartContract.Presenter{
+import org.json.JSONObject;
+
+public class StartPresenter implements StartContract.Presenter {
 
     private StartImagesBean imagesBean;
     private String sharedStr;
     private int imageLoadInt;
-    private final long ACTUVITY_SHOWTIME = 2000;
-
     private StartContract.View mView;
 
     public StartPresenter(StartContract.View mView) {
@@ -61,18 +56,18 @@ public class StartPresenter implements StartContract.Presenter{
         String path = getImagePath();
         mView.setImage(path);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
             requestImages();
-        }else if (ContextCompat.checkSelfPermission(mView.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+        } else if (ContextCompat.checkSelfPermission(mView.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             requestImages();
         }
         goInActivity(mView.getActivity());
     }
 
-    private String getImagePath(){
+    private String getImagePath() {
         String addressStr = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.START_IMAGES_ADDRESS);
-        if (TextUtils.isEmpty(addressStr)) {
+        if(TextUtils.isEmpty(addressStr)){
             return null;
         } else {
             String[] addressArray = addressStr.split(",");
@@ -90,23 +85,23 @@ public class StartPresenter implements StartContract.Presenter{
             @Override
             public void run() {
                 try {
-                    Thread.sleep(ACTUVITY_SHOWTIME);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                 if (!SharedPreferenceUtil.getInstance().isContains(SharedPreferenceUtil.FIRST_INTO_APP)) {
-                    mView.goinGuide();
+                    mView.goIntoGuide();
                 } else if (userBean == null) {
-                    mView.goinLoginForPhone();
+                    mView.goIntoLoginForPhone();
                 } else if (!TextUtils.isEmpty(userBean.getSalt())) {
                     openFromWeb(mActivity);
-                    mView.goinLoginPatter();
+                    mView.goIntoLoginPatter();
                 } else {
                     openFromWeb(mActivity);
                     MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
-                    mView.goinHome();
+                    mView.goIntoHome();
                 }
                 mActivity.finish();
             }
@@ -124,10 +119,11 @@ public class StartPresenter implements StartContract.Presenter{
             public void onFailure(Call call, IOException e) {
 
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String tempResponse = response.body().string();
-                int code = 0;
+                int code;
                 try {
                     JSONObject jsonObject = new JSONObject(tempResponse);
                     code = jsonObject.getInt("Code");
@@ -149,23 +145,24 @@ public class StartPresenter implements StartContract.Presenter{
     }
 
     private void saveImagesData(StartImagesBean images) {
-        if(!SystemUtil.isOpenWifi()){
+        if (!SystemUtil.isOpenWifi()) {
             return;
         }
         this.imagesBean = images;
         ArrayList<String> imageList = new ArrayList<>();
-        for(String path : imagesBean.getImages()){
-            if(!imageList.contains(path))
+        for (String path : imagesBean.getImages()) {
+            if (!imageList.contains(path)) {
                 imageList.add(path);
+            }
         }
         imagesBean.setImages(imageList);
         sharedStr = "";
         imageLoadInt = 0;
-        for(String path : imageList){
-            GlideUtil.downloadImage(path, new OnDownloadTarget(){
+        for (String path : imageList) {
+            GlideUtil.downloadImage(path, new OnDownloadTarget() {
                 @Override
                 public void finish(String path) {
-                    if(!TextUtils.isEmpty(path)){
+                    if (!TextUtils.isEmpty(path)) {
                         if (TextUtils.isEmpty(sharedStr)) {
                             sharedStr = path;
                         } else {
@@ -173,7 +170,7 @@ public class StartPresenter implements StartContract.Presenter{
                         }
                         imageLoadInt ++;
                     }
-                    if(imageLoadInt == imagesBean.getImages().size() && !TextUtils.isEmpty(sharedStr)){
+                    if (imageLoadInt == imagesBean.getImages().size() && !TextUtils.isEmpty(sharedStr)) {
                         SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.START_IMAGES_HASH,imagesBean.getHash());
                         SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.START_IMAGES_ADDRESS, sharedStr);
                     }
@@ -183,16 +180,15 @@ public class StartPresenter implements StartContract.Presenter{
     }
 
     /**
-     * Save url with open the App
-     * @param activity
+     * Save url with open the App.
+     * @param activity The activity reference
      */
-    private void openFromWeb(Activity activity){
-        Intent i_getvalue = activity.getIntent();
-        String action = i_getvalue.getAction();
-        Uri uri = i_getvalue.getData();
-        if(Intent.ACTION_VIEW.equals(action) && RegularUtil.matches(uri.toString(), ResolveUrlUtil.Web_Url)){
+    private void openFromWeb(Activity activity) {
+        Intent intent = activity.getIntent();
+        String action = intent.getAction();
+        Uri uri = intent.getData();
+        if (Intent.ACTION_VIEW.equals(action) && RegularUtil.matches(uri.toString(), ResolveUrlUtil.Web_Url)) {
             SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.WEB_OPEN_APP,uri.toString());
         }
     }
-
 }

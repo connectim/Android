@@ -5,20 +5,16 @@ import com.google.gson.Gson;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
+
 import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.AdBean;
 import connect.activity.chat.bean.ApplyGroupBean;
-import connect.activity.chat.bean.CardExt1Bean;
-import connect.activity.chat.bean.GroupReviewBean;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgSender;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.GroupChat;
-import connect.activity.chat.model.content.NormalChat;
 import connect.activity.chat.model.content.RobotChat;
 import connect.activity.login.bean.UserBean;
+import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -28,7 +24,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.MessageEntity;
 import connect.database.green.bean.ParamEntity;
-import connect.im.bean.MsgType;
 import connect.im.bean.Session;
 import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
@@ -90,7 +85,7 @@ public class MsgParseBean extends InterParse {
     /**
      * robotu message
      */
-    private void robotMsg()throws Exception{
+    private void robotMsg() throws Exception {
         Connect.MSMessage msMessage = Connect.MSMessage.parseFrom(byteBuffer.array());
         if (ext == 0) {
             backOffLineAck(5, msMessage.getMsgId());
@@ -99,14 +94,12 @@ public class MsgParseBean extends InterParse {
         }
 
         String robotname = BaseApplication.getInstance().getString(R.string.app_name);
-        MsgEntity msgEntity = robotMsgDeal(msMessage);
-        MessageHelper.getInstance().insertFromMsg(robotname, msgEntity.getMsgDefinBean());
-        MsgDefinBean definBean = msgEntity.getMsgDefinBean();
-        MsgEntity roMsgEntity = RobotChat.getInstance().createBaseChat(MsgType.toMsgType(definBean.getType()));
-        roMsgEntity.setMsgDefinBean(definBean);
+        MsgExtEntity msgExtEntity = robotMsgDeal(msMessage);
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
-        RobotChat.getInstance().updateRoomMsg(null, definBean.showContentTxt(2), definBean.getSendtime(),-1,true);
-        pushNoticeMsg(robotname, 2, msgEntity);
+        String content = msgExtEntity.showContent();
+        RobotChat.getInstance().updateRoomMsg(null, content, msgExtEntity.getCreatetime(), -1, true);
+        pushNoticeMsg(robotname, 2, content);
     }
 
     /**
@@ -121,7 +114,7 @@ public class MsgParseBean extends InterParse {
         }
 
         String msgid = rejectMessage.getMsgId();
-        String recAddress = rejectMessage.getReceiverAddress();
+        String recPublicKey = rejectMessage.getUid();
         switch (rejectMessage.getStatus()) {
             case 1://The user does not exist
             case 2://Is not a friend relationship
@@ -131,7 +124,7 @@ public class MsgParseBean extends InterParse {
                 }
                 break;
             case 3://in blakc list
-                blackFriendNotice(rejectMessage.getReceiverAddress());
+                blackFriendNotice(rejectMessage.getUid());
                 break;
             case 4://Not in the group
                 Map<String, Object> groupFail = FailMsgsManager.getInstance().getFailMap(msgid);
@@ -143,13 +136,13 @@ public class MsgParseBean extends InterParse {
             case 6://Error accessing chat information
             case 7://Chat messages do not match
                 Connect.ChatCookie chatCookie = Connect.ChatCookie.parseFrom(rejectMessage.getData());
-                saltNotMatch(msgid, recAddress, chatCookie);
+                saltNotMatch(msgid, recPublicKey, chatCookie);
                 break;
             case 8://The other cookies expire, single side
-                halfRandom(msgid, recAddress);
+                halfRandom(msgid, recPublicKey);
                 break;
             case 9://upload cookie expire
-                reloadUserCookie(msgid, recAddress);
+                reloadUserCookie(msgid, recPublicKey);
                 break;
         }
         receiptMsg(msgid, 3);
@@ -179,9 +172,9 @@ public class MsgParseBean extends InterParse {
         Connect.MessageData messageData = messagePost.getMsgData();
 
         if (ext == 0) {
-            backOffLineAck(5, messageData.getMsgId());
+            backOffLineAck(5, messageData.getChatMsg().getMsgId());
         } else {
-            backOnLineAck(5, messageData.getMsgId());
+            backOnLineAck(5, messageData.getChatMsg().getMsgId());
         }
 
         ChatParseBean parseBean = new ChatParseBean(ackByte, messagePost);
@@ -191,53 +184,36 @@ public class MsgParseBean extends InterParse {
     /**
      * robot notice message
      */
-    private MsgEntity robotMsgDeal(Connect.MSMessage message) throws Exception {
-        MsgEntity entity = null;
+    private MsgExtEntity robotMsgDeal(Connect.MSMessage message) throws Exception {
+        MsgExtEntity entity = null;
         switch (message.getCategory()) {
             case 1://text message
                 Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(message.getBody().toByteArray());
                 entity = RobotChat.getInstance().txtMsg(textMessage.getContent());
                 break;
             case 2://voice message
-                Connect.Voice voice = Connect.Voice.parseFrom(message.getBody().toByteArray());
-                entity = RobotChat.getInstance().voiceMsg(voice.getUrl(), (int) voice.getDuration(), "");
+                Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(message.getBody().toByteArray());
+                entity = RobotChat.getInstance().voiceMsg(voiceMessage.getUrl(), voiceMessage.getTimeLength());
                 break;
             case 3://picture message
-                Connect.Image image = Connect.Image.parseFrom(message.getBody().toByteArray());
-                entity = RobotChat.getInstance().photoMsg(image.getUrl(), "");
-                entity.getMsgDefinBean().setImageOriginWidth(Float.parseFloat(image.getWidth()));
-                entity.getMsgDefinBean().setImageOriginHeight(Float.parseFloat(image.getHeight()));
+                Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(message.getBody().toByteArray());
+                entity = RobotChat.getInstance().photoMsg(photoMessage.getThum(), photoMessage.getUrl(), photoMessage.getSize(),
+                        photoMessage.getImageWidth(), photoMessage.getImageHeight());
                 break;
             case 15://translation message
                 Connect.SystemTransferPackage transferPackage = Connect.SystemTransferPackage.parseFrom(message.getBody().toByteArray());
-                entity = RobotChat.getInstance().transferMsg(transferPackage.getTxid(), transferPackage.getAmount(), transferPackage.getTips(), 0);
+                entity = RobotChat.getInstance().transferMsg(0, transferPackage.getTxid(), transferPackage.getAmount(), transferPackage.getTips());
                 break;
             case 16://system red packet message
                 Connect.SystemRedPackage redPackage = Connect.SystemRedPackage.parseFrom(message.getBody().toByteArray());
-                entity = RobotChat.getInstance().luckPacketMsg(redPackage.getHashId(), redPackage.getTips(), 0);
+                entity = RobotChat.getInstance().luckPacketMsg(0, redPackage.getHashId(), redPackage.getTips(), redPackage.getAmount());
                 break;
             case 101://group review
                 Connect.Reviewed reviewed = Connect.Reviewed.parseFrom(message.getBody().toByteArray());
+                entity = RobotChat.getInstance().groupReviewMsg(reviewed);
 
-                Connect.UserInfo info = reviewed.getUserInfo();
-                CardExt1Bean ext1Bean = new CardExt1Bean();
-                ext1Bean.setAvatar(info.getAvatar());
-                ext1Bean.setAddress(info.getAddress());
-                ext1Bean.setPub_key(info.getPubKey());
-                ext1Bean.setUsername(info.getUsername());
-
-                GroupReviewBean reviewBean = new GroupReviewBean();
-                reviewBean.setTips(reviewed.getTips());
-                reviewBean.setVerificationCode(reviewed.getVerificationCode());
-                reviewBean.setGroupKey(reviewed.getIdentifier());
-                reviewBean.setSource(reviewed.getSource());
-                reviewBean.setInvitor(reviewed.getUserInfo());
-                reviewBean.setGroupName(reviewed.getName());
-
-                entity = RobotChat.getInstance().groupReviewMsg(new Gson().toJson(reviewBean), new Gson().toJson(ext1Bean));
-                String msgid = entity.getMsgDefinBean().getMessage_id();
-
-                String groupApplyKey = reviewed.getIdentifier() + info.getPubKey();
+                String msgid = entity.getMessage_id();
+                String groupApplyKey = reviewed.getIdentifier() + reviewed.getUserInfo().getPubKey();
                 ApplyGroupBean applyGroupBean = ParamManager.getInstance().loadGroupApply(groupApplyKey);
                 if (applyGroupBean == null) {//new apply
                     ParamManager.getInstance().updateGroupApply(groupApplyKey, reviewed.getTips(), reviewed.getSource(), 0, msgid);
@@ -248,9 +224,7 @@ public class MsgParseBean extends InterParse {
                 break;
             case 102://announce message
                 Connect.Announcement announcement = Connect.Announcement.parseFrom(message.getBody().toByteArray());
-                AdBean adBean = new AdBean();
-                adBean.transSystemAd(announcement);
-                entity = RobotChat.getInstance().systemAdNotice(adBean);
+                entity = RobotChat.getInstance().systemAdNotice(announcement);
                 break;
             case 103://red packet has get notice
                 Connect.SystemRedpackgeNotice packgeNotice = Connect.SystemRedpackgeNotice.parseFrom(message.getBody().toByteArray());
@@ -290,13 +264,10 @@ public class MsgParseBean extends InterParse {
                 break;
         }
 
-        entity.setSendstate(1);
-        entity.setReadstate(0);
-        if (entity.getMsgDefinBean().getSenderInfoExt() == null) {
-            entity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().roomKey(),
-                    BaseApplication.getInstance().getString(R.string.app_name),
-                    RobotChat.getInstance().address(), RobotChat.getInstance().headImg()));
-        }
+        entity.setSend_status(1);
+        String mypublickey = MemoryDataManager.getInstance().getPubKey();
+        entity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));
+        entity.setMessage_to(mypublickey);
         return entity;
     }
 
@@ -308,11 +279,11 @@ public class MsgParseBean extends InterParse {
     private void insertNotFriendNotice(String pubkey) {
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
         if (friendEntity != null) {
-            NormalChat normalChat = new FriendChat(friendEntity);
-            MsgEntity msgEntity = normalChat.strangerNotice();
+            FriendChat friendChat = new FriendChat(friendEntity);
+            MsgExtEntity msgExtEntity = friendChat.strangerNotice();
 
-            MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
+            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
         }
     }
 
@@ -324,11 +295,11 @@ public class MsgParseBean extends InterParse {
     private void blackFriendNotice(String pubkey) {
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
         if (friendEntity != null) {
-            NormalChat normalChat = new FriendChat(friendEntity);
-            MsgEntity msgEntity = normalChat.blackFriendNotice();
+            FriendChat friendChat = new FriendChat(friendEntity);
+            MsgExtEntity msgExtEntity = friendChat.blackFriendNotice();
 
-            MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgEntity);
+            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
         }
     }
 
@@ -340,21 +311,21 @@ public class MsgParseBean extends InterParse {
     private void notGroupMemberNotice(String groupkey) {
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupkey);
         if (groupEntity != null) {
-            NormalChat normalChat = new GroupChat(groupEntity);
-            MsgEntity msgEntity = normalChat.notMemberNotice();
+            GroupChat groupChat = new GroupChat(groupEntity);
+            MsgExtEntity msgExtEntity = groupChat.notMemberNotice();
 
-            MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupkey, msgEntity);
+            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupkey, msgExtEntity);
         }
     }
 
     /**
      * salt not match
-     * @param address
+     * @param publickey
      * @param cookie
      */
-    private void saltNotMatch(String msgid, String address, Connect.ChatCookie cookie) throws Exception {
-        ContactEntity friendEntity= ContactHelper.getInstance().loadFriendEntity(address);
+    private void saltNotMatch(String msgid, String publickey, Connect.ChatCookie cookie) throws Exception {
+        ContactEntity friendEntity= ContactHelper.getInstance().loadFriendEntity(publickey);
         if (friendEntity == null) {
             return;
         }
@@ -398,11 +369,10 @@ public class MsgParseBean extends InterParse {
         if (messageEntity != null) {
             FriendChat friendChat = new FriendChat(friendEntity);
             friendChat.setEncryType(FriendChat.EncryType.NORMAL);
-            MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
-            friendChat.sendPushMsg(baseEntity);
+            MsgExtEntity msgExtEntity = friendChat.loadEntityByMsgid(msgid);
+            friendChat.sendPushMsg(msgExtEntity);
         }
     }
-
 
     private void halfRandom(String msgid, String address) throws Exception {
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
@@ -416,8 +386,8 @@ public class MsgParseBean extends InterParse {
         if (messageEntity != null) {
             FriendChat friendChat = new FriendChat(friendEntity);
             friendChat.setEncryType(FriendChat.EncryType.HALF);
-            MsgEntity baseEntity = friendChat.loadEntityByMsgid(msgid);
-            friendChat.sendPushMsg(baseEntity);
+            MsgExtEntity msgExtEntity = friendChat.loadEntityByMsgid(msgid);
+            friendChat.sendPushMsg(msgExtEntity);
         }
     }
 

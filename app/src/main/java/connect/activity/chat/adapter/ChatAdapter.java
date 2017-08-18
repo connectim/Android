@@ -11,38 +11,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import connect.activity.chat.bean.BaseListener;
 import connect.activity.chat.bean.ItemViewType;
-import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.model.ChatMsgUtil;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.view.holder.MsgBaseHolder;
 import connect.activity.chat.view.row.MsgBaseRow;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.BaseListener;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
+import protos.Connect;
 
 /**
- *
  * Created by gtq on 2016/11/23.
  */
 public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     private LayoutInflater inflater;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
-    protected List<MsgEntity> msgEntities = new ArrayList<>();
+    protected List<MsgExtEntity> msgEntities = new ArrayList<>();
 
-    /** mapping msgid，MsgEntity ,quickly query msgid and Message Entities */
-    private Map<String, MsgEntity> msgEntityMap = new HashMap<>();
+    private Map<String, MsgExtEntity> msgEntityMap = new HashMap<>();
 
     public ChatAdapter(Activity activity, RecyclerView recycler, LinearLayoutManager manager) {
         this.inflater = LayoutInflater.from(activity);
@@ -50,7 +49,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         this.layoutManager = manager;
     }
 
-    public List<MsgEntity> getMsgEntities() {
+    public List<MsgExtEntity> getMsgEntities() {
         return msgEntities;
     }
 
@@ -67,9 +66,9 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
      */
     @Override
     public int getItemViewType(int position) {
-        MsgDefinBean definBean = msgEntities.get(position).getMsgDefinBean();
-        MsgDirect dirct = ChatMsgUtil.parseMsgDirect(definBean);
-        return definBean.getType() * dirct.dirct;
+        MsgExtEntity msgExtEntity = msgEntities.get(position);
+        MsgDirect dirct = msgExtEntity.parseDirect();
+        return msgExtEntity.getMessageType() * dirct.dirct;
     }
 
     @Override
@@ -88,22 +87,26 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
 
     @Override
     public void onBindViewHolder(MsgBaseHolder holder, int position) {
-        MsgEntity msgEntity = msgEntities.get(position);
+        MsgExtEntity msgExtEntity = msgEntities.get(position);
 
         long lasttime = 0;
         if (position == 0) {
-            MessageEntity lastMsgEntity = MessageHelper.getInstance().loadMsgLessMsgid(msgEntity.getMsgid());
+            MessageEntity lastMsgEntity = MessageHelper.getInstance().loadMsgLessMsgid(msgExtEntity.getMessage_id());
             if (lastMsgEntity != null) {
                 lasttime = lastMsgEntity.getCreatetime();
             }
         } else {
-            MsgEntity lastMsgEntity = msgEntities.get(position - 1);
-            lasttime = lastMsgEntity.getMsgDefinBean().getSendtime();
+            MsgExtEntity lastMsgEntity = msgEntities.get(position - 1);
+            lasttime = lastMsgEntity.getCreatetime();
         }
 
-        long curtime = msgEntity.getMsgDefinBean().getSendtime();
-        holder.buildMsgTime(lasttime, curtime);
-        holder.buildRowData(holder, msgEntities.get(position));
+        long curtime = msgExtEntity.getCreatetime();
+        try {
+            holder.buildMsgTime(lasttime, curtime);
+            holder.buildRowData(holder, msgExtEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Handler itemsUpdateHandler = new Handler(Looper.myLooper()) {
@@ -122,7 +125,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         }
     };
 
-    public void insertItem(final MsgEntity t) {
+    public void insertItem(final MsgExtEntity t) {
         BaseListener listener = new BaseListener() {
             @Override
             public void Success(Object ts) {
@@ -130,7 +133,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
                 msgEntities.add(posi, t);
                 notifyItemInserted(posi);
 
-                msgEntityMap.put(t.getMsgid(), t);
+                msgEntityMap.put(t.getMessage_id(), t);
             }
 
             @Override
@@ -145,15 +148,15 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         itemsUpdateHandler.sendMessage(message);
     }
 
-    public void insertItems(final List<MsgEntity> entities) {
+    public void insertItems(final List<MsgExtEntity> entities) {
         BaseListener listener = new BaseListener() {
             @Override
             public void Success(Object ts) {
                 msgEntities.addAll(0, entities);
                 notifyDataSetChanged();
 
-                for (MsgEntity entity : entities) {
-                    msgEntityMap.put(entity.getMsgid(), entity);
+                for (MsgExtEntity entity : entities) {
+                    msgEntityMap.put(entity.getMessage_id(), entity);
                 }
             }
 
@@ -169,8 +172,8 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         itemsUpdateHandler.sendMessage(message);
     }
 
-    public void removeItem(final MsgEntity t) {
-        BaseListener listener=new BaseListener() {
+    public void removeItem(final MsgExtEntity t) {
+        BaseListener listener = new BaseListener() {
             @Override
             public void Success(Object ts) {
                 int posi = msgEntities.lastIndexOf(t);
@@ -178,7 +181,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
                     msgEntities.remove(posi);
                     notifyItemRemoved(posi);
 
-                    msgEntityMap.remove(t.getMsgid());
+                    msgEntityMap.remove(t.getMessage_id());
                 }
             }
 
@@ -195,24 +198,30 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     }
 
     public void updateItemSendState(String msgid, int state) {
-        MsgEntity msgEntity = msgEntityMap.get(msgid);
-        if (msgEntity != null) {
-            msgEntity.setSendstate(state);
+        MsgExtEntity msgExtEntity = msgEntityMap.get(msgid);
+        if (msgExtEntity != null) {
+            msgExtEntity.setSend_status(state);
         }
     }
 
     public void showImgMsgs(final BaseListener listener) {
-        new AsyncTask<List<MsgEntity>,Void,ArrayList<String>>(){
+        new AsyncTask<List<MsgExtEntity>, Void, ArrayList<String>>() {
             @Override
-            protected ArrayList<String> doInBackground(List<MsgEntity>... params) {
+            protected ArrayList<String> doInBackground(List<MsgExtEntity>... params) {
                 ArrayList<String> imgList = new ArrayList<>();
                 for (int i = 0; i < msgEntities.size(); i++) {
-                    MsgEntity index = msgEntities.get(i);
-                    MsgDefinBean definBean = index.getMsgDefinBean();
-                    if (definBean.getType() == MsgType.Photo.type) {
-                        String thumb = definBean.getContent();
-                        String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(index.getPubkey(), definBean.getMessage_id(), FileUtil.FileType.IMG);
-                        imgList.add(path);
+                    MsgExtEntity index = msgEntities.get(i);
+
+                    MsgType msgType = MsgType.toMsgType(index.getMessageType());
+                    if (msgType == MsgType.Photo) {
+                        try {
+                            Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(index.getContents());
+                            String thumb = photoMessage.getThum();
+                            String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(index.getMessage_ower(), index.getMessage_id(), FileUtil.FileType.IMG);
+                            imgList.add(path);
+                        } catch (InvalidProtocolBufferException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 return imgList;
@@ -227,18 +236,19 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     }
 
     public void unReadVoice(final String msgid) {
-        new AsyncTask<List<MsgEntity>, Void, Integer>() {
+        new AsyncTask<List<MsgExtEntity>, Void, Integer>() {
             @Override
-            protected Integer doInBackground(List<MsgEntity>... params) {
+            protected Integer doInBackground(List<MsgExtEntity>... params) {
                 int holdPosi = -1;
-                MsgEntity msgEntity = msgEntityMap.get(msgid);
-                if (msgEntity != null) {
-                    List<MsgEntity> msgEntities = params[0];
-                    int readPosi = msgEntities.indexOf(msgEntity);
+                MsgExtEntity msgExtEntity = msgEntityMap.get(msgid);
+                if (msgExtEntity != null) {
+                    List<MsgExtEntity> msgEntities = params[0];
+                    int readPosi = msgEntities.indexOf(msgExtEntity);
                     for (int i = readPosi; i < msgEntities.size(); i++) {
-                        msgEntity = msgEntities.get(i);//Ergodic voice list
-                        MsgDefinBean definBean = msgEntity.getMsgDefinBean();
-                        if (definBean.getType() == MsgType.Voice.type && msgEntity.getReadstate() == 0) {
+                        msgExtEntity = msgEntities.get(i);//Ergodic voice list
+
+                        MsgType msgType = MsgType.toMsgType(msgExtEntity.getMessageType());
+                        if (msgType == MsgType.Voice && msgExtEntity.getRead_time() == 0) {
                             holdPosi = i;
                         }
                     }
@@ -261,13 +271,14 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
 
     /**
      * The message has been read
+     *
      * @param msgid
      */
     public void hasReadBurnMsg(String msgid) {
-        MsgEntity msgEntity = msgEntityMap.get(msgid);
+        MsgExtEntity msgEntity = msgEntityMap.get(msgid);
         long burntime = TimeUtil.getCurrentTimeInLong();
         if (msgEntity != null) {
-            msgEntity.setBurnstarttime(burntime);
+            msgEntity.setRead_time(burntime);
         }
 
         //Modify read time

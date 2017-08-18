@@ -15,9 +15,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
+import connect.ui.activity.R;
 
 /**
  * State news component
@@ -30,7 +30,7 @@ public class MsgStateView extends RelativeLayout {
     /** The message delay processing */
     private static final long MESSAGE_DELAY = 1000;
     /** Send the failure message */
-    private MsgEntity chatBean;
+    private MsgExtEntity msgExtEntity;
 
     public MsgStateView(Context context) {
         super(context);
@@ -48,22 +48,22 @@ public class MsgStateView extends RelativeLayout {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.RESEND, chatBean);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.RESEND, msgExtEntity);
         }
     };
 
-    public void setMsgEntity(MsgEntity bean) {
-        this.chatBean = bean;
+    public void setMsgEntity(MsgExtEntity entity) {
+        this.msgExtEntity = entity;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN://Click on the button, failure Delay sending failed messages
-                if (chatBean.getSendstate() == 2) {
+                if (msgExtEntity.getSend_status() == 2) {
                     handler.sendEmptyMessageDelayed(MESSAGE_WHAT, MESSAGE_DELAY);
                     updateMsgState(0);
-                    chatBean.setSendstate(0);
+                    msgExtEntity.setSend_status(0);
                 }
                 break;
         }
@@ -76,16 +76,16 @@ public class MsgStateView extends RelativeLayout {
             case 0:
                 setVisibility(VISIBLE);
                 addView(createNewBar());
-                chatBean.setSendstate(0);
+                msgExtEntity.setSend_status(0);
                 break;
             case 1:
                 setVisibility(GONE);
-                chatBean.setSendstate(1);
+                msgExtEntity.setSend_status(1);
                 break;
             case 2:
                 setVisibility(VISIBLE);
                 addView(createFailImag());
-                chatBean.setSendstate(2);
+                msgExtEntity.setSend_status(2);
                 break;
         }
     }
@@ -101,7 +101,7 @@ public class MsgStateView extends RelativeLayout {
             case MSGSTATEVIEW:
                  String msgid = (String) objects[0];
                 int state = (int) objects[1];
-                if (chatBean.getMsgDefinBean().getMessage_id().equals(msgid)) {
+                if (msgExtEntity.getMessage_id().equals(msgid)) {
                     updateMsgState(state);
                 }
                 break;

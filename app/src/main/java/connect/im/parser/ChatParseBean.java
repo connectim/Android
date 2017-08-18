@@ -3,11 +3,17 @@ package connect.im.parser;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 
+import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.RecExtBean;
+import connect.activity.chat.model.content.FriendChat;
+import connect.activity.chat.model.content.GroupChat;
+import connect.activity.chat.model.content.NormalChat;
+import connect.activity.home.bean.HttpRecBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -16,21 +22,15 @@ import connect.database.green.DaoHelper.ParamHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.ParamEntity;
+import connect.im.bean.MsgType;
 import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.model.content.NormalChat;
-import connect.activity.home.bean.HttpRecBean;
-import connect.activity.base.BaseApplication;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.okhttp.adapter.MsgDefTypeAdapter;
 import protos.Connect;
 
 /**
@@ -66,52 +66,85 @@ public class ChatParseBean extends InterParse {
         }
     }
 
-    public synchronized void singleChat(Connect.MessagePost msgpost) {
+    public synchronized void singleChat(Connect.MessagePost msgpost) throws Exception {
+        Connect.MessageData messageData = msgpost.getMsgData();
+        Connect.ChatSession chatSession = messageData.getChatSession();
+        Connect.ChatMessage chatMessage = messageData.getChatMsg();
+
         String friendPubKey = msgpost.getPubKey();
         String priKey = null;
         String pubkey = null;
 
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(friendPubKey);
+        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
         if (friendEntity == null) {
             requestFriendsByVersion();
         }
 
-        Connect.MessageData messageData = msgpost.getMsgData();
-        Connect.GcmData gcmData = messageData.getCipherData();
-
         SupportKeyUril.EcdhExts ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
-        if (TextUtils.isEmpty(messageData.getChatPubKey())) {//old protocol
+        if (TextUtils.isEmpty(chatSession.getPubKey())) {//old protocol
             priKey = MemoryDataManager.getInstance().getPriKey();
             pubkey = friendPubKey;
-        } else if (null == messageData.getVer() || messageData.getVer().size() == 0) {//half random
+        } else if (null == chatSession.getVer() || chatSession.getVer().size() == 0) {//half random
             priKey = MemoryDataManager.getInstance().getPriKey();
 
-            ByteString fromSalt = messageData.getSalt();
-            pubkey = messageData.getChatPubKey();
+            ByteString fromSalt = chatSession.getSalt();
+            pubkey = chatSession.getPubKey();
             ecdhExts = SupportKeyUril.EcdhExts.OTHER;
             ecdhExts.setBytes(fromSalt.toByteArray());
         } else {//both random
-            ByteString fromSalt = messageData.getSalt();
-            ByteString toSalt = messageData.getVer();
+            ByteString fromSalt = chatSession.getSalt();
+            ByteString toSalt = chatSession.getVer();
 
             ParamEntity toSaltEntity = ParamHelper.getInstance().likeParamEntity(StringUtil.bytesToHexString(toSalt.toByteArray()));
             if (toSaltEntity == null) {
-                msgParseException(friendPubKey);
                 return;
             }
 
             UserCookie toCookie = new Gson().fromJson(toSaltEntity.getValue(), UserCookie.class);
             priKey = toCookie.getPriKey();
-            pubkey = messageData.getChatPubKey();
+            pubkey = chatSession.getPubKey();
             ecdhExts = SupportKeyUril.EcdhExts.OTHER;
             ecdhExts.setBytes(SupportKeyUril.xor(fromSalt.toByteArray(), toSalt.toByteArray()));
         }
 
-        byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, priKey, pubkey, gcmData);
-        if (contents.length > 10) {
-            parseToGsonMsg(msgpost.getPubKey(), 0, contents);
+        byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, priKey, pubkey, messageData.getChatMsg().getCipherData());
+        if (contents.length < 3) {
+            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
+            if (contactEntity != null) {
+                NormalChat normalChat = new FriendChat(contactEntity);
+                String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
+                MsgExtEntity msgExtEntity = normalChat.noticeMsg(showTxt);
+                normalChat.updateRoomMsg(null, showTxt, msgExtEntity.getCreatetime(), -1, true);
+
+                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.chatKey(), msgExtEntity);
+            }
         } else {
-            msgParseException(friendPubKey);
+            MsgExtEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
+                    chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
+                    chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
+
+            MsgType msgType = MsgType.toMsgType(chatMessage.getChatTypeValue());
+            switch (msgType) {
+                case Self_destruct_Notice:
+                    Connect.DestructMessage destructMessage = Connect.DestructMessage.parseFrom(contents);
+                    ConversionSettingHelper.getInstance().updateBurnTime(pubkey, destructMessage.getTime());
+                    break;
+                case Self_destruct_Receipt:
+                    Connect.ReadReceiptMessage readReceiptMessage = Connect.ReadReceiptMessage.parseFrom(contents);
+                    MessageHelper.getInstance().updateBurnMsg(readReceiptMessage.getMessageId(), TimeUtil.getCurrentTimeInLong());
+                    break;
+                default:
+                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
+                    if (contactEntity != null) {
+                        NormalChat normalChat = new FriendChat(contactEntity);
+                        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
+                    }
+                    break;
+            }
+
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
+            pushNoticeMsg(pubkey, 0, msgExtEntity.showContent());
         }
     }
 
@@ -121,19 +154,38 @@ public class ChatParseBean extends InterParse {
      * @param msgpost
      */
     protected synchronized void groupChat(Connect.MessagePost msgpost) {
-        String pubkey = msgpost.getMsgData().getReceiverAddress();
+        Connect.MessageData messageData = msgpost.getMsgData();
+        Connect.ChatMessage chatMessage = messageData.getChatMsg();
+
+        String pubkey = chatMessage.getFrom();
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
-        Connect.GcmData gcmData = msgpost.getMsgData().getCipherData();
+        Connect.GcmData gcmData = chatMessage.getCipherData();
 
         if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {//group backup
-            FailMsgsManager.getInstance().insertReceiveMsg(pubkey, msgpost.getMsgData().getMsgId(), gcmData);
+            FailMsgsManager.getInstance().insertReceiveMsg(pubkey, chatMessage.getMsgId(), chatMessage);
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, pubkey);
         } else {
             byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
             if (contents.length < 10) {
                 HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, pubkey);
             } else {
-                parseToGsonMsg(pubkey, 1, contents);
+                MsgExtEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
+                        chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
+                        chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
+
+                NormalChat normalChat = new GroupChat(groupEntity);
+                normalChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
+
+                String content = "";
+                String myaddress = MemoryDataManager.getInstance().getAddress();
+                String ext = chatMessage.getExt();
+                if (ext.contains(myaddress)) {
+                    content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
+                } else {
+                    content = msgExtEntity.showContent();
+                }
+                pushNoticeMsg(pubkey, 0, content);
             }
         }
     }
@@ -145,63 +197,12 @@ public class ChatParseBean extends InterParse {
      * @throws Exception
      */
     protected void inviteJoinGroup(Connect.MessagePost msgpost) throws Exception {
-        Connect.GcmData gcmData = msgpost.getMsgData().getCipherData();
-        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, MemoryDataManager.getInstance().getPriKey(),
-                msgpost.getPubKey(), gcmData);
+        String prikey = MemoryDataManager.getInstance().getPriKey();
+        Connect.GcmData gcmData = msgpost.getMsgData().getChatMsg().getCipherData();
+        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
+                prikey, msgpost.getPubKey(), gcmData);
 
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData());
         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupMessage.getIdentifier());
-    }
-
-    /**
-     * MsgDefinBean
-     *
-     * @param pubkey
-     * @param contents
-     */
-    protected void parseToGsonMsg(String pubkey, int roomtype, byte[] contents) {
-        String content = new String(contents);
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(MsgDefinBean.class, new MsgDefTypeAdapter());
-        MsgDefinBean definBean = gsonBuilder.create().fromJson(content, MsgDefinBean.class);
-
-        switch (definBean.getType()) {
-            case 11://burn state
-                ConversionSettingHelper.getInstance().updateBurnTime(pubkey, Long.parseLong(definBean.getContent()));
-                break;
-            case 12://friend read the burn
-                MessageHelper.getInstance().updateBurnMsg(definBean.getContent(), TimeUtil.getCurrentTimeInLong());
-                break;
-            default:
-                MessageHelper.getInstance().insertFromMsg(pubkey, definBean);
-
-                NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
-                normalChat.updateRoomMsg(null, definBean.showContentTxt(normalChat.roomType()), definBean.getSendtime(), -1, true, false);
-                break;
-        }
-        broadMsg(pubkey, roomtype, definBean);
-    }
-
-    protected void msgParseException(String pubkey) {
-        NormalChat normalChat = NormalChat.loadBaseChat(pubkey);
-        if (normalChat != null) {
-            String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
-            MsgEntity msgEntity = normalChat.noticeMsg(showTxt);
-            normalChat.updateRoomMsg(null, showTxt, msgEntity.getMsgDefinBean().getSendtime(),-1,true);
-            MessageHelper.getInstance().insertFromMsg(normalChat.roomKey(), msgEntity.getMsgDefinBean());
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.roomKey(), msgEntity);
-        }
-    }
-
-    /**
-     * broad message
-     */
-    protected void broadMsg(String pubkey, int type, MsgDefinBean definBean) {
-        MsgEntity msgEntity = new MsgEntity();
-        msgEntity.setMsgDefinBean(definBean);
-        msgEntity.setSendstate(0);
-        msgEntity.setPubkey(pubkey);
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,pubkey,msgEntity);
-        pushNoticeMsg(pubkey, type, msgEntity);
     }
 }

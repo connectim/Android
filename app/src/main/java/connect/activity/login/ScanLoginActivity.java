@@ -3,6 +3,8 @@ package connect.activity.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 import android.view.View;
@@ -22,14 +24,15 @@ import connect.activity.login.presenter.ScanLoginPresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ProgressUtil;
 import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.ui.activity.PhotoAlbumActivity;
 import connect.wallet.jni.AllNativeMethod;
 
 /**
- * Scan to login
+ * Scan to login.
  */
-public class ScanLoginActivity extends BaseScanActivity implements ScanLoginContract.View{
+public class ScanLoginActivity extends BaseScanActivity implements ScanLoginContract.View {
 
     @Bind(R.id.capture_preview)
     SurfaceView capturePreview;
@@ -63,28 +66,43 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
         new ScanLoginPresenter(this).start();
     }
 
+    @OnClick(R.id.left_img)
+    void goBack(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick(R.id.select_album)
+    void goSeleAlbm(View view) {
+        PhotoAlbumActivity.startActivity(mActivity,PhotoAlbumActivity.OPEN_ALBUM_CODE,1);
+    }
+
     @Override
     public void scanCall(String value) {
         presenter.checkString(value);
     }
 
-    @OnClick(R.id.left_img)
-    void goBack(View view){
-        ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.select_album)
-    void goSeleAlbm(View view){
-        PhotoAlbumActivity.startActivity(mActivity,PhotoAlbumActivity.OPEN_ALBUM_CODE,1);
-    }
+    public Handler mLocalHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            ProgressUtil.getInstance().dismissProgress();
+            switch (msg.what) {
+                case PARSE_BARCODE_SUC:
+                    presenter.checkString((String) msg.obj);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == PhotoAlbumActivity.OPEN_ALBUM_CODE && requestCode == PhotoAlbumActivity.OPEN_ALBUM_CODE){
+        if (resultCode == PhotoAlbumActivity.OPEN_ALBUM_CODE && requestCode == PhotoAlbumActivity.OPEN_ALBUM_CODE) {
             List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
             if (strings != null && strings.size() > 0) {
-                getAblamString(strings.get(0).getImageFile().getAbsolutePath(),presenter.getHandle());
+                getAblamString(strings.get(0).getImageFile().getAbsolutePath(), mLocalHandler);
             }
         }
     }
@@ -100,17 +118,22 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
     }
 
     @Override
-    public void goinCodeLogin(UserBean userBean, String token) {
-        if(TextUtils.isEmpty(token)){
+    public void goIntoCodeLogin(UserBean userBean, String token) {
+        if (TextUtils.isEmpty(token)) {
             CodeLoginActivity.startActivity(mActivity,userBean);
-        }else{
+        } else {
             CodeLoginActivity.startActivity(mActivity,userBean,token);
         }
         finish();
     }
 
+    /**
+     * The private key has not been registered
+     *
+     * @param priKey private key
+     */
     @Override
-    public void goinRegister(final String priKey) {
+    public void goIntoRegister(final String priKey) {
         DialogUtil.showAlertTextView(mActivity,
                 mActivity.getResources().getString(R.string.Set_tip_title),
                 mActivity.getResources().getString(R.string.Login_private_not_registered_register_now),
@@ -127,9 +150,7 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
                     }
 
                     @Override
-                    public void cancel() {
-
-                    }
+                    public void cancel() {}
                 });
     }
 

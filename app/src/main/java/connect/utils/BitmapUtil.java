@@ -7,6 +7,7 @@ import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.view.View;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -292,6 +293,7 @@ public class BitmapUtil {
 
     /**
      * Get video thumbnails
+     *
      * @param filepath
      * @return
      */
@@ -300,4 +302,20 @@ public class BitmapUtil {
         media.setDataSource(filepath);
         return media.getFrameAtTime();
     }
+
+    /**
+     * The view into the bitmap
+     *
+     * @param view
+     * @return
+     */
+    public static Bitmap createViewBitmap(View view){
+        view.setDrawingCacheEnabled(true);
+        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        view.buildDrawingCache();
+        return view.getDrawingCache();
+    }
+
 }

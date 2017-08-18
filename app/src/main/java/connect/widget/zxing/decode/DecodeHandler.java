@@ -1,173 +1,112 @@
-/*
- * Copyright (C) 2010 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package connect.widget.zxing.decode;
 
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.hardware.Camera.Size;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-
-import connect.ui.activity.R;
-import connect.activity.base.BaseScanActivity;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
 
-import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class DecodeHandler extends Handler {
+import connect.activity.base.BaseScanActivity;
+import connect.ui.activity.R;
 
-	private final BaseScanActivity activity;
-	private final QRCodeReader mQrCodeReader;
-	private boolean running = true;
-	private final Map<DecodeHintType, Object> mHintsa;
+final class DecodeHandler extends Handler {
 
-	public DecodeHandler(BaseScanActivity activity, Map<DecodeHintType, Object> hints) {
-		/*multiFormatReader = new MultiFormatReader();
-		multiFormatReader.setHints(hints);
-		this.activity = activity;*/
+    private final BaseScanActivity mActivity;
+    private final MultiFormatReader mMultiFormatReader;
+    private final Map<DecodeHintType, Object> mHints;
+    private byte[] mRotatedData;
 
-		this.activity = activity;
-		mQrCodeReader = new QRCodeReader();
-		mHintsa = new Hashtable<>();
-		mHintsa.put(DecodeHintType.CHARACTER_SET, "utf-8");
-		mHintsa.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
-		mHintsa.put(DecodeHintType.POSSIBLE_FORMATS, BarcodeFormat.QR_CODE);
-	}
+    DecodeHandler(BaseScanActivity activity) {
+        this.mActivity = activity;
+        mMultiFormatReader = new MultiFormatReader();
+        mHints = new Hashtable<>();
+        mHints.put(DecodeHintType.CHARACTER_SET, "utf-8");
+        mHints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+        Collection<BarcodeFormat> barcodeFormats = new ArrayList<>();
+        barcodeFormats.add(BarcodeFormat.QR_CODE);
+        barcodeFormats.add(BarcodeFormat.CODE_39);
+        barcodeFormats.add(BarcodeFormat.CODE_93);
+        barcodeFormats.add(BarcodeFormat.CODE_128);
+        mHints.put(DecodeHintType.POSSIBLE_FORMATS, barcodeFormats);
+    }
 
-	@Override
-	public void handleMessage(Message message) {
-		if (!running) {
-			return;
-		}
-		switch (message.what) {
-		case R.id.decode:
-			decode((byte[]) message.obj, message.arg1, message.arg2);
-			break;
-		case R.id.quit:
-			running = false;
-			Looper.myLooper().quit();
-			break;
-		}
-	}
+    @Override
+    public void handleMessage(Message message) {
+        switch (message.what) {
+            case R.id.decode:
+                decode((byte[]) message.obj, message.arg1, message.arg2);
+                break;
+            case R.id.quit:
+                Looper looper = Looper.myLooper();
+                if (null != looper) {
+                    looper.quit();
+                }
+                break;
+        }
+    }
 
-	/**
-	 * Decode the data within the viewfinder rectangle, and time how long it
-	 * took. For efficiency, reuse the same reader objects from one decode to
-	 * the next.
-	 * 
-	 * @param data
-	 *            The YUV preview frame.
-	 * @param width
-	 *            The width of the preview frame.
-	 * @param height
-	 *            The height of the preview frame.
-	 */
-	private void decode(byte[] data, int width, int height) {
-		Size size = activity.getCameraManager().getPreviewSize();
+    /**
+     * Decode the data within the viewfinder rectangle, and time how long it took. For efficiency, reuse the same reader
+     * objects from one decode to the next.
+     *
+     * @param data The YUV preview frame.
+     * @param width The width of the preview frame.
+     * @param height The height of the preview frame.
+     */
+    private void decode(byte[] data, int width, int height) {
+        if (null == mRotatedData) {
+            mRotatedData = new byte[width * height];
+        } else {
+            if (mRotatedData.length < width * height) {
+                mRotatedData = new byte[width * height];
+            }
+        }
+        Arrays.fill(mRotatedData, (byte) 0);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (x + y * width >= data.length) {
+                    break;
+                }
+                mRotatedData[x * height + height - y - 1] = data[x + y * width];
+            }
+        }
+        // Here we are swapping, that's the difference to
+        int tmp = width;
+        width = height;
+        height = tmp;
 
-		// Here you need to flip the captured data, because the camera to take the default screen data
-		byte[] rotatedData = new byte[data.length];
-		for (int y = 0; y < size.height; y++) {
-			for (int x = 0; x < size.width; x++)
-				rotatedData[x * size.height + size.height - y - 1] = data[x + y * size.width];
-		}
+        Result rawResult = null;
+        try {
+            PlanarYUVLuminanceSource source =
+                    new PlanarYUVLuminanceSource(mRotatedData, width, height, 0, 0, width, height, false);
+            BinaryBitmap bitmap1 = new BinaryBitmap(new HybridBinarizer(source));
+            rawResult = mMultiFormatReader.decode(bitmap1, mHints);
+        } catch (ReaderException ignored) {
 
-		// Width and height adjustment
-		int tmp = size.width;
-		size.width = size.height;
-		size.height = tmp;
+        } finally {
+            mMultiFormatReader.reset();
+        }
 
-		Result rawResult = null;
-		PlanarYUVLuminanceSource source = buildLuminanceSource(rotatedData, size.width, size.height);
-		if (source != null) {
-			BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-			try {
-				rawResult = mQrCodeReader.decode(bitmap,mHintsa);
-				// rawResult = multiFormatReader.decodeWithState(bitmap);
-			} catch (ReaderException re) {
-				// continue
-			} finally {
-				mQrCodeReader.reset();
-			}
-		}
-
-		Handler handler = activity.getHandler();
-		if (rawResult != null) {
-			// Don't log the barcode contents for security.
-			if (handler != null) {
-				Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
-				Bundle bundle = new Bundle();
-				bundleThumbnail(source, bundle);
-				message.setData(bundle);
-				message.sendToTarget();
-			}
-		} else {
-			if (handler != null) {
-				Message message = Message.obtain(handler, R.id.decode_failed);
-				message.sendToTarget();
-			}
-		}
-	}
-
-	private static void bundleThumbnail(PlanarYUVLuminanceSource source, Bundle bundle) {
-		int[] pixels = source.renderThumbnail();
-		int width = source.getThumbnailWidth();
-		int height = source.getThumbnailHeight();
-		Bitmap bitmap = Bitmap.createBitmap(pixels, 0, width, width, height, Bitmap.Config.ARGB_8888);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
-		bundle.putByteArray(DecodeThread.BARCODE_BITMAP, out.toByteArray());
-	}
-
-	/**
-	 * A factory method to build the appropriate LuminanceSource object based on
-	 * the format of the preview buffers, as described by Camera.Parameters.
-	 * 
-	 * @param data
-	 *            A preview frame.
-	 * @param width
-	 *            The width of the image.
-	 * @param height
-	 *            The height of the image.
-	 * @return A PlanarYUVLuminanceSource instance.
-	 */
-	public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height) {
-		Rect rect = activity.getCropRect();
-		if (rect == null) {
-			return null;
-		}
-		// Returns the whole image data directly, and not focus frame size calculation
-		return new PlanarYUVLuminanceSource(data, width, height, 0, 0, width, height, false);
-
-		// Go ahead and assume it's YUV rather than die.
-		//return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top, rect.width(), rect.height(), false);
-	}
-
+        Handler handler = mActivity.getHandler();
+        if (rawResult != null && handler != null) {
+            Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
+            message.sendToTarget();
+        }else if (handler != null){
+            Message message = Message.obtain(handler, R.id.decode_failed);
+            message.sendToTarget();
+        }
+    }
 }

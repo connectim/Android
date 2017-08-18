@@ -30,9 +30,8 @@ public class GroupEntityDao extends AbstractDao<GroupEntity, Long> {
         public final static Property Ecdh_key = new Property(3, String.class, "ecdh_key", false, "ECDH_KEY");
         public final static Property Common = new Property(4, Integer.class, "common", false, "COMMON");
         public final static Property Verify = new Property(5, Integer.class, "verify", false, "VERIFY");
-        public final static Property Pub = new Property(6, Integer.class, "pub", false, "PUB");
-        public final static Property Avatar = new Property(7, String.class, "avatar", false, "AVATAR");
-        public final static Property Summary = new Property(8, String.class, "summary", false, "SUMMARY");
+        public final static Property Avatar = new Property(6, String.class, "avatar", false, "AVATAR");
+        public final static Property Summary = new Property(7, String.class, "summary", false, "SUMMARY");
     }
 
 
@@ -54,9 +53,8 @@ public class GroupEntityDao extends AbstractDao<GroupEntity, Long> {
                 "\"ECDH_KEY\" TEXT," + // 3: ecdh_key
                 "\"COMMON\" INTEGER," + // 4: common
                 "\"VERIFY\" INTEGER," + // 5: verify
-                "\"PUB\" INTEGER," + // 6: pub
-                "\"AVATAR\" TEXT," + // 7: avatar
-                "\"SUMMARY\" TEXT);"); // 8: summary
+                "\"AVATAR\" TEXT," + // 6: avatar
+                "\"SUMMARY\" TEXT);"); // 7: summary
     }
 
     /** Drops the underlying database table. */
@@ -95,19 +93,14 @@ public class GroupEntityDao extends AbstractDao<GroupEntity, Long> {
             stmt.bindLong(6, verify);
         }
  
-        Integer pub = entity.getPub();
-        if (pub != null) {
-            stmt.bindLong(7, pub);
-        }
- 
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(8, avatar);
+            stmt.bindString(7, avatar);
         }
  
         String summary = entity.getSummary();
         if (summary != null) {
-            stmt.bindString(9, summary);
+            stmt.bindString(8, summary);
         }
     }
 
@@ -141,19 +134,14 @@ public class GroupEntityDao extends AbstractDao<GroupEntity, Long> {
             stmt.bindLong(6, verify);
         }
  
-        Integer pub = entity.getPub();
-        if (pub != null) {
-            stmt.bindLong(7, pub);
-        }
- 
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(8, avatar);
+            stmt.bindString(7, avatar);
         }
  
         String summary = entity.getSummary();
         if (summary != null) {
-            stmt.bindString(9, summary);
+            stmt.bindString(8, summary);
         }
     }
 
@@ -171,9 +159,8 @@ public class GroupEntityDao extends AbstractDao<GroupEntity, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // ecdh_key
             cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // common
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // verify
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // pub
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // avatar
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // summary
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // avatar
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // summary
         );
         return entity;
     }
@@ -186,9 +173,8 @@ public class GroupEntityDao extends AbstractDao<GroupEntity, Long> {
         entity.setEcdh_key(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setCommon(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setVerify(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setPub(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
-        entity.setAvatar(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setSummary(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setAvatar(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setSummary(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     @Override

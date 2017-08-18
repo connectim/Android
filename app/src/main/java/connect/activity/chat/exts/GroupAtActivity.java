@@ -77,7 +77,7 @@ public class GroupAtActivity extends BaseActivity implements GroupAtContract.BVi
 
         groupKey = getIntent().getStringExtra("GROUP_KEY");
         linearLayoutManager = new LinearLayoutManager(activity);
-        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey, MemoryDataManager.getInstance().getAddress());
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey, MemoryDataManager.getInstance().getAddress());
         Collections.sort(groupMemEntities, new GroupMemberCompara());
 
         adapter = new GroupMemberSelectAdapter(activity, groupMemEntities);

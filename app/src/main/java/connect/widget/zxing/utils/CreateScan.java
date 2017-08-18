@@ -15,7 +15,6 @@ import java.util.Hashtable;
 
 /**
  * Generate two-dimensional code
- * Created by Administrator on 2016/12/6.
  */
 public class CreateScan {
 
@@ -32,9 +31,9 @@ public class CreateScan {
         try {
             QRCodeWriter writer = new QRCodeWriter();
             Hashtable hints = new Hashtable();
-            hints.put(EncodeHintType.CHARACTER_SET, "utf-8"); //coding
-            //hints.put(EncodeHintType.ERROR_CORRECTION, level); //Fault tolerance
-            hints.put(EncodeHintType.MARGIN, 0);  //Two dimensional code frame width, where the document says 0-4
+            hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+            //Two dimensional code frame width, where the document says 0-4
+            hints.put(EncodeHintType.MARGIN, 0);
             BitMatrix matrix = writer.encode(content, BarcodeFormat.QR_CODE, widthDef, heightDef,hints);
             return bitMatrix2Bitmap(matrix,colorBg);
         } catch (WriterException e) {

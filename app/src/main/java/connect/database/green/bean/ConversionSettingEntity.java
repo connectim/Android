@@ -17,11 +17,10 @@ public class ConversionSettingEntity implements Serializable {
     @Unique
     private String identifier;
 
-    private Long snap_time;
+    private Integer snap_time;
     private Integer disturb;
-
-    @Generated(hash = 648267286)
-    public ConversionSettingEntity(Long _id, String identifier, Long snap_time,
+    @Generated(hash = 841544130)
+    public ConversionSettingEntity(Long _id, String identifier, Integer snap_time,
             Integer disturb) {
         this._id = _id;
         this.identifier = identifier;
@@ -43,10 +42,10 @@ public class ConversionSettingEntity implements Serializable {
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
-    public Long getSnap_time() {
+    public Integer getSnap_time() {
         return this.snap_time;
     }
-    public void setSnap_time(Long snap_time) {
+    public void setSnap_time(Integer snap_time) {
         this.snap_time = snap_time;
     }
     public Integer getDisturb() {
@@ -56,4 +55,5 @@ public class ConversionSettingEntity implements Serializable {
         this.disturb = disturb;
     }
 
+    
 }

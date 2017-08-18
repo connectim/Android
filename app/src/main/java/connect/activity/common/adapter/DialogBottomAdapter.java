@@ -1,23 +1,17 @@
-package connect.activity.login.adapter;
+package connect.activity.common.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import connect.activity.contact.adapter.FriendRecordAdapter;
-import connect.ui.activity.R;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import protos.Connect;
+import connect.ui.activity.R;
 
 /**
- * Created by Administrator on 2016/12/5.
+ * Universal adapter with words
  */
 public class DialogBottomAdapter extends RecyclerView.Adapter<DialogBottomAdapter.ViewHolder> {
 

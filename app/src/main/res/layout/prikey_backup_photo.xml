@@ -10,7 +10,8 @@
         android:layout_width="@dimen/dp_150"
         android:layout_height="@dimen/dp_36"
         android:layout_gravity="center_horizontal"
-        android:src="@mipmap/logo_black_middle"/>
+        android:src="@mipmap/logo_black_middle"
+        android:id="@+id/imageView2" />
 
     <ImageView
         android:contentDescription="@string/app_name"
@@ -32,9 +33,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_30"
         android:textSize="@dimen/sp_16"
-        android:textColor="@color/color_767a82" />
+        android:textColor="@color/color_767a82"
+        android:text="@string/Set_Name"/>
     <TextView
         android:id="@id/name_tv"
         android:layout_width="wrap_content"
@@ -47,7 +49,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
         android:textSize="@dimen/sp_16"
-        android:textColor="@color/color_767a82" />
+        android:textColor="@color/color_767a82"
+        android:text="@string/Set_Id_address"/>
     <TextView
         android:id="@+id/address_tv"
         android:layout_width="wrap_content"
@@ -55,19 +58,13 @@
         android:textSize="@dimen/sp_18"
         android:textColor="@color/color_767a82" />
 
-    <RelativeLayout
+    <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/dp_20"
-            android:textSize="@dimen/sp_16"
-            android:text="@string/app_name_im"
-            android:textColor="@color/color_767a82" />
-
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginTop="@dimen/dp_20"
+        android:textSize="@dimen/sp_16"
+        android:text="@string/app_name_im"
+        android:textColor="@color/color_767a82" />
 
 </LinearLayout>

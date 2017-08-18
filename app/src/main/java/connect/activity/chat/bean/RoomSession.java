@@ -3,6 +3,7 @@ package connect.activity.chat.bean;
 import android.text.TextUtils;
 
 import connect.database.SharedPreferenceUtil;
+import protos.Connect;
 
 /**
  * chat room session
@@ -28,8 +29,8 @@ public class RoomSession {
     private String groupEcdh;
     /** 0:close burn  5000+:start burn */
     private long burntime;
-    /** friend avatar */
-    private String friendAvatar;
+    Connect.MessageUserInfo userInfo;
+
 
     public int getRoomType() {
         return roomType;
@@ -80,11 +81,11 @@ public class RoomSession {
         this.roomName = roomName;
     }
 
-    public String getFriendAvatar() {
-        return friendAvatar;
+    public Connect.MessageUserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public void setFriendAvatar(String friendAvatar) {
-        this.friendAvatar = friendAvatar;
+    public void setUserInfo(Connect.MessageUserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

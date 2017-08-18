@@ -7,14 +7,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.PaymentDetailContract;
 import connect.activity.chat.exts.presenter.PaymentDetailPresenter;
@@ -69,8 +70,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
     private int state;
     private Connect.Bill billDetail = null;
 
-    private MsgDefinBean definBean;
-    private String msgId;
+    private MsgExtEntity msgExtEntity;
     private PaymentDetailContract.Presenter presenter;
 
     @Override
@@ -81,9 +81,9 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
         initView();
     }
 
-    public static void startActivity(Activity activity, MsgDefinBean definBean) {
+    public static void startActivity(Activity activity, MsgExtEntity msgExtEntity) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("MsgDefinBean",definBean);
+        bundle.putSerializable("MsgExtEntity",msgExtEntity);
         ActivityUtil.next(activity, PaymentDetailActivity.class, bundle);
     }
 
@@ -100,11 +100,13 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
             }
         });
 
-        definBean = (MsgDefinBean) getIntent().getSerializableExtra("MsgDefinBean");
-        msgId = definBean.getMessage_id();
-        String hashid = definBean.getContent();
-        requestGatherDetail(hashid);
-
+        msgExtEntity = (MsgExtEntity) getIntent().getSerializableExtra("MsgExtEntity");
+        try {
+            Connect.PaymentMessage paymentMessage = Connect.PaymentMessage.parseFrom(msgExtEntity.getContents());
+            requestGatherDetail(paymentMessage.getHashId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         new PaymentDetailPresenter(this).start();
     }
 
@@ -118,8 +120,12 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
                         ActivityUtil.goBack(activity);
                         break;
                     case 1://Did not pay ,to pay
-                        String hashid = definBean.getContent();
-                        requestPayment(hashid);
+                        try {
+                            Connect.PaymentMessage paymentMessage = Connect.PaymentMessage.parseFrom(msgExtEntity.getContents());
+                            requestPayment(paymentMessage.getHashId());
+                        } catch (InvalidProtocolBufferException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     case 2:
                         ActivityUtil.goBack(activity);
@@ -145,13 +151,13 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
                     if (ProtoBufUtil.getInstance().checkProtoBuf(billDetail)) {
                         String username = "";
                         ContactEntity entity = null;
-                        if (definBean.msgDirect() == MsgDirect.To) {//I started gathering
-                            entity = ContactHelper.getInstance().loadFriendEntity(definBean.getPublicKey());
+                        if (msgExtEntity.parseDirect() == MsgDirect.To) {//I started gathering
+                            entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_to());
                             username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
                             txt1.setText(String.format(getString(R.string.Wallet_has_requested_to_payment), username));
                             txt4.setVisibility(View.INVISIBLE);
                         } else {//I received the payment
-                            entity = ContactHelper.getInstance().loadFriendEntity(definBean.getSenderInfoExt().getPublickey());
+                            entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_from());
                             username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
                             txt1.setText(String.format(getString(R.string.Wallet_has_requested_for_payment), username));
                             txt4.setVisibility(View.VISIBLE);
@@ -171,7 +177,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
 
                         state = billDetail.getStatus();
                         if (state == 0) {//Did not pay
-                            if (definBean.msgDirect() == MsgDirect.To) {
+                            if (msgExtEntity.parseDirect() == MsgDirect.To) {
                                 btn.setText(getResources().getString(R.string.Wallet_Waitting_for_pay));
                                 btn.setBackgroundResource(R.drawable.shape_stroke_red);
                                 btn.setTag(0);
@@ -186,6 +192,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
                             btn.setTag(2);
                         }
 
+                        String msgId=msgExtEntity.getMessage_id();
                         if (!TextUtils.isEmpty(msgId)) {
                             TransactionHelper.getInstance().updateTransEntity(hashid, msgId, state);
                         }
@@ -208,17 +215,18 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
         baseBusiness.typePayment(hashid, TransferType.TransactionTypePayCrowding.getType(), new WalletListener<String>() {
             @Override
             public void success(String hashId) {
-                ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(definBean.getSenderInfoExt().getPublickey());
+                ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_ower());
                 if (entity != null) {
                     String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
                     String noticeContent = getString(R.string.Chat_paid_the_bill_to, activity.getString(R.string.Chat_You), contactName);
                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NOTICE, noticeContent);
 
                     NormalChat normalChat = new FriendChat(entity);
-                    MsgEntity msgEntity = normalChat.noticeMsg(noticeContent);
-                    MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
+                    MsgExtEntity msgExtEntity = normalChat.noticeMsg(noticeContent);
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                 }
 
+                String msgId=msgExtEntity.getMessage_id();
                 TransactionHelper.getInstance().updateTransEntity(billDetail.getHash(), msgId, 1);
                 ToastEUtil.makeText(activity, R.string.Wallet_Payment_Successful).show();
                 ActivityUtil.goBack(activity);

@@ -11,6 +11,9 @@ import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 
+import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.model.content.RobotChat;
 import connect.database.MemoryDataManager;
 import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -24,13 +27,9 @@ import connect.im.bean.UserCookie;
 import connect.im.inter.InterParse;
 import connect.im.model.ChatSendManager;
 import connect.im.model.FailMsgsManager;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgSender;
-import connect.activity.chat.model.content.RobotChat;
-import connect.activity.base.BaseApplication;
 import connect.service.bean.PushMessage;
 import connect.service.bean.ServiceAck;
+import connect.ui.activity.R;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
@@ -152,11 +151,13 @@ public class ShakeHandBean extends InterParse {
     }
 
     private void welcomeRobotMsg() {
-        MsgEntity msgEntity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
-        msgEntity.getMsgDefinBean().setSenderInfoExt(new MsgSender(RobotChat.getInstance().nickName(), ""));
-        MessageHelper.getInstance().insertFromMsg(RobotChat.getInstance().roomKey(), msgEntity.getMsgDefinBean());
+        String mypublickey = MemoryDataManager.getInstance().getPubKey();
+        MsgExtEntity msgExtEntity = RobotChat.getInstance().txtMsg(BaseApplication.getInstance().getString(R.string.Login_Welcome));
+        msgExtEntity.setMessage_from(RobotChat.getInstance().nickName());
+        msgExtEntity.setMessage_to(mypublickey);
 
-        RobotChat.getInstance().updateRoomMsg(null,msgEntity.getMsgDefinBean().showContentTxt(2),msgEntity.getMsgDefinBean().getSendtime(),-1,true);
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+        RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
     }
 
     /**

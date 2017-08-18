@@ -23,21 +23,18 @@ public class GroupEntity implements Serializable {
     private String ecdh_key;
     private Integer common;
     private Integer verify;
-    private Integer pub;
     private String avatar;
     private String summary;
-
-    @Generated(hash = 2034602142)
+    @Generated(hash = 1216626780)
     public GroupEntity(Long _id, @NotNull String identifier, String name,
-            String ecdh_key, Integer common, Integer verify, Integer pub,
-            String avatar, String summary) {
+            String ecdh_key, Integer common, Integer verify, String avatar,
+            String summary) {
         this._id = _id;
         this.identifier = identifier;
         this.name = name;
         this.ecdh_key = ecdh_key;
         this.common = common;
         this.verify = verify;
-        this.pub = pub;
         this.avatar = avatar;
         this.summary = summary;
     }
@@ -80,12 +77,6 @@ public class GroupEntity implements Serializable {
     public void setVerify(Integer verify) {
         this.verify = verify;
     }
-    public Integer getPub() {
-        return this.pub;
-    }
-    public void setPub(Integer pub) {
-        this.pub = pub;
-    }
     public String getAvatar() {
         return this.avatar;
     }
@@ -98,5 +89,5 @@ public class GroupEntity implements Serializable {
     public void setSummary(String summary) {
         this.summary = summary;
     }
-
+    
 }

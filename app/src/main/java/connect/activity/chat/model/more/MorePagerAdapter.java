@@ -144,19 +144,19 @@ public class MorePagerAdapter extends PagerAdapter {
 
     private OnTimerListener onTimerListener = new OnTimerListener() {
         @Override
-        public void itemTimerClick(long time) {
+        public void itemTimerClick(int time) {
             String roomkey = RoomSession.getInstance().getRoomKey();
             ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(roomkey);
             if (null == chatSetEntity) {
                 chatSetEntity = new ConversionSettingEntity();
                 chatSetEntity.setIdentifier(roomkey);
-                chatSetEntity.setSnap_time(0L);
+                chatSetEntity.setSnap_time(0);
             }
 
             if (!Long.valueOf(time).equals(chatSetEntity.getSnap_time())) {
                 BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
                 MsgSend.sendOuterMsg(MsgType.Self_destruct_Notice, time);
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time == 0 ? 0 : 1);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time <= 0 ? 0 : 1);
 
                 chatSetEntity.setSnap_time(time);
                 ConversionSettingHelper.getInstance().insertSetEntity(chatSetEntity);
@@ -165,7 +165,7 @@ public class MorePagerAdapter extends PagerAdapter {
     };
 
     public interface OnTimerListener {
-        void itemTimerClick(long time);
+        void itemTimerClick(int time);
     }
 
     /**

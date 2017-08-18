@@ -75,7 +75,7 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
     }
 
     @Override
-    public void sendLuckyPacket(final int roomtype, int packetcount, long amount, final String tips) {
+    public void sendLuckyPacket(final int roomtype, int packetcount, final long amount, final String tips) {
         view.getBusiness().luckyPacket(null, roomKey, 0, roomtype, packetcount, amount, tips, new WalletListener<String>() {
             @Override
             public void success(String hashId) {
@@ -84,7 +84,7 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
                             friendEntity.getUsername(), friendEntity.getAddress()));
                 }
 
-                MsgSend.sendOuterMsg(MsgType.Lucky_Packet, hashId, tips);
+                MsgSend.sendOuterMsg(MsgType.Lucky_Packet, 0, hashId, tips, amount);
                 ToastEUtil.makeText(activity, R.string.Link_Send_successful).show();
                 ActivityUtil.goBack(activity);
             }

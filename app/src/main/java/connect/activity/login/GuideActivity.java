@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by Administrator on 2017/1/5.
+ * App guide page.
  */
 public class GuideActivity extends BaseActivity {
 
@@ -53,7 +53,7 @@ public class GuideActivity extends BaseActivity {
     public void initView() {
         mActivity = this;
         ArrayList<View> arrayList = new ArrayList<>();
-        for(int i = 0;i < titleId.length;i ++){
+        for (int i = 0;i < titleId.length;i ++) {
             View view = LayoutInflater.from(mActivity).inflate(R.layout.item_login_guide_1,null);
             TextView titleTv = (TextView) view.findViewById(R.id.title_tv);
             TextView describeTv = (TextView) view.findViewById(R.id.describe_tv);
@@ -70,7 +70,7 @@ public class GuideActivity extends BaseActivity {
     }
 
     @OnClick(R.id.start_message_tv)
-    void startMessageing(){
+    void startChat(){
         SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.FIRST_INTO_APP, 1);
         ActivityUtil.next(mActivity, LoginForPhoneActivity.class);
         finish();

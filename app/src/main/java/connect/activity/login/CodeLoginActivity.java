@@ -29,8 +29,7 @@ import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 
 /**
- * Login phone number verification
- * Created by john on 2016/11/29.
+ * Login phone number verification.
  */
 public class CodeLoginActivity extends BaseActivity implements CodeLoginContract.View {
 
@@ -54,12 +53,23 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
     private UserBean userBean;
     private String token = "";
 
+    /**
+     * Login phone number verification.
+     *
+     * @param activity
+     * @param userBean The user information
+     */
     public static void startActivity(Activity activity, UserBean userBean) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("user", userBean);
-        ActivityUtil.next(activity, CodeLoginActivity.class, bundle);
+        startActivity(activity, userBean, "");
     }
 
+    /**
+     * Scan the private key to log in.
+     *
+     * @param activity
+     * @param userBean The user information
+     * @param token Change the password token
+     */
     public static void startActivity(Activity activity, UserBean userBean, String token) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("user", userBean);
@@ -100,17 +110,6 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
         }
     }
 
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        @Override
-        public void afterTextChanged(Editable s) {
-            presenter.passEditChange(passwordEt.getText().toString(), nicknameEt.getText().toString());
-        }
-    };
-
     @OnClick(R.id.left_img)
     void goBack(View view) {
         ActivityUtil.goBack(mActivity);
@@ -130,14 +129,9 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
                         getString(R.string.Login_letter_number_and_character_must_be_included_in_your_login_password),
                         "", "", true, new DialogUtil.OnItemClickListener() {
                             @Override
-                            public void confirm(String value) {
-
-                            }
-
+                            public void confirm(String value) {}
                             @Override
-                            public void cancel() {
-
-                            }
+                            public void cancel() {}
                         });
             }
         }
@@ -145,20 +139,28 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
 
     @OnClick(R.id.passwordedit_tv)
     void editPasswordHint(View view){
-        DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Login_Login_Password_Hint_Title),"", "", "", "", "",
-                false,15,new DialogUtil.OnItemClickListener() {
+        DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Login_Login_Password_Hint_Title),"", "", "", "", "", false,15,
+                new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(String value) {
                 presenter.setPasswordHintData(value);
                 passwordhintTv.setText(getString(R.string.Login_Password_Hint,value));
             }
-
             @Override
-            public void cancel() {
-
-            }
+            public void cancel() {}
         });
     }
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void afterTextChanged(Editable s) {
+            presenter.passEditChange(passwordEt.getText().toString(), nicknameEt.getText().toString());
+        }
+    };
 
     @Override
     public void setPresenter(CodeLoginContract.Presenter presenter) {

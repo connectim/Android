@@ -36,10 +36,8 @@ import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 
 /**
- * After login to backup the private key
- * Created by Administrator on 2017/3/7.
+ * After login to backup the private key.
  */
-
 public class ExportPriActivity extends BaseActivity {
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -82,7 +80,7 @@ public class ExportPriActivity extends BaseActivity {
         scanner = new MediaScannerConnection(mActivity, new MediaScannerConnection.MediaScannerConnectionClient() {
             @Override
             public void onMediaScannerConnected() {
-                if(pathDcim != null){
+                if (pathDcim != null) {
                     scanner.scanFile(pathDcim,"media/*");
                 }
             }
@@ -95,44 +93,19 @@ public class ExportPriActivity extends BaseActivity {
     }
 
     @OnClick(R.id.next_btn)
-    void goNext(View view){
+    void goNext(View view) {
         PatternActivity.startActivity(mActivity,PatternActivity.LOGIN_STYPE);
     }
 
     @OnClick(R.id.backup_private_key)
-    void gobackup(View view){
+    void gobackup(View view) {
         viewBackUp = LayoutInflater.from(mActivity).inflate(R.layout.prikey_backup_photo,null);
         ((ImageView)viewBackUp.findViewById(R.id.scan_imag)).setImageBitmap(bitmap);
         ((TextView)viewBackUp.findViewById(R.id.name_tv)).setText(userBean.getName());
         ((TextView)viewBackUp.findViewById(R.id.address_tv)).setText(userBean.getAddress());
-        viewBackUp.measure(View.MeasureSpec.makeMeasureSpec(256, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(256, View.MeasureSpec.EXACTLY));
-        viewBackUp.layout(0, 0, SystemDataUtil.getScreenWidth(), SystemDataUtil.getScreenHeight());
+        Bitmap bitmap = BitmapUtil.createViewBitmap(viewBackUp);
 
-        Bitmap bitmap = Bitmap.createBitmap(SystemDataUtil.getScreenWidth(), SystemDataUtil.getScreenHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        viewBackUp.draw(canvas);
-
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        int startH = height*2/3;
-        TextPaint textPaint = new TextPaint();
-        textPaint.setColor(getResources().getColor(R.color.color_767a82));
-        textPaint.setTextSize(30);
-        textPaint.setAntiAlias(true);
-
-        int paddingLeft = SystemUtil.dipToPx(30);
-        canvas.drawText(getString(R.string.Set_Name), paddingLeft, startH,textPaint);
-        canvas.drawText(userBean.getName(), paddingLeft, startH + 40,textPaint);
-        canvas.drawText(getString(R.string.Set_Id_address), paddingLeft, startH + 100,textPaint);
-        canvas.drawText(userBean.getAddress(), paddingLeft, startH + 140,textPaint);
-        canvas.drawText(getString(R.string.app_name_im), width*3/4 - SystemUtil.dipToPx(10), height - 80,textPaint);
-
-        saveImageToGallery(bitmap);
-    }
-
-    public void saveImageToGallery(Bitmap bmp) {
-        File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bmp);
+        File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bitmap);
         pathDcim = file.getAbsolutePath();
         try {
             MediaStore.Images.Media.insertImage(getContentResolver(), pathDcim, "", null);

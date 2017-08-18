@@ -2,12 +2,12 @@ package connect.activity.chat.model.content;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.RoomSession;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupEntity;
@@ -15,11 +15,6 @@ import connect.database.green.bean.GroupMemberEntity;
 import connect.im.bean.MsgType;
 import connect.im.bean.SocketACK;
 import connect.im.model.ChatSendManager;
-import connect.activity.chat.bean.ExtBean;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgSender;
-import connect.activity.chat.bean.RoomSession;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.EncryptionUtil;
@@ -45,7 +40,7 @@ public class GroupChat extends NormalChat {
             RoomSession.getInstance().setGroupEcdh(groupEntity.getEcdh_key());
         }
 
-        myGroupMember = ContactHelper.getInstance().loadGroupMemByAds(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
+        myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
         if (myGroupMember == null) {
             myGroupMember = new GroupMemberEntity();
             myGroupMember.setPub_key(MemoryDataManager.getInstance().getPubKey());
@@ -53,52 +48,35 @@ public class GroupChat extends NormalChat {
         }
     }
 
-    public MsgEntity inviteNotice(String str) {
-        MsgEntity bean = createBaseChat(MsgType.GROUP_INVITE);
-        bean.getMsgDefinBean().setContent(str);
-        return bean;
-    }
+    @Override
+    public MsgExtEntity createBaseChat(MsgType type) {
+        String mypublickey = MemoryDataManager.getInstance().getPubKey();
 
-    public MsgEntity addUserMsg(String str) {
-        MsgEntity bean = createBaseChat(MsgType.GROUP_ADDUSER_TO);
-        bean.getMsgDefinBean().setExt(str);
-        return bean;
+        MsgExtEntity msgExtEntity = new MsgExtEntity();
+        msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());
+        msgExtEntity.setChatType(Connect.ChatType.GROUPCHAT.getNumber());
+        msgExtEntity.setMessage_ower(identify());
+        msgExtEntity.setMessage_from(mypublickey);
+        msgExtEntity.setMessage_to(identify());
+        msgExtEntity.setMessageType(type.type);
+        msgExtEntity.setCreatetime(TimeUtil.getCurrentTimeInLong());
+        msgExtEntity.setSend_status(0);
+        return msgExtEntity;
     }
 
     @Override
-    public MsgEntity createBaseChat(MsgType type) {
-        MsgDefinBean msgDefinBean = new MsgDefinBean();
-        msgDefinBean.setType(type.type);
-        msgDefinBean.setUser_name(groupEntity.getName());
-        msgDefinBean.setSendtime(TimeUtil.getCurrentTimeInLong());
-        msgDefinBean.setMessage_id(TimeUtil.timestampToMsgid());
-        msgDefinBean.setPublicKey(groupEntity.getIdentifier());
-        msgDefinBean.setUser_id(groupEntity.getEcdh_key());
-        msgDefinBean.setSenderInfoExt(new MsgSender(myGroupMember.getPub_key(),
-                TextUtils.isEmpty(myGroupMember.getNick()) ? myGroupMember.getUsername() : myGroupMember.getNick(),
-                myGroupMember.getAddress(), MemoryDataManager.getInstance().getAvatar()));
+    public void sendPushMsg(MsgExtEntity msgExtEntity) {
+        Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
 
-        MsgEntity chatBean = new MsgEntity();
-        chatBean.setMsgDefinBean(msgDefinBean);
-        chatBean.setPubkey(groupEntity.getIdentifier());
-        chatBean.setRecAddress(groupEntity.getIdentifier());
-        chatBean.setSendstate(0);
-        return chatBean;
-    }
-
-    @Override
-    public void sendPushMsg(Object bean) {
-        MsgDefinBean definBean = ((MsgEntity) bean).getMsgDefinBean();
-        String msgStr = new Gson().toJson(definBean);
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), msgStr.getBytes());
+        byte[] groupecdh = StringUtil.hexStringToBytes(groupEntity.getEcdh_key());
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, groupecdh, msgExtEntity.getContents());
+        chatMessageBuilder.setCipherData(gcmData);
 
         //messageData
-        Connect.MessageData messageData = Connect.MessageData.newBuilder().
-                setCipherData(gcmData).
-                setMsgId(definBean.getMessage_id()).
-                setTyp(definBean.getType()).
-                setReceiverAddress(((MsgEntity) bean).getRecAddress()).build();
+        Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
+        builder.setChatMsg(chatMessageBuilder);
 
+        Connect.MessageData messageData = builder.build();
         ChatSendManager.getInstance().sendChatAckMsg(SocketACK.GROUP_CHAT, groupEntity.getIdentifier(), messageData);
     }
 
@@ -117,6 +95,13 @@ public class GroupChat extends NormalChat {
     }
 
     @Override
+    public String identify() {
+        if (groupEntity == null) return "";
+        String groupKey = TextUtils.isEmpty(groupEntity.getIdentifier()) ? "" : groupEntity.getIdentifier();
+        return groupKey;
+    }
+
+    @Override
     public String address() {
         if (groupEntity == null) return "";
         String groupAddress = TextUtils.isEmpty(groupEntity.getIdentifier()) ? "" : groupEntity.getIdentifier();
@@ -124,15 +109,29 @@ public class GroupChat extends NormalChat {
     }
 
     @Override
-    public String roomKey() {
+    public String chatKey() {
         if (groupEntity == null) return "";
         String groupKey = TextUtils.isEmpty(groupEntity.getIdentifier()) ? "" : groupEntity.getIdentifier();
         return groupKey;
     }
 
     @Override
-    public int roomType() {
+    public int chatType() {
         return 1;
+    }
+
+    @Override
+    public long destructReceipt() {
+        return 0L;
+    }
+
+    @Override
+    public Connect.MessageUserInfo senderInfo() {
+        Connect.MessageUserInfo userInfo = Connect.MessageUserInfo.newBuilder()
+                .setAvatar(myGroupMember.getAvatar())
+                .setUsername(myGroupMember.getUsername())
+                .setUid(myGroupMember.getPub_key()).build();
+        return userInfo;
     }
 
     public String groupEcdh() {
@@ -146,7 +145,7 @@ public class GroupChat extends NormalChat {
     }
 
     public void updateMyNickName(){
-        myGroupMember = ContactHelper.getInstance().loadGroupMemByAds(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
+        myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
     }
 
     private Map<String, GroupMemberEntity> memEntityMap = null;
@@ -154,7 +153,7 @@ public class GroupChat extends NormalChat {
     public GroupMemberEntity loadGroupMember(String memberkey) {
         if (memEntityMap == null) {
             memEntityMap = new HashMap<>();
-            List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(roomKey());
+            List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(chatKey());
             for (GroupMemberEntity memEntity : groupMemEntities) {
                 memEntityMap.put(memEntity.getPub_key(), memEntity);
             }
@@ -179,5 +178,28 @@ public class GroupChat extends NormalChat {
 
     public void setHeadimg(String path) {
         groupEntity.setAvatar(path);
+    }
+
+    public MsgExtEntity notMemberNotice() {
+        MsgExtEntity msgExtEntity =  createBaseChat(MsgType.NOTICE_NOTMEMBER);
+        return msgExtEntity;
+    }
+
+    public MsgExtEntity inviteNotice(String tips) {
+        MsgExtEntity msgExtEntity = createBaseChat(MsgType.GROUP_INVITE);
+        Connect.NotifyMessage.Builder builder = Connect.NotifyMessage.newBuilder()
+                .setContent(tips);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    public MsgExtEntity addUserMsg(String tips) {
+        MsgExtEntity msgExtEntity = createBaseChat(MsgType.GROUP_ADDUSER_TO);
+        Connect.NotifyMessage.Builder builder = Connect.NotifyMessage.newBuilder()
+                .setContent(tips);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
     }
 }

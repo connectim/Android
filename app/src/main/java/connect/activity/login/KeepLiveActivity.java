@@ -15,7 +15,6 @@ import connect.activity.base.BaseActivity;
 /**
  * Monitor the phone lock screen to unlock the event, when the screen lock screen to start the 1 pixel Activity,
  * the user will be destroyed when unlocking Activity. Note that the Activity needs to be designed to be user aware.
- * Created by pujin on 2017/5/11.
  */
 
 public class KeepLiveActivity extends BaseActivity {

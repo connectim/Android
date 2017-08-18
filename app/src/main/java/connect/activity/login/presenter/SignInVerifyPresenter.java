@@ -2,17 +2,18 @@ package connect.activity.login.presenter;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+
 import java.util.List;
-import connect.database.SharedPreferenceUtil;
-import connect.ui.activity.R;
+
+import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.SignInVerifyContract;
 import connect.activity.set.LinkChangePhoneActivity;
-import connect.activity.base.BaseApplication;
+import connect.database.SharedPreferenceUtil;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ExCountDownTimer;
 import connect.utils.ProgressUtil;
@@ -24,19 +25,21 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/4/13 0013.
- */
-
-public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
+public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
 
     private SignInVerifyContract.View mView;
     private final int CODE_PHONE_ABSENT = 2404;
     private String phone;
     private int countryCode;
 
-    public SignInVerifyPresenter(SignInVerifyContract.View mView,
-                                 String countryCode, String phone) {
+    /**
+     * The constructor.
+     *
+     * @param mView
+     * @param countryCode country code
+     * @param phone phone number
+     */
+    public SignInVerifyPresenter(SignInVerifyContract.View mView, String countryCode, String phone) {
         this.mView = mView;
         this.countryCode = Integer.valueOf(countryCode);
         this.phone = phone;
@@ -48,33 +51,8 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
         countdownTime();
     }
 
-    public TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (s.toString().length() == 6) {
-                requestVerifyCode();
-            }
-            mView.changeBtnNext();
-        }
-    };
-
-    @Override
-    public TextWatcher getEditChange() {
-        return textWatcher;
-    }
-
     /**
-     * Message authentication code
+     * Message authentication code.
      */
     public void requestVerifyCode() {
         ProgressUtil.getInstance().showProgress(mView.getActivity());
@@ -159,7 +137,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
         ExCountDownTimer exCountDownTimer = new ExCountDownTimer(120*1000,1000){
             @Override
             public void onTick(long millisUntilFinished, int percent) {
-                mView.changeBtnTiming(millisUntilFinished/1000);
+                mView.changeBtnTiming(millisUntilFinished / 1000);
             }
 
             @Override
@@ -183,25 +161,25 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
                 .setCode(mView.getCode())
                 .build();
         String url = "";
-        if(type.equals(LinkChangePhoneActivity.LINK_TYPE)){
+        if (type.equals(LinkChangePhoneActivity.LINK_TYPE)) {
             url = UriUtil.SETTING_BIND_MOBILE;
-        }else if(type.equals(LinkChangePhoneActivity.UNLINK_TYPE)) {
+        } else if(type.equals(LinkChangePhoneActivity.UNLINK_TYPE)) {
             url = UriUtil.SETTING_UNBIND_MOBILE;
         }
         OkHttpUtil.getInstance().postEncrySelf(url, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                if(type.equals(LinkChangePhoneActivity.LINK_TYPE)){
+                if (type.equals(LinkChangePhoneActivity.LINK_TYPE)) {
                     userBean.setPhone(countryCode + "-" + phone);
-                }else if(type.equals(LinkChangePhoneActivity.UNLINK_TYPE)) {
+                }else if (type.equals(LinkChangePhoneActivity.UNLINK_TYPE)) {
                     userBean.setPhone("");
                 }
                 ToastEUtil.makeText(mView.getActivity(),R.string.Set_Set_success).show();
                 SharedPreferenceUtil.getInstance().putUser(userBean);
                 List<Activity> list = BaseApplication.getInstance().getActivityList();
                 for (Activity activity : list) {
-                    if (activity.getClass().getName().equals(LinkChangePhoneActivity.class.getName())){
+                    if (activity.getClass().getName().equals(LinkChangePhoneActivity.class.getName())) {
                         activity.finish();
                     }
                 }
@@ -210,9 +188,9 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter{
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
-                if(response.getCode() == 2414){
+                if (response.getCode() == 2414) {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Login_Phone_binded).show();
-                }else{
+                } else {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Link_update_Failed).show();
                 }
             }

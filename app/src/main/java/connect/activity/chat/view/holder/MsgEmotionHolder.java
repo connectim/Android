@@ -2,14 +2,14 @@ package connect.activity.chat.view.holder;
 
 import android.view.View;
 import android.widget.ImageView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.io.File;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.model.EmoManager;
 import connect.ui.activity.R;
+import protos.Connect;
+
 /**
  * Created by gtq on 2016/11/23.
  */
@@ -22,13 +22,12 @@ public class MsgEmotionHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgEntity entity) {
-        super.buildRowData(msgBaseHolder, entity);
-        MsgDefinBean bean = entity.getMsgDefinBean();
+    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        Connect.EmotionMessage emotionMessage = Connect.EmotionMessage.parseFrom(msgExtEntity.getContents());
 
-        String filepath = bean.getContent();
+        String filepath = emotionMessage.getContent();
         filepath = EmoManager.GIF_PATH + File.separator + filepath + ".gif";
-
         Glide.with(context).load("file:///android_asset/" + filepath)
                 .asGif()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)

@@ -1,16 +1,6 @@
 package connect.activity.login.presenter;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import connect.database.SharedPreferenceUtil;
-import connect.ui.activity.R;
 import connect.activity.login.bean.CountryBean;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneContract;
@@ -22,11 +12,14 @@ import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/4/12 0012.
- */
+import java.util.ArrayList;
+import java.util.List;
+import connect.ui.activity.R;
 
-public class LoginPhonePresenter implements LoginPhoneContract.Presenter{
+/**
+ * Enter the phone number interface of the Presenter.
+ */
+public class LoginPhonePresenter implements LoginPhoneContract.Presenter {
 
     private final CountryBean countryBean;
     private LoginPhoneContract.View mView;
@@ -38,39 +31,10 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter{
     }
 
     @Override
-    public void start() {
-
-    }
-
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        @Override
-        public void afterTextChanged(Editable s) {
-            try {
-                PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-                Phonenumber.PhoneNumber swissNumberProto = phoneUtil.parse(s.toString(), countryBean.getCountryCode());
-                if(phoneUtil.isValidNumberForRegion(swissNumberProto, countryBean.getCountryCode())){
-                    mView.setBtnEnabled(true);
-                }else{
-                    mView.setBtnEnabled(false);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                mView.setBtnEnabled(false);
-            }
-        }
-    };
+    public void start() {}
 
     @Override
-    public TextWatcher getPhoneTextWatcher() {
-        return textWatcher;
-    }
-
-    @Override
-    public void request(String mobile){
+    public void request(String mobile) {
         ProgressUtil.getInstance().showProgress(mView.getActivity());
         Connect.SendMobileCode sendMobileCode = Connect.SendMobileCode.newBuilder()
                 .setMobile(mobile)
@@ -81,7 +45,7 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter{
                 try {
                     ProgressUtil.getInstance().dismissProgress();
                     mView.verifySuccess();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -90,10 +54,10 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter{
             public void onError(Connect.HttpNotSignResponse response) {
                 try {
                     ProgressUtil.getInstance().dismissProgress();
-                    if(response.getCode() == 2400){
+                    if (response.getCode() == 2400) {
                         ToastEUtil.makeText(mView.getActivity(), R.string.Link_Operation_frequent,ToastEUtil.TOAST_STATUS_FAILE).show();
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -101,7 +65,7 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter{
     }
 
     @Override
-    public void showMore(){
+    public void showMore() {
         ArrayList<String> list = new ArrayList<>();
         list.add(mView.getActivity().getString(R.string.Login_Scan_your_backup_for_login));
         list.add(mView.getActivity().getString(R.string.Login_Sign_In_Up_Local_account));
@@ -114,10 +78,10 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter{
                         break;
                     case 1://Local account password to log in
                         List<UserBean> list = SharedPreferenceUtil.getInstance().getUserList();
-                        if(list == null || list.size() == 0){
-                            mView.goinRandomSend();
-                        }else{
-                            mView.goinLocalLogin();
+                        if (list == null || list.size() == 0) {
+                            mView.goIntoRandomSend();
+                        } else {
+                            mView.goIntoLocalLogin();
                         }
                         break;
                     default:
@@ -126,5 +90,4 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter{
             }
         });
     }
-
 }

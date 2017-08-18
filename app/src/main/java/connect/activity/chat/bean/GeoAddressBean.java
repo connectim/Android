@@ -5,17 +5,15 @@ package connect.activity.chat.bean;
  * Created by gtq on 2016/12/26.
  */
 public class GeoAddressBean {
+
     private double locationLatitude;
     private double locationLongitude;
     private String address;
     private String path;
-    private float imageOriginWidth;
-    private float imageOriginHeight;
+    private int imageOriginWidth;
+    private int imageOriginHeight;
 
-    public GeoAddressBean() {
-    }
-
-    public GeoAddressBean(double locationLatitude, double locationLongitude, String address, String path, float imageOriginWidth, float imageOriginHeight) {
+    public GeoAddressBean(double locationLatitude, double locationLongitude, String address, String path, int imageOriginWidth, int imageOriginHeight) {
         this.locationLatitude = locationLatitude;
         this.locationLongitude = locationLongitude;
         this.address = address;
@@ -48,19 +46,19 @@ public class GeoAddressBean {
         this.path = path;
     }
 
-    public float getImageOriginWidth() {
+    public int getImageOriginWidth() {
         return imageOriginWidth;
     }
 
-    public void setImageOriginWidth(float imageOriginWidth) {
+    public void setImageOriginWidth(int imageOriginWidth) {
         this.imageOriginWidth = imageOriginWidth;
     }
 
-    public float getImageOriginHeight() {
+    public int getImageOriginHeight() {
         return imageOriginHeight;
     }
 
-    public void setImageOriginHeight(float imageOriginHeight) {
+    public void setImageOriginHeight(int imageOriginHeight) {
         this.imageOriginHeight = imageOriginHeight;
     }
 }

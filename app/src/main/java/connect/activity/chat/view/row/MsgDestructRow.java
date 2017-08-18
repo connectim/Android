@@ -17,7 +17,7 @@ public class MsgDestructRow extends MsgBaseRow {
     @Override
     public MsgBaseHolder buildRowView(LayoutInflater inflater, MsgDirect direct) {
         super.buildRowView(inflater, direct);
-        container = new BaseContainer(inflater, R.layout.item_chat_destruct);
+        container = new BaseContainer(inflater, R.layout.item_chat_notice);
         MsgDestructHolder msgDestructHolder = new MsgDestructHolder(container);
         return msgDestructHolder;
     }

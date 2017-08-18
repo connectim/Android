@@ -4,19 +4,20 @@ import android.app.Activity;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 
-import connect.activity.home.bean.HomeAction;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgDefinBean;
+import com.google.protobuf.InvalidProtocolBufferException;
+
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.view.EmoTextView;
-import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.common.bean.ConverType;
-import connect.utils.ActivityUtil;
+import connect.activity.common.selefriend.ConversationActivity;
+import connect.ui.activity.R;
+import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/23.
  */
 public class MsgTxtHolder extends MsgChatHolder {
+
     private EmoTextView txtmsg;
 
     public MsgTxtHolder(View itemView) {
@@ -26,10 +27,11 @@ public class MsgTxtHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgEntity entity) {
-        super.buildRowData(msgBaseHolder, entity);
-        MsgDefinBean definBean = entity.getMsgDefinBean();
-        String content = definBean.getContent();
+    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(msgExtEntity.getContents());
+
+        String content = textMessage.getContent();
         txtmsg.setText(content);
     }
 
@@ -45,6 +47,17 @@ public class MsgTxtHolder extends MsgChatHolder {
 
     @Override
     public void transPondTo() {
-        ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(definBean.getType()), definBean.getContent());
+        MsgExtEntity msgExtEntity = getMsgExtEntity();
+        try {
+            Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(msgExtEntity.getContents());
+            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), textMessage.getContent());
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String getCopyTxt() {
+        return txtmsg.getText().toString();
     }
 }

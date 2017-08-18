@@ -11,16 +11,15 @@ import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgSender;
+import com.google.protobuf.InvalidProtocolBufferException;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.wallet.PacketDetailActivity;
 import connect.database.MemoryDataManager;
+import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.utils.TimeUtil;
+import protos.Connect;
 
 /**
  * Created by gtq on 2016/12/19.
@@ -36,8 +35,8 @@ public class MsgNoticeHolder extends MsgBaseHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
-        super.buildRowData(msgBaseHolder, entity);
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
         SpannableStringBuilder builder = null;
         SpannableStringBuilder colorBuilder = null;
         SpannableStringBuilder stringBuilder = null;
@@ -46,9 +45,9 @@ public class MsgNoticeHolder extends MsgBaseHolder {
         Drawable drawable = null;
         ImageSpan imageSpan = null;
 
-        MsgDefinBean definBean = entity.getMsgDefinBean();
-        switch (definBean.getType()) {
-            case -9://stranger
+        MsgType msgType=MsgType.toMsgType(msgExtEntity.getMessageType());
+        switch (msgType) {
+            case NOTICE_STRANGER://stranger
                 builder = new SpannableStringBuilder();
                 stringBuilder = new SpannableStringBuilder(context.getString(R.string.Chat_Add_as_a_friend_to_chat));
                 builder.append(stringBuilder);
@@ -60,40 +59,30 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                 noticeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        StrangerInfoActivity.startActivity((Activity) context, ((MsgEntity) entity).getRecAddress(), SourceType.SEARCH);
+                        try {
+                            Connect.NotifyMessage notifyMessage = Connect.NotifyMessage.parseFrom(msgExtEntity.getContents());
+                            StrangerInfoActivity.startActivity((Activity) context, notifyMessage.getContent(), SourceType.SEARCH);
+                        } catch (InvalidProtocolBufferException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
                 break;
-            case -10://black friend
+            case NOTICE_BLACK://black friend
                 notice.setText(context.getString(R.string.Link_Add_as_a_friend));
                 break;
-            case -11://not group member
+            case NOTICE_NOTMEMBER://not group member
                 notice.setText(context.getString(R.string.Message_send_fail_not_in_group));
                 break;
-            case 11://open/close burn
-                String name = "";
-                String content = "";
-                String myPubkey=MemoryDataManager.getInstance().getPubKey();
-                if (entity.getMsgDefinBean().getPublicKey().equals(myPubkey)) {
-                    MsgSender msgSender = entity.getMsgDefinBean().getSenderInfoExt();
-                    name = msgSender.username;
-                } else {
-                    name = context.getResources().getString(R.string.Chat_You);
-                }
+            case OUTERPACKET_GET://External envelope was received
+                final Connect.SystemRedpackgeNotice redpackgeNotice = Connect.SystemRedpackgeNotice.parseFrom(msgExtEntity.getContents());
 
-                if (TextUtils.isEmpty(definBean.getContent()) || "0".equals(definBean.getContent())) {
-                    content = context.getResources().getString(R.string.Chat_disable_the_self_descruct, name);
-                } else {
-                    content = context.getResources().getString(R.string.Chat_set_the_self_destruct_timer_to, name, TimeUtil.parseBurnTime(definBean.getContent()));
-                }
-                notice.setText(content);
-                break;
-            case 103://External envelope was received
-                MsgSender msgSender = entity.getMsgDefinBean().getSenderInfoExt();
-                String receiverName = MemoryDataManager.getInstance().getPubKey().equals(msgSender.publickey) ?
-                        context.getString(R.string.Chat_You) : msgSender.username;
+                String mypubkey = MemoryDataManager.getInstance().getPubKey();
+                Connect.UserInfo userInfo = redpackgeNotice.getReceiver();
+                String receiverName = userInfo.getPubKey().equals(mypubkey) ?
+                        context.getString(R.string.Chat_You) : userInfo.getUsername();
 
-                builder = new SpannableStringBuilder(" "+context.getString(R.string.Chat_opened_Lucky_Packet_of, receiverName,context.getString(R.string.Chat_You)));
+                builder = new SpannableStringBuilder(" " + context.getString(R.string.Chat_opened_Lucky_Packet_of, receiverName, context.getString(R.string.Chat_You)));
                 drawable = context.getResources().getDrawable(R.mipmap.luckybag3x);
                 drawable.setBounds(0, 0, 20, 20);
                 imageSpan = new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE);
@@ -107,12 +96,13 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                 noticeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        PacketDetailActivity.startActivity((Activity) context,entity.getMsgDefinBean().getContent());
+                        PacketDetailActivity.startActivity((Activity) context, redpackgeNotice.getHashid());
                     }
                 });
                 break;
-            case -501://click to get lucky packet
-                builder = new SpannableStringBuilder("  " + definBean.getContent());
+            case NOTICE_CLICKRECEIVEPACKET://click to get lucky packet
+                Connect.NotifyMessage notifyMessage= Connect.NotifyMessage.parseFrom(msgExtEntity.getContents());
+                builder = new SpannableStringBuilder("  " + notifyMessage.getContent());
                 drawable = context.getResources().getDrawable(R.mipmap.luckybag3x);
                 drawable.setBounds(0, 0, 20, 20);
                 imageSpan = new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE);
@@ -121,8 +111,9 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                 break;
             default:
                 String showTxt = context.getString(R.string.Chat_Msg_Undefine);
-                if (definBean != null && !TextUtils.isEmpty(definBean.getContent())) {
-                    showTxt = definBean.getContent();
+                Connect.NotifyMessage defaultNotify= Connect.NotifyMessage.parseFrom(msgExtEntity.getContents());
+                if (!TextUtils.isEmpty(defaultNotify.getContent())) {
+                    showTxt = defaultNotify.getContent();
                 }
                 notice.setText(showTxt);
                 break;

@@ -13,24 +13,23 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.bean.MsgSend;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.GatherBean;
-import connect.activity.chat.bean.MsgSend;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.data.RateFormatUtil;
 import connect.utils.ToastEUtil;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.business.BaseBusiness;
+import connect.wallet.cwallet.business.TransferEditView;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
-import connect.wallet.cwallet.business.TransferEditView;
 import protos.Connect;
 
 /**
@@ -212,8 +211,8 @@ public class GatherActivity extends BaseActivity {
             @Override
             public void success(Connect.Bill bill) {
                 ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
-                GatherBean gatherBean = new GatherBean(bill.getHash(), amount, 1, false, bill.getTips());
-                MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+
+                MsgSend.sendOuterMsg(MsgType.Request_Payment, 0, bill.getHash(), amount, 1, bill.getTips());
                 ActivityUtil.goBack(activity);
             }
 
@@ -239,8 +238,8 @@ public class GatherActivity extends BaseActivity {
             @Override
             public void success(Connect.Crowdfunding crowdfunding) {
                 int size = Integer.parseInt(edit.getText().toString());
-                GatherBean gatherBean = new GatherBean(crowdfunding.getHashId(), crowdfunding.getTotal() / size, size, true, crowdfunding.getTips());
-                MsgSend.sendOuterMsg(MsgType.Request_Payment, gatherBean);
+
+                MsgSend.sendOuterMsg(MsgType.Request_Payment, 1, crowdfunding.getHashId(), crowdfunding.getTotal() / size, size, crowdfunding.getTips());
                 ActivityUtil.goBack(activity);
             }
 

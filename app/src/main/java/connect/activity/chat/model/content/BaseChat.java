@@ -2,25 +2,16 @@ package connect.activity.chat.model.content;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.home.bean.MsgFragmReceiver;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
-import connect.activity.chat.bean.GatherBean;
-import connect.activity.chat.bean.MessageExtEntity;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.WebsiteExt1Bean;
-import connect.activity.home.bean.MsgFragmReceiver;
-import connect.activity.chat.bean.GeoAddressBean;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -31,6 +22,7 @@ import protos.Connect;
  */
 
 public abstract class BaseChat<T> implements Serializable {
+
     private static String Tag = "BaseChat";
 
     protected boolean isStranger = false;
@@ -43,31 +35,53 @@ public abstract class BaseChat<T> implements Serializable {
 
     public abstract T txtMsg(String string);
 
-    public abstract T photoMsg(String string, String ext1);
+    public abstract T photoMsg(String thum, String url, String filesize, int width, int height);
 
-    public abstract T videoMsg(String string, int length, String ext1);
+    public abstract T voiceMsg(String string, int length);
+
+    public abstract T videoMsg(String thum,String url, int length,int filesize,int width,int height);
 
     public abstract T emotionMsg(String string);
 
-    public abstract T voiceMsg(String string, int size, String ext1);
+    public abstract T cardMsg(String pubkey, String name, String avatar);
 
-    public abstract T transferMsg(String hashid, long amout, String note, int type);
-
-    public abstract T locationMsg(String address, GeoAddressBean location);
-
-    public abstract T luckPacketMsg(String string, String tips, int type);
+    public abstract T locationMsg(float latitude,float longitude,String address,String thum,int width,int height);
 
     public abstract T noticeMsg(String string);
 
-    public abstract T cardMsg(ContactEntity entity);
+    public abstract T destructMsg(int time);
 
-    public abstract T destructMsg(long time);
+    public abstract T receiptMsg(String messageid);
 
-    public abstract T receiptMsg(String string);
+    /**
+     * @param type 0:private  1:group  2:outer
+     * @param hashid
+     * @param amout
+     * @param tips
+     * @return
+     */
+    public abstract T transferMsg(int type, String hashid, long amout, String tips);
 
-    public abstract T paymentMsg(GatherBean bean);
+    /**
+     * @param type 0:inner 1:outer 2:system
+     * @param hashid
+     * @param tips
+     * @param amount
+     * @return
+     */
+    public abstract T luckPacketMsg(int type, String hashid, String tips, long amount);
 
-    public abstract T outerWebsiteMsg(String string, WebsiteExt1Bean bean);
+    /**
+     * @param paymenttype 0: private 1:crowding
+     * @param hashid
+     * @param amount
+     * @param membersize
+     * @param tips
+     * @return
+     */
+    public abstract T paymentMsg(int paymenttype,String hashid, long amount, int membersize, String tips);
+
+    public abstract T outerWebsiteMsg(String url, String title, String subtitle, String img);
 
     public abstract T encryptChatMsg();
 
@@ -88,19 +102,19 @@ public abstract class BaseChat<T> implements Serializable {
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at, boolean newmsg,boolean broad) {
-        if (TextUtils.isEmpty(roomKey())) {
+        if (TextUtils.isEmpty(chatKey())) {
             return;
         }
 
-        ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(roomKey());
+        ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(chatKey());
         if (roomEntity == null) {
             roomEntity = new ConversionEntity();
-            roomEntity.setIdentifier(roomKey());
+            roomEntity.setIdentifier(chatKey());
         }
 
         roomEntity.setName(nickName());
         roomEntity.setAvatar(headImg());
-        roomEntity.setType(roomType());
+        roomEntity.setType(chatType());
         if (!TextUtils.isEmpty(showText)) {
             roomEntity.setContent(showText);
         }
@@ -124,13 +138,11 @@ public abstract class BaseChat<T> implements Serializable {
         }
     }
 
-    public abstract void sendPushMsg(T bean);
+    public abstract void sendPushMsg(MsgExtEntity msgExtEntity);
 
-    /** Roomkey */
-    public abstract String roomKey();
+    public abstract String chatKey();
 
-    /** RoomType */
-    public abstract int roomType();
+    public abstract int chatType();
 
     public boolean isStranger() {
         return isStranger;
@@ -140,35 +152,19 @@ public abstract class BaseChat<T> implements Serializable {
         isStranger = stranger;
     }
 
-    public List<MsgEntity> loadMoreEntities(long firstmsgtime) {
-        List<MsgEntity> localBeans = new ArrayList();
-        List<MessageExtEntity> detailEntities = MessageHelper.getInstance().loadMoreMsgEntities(roomKey(), firstmsgtime);
+    public List<MsgExtEntity> loadMoreEntities(long firstmsgtime) {
+        List<MsgExtEntity> detailEntities = MessageHelper.getInstance().loadMoreMsgEntities(chatKey(), firstmsgtime);
         byte[] localHashKeys = SupportKeyUril.localHashKey().getBytes();
-        for (MessageExtEntity detailEntity : detailEntities) {
+        for (MsgExtEntity detailEntity : detailEntities) {
             try {
                 Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(detailEntity.getContent()));
                 byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, localHashKeys, gcmData);
-                MsgDefinBean definBean = new Gson().fromJson(new String(contents), MsgDefinBean.class);
-
-                MsgEntity msgEntity = new MsgEntity();
-                msgEntity.setPubkey(roomKey());
-                msgEntity.setMsgDefinBean(definBean);
-                msgEntity.setReadstate(detailEntity.getState());
-                msgEntity.setSendstate(detailEntity.getSend_status());
-                msgEntity.setRecAddress(address());
-                msgEntity.setHashid(detailEntity.getHashid());
-                msgEntity.setTransStatus(detailEntity.getTransStatus());
-                msgEntity.setPayCount(detailEntity.getPayCount());
-                msgEntity.setCrowdCount(detailEntity.getCrowdCount());
-                long burnstart = (null == detailEntity.getSnap_time()) ? 0 : detailEntity.getSnap_time();
-                msgEntity.setBurnstarttime(burnstart);
-
-                localBeans.add(msgEntity);
+                detailEntity.setContents(contents);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return localBeans;
+        return detailEntities;
     }
 
     /**
@@ -177,7 +173,7 @@ public abstract class BaseChat<T> implements Serializable {
      * @param msgid
      * @return
      */
-    public MsgEntity loadEntityByMsgid(String msgid) throws Exception {
+    public MsgExtEntity loadEntityByMsgid(String msgid) throws Exception {
         MessageEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity == null) {
             return null;
@@ -186,16 +182,9 @@ public abstract class BaseChat<T> implements Serializable {
         byte[] localHashKeys = SupportKeyUril.localHashKey().getBytes();
         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(messageEntity.getContent()));
         byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, localHashKeys, gcmData);
-        MsgDefinBean definBean = new Gson().fromJson(new String(contents), MsgDefinBean.class);
 
-        MsgEntity chatBean = new MsgEntity();
-        chatBean.setPubkey(roomKey());
-        chatBean.setMsgDefinBean(definBean);
-        chatBean.setSendstate(messageEntity.getSend_status());
-        chatBean.setRecAddress(address());
-
-        long burnstart = (null == messageEntity.getSnap_time()) ? 0 : messageEntity.getSnap_time();
-        chatBean.setBurnstarttime(burnstart);
-        return chatBean;
+        MsgExtEntity msgExtEntity = messageEntity.transToExtEntity();
+        msgExtEntity.setContents(contents);
+        return msgExtEntity;
     }
 }

@@ -166,7 +166,7 @@ public class UserOrderBean extends InterParse {
     public void friendChatCookie(String pubkey) {
         String msgid = TimeUtil.timestampToMsgid();
         Connect.FriendChatCookie chatInfo = Connect.FriendChatCookie.newBuilder().
-                setAddress(SupportKeyUril.getAddressFromPubkey(pubkey)).build();
+                setUid(pubkey).build();
 
         commandToIMTransfer(msgid, SocketACK.DOWNLOAD_FRIENDCOOKIE, chatInfo.toByteString());
 
