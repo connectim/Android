@@ -2,7 +2,6 @@ package connect.activity.base;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,19 +15,12 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
-import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Hashtable;
 
 import connect.ui.activity.R;
-import connect.utils.BitmapUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastUtil;
 import connect.utils.log.LogManager;
@@ -57,7 +49,6 @@ public abstract class BaseScanActivity extends BaseActivity {
     private RelativeLayout scanContainer;
     private Rect mCropRect = null;
     public final int PARSE_BARCODE_SUC = 601;
-    private String imagePath = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

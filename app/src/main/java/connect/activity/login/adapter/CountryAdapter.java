@@ -6,20 +6,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import connect.activity.contact.adapter.FriendRecordAdapter;
-import connect.ui.activity.R;
-import connect.activity.login.bean.CountryBean;
-import connect.utils.PinyinUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import protos.Connect;
+import connect.activity.login.bean.CountryBean;
+import connect.ui.activity.R;
+import connect.utils.PinyinUtil;
 
 /**
  * Created by Administrator on 2017/1/5.

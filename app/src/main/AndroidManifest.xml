@@ -100,7 +100,7 @@
             android:name="connect.activity.login.LoginPatterActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.LoginSeleUserActivity"
+            android:name="connect.activity.login.LoginSelectUserActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.widget.camera.CameraTakeActivity"

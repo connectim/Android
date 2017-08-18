@@ -55,7 +55,7 @@ public class QrUtils {
     }
 
     /**
-     * RGB转YUV420sp
+     * RGB turn YUV420sp
      *
      * @param yuv420sp inputWidth * inputHeight * 3 / 2
      * @param argb inputWidth * inputHeight

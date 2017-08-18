@@ -2,13 +2,29 @@ package connect.activity.login;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -18,13 +34,15 @@ import connect.activity.login.contract.LoginPhoneContract;
 import connect.activity.login.presenter.LoginPhonePresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.BitmapUtil;
 import connect.utils.StringUtil;
-import connect.utils.permission.PermissionUtil;
+import connect.utils.ToastEUtil;
 import connect.utils.data.PhoneDataUtil;
-
+import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemDataUtil;
 
 /**
- * Login interface verify phone number
+ * Login interface verify phone number.
  */
 public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneContract.View{
 
@@ -60,13 +78,14 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
             countryTv.setText("+ " + countryBean.getCode());
         }
         new LoginPhonePresenter(this,countryBean).start();
-        phoneEt.addTextChangedListener(presenter.getPhoneTextWatcher());
+        phoneEt.addTextChangedListener(textWatcher);
     }
 
     @OnClick(R.id.country_rela)
     void countryCodeClick(View view) {
         ActivityUtil.next(mActivity, CountryCodeActivity.class, COUNTRY_CODE);
     }
+
 
     @OnClick(R.id.backup_local_tv)
     void otherLoginClick(View view) {
@@ -78,22 +97,45 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
         presenter.request(StringUtil.filterNumber(countryTv.getText().toString()) + "-" + phoneEt.getText().toString());
     }
 
-    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
+    /**
+     * Listening to the EditView input, verify the phone number.
+     */
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void afterTextChanged(Editable s) {
+            try {
+                PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+                Phonenumber.PhoneNumber swissNumberProto = phoneUtil.parse(s.toString(), countryBean.getCountryCode());
+                if(phoneUtil.isValidNumberForRegion(swissNumberProto, countryBean.getCountryCode())){
+                    nextBtn.setEnabled(true);
+                }else{
+                    nextBtn.setEnabled(false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                nextBtn.setEnabled(false);
+            }
+        }
+    };
+
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
             ActivityUtil.next(mActivity, ScanLoginActivity.class);
         }
 
         @Override
-        public void deny(String[] permissions) {
-
-        }
+        public void deny(String[] permissions) {}
     };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissionCallBack);
     }
 
     @Override
@@ -111,27 +153,22 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
     }
 
     @Override
-    public void setBtnEnabled(boolean isEnabled) {
-        nextBtn.setEnabled(isEnabled);
-    }
-
-    @Override
     public void verifySuccess() {
         SignInVerifyActivity.startActivity(mActivity, countryBean.getCode(),phoneEt.getText().toString());
     }
 
     @Override
     public void scanPermission() {
-        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_CAMERA}, permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_CAMERA}, permissionCallBack);
     }
 
     @Override
-    public void goinRandomSend() {
+    public void goIntoRandomSend() {
         RandomSendActivity.startActivity(mActivity);
     }
 
     @Override
-    public void goinLocalLogin() {
+    public void goIntoLocalLogin() {
         ActivityUtil.next(mActivity, LocalLoginActivity.class);
     }
 
@@ -148,4 +185,5 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
         }
         return super.onKeyDown(keyCode, event);
     }
+
 }

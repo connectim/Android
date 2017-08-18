@@ -14,8 +14,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.RendomSendContract;
-import connect.activity.login.presenter.RendomSendPresenter;
+import connect.activity.login.contract.RandomSendContract;
+import connect.activity.login.presenter.RandomSendPresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -28,11 +28,9 @@ import connect.widget.TopToolBar;
 import connect.widget.camera.CricleProgressbar;
 
 /**
- * Voice to generate random number
- * Created by Administrator on 2017/3/14.
+ * Voice to generate random number.
  */
-
-public class RandomSendActivity extends BaseActivity implements RendomSendContract.View {
+public class RandomSendActivity extends BaseActivity implements RandomSendContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -46,13 +44,25 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
     TextView jumpTv;
 
     private RandomSendActivity mActivity;
-    private RendomSendContract.Presenter presenter;
+    private RandomSendContract.Presenter presenter;
     private int errorMax = 3;
 
+    /**
+     * No binding number registered accounts.
+     *
+     * @param activity
+     */
     public static void startActivity(Activity activity) {
         startActivity(activity, "", "");
     }
 
+    /**
+     * The binding number registered accounts.
+     *
+     * @param activity
+     * @param phone phone number
+     * @param token The token to verify the phone number
+     */
     public static void startActivity(Activity activity, String phone, String token) {
         Bundle bundle = new Bundle();
         bundle.putString("phone", phone);
@@ -78,7 +88,7 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
         myProgressBar.setLineWidth(4);
         startImg.setEnabled(false);
 
-        new RendomSendPresenter(this).start();
+        new RandomSendPresenter(this).start();
     }
 
     @OnClick(R.id.left_img)
@@ -108,8 +118,14 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
     }
 
     @Override
-    public void setPresenter(RendomSendContract.Presenter presenter) {
+    public void setPresenter(RandomSendContract.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,presenter.getPermissomCallBack());
     }
 
     @Override
@@ -146,9 +162,11 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
                 myProgressBar.setEndAngle(0);
                 ToastEUtil.makeText(mActivity, R.string.Login_Generated_Failure, ToastEUtil.TOAST_STATUS_FAILE).show();
                 errorMax --;
-                if(errorMax <= 0){
+                if (errorMax <= 0) {
                     jumpTv.setVisibility(View.VISIBLE);
                 }
+                break;
+            default:
                 break;
         }
     }
@@ -156,38 +174,29 @@ public class RandomSendActivity extends BaseActivity implements RendomSendContra
     @Override
     public void denyPressionDialog() {
         jumpTv.setVisibility(View.VISIBLE);
-        DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
-                getString(R.string.Link_Unable_to_get_the_voice_data),
+        DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title), getString(R.string.Link_Unable_to_get_the_voice_data),
                 "", "", true, new DialogUtil.OnItemClickListener() {
                     @Override
-                    public void confirm(String value) {
-
-                    }
-
+                    public void confirm(String value) {}
                     @Override
-                    public void cancel() {
-
-                    }
+                    public void cancel() {}
                 }, false);
     }
 
     @Override
     public void goinRegister(UserBean userBean) {
         Bundle bundle = getIntent().getExtras();
-        userBean.setPhone(bundle.getString("phone", ""));
-        RegisterActivity.startActivity(mActivity, userBean, bundle.getString("token", ""));
+        String phone = bundle.getString("phone", "");
+        String token = bundle.getString("token", "");
+
+        userBean.setPhone(phone);
+        RegisterActivity.startActivity(mActivity, userBean, token);
         finish();
     }
 
     @Override
     public void setProgressBar(float value) {
         myProgressBar.setEndAngle(value);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,presenter.getPermissomCallBack());
     }
 
     @Override

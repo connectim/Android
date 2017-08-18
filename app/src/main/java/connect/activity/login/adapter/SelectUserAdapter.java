@@ -22,17 +22,17 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/12/8.
  */
-public class SeleUserAdapter extends RecyclerView.Adapter<SeleUserAdapter.UserHolder> {
+public class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.UserHolder> {
 
     private final LayoutInflater inflater;
-    private final OnItemClickListence onItemClickListence;
+    private final OnSelectItemListener onSelectItemListener;
     private SideScrollView sideScrollView;
     private List<UserBean> msgRoomEntities = new ArrayList<>();
     private UserBean userBean;
 
-    public SeleUserAdapter(Activity activity,OnItemClickListence onItemClickListence) {
+    public SelectUserAdapter(Activity activity, OnSelectItemListener onSelectItemListener) {
         inflater = LayoutInflater.from(activity);
-        this.onItemClickListence = onItemClickListence;
+        this.onSelectItemListener = onSelectItemListener;
     }
 
     public void setData(List<UserBean> entities,UserBean userBean) {
@@ -44,14 +44,14 @@ public class SeleUserAdapter extends RecyclerView.Adapter<SeleUserAdapter.UserHo
     }
 
     @Override
-    public SeleUserAdapter.UserHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SelectUserAdapter.UserHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.item_login_sele_user,parent, false);
         UserHolder userHolder = new UserHolder(view);
         return userHolder;
     }
 
     @Override
-    public void onBindViewHolder(SeleUserAdapter.UserHolder holder, final int position) {
+    public void onBindViewHolder(SelectUserAdapter.UserHolder holder, final int position) {
         if(userBean != null && userBean.getTalkKey().equals(msgRoomEntities.get(position).getTalkKey())){
             holder.statusImg.setVisibility(View.VISIBLE);
         }else{
@@ -67,7 +67,7 @@ public class SeleUserAdapter extends RecyclerView.Adapter<SeleUserAdapter.UserHo
                 if (menuIsOpen()) {
                     closeMenu();
                 }
-                onItemClickListence.onClick(msgRoomEntities.get(position),position);
+                onSelectItemListener.onClick(msgRoomEntities.get(position),position);
             }
         });
 
@@ -75,7 +75,7 @@ public class SeleUserAdapter extends RecyclerView.Adapter<SeleUserAdapter.UserHo
             @Override
             public void onClick(View v) {
                 closeMenu();
-                onItemClickListence.itemOnClick(msgRoomEntities.get(position),position);
+                onSelectItemListener.remove(msgRoomEntities.get(position),position);
                 removeData(msgRoomEntities.get(position));
             }
         });
@@ -142,5 +142,12 @@ public class SeleUserAdapter extends RecyclerView.Adapter<SeleUserAdapter.UserHo
             }
         }
     };
+
+    public interface OnSelectItemListener  {
+
+        void onClick(Object object,int position);
+
+        void remove(Object object,int position);
+    }
 
 }
