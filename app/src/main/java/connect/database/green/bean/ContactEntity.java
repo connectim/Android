@@ -21,6 +21,7 @@ public class ContactEntity implements Serializable {
     @Unique
     private String address;
 
+    private String connectId;
     private String username;
     private String avatar;
     private String remark;
@@ -28,13 +29,14 @@ public class ContactEntity implements Serializable {
     private Integer source;
     private Boolean blocked;
 
-    @Generated(hash = 1202098558)
+    @Generated(hash = 2102055938)
     public ContactEntity(Long _id, @NotNull String pub_key, String address,
-            String username, String avatar, String remark, Integer common,
-            Integer source, Boolean blocked) {
+            String connectId, String username, String avatar, String remark,
+            Integer common, Integer source, Boolean blocked) {
         this._id = _id;
         this.pub_key = pub_key;
         this.address = address;
+        this.connectId = connectId;
         this.username = username;
         this.avatar = avatar;
         this.remark = remark;
@@ -62,6 +64,12 @@ public class ContactEntity implements Serializable {
     }
     public void setAddress(String address) {
         this.address = address;
+    }
+    public String getConnectId() {
+        return this.connectId;
+    }
+    public void setConnectId(String connectId) {
+        this.connectId = connectId;
     }
     public String getUsername() {
         return this.username;
@@ -99,5 +107,6 @@ public class ContactEntity implements Serializable {
     public void setBlocked(Boolean blocked) {
         this.blocked = blocked;
     }
+    
 
 }

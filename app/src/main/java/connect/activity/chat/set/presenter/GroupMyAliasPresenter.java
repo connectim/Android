@@ -37,7 +37,7 @@ public class GroupMyAliasPresenter implements GroupMyAliasContract.Presenter {
         activity = view.getActivity();
 
         String myAddress = MemoryDataManager.getInstance().getAddress();
-        GroupMemberEntity myMemberEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, myAddress);
+        GroupMemberEntity myMemberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, myAddress);
         if (null != myMemberEntity) {
             String myGroupName=TextUtils.isEmpty(myMemberEntity.getNick()) ? myMemberEntity.getUsername() : myMemberEntity.getNick();
             view.myNameInGroup(myGroupName);
@@ -52,7 +52,7 @@ public class GroupMyAliasPresenter implements GroupMyAliasContract.Presenter {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 String myAddress = MemoryDataManager.getInstance().getAddress();
-                GroupMemberEntity myMemberEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, myAddress);
+                GroupMemberEntity myMemberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, myAddress);
                 myMemberEntity.setUsername(myalias);
                 ContactHelper.getInstance().inserGroupMemEntity(myMemberEntity);
 

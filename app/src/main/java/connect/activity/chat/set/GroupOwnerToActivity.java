@@ -78,7 +78,7 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
 
-        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey, MemoryDataManager.getInstance().getAddress());
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey, MemoryDataManager.getInstance().getAddress());
         Collections.sort(groupMemEntities, new GroupMemberCompara());
 
         adapter = new GroupMemberSelectAdapter(activity, groupMemEntities);

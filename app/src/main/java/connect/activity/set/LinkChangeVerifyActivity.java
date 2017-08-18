@@ -82,7 +82,10 @@ public class LinkChangeVerifyActivity extends BaseActivity implements SignInVeri
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
         public void afterTextChanged(Editable s) {
-            changeBtnNext();
+            if (codeEt.getText().toString().length() == 6) {
+                nextBtn.setText(R.string.Common_OK);
+                nextBtn.setEnabled(true);
+            }
         }
     };
 
@@ -129,14 +132,6 @@ public class LinkChangeVerifyActivity extends BaseActivity implements SignInVeri
     @Override
     public void goinRandomSend(String phone, String token) {
 
-    }
-
-    @Override
-    public void changeBtnNext() {
-        if (codeEt.getText().toString().length() == 6) {
-            nextBtn.setText(R.string.Common_OK);
-            nextBtn.setEnabled(true);
-        }
     }
 
     @Override

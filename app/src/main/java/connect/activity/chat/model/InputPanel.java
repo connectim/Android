@@ -20,18 +20,17 @@ import android.widget.TextView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import connect.im.bean.MsgType;
-import connect.ui.activity.R;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.StickerCategory;
-import connect.activity.chat.bean.WebsiteExt1Bean;
 import connect.activity.chat.exts.GroupAtActivity;
 import connect.activity.chat.inter.IEmojiClickListener;
 import connect.activity.chat.view.ChatEditText;
 import connect.activity.chat.view.ExBottomLayout;
 import connect.activity.chat.view.RecordView;
+import connect.im.bean.MsgType;
+import connect.ui.activity.R;
 import connect.utils.RegularUtil;
 import connect.utils.data.ResourceUtil;
 import connect.utils.system.SystemUtil;
@@ -185,7 +184,7 @@ public class InputPanel {
 
                 String string = s.toString();
                 if (isGroupAt && count == 1 && "@".equals(string.substring(start))) {
-                    GroupAtActivity.startActivity((Activity) context, ((ChatActivity) context).getBaseChat().roomKey());
+                    GroupAtActivity.startActivity((Activity) context, ((ChatActivity) context).getNormalChat().chatKey());
                 }
             }
         });
@@ -258,7 +257,7 @@ public class InputPanel {
                     if (RegularUtil.matches(string, RegularUtil.OUTER_BITWEBSITE)) {
                         String title = "";
                         String sub = "";
-                        WebsiteExt1Bean webSite = new WebsiteExt1Bean();
+
                         if (RegularUtil.matches(string, RegularUtil.OUTER_BITWEBSITE_TRANSFER)) {//External transfer
                             title = context.getString(R.string.Wallet_Send_a_bitcoin_transfer_link);
                             sub = context.getString(R.string.Wallet_Click_to_recive_payment);
@@ -269,9 +268,7 @@ public class InputPanel {
                             title = context.getString(R.string.Wallet_Send_the_payment_connection);
                             sub = context.getString(R.string.Wallet_Click_to_transfer_bitcoin);
                         }
-
-                        webSite.setExt1(title, sub);
-                        MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, string, webSite);
+                        MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, string, title,sub,"");
                     } else {
                         MsgSend.sendOuterMsg(MsgType.Text, inputEdit.getText().toString(), inputEdit.groupAts());
                     }

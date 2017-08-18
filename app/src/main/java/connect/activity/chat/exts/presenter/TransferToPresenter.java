@@ -7,7 +7,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.HashMap;
 
-import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.exts.contract.TransferToContract;
@@ -115,14 +115,13 @@ public class TransferToPresenter implements TransferToContract.Presenter{
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(4, contactEntity.getAvatar(),
                         contactEntity.getUsername(), contactEntity.getAddress()));
                 if (view.getTransType() == TransferToActivity.TransferType.CHAT) {
-                    MsgSend.sendOuterMsg(MsgType.Transfer, value, amount, view.getTransferNote());
+                    MsgSend.sendOuterMsg(MsgType.Transfer,0,value, amount, view.getTransferNote());
                 } else if (view.getTransType() == TransferToActivity.TransferType.ADDRESS) {
                     NormalChat friendChat = new FriendChat(contactEntity);
-                    MsgEntity msgEntity = friendChat.transferMsg(value, amount, view.getTransferNote(), 0);
-                    MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-                    String showTxt = msgEntity.getMsgDefinBean().showContentTxt(0);
-                    friendChat.updateRoomMsg(null, showTxt, TimeUtil.getCurrentTimeInLong());
-                    TransactionHelper.getInstance().updateTransEntity(value, msgEntity.getMsgid(), 1);
+                    MsgExtEntity msgExtEntity = friendChat.transferMsg(0,value, amount, view.getTransferNote());
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                    friendChat.updateRoomMsg(null, msgExtEntity.showContent(), TimeUtil.getCurrentTimeInLong());
+                    TransactionHelper.getInstance().updateTransEntity(value, msgExtEntity.getMessage_id(), 1);
                 }
 
                 ActivityUtil.goBack(activity);

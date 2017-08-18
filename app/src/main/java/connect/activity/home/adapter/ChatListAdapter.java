@@ -38,6 +38,7 @@ import connect.utils.system.SystemDataUtil;
 import connect.widget.MaterialBadgeTextView;
 import connect.widget.SideScrollView;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 import static connect.widget.SideScrollView.SideScrollListener;
 
@@ -178,7 +179,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                             talker = new Talker(group);
                             break;
                         case 2:
-                            talker = new Talker(2, inflater.getContext().getString(R.string.app_name));
+                            talker = new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE, inflater.getContext().getString(R.string.app_name));
                             break;
                     }
 

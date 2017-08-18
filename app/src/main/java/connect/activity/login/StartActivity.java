@@ -8,20 +8,22 @@ import android.widget.ImageView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.home.HomeActivity;
 import connect.activity.login.contract.StartContract;
 import connect.activity.login.presenter.StartPresenter;
-import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 
-public class StartActivity extends BaseActivity implements StartContract.View{
+/**
+ * The App start page.
+ */
+public class StartActivity extends BaseActivity implements StartContract.View {
 
     @Bind(R.id.start_img)
     ImageView startImg;
 
     private StartActivity mActivity;
-    private StartContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class StartActivity extends BaseActivity implements StartContract.View{
 
     @Override
     public void setPresenter(StartContract.Presenter presenter) {
-        this.presenter = presenter;
+
     }
 
     @Override
@@ -52,22 +54,22 @@ public class StartActivity extends BaseActivity implements StartContract.View{
     }
 
     @Override
-    public void goinGuide() {
+    public void goIntoGuide() {
         ActivityUtil.next(mActivity, GuideActivity.class);
     }
 
     @Override
-    public void goinLoginForPhone() {
+    public void goIntoLoginForPhone() {
         ActivityUtil.next(mActivity, LoginForPhoneActivity.class);
     }
 
     @Override
-    public void goinLoginPatter() {
+    public void goIntoLoginPatter() {
         LoginPatterActivity.startActivity(mActivity);
     }
 
     @Override
-    public void goinHome() {
+    public void goIntoHome() {
         HomeActivity.startActivity(mActivity);
     }
 

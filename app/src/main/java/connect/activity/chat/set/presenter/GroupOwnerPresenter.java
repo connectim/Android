@@ -46,11 +46,11 @@ public class GroupOwnerPresenter implements GroupOwnerContract.Presenter{
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 String myaddress = MemoryDataManager.getInstance().getAddress();
-                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemByAds(roomKey, myaddress);
+                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myaddress);
                 myMember.setRole(0);
                 ContactHelper.getInstance().inserGroupMemEntity(myMember);
 
-                GroupMemberEntity ownerMember = ContactHelper.getInstance().loadGroupMemByAds(roomKey, address);
+                GroupMemberEntity ownerMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, address);
                 ownerMember.setRole(1);
                 ContactHelper.getInstance().inserGroupMemEntity(ownerMember);
 

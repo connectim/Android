@@ -7,6 +7,8 @@ import com.google.protobuf.ByteString;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
+import connect.activity.chat.model.ChatMsgUtil;
+import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.im.bean.Session;
@@ -14,9 +16,6 @@ import connect.im.bean.SocketACK;
 import connect.im.model.ChatSendManager;
 import connect.im.model.FailMsgsManager;
 import connect.im.model.NotificationManager;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.model.ChatMsgUtil;
-import connect.activity.home.bean.MsgNoticeBean;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
@@ -156,8 +155,8 @@ public abstract class InterParse {
         FailMsgsManager.getInstance().removeFailMap(msgid);
     }
 
-    protected void pushNoticeMsg(String pubkey,int type,MsgEntity msgEntity) {
-        NotificationManager.getInstance().pushNoticeMsg(pubkey,type,msgEntity);
+    protected void pushNoticeMsg(String pubkey, int type, String content) {
+        NotificationManager.getInstance().pushNoticeMsg(pubkey, type, content);
     }
 
     protected void commandToIMTransfer(String msgid, SocketACK ack, ByteString byteString) {

@@ -25,23 +25,22 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.MsgSend;
+import connect.activity.chat.bean.RoomSession;
+import connect.activity.chat.model.content.FriendChat;
+import connect.activity.chat.model.content.GroupChat;
+import connect.activity.chat.model.content.NormalChat;
+import connect.activity.common.bean.ConverType;
+import connect.activity.common.selefriend.ConversationActivity;
+import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.MsgSend;
-import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.bean.WebsiteExt1Bean;
-import connect.activity.chat.model.content.BaseChat;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.GroupChat;
-import connect.activity.common.selefriend.ConversationActivity;
-import connect.activity.common.bean.ConverType;
-import connect.activity.home.bean.MsgNoticeBean;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.RegularUtil;
@@ -277,14 +276,9 @@ public class OuterWebsiteActivity extends BaseActivity {
             int type = data.getIntExtra("type", 0);
             String pubkey = data.getStringExtra("object");
 
-
-            WebsiteExt1Bean ext1Bean = new WebsiteExt1Bean(title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
-
-            BaseChat baseChat = null;
-            MsgEntity msgEntity = null;
-
+            NormalChat baseChat = null;
             if (RoomSession.getInstance().getRoomKey().equals(pubkey)) {
-                MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, inUrl, ext1Bean);
+                MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, inUrl, title,TextUtils.isEmpty(subtitle) ? inUrl : subtitle,imgUrl);
             } else {
                 switch (type) {
                     case 0:
@@ -297,10 +291,10 @@ public class OuterWebsiteActivity extends BaseActivity {
                         break;
                 }
 
-                msgEntity = (MsgEntity) baseChat.outerWebsiteMsg(inUrl, ext1Bean);
-                baseChat.sendPushMsg(msgEntity);
-                MessageHelper.getInstance().insertToMsg(msgEntity.getMsgDefinBean());
-                baseChat.updateRoomMsg(null, getString(R.string.Chat_Sharelink), msgEntity.getMsgDefinBean().getSendtime());
+                MsgExtEntity msgExtEntity = baseChat.outerWebsiteMsg(inUrl, title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
+                baseChat.sendPushMsg(msgExtEntity);
+                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                baseChat.updateRoomMsg(null, getString(R.string.Chat_Sharelink), msgExtEntity.getCreatetime());
             }
         }
     }

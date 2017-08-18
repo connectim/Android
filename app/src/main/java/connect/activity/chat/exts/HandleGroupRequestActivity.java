@@ -12,18 +12,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.ApplyGroupBean;
-import connect.activity.chat.bean.CardExt1Bean;
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.GroupReviewBean;
-import connect.activity.chat.bean.Talker;
 import connect.activity.chat.exts.contract.HandleGroupRequestContract;
 import connect.activity.chat.exts.presenter.HandleGroupRequestPresenter;
 import connect.activity.contact.FriendInfoActivity;
@@ -34,9 +28,11 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 /**
  * group audit
@@ -73,8 +69,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
     private HandleGroupRequestActivity activity;
 
     private String messageId;
-    private CardExt1Bean ext1Bean;
-    private GroupReviewBean reviewBean;
+    private Connect.Reviewed reviewed;
     private HandleGroupRequestContract.Presenter presenter;
 
     @Override
@@ -85,11 +80,10 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
         initView();
     }
 
-    public static void startActivity(Activity activity, String content,String ext1,String messageid) {
+    public static void startActivity(Activity activity, byte[] reveiews,String messageid) {
         Bundle bundle = new Bundle();
-        bundle.putString("CONTENT", content);
-        bundle.putString("EXT1", ext1);
-        bundle.putString("MESSAGEID", messageid);
+        bundle.putByteArray("REVIEW", reveiews);
+        bundle.putString("MESSAGEID",messageid);
         ActivityUtil.next(activity, HandleGroupRequestActivity.class, bundle);
     }
 
@@ -106,28 +100,31 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
             }
         });
 
+        byte[] receivebytes = getIntent().getByteArrayExtra("REVIEW");
+        try {
+            reviewed = Connect.Reviewed.parseFrom(receivebytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         messageId = getIntent().getStringExtra("MESSAGEID");
-        String content = getIntent().getStringExtra("CONTENT");
-        String extra = getIntent().getStringExtra("EXT1");
-        ext1Bean = new Gson().fromJson(extra, CardExt1Bean.class);
-        reviewBean = new Gson().fromJson(content, GroupReviewBean.class);
 
-
-        GlideUtil.loadAvater(roundimg1, ext1Bean.getAvatar());
-        txt4.setText(ext1Bean.getUsername());
-        String tips = TextUtils.isEmpty(reviewBean.getTips()) ? getString(R.string.Link_apply_to_join_group) : reviewBean.getTips();
+        Connect.UserInfo userInfo = reviewed.getUserInfo();
+        GlideUtil.loadAvater(roundimg1, userInfo.getAvatar());
+        txt4.setText(userInfo.getUsername());
+        String tips = TextUtils.isEmpty(reviewed.getTips()) ? getString(R.string.Link_apply_to_join_group) : reviewed.getTips();
         txt5.setText(tips);
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(getString(R.string.Link_From));
-        SpannableString colorStr = new SpannableString(reviewBean.getInvitor().getUsername());
+        SpannableString colorStr = new SpannableString(userInfo.getUsername());
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.color_blue));
         colorStr.setSpan(colorSpan, 0, colorStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.append(colorStr);
-        builder.append(formatSource(reviewBean.getSource()));
+        builder.append(formatSource(reviewed.getSource()));
         txt6.setText(builder);
 
-        String groupApplyKey = reviewBean.getGroupKey() + ext1Bean.getPub_key();
+        String groupApplyKey = reviewed.getIdentifier() + userInfo.getPubKey();
         ApplyGroupBean applyGroupBean = ParamManager.getInstance().loadGroupApply(groupApplyKey);
         int verifycode = applyGroupBean.getState();
         if (verifycode == 0 || verifycode == -1) {//Audit/new apply
@@ -160,19 +157,20 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.txt6:
-                String invitor = reviewBean.getInvitor().getAddress();
+                String invitor = reviewed.getUserInfo().getPubKey();
                 ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(invitor);
                 if (friend == null) {
-                    StrangerInfoActivity.startActivity(activity, invitor, SourceType.GROUP);
+                    String address = SupportKeyUril.getAddressFromPubkey(invitor);
+                    StrangerInfoActivity.startActivity(activity, address, SourceType.GROUP);
                 } else {
-                    FriendInfoActivity.startActivity(activity, friend.getPub_key());
+                    FriendInfoActivity.startActivity(activity, invitor);
                 }
                 break;
             case R.id.btn1:
-                presenter.agreeRequest(ext1Bean.getPub_key(), reviewBean.getVerificationCode(), ext1Bean.getAddress());
+                presenter.agreeRequest(reviewed.getUserInfo().getPubKey(), reviewed.getVerificationCode(), reviewed.getUserInfo().getAddress());
                 break;
             case R.id.btn2:
-                presenter.rejectRequest(ext1Bean.getPub_key(), reviewBean.getVerificationCode(), ext1Bean.getAddress());
+                presenter.rejectRequest(reviewed.getUserInfo().getPubKey(), reviewed.getVerificationCode(), reviewed.getUserInfo().getAddress());
                 break;
             case R.id.btn3:
                 presenter.groupChat();
@@ -182,7 +180,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
 
     @Override
     public String getPubKey() {
-        return reviewBean.getGroupKey();
+        return reviewed.getIdentifier();
     }
 
     @Override
@@ -207,8 +205,8 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
 
     @Override
     public void updateGroupRequest(int state) {
-        String groupApplyKey = reviewBean.getGroupKey() + ext1Bean.getPub_key();
-        ParamManager.getInstance().updateGroupApply(groupApplyKey, reviewBean.getTips(), reviewBean.getSource(), state, messageId);
+        String groupApplyKey = reviewed.getIdentifier() + reviewed.getUserInfo().getPubKey();
+        ParamManager.getInstance().updateGroupApply(groupApplyKey, reviewed.getTips(), reviewed.getSource(), state, messageId);
         ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.ROBOT_HANDLEAPPLY, messageId, state);
         ActivityUtil.goBack(activity);
     }

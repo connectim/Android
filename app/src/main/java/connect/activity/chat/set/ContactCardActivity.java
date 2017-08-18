@@ -90,7 +90,7 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
             @Override
             public void onClick(View v) {
                 ContactEntity entity = (ContactEntity) v.getTag();
-                MsgSend.sendOuterMsg(MsgType.Name_Card,entity);
+                MsgSend.sendOuterMsg(MsgType.Name_Card,entity.getPub_key(),entity.getUsername(),entity.getAvatar());
                 ActivityUtil.goBack(activity);
             }
         });

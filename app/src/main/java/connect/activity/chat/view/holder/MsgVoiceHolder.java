@@ -1,26 +1,27 @@
 package connect.activity.chat.view.holder;
 
-import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.MessageEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDefinBean;
 import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.chat.view.VoiceImg;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.MessageEntity;
+import connect.ui.activity.R;
 import connect.utils.FileUtil;
+import connect.utils.TimeUtil;
+import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/23.
  */
 public class MsgVoiceHolder extends MsgChatHolder {
+
     private View view1;
     private VoiceImg voiceImg;
     private ImageView loadImg;
@@ -38,87 +39,73 @@ public class MsgVoiceHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgEntity entity) {
-        super.buildRowData(msgBaseHolder, entity);
-        MsgDefinBean bean = entity.getMsgDefinBean();
+    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        final Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
 
-        if (direct == MsgDirect.From && view1 != null) {
-            if (entity.getReadstate() == 0) {
-                view1.setVisibility(View.VISIBLE);
-            } else {
-                view1.setVisibility(View.GONE);
-            }
-        }
-
-        voiceImg.loadVoice(direct, bean.getSize());
+        view1.setVisibility((msgExtEntity.parseDirect() == MsgDirect.From && msgExtEntity.getRead_time() == 0) ?
+                View.VISIBLE : View.GONE);
+        voiceImg.loadVoice(msgExtEntity.parseDirect(), voiceMessage.getTimeLength());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MsgDefinBean bean = entity.getMsgDefinBean();
-                String url = bean.getContent();
-
-                MessageHelper.getInstance().updateMsgState(bean.getMessage_id(), 1);
+                String url = voiceMessage.getUrl();
+                msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
+                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
                 if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(url)) {
                     voiceImg.startPlay(url);
-
-                    if (entity instanceof MsgEntity) {
-                        if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                            voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
-                                @Override
-                                public void playFinish(String msgid, String filepath) {
-                                    MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
-                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
-                                }
-                            });
-                        }
+                    if ((voiceMessage.getSnapTime() == 0 && msgExtEntity.parseDirect() == MsgDirect.From)) {
+                        voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
+                            @Override
+                            public void playFinish(String msgid, String filepath) {
+                                msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
+                            }
+                        });
                     }
                 } else {
-                    entity.setReadstate(1);
+                    msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
                     if (view1 != null) {
                         view1.setVisibility(View.GONE);
                     }
-                    MessageEntity msgEntity = MessageHelper.getInstance().loadMsgByMsgid(bean.getMessage_id());
-                    if (msgEntity != null) {
-                        msgEntity.setState(1);
-                        MessageHelper.getInstance().updateMsg(msgEntity);
-                    }
 
-                    final String localPath = FileUtil.newContactFileName(entity.getPubkey(), bean.getMessage_id(), FileUtil.FileType.VOICE);
+                    final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VOICE);
                     if (FileUtil.isExistFilePath(localPath)) {
                         voiceImg.startPlay(localPath);
 
-                        if (entity instanceof MsgEntity) {
-                            if (!TextUtils.isEmpty(definBean.getExt()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                                voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
-                                    @Override
-                                    public void playFinish(String msgid, String filepath) {
-                                        MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
-                                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
-                                    }
-                                });
-                            }
+                        if (voiceMessage.getSnapTime() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
+                            voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
+                                @Override
+                                public void playFinish(String msgid, String filepath) {
+                                    msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
+                                }
+                            });
                         }
                     } else {
                         voiceImg.downLoading();
-                        FileDownLoad.getInstance().downChatFile(entity.getRoomType(),url, entity.getPubkey(), new FileDownLoad.IFileDownLoad() {
+
+                        Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
+                        FileDownLoad.getInstance().downChatFile(chatType, url, msgExtEntity.getMessage_ower(), new FileDownLoad.IFileDownLoad() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 loadImg.setVisibility(View.GONE);
 
                                 FileUtil.byteArrToFilePath(bytes, localPath);
-                                voiceImg.startPlay(entity.getMsgDefinBean().getMessage_id(), localPath);
+                                voiceImg.startPlay(msgExtEntity.getMessage_id(), localPath);
 
-                                if (entity instanceof MsgEntity) {
-                                    if (!TextUtils.isEmpty(definBean.getExt1()) && ((MsgEntity) entity).getBurnstarttime() == 0 && direct == MsgDirect.From) {
-                                        voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
-                                            @Override
-                                            public void playFinish(String msgid, String filepath) {
-                                                MessageHelper.getInstance().updateMsgState(entity.getMsgid(), 2);
-                                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, direct);
-                                            }
-                                        });
-                                    }
+                                if (voiceMessage.getSnapTime() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
+                                    voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
+                                        @Override
+                                        public void playFinish(String msgid, String filepath) {
+                                            msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                                            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
+                                        }
+                                    });
                                 }
                             }
 

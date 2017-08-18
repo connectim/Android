@@ -7,11 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.set.contract.GroupCreateContract;
-import connect.activity.chat.set.contract.SingleSetContract;
 import connect.activity.home.bean.HttpRecBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -148,7 +147,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         String stringMems = "";
         List<GroupMemberEntity> memEntities = new ArrayList<>();
         for (Connect.GroupMember member : groupInfo.getMembersList()) {
-            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemByAds(groupKey, member.getAddress());
+            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, member.getAddress());
             if (memEntity == null) {
                 memEntity = new GroupMemberEntity();
             }
@@ -167,8 +166,8 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         GroupChat groupChat = new GroupChat(groupEntity);
         stringMems = String.format(activity.getString(R.string.Link_enter_the_group), stringMems);
 
-        MsgEntity invite = groupChat.inviteNotice(stringMems);
-        MessageHelper.getInstance().insertToMsg(invite.getMsgDefinBean());
+        MsgExtEntity invite = groupChat.inviteNotice(stringMems);
+        MessageHelper.getInstance().insertMsgExtEntity(invite);
 
         ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
             @Override
@@ -187,12 +186,12 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
             byte[] groupecdhkey = SupportKeyUril.rawECDHkey(prikey, member.getPub_key());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, groupecdhkey, groupMessage.toByteString());
 
-            String msgid = TimeUtil.timestampToMsgid();
-            Connect.MessageData messageData = Connect.MessageData.newBuilder()
+            Connect.ChatMessage chatMessage = Connect.ChatMessage.newBuilder()
                     .setCipherData(gcmData)
-                    .setReceiverAddress(member.getAddress())
-                    .setMsgId(msgid).build();
+                    .setMsgId(TimeUtil.timestampToMsgid()).build();
 
+            Connect.MessageData messageData = Connect.MessageData.newBuilder()
+                    .setChatMsg(chatMessage).build();
             ChatSendManager.getInstance().sendChatAckMsg(SocketACK.GROUP_INVITE, groupKey, messageData);
         }
     }

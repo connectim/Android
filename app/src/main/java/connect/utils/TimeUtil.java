@@ -155,7 +155,7 @@ public class TimeUtil {
      * @param time
      * @return
      */
-    public static String parseBurnTime(String time) {
+    public static String parseBurnTime(int time) {
         if (burnTimeMap == null || burnTimeMap.isEmpty()) {
             burnTimeMap = new HashMap<>();
 
@@ -166,6 +166,6 @@ public class TimeUtil {
                 burnTimeMap.put(String.valueOf(destimes[i]), strtimes[i]);
             }
         }
-        return burnTimeMap.get(time);
+        return burnTimeMap.get(String.valueOf(time));
     }
 }

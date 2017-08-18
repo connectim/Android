@@ -31,10 +31,8 @@ import connect.widget.roundedimageview.RoundedImageView;
 import connect.widget.takepicture.TakePictureActivity;
 
 /**
- * The new user registration
- * Created by john on 2016/11/22.
+ * The new user registration.
  */
-
 public class RegisterActivity extends BaseActivity implements RegisterContract.View{
 
     @Bind(R.id.toolbar_top)
@@ -54,14 +52,25 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
 
     private RegisterActivity mActivity;
     private RegisterContract.Presenter presenter;
-    private String token;
-    private UserBean userBean;
     public String talkKey;
 
+    /**
+     * Sweep the private key is registered.
+     *
+     * @param activity
+     * @param userBean priKey pubKey address
+     */
     public static void startActivity(Activity activity, UserBean userBean) {
         startActivity(activity, userBean,"");
     }
 
+    /**
+     * Mobile phone number registered accounts.
+     *
+     * @param activity
+     * @param userBean priKey pubKey address
+     * @param token Check the phone number token
+     */
     public static void startActivity(Activity activity, UserBean userBean,String token) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("user",userBean);
@@ -87,23 +96,8 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         nicnameEt.addTextChangedListener(textWatcher);
         userpasswordEt.addTextChangedListener(textWatcher);
 
-        Bundle bundle = getIntent().getExtras();
-        userBean = (UserBean)bundle.getSerializable("user");
-        token = bundle.getString("token","");
-
         new RegisterPresenter(this).start();
     }
-
-    private TextWatcher textWatcher = new TextWatcher(){
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        @Override
-        public void afterTextChanged(Editable s) {
-            presenter.editChange(userpasswordEt.getText().toString(), nicnameEt.getText().toString().trim());
-        }
-    };
 
     @OnClick(R.id.left_img)
     void goBack(View view) {
@@ -121,26 +115,24 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
             }
 
             @Override
-            public void cancel() {
-
-            }
+            public void cancel() {}
         });
     }
 
     @OnClick(R.id.userhead_img)
-    void seleAvater(View view){
+    void seleAvater(View view) {
         TakePictureActivity.startActivity(mActivity);
     }
 
     @OnClick(R.id.next_btn)
-    void registerAccount(View view){
-        if(RegularUtil.matches(userpasswordEt.getText().toString(), RegularUtil.PASSWORD)){
+    void registerAccount(View view) {
+        if (RegularUtil.matches(userpasswordEt.getText().toString(), RegularUtil.PASSWORD)) {
             ProgressUtil.getInstance().showProgress(mActivity);
             presenter.registerUser(nicnameEt.getText().toString(),
                     userpasswordEt.getText().toString(),
-                    token,
-                    userBean);
-        }else{
+                    getIntent().getExtras().getString("token",""),
+                    (UserBean)getIntent().getExtras().getSerializable("user"));
+        } else {
             DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
                     getString(R.string.Login_letter_number_and_character_must_be_included_in_your_login_password),
                     "", "", true, new DialogUtil.OnItemClickListener() {
@@ -157,14 +149,31 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         }
     }
 
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (!TextUtils.isEmpty(userpasswordEt.getText().toString()) && !TextUtils.isEmpty(nicnameEt.getText().toString().trim())) {
+                nextBtn.setEnabled(true);
+            }else{
+                nextBtn.setEnabled(false);
+            }
+        }
+    };
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && requestCode == TakePictureActivity.REQUEST_CODE){
+        if (resultCode == Activity.RESULT_OK && requestCode == TakePictureActivity.REQUEST_CODE) {
             String pathLocal = data.getExtras().getString("path");
-            if(!TextUtils.isEmpty(pathLocal)){
+            if (!TextUtils.isEmpty(pathLocal)) {
                 presenter.requestUserHead(pathLocal);
-            }else{
+            } else {
                 ToastEUtil.makeText(mActivity,R.string.Login_Avatar_upload_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         }
@@ -181,11 +190,6 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     }
 
     @Override
-    public void setNextBtnEnable(boolean isEnable) {
-        nextBtn.setEnabled(isEnable);
-    }
-
-    @Override
     public void setPasswordhint(String text) {
         passwordhintTv.setText(text);
     }
@@ -197,9 +201,9 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
 
     @Override
     public void complete(boolean isBack) {
-        if(isBack){
+        if (isBack) {
             HomeActivity.startActivity(mActivity);
-        }else{
+        } else {
             ActivityUtil.next(mActivity,ExportPriActivity.class);
         }
         mActivity.finish();

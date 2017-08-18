@@ -1,20 +1,8 @@
 package connect.activity.chat.model.content;
 
-import com.google.gson.Gson;
-
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.GroupEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.im.bean.MsgType;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.CardExt1Bean;
-import connect.activity.chat.bean.GatherBean;
-import connect.activity.chat.bean.GroupExt1Bean;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.TransferExt;
-import connect.activity.chat.bean.WebsiteExt1Bean;
-import connect.activity.chat.bean.GeoAddressBean;
-import connect.activity.base.BaseApplication;
+import protos.Connect;
 
 /**
  * public methods to extract
@@ -22,177 +10,236 @@ import connect.activity.base.BaseApplication;
  */
 public abstract class NormalChat extends BaseChat {
 
-    public static NormalChat loadBaseChat(String pubkey) {
-        NormalChat normalChat = null;
-
-        if ((BaseApplication.getInstance().getString(R.string.app_name)).equals(pubkey)) {
-            normalChat = RobotChat.getInstance();
-        } else {
-            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
-            if (groupEntity != null) {
-                normalChat = new GroupChat(groupEntity);
-            } else {
-                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
-                if (friendEntity != null) {
-                    normalChat = new FriendChat(friendEntity);
-                }
-            }
-        }
-        return normalChat;
-    }
-
     @Override
     public void updateRoomMsg(String draft, String showText, long msgtime) {
         super.updateRoomMsg(draft, showText, msgtime);
     }
 
-    public MsgEntity txtMsg(String string) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Text);
-        chatBean.getMsgDefinBean().setContent(string);
-        return chatBean;
-    }
+    @Override
+    public MsgExtEntity txtMsg(String string) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Text);
+        Connect.TextMessage.Builder builder = Connect.TextMessage.newBuilder()
+                .setContent(string);
 
-    public MsgEntity photoMsg(String string, String ext1) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Photo);
-        chatBean.getMsgDefinBean().setContent(string);
-        chatBean.getMsgDefinBean().setUrl(string);
-        chatBean.getMsgDefinBean().setExt1(ext1);
-        return chatBean;
-    }
-
-    public MsgEntity videoMsg(String string, int length, String ext1) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Video);
-        chatBean.getMsgDefinBean().setContent(string);
-        chatBean.getMsgDefinBean().setUrl(string);
-        chatBean.getMsgDefinBean().setSize(length);
-        chatBean.getMsgDefinBean().setExt1(ext1);
-        return chatBean;
-    }
-
-    public MsgEntity voiceMsg(String string, int size, String ext1) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Voice);
-        chatBean.getMsgDefinBean().setContent(string);
-        chatBean.getMsgDefinBean().setSize(size);
-        chatBean.getMsgDefinBean().setExt1(ext1);
-        return chatBean;
-    }
-
-    public MsgEntity emotionMsg(String string) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Emotion);
-        chatBean.getMsgDefinBean().setContent(string);
-        return chatBean;
-    }
-
-    public MsgEntity cardMsg(ContactEntity entity) {
-        CardExt1Bean ext1Bean = new CardExt1Bean();
-        ext1Bean.setAvatar(entity.getAvatar());
-        ext1Bean.setAddress(entity.getAddress());
-        ext1Bean.setPub_key(entity.getPub_key());
-        ext1Bean.setUsername(entity.getUsername());
-
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Name_Card);
-        chatBean.getMsgDefinBean().setExt1(new Gson().toJson(ext1Bean));
-        return chatBean;
-    }
-
-    public MsgEntity destructMsg(long time) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Self_destruct_Notice);
-        chatBean.getMsgDefinBean().setContent(String.valueOf(time));
-        return chatBean;
-    }
-
-    public MsgEntity receiptMsg(String string) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Self_destruct_Receipt);
-        chatBean.getMsgDefinBean().setContent(string);
-        return chatBean;
-    }
-
-    public MsgEntity paymentMsg(GatherBean bean) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Request_Payment);
-        chatBean.getMsgDefinBean().setContent(bean.getHashid());
-        chatBean.getMsgDefinBean().setExt1(new Gson().toJson(bean));
-        return chatBean;
-    }
-
-    public MsgEntity transferMsg(String hashid, long amout, String note,int type) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Transfer);
-        chatBean.getMsgDefinBean().setContent(hashid);
-
-        TransferExt ext = new TransferExt(amout, note, type);
-        chatBean.getMsgDefinBean().setExt1(new Gson().toJson(ext));
-        return chatBean;
-    }
-
-    public MsgEntity locationMsg(String address, GeoAddressBean location) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Location);
-        chatBean.getMsgDefinBean().setContent(address);
-        chatBean.getMsgDefinBean().setLocationExt(location);
-        chatBean.getMsgDefinBean().setImageOriginWidth(location.getImageOriginWidth());
-        chatBean.getMsgDefinBean().setImageOriginHeight(location.getImageOriginHeight());
-        return chatBean;
-    }
-
-    public MsgEntity luckPacketMsg(String string, String tips, int type) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.Lucky_Packet);
-        chatBean.getMsgDefinBean().setContent(string);
-
-        TransferExt ext = new TransferExt();
-        ext.setNote(tips);
-        ext.setType(type);
-        chatBean.getMsgDefinBean().setExt1(new Gson().toJson(ext));
-        return chatBean;
-    }
-
-    public MsgEntity noticeMsg(String string) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.NOTICE);
-        chatBean.getMsgDefinBean().setContent(string);
-        return chatBean;
-    }
-
-    public MsgEntity joinGroupMsg(GroupExt1Bean ext1Bean) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.INVITE_GROUP);
-        chatBean.getMsgDefinBean().setExt1(new Gson().toJson(ext1Bean));
-        return chatBean;
-    }
-
-    public MsgEntity strangerNotice() {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.NOTICE_STRANGER);
-        return chatBean;
-    }
-
-    public MsgEntity blackFriendNotice() {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.NOTICE_BLACK);
-        return chatBean;
-    }
-
-    public MsgEntity notMemberNotice() {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.NOTICE_NOTMEMBER);
-        return chatBean;
-    }
-
-    public MsgEntity outerWebsiteMsg(String string, WebsiteExt1Bean ext1Bean) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.OUTER_WEBSITE);
-        chatBean.getMsgDefinBean().setContent(string);
-        chatBean.getMsgDefinBean().setExt1(new Gson().toJson(ext1Bean));
-        return chatBean;
+        if (chatType() == 0) {
+            long destructtime = destructReceipt();
+            if (destructtime > 0) {
+                builder.setSnapTime(destructtime);
+            }
+        }
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
     }
 
     @Override
-    public MsgEntity encryptChatMsg() {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.NOTICE_ENCRYPTCHAT);
-        return chatBean;
+    public MsgExtEntity photoMsg(String thum, String url, String filesize, int width, int height) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Photo);
+        Connect.PhotoMessage.Builder builder = Connect.PhotoMessage.newBuilder()
+                .setThum(thum)
+                .setUrl(url)
+                .setSize(filesize)
+                .setImageWidth(width)
+                .setImageHeight(height);
+
+        if (chatType() == 0) {
+            long destructtime = destructReceipt();
+            if (destructtime > 0) {
+                builder.setSnapTime(destructtime);
+            }
+        }
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
     }
 
     @Override
-    public MsgEntity clickReceiveLuckMsg(String string) {
-        MsgEntity chatBean = (MsgEntity) createBaseChat(MsgType.NOTICE_CLICKRECEIVEPACKET);
-        chatBean.getMsgDefinBean().setContent(string);
-        return chatBean;
+    public MsgExtEntity voiceMsg(String string, int length) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Voice);
+        Connect.VoiceMessage.Builder builder = Connect.VoiceMessage.newBuilder()
+                .setUrl(string)
+                .setTimeLength(length);
+
+        if (chatType() == 0) {
+            long destructtime = destructReceipt();
+            if (destructtime > 0) {
+                builder.setSnapTime(destructtime);
+            }
+        }
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity videoMsg(String thum, String url, int length, int filesize, int width, int height) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Video);
+        Connect.VideoMessage.Builder builder = Connect.VideoMessage.newBuilder()
+                .setCover(thum)
+                .setUrl(url)
+                .setTimeLength(length)
+                .setSize(filesize)
+                .setImageWidth(width)
+                .setImageHeight(height);
+
+        if (chatType() == 0) {
+            long destructtime = destructReceipt();
+            if (destructtime > 0) {
+                builder.setSnapTime(destructtime);
+            }
+        }
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity emotionMsg(String string) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Emotion);
+        Connect.EmotionMessage.Builder builder = Connect.EmotionMessage.newBuilder()
+                .setContent(string);
+
+        if (chatType() == 0) {
+            long destructtime = destructReceipt();
+            if (destructtime > 0) {
+                builder.setSnapTime(destructtime);
+            }
+        }
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity cardMsg(String pubkey, String name, String avatar) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Name_Card);
+        Connect.CardMessage.Builder builder = Connect.CardMessage.newBuilder()
+                .setUid(pubkey)
+                .setUsername(name)
+                .setAvatar(avatar);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity destructMsg(int time) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Self_destruct_Notice);
+        Connect.DestructMessage.Builder builder = Connect.DestructMessage.newBuilder()
+                .setTime(time <= 0 ? -1 : time);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity receiptMsg(String messageid) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Self_destruct_Receipt);
+        Connect.ReadReceiptMessage.Builder builder = Connect.ReadReceiptMessage.newBuilder()
+                .setMessageId(messageid);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity paymentMsg(int paymenttype,String hashid, long amount, int membersize, String tips) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Request_Payment);
+        Connect.PaymentMessage.Builder builder = Connect.PaymentMessage.newBuilder()
+                .setPaymentType(paymenttype)
+                .setHashId(hashid)
+                .setAmount(amount)
+                .setMemberSize(membersize)
+                .setTips(tips);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity transferMsg(int type, String hashid, long amout, String tips) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Transfer);
+        Connect.TransferMessage.Builder builder = Connect.TransferMessage.newBuilder()
+                .setTransferType(type)
+                .setHashId(hashid)
+                .setAmount(amout)
+                .setTips(tips);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity locationMsg(float latitude, float longitude, String address, String thum, int width, int height) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Location);
+        Connect.LocationMessage.Builder builder = Connect.LocationMessage.newBuilder()
+                .setLatitude(latitude)
+                .setLongitude(longitude)
+                .setAddress(address)
+                .setScreenShot(thum)
+                .setImageWidth(width)
+                .setImageHeight(height);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity luckPacketMsg(int type, String hashid, String tips, long amount) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Lucky_Packet);
+        Connect.LuckPacketMessage.Builder builder = Connect.LuckPacketMessage.newBuilder()
+                .setLuckyType(type)
+                .setHashId(hashid)
+                .setAmount(amount)
+                .setTips(hashid);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity noticeMsg(String string) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.NOTICE);
+        Connect.NotifyMessage.Builder builder = Connect.NotifyMessage.newBuilder()
+                .setContent(string);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity outerWebsiteMsg(String url, String title, String subtitle, String img) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.OUTER_WEBSITE);
+        Connect.WebsiteMessage.Builder builder = Connect.WebsiteMessage.newBuilder()
+                .setUrl(url)
+                .setTitle(title)
+                .setSubtitle(subtitle)
+                .setImg(img);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity encryptChatMsg() {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.NOTICE_ENCRYPTCHAT);
+        return msgExtEntity;
+    }
+
+    @Override
+    public MsgExtEntity clickReceiveLuckMsg(String string) {
+        MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.NOTICE_CLICKRECEIVEPACKET);
+        Connect.NotifyMessage.Builder builder = Connect.NotifyMessage.newBuilder()
+                .setContent(string);
+
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
     }
 
     public abstract String headImg();
 
     public abstract String nickName();
 
+    public abstract String identify();
+
     public abstract String address();
+
+    public abstract long destructReceipt();
+
+    public abstract Connect.MessageUserInfo senderInfo();
 }

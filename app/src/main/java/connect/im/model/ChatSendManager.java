@@ -77,7 +77,7 @@ public class ChatSendManager {
                 setMsgData(data).setSign(postsign).
                 setPubKey(mypubkey).build();
 
-        sendAckMsg(order, roomkey, data.getMsgId(), messagePost.toByteString());
+        sendAckMsg(order, roomkey, data.getChatMsg().getMsgId(), messagePost.toByteString());
     }
 
     public void sendAckMsg(SocketACK order, String roomkey, String msgid, ByteString bytes) {

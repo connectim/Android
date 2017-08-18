@@ -12,15 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
-import org.greenrobot.greendao.database.Database;
-
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,48 +25,19 @@ import connect.activity.set.ModifyInfoActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
-import connect.activity.wallet.bean.WalletBean;
-import connect.database.MemoryDataManager;
-import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.CurrencyHelper;
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.CurrencyAddressEntity;
-import connect.database.green.bean.CurrencyEntity;
-import connect.database.green.bean.MessageEntity;
-import connect.database.green.dao.DaoMaster;
-import connect.database.green.dao.DaoSession;
 import connect.im.bean.UserOrderBean;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.ProtoBufUtil;
-import connect.utils.StringUtil;
-import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
-import connect.wallet.cwallet.NativeWallet;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.currency.BaseCurrency;
-import connect.wallet.cwallet.inter.WalletListener;
-import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
-import connect.widget.payment.PaymentPwd;
-import connect.widget.payment.PinTransferDialog;
 import connect.widget.roundedimageview.RoundedImageView;
-import protos.Connect;
-import wallet_gateway.WalletOuterClass;
 
 /**
- * setting
- * Created by john on 2016/11/28.
+ * Set the main interface
  */
 public class SetFragment extends BaseFragment {
 
@@ -106,7 +68,6 @@ public class SetFragment extends BaseFragment {
 
     private String Tag = "SetFragment";
     private FragmentActivity mActivity;
-    private UserBean userBean;
 
     public static SetFragment startFragment() {
         SetFragment setFragment = new SetFragment();
@@ -137,20 +98,19 @@ public class SetFragment extends BaseFragment {
         toolbarTop.setBlackStyle();
         toolbarTop.setTitle(null, R.string.Set_Setting);
 
-        userBean = SharedPreferenceUtil.getInstance().getUser();
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         GlideUtil.loadAvater(ivAvatar, userBean.getAvatar());
         tvName.setText(userBean.getName());
-
-        if(TextUtils.isEmpty(userBean.getConnectId())){
+        if (TextUtils.isEmpty(userBean.getConnectId())) {
             tvId.setText(userBean.getAddress());
-        }else{
+        } else {
             tvId.setText(userBean.getConnectId());
         }
     }
 
     @OnClick(R.id.llUserMsg)
     void intoUserInfo(View view) {
-        if(mActivity != null && isAdded()){
+        if (mActivity != null && isAdded()) {
             ActivityUtil.next(mActivity, ModifyInfoActivity.class);
         }
     }
@@ -180,6 +140,11 @@ public class SetFragment extends BaseFragment {
         AboutActivity.startActivity(mActivity);
     }
 
+    @OnClick(R.id.address_scan_img)
+    void showScanAddress(View view) {
+        ActivityUtil.next(mActivity, AddressActivity.class);
+    }
+
     @OnClick(R.id.log_out_tv)
     void logOut(View view) {
         DialogUtil.showAlertTextView(mActivity,
@@ -195,14 +160,10 @@ public class SetFragment extends BaseFragment {
                         UserOrderBean userOrderBean = new UserOrderBean();
                         userOrderBean.connectLogout();
                     }
+
                     @Override
                     public void cancel() {}
                 });
-    }
-
-    @OnClick(R.id.address_scan_img)
-    void showScanAddress(View view) {
-        ActivityUtil.next(mActivity, AddressActivity.class);
     }
 
     @Override

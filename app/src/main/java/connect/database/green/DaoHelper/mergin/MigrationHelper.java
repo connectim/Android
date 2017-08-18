@@ -175,7 +175,9 @@ public final class MigrationHelper {
                     insertTableStringBuilder.append(") SELECT ");
                     insertTableStringBuilder.append(columnSQL);
                     insertTableStringBuilder.append(" FROM ").append(tempTableName).append(";");
-                    db.execSQL(insertTableStringBuilder.toString());
+                    String sql = insertTableStringBuilder.toString();
+                    LogManager.getLogger().d(TAG,"[Restore data] sql = " + sql);
+                    db.execSQL(sql);
                     LogManager.getLogger().d(TAG,"[Restore data] to " + tableName);
                 }
                 StringBuilder dropTableStringBuilder = new StringBuilder();

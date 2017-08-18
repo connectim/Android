@@ -3,13 +3,10 @@ package connect.activity.chat.model.fileload;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.activity.chat.bean.MsgDefinBean;
-import connect.activity.chat.bean.MsgEntity;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileUpLoad;
 import connect.activity.chat.model.content.BaseChat;
-import connect.utils.FileUtil;
+import connect.database.MemoryDataManager;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
@@ -19,11 +16,11 @@ import protos.Connect;
  */
 public class VoiceUpload extends FileUpLoad {
 
-    public VoiceUpload(Context context, BaseChat baseChat, MsgDefinBean bean, FileUpListener listener) {
+    public VoiceUpload(Context context, BaseChat baseChat, MsgExtEntity entity, FileUpListener listener) {
         this.context = context;
         this.context = context;
         this.baseChat = baseChat;
-        this.bean = bean;
+        this.msgExtEntity = entity;
         this.fileUpListener = listener;
     }
 
@@ -34,19 +31,18 @@ public class VoiceUpload extends FileUpLoad {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    bean.setExt1(FileUtil.fileSize(bean.getContent()));
-                    MessageHelper.getInstance().insertToMsg(bean);
+                    Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
 
                     String pubkey = SupportKeyUril.getPubKeyFromPriKey(MemoryDataManager.getInstance().getPriKey());
                     String priKey = MemoryDataManager.getInstance().getPriKey();
 
-                    if (baseChat.roomType() != 2) {
-                        Connect.GcmData gcmData = encodeAESGCMStructData(bean.getContent());
+                    if (baseChat.chatType() != 2) {
+                        Connect.GcmData gcmData = encodeAESGCMStructData(voiceMessage.getUrl());
                         Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
                                 setEntity(gcmData.toByteString()).build();
 
-                    gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, priKey, richMedia.toByteString());
-                    mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
+                        gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, priKey, richMedia.toByteString());
+                        mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -57,10 +53,7 @@ public class VoiceUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                msgEntity = (MsgEntity) baseChat.voiceMsg(bean.getContent(), bean.getSize(), bean.getExt1());
-                msgEntity.getMsgDefinBean().setMessage_id(bean.getMessage_id());
-                localEncryptionSuccess(msgEntity);
-
+                localEncryptionSuccess(msgExtEntity);
                 if (mediaFile != null) {
                     fileUp();
                 }
@@ -73,11 +66,17 @@ public class VoiceUpload extends FileUpLoad {
         resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
-                String content = getUrl(mediaFile.getUrl(), mediaFile.getToken());
-                MsgEntity index = (MsgEntity) baseChat.voiceMsg(content, bean.getSize(), bean.getExt1());
-                index.getMsgDefinBean().setMessage_id(bean.getMessage_id());
+                String url = getUrl(mediaFile.getUrl(), mediaFile.getToken());
 
-                uploadSuccess(index);
+                try {
+                    Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
+                    voiceMessage.toBuilder().setUrl(url);
+
+                    msgExtEntity.setContents(voiceMessage.toByteArray());
+                    uploadSuccess(msgExtEntity);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

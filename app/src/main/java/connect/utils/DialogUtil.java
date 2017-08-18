@@ -2,8 +2,6 @@ package connect.utils;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,16 +20,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import connect.activity.home.view.LineDecoration;
-import connect.activity.login.adapter.DialogBottomAdapter;
+import connect.activity.common.adapter.DialogBottomAdapter;
 import connect.ui.activity.R;
-import connect.utils.glide.GlideUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.FrameAnimationDrawable;
@@ -284,7 +279,7 @@ public class DialogUtil {
     }
 
     /**
-     * popup dialong
+     * popup dialog
      *
      * @param mContext
      * @param list

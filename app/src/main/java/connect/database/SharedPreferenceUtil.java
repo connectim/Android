@@ -1,5 +1,6 @@
 package connect.database;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -8,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import connect.activity.home.bean.EstimatefeeBean;
 import connect.activity.login.bean.UserBean;
@@ -133,6 +135,25 @@ public class SharedPreferenceUtil {
         SharedPreferences.Editor editor = sharePre.edit();
         editor.putString(USER_INFO_LIST,new Gson().toJson(listUser));
         editor.apply();
+    }
+
+    /**
+     * Save the user information in hand in the interface
+     *
+     * @param userBean The user information
+     */
+    public void loginSaveUserBean(UserBean userBean, Activity currentActivity) {
+        // Save the current login user information
+        SharedPreferenceUtil.getInstance().putUser(userBean);
+        // finish the Activity except the current Activity
+        List<Activity> list = BaseApplication.getInstance().getActivityList();
+        for (Activity activity : list) {
+            if (!activity.getClass().getName().equals(currentActivity.getClass().getName())) {
+                activity.finish();
+            }
+        }
+        // Save the current user private key to memory
+        MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
     }
 
     /**

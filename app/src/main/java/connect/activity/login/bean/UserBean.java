@@ -2,11 +2,6 @@ package connect.activity.login.bean;
 
 import java.io.Serializable;
 
-/**
- * UserInfoDetail
- * Created by john on 2016/11/29.
- */
-
 public class UserBean implements Serializable{
 
     private String talkKey;

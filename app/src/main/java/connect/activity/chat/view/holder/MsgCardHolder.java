@@ -3,20 +3,17 @@ package connect.activity.chat.view.holder;
 import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
-
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgEntity;
-import connect.activity.chat.bean.CardExt1Bean;
-import connect.activity.chat.bean.MsgDefinBean;
+import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
+import connect.ui.activity.R;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
+import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/23.
@@ -26,8 +23,6 @@ public class MsgCardHolder extends MsgChatHolder {
     private RoundedImageView cardHead;
     private TextView cardName;
 
-    private CardExt1Bean cardExt1Bean;
-
     public MsgCardHolder(View itemView) {
         super(itemView);
         cardHead = (RoundedImageView) itemView.findViewById(R.id.roundimg_head_small);
@@ -35,21 +30,21 @@ public class MsgCardHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgEntity baseEntity) {
-        super.buildRowData(msgBaseHolder, baseEntity);
-        MsgDefinBean definBean = baseEntity.getMsgDefinBean();
-        cardExt1Bean = new Gson().fromJson(definBean.getExt1(), CardExt1Bean.class);
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+        super.buildRowData(msgBaseHolder, msgExtEntity);
+        final Connect.CardMessage cardMessage = Connect.CardMessage.parseFrom(msgExtEntity.getContents());
 
-        GlideUtil.loadAvater(cardHead, cardExt1Bean.getAvatar());
-        cardName.setText(cardExt1Bean.getUsername());
+        GlideUtil.loadAvater(cardHead, cardMessage.getAvatar());
+        cardName.setText(cardMessage.getUsername());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(cardExt1Bean.getPub_key());
+                ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(cardMessage.getUid());
                 if (entity == null) {
-                    StrangerInfoActivity.startActivity((Activity) context, cardExt1Bean.getAddress(), SourceType.CARD);
+                    String address = SupportKeyUril.getAddressFromPubkey(cardMessage.getUid());
+                    StrangerInfoActivity.startActivity((Activity) context, address, SourceType.CARD);
                 } else {
-                    FriendInfoActivity.startActivity((Activity) context, cardExt1Bean.getPub_key());
+                    FriendInfoActivity.startActivity((Activity) context, cardMessage.getUid());
                 }
             }
         });
