@@ -16,7 +16,6 @@ import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
-import connect.widget.AvatarGridView;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
@@ -43,7 +42,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         int typeTx = mListData.get(position).getTxType();
-        viewHolder.avatarGridview.setVisibility(View.GONE);
         viewHolder.avaterRimg.setVisibility(View.GONE);
         Connect.Transaction transaction = mListData.get(position);
         switch (typeTx){
@@ -56,17 +54,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             case 2://gather
             case 8://gather
                 List<Connect.UserInfoBalance> list = mListData.get(position).getUserInfosList();
-                if(list.size() > 0){
+                if (list.size() > 0) {
                     ArrayList arrayList = new ArrayList<String>();
-                    for(Connect.UserInfoBalance userInfoBalance : list){
+                    for (Connect.UserInfoBalance userInfoBalance : list) {
                         arrayList.add(userInfoBalance.getAvatar());
                     }
-                    viewHolder.avatarGridview.setVisibility(View.VISIBLE);
-                    viewHolder.avatarGridview.setAvaterData(arrayList);
-                }else{
-                    viewHolder.avaterRimg.setVisibility(View.VISIBLE);
-                    viewHolder.avaterRimg.setImageResource(R.mipmap.bitcoin_luckybag3x);
                 }
+                viewHolder.avaterRimg.setVisibility(View.VISIBLE);
+                viewHolder.avaterRimg.setImageResource(R.mipmap.bitcoin_luckybag3x);
                 break;
             case 3://lucky packet
             case 4:
@@ -136,7 +131,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     class ViewHolder extends RecyclerView.ViewHolder {
 
         RoundedImageView avaterRimg;
-        AvatarGridView avatarGridview;
         RelativeLayout leftRela;
         TextView nameTv;
         TextView balanceTv;
@@ -146,7 +140,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         ViewHolder(View itemview) {
             super(itemview);
             avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
-            avatarGridview = (AvatarGridView) itemview.findViewById(R.id.avatar_gridview);
             leftRela = (RelativeLayout) itemview.findViewById(R.id.left_rela);
             nameTv = (TextView) itemview.findViewById(R.id.name_tv);
             balanceTv = (TextView) itemview.findViewById(R.id.balance_tv);

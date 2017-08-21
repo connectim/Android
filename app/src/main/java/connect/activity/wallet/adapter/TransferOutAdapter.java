@@ -6,24 +6,18 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import connect.activity.contact.adapter.FriendRecordAdapter;
-import connect.database.MemoryDataManager;
-import connect.ui.activity.R;
-import connect.utils.data.RateFormatUtil;
-import connect.utils.TimeUtil;
-import connect.utils.glide.GlideUtil;
-import connect.widget.AvatarGridView;
-import connect.widget.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import connect.database.MemoryDataManager;
+import connect.ui.activity.R;
+import connect.utils.TimeUtil;
+import connect.utils.data.RateFormatUtil;
+import connect.utils.glide.GlideUtil;
+import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -49,7 +43,6 @@ public class TransferOutAdapter extends RecyclerView.Adapter<TransferOutAdapter.
     @Override
     public void onBindViewHolder(TransferOutAdapter.ViewHolder viewHolder, final int position) {
         viewHolder.avaterRimg.setVisibility(View.VISIBLE);
-        viewHolder.avatarGridview.setVisibility(View.GONE);
         if(TextUtils.isEmpty(mListData.get(position).getReceiverInfo().getAvatar())){
             GlideUtil.loadAvater(viewHolder.avaterRimg, MemoryDataManager.getInstance().getAvatar());
             viewHolder.nameTv.setText(mListData.get(position).getSender());
@@ -97,7 +90,6 @@ public class TransferOutAdapter extends RecyclerView.Adapter<TransferOutAdapter.
     class ViewHolder extends RecyclerView.ViewHolder {
 
         RoundedImageView avaterRimg;
-        AvatarGridView avatarGridview;
         RelativeLayout leftRela;
         TextView nameTv;
         TextView balanceTv;
@@ -107,7 +99,6 @@ public class TransferOutAdapter extends RecyclerView.Adapter<TransferOutAdapter.
         ViewHolder(View itemview) {
             super(itemview);
             avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
-            avatarGridview = (AvatarGridView) itemview.findViewById(R.id.avatar_gridview);
             leftRela = (RelativeLayout) itemview.findViewById(R.id.left_rela);
             nameTv = (TextView) itemview.findViewById(R.id.name_tv);
             balanceTv = (TextView) itemview.findViewById(R.id.balance_tv);
