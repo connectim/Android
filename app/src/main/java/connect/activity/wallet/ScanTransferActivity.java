@@ -29,7 +29,7 @@ import connect.utils.scan.ResolveScanUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.ScanBgView;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 
 /**
  * Scan the qr code transfer

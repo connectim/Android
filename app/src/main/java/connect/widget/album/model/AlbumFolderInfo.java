@@ -1,4 +1,4 @@
-package connect.widget.album.entity;
+package connect.widget.album.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class AlbumFolderInfo implements Serializable {
     /** First picture */
     private ExFile frontCover;
     /** Folder type 0: image 1: video */
-    private int albumType;
+    private AlbumType albumType;
 
     public AlbumFolderInfo() {
     }
@@ -49,11 +49,11 @@ public class AlbumFolderInfo implements Serializable {
         this.imageInfoList = imageInfoList;
     }
 
-    public int getAlbumType() {
+    public AlbumType getAlbumType() {
         return albumType;
     }
 
-    public void setAlbumType(int albumType) {
+    public void setAlbumType(AlbumType albumType) {
         this.albumType = albumType;
     }
 

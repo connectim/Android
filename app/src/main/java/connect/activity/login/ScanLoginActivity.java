@@ -27,7 +27,7 @@ import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.wallet.jni.AllNativeMethod;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 
 /**
  * Scan to login.

@@ -1,4 +1,4 @@
-package connect.utils;
+package connect.widget.video;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -10,6 +10,8 @@ import android.view.SurfaceView;
 
 import java.io.IOException;
 import java.io.Serializable;
+
+import connect.widget.video.inter.VideoListener;
 
 /**
  * video player tool
@@ -24,12 +26,12 @@ public class VideoPlayerUtil implements OnPreparedListener,
     private int mVideoWidth;
     private int mVideoHeight;
 
-    private VideoPlayListener videoPlayListener;
+    private VideoListener videoListener;
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         surfaceHolder = holder;
-        videoPlayListener.onVideoPrepared();
+        videoListener.onVideoPrepared();
     }
 
     @Override
@@ -49,8 +51,8 @@ public class VideoPlayerUtil implements OnPreparedListener,
         return mVideoUtil;
     }
 
-    public void init(SurfaceView sf, VideoPlayListener listener) {
-        this.videoPlayListener = listener;
+    public void init(SurfaceView sf, VideoListener listener) {
+        this.videoListener = listener;
 
         surfaceHolder = sf.getHolder();
         surfaceHolder.addCallback(this);
@@ -111,7 +113,7 @@ public class VideoPlayerUtil implements OnPreparedListener,
 
     @Override
     public void onCompletion(MediaPlayer arg0) {
-        videoPlayListener.onVidePlayFinish();
+        videoListener.onVidePlayFinish();
         freeMediaPlayerResource();
     }
 
@@ -148,12 +150,5 @@ public class VideoPlayerUtil implements OnPreparedListener,
             surfaceHolder.setFixedSize(mVideoWidth, mVideoHeight);
             mediaPlayer.start();
         }
-    }
-
-    public interface VideoPlayListener extends Serializable {
-
-        void onVideoPrepared();
-
-        void onVidePlayFinish();
     }
 }

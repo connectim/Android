@@ -1,4 +1,4 @@
-package connect.widget.album.entity;
+package connect.widget.album.model;
 
 import java.io.File;
 import java.net.URI;

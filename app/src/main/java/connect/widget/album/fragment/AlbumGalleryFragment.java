@@ -11,18 +11,16 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import connect.activity.chat.exts.VideoPlayerActivity;
 import connect.ui.activity.R;
-import connect.utils.VideoPlayerUtil;
 import connect.widget.album.AlbumActivity;
 import connect.widget.album.adapter.AlbumGalleryAdp;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 import connect.widget.album.view.HackyViewPager;
+
 public class AlbumGalleryFragment extends Fragment implements View.OnClickListener{
 
     private static AlbumGalleryFragment galleryFragment;
@@ -41,6 +39,13 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
     /** Preview loaded image location */
     private int previewPosition;
     private List<ImageInfo> imageInfos;
+
+    public static AlbumGalleryFragment newInstance() {
+        if (galleryFragment == null) {
+            galleryFragment = new AlbumGalleryFragment();
+        }
+        return galleryFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,15 +101,8 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
         return rootView;
     }
 
-    public static AlbumGalleryFragment newInstance() {
-        if (galleryFragment == null) {
-            galleryFragment = new AlbumGalleryFragment();
-        }
-        return galleryFragment;
-    }
-
     public void initImgInfos(){
-        List<ImageInfo> infos = preViewState ? activity.getSelectInfoList() : activity.getImageInfoList();
+        List<ImageInfo> infos = preViewState ? activity.getSelectInfoList() : activity.getImageInfos();
         imageInfos = new ArrayList<>(infos);
         galleryAdp.setData(imageInfos);
         viewPager.setCurrentItem(previewPosition, false);//Cancel the animation
@@ -150,7 +148,7 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_back:
-                activity.gridListInfos();
+                activity.getPresenter().gridAlbumFragment();
                 break;
             case R.id.txt:
                 if (activity.getSelectSize() == 0) {
@@ -165,17 +163,7 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
                 int videolength = (int) (imageInfo.getImageFile().getVideoLength() / 1000);
                 String filepath = imageInfo.getImageFile().getAbsolutePath();
                 String length = String.valueOf(videolength);
-                VideoPlayerActivity.startActivity(activity, filepath, length, new VideoPlayerUtil.VideoPlayListener() {
-                    @Override
-                    public void onVideoPrepared() {
-
-                    }
-
-                    @Override
-                    public void onVidePlayFinish() {
-
-                    }
-                });
+                VideoPlayerActivity.startActivity(activity, filepath, length, null);
                 break;
         }
     }

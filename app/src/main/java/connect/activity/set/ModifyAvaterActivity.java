@@ -23,7 +23,7 @@ import connect.utils.glide.GlideUtil;
 import connect.widget.HightEqWidthImage;
 import connect.widget.TopToolBar;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 import connect.widget.clip.ClipImageActivity;
 import connect.widget.takepicture.TakePictureActivity;
 

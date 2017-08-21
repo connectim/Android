@@ -2,8 +2,7 @@ package connect.widget.album.model;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Handler;
-import android.os.Message;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 
 import java.util.ArrayList;
@@ -13,16 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import connect.ui.activity.R;
-import connect.widget.album.entity.AlbumFolderInfo;
-import connect.widget.album.entity.ExFile;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.inter.IAlbumScanner;
+import connect.widget.album.presenter.AlbumPresenter;
 
 /**
  * Created by Clock on 2016/3/21.
  */
-public class ImageScannerModelImpl implements ImageScannerModel {
+public class AlbumScanner implements IAlbumScanner {
 
-    private final static String TAG = ImageScannerModelImpl.class.getSimpleName();
+    private final static String TAG = "_ImageScannerModelImpl";
     /**
      * Loader's unique ID number
      */
@@ -36,37 +34,42 @@ public class ImageScannerModelImpl implements ImageScannerModel {
             MediaStore.Images.Media.TITLE//Image file name, does not contain suffix
     };
 
-    private OnScanImageFinish mOnScanImageFinish;
-
-    private Handler mRefreshHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            List<AlbumFolderInfo> infos = (List<AlbumFolderInfo>) msg.obj;
-            if (mOnScanImageFinish != null && infos != null) {
-                mOnScanImageFinish.onFinish(infos);
-            }
-        }
-    };
-
     private Context context;
 
     @Override
-    public void startScanAlbum(final Context context, int  selecttype, final OnScanImageFinish onScanImageFinish) {
-        this.context=context;
-        mOnScanImageFinish = onScanImageFinish;
+    public void startScanAlbum(final Context context, final AlbumType albumType, final AlbumPresenter.OnScanListener onScanListener) {
+        this.context = context;
 
-        HashMap<String, AlbumFolderInfo> albumFolderMap = new HashMap<>();
-        searchLocalPhoto(albumFolderMap);
+        new AsyncTask<Void, Void, List<AlbumFolderInfo>>() {
+            @Override
+            protected List<AlbumFolderInfo> doInBackground(Void... params) {
+                HashMap<String, AlbumFolderInfo> albumFolderMap = new HashMap<>();
+                switch (albumType) {
+                    case Photo:
+                        searchLocalPhoto(albumFolderMap);
+                        break;
+                    case Video:
+                        break;
+                    case All:
+                        searchLocalPhoto(albumFolderMap);
+                        searchLocalVideo(albumFolderMap);
+                        break;
+                    default:
+                        break;
+                }
 
-        if (selecttype == 1) {
-            searchLocalVideo(albumFolderMap);
-        }
+                List<AlbumFolderInfo> albumFolderList = sortAllAlbum(albumFolderMap);
+                return albumFolderList;
+            }
 
-        List<AlbumFolderInfo> albumFolderList = sortAllAlbum(selecttype,albumFolderMap);
-
-        Message message = mRefreshHandler.obtainMessage();
-        message.obj = albumFolderList;
-        mRefreshHandler.sendMessage(message);
+            @Override
+            protected void onPostExecute(List<AlbumFolderInfo> albumFolderInfos) {
+                super.onPostExecute(albumFolderInfos);
+                if (onScanListener != null && albumFolderInfos != null) {
+                    onScanListener.onScanFinish(albumFolderInfos);
+                }
+            }
+        }.execute();
     }
 
     /**
@@ -92,14 +95,16 @@ public class ImageScannerModelImpl implements ImageScannerModel {
             ImageInfo imageFile = new ImageInfo(albumFolder,0);
             if (folderInfo == null) {
                 folderInfo = new AlbumFolderInfo(albumFolder, albumPath);
-                folderInfo.setAlbumType(0);
+                folderInfo.setAlbumType(AlbumType.Photo);
                 ArrayList<ImageInfo> albumImageFiles = new ArrayList<>();
                 folderInfo.setImageInfoList(albumImageFiles);
                 albumFolderMap.put(albumPath, folderInfo);
             }
             folderInfo.getImageInfoList().add(imageFile);
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
     }
 
     /**
@@ -128,7 +133,7 @@ public class ImageScannerModelImpl implements ImageScannerModel {
             ImageInfo imageFile = new ImageInfo(albumFolder, 1);
             if (folderInfo == null) {
                 folderInfo = new AlbumFolderInfo(albumFolder, albumPath);
-                folderInfo.setAlbumType(1);
+                folderInfo.setAlbumType(AlbumType.Video);
                 ArrayList<ImageInfo> albumImageFiles = new ArrayList<>();
                 folderInfo.setImageInfoList(albumImageFiles);
                 albumFolderMap.put(albumPath, folderInfo);
@@ -137,8 +142,7 @@ public class ImageScannerModelImpl implements ImageScannerModel {
             if (videosInfo == null) {
                 String videoAlbumName = context.getString(R.string.Chat_All_Video);
                 videosInfo = new AlbumFolderInfo(albumFolder, videoAlbumName);
-                videosInfo.setAlbumType(1);
-                //albumFolderMap.put(videoAlbumName, videosInfo);
+                videosInfo.setAlbumType(AlbumType.Video);
                 ArrayList<ImageInfo> videoImagesInfo = new ArrayList<>();
                 videosInfo.setImageInfoList(videoImagesInfo);
                 albumFolderMap.put(videoAlbumName, videosInfo);
@@ -149,7 +153,7 @@ public class ImageScannerModelImpl implements ImageScannerModel {
         cursor.close();
     }
 
-    public List<AlbumFolderInfo> sortAllAlbum(int selecttype,HashMap<String, AlbumFolderInfo> albumFolderMap){
+    public List<AlbumFolderInfo> sortAllAlbum(HashMap<String, AlbumFolderInfo> albumFolderMap){
         List<AlbumFolderInfo> albumFolderList = new ArrayList<>();
         for (AlbumFolderInfo info : albumFolderMap.values()) {
             albumFolderList.add(info);
@@ -162,8 +166,7 @@ public class ImageScannerModelImpl implements ImageScannerModel {
             if (allfolderInfo == null) {
                 String allAlbumName = context.getString(R.string.Chat_All_Image_Video);
                 allfolderInfo = new AlbumFolderInfo(info.getFrontCover(), allAlbumName);
-                allfolderInfo.setAlbumType(0);
-                //albumFolderMap.put(allAlbumName, videosInfo);
+                allfolderInfo.setAlbumType(AlbumType.All);
                 ArrayList<ImageInfo> allImagesInfo = new ArrayList<>();
                 allfolderInfo.setImageInfoList(allImagesInfo);
             }

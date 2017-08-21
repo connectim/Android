@@ -1,4 +1,4 @@
-package connect.widget.album.entity;
+package connect.widget.album.model;
 
 import java.io.Serializable;
 
@@ -8,6 +8,7 @@ import java.io.Serializable;
  * Created by Clock on 2016/1/26.
  */
 public class ImageInfo implements Serializable {
+
     private static final long serialVersionUID = -3753345306395582567L;
     /** Image files */
     private ExFile imageFile;

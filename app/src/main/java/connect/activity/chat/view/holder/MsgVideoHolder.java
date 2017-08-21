@@ -21,6 +21,7 @@ import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
 import connect.utils.VideoPlayerUtil;
+import connect.widget.video.inter.VideoListener;
 import protos.Connect;
 
 /**
@@ -122,22 +123,7 @@ public class MsgVideoHolder extends MsgChatHolder {
     }
 
     public void startPlayVideo(String filepath, int videolength, final String messageid) {
-        VideoPlayerActivity.startActivity((Activity) context, filepath, String.valueOf(videolength), new VideoPlayerUtil.VideoPlayListener() {
-            @Override
-            public void onVideoPrepared() {
-
-            }
-
-            @Override
-            public void onVidePlayFinish() {
-                if (!TextUtils.isEmpty(messageid)) {
-                    MsgExtEntity msgExtEntity = getMsgExtEntity();
-                    msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
-                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, messageid, MsgDirect.From);
-                }
-            }
-        });
+        VideoPlayerActivity.startActivity((Activity) context, filepath, String.valueOf(videolength), messageid);
     }
 
     public boolean hasDownLoad() {

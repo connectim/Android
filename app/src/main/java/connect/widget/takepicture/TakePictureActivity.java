@@ -24,7 +24,7 @@ import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 import connect.widget.clip.ClipImageActivity;
 
 /**

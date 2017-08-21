@@ -36,7 +36,7 @@ import connect.utils.scan.ResolveUrlUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.ScanBgView;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 import connect.widget.zxing.utils.CreateScan;
 
 /**

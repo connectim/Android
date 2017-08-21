@@ -1,7 +1,6 @@
 package connect.activity.chat.exts;
 
 import android.app.Activity;
-import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.SurfaceView;
@@ -12,25 +11,22 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.io.Serializable;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.bean.MsgDirect;
+import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.VideoPlayContract;
 import connect.activity.chat.exts.presenter.VideoPlayPresenter;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.RecExtBean;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.ExCountDownTimer;
-import connect.utils.system.SystemDataUtil;
 import connect.utils.TimeUtil;
 import connect.utils.VideoPlayerUtil;
 import connect.widget.TopToolBar;
+import connect.widget.video.inter.VideoListener;
 
 /**
  * play Local video files
@@ -51,16 +47,12 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
     ProgressBar probar2;
 
     private VideoPlayerActivity activity;
-
-    private Object[] objs = null;
-    private int voiceLength;
-    private String burnTime = "";
     private VideoPlayerUtil videoPlayerUtil;
 
     private VideoPlayContract.Presenter presenter;
     private String filePath;
     private String length;
-    private VideoPlayerUtil.VideoPlayListener callBackListener;
+    private String messageId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,11 +67,11 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
         initView();
     }
 
-    public static void startActivity(Activity activity, String filepath, String length, VideoPlayerUtil.VideoPlayListener listener) {
+    public static void startActivity(Activity activity, String filepath, String length, String messageid) {
         Bundle bundle = new Bundle();
         bundle.putString("PATH", filepath);
         bundle.putString("LENGTH", length);
-        bundle.putSerializable("LISTENER", listener);
+        bundle.putSerializable("MESSAGEID", messageid);
         ActivityUtil.next(activity, VideoPlayerActivity.class, bundle);
     }
 
@@ -97,7 +89,7 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
 
         filePath = getIntent().getStringExtra("PATH");
         length = getIntent().getStringExtra("LENGTH");
-        callBackListener = (VideoPlayerUtil.VideoPlayListener) getIntent().getSerializableExtra("LISTENER");
+        messageId = getIntent().getStringExtra("MESSAGEID");
 
         videoPlayerUtil = VideoPlayerUtil.getInstance();
         videoPlayerUtil.init(surfaceview, new VideoPlayerUtil.VideoPlayListener() {
@@ -114,6 +106,25 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
 
         new VideoPlayPresenter(this).start();
     }
+
+    private VideoListener callBackListener = new VideoListener() {
+
+        @Override
+        public void onVideoPrepared() {
+
+        }
+
+        @Override
+        public void onVidePlayFinish() {
+            if (!TextUtils.isEmpty(messageId)) {
+                MsgExtEntity msgExtEntity = MessageHelper.getInstance().loadMsgByMsgid(messageId).transToExtEntity();
+                msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, messageId, MsgDirect.From);
+            }
+        }
+    };
 
     @OnClick({R.id.surfaceview, R.id.img2})
     public void OnClickListener(View view) {
@@ -170,7 +181,7 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
     }
 
     @Override
-    public VideoPlayerUtil.VideoPlayListener getVideoListener() {
+    public VideoListener getVideoListener() {
         return callBackListener;
     }
 

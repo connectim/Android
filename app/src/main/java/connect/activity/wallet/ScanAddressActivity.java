@@ -22,7 +22,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
 import connect.widget.ScanBgView;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 
 /**
  * Scan the qr code address added

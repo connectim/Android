@@ -57,7 +57,7 @@ import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 import connect.widget.camera.CameraTakeActivity;
 import protos.Connect;
 
