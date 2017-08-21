@@ -56,8 +56,8 @@ import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
+import connect.widget.album.AlbumActivity;
 import connect.widget.album.entity.ImageInfo;
-import connect.widget.album.ui.activity.PhotoAlbumActivity;
 import connect.widget.camera.CameraTakeActivity;
 import protos.Connect;
 
@@ -272,7 +272,7 @@ public class ChatActivity extends BaseChatActvity {
                 int length = data.getIntExtra("length", 10);
                 MsgSend.sendOuterMsg(MsgType.Video, path, length);
             }
-        } else if (requestCode == PhotoAlbumActivity.OPEN_ALBUM_CODE && data != null) {
+        } else if (requestCode == AlbumActivity.OPEN_ALBUM_CODE && data != null) {
             List<ImageInfo> imageInfos = (List<ImageInfo>) data.getSerializableExtra("list");
             if (imageInfos != null && imageInfos.size() > 0) {
                 for (ImageInfo info : imageInfos) {

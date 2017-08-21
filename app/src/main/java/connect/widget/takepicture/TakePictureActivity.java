@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
 import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,8 +23,8 @@ import connect.utils.ActivityUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
+import connect.widget.album.AlbumActivity;
 import connect.widget.album.entity.ImageInfo;
-import connect.widget.album.ui.activity.PhotoAlbumActivity;
 import connect.widget.clip.ClipImageActivity;
 
 /**
@@ -96,7 +98,7 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
 
     @OnClick(R.id.sele_photos_tv)
     void setSelePhoto(View view) {
-        PhotoAlbumActivity.startActivity(mActivity, PhotoAlbumActivity.OPEN_ALBUM_CODE, 1);
+        AlbumActivity.startActivity(mActivity, AlbumActivity.OPEN_ALBUM_CODE, 1);
     }
 
     @OnClick(R.id.switch_photos_img)
@@ -113,7 +115,7 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == PhotoAlbumActivity.OPEN_ALBUM_CODE && requestCode == PhotoAlbumActivity.OPEN_ALBUM_CODE) {
+        if (resultCode == AlbumActivity.OPEN_ALBUM_CODE && requestCode == AlbumActivity.OPEN_ALBUM_CODE) {
             List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
             if (strings != null && strings.size() > 0) {
                 ClipImageActivity.startActivity(mActivity, strings.get(0).getImageFile().getAbsolutePath(), ClipImageActivity.REQUEST_CODE);

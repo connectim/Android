@@ -11,19 +11,19 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.MemoryDataManager;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.set.contract.ModifyAvaterContract;
 import connect.activity.set.presenter.ModifyAvaterPresenter;
-import connect.activity.base.BaseActivity;
+import connect.database.MemoryDataManager;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.HightEqWidthImage;
 import connect.widget.TopToolBar;
+import connect.widget.album.AlbumActivity;
 import connect.widget.album.entity.ImageInfo;
-import connect.widget.album.ui.activity.PhotoAlbumActivity;
 import connect.widget.clip.ClipImageActivity;
 import connect.widget.takepicture.TakePictureActivity;
 
@@ -90,7 +90,7 @@ public class ModifyAvaterActivity extends BaseActivity implements ModifyAvaterCo
                         TakePictureActivity.startActivity(mActivity);
                         break;
                     case 1://album
-                        PhotoAlbumActivity.startActivity(mActivity,PhotoAlbumActivity.OPEN_ALBUM_CODE,1);
+                        AlbumActivity.startActivity(mActivity,AlbumActivity.OPEN_ALBUM_CODE,1);
                         break;
                     case 2://save in phone
                         presenter.saveImageToGallery();
@@ -116,7 +116,7 @@ public class ModifyAvaterActivity extends BaseActivity implements ModifyAvaterCo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == PhotoAlbumActivity.OPEN_ALBUM_CODE && requestCode == PhotoAlbumActivity.OPEN_ALBUM_CODE){
+        if(resultCode == AlbumActivity.OPEN_ALBUM_CODE && requestCode == AlbumActivity.OPEN_ALBUM_CODE){
             List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
             if (strings != null && strings.size() > 0) {
                 ClipImageActivity.startActivity(mActivity,strings.get(0).getImageFile().getAbsolutePath(),ClipImageActivity.REQUEST_CODE);

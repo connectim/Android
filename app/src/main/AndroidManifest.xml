@@ -390,7 +390,7 @@
         </activity>
         <activity android:name="connect.activity.chat.exts.GoogleMapActivity">
         </activity>
-        <activity android:name="connect.widget.album.ui.activity.PhotoAlbumActivity">
+        <activity android:name="connect.widget.album.AlbumActivity">
         </activity>
         <activity android:name="connect.activity.home.DBUpdateActivity">
         </activity>

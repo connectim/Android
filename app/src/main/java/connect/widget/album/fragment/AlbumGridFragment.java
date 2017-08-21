@@ -1,4 +1,4 @@
-package connect.widget.album.ui.activity;
+package connect.widget.album.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +14,7 @@ import java.util.List;
 import connect.ui.activity.R;
 import connect.activity.base.BaseFragment;
 import connect.utils.ActivityUtil;
+import connect.widget.album.AlbumActivity;
 import connect.widget.album.adapter.AlbumGridAdp;
 import connect.widget.album.entity.ImageInfo;
 
@@ -21,7 +22,7 @@ import connect.widget.album.entity.ImageInfo;
  * All pictures show photo albums
  */
 public class AlbumGridFragment extends BaseFragment implements View.OnClickListener{
-    private PhotoAlbumActivity activity;
+    private AlbumActivity activity;
     private GridView gridView;
     private AlbumGridAdp albumGridAdp;
 
@@ -34,7 +35,7 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        activity = (PhotoAlbumActivity) getActivity();
+        activity = (AlbumActivity) getActivity();
         View rootView = inflater.inflate(R.layout.fragment_album_grid, container, false);
         gridView = (GridView) rootView.findViewById(R.id.gridview);
         backImg= (ImageView) rootView.findViewById(R.id.iv_back);

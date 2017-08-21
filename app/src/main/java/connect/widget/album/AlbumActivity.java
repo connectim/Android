@@ -1,4 +1,4 @@
-package connect.widget.album.ui.activity;
+package connect.widget.album;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -36,24 +36,28 @@ import connect.utils.glide.GlideUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
+import connect.widget.album.contract.AlbumContract;
 import connect.widget.album.entity.AlbumFolderInfo;
 import connect.widget.album.entity.ImageInfo;
 import connect.widget.album.presenter.ImageScannerPresenter;
 import connect.widget.album.presenter.ImageScannerPresenterImpl;
+import connect.widget.album.fragment.AlbumGalleryFragment;
+import connect.widget.album.fragment.AlbumGridFragment;
 import connect.widget.album.view.AlbumView;
 import connect.widget.album.view.entity.AlbumViewData;
 
 /**
- * Photo viewer
+ * Created by Administrator on 2017/8/21.
  */
-public class PhotoAlbumActivity extends BaseFragmentActivity {
+
+public class AlbumActivity extends BaseFragmentActivity implements AlbumContract.BView{
 
     @Bind(R.id.framelayout)
     FrameLayout framelayout;
     @Bind(R.id.txt1)
     TextView txt1;
 
-    private PhotoAlbumActivity activity;
+    private AlbumActivity activity;
     /** Select type 0: only select picture 1: picture video*/
     private int selectType;
     /** External incoming request code */
@@ -65,7 +69,7 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
     /** Current album information */
     private AlbumFolderInfo albumFolderInfo;
     /** All albums list */
-    private   List<AlbumFolderInfo> mAlbumFolderInfoList;
+    private List<AlbumFolderInfo> mAlbumFolderInfoList;
     /** Show the image list */
     private ArrayList<ImageInfo> imageInfoList=new ArrayList<>();
     /** The selected image list */
@@ -74,6 +78,8 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
     public final static int OPEN_ALBUM_CODE = 502;
     private AlbumGridFragment gridFragment;
     private AlbumGalleryFragment galleryFragment;
+
+    private AlbumContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,30 +97,21 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("CODE_REQUEST", code);
         bundle.putInt("MAX_SELECT", maxSelect);
-        ActivityUtil.next(activity, PhotoAlbumActivity.class, bundle, code);
+        ActivityUtil.next(activity, AlbumActivity.class, bundle, code);
     }
 
     @Override
     public void initView() {
-        activity=this;
+        activity = this;
         requestCode = getIntent().getIntExtra("CODE_REQUEST", 0);
         maxSelect = getIntent().getIntExtra("MAX_SELECT", 9);
         selectType = (maxSelect == 1 ? 0 : 1);
 
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = activity.getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.color_161A21));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        PermissionUtil.getInstance().requestPermissom(activity,new String[]{PermissionUtil.PERMISSIM_STORAGE},permissomCallBack);
+        PermissionUtil.getInstance().requestPermissom(activity, new String[]{PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
     }
 
     private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
+
         @Override
         public void granted(String[] permissions) {
             scanPhotoAlbum();
@@ -211,7 +208,7 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
         list_lin.setLayoutParams(layoutParams);
 
         titleTextView.setVisibility(View.GONE);
-        albumFolderAdapter.setItemClickListener(new OnItemClickListener() {
+        albumFolderAdapter.setItemClickListener(new AlbumActivity.OnItemClickListener() {
             @Override
             public void itemClick(int position) {
                 AlbumFolderInfo albumFolderInfo = mAlbumFolderInfoList.get(position);
@@ -321,7 +318,8 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
 
     public BaseAdapter albumFolderAdapter = new BaseAdapter();
 
-    class BaseAdapter extends RecyclerView.Adapter<PhotoAlbumActivity.ViewHolder> {
+
+    class BaseAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -394,5 +392,16 @@ public class PhotoAlbumActivity extends BaseFragmentActivity {
     public int getMaxSelect() {
         return maxSelect;
     }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
+    }
+
+    @Override
+    public void setPresenter(AlbumContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
 
 }

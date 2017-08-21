@@ -64,7 +64,7 @@ import connect.utils.FileUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.DialogView;
 import connect.widget.RecycleViewScrollHelper;
-import connect.widget.album.ui.activity.PhotoAlbumActivity;
+import connect.widget.album.AlbumActivity;
 import connect.widget.camera.CameraTakeActivity;
 import connect.widget.imagewatcher.ImageViewerActivity;
 import connect.widget.imagewatcher.ImageWatcher;
@@ -348,7 +348,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 PermissionUtil.getInstance().requestPermissom(activity, new String[]{PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
                 break;
             case OPEN_ALBUM://Open the photo album
-                PhotoAlbumActivity.startActivity(activity, PhotoAlbumActivity.OPEN_ALBUM_CODE);
+                AlbumActivity.startActivity(activity, AlbumActivity.OPEN_ALBUM_CODE);
                 break;
             case TAKE_PHOTO:
                 CameraTakeActivity.startActivity(activity, CODE_TAKEPHOTO);

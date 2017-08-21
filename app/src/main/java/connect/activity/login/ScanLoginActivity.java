@@ -25,9 +25,9 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
-import connect.widget.album.entity.ImageInfo;
-import connect.widget.album.ui.activity.PhotoAlbumActivity;
 import connect.wallet.jni.AllNativeMethod;
+import connect.widget.album.AlbumActivity;
+import connect.widget.album.entity.ImageInfo;
 
 /**
  * Scan to login.
@@ -73,7 +73,7 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
 
     @OnClick(R.id.select_album)
     void goSeleAlbm(View view) {
-        PhotoAlbumActivity.startActivity(mActivity,PhotoAlbumActivity.OPEN_ALBUM_CODE,1);
+        AlbumActivity.startActivity(mActivity,AlbumActivity.OPEN_ALBUM_CODE,1);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == PhotoAlbumActivity.OPEN_ALBUM_CODE && requestCode == PhotoAlbumActivity.OPEN_ALBUM_CODE) {
+        if (resultCode == AlbumActivity.OPEN_ALBUM_CODE && requestCode == AlbumActivity.OPEN_ALBUM_CODE) {
             List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
             if (strings != null && strings.size() > 0) {
                 getAblamString(strings.get(0).getImageFile().getAbsolutePath(), mLocalHandler);

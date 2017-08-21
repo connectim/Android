@@ -1,4 +1,4 @@
-package connect.widget.album.ui.widget;
+package connect.widget.album.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

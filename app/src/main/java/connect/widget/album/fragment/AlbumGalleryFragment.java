@@ -1,4 +1,4 @@
-package connect.widget.album.ui.activity;
+package connect.widget.album.fragment;
 
 
 import android.os.Bundle;
@@ -16,19 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import connect.ui.activity.R;
-
 import connect.activity.chat.exts.VideoPlayerActivity;
+import connect.ui.activity.R;
 import connect.utils.VideoPlayerUtil;
+import connect.widget.album.AlbumActivity;
 import connect.widget.album.adapter.AlbumGalleryAdp;
 import connect.widget.album.entity.ImageInfo;
-import connect.widget.album.ui.activity.PhotoAlbumActivity;
-import connect.widget.album.ui.widget.HackyViewPager;
+import connect.widget.album.view.HackyViewPager;
 public class AlbumGalleryFragment extends Fragment implements View.OnClickListener{
 
     private static AlbumGalleryFragment galleryFragment;
 
-    private PhotoAlbumActivity activity;
+    private AlbumActivity activity;
     private HackyViewPager viewPager;
     private ImageView videoImg;
     private ImageView backImg;
@@ -45,7 +44,7 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        activity = (PhotoAlbumActivity) getActivity();
+        activity = (AlbumActivity) getActivity();
         View rootView = inflater.inflate(R.layout.fragment_album_gallery, container, false);
 
         viewPager = (HackyViewPager) rootView.findViewById(R.id.gallery);
