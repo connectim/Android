@@ -11,16 +11,12 @@ import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.activity.login.StartActivity;
+import connect.activity.login.StartPageActivity;
 import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.widget.DBUpgradeView;
 import connect.widget.TopToolBar;
-
-/**
- * Created by Administrator on 2017/6/29 0029.
- */
 
 public class DBUpdateActivity extends BaseActivity {
 
@@ -56,7 +52,7 @@ public class DBUpdateActivity extends BaseActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 50:
-                    Intent intent = new Intent(activity, StartActivity.class);
+                    Intent intent = new Intent(activity, StartPageActivity.class);
                     activity.startActivity(intent);
                     break;
             }

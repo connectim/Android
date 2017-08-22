@@ -39,7 +39,7 @@ import connect.widget.TopToolBar;
 /**
  * add new friend.
  */
-public class NewFriendActivity extends BaseActivity implements NewFriendContract.View {
+public class AddFriendActivity extends BaseActivity implements NewFriendContract.View {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -48,7 +48,7 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
 
-    private NewFriendActivity mActivity;
+    private AddFriendActivity mActivity;
     private NewFriendContract.Presenter presenter;
     private NewRequestAdapter requestAdapter;
 
@@ -90,6 +90,11 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         presenter.updateRequestListStatus();
     }
 
+    @OnClick(R.id.left_img)
+    void goBack(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
     @Override
     public void itemClick(int tag) {
         switch (tag) {
@@ -97,7 +102,7 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
                 ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
                 break;
             case 1:
-                ActivityUtil.next(mActivity, FriendAddPhoneActivity.class);
+                ActivityUtil.next(mActivity, AddFriendPhoneActivity.class);
                 break;
             case 2://share
                 Intent shareIntent = new Intent();
@@ -112,11 +117,6 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         }
     }
 
-    @OnClick(R.id.left_img)
-    void goBack(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
     RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener(){
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -126,7 +126,6 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
     };
 
     private NewRequestAdapter.OnAcceptListener onAcceptListener = new NewRequestAdapter.OnAcceptListener() {
-
         @Override
         public void accept(int position, FriendRequestEntity entity) {
             if (entity.getStatus() == 4) {
@@ -144,13 +143,13 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         public void itemClick(int position, FriendRequestEntity entity) {
             if (TextUtils.isEmpty(entity.getPub_key())) {
                 //load more
-                ActivityUtil.next(mActivity, RecommendActivity.class);
+                ActivityUtil.next(mActivity, AddFriendRecommendActivity.class);
             } else if (entity.getStatus() == 4) {
                 //introduce
                 StrangerInfoActivity.startActivity(mActivity, entity.getAddress(), SourceType.RECOMMEND);
             } else {
                 if (entity.getStatus() == 1) {
-                    FriendAcceptActivity.startActivity(mActivity, entity);
+                    AddFriendAcceptActivity.startActivity(mActivity, entity);
                     return;
                 }
                 ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(entity.getPub_key());
@@ -196,7 +195,7 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
             case MSG_SEND_SUCCESS:
                 MsgSendBean sendBean = (MsgSendBean) objs[0];
                 if (sendBean.getType() == MsgSendBean.SendType.TypeAcceptFriendQuest) {
-                    presenter.updataFriendRequest(ContactHelper.getInstance().loadFriendRequest(sendBean.getAddress()));
+                    presenter.updateRequestAddSuccess(ContactHelper.getInstance().loadFriendRequest(sendBean.getAddress()));
                 } else if (sendBean.getType() == MsgSendBean.SendType.TypeRecommendNoInterested) {
                     ContactHelper.getInstance().removeRecommendEntity(sendBean.getPubkey());
                     presenter.queryFriend();

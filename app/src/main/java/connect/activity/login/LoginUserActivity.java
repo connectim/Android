@@ -31,7 +31,7 @@ import connect.widget.roundedimageview.RoundedImageView;
 /**
  * Login phone number verification.
  */
-public class CodeLoginActivity extends BaseActivity implements CodeLoginContract.View {
+public class LoginUserActivity extends BaseActivity implements CodeLoginContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -48,7 +48,7 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
     @Bind(R.id.passwordedit_tv)
     TextView passwordeditTv;
 
-    private CodeLoginActivity mActivity;
+    private LoginUserActivity mActivity;
     private CodeLoginContract.Presenter presenter;
     private UserBean userBean;
     private String token = "";
@@ -74,7 +74,7 @@ public class CodeLoginActivity extends BaseActivity implements CodeLoginContract
         Bundle bundle = new Bundle();
         bundle.putSerializable("user", userBean);
         bundle.putString("token", token);
-        ActivityUtil.next(activity, CodeLoginActivity.class, bundle);
+        ActivityUtil.next(activity, LoginUserActivity.class, bundle);
     }
 
     @Override

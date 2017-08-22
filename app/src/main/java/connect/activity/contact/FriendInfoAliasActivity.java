@@ -27,9 +27,9 @@ import connect.utils.ToastUtil;
 import connect.widget.TopToolBar;
 
 /**
- * Created by Administrator on 2016/12/28.
+ * Modify your friend's alias
  */
-public class FriendSetAliasActivity extends BaseActivity {
+public class FriendInfoAliasActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -38,13 +38,13 @@ public class FriendSetAliasActivity extends BaseActivity {
     @Bind(R.id.save_tv)
     TextView saveTv;
 
-    private FriendSetAliasActivity mActivity;
+    private FriendInfoAliasActivity mActivity;
     private ContactEntity friendEntity;
 
     public static void startActivity(Activity activity, String pubKey) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("pubKey", pubKey);
-        ActivityUtil.next(activity, FriendSetAliasActivity.class, bundle);
+        ActivityUtil.next(activity, FriendInfoAliasActivity.class, bundle);
     }
 
     @Override

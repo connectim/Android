@@ -23,7 +23,7 @@ import connect.widget.TopToolBar;
 /**
  * Choose the country code number.
  */
-public class CountryCodeActivity extends BaseActivity {
+public class LoginPhoneCountryCodeActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -34,7 +34,7 @@ public class CountryCodeActivity extends BaseActivity {
 
     private LinearLayoutManager linearLayoutManager;
     private CountryAdapter adapter;
-    private CountryCodeActivity mActivity;
+    private LoginPhoneCountryCodeActivity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

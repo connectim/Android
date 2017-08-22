@@ -129,29 +129,10 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         GlideUtil.loadAvater(avatarRimg, (null == friendEntity || null == friendEntity.getAvatar()) ? "" : friendEntity.getAvatar());
         nameTv.setText(friendEntity.getUsername());
         addressTv.setText(friendEntity.getAddress());
-        if (friendEntity.getSource() == null) {
-            sourceTv.setText(SourceType.UNKOWN.getString());
-        } else {
-            sourceTv.setText(SourceType.getString(friendEntity.getSource()));
-        }
-
-        if (!TextUtils.isEmpty(friendEntity.getRemark())) {
-            aliasTv.setText(friendEntity.getRemark());
-        } else {
-            aliasTv.setText("");
-        }
-
-        if (friendEntity.getCommon() == null) {
-            addFavoritesTb.setSelected(false);
-        } else {
-            addFavoritesTb.setSelected(friendEntity.getCommon() == 1);
-        }
-
-        if (friendEntity.getBlocked() == null) {
-            addBlockTb.setSelected(false);
-        } else {
-            addBlockTb.setSelected(friendEntity.getBlocked());
-        }
+        sourceTv.setText(friendEntity.getSource() == null ? SourceType.UNKOWN.getString() : SourceType.getString(friendEntity.getSource()));
+        aliasTv.setText(TextUtils.isEmpty(friendEntity.getRemark()) ? "" : friendEntity.getRemark());
+        addFavoritesTb.setSelected(friendEntity.getCommon() == null ? false : friendEntity.getCommon() == 1);
+        addBlockTb.setSelected(friendEntity.getBlocked() == null ? false : friendEntity.getBlocked());
     }
 
     @OnClick(R.id.left_img)
@@ -188,12 +169,12 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.set_alias_rela)
     void goSetAlias(View view) {
-        FriendSetAliasActivity.startActivity(mActivity, friendEntity.getPub_key());
+        FriendInfoAliasActivity.startActivity(mActivity, friendEntity.getPub_key());
     }
 
     @OnClick(R.id.transfer_record_rela)
     void goFriendTransferRecord(View view) {
-        FriendRecordActivity.startActivity(mActivity, friendEntity);
+        FriendInfoRecordActivity.startActivity(mActivity, friendEntity);
     }
 
     @OnClick(R.id.add_favorites_tb)

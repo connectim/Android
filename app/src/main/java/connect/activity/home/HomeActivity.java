@@ -49,7 +49,7 @@ import connect.activity.home.fragment.ConversationFragment;
 import connect.activity.home.fragment.SetFragment;
 import connect.activity.home.fragment.WalletFragment;
 import connect.activity.home.view.CheckUpdata;
-import connect.activity.login.LoginForPhoneActivity;
+import connect.activity.login.LoginPhoneActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.base.BaseFragmentActivity;
 import connect.service.HttpsService;
@@ -190,7 +190,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 HttpsService.stopServer(activity);
 
                 ProgressUtil.getInstance().dismissProgress();
-                ActivityUtil.next(activity, LoginForPhoneActivity.class);
+                ActivityUtil.next(activity, LoginPhoneActivity.class);
                 finish();
                 break;
             case TOCHAT:

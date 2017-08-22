@@ -18,12 +18,12 @@ import connect.utils.ActivityUtil;
 /**
  * The App start page.
  */
-public class StartActivity extends BaseActivity implements StartContract.View {
+public class StartPageActivity extends BaseActivity implements StartContract.View {
 
     @Bind(R.id.start_img)
     ImageView startImg;
 
-    private StartActivity mActivity;
+    private StartPageActivity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +55,12 @@ public class StartActivity extends BaseActivity implements StartContract.View {
 
     @Override
     public void goIntoGuide() {
-        ActivityUtil.next(mActivity, GuideActivity.class);
+        ActivityUtil.next(mActivity, GuidePageActivity.class);
     }
 
     @Override
     public void goIntoLoginForPhone() {
-        ActivityUtil.next(mActivity, LoginForPhoneActivity.class);
+        ActivityUtil.next(mActivity, LoginPhoneActivity.class);
     }
 
     @Override

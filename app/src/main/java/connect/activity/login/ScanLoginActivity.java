@@ -120,9 +120,9 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
     @Override
     public void goIntoCodeLogin(UserBean userBean, String token) {
         if (TextUtils.isEmpty(token)) {
-            CodeLoginActivity.startActivity(mActivity,userBean);
+            LoginUserActivity.startActivity(mActivity,userBean);
         } else {
-            CodeLoginActivity.startActivity(mActivity,userBean,token);
+            LoginUserActivity.startActivity(mActivity,userBean,token);
         }
         finish();
     }

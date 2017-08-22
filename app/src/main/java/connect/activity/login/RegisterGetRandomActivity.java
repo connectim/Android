@@ -30,7 +30,7 @@ import connect.widget.camera.CricleProgressbar;
 /**
  * Voice to generate random number.
  */
-public class RandomSendActivity extends BaseActivity implements RandomSendContract.View {
+public class RegisterGetRandomActivity extends BaseActivity implements RandomSendContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -43,7 +43,7 @@ public class RandomSendActivity extends BaseActivity implements RandomSendContra
     @Bind(R.id.jump_tv)
     TextView jumpTv;
 
-    private RandomSendActivity mActivity;
+    private RegisterGetRandomActivity mActivity;
     private RandomSendContract.Presenter presenter;
     private int errorMax = 3;
 
@@ -67,7 +67,7 @@ public class RandomSendActivity extends BaseActivity implements RandomSendContra
         Bundle bundle = new Bundle();
         bundle.putString("phone", phone);
         bundle.putString("token", token);
-        ActivityUtil.next(activity, RandomSendActivity.class, bundle);
+        ActivityUtil.next(activity, RegisterGetRandomActivity.class, bundle);
     }
 
     @Override

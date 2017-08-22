@@ -27,9 +27,9 @@ import connect.utils.ActivityUtil;
 import connect.utils.system.SystemUtil;
 
 /**
- * Created by Administrator on 2016/12/26.
+ * Search add friends
  */
-public class SearchActivity extends BaseActivity {
+public class SearchFriendActivity extends BaseActivity {
 
     @Bind(R.id.search_edit)
     EditText searchEdit;
@@ -42,7 +42,7 @@ public class SearchActivity extends BaseActivity {
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
 
-    private SearchActivity mActivity;
+    private SearchFriendActivity mActivity;
     private SearchAdapter adapter;
 
     @Override
@@ -62,8 +62,18 @@ public class SearchActivity extends BaseActivity {
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new SearchAdapter(mActivity);
         recyclerview.setAdapter(adapter);
-        adapter.setOnItemClickListence(itemClickListence);
+        adapter.setOnItemClickListener(itemClickListener);
         SystemUtil.showKeyBoard(mActivity, searchEdit);
+    }
+
+    @OnClick(R.id.cancel_tv)
+    void goBack(View view) {
+        ActivityUtil.goBackWithResult(mActivity, 0, null, android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @OnClick(R.id.del_tv)
+    void delEdit(View view) {
+        searchEdit.setText("");
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
@@ -95,12 +105,12 @@ public class SearchActivity extends BaseActivity {
         }
     };
 
-    private SearchAdapter.OnItemClickListence itemClickListence = new SearchAdapter.OnItemClickListence() {
+    private SearchAdapter.OnItemClickListener itemClickListener = new SearchAdapter.OnItemClickListener() {
         @Override
         public void itemClick(int position, ContactEntity list, int type) {
             switch (type) {
                 case 1:
-                    SearchServerActivity.startActivity(mActivity, list.getAddress());
+                    SearchFriendResultActivity.startActivity(mActivity, list.getAddress());
                     break;
                 case 2:
                     FriendInfoActivity.startActivity(mActivity, list.getPub_key());
@@ -110,16 +120,6 @@ public class SearchActivity extends BaseActivity {
             }
         }
     };
-
-    @OnClick(R.id.cancel_tv)
-    void goBack(View view) {
-        ActivityUtil.goBackWithResult(mActivity, 0, null, android.R.anim.fade_in, android.R.anim.fade_out);
-    }
-
-    @OnClick(R.id.del_tv)
-    void delEdit(View view) {
-        searchEdit.setText("");
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

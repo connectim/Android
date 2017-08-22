@@ -38,9 +38,9 @@ import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
- * Created by Administrator on 2017/1/4.
+ * Search for friends results
  */
-public class SearchServerActivity extends BaseActivity {
+public class SearchFriendResultActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -53,12 +53,12 @@ public class SearchServerActivity extends BaseActivity {
     @Bind(R.id.result_lin)
     LinearLayout resultLin;
 
-    private SearchServerActivity mActivity;
+    private SearchFriendResultActivity mActivity;
 
     public static void startActivity(Activity activity, String text) {
         Bundle bundle = new Bundle();
         bundle.putString("text", text);
-        ActivityUtil.next(activity, SearchServerActivity.class, bundle);
+        ActivityUtil.next(activity, SearchFriendResultActivity.class, bundle);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class SearchServerActivity extends BaseActivity {
         search();
     }
 
-    private void updataView(final Connect.UserInfo userInfo){
+    private void updateView(final Connect.UserInfo userInfo){
         resultLin.removeAllViews();
         if(userInfo != null){
             noResultTv.setVisibility(View.GONE);
@@ -133,12 +133,22 @@ public class SearchServerActivity extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.left_img)
+    void goBack(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick(R.id.del_tv)
+    void delEdit(View view) {
+        searchEdit.setText("");
+    }
+
     private View.OnKeyListener keyListener = new View.OnKeyListener(){
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
                 ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                        .hideSoftInputFromWindow(SearchServerActivity.this.getCurrentFocus()
+                        .hideSoftInputFromWindow(SearchFriendResultActivity.this.getCurrentFocus()
                                 .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 search();
             }
@@ -160,16 +170,6 @@ public class SearchServerActivity extends BaseActivity {
             }
         }
     };
-
-    @OnClick(R.id.left_img)
-    void goBack(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.del_tv)
-    void delEdit(View view) {
-        searchEdit.setText("");
-    }
 
     private void search() {
         String searchContext = searchEdit.getText().toString().trim();
@@ -193,7 +193,7 @@ public class SearchServerActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
-                        updataView(userInfo);
+                        updateView(userInfo);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -202,7 +202,7 @@ public class SearchServerActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                updataView(null);
+                updateView(null);
             }
         });
     }
