@@ -39,14 +39,14 @@ import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
- * Created by Administrator on 2016/12/27.
+ * Stranger details
  */
 public class StrangerInfoActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
-    @Bind(R.id.avater_rimg)
-    RoundedImageView avaterRimg;
+    @Bind(R.id.avatar_rimg)
+    RoundedImageView avatarRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
     @Bind(R.id.address_tv)
@@ -100,7 +100,7 @@ public class StrangerInfoActivity extends BaseActivity {
     private void updataView() {
         if (sendUserInfo == null)
             return;
-        GlideUtil.loadAvater(avaterRimg, sendUserInfo.getAvatar());
+        GlideUtil.loadAvater(avatarRimg, sendUserInfo.getAvatar());
         nameTv.setText(sendUserInfo.getUsername());
     }
 

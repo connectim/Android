@@ -45,16 +45,16 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
     }
 
     @Override
-    public ImageWatcher getImageWatcher() {
-        return vImageWatcher;
-    }
-
-    @Override
     public void start() {
         vImageWatcher = ImageWatcher.Helper.with(mView.getActivity())
                 .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(mView.getActivity()))
                 .setErrorImageRes(R.mipmap.default_user_avatar)
                 .create();
+    }
+
+    @Override
+    public ImageWatcher getImageWatcher() {
+        return vImageWatcher;
     }
 
     @Override
@@ -115,6 +115,12 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
         }
     }
 
+    /**
+     * Get the latest information from friends
+     *
+     * @param address friend address
+     * @param friendEntity
+     */
     @Override
     public void requestUserInfo(String address, final ContactEntity friendEntity) {
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
@@ -133,10 +139,12 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     if (friendEntity.getAvatar().equals(userInfo.getAvatar()) && friendEntity.getUsername().equals(userInfo.getUsername())) {
                         return;
                     }
+                    // Update the database information
                     friendEntity.setUsername(userInfo.getUsername());
                     friendEntity.setAvatar(userInfo.getAvatar());
                     mView.updateView(friendEntity);
                     ContactHelper.getInstance().insertContact(friendEntity);
+                    // Update the message list user information
                     ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
                     if (roomEntity != null) {
                         MsgFragmReceiver.refreshRoom();
@@ -151,6 +159,12 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
         });
     }
 
+    /**
+     * Set friends blacklist
+     *
+     * @param block
+     * @param address friend address
+     */
     @Override
     public void requestBlock(final boolean block,String address) {
         Connect.UserIdentifier userIdentifier = Connect.UserIdentifier.newBuilder()

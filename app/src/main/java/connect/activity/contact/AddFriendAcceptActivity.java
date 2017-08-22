@@ -31,9 +31,9 @@ import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 
 /**
- * Created by Administrator on 2016/12/29.
+ * Receive a friend to add a request
  */
-public class FriendAcceptActivity extends BaseActivity {
+public class AddFriendAcceptActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -52,13 +52,13 @@ public class FriendAcceptActivity extends BaseActivity {
     @Bind(R.id.tips_rela)
     RelativeLayout tipsRela;
 
-    private FriendAcceptActivity mActivity;
+    private AddFriendAcceptActivity mActivity;
     private FriendRequestEntity requestEntity;
 
     public static void startActivity(Activity activity, FriendRequestEntity requestEntity) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("bean", requestEntity);
-        ActivityUtil.next(activity, FriendAcceptActivity.class, bundle);
+        ActivityUtil.next(activity, AddFriendAcceptActivity.class, bundle);
     }
 
     @Override
@@ -90,6 +90,20 @@ public class FriendAcceptActivity extends BaseActivity {
         addressTv.setText(requestEntity.getAddress());
     }
 
+    @OnClick(R.id.left_img)
+    void goBack(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick(R.id.addFriend_btn)
+    void goAccept(View view) {
+        MsgSendBean msgSendBean = new MsgSendBean();
+        msgSendBean.setType(MsgSendBean.SendType.TypeAcceptFriendQuest);
+
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.acceptFriendRequest(requestEntity.getAddress(), requestEntity.getSource(), msgSendBean);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MsgNoticeBean notice) {
         Object[] objs = null;
@@ -112,20 +126,6 @@ public class FriendAcceptActivity extends BaseActivity {
                 ToastEUtil.makeText(mActivity,R.string.Link_Add_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
                 break;
         }
-    }
-
-    @OnClick(R.id.left_img)
-    void goback(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.addFriend_btn)
-    void goAccept(View view) {
-        MsgSendBean msgSendBean = new MsgSendBean();
-        msgSendBean.setType(MsgSendBean.SendType.TypeAcceptFriendQuest);
-
-        UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.acceptFriendRequest(requestEntity.getAddress(), requestEntity.getSource(), msgSendBean);
     }
 
     @Override

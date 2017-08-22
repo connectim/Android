@@ -36,7 +36,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="connect.activity.login.StartActivity"
+            android:name="connect.activity.login.StartPageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/welcomebg">
             <intent-filter>
@@ -73,34 +73,34 @@
             android:value="GlideModule"/>
 
         <activity
-            android:name="connect.activity.login.GuideActivity"
+            android:name="connect.activity.login.GuidePageActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.LoginForPhoneActivity"
+            android:name="connect.activity.login.LoginPhoneActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.CountryCodeActivity"
+            android:name="connect.activity.login.LoginPhoneCountryCodeActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.SignInVerifyActivity"
+            android:name="connect.activity.login.LoginPhoneVerifyActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.login.RegisterActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.LocalLoginActivity"
+            android:name="connect.activity.login.LoginLocalActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.login.ScanLoginActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.CodeLoginActivity"
+            android:name="connect.activity.login.LoginUserActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.login.LoginPatterActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.LoginSelectUserActivity"
+            android:name="connect.activity.login.LoginLocalSelectActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.widget.camera.CameraTakeActivity"
@@ -112,10 +112,10 @@
             android:name="connect.widget.takepicture.PreviewPictureActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.ExportPriActivity"
+            android:name="connect.activity.login.BackupPrivateKeyActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.RandomSendActivity"
+            android:name="connect.activity.login.RegisterGetRandomActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.login.KeepLiveActivity"
@@ -249,13 +249,13 @@
             android:name="connect.widget.random.RandomVoiceActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.contact.NewFriendActivity"
+            android:name="connect.activity.contact.AddFriendActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.contact.SearchActivity"
+            android:name="connect.activity.contact.SearchFriendActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.contact.SearchServerActivity"
+            android:name="connect.activity.contact.SearchFriendResultActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.contact.ScanAddFriendActivity"
@@ -267,19 +267,19 @@
             android:name="connect.activity.contact.FriendInfoActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.contact.FriendSetAliasActivity"
+            android:name="connect.activity.contact.FriendInfoAliasActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.contact.FriendAcceptActivity"
+            android:name="connect.activity.contact.AddFriendAcceptActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.contact.FriendAddPhoneActivity"
+            android:name="connect.activity.contact.AddFriendPhoneActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.contact.RecommendActivity"
+            android:name="connect.activity.contact.AddFriendRecommendActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.contact.FriendRecordActivity"
+            android:name="connect.activity.contact.FriendInfoRecordActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.home.HomeActivity"

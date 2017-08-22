@@ -25,10 +25,10 @@ import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.FriendSetAliasActivity;
-import connect.activity.contact.NewFriendActivity;
+import connect.activity.contact.FriendInfoAliasActivity;
+import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.ScanAddFriendActivity;
-import connect.activity.contact.SearchActivity;
+import connect.activity.contact.SearchFriendActivity;
 import connect.activity.home.adapter.ContactAdapter;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.model.ContactListManage;
@@ -97,7 +97,7 @@ public class ContactFragment extends BaseFragment {
 
     @OnClick(R.id.left_img)
     void search(View view) {
-        ActivityUtil.next(mActivity, SearchActivity.class, android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityUtil.next(mActivity, SearchFriendActivity.class, android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @OnClick(R.id.right_lin)
@@ -129,7 +129,7 @@ public class ContactFragment extends BaseFragment {
             switch (entity.getStatus()) {
                 case 1:
                     ((HomeActivity) mActivity).setFragmentDot(1, 0);
-                    ActivityUtil.next(mActivity, NewFriendActivity.class);
+                    ActivityUtil.next(mActivity, AddFriendActivity.class);
                     break;
                 case 6:
                     ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE, "Connect"));
@@ -158,7 +158,7 @@ public class ContactFragment extends BaseFragment {
                     break;
                 case 3:
                 case 4:
-                    FriendSetAliasActivity.startActivity(mActivity, entity.getPub_key());
+                    FriendInfoAliasActivity.startActivity(mActivity, entity.getPub_key());
                     break;
                 default:
                     break;

@@ -24,21 +24,21 @@ import connect.widget.TopToolBar;
 /**
  * Select the local user.
  */
-public class LoginSelectUserActivity extends BaseActivity {
+public class LoginLocalSelectActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    private LoginSelectUserActivity mActivity;
+    private LoginLocalSelectActivity mActivity;
     private SelectUserAdapter selectUserAdapter;
     private ArrayList<UserBean> listUser;
 
     public static void startActivity(Activity activity,UserBean userBean, int code) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("bean", userBean);
-        ActivityUtil.next(activity, LoginSelectUserActivity.class, bundle,code);
+        ActivityUtil.next(activity, LoginLocalSelectActivity.class, bundle,code);
     }
 
     @Override

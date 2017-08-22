@@ -9,10 +9,6 @@ import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
 import connect.widget.imagewatcher.ImageWatcher;
 
-/**
- * Created by Administrator on 2017/4/19 0019.
- */
-
 public interface FriendInfoContract {
 
     interface View extends BaseView<FriendInfoContract.Presenter> {

@@ -27,10 +27,8 @@ import connect.widget.pullTorefresh.EndlessScrollListener;
 
 /**
  * Recommend friends
- * Created by Administrator on 2017/1/21.
  */
-
-public class RecommendActivity extends BaseActivity {
+public class AddFriendRecommendActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -39,7 +37,7 @@ public class RecommendActivity extends BaseActivity {
     @Bind(R.id.refreshview)
     SwipeRefreshLayout refreshview;
 
-    private RecommendActivity mActivity;
+    private AddFriendRecommendActivity mActivity;
     private RecommendAdapter adapter;
     private int MAX_RECOMMEND_COUNT = 20;
     private int page = 1;
@@ -66,34 +64,34 @@ public class RecommendActivity extends BaseActivity {
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Friend_Recommendation);
 
-        refreshview.setColorSchemeResources(
-                R.color.color_ebecee,
-                R.color.color_c8ccd5,
-                R.color.color_lightgray
-        );
-        refreshview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshview.setRefreshing(false);
-            }
-        });
+        refreshview.setColorSchemeResources(R.color.color_ebecee, R.color.color_c8ccd5, R.color.color_lightgray);
+        refreshview.setOnRefreshListener(onRefreshListener);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.addItemDecoration(new LineDecoration(mActivity));
         adapter = new RecommendAdapter(mActivity);
-        adapter.setOnAddListence(onAddListence);
+        adapter.setOnAddListener(onAddListener);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore() {
-                page++;
-                queryRecommend();
-            }
-        });
+        recyclerview.addOnScrollListener(endlessScrollListener);
     }
 
-    private RecommendAdapter.OnAddListence onAddListence = new RecommendAdapter.OnAddListence() {
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+        @Override
+        public void onRefresh() {
+            refreshview.setRefreshing(false);
+        }
+    };
+
+    EndlessScrollListener endlessScrollListener = new EndlessScrollListener(){
+        @Override
+        public void onLoadMore() {
+            page++;
+            queryRecommend();
+        }
+    };
+
+    private RecommendAdapter.OnAddListener onAddListener = new RecommendAdapter.OnAddListener() {
         @Override
         public void add(int position, RecommandFriendEntity entity) {
             StrangerInfoActivity.startActivity(mActivity, entity.getAddress(), SourceType.RECOMMEND);
@@ -135,7 +133,6 @@ public class RecommendActivity extends BaseActivity {
             protected void onPostExecute(List<RecommandFriendEntity> recommendEntities) {
                 super.onPostExecute(recommendEntities);
                 refreshview.setRefreshing(false);
-
                 if (page > 1) {
                     adapter.setDataNotify(recommendEntities, false);
                 } else {

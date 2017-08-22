@@ -24,7 +24,7 @@ import connect.widget.TopToolBar;
 /**
  * Verify the sms.
  */
-public class SignInVerifyActivity extends BaseActivity implements SignInVerifyContract.View {
+public class LoginPhoneVerifyActivity extends BaseActivity implements SignInVerifyContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -39,7 +39,7 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
     @Bind(R.id.textView3)
     TextView textView3;
 
-    private SignInVerifyActivity mActivity;
+    private LoginPhoneVerifyActivity mActivity;
     private SignInVerifyContract.Presenter presenter;
 
     /**
@@ -53,7 +53,7 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
         Bundle bundle = new Bundle();
         bundle.putString("countryCode", countryCode);
         bundle.putString("phone", phone);
-        ActivityUtil.next(activity, SignInVerifyActivity.class, bundle);
+        ActivityUtil.next(activity, LoginPhoneVerifyActivity.class, bundle);
     }
 
     @Override
@@ -140,13 +140,13 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
 
     @Override
     public void goinCodeLogin(UserBean userBean) {
-        CodeLoginActivity.startActivity(mActivity, userBean);
+        LoginUserActivity.startActivity(mActivity, userBean);
         mActivity.finish();
     }
 
     @Override
     public void goinRandomSend(String phone, String token) {
-        RandomSendActivity.startActivity(mActivity, phone, token);
+        RegisterGetRandomActivity.startActivity(mActivity, phone, token);
     }
 
     @Override

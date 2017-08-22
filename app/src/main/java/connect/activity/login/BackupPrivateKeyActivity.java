@@ -34,7 +34,7 @@ import connect.widget.zxing.utils.CreateScan;
 /**
  * After login to backup the private key.
  */
-public class ExportPriActivity extends BaseActivity {
+public class BackupPrivateKeyActivity extends BaseActivity {
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.backup_img)
@@ -44,7 +44,7 @@ public class ExportPriActivity extends BaseActivity {
     @Bind(R.id.next_btn)
     Button nextBtn;
 
-    private ExportPriActivity mActivity;
+    private BackupPrivateKeyActivity mActivity;
     private Bitmap bitmap;
     private MediaScannerConnection scanner;
     private String pathDcim;

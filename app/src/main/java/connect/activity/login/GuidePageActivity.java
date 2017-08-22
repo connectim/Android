@@ -23,14 +23,14 @@ import butterknife.OnClick;
 /**
  * App guide page.
  */
-public class GuideActivity extends BaseActivity {
+public class GuidePageActivity extends BaseActivity {
 
     @Bind(R.id.viewpager)
     ViewPager viewpager;
     @Bind(R.id.start_message_tv)
     TextView startMessageTv;
 
-    private GuideActivity mActivity;
+    private GuidePageActivity mActivity;
     private int[] titleId = new int[]{R.string.Login_guide_encryptedChat
             ,R.string.Login_guide_bitcoinWallet
             ,R.string.Login_guide_funStickers};
@@ -72,7 +72,7 @@ public class GuideActivity extends BaseActivity {
     @OnClick(R.id.start_message_tv)
     void startChat(){
         SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.FIRST_INTO_APP, 1);
-        ActivityUtil.next(mActivity, LoginForPhoneActivity.class);
+        ActivityUtil.next(mActivity, LoginPhoneActivity.class);
         finish();
     }
 }

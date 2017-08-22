@@ -31,7 +31,7 @@ import connect.utils.permission.PermissionUtil;
 /**
  * Login interface verify phone number.
  */
-public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneContract.View{
+public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContract.View{
 
     @Bind(R.id.phone_et)
     EditText phoneEt;
@@ -44,7 +44,7 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
     @Bind(R.id.backup_local_tv)
     TextView backupLocalTv;
 
-    private LoginForPhoneActivity mActivity;
+    private LoginPhoneActivity mActivity;
     private LoginPhoneContract.Presenter presenter;
     private final int COUNTRY_CODE = 100;
     private CountryBean countryBean;
@@ -70,7 +70,7 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
 
     @OnClick(R.id.country_rela)
     void countryCodeClick(View view) {
-        ActivityUtil.next(mActivity, CountryCodeActivity.class, COUNTRY_CODE);
+        ActivityUtil.next(mActivity, LoginPhoneCountryCodeActivity.class, COUNTRY_CODE);
     }
 
 
@@ -141,7 +141,7 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
 
     @Override
     public void verifySuccess() {
-        SignInVerifyActivity.startActivity(mActivity, countryBean.getCode(),phoneEt.getText().toString());
+        LoginPhoneVerifyActivity.startActivity(mActivity, countryBean.getCode(),phoneEt.getText().toString());
     }
 
     @Override
@@ -151,12 +151,12 @@ public class LoginForPhoneActivity extends BaseActivity implements LoginPhoneCon
 
     @Override
     public void goIntoRandomSend() {
-        RandomSendActivity.startActivity(mActivity);
+        RegisterGetRandomActivity.startActivity(mActivity);
     }
 
     @Override
     public void goIntoLocalLogin() {
-        ActivityUtil.next(mActivity, LocalLoginActivity.class);
+        ActivityUtil.next(mActivity, LoginLocalActivity.class);
     }
 
     @Override

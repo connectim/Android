@@ -9,10 +9,6 @@ import connect.database.green.bean.FriendRequestEntity;
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
 
-/**
- * Created by Administrator on 2017/4/19 0019.
- */
-
 public interface NewFriendContract {
 
     interface View extends BaseView<NewFriendContract.Presenter> {
@@ -30,7 +26,7 @@ public interface NewFriendContract {
 
         void queryFriend();
 
-        void updataFriendRequest(FriendRequestEntity entity);
+        void updateRequestAddSuccess(FriendRequestEntity entity);
 
         void requestRecommendUser();
     }

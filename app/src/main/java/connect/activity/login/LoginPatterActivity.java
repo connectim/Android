@@ -78,7 +78,7 @@ public class LoginPatterActivity extends BaseActivity{
             @Override
             public void onUnmatchedExceedBoundary() {
                 SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
-                ActivityUtil.next(mActivity, LoginForPhoneActivity.class);
+                ActivityUtil.next(mActivity, LoginPhoneActivity.class);
                 finish();
             }
         });

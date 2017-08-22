@@ -62,6 +62,9 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
         });
     }
 
+    /**
+     * Set all buddy requests not read
+     */
     @Override
     public void updateRequestListStatus() {
         new AsyncTask<Void, Void, Void>() {
@@ -79,8 +82,13 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
         }.execute();
     }
 
+    /**
+     * Add friends success, update the database
+     *
+     * @param entity
+     */
     @Override
-    public void updataFriendRequest(final FriendRequestEntity entity) {
+    public void updateRequestAddSuccess(final FriendRequestEntity entity) {
         entity.setRead(1);
         entity.setStatus(2);
         new AsyncTask<Void, Void, Void>() {

@@ -27,9 +27,8 @@ import connect.widget.TopToolBar;
 
 /**
  * Add a phone book friends
- * Created by Administrator on 2016/12/29.
  */
-public class FriendAddPhoneActivity extends BaseActivity implements FriendAddContract.View {
+public class AddFriendPhoneActivity extends BaseActivity implements FriendAddContract.View {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -39,7 +38,7 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
     RecyclerView recyclerview;
 
     private LinearLayoutManager linearLayoutManager;
-    private FriendAddPhoneActivity mActivity;
+    private AddFriendPhoneActivity mActivity;
     private FriendAddContract.Presenter presenter;
     private AddPhoneAdapter adapter;
 
@@ -70,10 +69,20 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
         linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new AddPhoneAdapter(mActivity);
-        adapter.setOnSeleListence(onSeleListence);
+        adapter.setOnSelectListener(onSelectListener);
         recyclerview.setAdapter(adapter);
         siderbar.setOnTouchingLetterChangedListener(letterChangedListener);
         PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_CONTACTS}, permissomCallBack);
+    }
+
+    @OnClick(R.id.left_img)
+    void goback(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick(R.id.right_text)
+    void goinvite(View view) {
+        PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_SMS}, permissomCallBack);
     }
 
     SideBar.OnTouchingLetterChangedListener letterChangedListener = new SideBar.OnTouchingLetterChangedListener() {
@@ -105,29 +114,12 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
         }
 
         @Override
-        public void deny(String[] permissions) {
-        }
+        public void deny(String[] permissions) {}
     };
 
-    @OnClick(R.id.left_img)
-    void goback(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.right_text)
-    void goinvite(View view) {
-        PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_SMS}, permissomCallBack);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
-    }
-
-    private AddPhoneAdapter.OnSeleListence onSeleListence = new AddPhoneAdapter.OnSeleListence() {
+    private AddPhoneAdapter.OnSelectListener onSelectListener = new AddPhoneAdapter.OnSelectListener() {
         @Override
-        public void seleFriend(List<PhoneContactBean> list) {
+        public void selectFriend(List<PhoneContactBean> list) {
             if (list.size() == 0) {
                 toolbar.setRightText(R.string.Link_Invite);
                 toolbar.setRightTextEnable(false);
@@ -144,6 +136,12 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
     };
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
+    }
+
+    @Override
     public void setPresenter(FriendAddContract.Presenter presenter) {
         this.presenter = presenter;
     }
@@ -154,7 +152,7 @@ public class FriendAddPhoneActivity extends BaseActivity implements FriendAddCon
     }
 
     @Override
-    public void updataView(int size, List<PhoneContactBean> list) {
+    public void updateView(int size, List<PhoneContactBean> list) {
         adapter.setServerSize(size);
         adapter.setDataNotify(list);
     }

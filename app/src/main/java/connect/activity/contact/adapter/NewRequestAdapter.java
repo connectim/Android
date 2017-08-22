@@ -21,9 +21,6 @@ import connect.utils.system.SystemDataUtil;
 import connect.widget.SideScrollView;
 import connect.widget.roundedimageview.RoundedImageView;
 
-/**
- * Created by Administrator on 2016/12/29.
- */
 public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.ViewHolder> {
 
     private ArrayList<FriendRequestEntity> mList = new ArrayList<>();

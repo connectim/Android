@@ -36,7 +36,7 @@ import connect.widget.roundedimageview.RoundedImageView;
  * Created by john on 2016/11/23.
  */
 
-public class LocalLoginActivity extends BaseActivity implements LocalLoginContract.View {
+public class LoginLocalActivity extends BaseActivity implements LocalLoginContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -53,11 +53,10 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
     @Bind(R.id.nickname_rela)
     RelativeLayout nicknameLin;
 
-    private LocalLoginActivity mActivity;
+    private LoginLocalActivity mActivity;
     private LocalLoginContract.Presenter presenter;
     private UserBean userBean;
     public static final int SELECT_USER_CODE = 100;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +108,7 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
 
     @OnClick(R.id.right_lin)
     void signUp(View view) {
-        RandomSendActivity.startActivity(mActivity);
+        RegisterGetRandomActivity.startActivity(mActivity);
     }
 
     @OnClick(R.id.next_btn)
@@ -120,7 +119,7 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
 
     @OnClick(R.id.nickname_rela)
     void selectLocalAccount(View view){
-        LoginSelectUserActivity.startActivity(mActivity,userBean,SELECT_USER_CODE);
+        LoginLocalSelectActivity.startActivity(mActivity,userBean,SELECT_USER_CODE);
     }
 
     @Override

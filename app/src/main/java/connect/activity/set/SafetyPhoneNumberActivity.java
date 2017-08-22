@@ -19,7 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.ui.activity.R;
-import connect.activity.login.CountryCodeActivity;
+import connect.activity.login.LoginPhoneCountryCodeActivity;
 import connect.activity.login.bean.CountryBean;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
@@ -87,7 +87,7 @@ public class SafetyPhoneNumberActivity extends BaseActivity {
 
     @OnClick(R.id.country_rela)
     void countryCodeClick(View view) {
-        ActivityUtil.next(mActivity, CountryCodeActivity.class, COUNTRY_CODE);
+        ActivityUtil.next(mActivity, LoginPhoneCountryCodeActivity.class, COUNTRY_CODE);
     }
 
     @OnClick(R.id.right_lin)

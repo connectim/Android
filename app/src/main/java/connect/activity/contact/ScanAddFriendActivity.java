@@ -40,7 +40,7 @@ import connect.widget.album.model.ImageInfo;
 import connect.widget.zxing.utils.CreateScan;
 
 /**
- * Created by Administrator on 2016/12/27.
+ * scan it
  */
 public class ScanAddFriendActivity extends BaseScanActivity {
 
@@ -122,28 +122,23 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         scanRela.startAnimation(set);
         set.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
+            public void onAnimationStart(Animation animation) {}
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 bottomScanRela.setVisibility(View.VISIBLE);
                 bottomCaptureImg.setVisibility(View.GONE);
                 scanRela.setVisibility(View.GONE);
-
                 moveUpImg.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
+            public void onAnimationRepeat(Animation animation) {}
         });
     }
 
     @OnClick(R.id.bottom_scan_rela)
-    void switchAddresss(View view) {
+    void switchAddress(View view) {
         onPause();
         moveUpImg.setVisibility(View.GONE);
         bottomCaptureImg.setVisibility(View.VISIBLE);
@@ -165,9 +160,7 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         bottomScanRela.startAnimation(set);
         set.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
+            public void onAnimationStart(Animation animation) {}
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -177,20 +170,44 @@ public class ScanAddFriendActivity extends BaseScanActivity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
+            public void onAnimationRepeat(Animation animation) {}
         });
     }
 
     @OnClick(R.id.photos_tv)
-    void goSeleAlbm(View view){
+    void goSelectAlbm(View view){
         AlbumActivity.startActivity(mActivity,AlbumActivity.OPEN_ALBUM_CODE,1);
     }
+
+    private Handler mLocalHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            ProgressUtil.getInstance().dismissProgress();
+            switch (msg.what){
+                case PARSE_BARCODE_SUC:
+                    resolveScanUtil.analysisUrl((String) msg.obj);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MsgNoticeBean notice) {
         new ResolveUrlUtil(mActivity).showMsgTip(notice,ResolveUrlUtil.TYPE_OPEN_SCAN, true);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == AlbumActivity.OPEN_ALBUM_CODE && requestCode == AlbumActivity.OPEN_ALBUM_CODE){
+            List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
+            if (strings != null && strings.size() > 0) {
+                getAblamString(strings.get(0).getImageFile().getAbsolutePath(),mLocalHandler);
+            }
+        }
     }
 
     @Override
@@ -206,31 +223,6 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == AlbumActivity.OPEN_ALBUM_CODE && requestCode == AlbumActivity.OPEN_ALBUM_CODE){
-            List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
-            if (strings != null && strings.size() > 0) {
-                getAblamString(strings.get(0).getImageFile().getAbsolutePath(),mLocalHandler);
-            }
-        }
-    }
-
-    private Handler mLocalHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            ProgressUtil.getInstance().dismissProgress();
-            switch (msg.what){
-                case PARSE_BARCODE_SUC:
-                    resolveScanUtil.analysisUrl((String) msg.obj);
-                    break;
-            }
-
-        }
-    };
 
     @Override
     protected void onDestroy() {

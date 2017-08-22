@@ -30,10 +30,9 @@ import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
 
 /**
- * Created by Administrator on 2017/4/26 0026.
+ * Friends transfer records
  */
-
-public class FriendRecordActivity extends BaseActivity {
+public class FriendInfoRecordActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -42,8 +41,7 @@ public class FriendRecordActivity extends BaseActivity {
     @Bind(R.id.refreshview)
     SwipeRefreshLayout refreshview;
 
-
-    private FriendRecordActivity mActivity;
+    private FriendInfoRecordActivity mActivity;
     private int page = 1;
     private int MAX_RECOMMEND_COUNT = 20;
     private ContactEntity friendEntity;
@@ -52,7 +50,7 @@ public class FriendRecordActivity extends BaseActivity {
     public static void startActivity(Activity activity, ContactEntity friendEntity) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("friend", friendEntity);
-        ActivityUtil.next(activity, FriendRecordActivity.class, bundle);
+        ActivityUtil.next(activity, FriendInfoRecordActivity.class, bundle);
     }
 
     @Override
@@ -73,37 +71,16 @@ public class FriendRecordActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         friendEntity = (ContactEntity) bundle.getSerializable("friend");
 
-        refreshview.setColorSchemeResources(
-                R.color.color_ebecee,
-                R.color.color_c8ccd5,
-                R.color.color_lightgray
-        );
-        refreshview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshview.setRefreshing(false);
-            }
-        });
+        refreshview.setColorSchemeResources(R.color.color_ebecee, R.color.color_c8ccd5, R.color.color_lightgray);
+        refreshview.setOnRefreshListener(onRefreshListener);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         adapter = new FriendRecordAdapter(mActivity, friendEntity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore() {
-                page++;
-                requestRecord();
-            }
-        });
+        recyclerview.addOnScrollListener(endlessScrollListener);
 
-        adapter.setItemClickListener(new FriendRecordAdapter.OnItemClickListener() {
-            @Override
-            public void itemClick(Connect.FriendBill friendBill) {
-                BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, friendBill.getTxId());
-            }
-        });
-
+        adapter.setItemClickListener(onItemClickListener);
         requestRecord();
     }
 
@@ -111,6 +88,28 @@ public class FriendRecordActivity extends BaseActivity {
     void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
+
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+        @Override
+        public void onRefresh() {
+            refreshview.setRefreshing(false);
+        }
+    };
+
+    EndlessScrollListener endlessScrollListener = new EndlessScrollListener(){
+        @Override
+        public void onLoadMore() {
+            page++;
+            requestRecord();
+        }
+    };
+
+    FriendRecordAdapter.OnItemClickListener onItemClickListener = new FriendRecordAdapter.OnItemClickListener(){
+        @Override
+        public void itemClick(Connect.FriendBill friendBill) {
+            BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, friendBill.getTxId());
+        }
+    };
 
     private void requestRecord() {
         Connect.FriendRecords friendRecords = Connect.FriendRecords.newBuilder()

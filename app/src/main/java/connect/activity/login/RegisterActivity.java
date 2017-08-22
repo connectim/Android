@@ -204,7 +204,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         if (isBack) {
             HomeActivity.startActivity(mActivity);
         } else {
-            ActivityUtil.next(mActivity,ExportPriActivity.class);
+            ActivityUtil.next(mActivity,BackupPrivateKeyActivity.class);
         }
         mActivity.finish();
     }

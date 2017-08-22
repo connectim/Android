@@ -20,10 +20,6 @@ import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/4/26 0026.
- */
-
 public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapter.ViewHolder> {
 
 
