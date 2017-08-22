@@ -26,6 +26,7 @@ import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
+import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
@@ -133,11 +134,14 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     } else {
                         if (direct == MsgDirect.From || msgExtEntity.getRead_time() == 0) {
                             burnProBar.setVisibility(View.VISIBLE);
-                            burnProBar.initBurnMsg(msgExtEntity);
-                            if (direct == MsgDirect.From && (msgExtEntity.getMessageType() == 1 || msgExtEntity.getMessageType() == 5)) {
-                                msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
+                            burnProBar.setMsgExtEntity(msgExtEntity);
+
+                            MsgType msgType = MsgType.toMsgType(msgExtEntity.getMessageType());
+                            if (direct == MsgDirect.From && (msgType == MsgType.Text || msgType == MsgType.Emotion)) {
+                                msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                                 burnProBar.startBurnRead();
-                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgExtEntity.getMessage_id(), direct);
+                            } else {
+                                burnProBar.loadBurnMsg();
                             }
                         } else {
                             burnProBar.setVisibility(View.GONE);

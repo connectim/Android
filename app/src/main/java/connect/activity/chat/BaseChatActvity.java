@@ -470,7 +470,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                     String msgid = null;
 
                     switch (MsgType.toMsgType(msgExtEntity.getMessageType())) {
-                        case Self_destruct_Notice://Accept each other send after reading
+                        case Self_destruct_Notice://open burn message notice
                             try {
                                 Connect.DestructMessage destructMessage = Connect.DestructMessage.parseFrom(msgExtEntity.getContents());
                                 time = destructMessage.getTime();
@@ -490,7 +490,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                             try {
                                 Connect.ReadReceiptMessage readReceiptMessage = Connect.ReadReceiptMessage.parseFrom(msgExtEntity.getContents());
                                 msgid = readReceiptMessage.getMessageId();
-                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, MsgDirect.To);
+                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, MsgDirect.From);
                             } catch (InvalidProtocolBufferException e) {
                                 e.printStackTrace();
                             }

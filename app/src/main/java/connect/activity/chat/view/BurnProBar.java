@@ -63,25 +63,31 @@ public class BurnProBar extends View {
         invalidate();
     }
 
-    public void initBurnMsg(MsgExtEntity entity) {
+    public void setMsgExtEntity(MsgExtEntity msgExtEntity) {
+        this.msgExtEntity = msgExtEntity;
+    }
+
+    public void loadBurnMsg() {
         setValue(ROUND_DIRECT);
-        this.msgExtEntity = entity;
         cancelTimer();
 
-        long burnstart = entity.parseDestructTime();
+        long burnstart = msgExtEntity.parseDestructTime();
         if (burnstart > 0) {
             startBurnRead();
         }
     }
 
     public void startBurnRead() {
-        long burnstart = msgExtEntity.getRead_time();
+        long burnstart = msgExtEntity.getSnap_time();
         MsgDirect direct = msgExtEntity.parseDirect();
 
-        if (burnstart > 0 || direct == MsgDirect.From) {
+        if (burnstart > 0) {
             long remainTime = msgExtEntity.parseDestructTime() - (TimeUtil.getCurrentTimeInLong() - burnstart);
             burnTimer = new BurnCountTimer(remainTime, 500);
             burnTimer.start();
+        }
+        if (direct == MsgDirect.From) {
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgExtEntity.getMessage_id(), direct);
         }
     }
 

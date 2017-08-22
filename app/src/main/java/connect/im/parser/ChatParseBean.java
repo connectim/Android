@@ -124,6 +124,8 @@ public class ChatParseBean extends InterParse {
             MsgType msgType = MsgType.toMsgType(chatMessage.getMsgType());
             switch (msgType) {
                 case Self_destruct_Notice:
+                    MessageHelper.getInstance().insertMessageEntity(msgExtEntity);
+
                     Connect.DestructMessage destructMessage = Connect.DestructMessage.parseFrom(contents);
                     ConversionSettingHelper.getInstance().updateBurnTime(pubkey, destructMessage.getTime());
                     break;
@@ -132,6 +134,8 @@ public class ChatParseBean extends InterParse {
                     MessageHelper.getInstance().updateBurnMsg(readReceiptMessage.getMessageId(), TimeUtil.getCurrentTimeInLong());
                     break;
                 default:
+                    MessageHelper.getInstance().insertMessageEntity(msgExtEntity);
+
                     ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
                     if (contactEntity != null) {
                         NormalChat normalChat = new FriendChat(contactEntity);
@@ -169,6 +173,7 @@ public class ChatParseBean extends InterParse {
                 MsgExtEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
                         chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
                         chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
+                MessageHelper.getInstance().insertMessageEntity(msgExtEntity);
 
                 NormalChat normalChat = new GroupChat(groupEntity);
                 normalChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
