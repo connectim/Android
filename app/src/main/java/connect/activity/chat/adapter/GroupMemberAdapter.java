@@ -19,7 +19,7 @@ import connect.ui.activity.R;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
-import connect.activity.set.ModifyInfoActivity;
+import connect.activity.set.UserInfoActivity;
 import connect.utils.PinyinUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.ToastEUtil;
@@ -112,7 +112,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
                     closeMenu();
                     GroupMemberEntity indexEntity = groupMemEntities.get(position);
                     if (indexEntity.getIdentifier().equals(MemoryDataManager.getInstance().getPubKey())) {
-                        ModifyInfoActivity.startActivity(activity);
+                        UserInfoActivity.startActivity(activity);
                     } else {
                         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(indexEntity.getPub_key());
                         if (friendEntity == null) {

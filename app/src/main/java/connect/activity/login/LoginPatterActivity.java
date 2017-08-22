@@ -86,7 +86,7 @@ public class LoginPatterActivity extends BaseActivity{
 
     @OnClick(R.id.password_tv)
     void goBack(View view) {
-        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListence() {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
             @Override
             public void success(String priKey) {
                 goinHome(priKey);

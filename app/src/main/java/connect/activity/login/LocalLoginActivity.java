@@ -23,7 +23,7 @@ import connect.activity.home.HomeActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LocalLoginContract;
 import connect.activity.login.presenter.LocalLoginPresenter;
-import connect.activity.set.PatternActivity;
+import connect.activity.set.SafetyPatternActivity;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
@@ -170,7 +170,7 @@ public class LocalLoginActivity extends BaseActivity implements LocalLoginContra
         if(isBack){
             HomeActivity.startActivity(mActivity);
         }else{
-            PatternActivity.startActivity(mActivity,PatternActivity.LOGIN_STYPE);
+            SafetyPatternActivity.startActivity(mActivity,SafetyPatternActivity.LOGIN_TYPE);
         }
         mActivity.finish();
     }

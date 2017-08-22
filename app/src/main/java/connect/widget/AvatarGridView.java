@@ -92,7 +92,7 @@ public class AvatarGridView extends RelativeLayout {
             if(convertView == null){
                 viewHolder = new ViewHolder();
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_avater_gridview, parent, false);
-                viewHolder.avaterRimg = (HightEqWidthRounderImage)convertView.findViewById(R.id.avater_rimg);
+                viewHolder.avaterRimg = (HeightEqWidthRounderImage)convertView.findViewById(R.id.avater_rimg);
                 convertView.setTag(viewHolder);
             }else{
                 viewHolder = (ViewHolder)convertView.getTag();
@@ -102,7 +102,7 @@ public class AvatarGridView extends RelativeLayout {
         }
 
         private class ViewHolder {
-            HightEqWidthRounderImage avaterRimg;
+            HeightEqWidthRounderImage avaterRimg;
         }
 
         public void setDataNotify(List<String> list) {

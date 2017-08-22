@@ -3,7 +3,6 @@ package connect.wallet.cwallet.business;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -24,34 +23,23 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import connect.activity.base.BaseApplication;
-import connect.activity.home.bean.HomeAction;
 import connect.activity.set.bean.PaySetBean;
-import connect.activity.set.manager.EditInputFilterPrice;
+import connect.widget.EditInputFilterPrice;
 import connect.activity.wallet.bean.RateBean;
-import connect.activity.wallet.bean.WalletBean;
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.ProgressUtil;
 import connect.utils.RegularUtil;
 import connect.utils.data.RateDataUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.wallet.cwallet.InitWalletManager;
-import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
-import connect.widget.random.RandomVoiceActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import wallet_gateway.WalletOuterClass;
 
 /**
  * Transfer amount input

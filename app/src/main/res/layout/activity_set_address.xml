@@ -19,7 +19,7 @@
         android:orientation="vertical"
         android:background="@drawable/shape_stroke_00ffbf">
 
-        <connect.widget.HightEqWidthImage
+        <connect.widget.HeightEqWidthImage
             android:id="@+id/scan_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

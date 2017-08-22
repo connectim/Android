@@ -13,8 +13,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.login.bean.UserBean;
-import connect.activity.set.contract.BackUpContract;
-import connect.activity.set.presenter.BackUpPresenter;
+import connect.activity.set.contract.SafetyBackupContract;
+import connect.activity.set.presenter.SafetyBackupPresenter;
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
@@ -27,7 +27,7 @@ import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 
-public class BackUpCurrencyActivity extends BaseActivity implements BackUpContract.View {
+public class BackUpCurrencyActivity extends BaseActivity implements SafetyBackupContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -41,7 +41,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
     TextView saveTv;
 
     private BackUpCurrencyActivity mActivity;
-    private BackUpContract.Presenter presenter;
+    private SafetyBackupContract.Presenter presenter;
     private UserBean userBean;
     private Bitmap bitmap;
 
@@ -71,7 +71,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
         userBean = SharedPreferenceUtil.getInstance().getUser();
 
         currencyBean= (CurrencyEnum) getIntent().getSerializableExtra("Currency");
-        new BackUpPresenter(this).start();
+        new SafetyBackupPresenter(this).start();
         switchPriKey(1);
     }
 
@@ -108,7 +108,7 @@ public class BackUpCurrencyActivity extends BaseActivity implements BackUpContra
     }
 
     @Override
-    public void setPresenter(BackUpContract.Presenter presenter) {
+    public void setPresenter(SafetyBackupContract.Presenter presenter) {
         this.presenter = presenter;
     }
 

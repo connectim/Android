@@ -19,8 +19,7 @@ import connect.utils.ToastUtil;
 import connect.widget.TopToolBar;
 
 /**
- * General Settings
- * Created by Administrator on 2016/12/1.
+ * The user general Settings
  */
 public class GeneralActivity extends BaseActivity {
 
@@ -81,12 +80,12 @@ public class GeneralActivity extends BaseActivity {
 
     @OnClick(R.id.currency_ll)
     void goCurrency(View view) {
-        ActivityUtil.next(mActivity, CurrencyActivity.class);
+        ActivityUtil.next(mActivity, GeneralCurrencyActivity.class);
     }
 
     @OnClick(R.id.language_ll)
     void goLanguage(View view) {
-        ActivityUtil.next(mActivity, LanguageActivity.class);
+        ActivityUtil.next(mActivity, GeneralLanguageActivity.class);
     }
 
     @OnClick(R.id.clear_chat_tv)

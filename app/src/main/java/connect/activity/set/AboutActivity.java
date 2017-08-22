@@ -30,10 +30,8 @@ import connect.widget.TopToolBar;
 import protos.Connect;
 
 /**
- * about
- * Created by john on 2016/11/30.
+ * About the App
  */
-
 public class AboutActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
@@ -51,7 +49,7 @@ public class AboutActivity extends BaseActivity {
 
     private AboutActivity mActivity;
     private Connect.VersionResponse versionResponse;
-    private int comparInt = 0;
+    private int compareInt = 0;
     private String downLoadPath;
 
     @Override
@@ -72,7 +70,6 @@ public class AboutActivity extends BaseActivity {
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_About);
-
         appVersion.setText(getString(R.string.Set_Versions_number, SystemDataUtil.getVersionName(mActivity)));
         requestAppUpdata();
     }
@@ -84,33 +81,30 @@ public class AboutActivity extends BaseActivity {
 
     @OnClick(R.id.llOpenSource)
     void goOpenSource(View view){
-        ActivityUtil.next(mActivity,DeveloperActivity.class);
+        ActivityUtil.next(mActivity,AboutDeveloperActivity.class);
     }
 
     @OnClick(R.id.llUpdate)
     void goUpdate(View view){
-        if(comparInt == 1){
+        if(compareInt == 1){
             Dialog dialogUpdata = DialogUtil.showAlertTextView(mActivity,
-                    getString(R.string.Set_Found_new_version), versionResponse.getRemark(),
-                    "", getString(R.string.Set_Now_update_app),
+                    getString(R.string.Set_Found_new_version), versionResponse.getRemark(), "", getString(R.string.Set_Now_update_app),
                     false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {
                             if(!TextUtils.isEmpty(versionResponse.getUpgradeUrl())){
                                 downLoadPath = versionResponse.getUpgradeUrl();
-                                PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_STORAGE},permissomCallBack);
+                                PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_STORAGE},permissionCallBack);
                             }
                         }
 
                         @Override
-                        public void cancel() {
-
-                        }
+                        public void cancel() {}
                     },false);
         }
     }
 
-    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack(){
                 @Override
                 public void granted(String[] permissions) {
                     Intent intent = new Intent(mActivity, UpdataService.class);
@@ -127,7 +121,7 @@ public class AboutActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
         PermissionUtil.getInstance().onRequestPermissionsResult
-                (mActivity,requestCode,permissions,grantResults,permissomCallBack);
+                (mActivity,requestCode,permissions,grantResults,permissionCallBack);
     }
 
     private void requestAppUpdata(){
@@ -144,8 +138,8 @@ public class AboutActivity extends BaseActivity {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                     versionResponse = Connect.VersionResponse.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(versionResponse)){
-                        comparInt = StringUtil.VersionComparison(versionResponse.getVersion(),SystemDataUtil.getVersionName(mActivity));
-                        switch (comparInt){
+                        compareInt = StringUtil.VersionComparison(versionResponse.getVersion(),SystemDataUtil.getVersionName(mActivity));
+                        switch (compareInt){
                             case 1:
                                 tvNewVersion.setText(mActivity.getString(R.string.Set_new_version,versionResponse.getVersion()));
                                 break;
@@ -162,9 +156,7 @@ public class AboutActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-
-            }
+            public void onError(Connect.HttpNotSignResponse response) {}
         });
     }
 

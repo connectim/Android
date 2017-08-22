@@ -19,9 +19,9 @@ import connect.activity.base.BaseFragment;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.AboutActivity;
-import connect.activity.set.AddressActivity;
+import connect.activity.set.UserAddressActivity;
 import connect.activity.set.GeneralActivity;
-import connect.activity.set.ModifyInfoActivity;
+import connect.activity.set.UserInfoActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
@@ -37,7 +37,7 @@ import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 
 /**
- * Set the main interface
+ * Set the main interface.
  */
 public class SetFragment extends BaseFragment {
 
@@ -111,7 +111,7 @@ public class SetFragment extends BaseFragment {
     @OnClick(R.id.llUserMsg)
     void intoUserInfo(View view) {
         if (mActivity != null && isAdded()) {
-            ActivityUtil.next(mActivity, ModifyInfoActivity.class);
+            ActivityUtil.next(mActivity, UserInfoActivity.class);
         }
     }
 
@@ -142,7 +142,7 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.address_scan_img)
     void showScanAddress(View view) {
-        ActivityUtil.next(mActivity, AddressActivity.class);
+        ActivityUtil.next(mActivity, UserAddressActivity.class);
     }
 
     @OnClick(R.id.log_out_tv)
