@@ -68,46 +68,45 @@ public class MsgVideoHolder extends MsgChatHolder {
             public void onClick(View v) {
                 String url = videoMessage.getUrl();
                 if (FileUtil.islocalFile(url)) {
-                    startPlayVideo(url, videoMessage.getSize(), "");
-                    return;
-                }
-
-                final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(),
-                        msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
-                if (FileUtil.isExistFilePath(localPath)) {
-                    if (videoMessage.getSnapTime() == 0) {
-                        startPlayVideo(localPath, videoMessage.getSize(), "");
-                    } else {
-                        startPlayVideo(localPath, videoMessage.getSize(), msgExtEntity.getMessage_id());
-                    }
+                    startPlayVideo(url, videoMessage.getTimeLength(), "");
                 } else {
-                    FileDownLoad.getInstance().downChatFile(chatType, url, msgExtEntity.getMessage_ower(), new FileDownLoad.IFileDownLoad() {
-                        @Override
-                        public void successDown(byte[] bytes) {
-                            videoProView.loadState(true, 0);
-                            videomsg.setOpenBurn(false);
-                            videomsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),
-                                    videoMessage.getUrl(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
+                    final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(),
+                            msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
+                    if (FileUtil.isExistFilePath(localPath)) {
+                        if (videoMessage.getSnapTime() == 0) {
+                            startPlayVideo(localPath, videoMessage.getTimeLength(), "");
+                        } else {
+                            startPlayVideo(localPath, videoMessage.getTimeLength(), msgExtEntity.getMessage_id());
+                        }
+                    } else {
+                        FileDownLoad.getInstance().downChatFile(chatType, url, msgExtEntity.getMessage_ower(), new FileDownLoad.IFileDownLoad() {
+                            @Override
+                            public void successDown(byte[] bytes) {
+                                videoProView.loadState(true, 0);
+                                videomsg.setOpenBurn(false);
+                                videomsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),
+                                        videoMessage.getUrl(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
 
-                            FileUtil.byteArrToFilePath(bytes, localPath);
-                            if (videoMessage.getSnapTime() == 0) {
-                                startPlayVideo(localPath, videoMessage.getSize(), "");
-                            } else {
-                                startPlayVideo(localPath, videoMessage.getSize(), msgExtEntity.getMessage_id());
+                                FileUtil.byteArrToFilePath(bytes, localPath);
+                                if (videoMessage.getSnapTime() == 0) {
+                                    startPlayVideo(localPath, videoMessage.getTimeLength(), "");
+                                } else {
+                                    startPlayVideo(localPath, videoMessage.getTimeLength(), msgExtEntity.getMessage_id());
+                                }
                             }
-                        }
 
-                        @Override
-                        public void failDown() {
+                            @Override
+                            public void failDown() {
 
-                        }
+                            }
 
-                        @Override
-                        public void onProgress(long bytesWritten, long totalSize) {
-                            int progress = (int) (bytesWritten * 100 / totalSize);
-                            videoProView.loadState(false, progress);
-                        }
-                    });
+                            @Override
+                            public void onProgress(long bytesWritten, long totalSize) {
+                                int progress = (int) (bytesWritten * 100 / totalSize);
+                                videoProView.loadState(false, progress);
+                            }
+                        });
+                    }
                 }
             }
         });

@@ -270,10 +270,10 @@ public class FileUtil {
         FileSizeType sizeType = length < 1024 ? FileSizeType.KB : FileSizeType.M;
         switch (sizeType) {
             case KB:
-                size = length / 1024 + " KB";
+                size = length + " KB";
                 break;
             case M:
-                size = length / (1024 * 1024) + " M";
+                size = length / 1024 + " M";
                 break;
         }
         return size;

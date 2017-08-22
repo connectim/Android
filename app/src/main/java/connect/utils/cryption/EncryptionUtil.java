@@ -1,7 +1,6 @@
 package connect.utils.cryption;
 
 import com.google.protobuf.ByteString;
-
 import connect.utils.ConfigUtil;
 import connect.wallet.jni.AllNativeMethod;
 import connect.wallet.jni.GCMModel;

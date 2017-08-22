@@ -63,6 +63,7 @@ public class FriendChat extends NormalChat {
         msgExtEntity.setMessage_ower(identify());
         msgExtEntity.setMessage_from(mypublickey);
         msgExtEntity.setMessage_to(identify());
+        msgExtEntity.setRead_time(0L);
         msgExtEntity.setMessageType(type.type);
         msgExtEntity.setCreatetime(TimeUtil.getCurrentTimeInLong());
         msgExtEntity.setSend_status(0);

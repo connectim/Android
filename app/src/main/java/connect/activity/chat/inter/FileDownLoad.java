@@ -58,6 +58,7 @@ public class FileDownLoad {
     }
 
     public interface IFileDownLoad {
+
         void successDown(byte[] bytes);
 
         void failDown();

@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -205,7 +206,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                     options.inSampleSize = 1;
                     BitmapFactory.decodeFile(str, options);
 
-                    msgExtEntity = normalChat.photoMsg(str, "", FileUtil.fileSize(str), options.outWidth, options.outHeight);
+                    msgExtEntity = normalChat.photoMsg(str, str, FileUtil.fileSize(str), options.outWidth, options.outHeight);
 
                     adapterInsetItem(msgExtEntity);
                     upLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
@@ -216,22 +217,8 @@ public abstract class BaseChatActvity extends BaseActivity {
                     upLoad.fileHandle();
                 }
                 break;
-            case Video:
-                filePath = (String) objects[0];
-                Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
-                msgExtEntity = normalChat.videoMsg("", filePath, (int) objects[1],
-                        FileUtil.fileSizeOf(filePath), thumbBitmap.getWidth(), thumbBitmap.getHeight());
-
-                adapterInsetItem(msgExtEntity);
-                upLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
-                    @Override
-                    public void upSuccess(String msgid) {
-                    }
-                });
-                upLoad.fileHandle();
-                break;
             case Voice:
-                msgExtEntity = normalChat.voiceMsg((String) objects[0], (int)objects[1]);
+                msgExtEntity = normalChat.voiceMsg((String) objects[0], (Integer) objects[1]);
 
                 adapterInsetItem(msgExtEntity);
                 upLoad = new VoiceUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
@@ -244,6 +231,21 @@ public abstract class BaseChatActvity extends BaseActivity {
             case Emotion:
                 msgExtEntity = normalChat.emotionMsg((String) objects[0]);
                 sendNormalMsg(true, msgExtEntity);
+                break;
+            case Video:
+                filePath = (String) objects[0];
+                Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
+                File thumbFile = BitmapUtil.getInstance().bitmapSavePath(thumbBitmap);
+                msgExtEntity = normalChat.videoMsg(thumbFile.getAbsolutePath(), filePath, (Integer) objects[1],
+                        FileUtil.fileSizeOf(filePath), thumbBitmap.getWidth(), thumbBitmap.getHeight());
+
+                adapterInsetItem(msgExtEntity);
+                upLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                    @Override
+                    public void upSuccess(String msgid) {
+                    }
+                });
+                upLoad.fileHandle();
                 break;
             case Name_Card:
                 msgExtEntity = normalChat.cardMsg((String) objects[0], (String) objects[1], (String) objects[2]);

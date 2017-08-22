@@ -4,14 +4,12 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.chat.view.VoiceImg;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
@@ -43,8 +41,17 @@ public class MsgVoiceHolder extends MsgChatHolder {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
 
-        view1.setVisibility((msgExtEntity.parseDirect() == MsgDirect.From && msgExtEntity.getRead_time() == 0) ?
-                View.VISIBLE : View.GONE);
+        boolean visiable = false;
+        if (msgExtEntity.parseDirect() == MsgDirect.From) {
+            Long readTime = msgExtEntity.getRead_time();
+            if (readTime == null) {
+                visiable = true;
+            } else if (readTime != null) {
+                visiable = 0 == msgExtEntity.getRead_time();
+            }
+            view1.setVisibility(visiable ? View.VISIBLE : View.GONE);
+        }
+
         voiceImg.loadVoice(msgExtEntity.parseDirect(), voiceMessage.getTimeLength());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,16 +62,6 @@ public class MsgVoiceHolder extends MsgChatHolder {
 
                 if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(url)) {
                     voiceImg.startPlay(url);
-                    if ((voiceMessage.getSnapTime() == 0 && msgExtEntity.parseDirect() == MsgDirect.From)) {
-                        voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
-                            @Override
-                            public void playFinish(String msgid, String filepath) {
-                                msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
-                                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
-                            }
-                        });
-                    }
                 } else {
                     msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
                     if (view1 != null) {
@@ -74,17 +71,6 @@ public class MsgVoiceHolder extends MsgChatHolder {
                     final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VOICE);
                     if (FileUtil.isExistFilePath(localPath)) {
                         voiceImg.startPlay(localPath);
-
-                        if (voiceMessage.getSnapTime() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
-                            voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
-                                @Override
-                                public void playFinish(String msgid, String filepath) {
-                                    msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
-                                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
-                                }
-                            });
-                        }
                     } else {
                         voiceImg.downLoading();
 
@@ -92,21 +78,21 @@ public class MsgVoiceHolder extends MsgChatHolder {
                         FileDownLoad.getInstance().downChatFile(chatType, url, msgExtEntity.getMessage_ower(), new FileDownLoad.IFileDownLoad() {
                             @Override
                             public void successDown(byte[] bytes) {
-                                loadImg.setVisibility(View.GONE);
+                                if (null != loadImg) {
+                                    loadImg.setVisibility(View.GONE);
+                                }
 
                                 FileUtil.byteArrToFilePath(bytes, localPath);
-                                voiceImg.startPlay(msgExtEntity.getMessage_id(), localPath);
-
-                                if (voiceMessage.getSnapTime() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
-                                    voiceImg.setPlayListener(new VoiceImg.VoicePlayListener() {
-                                        @Override
-                                        public void playFinish(String msgid, String filepath) {
-                                            msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
-                                            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                                voiceImg.startPlay(msgExtEntity.getMessage_id(), localPath, new VoiceImg.VoicePlayListener() {
+                                    @Override
+                                    public void playFinish(String msgid, String filepath) {
+                                        msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                                        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                                        if (voiceMessage.getSnapTime() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
                                             RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
                                         }
-                                    });
-                                }
+                                    }
+                                });
                             }
 
                             @Override
@@ -117,7 +103,9 @@ public class MsgVoiceHolder extends MsgChatHolder {
                             @Override
                             public void onProgress(long bytesWritten, long totalSize) {
                                 int progress = (int) (bytesWritten * 100 / totalSize);
-                                loadImg.setVisibility(View.VISIBLE);
+                                if (null != loadImg) {
+                                    loadImg.setVisibility(View.VISIBLE);
+                                }
                             }
                         });
                     }

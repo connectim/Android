@@ -19,7 +19,7 @@ import protos.Connect;
  * Message extensions such as transfer information
  * Created by pujin on 2017/4/13.
  */
-public class MsgExtEntity extends MessageEntity {
+public class MsgExtEntity extends MessageEntity implements Cloneable {
 
     private String hashid;
     private int transStatus;
@@ -213,5 +213,10 @@ public class MsgExtEntity extends MessageEntity {
 
     public Connect.MessageUserInfo getUserInfo(){
         return Connect.MessageUserInfo.newBuilder().build();
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

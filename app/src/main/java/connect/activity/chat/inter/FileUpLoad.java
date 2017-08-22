@@ -54,9 +54,9 @@ public abstract class FileUpLoad {
         String priKey = MemoryDataManager.getInstance().getPriKey();
 
         byte[] fileSie = FileUtil.filePathToByteArray(filePath);
-        if (baseChat.chatType() == 0) {
+        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
             gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, priKey, baseChat.chatKey(), ByteString.copyFrom(fileSie));
-        } else if (baseChat.chatType() == 1) {
+        } else if (baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
             gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), ByteString.copyFrom(fileSie));
         }
         return gcmData;

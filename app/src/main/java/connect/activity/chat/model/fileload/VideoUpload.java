@@ -91,12 +91,13 @@ public class VideoUpload extends FileUpLoad {
 
                 try {
                     Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
-                    videoMessage.toBuilder().setCover(thumb)
-                            .setUrl(url);
+                    videoMessage = videoMessage.toBuilder().setCover(thumb)
+                            .setUrl(url).build();
 
+                    msgExtEntity = (MsgExtEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(videoMessage.toByteArray());
                     uploadSuccess(msgExtEntity);
-                } catch (InvalidProtocolBufferException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

@@ -1,12 +1,9 @@
 package connect.im.parser;
 
 import android.text.TextUtils;
-
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
-
 import java.nio.ByteBuffer;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
@@ -124,7 +121,7 @@ public class ChatParseBean extends InterParse {
                     chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
                     chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
 
-            MsgType msgType = MsgType.toMsgType(chatMessage.getChatTypeValue());
+            MsgType msgType = MsgType.toMsgType(chatMessage.getMsgType());
             switch (msgType) {
                 case Self_destruct_Notice:
                     Connect.DestructMessage destructMessage = Connect.DestructMessage.parseFrom(contents);
@@ -143,7 +140,7 @@ public class ChatParseBean extends InterParse {
                     break;
             }
 
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, msgExtEntity.getMessage_from(), msgExtEntity);
             pushNoticeMsg(pubkey, 0, msgExtEntity.showContent());
         }
     }

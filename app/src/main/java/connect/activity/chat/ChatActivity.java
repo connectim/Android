@@ -336,7 +336,7 @@ public class ChatActivity extends BaseChatActvity {
                 normalChat.sendPushMsg(msgExtEntity);
                 break;
             case Photo:
-                msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), 0, 0);
+                msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), 200, 200);
                 fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(String msgid) {

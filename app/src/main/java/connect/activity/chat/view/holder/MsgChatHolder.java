@@ -123,6 +123,9 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                         }
                     }
                 });
+                if (memberTxt != null) {
+                    memberTxt.setVisibility(View.GONE);
+                }
                 if (burnProBar != null) {
                     long destructtime = msgExtEntity.parseDestructTime();
                     if (destructtime == 0) {

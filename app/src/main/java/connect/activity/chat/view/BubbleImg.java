@@ -5,10 +5,8 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.inter.FileDownLoad;

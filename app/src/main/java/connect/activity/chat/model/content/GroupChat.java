@@ -59,6 +59,7 @@ public class GroupChat extends NormalChat {
         msgExtEntity.setMessage_from(mypublickey);
         msgExtEntity.setMessage_to(identify());
         msgExtEntity.setMessageType(type.type);
+        msgExtEntity.setRead_time(0L);
         msgExtEntity.setCreatetime(TimeUtil.getCurrentTimeInLong());
         msgExtEntity.setSend_status(0);
         return msgExtEntity;
