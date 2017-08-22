@@ -4,10 +4,8 @@ import android.database.Cursor;
 
 import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.BaseDao;
 import connect.database.green.bean.MessageEntity;
@@ -121,7 +119,8 @@ public class MessageHelper extends BaseDao {
         messageEntity.setContent(StringUtil.bytesToHexString(gcmData.toByteArray()));
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
-        insertMessageEntity(messageEntity);
+        messageEntity.setRead_time(0L);
+        messageEntity.setSnap_time(0L);
 
         MsgExtEntity msgExtEntity = messageEntity.transToExtEntity();
         msgExtEntity.setContents(contents);
