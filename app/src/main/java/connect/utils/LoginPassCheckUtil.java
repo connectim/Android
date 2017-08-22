@@ -6,17 +6,15 @@ import android.text.TextUtils;
 
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 
 /**
  * Verify login password
- * Created by Administrator on 2016/12/6.
  */
 public class LoginPassCheckUtil {
 
     private Context mContext;
-    private OnResultListence onResultListence;
+    private OnResultListener onResultListener;
 
     private static LoginPassCheckUtil passCheckUtil = null;
 
@@ -27,37 +25,42 @@ public class LoginPassCheckUtil {
         return passCheckUtil;
     }
 
-    public void checkLoginPass(Context mContext,OnResultListence onResultListence){
+    public void checkLoginPass(Context mContext,OnResultListener onResultListener){
         this.mContext = mContext;
-        this.onResultListence = onResultListence;
-        checkPass();
+        this.onResultListener = onResultListener;
+        showPassDialog();
     }
 
-    private void checkPass(){
+    /**
+     * Enter the password dialog
+     */
+    private void showPassDialog(){
         String passHint = SharedPreferenceUtil.getInstance().getUser().getPassHint();
         passHint = TextUtils.isEmpty(passHint) ? "" : mContext.getString(R.string.Login_Password_Hint,passHint);
         DialogUtil.showEditView(mContext, mContext.getResources().getString(R.string.Set_Enter_Login_Password),
                 mContext.getResources().getString(R.string.Common_Cancel),
                 mContext.getResources().getString(R.string.Common_OK),
-                passHint, "", "", true
-                , 32,new DialogUtil.OnItemClickListener() {
+                passHint, "", "", true, 32,new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         if(TextUtils.isEmpty(value)){
 
                         }else{
-                            encryptionPass(value);
+                            checkLoginPass(value);
                         }
                     }
 
                     @Override
-                    public void cancel() {
-
-                    }
+                    public void cancel() {}
                 });
     }
 
-    private void encryptionPass(final String pass){
+    /**
+     * Verify password is correct
+     *
+     * @param pass login pass
+     */
+    private void checkLoginPass(final String pass){
         ProgressUtil.getInstance().showProgress(mContext);
         new AsyncTask<Void,Void,String>(){
             @Override
@@ -71,7 +74,7 @@ public class LoginPassCheckUtil {
                 super.onPostExecute(priKey);
                 ProgressUtil.getInstance().dismissProgress();
                 if(priKey != null && SupportKeyUril.checkPrikey(priKey)){
-                    onResultListence.success(priKey);
+                    onResultListener.success(priKey);
                 }else {
                     ToastEUtil.makeText(mContext,R.string.Login_Password_incorrect,ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
@@ -79,7 +82,7 @@ public class LoginPassCheckUtil {
         }.execute();
     }
 
-    public interface OnResultListence{
+    public interface OnResultListener{
         void success(String priKey);
         void error();
     }

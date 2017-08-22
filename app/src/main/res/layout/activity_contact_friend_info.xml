@@ -36,7 +36,7 @@
                     android:textColor="@color/color_858998"/>
 
                 <connect.widget.roundedimageview.RoundedImageView
-                    android:id="@+id/avater_rimg"
+                    android:id="@+id/avatar_rimg"
                     android:layout_width="@dimen/dp_60"
                     android:layout_height="@dimen/dp_60"
                     android:layout_gravity="center_horizontal"
@@ -67,7 +67,7 @@
                         android:src="@mipmap/send_message_icon_black3x"/>
 
                     <ImageView
-                        android:id="@+id/bitcoin_imgs"
+                        android:id="@+id/transfer_imgs"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_36"
@@ -75,7 +75,7 @@
                         android:src="@mipmap/send_bitcoin_icon_black3x"/>
 
                     <ImageView
-                        android:id="@+id/contact_img"
+                        android:id="@+id/share_img"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_36"
@@ -155,7 +155,7 @@
             <View style="@style/BaseViewLine.d1d5da"/>
 
             <RelativeLayout
-                android:id="@+id/tansfer_record_rela"
+                android:id="@+id/transfer_record_rela"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_50"
                 android:background="@drawable/selector_list_item_bg"

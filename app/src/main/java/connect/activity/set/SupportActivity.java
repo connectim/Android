@@ -18,8 +18,7 @@ import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
 
 /**
- * support
- * Created by Administrator on 2016/12/1.
+ * Help and feedback
  */
 public class SupportActivity extends BaseActivity {
     @Bind(R.id.toolbar_top)
@@ -48,20 +47,44 @@ public class SupportActivity extends BaseActivity {
         toolbarTop.setRightText(R.string.Set_FeedBack);
         toolbarTop.setRightTextEnable(true);
         String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
-        webView.loadUrl("https://www.connect.im/mobile/faqs?locale=" + languageCode);
 
-        webView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return true;
-            }
-        });
+        webView.loadUrl("https://www.connect.im/mobile/faqs?locale=" + languageCode);
         webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
             }
         });
+        maskLongPress();
+        updateProgress();
+    }
+
+    @OnClick(R.id.left_img)
+    void goback(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick(R.id.right_lin)
+    void goFeedBack(View view) {
+        ActivityUtil.next(mActivity,SupportFeedbackActivity.class);
+    }
+
+    /**
+     * Mask long press the copy function
+     */
+    private void maskLongPress(){
+        webView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Get WebView load progress
+     */
+    private void updateProgress(){
         webView.setWebChromeClient(new WebChromeClient(){
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -78,16 +101,9 @@ public class SupportActivity extends BaseActivity {
         });
     }
 
-    @OnClick(R.id.left_img)
-    void goback(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.right_lin)
-    void goFeedBack(View view) {
-        ActivityUtil.next(mActivity,FeedBackActivity.class);
-    }
-
+    /**
+     * Listen to the Back key, when loaded with Url, WebView goBack
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {

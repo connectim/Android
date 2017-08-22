@@ -21,7 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.set.manager.EditInputFilterPrice;
+import connect.widget.EditInputFilterPrice;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.ui.activity.R;

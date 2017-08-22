@@ -16,7 +16,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.exts.contract.LuckyPacketContract;
 import connect.activity.chat.exts.presenter.LuckyPacketPresenter;
-import connect.activity.set.PayFeeActivity;
+import connect.activity.set.SafetyPayFeeActivity;
 import connect.activity.wallet.PacketHistoryActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -131,7 +131,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
 
             @Override
             public void setFee() {
-                PayFeeActivity.startActivity(activity);
+                SafetyPayFeeActivity.startActivity(activity);
             }
         });
     }

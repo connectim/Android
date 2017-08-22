@@ -24,7 +24,7 @@ import connect.database.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.activity.common.selefriend.SeleUsersActivity;
-import connect.activity.set.PayFeeActivity;
+import connect.activity.set.SafetyPayFeeActivity;
 import connect.activity.wallet.adapter.FriendGridAdapter;
 import connect.activity.wallet.bean.FriendSeleBean;
 import connect.activity.wallet.contract.TransferFriendContract;
@@ -135,7 +135,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
 
     @Override
     public void setPayFee() {
-        PayFeeActivity.startActivity(mActivity);
+        SafetyPayFeeActivity.startActivity(mActivity);
     }
 
     @Override

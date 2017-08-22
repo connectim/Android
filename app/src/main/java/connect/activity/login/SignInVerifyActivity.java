@@ -158,7 +158,7 @@ public class SignInVerifyActivity extends BaseActivity implements SignInVerifyCo
     }
 
     @Override
-    public void changeBtnFinsh() {
+    public void changeBtnFinish() {
         if (codeEt.getText().toString().length() != 6) {
             nextBtn.setText(R.string.Login_Resend);
             nextBtn.setEnabled(true);

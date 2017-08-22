@@ -8,7 +8,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.ScanLoginContract;
-import connect.activity.set.presenter.BackUpPresenter;
+import connect.activity.set.presenter.SafetyBackupPresenter;
 import connect.ui.activity.R;
 import connect.utils.ConfigUtil;
 import connect.utils.ProtoBufUtil;
@@ -46,7 +46,7 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter {
         }
 
         try {
-            String enStr = value.replace(BackUpPresenter.scanHead,"");
+            String enStr = value.replace(SafetyBackupPresenter.scanHead,"");
             if (TextUtils.isEmpty(enStr)) {
                 ToastUtil.getInstance().showToast(R.string.Login_scan_string_error);
             } else {

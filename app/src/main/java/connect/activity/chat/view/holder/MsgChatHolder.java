@@ -21,7 +21,7 @@ import connect.activity.chat.view.MsgStateView;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
-import connect.activity.set.ModifyInfoActivity;
+import connect.activity.set.UserInfoActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -111,7 +111,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     @Override
                     public void onClick(View v) {
                         if (direct == MsgDirect.To) {
-                            ModifyInfoActivity.startActivity((Activity) context);
+                            UserInfoActivity.startActivity((Activity) context);
                         } else if (direct == MsgDirect.From) {
                             ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
                             if (friend == null) {
@@ -151,7 +151,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     @Override
                     public void onClick(View v) {
                         if (direct == MsgDirect.To) {
-                            ModifyInfoActivity.startActivity((Activity) context);
+                            UserInfoActivity.startActivity((Activity) context);
                         } else if (direct == MsgDirect.From) {
                             ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
                             if (friend == null) {

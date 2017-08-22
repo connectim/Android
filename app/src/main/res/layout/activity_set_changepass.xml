@@ -62,7 +62,7 @@
         android:background="@drawable/shape_stroke_20_ffffff">
         <EditText
             style="@style/EditStyle"
-            android:id="@+id/passwordhint_et"
+            android:id="@+id/password_hint_et"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@+id/close_ib"
@@ -71,7 +71,7 @@
             android:background="@null" />
         <ImageButton
             android:contentDescription="@string/app_name"
-            android:id="@+id/passwordhint_ib"
+            android:id="@+id/password_hint_ib"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

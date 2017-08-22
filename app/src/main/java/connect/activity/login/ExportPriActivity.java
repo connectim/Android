@@ -1,12 +1,10 @@
 package connect.activity.login;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextPaint;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +23,11 @@ import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.activity.login.bean.UserBean;
-import connect.activity.set.PatternActivity;
+import connect.activity.set.SafetyPatternActivity;
 import connect.activity.base.BaseActivity;
 import connect.utils.BitmapUtil;
-import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.ToastEUtil;
-import connect.widget.HightEqWidthImage;
+import connect.widget.HeightEqWidthImage;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 
@@ -42,7 +38,7 @@ public class ExportPriActivity extends BaseActivity {
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.backup_img)
-    HightEqWidthImage backupImg;
+    HeightEqWidthImage backupImg;
     @Bind(R.id.backup_private_key)
     TextView backupPrivateKey;
     @Bind(R.id.next_btn)
@@ -94,7 +90,7 @@ public class ExportPriActivity extends BaseActivity {
 
     @OnClick(R.id.next_btn)
     void goNext(View view) {
-        PatternActivity.startActivity(mActivity,PatternActivity.LOGIN_STYPE);
+        SafetyPatternActivity.startActivity(mActivity,SafetyPatternActivity.LOGIN_TYPE);
     }
 
     @OnClick(R.id.backup_private_key)

@@ -28,10 +28,6 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/4/19 0019.
- */
-
 public class NewFriendPresenter implements NewFriendContract.Presenter{
 
     private NewFriendContract.View mView;
@@ -45,9 +41,7 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
     }
 
     @Override
-    public void start() {
-
-    }
+    public void start() {}
 
     @Override
     public void initGrid(RecyclerView recycler) {
@@ -69,7 +63,7 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
     }
 
     @Override
-    public void updataRequestListRead() {
+    public void updateRequestListStatus() {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -105,6 +99,9 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
         }.execute();
     }
 
+    /**
+     * Get recommended friends
+     */
     @Override
     public void requestRecommendUser() {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_RECOMMEND, ByteString.copyFrom(new byte[]{}),
@@ -131,12 +128,13 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
                     }
 
                     @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
+                    public void onError(Connect.HttpResponse response) {}
                 });
     }
 
+    /**
+     * Get local recommended buddy and buddy request data
+     */
     @Override
     public void queryFriend() {
         new AsyncTask<Void, Void, Void>() {

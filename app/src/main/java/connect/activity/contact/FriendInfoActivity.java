@@ -43,23 +43,22 @@ import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
 
 /**
- *
- * Created by Administrator on 2016/12/28.
+ * Friends details.
  */
 public class FriendInfoActivity extends BaseActivity implements FriendInfoContract.View {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
-    @Bind(R.id.avater_rimg)
-    RoundedImageView avaterRimg;
+    @Bind(R.id.avatar_rimg)
+    RoundedImageView avatarRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
     @Bind(R.id.message_img)
     ImageView messageImg;
-    @Bind(R.id.bitcoin_imgs)
-    ImageView bitcoinImgs;
-    @Bind(R.id.contact_img)
-    ImageView contactImg;
+    @Bind(R.id.transfer_imgs)
+    ImageView transferImgs;
+    @Bind(R.id.share_img)
+    ImageView shareImg;
     @Bind(R.id.address_tv)
     TextView addressTv;
     @Bind(R.id.set_alias_rela)
@@ -76,12 +75,13 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     TextView aliasTv;
     @Bind(R.id.id_lin)
     LinearLayout idLin;
-    @Bind(R.id.tansfer_record_rela)
-    RelativeLayout tansferRecordRela;
+    @Bind(R.id.transfer_record_rela)
+    RelativeLayout transferRecordRela;
 
     private FriendInfoActivity mActivity;
     private FriendInfoContract.Presenter presenter;
     private ContactEntity friendEntity;
+    private String pubKey;
 
     public static void startActivity(Activity activity, String pubKey) {
         Bundle bundle = new Bundle();
@@ -95,31 +95,38 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         setContentView(R.layout.activity_contact_friend_info);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
-        mActivity = this;
-        new FriendInfoPresenter(this).start();
+        initView();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        initView();
+        if (null != presenter) {
+            friendEntity = ContactHelper.getInstance().loadFriendEntity(pubKey);
+            updateView(friendEntity);
+        }
     }
 
     @Override
     public void initView() {
+        mActivity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Profile);
 
         Bundle bundle = getIntent().getExtras();
-        String pubKey = bundle.getString("pubKey");
+        pubKey = bundle.getString("pubKey");
         friendEntity = ContactHelper.getInstance().loadFriendEntity(pubKey);
-        bindDataView();
+        updateView(friendEntity);
+
+        new FriendInfoPresenter(this).start();
         presenter.requestUserInfo(friendEntity.getAddress(), friendEntity);
     }
 
-    private void bindDataView() {
-        GlideUtil.loadAvater(avaterRimg, (null == friendEntity || null == friendEntity.getAvatar()) ? "" : friendEntity.getAvatar());
+    @Override
+    public void updateView(ContactEntity friendEntity) {
+        this.friendEntity = friendEntity;
+        GlideUtil.loadAvater(avatarRimg, (null == friendEntity || null == friendEntity.getAvatar()) ? "" : friendEntity.getAvatar());
         nameTv.setText(friendEntity.getUsername());
         addressTv.setText(friendEntity.getAddress());
         if (friendEntity.getSource() == null) {
@@ -152,9 +159,9 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         ActivityUtil.goBack(mActivity);
     }
 
-    @OnClick(R.id.avater_rimg)
+    @OnClick(R.id.avatar_rimg)
     void goimage(View view) {
-        presenter.getImageWatcher().showSingle((ImageView) view, avaterRimg, friendEntity.getAvatar() + "?size=400");
+        presenter.getImageWatcher().showSingle((ImageView) view, avatarRimg, friendEntity.getAvatar() + "?size=400");
     }
 
     @OnClick(R.id.id_lin)
@@ -169,13 +176,13 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         ChatActivity.startActivity(mActivity, new Talker(friendEntity));
     }
 
-    @OnClick(R.id.bitcoin_imgs)
-    void goSendBitcoin(View view) {
+    @OnClick(R.id.transfer_imgs)
+    void goSendTransfer(View view) {
         TransferToActivity.startActivity(mActivity, friendEntity.getAddress(), null);
     }
 
-    @OnClick(R.id.contact_img)
-    void goSendContact(View view) {
+    @OnClick(R.id.share_img)
+    void goSendShare(View view) {
         ConversationActivity.startActivity(mActivity, ConverType.CAED,friendEntity);
     }
 
@@ -184,8 +191,8 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         FriendSetAliasActivity.startActivity(mActivity, friendEntity.getPub_key());
     }
 
-    @OnClick(R.id.tansfer_record_rela)
-    void goFriaendRecord(View view) {
+    @OnClick(R.id.transfer_record_rela)
+    void goFriendTransferRecord(View view) {
         FriendRecordActivity.startActivity(mActivity, friendEntity);
     }
 
@@ -239,7 +246,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == ConversationActivity.CODE_REQUEST && requestCode == ConversationActivity.CODE_REQUEST){
+        if (requestCode == ConversationActivity.CODE_REQUEST && requestCode == ConversationActivity.CODE_REQUEST) {
             presenter.shareFriendCard(data,friendEntity);
         }
     }
@@ -252,12 +259,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @Override
     public Activity getActivity() {
         return mActivity;
-    }
-
-    @Override
-    public void updataView(ContactEntity friendEntity) {
-        this.friendEntity = friendEntity;
-        bindDataView();
     }
 
     @Override

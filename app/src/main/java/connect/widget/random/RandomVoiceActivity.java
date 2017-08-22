@@ -136,14 +136,10 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
                 getString(R.string.Link_Unable_to_get_the_voice_data),
                 "", "", true, new DialogUtil.OnItemClickListener() {
                     @Override
-                    public void confirm(String value) {
-
-                    }
+                    public void confirm(String value) {}
 
                     @Override
-                    public void cancel() {
-
-                    }
+                    public void cancel() {}
                 }, false);
     }
 
@@ -159,9 +155,7 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
             }
 
             @Override
-            public void fail(WalletError error) {
-
-            }
+            public void fail(WalletError error) {}
         });
     }
 

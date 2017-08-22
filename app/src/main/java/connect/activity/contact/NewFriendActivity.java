@@ -36,10 +36,8 @@ import connect.utils.ConfigUtil;
 import connect.utils.ToastEUtil;
 import connect.widget.TopToolBar;
 
-
 /**
- * add new friend
- * Created by Administrator on 2016/12/22.
+ * add new friend.
  */
 public class NewFriendActivity extends BaseActivity implements NewFriendContract.View {
 
@@ -66,8 +64,9 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
     @Override
     protected void onStart() {
         super.onStart();
-        if (null != presenter)
+        if (null != presenter) {
             presenter.queryFriend();
+        }
     }
 
     @Override
@@ -79,11 +78,55 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         new NewFriendPresenter(this).start();
 
         presenter.initGrid(recycler);
-        initRequestList();
-        presenter.updataRequestListRead();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        requestAdapter = new NewRequestAdapter(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
+        recyclerview.setAdapter(requestAdapter);
+        requestAdapter.setOnAcceptListener(onAcceptListener);
+        recyclerview.addOnScrollListener(onScrollListener);
+
+        presenter.requestRecommendUser();
+        presenter.updateRequestListStatus();
     }
 
-    private NewRequestAdapter.OnAcceptListence onAcceptListence = new NewRequestAdapter.OnAcceptListence() {
+    @Override
+    public void itemClick(int tag) {
+        switch (tag) {
+            case 0://scan qrcode
+                ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
+                break;
+            case 1:
+                ActivityUtil.next(mActivity, FriendAddPhoneActivity.class);
+                break;
+            case 2://share
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, ConfigUtil.getInstance().shareCardAddress()
+                        + "?address=" + MemoryDataManager.getInstance().getAddress());
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, "share to"));
+                break;
+            default:
+                break;
+        }
+    }
+
+    @OnClick(R.id.left_img)
+    void goBack(View view) {
+        ActivityUtil.goBack(mActivity);
+    }
+
+    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener(){
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            requestAdapter.closeMenu();
+        }
+    };
+
+    private NewRequestAdapter.OnAcceptListener onAcceptListener = new NewRequestAdapter.OnAcceptListener() {
+
         @Override
         public void accept(int position, FriendRequestEntity entity) {
             if (entity.getStatus() == 4) {
@@ -99,9 +142,11 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
 
         @Override
         public void itemClick(int position, FriendRequestEntity entity) {
-            if (TextUtils.isEmpty(entity.getPub_key())) {//load more
+            if (TextUtils.isEmpty(entity.getPub_key())) {
+                //load more
                 ActivityUtil.next(mActivity, RecommendActivity.class);
-            } else if (entity.getStatus() == 4) {//introduce
+            } else if (entity.getStatus() == 4) {
+                //introduce
                 StrangerInfoActivity.startActivity(mActivity, entity.getAddress(), SourceType.RECOMMEND);
             } else {
                 if (entity.getStatus() == 1) {
@@ -121,7 +166,8 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         @Override
         public void deleteItem(int position, FriendRequestEntity entity) {
             requestAdapter.closeMenu();
-            if (entity.getStatus() == 4) {//introduce
+            if (entity.getStatus() == 4) {
+                //introduce
                 MsgSendBean msgSendBean = new MsgSendBean();
                 msgSendBean.setType(MsgSendBean.SendType.TypeRecommendNoInterested);
                 msgSendBean.setPubkey(entity.getPub_key());
@@ -135,48 +181,11 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         }
     };
 
-    @Override
-    public void itemClick(int tag) {
-        switch (tag) {
-            case 0://scan qrcode
-                ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
-                break;
-            case 1:
-                ActivityUtil.next(mActivity, FriendAddPhoneActivity.class);
-                break;
-            case 2://share
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, ConfigUtil.getInstance().shareCardAddress()
-                        + "?address=" + MemoryDataManager.getInstance().getAddress());
-                shareIntent.setType("text/plain");
-                startActivity(Intent.createChooser(shareIntent, "share to"));
-                break;
-        }
-    }
-
-    private void initRequestList() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
-        requestAdapter = new NewRequestAdapter(mActivity);
-        recyclerview.setLayoutManager(linearLayoutManager);
-        recyclerview.addItemDecoration(new LineDecoration(mActivity));
-        recyclerview.setAdapter(requestAdapter);
-        requestAdapter.setOnAcceptListence(onAcceptListence);
-        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                requestAdapter.closeMenu();
-            }
-        });
-        presenter.requestRecommendUser();
-    }
-
-    @OnClick(R.id.left_img)
-    void goBack(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
-
+    /**
+     * The message returns the result
+     *
+     * @param notice result
+     */
     @Subscribe
     public void onEventMainThread(MsgNoticeBean notice) {
         Object[] objs = null;
@@ -196,6 +205,8 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
             case MSG_SEND_FAIL:
                 ToastEUtil.makeText(mActivity, R.string.Link_Operation_failed, ToastEUtil.TOAST_STATUS_FAILE).show();
                 break;
+            default:
+                break;
         }
     }
 
@@ -209,6 +220,12 @@ public class NewFriendActivity extends BaseActivity implements NewFriendContract
         return mActivity;
     }
 
+    /**
+     * After the access to the data update interface
+     *
+     * @param sizeRecommend recommend count
+     * @param listFina list data
+     */
     @Override
     public void notifyData(int sizeRecommend, ArrayList<FriendRequestEntity> listFina) {
         requestAdapter.setRecommendCount(sizeRecommend);
