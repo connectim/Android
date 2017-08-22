@@ -27,7 +27,7 @@ import connect.widget.roundedimageview.RoundedImageView;
 public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.ViewHolder> {
 
     private ArrayList<FriendRequestEntity> mList = new ArrayList<>();
-    private OnAcceptListence onAcceptListence;
+    private OnAcceptListener onAcceptListener;
     private int recommendCount;
 
     private Activity activity;
@@ -66,7 +66,7 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
                     viewHolder.moreTv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onAcceptListence.itemClick(position, new FriendRequestEntity());
+                            onAcceptListener.itemClick(position, new FriendRequestEntity());
                         }
                     });
                 }
@@ -91,21 +91,21 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
                 if (menuIsOpen(scrollView)) {
                     closeMenu();
                 }
-                onAcceptListence.itemClick(position, friendRequestEntity);
+                onAcceptListener.itemClick(position, friendRequestEntity);
             }
         });
 
         viewHolder.statusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAcceptListence.accept(position, friendRequestEntity);
+                onAcceptListener.accept(position, friendRequestEntity);
             }
         });
         viewHolder.deleteTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 closeMenu();
-                onAcceptListence.deleteItem(position, friendRequestEntity);
+                onAcceptListener.deleteItem(position, friendRequestEntity);
             }
         });
     }
@@ -134,8 +134,8 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (onAcceptListence != null) {
-                            onAcceptListence.accept(position, requestEntity);
+                        if (onAcceptListener != null) {
+                            onAcceptListener.accept(position, requestEntity);
                         }
                     }
                 });
@@ -223,11 +223,11 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
         }
     };
 
-    public void setOnAcceptListence(OnAcceptListence onAcceptListence) {
-        this.onAcceptListence = onAcceptListence;
+    public void setOnAcceptListener(OnAcceptListener onAcceptListener) {
+        this.onAcceptListener = onAcceptListener;
     }
 
-    public interface OnAcceptListence {
+    public interface OnAcceptListener {
 
         void accept(int position, FriendRequestEntity entity);
 

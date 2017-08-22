@@ -34,10 +34,6 @@ import connect.widget.imagewatcher.ImageWatcher;
 import connect.widget.imagewatcher.ImageWatcherUtil;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/4/19 0019.
- */
-
 public class FriendInfoPresenter implements FriendInfoContract.Presenter {
 
     private FriendInfoContract.View mView;
@@ -64,17 +60,17 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
     @Override
     public void shareFriendCard(Intent data, ContactEntity friendEntity) {
         int type = data.getIntExtra("type", 0);
-        String pubkey = data.getStringExtra("object");
-        if (TextUtils.isEmpty(pubkey)) {
+        String pubKey = data.getStringExtra("object");
+        if (TextUtils.isEmpty(pubKey)) {
             return;
         }
 
         NormalChat baseChat = null;
         if (type == 0) {
-            ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubkey);
+            ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubKey);
             baseChat = new FriendChat(acceptFriend);
         } else if (type == 1) {
-            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubKey);
             baseChat = new GroupChat(groupEntity);
         }
         MsgExtEntity msgExtEntity = baseChat.cardMsg(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAvatar());
@@ -139,7 +135,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     }
                     friendEntity.setUsername(userInfo.getUsername());
                     friendEntity.setAvatar(userInfo.getAvatar());
-                    mView.updataView(friendEntity);
+                    mView.updateView(friendEntity);
                     ContactHelper.getInstance().insertContact(friendEntity);
                     ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
                     if (roomEntity != null) {
@@ -151,9 +147,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
+            public void onError(Connect.HttpResponse response) {}
         });
     }
 
@@ -175,9 +169,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
+            public void onError(Connect.HttpResponse response) {}
         });
     }
 

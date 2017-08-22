@@ -26,7 +26,7 @@ public interface NewFriendContract {
     interface Presenter extends BasePresenter {
         void initGrid(RecyclerView recycler);
 
-        void updataRequestListRead();
+        void updateRequestListStatus();
 
         void queryFriend();
 

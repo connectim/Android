@@ -18,7 +18,7 @@ public interface FriendInfoContract {
     interface View extends BaseView<FriendInfoContract.Presenter> {
         Activity getActivity();
 
-        void updataView(ContactEntity friendEntity);
+        void updateView(ContactEntity friendEntity);
 
         void setCommon(boolean isCommon);
 
