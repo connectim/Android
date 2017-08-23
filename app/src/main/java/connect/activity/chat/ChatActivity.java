@@ -215,7 +215,7 @@ public class ChatActivity extends BaseChatActvity {
             if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
                 toolbar.setTitle(titleName);
             } else {
-                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
+                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
                 toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
             }
         } else {
@@ -231,7 +231,7 @@ public class ChatActivity extends BaseChatActvity {
             if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
                 toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
             } else {
-                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
+                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
                 toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
             }
         }

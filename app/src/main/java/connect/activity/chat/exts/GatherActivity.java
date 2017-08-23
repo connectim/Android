@@ -161,7 +161,7 @@ public class GatherActivity extends BaseActivity {
             layoutSecond.setVisibility(View.VISIBLE);
             transferEditView.setAmountTvGone();
 
-            int countMem = ContactHelper.getInstance().loadGroupMemEntity(gatherKey).size();
+            int countMem = ContactHelper.getInstance().loadGroupMemEntities(gatherKey).size();
             edit.setText(String.valueOf(countMem-1));
 
             txt2.setVisibility(View.VISIBLE);

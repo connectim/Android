@@ -587,7 +587,7 @@ public class CommandBean extends InterParse {
             case 4://Group change
                 groupKey = groupChange.getIdentifier();
                 Connect.GroupAttorn groupAttorn = Connect.GroupAttorn.parseFrom(groupChange.getDetail());
-                groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
+                groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
                 if (groupMemEntities == null) {
                     break;
                 }

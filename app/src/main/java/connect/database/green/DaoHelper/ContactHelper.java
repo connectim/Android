@@ -33,6 +33,7 @@ import protos.Connect;
  * Created by gtq on 2016/11/22.
  */
 public class ContactHelper extends BaseDao {
+
     private static ContactHelper contactHelper;
     private FriendRequestEntityDao friendRequestEntityDao;
     private RecommandFriendEntityDao recommandFriendEntityDao;
@@ -203,8 +204,9 @@ public class ContactHelper extends BaseDao {
      * @param pukkey
      * @return
      */
-    public List<GroupMemberEntity> loadGroupMemEntity(String pukkey) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY WHERE M.IDENTIFIER = ? GROUP BY M.IDENTIFIER ,M.ADDRESS ORDER BY M.ROLE DESC;";
+    public List<GroupMemberEntity> loadGroupMemEntities(String pukkey) {
+        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY " +
+                "WHERE M.IDENTIFIER = ? GROUP BY M.IDENTIFIER ,M.ADDRESS ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{pukkey});
 
         GroupMemberEntity groupMemEntity = null;
@@ -240,7 +242,8 @@ public class ContactHelper extends BaseDao {
      * @return
      */
     public List<GroupMemberEntity> loadGroupMemEntities(String identify,String memberkey) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY WHERE M.IDENTIFIER = ? AND ( M.ADDRESS == ? OR M.PUB_KEY ==? ) GROUP BY M.PUB_KEY ORDER BY M.ROLE DESC;";
+        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY " +
+                "WHERE M.IDENTIFIER = ? AND ( M.ADDRESS == ? OR M.PUB_KEY ==? ) GROUP BY M.PUB_KEY ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{identify, memberkey, memberkey});
 
         GroupMemberEntity groupMemEntity = null;
@@ -268,8 +271,8 @@ public class ContactHelper extends BaseDao {
         return groupMemEntities;
     }
 
-    public GroupMemberEntity loadGroupMemberEntity(String pukkey, String address) {
-        List<GroupMemberEntity> entities = loadGroupMemEntities(pukkey, address);
+    public GroupMemberEntity loadGroupMemberEntity(String identify, String publickey) {
+        List<GroupMemberEntity> entities = loadGroupMemEntities(identify, publickey);
         return entities == null || entities.size() == 0 ? null : entities.get(0);
     }
 

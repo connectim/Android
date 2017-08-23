@@ -151,7 +151,7 @@ public class GroupChat extends NormalChat {
         if (memEntityMap == null) {
             memEntityMap = new HashMap<>();
         }
-        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(chatKey());
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(chatKey());
         for (GroupMemberEntity memEntity : groupMemEntities) {
             memEntityMap.put(memEntity.getPub_key(), memEntity);
         }

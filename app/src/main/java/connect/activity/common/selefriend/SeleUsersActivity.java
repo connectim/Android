@@ -186,7 +186,7 @@ public class SeleUsersActivity extends BaseActivity {
 
     private List<ContactEntity> loadGropMember() {
         ArrayList<ContactEntity> list = new ArrayList<>();
-        List<GroupMemberEntity> allMembers = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
+        List<GroupMemberEntity> allMembers = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         for (GroupMemberEntity groupMemEntity : allMembers) {
             if (MemoryDataManager.getInstance().getPubKey().equals(groupMemEntity.getPub_key()))
                 continue;

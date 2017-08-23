@@ -69,7 +69,7 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
                 ActivityUtil.goBack(activity);
                 return;
             }
-            int countMember = ContactHelper.getInstance().loadGroupMemEntity(roomKey).size();
+            int countMember = ContactHelper.getInstance().loadGroupMemEntities(roomKey).size();
             view.showGroupInfo(countMember);
         }
     }

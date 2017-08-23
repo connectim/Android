@@ -120,11 +120,15 @@ public class FailMsgsManager {
         sendFailMap.remove(msgid);
     }
 
-    public void removeAllFailMsg(){
-        if (sendFailMap == null) {
-            sendFailMap = new HashMap<>();
+    public void removeAllFailMsg() {
+        if (sendFailMap != null) {
+            sendFailMap.clear();
+            sendFailMap = null;
         }
-        sendFailMap.clear();
+
+        if (receiveFailMap != null) {
+            receiveFailMap.clear();
+        }
     }
 
     /**
