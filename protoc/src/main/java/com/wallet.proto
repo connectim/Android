@@ -14,10 +14,11 @@ repeated Coin coins = 2;
 }
 
 message Wallet {
-string pay_load = 1;
+string payload = 1;
 int32 version = 2;
 int32 ver = 3;
 string check_sum = 4;
+string uuid = 100;
 }
 
 message Balance {

@@ -71,7 +71,7 @@ public class AboutActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_About);
         appVersion.setText(getString(R.string.Set_Versions_number, SystemDataUtil.getVersionName(mActivity)));
-        requestAppUpdata();
+        requestAppUpdate();
     }
 
     @OnClick(R.id.left_img)
@@ -124,7 +124,7 @@ public class AboutActivity extends BaseActivity {
                 (mActivity,requestCode,permissions,grantResults,permissionCallBack);
     }
 
-    private void requestAppUpdata(){
+    private void requestAppUpdate(){
         Connect.VersionRequest versionRequest = Connect.VersionRequest.newBuilder()
                 .setCategory(1)
                 .setPlatform(2)

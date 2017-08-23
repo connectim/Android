@@ -59,6 +59,10 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dp_22"
                     android:layout_toRightOf="@+id/avatar_rimg"
+                    android:layout_toLeftOf="@+id/status_btn"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:singleLine="true"
+                    android:ellipsize="middle"
                     android:text="" />
                 <Button
                     android:id="@+id/status_btn"

@@ -16,6 +16,7 @@ import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
+import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
@@ -59,9 +60,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                     for (Connect.UserInfoBalance userInfoBalance : list) {
                         arrayList.add(userInfoBalance.getAvatar());
                     }
+                    viewHolder.avaterRimg.setVisibility(View.VISIBLE);
+                    GlideUtil.loadAvater(viewHolder.avaterRimg,list.get(0).getAvatar());
+                }else{
+                    viewHolder.avaterRimg.setVisibility(View.VISIBLE);
+                    viewHolder.avaterRimg.setImageResource(R.mipmap.bitcoin_luckybag3x);
                 }
-                viewHolder.avaterRimg.setVisibility(View.VISIBLE);
-                viewHolder.avaterRimg.setImageResource(R.mipmap.bitcoin_luckybag3x);
                 break;
             case 3://lucky packet
             case 4:

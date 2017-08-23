@@ -217,7 +217,7 @@ public class BaseWallet {
                     if (respSyncWallet.getCoinsList() != null && respSyncWallet.getCoinsList().size() > 0) {
                         // Save the wallet information
                         WalletOuterClass.Wallet wallet = respSyncWallet.getWallet();
-                        WalletBean walletBean = new WalletBean(wallet.getPayLoad(), wallet.getVer(),
+                        WalletBean walletBean = new WalletBean(wallet.getPayload(), wallet.getVer(),
                                 wallet.getVersion(), wallet.getCheckSum());
                         // Save the currency information
                         SharePreferenceUser.getInstance().putWalletInfo(walletBean);
