@@ -11,12 +11,13 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import connect.activity.chat.bean.BurnNotice;
+import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.system.SystemUtil;
@@ -71,7 +72,7 @@ public class BurnProBar extends View {
         setValue(ROUND_DIRECT);
         cancelTimer();
 
-        long burnstart = msgExtEntity.parseDestructTime();
+        long burnstart = msgExtEntity.getSnap_time();
         if (burnstart > 0) {
             startBurnRead();
         }
@@ -79,30 +80,36 @@ public class BurnProBar extends View {
 
     public void startBurnRead() {
         long burnstart = msgExtEntity.getSnap_time();
-        MsgDirect direct = msgExtEntity.parseDirect();
-
-        if (burnstart > 0) {
-            long remainTime = msgExtEntity.parseDestructTime() - (TimeUtil.getCurrentTimeInLong() - burnstart);
-            burnTimer = new BurnCountTimer(remainTime, 500);
-            burnTimer.start();
+        if (burnstart <= 0) {
+            burnstart = TimeUtil.getCurrentTimeInLong();
+            msgExtEntity.setSnap_time(burnstart);
+            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         }
+
+        long remainTime = msgExtEntity.parseDestructTime() - (TimeUtil.getCurrentTimeInLong() - burnstart);
+        burnTimer = new BurnCountTimer(remainTime, 500);
+        burnTimer.start();
+
+        MsgDirect direct = msgExtEntity.parseDirect();
         if (direct == MsgDirect.From) {
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgExtEntity.getMessage_id(), direct);
+            MsgSend.sendOuterMsg(MsgType.Self_destruct_Receipt, msgExtEntity.getMessage_id());
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(BurnNotice notice) {
-        Object[] objects = (Object[]) notice.getObjs();
-        if (notice.getBurnType() == BurnNotice.BurnType.BURN_READ) {
-            if (objects[0].equals(msgExtEntity.getMessage_id())) {
-                startBurnRead();
-            }
+    public void onEventMainThread(DestructReadBean readBean) {
+        if (msgExtEntity.getMessage_id().equals(readBean.getMessageId())) {
+            startBurnRead();
         }
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(RecExtBean bean) {
+        if (msgExtEntity == null) {//group message haven't destruct message
+            return;
+        }
+
         Object[] objects = null;
         if (bean.getObj() != null) {
             objects = (Object[]) bean.getObj();

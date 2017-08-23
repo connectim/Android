@@ -11,13 +11,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.bean.MsgDirect;
+import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.VideoPlayContract;
 import connect.activity.chat.exts.presenter.VideoPlayPresenter;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -31,7 +31,7 @@ import connect.widget.video.inter.VideoListener;
 /**
  * play Local video files
  */
-public class VideoPlayerActivity extends BaseActivity implements VideoPlayContract.BView{
+public class VideoPlayerActivity extends BaseActivity implements VideoPlayContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -121,7 +121,7 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
                 msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, messageId, MsgDirect.From);
+                DestructReadBean.getInstance().sendEventDelay(messageId);
             }
         }
     };

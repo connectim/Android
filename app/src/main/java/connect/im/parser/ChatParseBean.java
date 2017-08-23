@@ -145,7 +145,7 @@ public class ChatParseBean extends InterParse {
             }
 
             RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, msgExtEntity.getMessage_from(), msgExtEntity);
-            pushNoticeMsg(pubkey, 0, msgExtEntity.showContent());
+            pushNoticeMsg(msgExtEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, msgExtEntity.showContent());
         }
     }
 
@@ -158,26 +158,26 @@ public class ChatParseBean extends InterParse {
         Connect.MessageData messageData = msgpost.getMsgData();
         Connect.ChatMessage chatMessage = messageData.getChatMsg();
 
-        String pubkey = chatMessage.getFrom();
-        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+        String groupIdentify = chatMessage.getTo();
+        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupIdentify);
         Connect.GcmData gcmData = chatMessage.getCipherData();
 
         if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {//group backup
-            FailMsgsManager.getInstance().insertReceiveMsg(pubkey, chatMessage.getMsgId(), chatMessage);
-            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, pubkey);
+            FailMsgsManager.getInstance().insertReceiveMsg(groupIdentify, chatMessage.getMsgId(), msgpost);
+            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupIdentify);
         } else {
             byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
-            if (contents.length < 10) {
-                HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, pubkey);
+            if (contents.length < 3) {
+                HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupIdentify);
             } else {
-                MsgExtEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), chatMessage.getFrom(),
+                MsgExtEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), groupIdentify,
                         chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
                         chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
                 MessageHelper.getInstance().insertMessageEntity(msgExtEntity);
 
                 NormalChat normalChat = new GroupChat(groupEntity);
                 normalChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
 
                 String content = "";
                 String myaddress = MemoryDataManager.getInstance().getAddress();
@@ -187,7 +187,7 @@ public class ChatParseBean extends InterParse {
                 } else {
                     content = msgExtEntity.showContent();
                 }
-                pushNoticeMsg(pubkey, 0, content);
+                pushNoticeMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
             }
         }
     }

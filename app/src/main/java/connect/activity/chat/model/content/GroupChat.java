@@ -30,6 +30,7 @@ public class GroupChat extends NormalChat {
 
     private GroupEntity groupEntity;
     private GroupMemberEntity myGroupMember;
+    private Map<String, GroupMemberEntity> memEntityMap = null;
 
     public GroupChat(GroupEntity entity) {
         groupEntity = entity;
@@ -40,12 +41,8 @@ public class GroupChat extends NormalChat {
             RoomSession.getInstance().setGroupEcdh(groupEntity.getEcdh_key());
         }
 
-        myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
-        if (myGroupMember == null) {
-            myGroupMember = new GroupMemberEntity();
-            myGroupMember.setPub_key(MemoryDataManager.getInstance().getPubKey());
-            myGroupMember.setUsername(MemoryDataManager.getInstance().getName());
-        }
+        loadGroupMembersMap();
+        myGroupMember = memEntityMap.get(MemoryDataManager.getInstance().getPubKey());
     }
 
     @Override
@@ -150,36 +147,27 @@ public class GroupChat extends NormalChat {
         myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
     }
 
-    private Map<String, GroupMemberEntity> memEntityMap = null;
+    public void loadGroupMembersMap() {
+        if (memEntityMap == null) {
+            memEntityMap = new HashMap<>();
+        }
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(chatKey());
+        for (GroupMemberEntity memEntity : groupMemEntities) {
+            memEntityMap.put(memEntity.getPub_key(), memEntity);
+        }
+    }
 
     public GroupMemberEntity loadGroupMember(String memberkey) {
         if (memEntityMap == null) {
-            memEntityMap = new HashMap<>();
-            List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(chatKey());
-            for (GroupMemberEntity memEntity : groupMemEntities) {
-                memEntityMap.put(memEntity.getPub_key(), memEntity);
-            }
+            loadGroupMembersMap();
         }
         return memEntityMap.get(memberkey);
-    }
-
-    public String nickName(String pubkey) {
-        String memberName = "";
-        GroupMemberEntity groupMemEntity = loadGroupMember(pubkey);
-        if (groupMemEntity != null) {
-            memberName = TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick();
-        }
-        return memberName;
     }
 
     public void setNickName(String name){
         if (!TextUtils.isEmpty(name)) {
             groupEntity.setName(name);
         }
-    }
-
-    public void setHeadimg(String path) {
-        groupEntity.setAvatar(path);
     }
 
     public MsgExtEntity notMemberNotice() {

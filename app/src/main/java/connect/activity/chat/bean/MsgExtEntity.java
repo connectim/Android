@@ -112,6 +112,10 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
                         Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(getContents());
                         destructtime = textMessage.getSnapTime();
                         break;
+                    case Emotion:
+                        Connect.EmotionMessage emotionMessage = Connect.EmotionMessage.parseFrom(getContents());
+                        destructtime = emotionMessage.getSnapTime();
+                        break;
                     case Photo:
                         Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(getContents());
                         destructtime = photoMessage.getSnapTime();
@@ -200,19 +204,16 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
             case PRIVATE:
                 break;
             case GROUPCHAT://show group member nickname
-                GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(getMessage_to(), getMessage_from());
+                GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(getMessage_ower(), getMessage_from());
                 if (memberEntity != null) {
-                    content = memberEntity.getUsername() + ": " + content;
+                    String memberName = TextUtils.isEmpty(memberEntity.getNick()) ? memberEntity.getUsername() : memberEntity.getNick();
+                    content = memberName + ": " + content;
                 }
                 break;
             case CONNECT_SYSTEM:
                 break;
         }
         return content;
-    }
-
-    public Connect.MessageUserInfo getUserInfo(){
-        return Connect.MessageUserInfo.newBuilder().build();
     }
 
     @Override

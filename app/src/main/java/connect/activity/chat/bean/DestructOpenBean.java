@@ -16,6 +16,10 @@ public class DestructOpenBean implements Serializable {
         this.time = time;
     }
 
+    public long getTime() {
+        return time;
+    }
+
     public static void sendDestructMsg(long time) {
         EventBus.getDefault().post(new DestructOpenBean(time));
     }

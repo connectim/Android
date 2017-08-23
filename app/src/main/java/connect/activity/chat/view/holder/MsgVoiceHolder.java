@@ -4,9 +4,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.chat.view.VoiceImg;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -86,10 +87,11 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                 voiceImg.startPlay(msgExtEntity.getMessage_id(), localPath, new VoiceImg.VoicePlayListener() {
                                     @Override
                                     public void playFinish(String msgid, String filepath) {
-                                        msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
-                                        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                                        if (voiceMessage.getSnapTime() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
-                                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, msgExtEntity.parseDirect());
+                                        if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
+                                            msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                                            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+
+                                            DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
                                         }
                                     }
                                 });
