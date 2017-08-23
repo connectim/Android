@@ -345,6 +345,24 @@ public class ContactHelper extends BaseDao {
         }
     }
 
+    public void updateGroupMemberRole(String identify, String publickey, Integer role) {
+        updateGroupMember(identify, publickey, null, null, role, null);
+    }
+
+    public void updateGroupMemberNickName(String identify, String publickey, String nickname) {
+        updateGroupMember(identify, publickey, null, null, null, nickname);
+    }
+
+    public void updateGroupMember(String identify, String publickey, String username, String avatar, Integer role, String nickname) {
+        String sql = "UPDATE GROUP_MEMBER_ENTITY SET " +
+                (TextUtils.isEmpty(username) ? " " : "USERNAME = " + username + " , ") +
+                (TextUtils.isEmpty(avatar) ? " " : "AVATAR = " + avatar + " , ") +
+                (role == null ? " " : "ROLE =  " + role + " ") +
+                (TextUtils.isEmpty(nickname) ? " " : "NICK = '" + nickname + "' ") +
+                "WHERE IDENTIFIER = ? AND (PUB_KEY = ? OR ADDRESS = ?);";
+        daoSession.getDatabase().execSQL(sql, new Object[]{identify, publickey, publickey});
+    }
+
     /*********************************  add ***********************************/
     /**
      * friend request (one friend one request
@@ -368,19 +386,6 @@ public class ContactHelper extends BaseDao {
      */
     public void inserGroupEntity(GroupEntity entity) {
         groupEntityDao.insertOrReplace(entity);
-    }
-
-    public void inserGroupEntity(List<GroupEntity> groupEntities) {
-        groupEntityDao.insertInTx(groupEntities);
-    }
-
-    /**
-     * add group member
-     *
-     * @param entity
-     */
-    public void inserGroupMemEntity(GroupMemberEntity entity) {
-        groupMemberEntityDao.insertOrReplace(entity);
     }
 
     /**
