@@ -168,6 +168,10 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
     public void initView(Double amount,Activity mActivity){
         this.mActivity = mActivity;
+        if(initWalletManager != null){
+            initWalletManager.setmActivity(mActivity);
+        }
+
         if(amount != null){
             editDefault = RateFormatUtil.doubleToLongBtc(amount);
         }

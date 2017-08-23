@@ -12,6 +12,7 @@ import java.util.List;
 import connect.activity.base.BaseApplication;
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.SharePreferenceUser;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
@@ -118,11 +119,10 @@ public class BaseWallet {
 
     /**
      * create wallet
-     * Create a wallet
      */
-    public void createWallet(String baseseed, String pwd, final WalletListener listener) {
+    public void createWallet(String baseSeed, String pwd, final WalletListener listener) {
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
-        final EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(BaseCurrency.CATEGORY_BASESEED,baseseed, pwd);
+        final EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(BaseCurrency.CATEGORY_BASESEED,baseSeed, pwd);
         final String checkSum = StringUtil.cdHash256(SupportKeyUril.PIN_VERSION + "" + encoPinBean.getPayload());
         builder.setPayload(encoPinBean.getPayload());
         builder.setCheckSum(checkSum);
@@ -174,12 +174,12 @@ public class BaseWallet {
     }
 
     /**
-     * Get user status
      * Get the user identity status
      */
     public void requestUserStatus(final WalletListener listener) {
         WalletOuterClass.RequestUserInfo requestUserInfo = WalletOuterClass.RequestUserInfo.newBuilder()
                 .setCurrency(CurrencyEnum.BTC.getCode())
+                .setUid(SharedPreferenceUtil.getInstance().getUser().getPubKey())
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_USER_STATUS, requestUserInfo, new ResultCall<Connect.HttpResponse>() {
             @Override

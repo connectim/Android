@@ -124,4 +124,7 @@ public class InitWalletManager {
         this.listener = listener;
     }
 
+    public void setmActivity(Activity mActivity) {
+        this.mActivity = mActivity;
+    }
 }
