@@ -85,7 +85,6 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            ProgressUtil.getInstance().dismissProgress();
             switch (msg.what) {
                 case PARSE_BARCODE_SUC:
                     presenter.checkString((String) msg.obj);
@@ -102,6 +101,7 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
         if (resultCode == AlbumActivity.OPEN_ALBUM_CODE && requestCode == AlbumActivity.OPEN_ALBUM_CODE) {
             List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
             if (strings != null && strings.size() > 0) {
+                ProgressUtil.getInstance().showProgress(mActivity);
                 getAblamString(strings.get(0).getImageFile().getAbsolutePath(), mLocalHandler);
             }
         }

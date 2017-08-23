@@ -94,7 +94,7 @@ public class BackupPrivateKeyActivity extends BaseActivity {
     }
 
     @OnClick(R.id.backup_private_key)
-    void gobackup(View view) {
+    void goBackup(View view) {
         viewBackUp = LayoutInflater.from(mActivity).inflate(R.layout.prikey_backup_photo,null);
         ((ImageView)viewBackUp.findViewById(R.id.scan_imag)).setImageBitmap(bitmap);
         ((TextView)viewBackUp.findViewById(R.id.name_tv)).setText(userBean.getName());

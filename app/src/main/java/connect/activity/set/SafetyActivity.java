@@ -1,6 +1,5 @@
 package connect.activity.set;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;

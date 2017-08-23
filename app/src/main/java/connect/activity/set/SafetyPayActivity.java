@@ -45,8 +45,6 @@ public class SafetyPayActivity extends BaseActivity {
     TextView payPassTv;
     @Bind(R.id.pas_ll)
     LinearLayout pasLl;
-    @Bind(R.id.without_tb)
-    View withoutTb;
     @Bind(R.id.miner_tv)
     TextView minerTv;
     @Bind(R.id.miner_ll)
@@ -77,52 +75,17 @@ public class SafetyPayActivity extends BaseActivity {
 
         paySetBean = ParamManager.getInstance().getPaySet();
         if (paySetBean != null) {
-            updateView();
+            minerTv.setText(paySetBean.isAutoFee() ? getString(R.string.Set_Auto) :
+                    getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(paySetBean.getFee()));
         }
-
         if (CurrencyHelper.getInstance().loadCurrencyList() == null) {
             pasLl.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void updateView() {
-        withoutTb.setSelected(paySetBean.getNoSecretPay());
-        if (TextUtils.isEmpty(paySetBean.getPayPin())) {
-            payPassTv.setText(R.string.Set_Setting);
-        } else {
-            payPassTv.setText(R.string.Wallet_Reset_password);
-        }
-
-        if (paySetBean.isAutoFee()) {
-            minerTv.setText(R.string.Set_Auto);
-        } else {
-            minerTv.setText(getResources().getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(paySetBean.getFee()));
-        }
-    }
-
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.without_tb)
-    void switchWithout(View view) {
-        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
-            @Override
-            public void success(String priKey) {
-                if (withoutTb.isSelected()) {
-                    paySetBean.setNoSecretPay(false);
-                } else {
-                    paySetBean.setNoSecretPay(true);
-                }
-                requestSetPay();
-            }
-
-            @Override
-            public void error() {
-
-            }
-        });
     }
 
     @OnClick(R.id.miner_ll)
@@ -150,28 +113,6 @@ public class SafetyPayActivity extends BaseActivity {
 
             @Override
             public void fail(WalletError error) {}
-        });
-    }
-
-    /**
-     * Upload payment infrastructure
-     */
-    private void requestSetPay() {
-        Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.newBuilder()
-                .setFee(paySetBean.getFee())
-                .setNoSecretPay(paySetBean.getNoSecretPay())
-                .setPayPin(paySetBean.getPayPin())
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SETTING, paymentSetting, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                ParamManager.getInstance().putPaySet(paySetBean);
-                ToastEUtil.makeText(mActivity, R.string.Chat_Set_success).show();
-                updateView();
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {}
         });
     }
 

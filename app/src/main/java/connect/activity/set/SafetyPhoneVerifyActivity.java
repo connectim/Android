@@ -84,6 +84,11 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements SignInVer
         ActivityUtil.goBack(mActivity);
     }
 
+    @OnClick(R.id.voice_tv)
+    void sendVoice(View view) {
+        presenter.reSendCode(2);
+    }
+
     @OnClick(R.id.next_btn)
     void nextBtn(View view) {
         String codeStr = codeEt.getText().toString();

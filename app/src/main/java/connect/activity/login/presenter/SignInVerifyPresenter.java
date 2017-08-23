@@ -108,7 +108,6 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
     }
 
     /**
-     *
      * @param type 1：sms  2：voice
      */
     public void reSendCode(int type) {
@@ -141,9 +140,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
             }
 
             @Override
-            public void onPause() {
-
-            }
+            public void onPause() {}
 
             @Override
             public void onFinish() {
@@ -155,6 +152,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
 
     @Override
     public void requestBindMobile(final String type){
+        ProgressUtil.getInstance().showProgress(mView.getActivity());
         Connect.MobileVerify mobileVerify = Connect.MobileVerify.newBuilder()
                 .setCountryCode(Integer.valueOf(countryCode))
                 .setNumber(phone)
@@ -169,6 +167,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
         OkHttpUtil.getInstance().postEncrySelf(url, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
+                ProgressUtil.getInstance().dismissProgress();
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                 if (type.equals(SafetyPhoneNumberActivity.LINK_TYPE)) {
                     userBean.setPhone(countryCode + "-" + phone);
@@ -188,6 +187,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
+                ProgressUtil.getInstance().dismissProgress();
                 if (response.getCode() == 2414) {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Login_Phone_binded).show();
                 } else {

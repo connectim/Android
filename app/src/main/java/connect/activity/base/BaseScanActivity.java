@@ -2,6 +2,7 @@ package connect.activity.base;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,12 +16,19 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Hashtable;
 
 import connect.ui.activity.R;
+import connect.utils.BitmapUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastUtil;
 import connect.utils.log.LogManager;
@@ -181,7 +189,7 @@ public abstract class BaseScanActivity extends BaseActivity {
     }
 
     public void getAblamString(final String path, final Handler handler){
-        ProgressUtil.getInstance().showProgress(this);
+        /*ProgressUtil.getInstance().showProgress(this);
         new Thread(new DecodeImageThread(path, new DecodeImageCallback() {
             @Override
             public void decodeSucceed(Result result) {
@@ -196,7 +204,57 @@ public abstract class BaseScanActivity extends BaseActivity {
                 ProgressUtil.getInstance().dismissProgress();
                 ToastUtil.getInstance().showToast("Scan failed!");
             }
-        })).start();
+        })).start();*/
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap scanBitmap = BitmapUtil.getInstance().compress(path, 480, 800);
+                String resultString;
+                if(scanBitmap != null){
+                    resultString = decodeQRImage(scanBitmap);
+                }else{
+                    resultString = null;
+                }
+                if (resultString != null) {
+                    Message m = handler.obtainMessage();
+                    m.what = PARSE_BARCODE_SUC;
+                    m.obj = resultString;
+                    handler.sendMessage(m);
+                } else {
+                    ProgressUtil.getInstance().dismissProgress();
+                    ToastUtil.getInstance().showToast("Scan failed!");
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * Method for scanning two-dimensional code picture
+     * @param bitmap
+     * @return
+     */
+    public String decodeQRImage(Bitmap bitmap) {
+        String value = null;
+        Hashtable<DecodeHintType, String> hints = new Hashtable<>();
+        // Encoding of two-dimensional code content
+        hints.put(DecodeHintType.CHARACTER_SET, "utf-8");
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int[] pixels = new int[width * height];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+
+        RGBLuminanceSource source = new RGBLuminanceSource(width,height,pixels);
+        BinaryBitmap bitmap1 = new BinaryBitmap(new HybridBinarizer(source));
+        QRCodeReader reader2 = new QRCodeReader();
+        Result result;
+        try {
+            result = reader2.decode(bitmap1,hints);
+            value = result.getText();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return value;
     }
 
     /**
