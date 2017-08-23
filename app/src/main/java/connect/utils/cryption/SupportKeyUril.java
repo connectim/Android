@@ -24,8 +24,7 @@ import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
 /**
- * Random number generation key class Key...
- * Created by john on 2016/11/28.
+ * Random number generation key class Key.
  */
 
 public class SupportKeyUril {

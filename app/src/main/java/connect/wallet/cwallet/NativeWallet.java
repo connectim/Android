@@ -53,6 +53,7 @@ public class NativeWallet {
 
     /**
      * Access to designated account
+     *
      * @param currencyEnum
      * @return
      */
@@ -75,7 +76,7 @@ public class NativeWallet {
 
     /**
      * Gets the specified currency
-     * Access to specified currency
+     *
      * @param currencyEnum
      * @return
      */
@@ -98,6 +99,7 @@ public class NativeWallet {
 
     /**
      * Check the password
+     *
      * @param listener
      */
     public void checkPin(Activity mActivity, final WalletListener listener){
@@ -116,8 +118,8 @@ public class NativeWallet {
     }
 
     /**
-     * Display new password
      * Set a new password
+     *
      * @param listen
      */
     public void showSetPin(Activity mActivity, final WalletListener listen){
@@ -136,6 +138,7 @@ public class NativeWallet {
 
     /**
      * Synchronous wallet information
+     *
      * @param listener
      */
     public void syncWalletInfo(final WalletListener listener){
@@ -164,6 +167,7 @@ public class NativeWallet {
 
     /**
      * Create a wallet
+     *
      * @param baseSeed
      * @param pwd
      */
@@ -183,6 +187,7 @@ public class NativeWallet {
 
     /**
      * Update the purse
+     *
      * @param payload
      * @param ver
      */
@@ -205,6 +210,7 @@ public class NativeWallet {
 
     /**
      * Create a currency
+     *
      * @param currencyEnum
      * @param category (priKey\baseSeed\salt+seed)
      * @param value
@@ -246,6 +252,7 @@ public class NativeWallet {
 
     /**
      * Currency total balance
+     *
      * @param currencyEnum
      */
     public void balance(CurrencyEnum currencyEnum) {
@@ -255,7 +262,7 @@ public class NativeWallet {
 
     /**
      * Hidden address
-     * Hide the address
+     *
      * @param currencyEnum
      * @param address
      */
@@ -266,6 +273,7 @@ public class NativeWallet {
 
     /**
      * Transfer accounts
+     *
      * @param currencyEnum
      * @param amount
      * @param fromAddress

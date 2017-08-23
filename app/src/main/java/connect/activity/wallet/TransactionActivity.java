@@ -48,7 +48,7 @@ public class TransactionActivity extends BaseActivity {
     private TransactionActivity mActivity;
     private final int PAGESIZE_MAX = 10;
     private int page = 1;
-    private TransactionAdapter ransactionAdapter;
+    private TransactionAdapter transactionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,28 +75,28 @@ public class TransactionActivity extends BaseActivity {
             public void onRefresh() {
                 refreshview.setRefreshing(false);
                 page = 1;
-                requsetTransaction();
+                requestTransaction();
             }
         });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
-        ransactionAdapter = new TransactionAdapter(mActivity);
-        recyclerview.setAdapter(ransactionAdapter);
+        transactionAdapter = new TransactionAdapter(mActivity);
+        recyclerview.setAdapter(transactionAdapter);
         recyclerview.addOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore() {
                 page++;
-                requsetTransaction();
+                requestTransaction();
             }
         });
-        ransactionAdapter.setItemClickListener(new TransactionAdapter.OnItemClickListener() {
+        transactionAdapter.setItemClickListener(new TransactionAdapter.OnItemClickListener() {
             @Override
             public void itemClick(Connect.Transaction transaction) {
                 BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, transaction.getHash());
             }
         });
-        requsetTransaction();
+        requestTransaction();
     }
 
     @OnClick(R.id.left_img)
@@ -104,7 +104,7 @@ public class TransactionActivity extends BaseActivity {
         ActivityUtil.goBack(mActivity);
     }
 
-    public void requsetTransaction() {
+    public void requestTransaction() {
         WalletOuterClass.Pagination pagination = WalletOuterClass.Pagination.newBuilder()
                 .setPage(page)
                 .setSize(PAGESIZE_MAX).build();
@@ -130,9 +130,9 @@ public class TransactionActivity extends BaseActivity {
                     }
 
                     if (page > 1) {
-                        ransactionAdapter.setNotifyData(listChecks, false);
+                        transactionAdapter.setNotifyData(listChecks, false);
                     } else {
-                        ransactionAdapter.setNotifyData(listChecks, true);
+                        transactionAdapter.setNotifyData(listChecks, true);
                     }
                     refreshview.setRefreshing(false);
                 } catch (InvalidProtocolBufferException e) {

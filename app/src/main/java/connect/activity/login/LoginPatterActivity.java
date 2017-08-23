@@ -65,7 +65,7 @@ public class LoginPatterActivity extends BaseActivity{
             @Override
             public void onGestureEvent(boolean matched) {
                 if (matched) {
-                    goinHome(idGestureLockViewGroup.getPriKey());
+                    launchHome(idGestureLockViewGroup.getPriKey());
                 } else {
                     hintTv.setText(getString(R.string.Set_Password_incorrect_you_have_chance,idGestureLockViewGroup.getUnMatchExceedBoundary()));
 
@@ -89,7 +89,7 @@ public class LoginPatterActivity extends BaseActivity{
         LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
             @Override
             public void success(String priKey) {
-                goinHome(priKey);
+                launchHome(priKey);
             }
 
             @Override
@@ -97,7 +97,7 @@ public class LoginPatterActivity extends BaseActivity{
         });
     }
 
-    private void goinHome(String priKey){
+    private void launchHome(String priKey){
         MemoryDataManager.getInstance().putPriKey(priKey);
         HomeActivity.startActivity(mActivity);
         mActivity.finish();
