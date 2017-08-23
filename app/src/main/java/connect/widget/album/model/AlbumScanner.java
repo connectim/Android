@@ -21,18 +21,6 @@ import connect.widget.album.presenter.AlbumPresenter;
 public class AlbumScanner implements IAlbumScanner {
 
     private final static String TAG = "_ImageScannerModelImpl";
-    /**
-     * Loader's unique ID number
-     */
-    private final static int IMAGE_LOADER_ID = 1000;
-    /**
-     * Load data mapping
-     */
-    private final static String[] IMAGE_PROJECTION = new String[]{
-            MediaStore.Images.Media.DATA,//Picture path
-            MediaStore.Images.Media.DISPLAY_NAME,//Image file name, including the suffix
-            MediaStore.Images.Media.TITLE//Image file name, does not contain suffix
-    };
 
     private Context context;
 
@@ -74,9 +62,10 @@ public class AlbumScanner implements IAlbumScanner {
 
     /**
      * Query local image
+     *
      * @param albumFolderMap
      */
-    public void searchLocalPhoto(HashMap<String, AlbumFolderInfo> albumFolderMap){
+    public void searchLocalPhoto(HashMap<String, AlbumFolderInfo> albumFolderMap) {
         Cursor cursor = MediaStore.Images.Media.query(context.getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME,
                         MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.Media.BUCKET_ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME}
@@ -84,7 +73,7 @@ public class AlbumScanner implements IAlbumScanner {
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String imagePath = cursor.getString(1);
             ExFile albumFolder = new ExFile(imagePath, 0);
-            if(albumFolder.length() < 1024 * 5){
+            if (albumFolder.length() < 1024 * 5) {
                 continue;
             }
 
@@ -92,7 +81,7 @@ public class AlbumScanner implements IAlbumScanner {
             String albumPath = albumFolder.getParentFile().getName();
             AlbumFolderInfo folderInfo = albumFolderMap.get(albumPath);
 
-            ImageInfo imageFile = new ImageInfo(albumFolder,0);
+            ImageInfo imageFile = new ImageInfo(albumFolder, 0);
             if (folderInfo == null) {
                 folderInfo = new AlbumFolderInfo(albumFolder, albumPath);
                 folderInfo.setAlbumType(AlbumType.Photo);
@@ -153,7 +142,7 @@ public class AlbumScanner implements IAlbumScanner {
         cursor.close();
     }
 
-    public List<AlbumFolderInfo> sortAllAlbum(HashMap<String, AlbumFolderInfo> albumFolderMap){
+    public List<AlbumFolderInfo> sortAllAlbum(HashMap<String, AlbumFolderInfo> albumFolderMap) {
         List<AlbumFolderInfo> albumFolderList = new ArrayList<>();
         for (AlbumFolderInfo info : albumFolderMap.values()) {
             albumFolderList.add(info);

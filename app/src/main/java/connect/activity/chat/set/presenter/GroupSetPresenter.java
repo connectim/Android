@@ -62,7 +62,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
             return;
         }
 
-        List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntity(roomKey);
+        List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(roomKey);
         String countTxt = String.format(activity.getString(R.string.Link_Members), memberEntities.size());
         view.countMember(countTxt);
 
@@ -108,8 +108,8 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
 
         view.groupName(groupEntity.getName());
 
-        String myAddress = MemoryDataManager.getInstance().getAddress();
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myAddress);
+        String myPublicKey = MemoryDataManager.getInstance().getPubKey();
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myPublicKey);
         String myAlias = "";
         if (myMember != null) {
             myAlias = TextUtils.isEmpty(myMember.getUsername()) ? myMember.getNick() : myMember.getUsername();
