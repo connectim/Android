@@ -20,20 +20,17 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import connect.activity.contact.adapter.FriendRecordAdapter;
+import connect.activity.chat.bean.BaseAction;
+import connect.activity.chat.bean.DestructOpenBean;
+import connect.activity.chat.bean.MsgSend;
+import connect.activity.chat.bean.RecExtBean;
+import connect.activity.chat.bean.RoomSession;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.BaseAction;
-import connect.activity.chat.bean.BurnNotice;
-import connect.activity.chat.bean.MsgSend;
-import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.bean.RoomSession;
-import connect.utils.DialogUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
-import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/24.
@@ -105,7 +102,8 @@ public class MorePagerAdapter extends PagerAdapter {
                         String roomkey = RoomSession.getInstance().getRoomKey();
                         ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(roomkey);
 
-                        long burncount = (null == chatSetEntity || null == chatSetEntity.getSnap_time()) ? 0 : chatSetEntity.getSnap_time();
+                        long burncount = (null == chatSetEntity || null == chatSetEntity.getSnap_time() || chatSetEntity.getSnap_time() <= 0) ?
+                                0 : chatSetEntity.getSnap_time();
                         showBurnDialog(context, burncount, onTimerListener);
                         break;
                     case R.string.Chat_Name_Card:
@@ -154,9 +152,8 @@ public class MorePagerAdapter extends PagerAdapter {
             }
 
             if (!Long.valueOf(time).equals(chatSetEntity.getSnap_time())) {
-                BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
                 MsgSend.sendOuterMsg(MsgType.Self_destruct_Notice, time);
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time <= 0 ? 0 : 1);
+                DestructOpenBean.sendDestructMsg(time);
 
                 chatSetEntity.setSnap_time(time);
                 ConversionSettingHelper.getInstance().insertSetEntity(chatSetEntity);

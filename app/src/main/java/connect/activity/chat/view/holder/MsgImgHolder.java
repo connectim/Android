@@ -13,6 +13,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import java.io.File;
 import java.io.FileNotFoundException;
+import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
@@ -63,7 +64,8 @@ public class MsgImgHolder extends MsgChatHolder {
                 if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
                     msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgExtEntity.getMessage_id(), msgExtEntity.parseDirect());
+
+                    DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
                 }
             }
         });

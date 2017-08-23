@@ -204,39 +204,36 @@ public class ChatActivity extends BaseChatActvity {
     }
 
     @Override
-    public void updateBurnState(int state) {
+    public void updateBurnState(long time) {
         String titleName = "";
-        switch (state) {
-            case 0:// not start
-                titleName = normalChat.nickName();
-                if (titleName.length() > 15) {
-                    titleName = titleName.substring(0, 12);
-                    titleName += "...";
+        if (time <= 0) {
+            titleName = normalChat.nickName();
+            if (titleName.length() > 15) {
+                titleName = titleName.substring(0, 12);
+                titleName += "...";
+            }
+            if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
+                toolbar.setTitle(titleName);
+            } else {
+                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
+                toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
+            }
+        } else {
+            String name = normalChat.nickName();
+            StringBuffer indexName = new StringBuffer();
+            indexName.append(name.charAt(0));
+            if (name.length() > 2) {
+                for (int i = 1; (i < name.length() - 1) && (i < 8); i++) {
+                    indexName.append("*");
                 }
-                if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
-                    toolbar.setTitle(titleName);
-                } else {
-                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
-                    toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
-                }
-                break;
-            case 1://have started
-                String name = normalChat.nickName();
-                StringBuffer indexName = new StringBuffer();
-                indexName.append(name.charAt(0));
-                if (name.length() > 2) {
-                    for (int i = 1; (i < name.length() - 1) && (i < 8); i++) {
-                        indexName.append("*");
-                    }
-                }
-                indexName.append(name.charAt(name.length() - 1));
-                if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
-                    toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
-                } else {
-                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
-                    toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
-                }
-                break;
+            }
+            indexName.append(name.charAt(name.length() - 1));
+            if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
+                toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
+            } else {
+                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
+                toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
+            }
         }
     }
 

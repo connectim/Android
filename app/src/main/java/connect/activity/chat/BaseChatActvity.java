@@ -11,23 +11,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-
 import com.google.protobuf.InvalidProtocolBufferException;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.BaseListener;
-import connect.activity.chat.bean.BurnNotice;
+import connect.activity.chat.bean.DestructOpenBean;
+import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.GeoAddressBean;
-import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
@@ -113,7 +109,6 @@ public abstract class BaseChatActvity extends BaseActivity {
         Connect.ChatType chatType = Connect.ChatType.forNumber(talker.getTalkType());
         switch (chatType) {
             case PRIVATE:
-                roomSession.setRoomName(talker.getTalkName());
                 Connect.MessageUserInfo userInfo = Connect.MessageUserInfo.newBuilder()
                         .setUid(talker.getFriendEntity().getPub_key())
                         .setUsername(talker.getFriendEntity().getUsername())
@@ -126,16 +121,13 @@ public abstract class BaseChatActvity extends BaseActivity {
                     UserOrderBean userOrderBean = new UserOrderBean();
                     userOrderBean.friendChatCookie(normalChat.chatKey());
                 }
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, roomSession.getBurntime() <= 0 ? 0 : 1);
                 break;
             case GROUPCHAT:
-                roomSession.setRoomName(talker.getTalkName());
                 roomSession.setGroupEcdh(talker.getGroupEntity().getEcdh_key());
                 normalChat = new GroupChat(talker.getGroupEntity());
                 break;
             case CONNECT_SYSTEM:
                 normalChat = RobotChat.getInstance();
-                roomSession.setRoomName(normalChat.nickName());
                 break;
         }
 
@@ -253,7 +245,6 @@ public abstract class BaseChatActvity extends BaseActivity {
                 break;
             case Self_destruct_Notice:
                 int time = (int) objects[0];
-                time = (time <= 0) ? -1 : time;
                 RoomSession.getInstance().setBurntime(time);
                 ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
 
@@ -321,6 +312,12 @@ public abstract class BaseChatActvity extends BaseActivity {
                 sendNormalMsg(true, msgExtEntity);
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(DestructOpenBean openBean) {
+        long time = openBean.getTime();
+        updateBurnState(time);
     }
 
     /**
@@ -419,19 +416,6 @@ public abstract class BaseChatActvity extends BaseActivity {
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                 adapterInsetItem(msgExtEntity);
                 break;
-            case BURNSTATE://burn message state
-                updateBurnState((Integer) objects[0]);
-                break;
-            case BURNMSG_READ://burn message start read
-                String burnid = (String) objects[0];
-                MsgDirect direct = (MsgDirect) objects[1];
-                chatAdapter.hasReadBurnMsg(burnid);
-                BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_READ, burnid);
-
-                if (direct == MsgDirect.From) {
-                    MsgSend.sendOuterMsg(MsgType.Self_destruct_Receipt, burnid);
-                }
-                break;
             case GROUP_UPDATENAME://update group name
                 ((GroupChat) normalChat).setNickName((String) objects[0]);
                 updateBurnState(RoomSession.getInstance().getBurntime() == 0 ? 0 : 1);
@@ -477,8 +461,8 @@ public abstract class BaseChatActvity extends BaseActivity {
                                 if (time != RoomSession.getInstance().getBurntime()) {
                                     RoomSession.getInstance().setBurntime(time);
                                     ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
-                                    BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
-                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time <= 0 ? 0 : 1);
+
+                                    DestructOpenBean.sendDestructMsg(time);
                                 }
                                 adapterInsetItem(msgExtEntity);
                                 ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
@@ -489,8 +473,9 @@ public abstract class BaseChatActvity extends BaseActivity {
                         case Self_destruct_Receipt://Accept each other has read one after reading
                             try {
                                 Connect.ReadReceiptMessage readReceiptMessage = Connect.ReadReceiptMessage.parseFrom(msgExtEntity.getContents());
+
                                 msgid = readReceiptMessage.getMessageId();
-                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgid, MsgDirect.From);
+                                DestructReadBean.getInstance().sendEventDelay(msgid);
                             } catch (InvalidProtocolBufferException e) {
                                 e.printStackTrace();
                             }
@@ -501,10 +486,9 @@ public abstract class BaseChatActvity extends BaseActivity {
                             time = (int) msgExtEntity.parseDestructTime();
                             if (time != RoomSession.getInstance().getBurntime()) {
                                 RoomSession.getInstance().setBurntime(time);
-                                BurnNotice.sendBurnMsg(BurnNotice.BurnType.BURN_START, time);
-                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNSTATE, time <= 0 ? 0 : 1);
-                                ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
+                                DestructOpenBean.sendDestructMsg(time);
 
+                                ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
                                 msgExtEntity = normalChat.destructMsg(time);
                                 sendNormalMsg(true, msgExtEntity);
                             }
@@ -642,7 +626,7 @@ public abstract class BaseChatActvity extends BaseActivity {
     public abstract void adapterInsetItem(MsgExtEntity bean);
 
     /** update title bar */
-    public abstract void updateBurnState(int state);
+    public abstract void updateBurnState(long time);
 
     public BaseChat getNormalChat() {
         return normalChat;

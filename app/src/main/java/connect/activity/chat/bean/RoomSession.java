@@ -25,7 +25,6 @@ public class RoomSession {
 
     private int roomType = -1;
     private String roomKey;
-    private String roomName;
     private String groupEcdh;
     /** 0:close burn  5000+:start burn */
     private long burntime;
@@ -71,14 +70,6 @@ public class RoomSession {
 
     public void setBurntime(long burntime) {
         this.burntime = burntime;
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
-
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
     }
 
     public Connect.MessageUserInfo getUserInfo() {
