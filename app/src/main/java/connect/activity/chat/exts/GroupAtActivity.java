@@ -29,7 +29,7 @@ import connect.widget.TopToolBar;
 /**
  * group At ,select group member
  */
-public class GroupAtActivity extends BaseActivity implements GroupAtContract.BView{
+public class GroupAtActivity extends BaseActivity implements GroupAtContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
