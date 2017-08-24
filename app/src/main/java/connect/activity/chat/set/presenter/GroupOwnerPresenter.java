@@ -46,13 +46,8 @@ public class GroupOwnerPresenter implements GroupOwnerContract.Presenter{
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 String myPublicKey = MemoryDataManager.getInstance().getPubKey();
-                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myPublicKey);
-                myMember.setRole(0);
-                ContactHelper.getInstance().inserGroupMemEntity(myMember);
-
-                GroupMemberEntity ownerMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, address);
-                ownerMember.setRole(1);
-                ContactHelper.getInstance().inserGroupMemEntity(ownerMember);
+                ContactHelper.getInstance().updateGroupMemberRole(roomKey, myPublicKey, 0);
+                ContactHelper.getInstance().updateGroupMemberRole(roomKey, address, 1);
 
                 GroupSetActivity.startActivity(activity, roomKey);
             }

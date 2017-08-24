@@ -80,8 +80,8 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
         groupKey = getIntent().getStringExtra(GROUP_KEY);
 
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
-        String myPublicKey=MemoryDataManager.getInstance().getPubKey();
 
+        String myPublicKey=MemoryDataManager.getInstance().getPubKey();
         Iterator<GroupMemberEntity> iterator = groupMemEntities.iterator();
         while (iterator.hasNext()) {
             GroupMemberEntity memberEntity = iterator.next();
