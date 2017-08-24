@@ -62,7 +62,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
             if (TextUtils.isEmpty(imgUrl)) {
                 GlideUtil.loadImage(typeImg, R.mipmap.message_link2x);
             } else {
-                GlideUtil.loadAvater(typeImg, imgUrl);
+                GlideUtil.loadImage(typeImg, imgUrl,R.mipmap.message_link2x);
             }
         }
 

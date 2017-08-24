@@ -56,8 +56,8 @@ import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
-import connect.widget.album.entity.ImageInfo;
-import connect.widget.album.ui.activity.PhotoAlbumActivity;
+import connect.widget.album.AlbumActivity;
+import connect.widget.album.model.ImageInfo;
 import connect.widget.camera.CameraTakeActivity;
 import protos.Connect;
 
@@ -204,39 +204,36 @@ public class ChatActivity extends BaseChatActvity {
     }
 
     @Override
-    public void updateBurnState(int state) {
+    public void updateBurnState(long time) {
         String titleName = "";
-        switch (state) {
-            case 0:// not start
-                titleName = normalChat.nickName();
-                if (titleName.length() > 15) {
-                    titleName = titleName.substring(0, 12);
-                    titleName += "...";
+        if (time <= 0) {
+            titleName = normalChat.nickName();
+            if (titleName.length() > 15) {
+                titleName = titleName.substring(0, 12);
+                titleName += "...";
+            }
+            if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
+                toolbar.setTitle(titleName);
+            } else {
+                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
+                toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
+            }
+        } else {
+            String name = normalChat.nickName();
+            StringBuffer indexName = new StringBuffer();
+            indexName.append(name.charAt(0));
+            if (name.length() > 2) {
+                for (int i = 1; (i < name.length() - 1) && (i < 8); i++) {
+                    indexName.append("*");
                 }
-                if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
-                    toolbar.setTitle(titleName);
-                } else {
-                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
-                    toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
-                }
-                break;
-            case 1://have started
-                String name = normalChat.nickName();
-                StringBuffer indexName = new StringBuffer();
-                indexName.append(name.charAt(0));
-                if (name.length() > 2) {
-                    for (int i = 1; (i < name.length() - 1) && (i < 8); i++) {
-                        indexName.append("*");
-                    }
-                }
-                indexName.append(name.charAt(name.length() - 1));
-                if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
-                    toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
-                } else {
-                    List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(normalChat.chatKey());
-                    toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
-                }
-                break;
+            }
+            indexName.append(name.charAt(name.length() - 1));
+            if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
+                toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
+            } else {
+                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
+                toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
+            }
         }
     }
 
@@ -272,7 +269,7 @@ public class ChatActivity extends BaseChatActvity {
                 int length = data.getIntExtra("length", 10);
                 MsgSend.sendOuterMsg(MsgType.Video, path, length);
             }
-        } else if (requestCode == PhotoAlbumActivity.OPEN_ALBUM_CODE && data != null) {
+        } else if (requestCode == AlbumActivity.OPEN_ALBUM_CODE && data != null) {
             List<ImageInfo> imageInfos = (List<ImageInfo>) data.getSerializableExtra("list");
             if (imageInfos != null && imageInfos.size() > 0) {
                 for (ImageInfo info : imageInfos) {
@@ -336,7 +333,7 @@ public class ChatActivity extends BaseChatActvity {
                 normalChat.sendPushMsg(msgExtEntity);
                 break;
             case Photo:
-                msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), 0, 0);
+                msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), 200, 200);
                 fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(String msgid) {

@@ -62,7 +62,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
     @Override
     public void loadCrowding(String pubkey) {
         int counts = 0;
-        List memberEntities = ContactHelper.getInstance().loadGroupMemEntity(pubkey);
+        List memberEntities = ContactHelper.getInstance().loadGroupMemEntities(pubkey);
         if (memberEntities != null) {
             counts = memberEntities.size();
         }

@@ -382,7 +382,7 @@
     <string name="Login_Encrypted_private_key">Encrypted private key</string>
     <string name="Login_Generated_Failure">Create failed, please make sure you\'ve made sound/voice around the mic</string>
     <string name="Login_Generated_Successful">Generated Successful</string>
-    <string name="Login_Generating_Bitcoin_address">Generating Bitcoin address as Connect ID</string>
+    <string name="Login_Generating_Bitcoin_address">btc address is being generated</string>
     <string name="Login_Generating_Private_and_Public_Key">Generating Private &amp; Public Key</string>
     <string name="Login_Import_private_key">Import private key</string>
     <string name="Login_Import_your_backup">Import your backup\nor another bitcoin private key</string>
@@ -709,6 +709,7 @@
     <string name="Wallet_You_already_open_this_luckypacket">You already opened this lucky packet</string>
     <string name="Wallet_You_are_a_narcissism">You are a narcissism</string>
     <string name="Wallet_You_do_not_have_any_Transactions">You don\'t have any Transactions</string>
+    <string name="Wallet_You_do_not_have_any_data">You do not have any data</string>
     <string name="Wallet_You_got_a_Lucky_Packet">You got a Lucky Packet</string>
     <string name="Wallet_Your_Bitcoin_Address">Your Bitcoin Address\n\n%s</string>
     <string name="Wallet_Your_Bitcoin_Address_Title">Your bitcoin address</string>

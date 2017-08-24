@@ -45,14 +45,9 @@ public class GroupOwnerPresenter implements GroupOwnerContract.Presenter{
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_ATTORN, attorn, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String myaddress = MemoryDataManager.getInstance().getAddress();
-                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myaddress);
-                myMember.setRole(0);
-                ContactHelper.getInstance().inserGroupMemEntity(myMember);
-
-                GroupMemberEntity ownerMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, address);
-                ownerMember.setRole(1);
-                ContactHelper.getInstance().inserGroupMemEntity(ownerMember);
+                String myPublicKey = MemoryDataManager.getInstance().getPubKey();
+                ContactHelper.getInstance().updateGroupMemberRole(roomKey, myPublicKey, 0);
+                ContactHelper.getInstance().updateGroupMemberRole(roomKey, address, 1);
 
                 GroupSetActivity.startActivity(activity, roomKey);
             }

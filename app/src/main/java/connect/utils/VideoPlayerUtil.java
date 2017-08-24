@@ -150,7 +150,7 @@ public class VideoPlayerUtil implements OnPreparedListener,
         }
     }
 
-    public interface VideoPlayListener extends Serializable{
+    public interface VideoPlayListener extends Serializable {
 
         void onVideoPrepared();
 

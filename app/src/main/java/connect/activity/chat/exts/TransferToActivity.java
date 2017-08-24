@@ -15,7 +15,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.exts.contract.TransferToContract;
 import connect.activity.chat.exts.presenter.TransferToPresenter;
-import connect.activity.set.PayFeeActivity;
+import connect.activity.set.SafetyPayFeeActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
@@ -136,7 +136,7 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
 
             @Override
             public void setFee() {
-                PayFeeActivity.startActivity(activity);
+                SafetyPayFeeActivity.startActivity(activity);
             }
         });
     }

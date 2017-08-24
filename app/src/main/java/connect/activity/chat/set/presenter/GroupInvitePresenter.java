@@ -81,7 +81,6 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
                                 friendChat.sendPushMsg(msgExtEntity);
                                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                                 friendChat.updateRoomMsg(null, "[" + activity.getString(R.string.Link_Join_Group) + "]", msgExtEntity.getCreatetime());
-
                             }
                         }
                     }

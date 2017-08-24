@@ -17,13 +17,8 @@ import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.AvatarGridView;
 import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
-
-/**
- * Created by Administrator on 2017/4/26 0026.
- */
 
 public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapter.ViewHolder> {
 
@@ -48,7 +43,6 @@ public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final Connect.FriendBill friendBill = mListData.get(position);
-        viewHolder.avatarGridview.setVisibility(View.GONE);
         viewHolder.avaterRimg.setVisibility(View.VISIBLE);
 
         GlideUtil.loadAvater(viewHolder.avaterRimg, friendEntity.getAvatar());
@@ -96,7 +90,6 @@ public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapte
     class ViewHolder extends RecyclerView.ViewHolder {
 
         RoundedImageView avaterRimg;
-        AvatarGridView avatarGridview;
         RelativeLayout leftRela;
         TextView nameTv;
         TextView balanceTv;
@@ -106,7 +99,6 @@ public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapte
         ViewHolder(View itemview) {
             super(itemview);
             avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
-            avatarGridview = (AvatarGridView) itemview.findViewById(R.id.avatar_gridview);
             leftRela = (RelativeLayout) itemview.findViewById(R.id.left_rela);
             nameTv = (TextView) itemview.findViewById(R.id.name_tv);
             balanceTv = (TextView) itemview.findViewById(R.id.balance_tv);

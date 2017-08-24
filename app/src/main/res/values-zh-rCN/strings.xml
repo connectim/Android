@@ -382,7 +382,7 @@
     <string name="Login_Encrypted_private_key">加密私钥</string>
     <string name="Login_Generated_Failure">创建失败，周围环境嘈杂系数不够</string>
     <string name="Login_Generated_Successful">创建成功</string>
-    <string name="Login_Generating_Bitcoin_address">正在生成比特币地址作为Connect ID</string>
+    <string name="Login_Generating_Bitcoin_address">正在生成比特币地址</string>
     <string name="Login_Generating_Private_and_Public_Key">正在生成公私钥...</string>
     <string name="Login_Import_private_key">导入</string>
     <string name="Login_Import_your_backup">导入备份或者另一个私钥</string>
@@ -709,6 +709,7 @@
     <string name="Wallet_You_already_open_this_luckypacket">你已经领取了这个红包</string>
     <string name="Wallet_You_are_a_narcissism">你个自恋狂</string>
     <string name="Wallet_You_do_not_have_any_Transactions">你没有任何交易记录</string>
+    <string name="Wallet_You_do_not_have_any_data">你没有任何数据</string>
     <string name="Wallet_You_got_a_Lucky_Packet">抢到一个红包</string>
     <string name="Wallet_Your_Bitcoin_Address">你的比特币地址\n%s</string>
     <string name="Wallet_Your_Bitcoin_Address_Title">你的比特币地址</string>

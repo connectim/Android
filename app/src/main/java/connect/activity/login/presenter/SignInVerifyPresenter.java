@@ -11,7 +11,7 @@ import java.util.List;
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.SignInVerifyContract;
-import connect.activity.set.LinkChangePhoneActivity;
+import connect.activity.set.SafetyPhoneNumberActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -108,7 +108,6 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
     }
 
     /**
-     *
      * @param type 1：sms  2：voice
      */
     public void reSendCode(int type) {
@@ -141,13 +140,11 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
             }
 
             @Override
-            public void onPause() {
-
-            }
+            public void onPause() {}
 
             @Override
             public void onFinish() {
-                mView.changeBtnFinsh();
+                mView.changeBtnFinish();
             }
         };
         exCountDownTimer.start();
@@ -155,31 +152,33 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
 
     @Override
     public void requestBindMobile(final String type){
+        ProgressUtil.getInstance().showProgress(mView.getActivity());
         Connect.MobileVerify mobileVerify = Connect.MobileVerify.newBuilder()
                 .setCountryCode(Integer.valueOf(countryCode))
                 .setNumber(phone)
                 .setCode(mView.getCode())
                 .build();
         String url = "";
-        if (type.equals(LinkChangePhoneActivity.LINK_TYPE)) {
+        if (type.equals(SafetyPhoneNumberActivity.LINK_TYPE)) {
             url = UriUtil.SETTING_BIND_MOBILE;
-        } else if(type.equals(LinkChangePhoneActivity.UNLINK_TYPE)) {
+        } else if(type.equals(SafetyPhoneNumberActivity.UNLINK_TYPE)) {
             url = UriUtil.SETTING_UNBIND_MOBILE;
         }
         OkHttpUtil.getInstance().postEncrySelf(url, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
+                ProgressUtil.getInstance().dismissProgress();
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                if (type.equals(LinkChangePhoneActivity.LINK_TYPE)) {
+                if (type.equals(SafetyPhoneNumberActivity.LINK_TYPE)) {
                     userBean.setPhone(countryCode + "-" + phone);
-                }else if (type.equals(LinkChangePhoneActivity.UNLINK_TYPE)) {
+                }else if (type.equals(SafetyPhoneNumberActivity.UNLINK_TYPE)) {
                     userBean.setPhone("");
                 }
                 ToastEUtil.makeText(mView.getActivity(),R.string.Set_Set_success).show();
                 SharedPreferenceUtil.getInstance().putUser(userBean);
                 List<Activity> list = BaseApplication.getInstance().getActivityList();
                 for (Activity activity : list) {
-                    if (activity.getClass().getName().equals(LinkChangePhoneActivity.class.getName())) {
+                    if (activity.getClass().getName().equals(SafetyPhoneNumberActivity.class.getName())) {
                         activity.finish();
                     }
                 }
@@ -188,6 +187,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
+                ProgressUtil.getInstance().dismissProgress();
                 if (response.getCode() == 2414) {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Login_Phone_binded).show();
                 } else {

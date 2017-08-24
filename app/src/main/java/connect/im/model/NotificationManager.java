@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;

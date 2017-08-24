@@ -11,14 +11,14 @@
         android:layout_height="wrap_content"/>
 
     <connect.widget.lockview.GestureTopView
-        android:id="@+id/drawpatter_gestop"
+        android:id="@+id/draw_patter_gestop"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_marginTop="@dimen/dp_50"
         android:layout_gravity="center_horizontal"/>
 
     <TextView
-        android:id="@+id/drawpatter_tv"
+        android:id="@+id/draw_patter_tv"
         style="@style/BaseTextStyle"
         android:layout_marginTop="@dimen/dp_15"
         android:layout_gravity="center_horizontal"
@@ -36,7 +36,7 @@
         app:tryTimes="5" />
 
     <TextView
-        android:id="@+id/userpass_tv"
+        android:id="@+id/user_pass_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"

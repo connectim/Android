@@ -96,7 +96,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
             }
         });
 
-        final List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
+        final List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         Collections.sort(memEntities, new GroupComPara());
         toolbarTop.setTitle(getString(R.string.Chat_Group_Members, memEntities.size()));
 

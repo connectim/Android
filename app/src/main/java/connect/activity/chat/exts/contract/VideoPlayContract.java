@@ -5,6 +5,7 @@ import android.widget.RelativeLayout;
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
 import connect.utils.VideoPlayerUtil;
+import connect.widget.video.inter.VideoListener;
 
 /**
  * Created by Administrator on 2017/8/10.
@@ -18,7 +19,7 @@ public interface VideoPlayContract {
 
         String getFileLength();
 
-        VideoPlayerUtil.VideoPlayListener getVideoListener();
+        VideoListener getVideoListener();
 
         void videoTotalLength(String lengthformat);
 

@@ -20,6 +20,7 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
@@ -29,6 +30,7 @@ import protos.Connect;
  */
 public abstract class FileUpLoad {
 
+    private String Tag = "_FileUpLoad";
     protected Context context;
     protected MsgExtEntity msgExtEntity;
     protected BaseChat baseChat;
@@ -49,15 +51,18 @@ public abstract class FileUpLoad {
      * @param filePath
      * @return
      */
-    public Connect.GcmData encodeAESGCMStructData(String filePath) {
+    public synchronized Connect.GcmData encodeAESGCMStructData(String filePath) {
         Connect.GcmData gcmData = null;
         String priKey = MemoryDataManager.getInstance().getPriKey();
 
         byte[] fileSie = FileUtil.filePathToByteArray(filePath);
-        if (baseChat.chatType() == 0) {
-            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, priKey, baseChat.chatKey(), ByteString.copyFrom(fileSie));
-        } else if (baseChat.chatType() == 1) {
-            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), ByteString.copyFrom(fileSie));
+        ByteString fileBytes = ByteString.copyFrom(fileSie);
+        LogManager.getLogger().d(Tag, "ByteString size:" + fileBytes.size());
+
+        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
+            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, priKey, baseChat.chatKey(), fileBytes);
+        } else if (baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
+            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), fileBytes);
         }
         return gcmData;
     }

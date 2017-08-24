@@ -26,7 +26,7 @@ import protos.Connect;
  */
 public class ChatSendManager {
 
-    private static String Tag="ChatSendManager";
+    private static String Tag="_ChatSendManager";
     private static ChatSendManager chatSendManager;
 
     public static ChatSendManager getInstance() {
@@ -94,6 +94,11 @@ public class ChatSendManager {
             case 0x04:
                 canFailReSend = false;
                 break;
+            case 0x05:
+                if (getOrder[1] == 0x03) {
+                    canFailReSend = false;
+                }
+                break;
         }
         if (canFailReSend) {
             FailMsgsManager.getInstance().sendDelayFailMsg(roomkey, msgid, order, bytes);
@@ -125,6 +130,8 @@ public class ChatSendManager {
         @Override
         public synchronized void run() {
             try {
+                LogManager.getLogger().i(Tag, "sender order: " + ack.name() + "[" + ack.getOrder()[0] + ack.getOrder()[1] + "]");
+
                 ByteBuffer byteBuffer = null;
                 if (transfer) { // transferData,Encapsulating server checksum data
                     String priKey = MemoryDataManager.getInstance().getPriKey();

@@ -31,16 +31,12 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/4/19 0019.
- */
-
 public class FriendAddPresenter implements FriendAddContract.Presenter{
 
     private FriendAddContract.View mView;
     private List<PhoneContactBean> localList;
     private Connect.PhoneBookUsersInfo usersInfo;
-    public static final int UPDATA_CODE = 151;
+    public static final int UPDATE_CODE = 151;
     private ArrayList<PhoneContactBean> listData = new ArrayList<>();
     private PhoneListComparatorSort comp = new PhoneListComparatorSort();
 
@@ -50,9 +46,7 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
     }
 
     @Override
-    public void start() {
-
-    }
+    public void start() {}
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -60,7 +54,7 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
             super.handleMessage(msg);
             ProgressUtil.getInstance().dismissProgress();
             switch (msg.what) {
-                case UPDATA_CODE:
+                case UPDATE_CODE:
                     listData.clear();
                     HashMap<String, List<PhoneContactBean>> map = (HashMap<String, List<PhoneContactBean>>) msg.obj;
                     if(map == null){
@@ -76,7 +70,7 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
                     listData.addAll(server);
                     Collections.sort(local, comp);
                     listData.addAll(local);
-                    mView.updataView(server.size(),listData);
+                    mView.updateView(server.size(),listData);
                     break;
                 default:
                     break;
@@ -90,23 +84,7 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
         new AsyncTask<Void, Void, Connect.PhoneBook>() {
             @Override
             protected Connect.PhoneBook doInBackground(Void... params) {
-                localList = SystemDataUtil.getLoadAddresSbook(mView.getActivity());
-                if(null == localList || localList.size() == 0)
-                    return null;
-
-                Connect.PhoneBook.Builder builder = Connect.PhoneBook.newBuilder();
-                for (int i = 0; i < localList.size(); i++) {
-                    if(TextUtils.isEmpty(localList.get(i).getPhone()))
-                        continue ;
-                    String phone = StringUtil.filterNumber(localList.get(i).getPhone());
-                    String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.HmacSalt);
-                    Connect.PhoneInfo phoneInfo = Connect.PhoneInfo.newBuilder()
-                            .setMobile(phoneHmac)
-                            .build();
-                    builder.addMobiles(phoneInfo);
-                }
-                Connect.PhoneBook phoneBook = builder.build();
-                return phoneBook;
+                return getPhoneHmacBook();
             }
 
             @Override
@@ -117,26 +95,38 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
                     ToastEUtil.makeText(mView.getActivity(),R.string.Link_contact_loading_failed_check_the_contact_pression,ToastEUtil.TOAST_STATUS_FAILE).show();
                     return;
                 }
-                OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PHONE_SYNC, phoneBook, new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        PrivateSetBean privateSetBean = ParamManager.getInstance().getPrivateSet();
-                        if(null != privateSetBean){
-                            privateSetBean.setUpdateTime(TimeUtil.getCurrentTimeInString(TimeUtil.DEFAULT_DATE_FORMAT));
-                            ParamManager.getInstance().putPrivateSet(privateSetBean);
-                        }
-                        getServeFriend();
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-                        ProgressUtil.getInstance().dismissProgress();
-                    }
-                });
+                syncPhone(phoneBook);
             }
         }.execute();
     }
 
+    /**
+     * Synchronize the encrypted phone number
+     *
+     * @param phoneBook phone data
+     */
+    private void syncPhone(Connect.PhoneBook phoneBook){
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PHONE_SYNC, phoneBook, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                PrivateSetBean privateSetBean = ParamManager.getInstance().getPrivateSet();
+                if(null != privateSetBean){
+                    privateSetBean.setUpdateTime(TimeUtil.getCurrentTimeInString(TimeUtil.DEFAULT_DATE_FORMAT));
+                    ParamManager.getInstance().putPrivateSet(privateSetBean);
+                }
+                getServeFriend();
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                ProgressUtil.getInstance().dismissProgress();
+            }
+        });
+    }
+
+    /**
+     * Get register your friends for your phone contacts
+     */
     private void getServeFriend() {
         Connect.RequestNotEncrypt notEncrypt = Connect.RequestNotEncrypt.newBuilder().build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_PHONEBOOK, notEncrypt, new ResultCall<Connect.HttpResponse>() {
@@ -161,9 +151,34 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                handler.sendEmptyMessage(UPDATA_CODE);
+                handler.sendEmptyMessage(UPDATE_CODE);
             }
         });
+    }
+
+    /**
+     * Access to local contacts, and to do Hmac phone number
+     *
+     * @return Phone number after I finish Hmac the PhoneBook
+     */
+    private Connect.PhoneBook getPhoneHmacBook(){
+        // For local contacts
+       localList = SystemDataUtil.getLoadAddresSbook(mView.getActivity());
+        if (null == localList || localList.size() == 0) {
+            return null;
+        }
+        // Do the Hmac to telephone number
+        Connect.PhoneBook.Builder builder = Connect.PhoneBook.newBuilder();
+        for (int i = 0; i < localList.size(); i++) {
+            String phone = StringUtil.filterNumber(localList.get(i).getPhone());
+            String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.HmacSalt);
+            Connect.PhoneInfo phoneInfo = Connect.PhoneInfo.newBuilder()
+                    .setMobile(phoneHmac)
+                    .build();
+            builder.addMobiles(phoneInfo);
+        }
+        Connect.PhoneBook phoneBook = builder.build();
+        return phoneBook;
     }
 
 }

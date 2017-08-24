@@ -21,7 +21,7 @@ import connect.activity.chat.set.presenter.GroupSetPresenter;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
-import connect.activity.set.ModifyInfoActivity;
+import connect.activity.set.UserInfoActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -123,7 +123,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
                     GroupInviteActivity.startActivity(activity, groupKey);
                 } else {
                     if (MemoryDataManager.getInstance().getAddress().equals(address)) {
-                        ModifyInfoActivity.startActivity(activity);
+                        UserInfoActivity.startActivity(activity);
                     } else {
                         ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);
                         if (entity == null) {

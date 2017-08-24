@@ -59,10 +59,7 @@
                 android:paddingLeft="@dimen/dp_15"
                 android:paddingTop="@dimen/dp_9"
                 android:paddingBottom="@dimen/dp_9">
-                <!--<com.AvatarGridView
-                    android:id="@+id/avatar_gridview"
-                    android:layout_width="@dimen/dp_44"
-                    android:layout_height="@dimen/dp_44"/>-->
+
                 <TextView
                     android:id="@+id/name_tv"
                     style="@style/BaseTextStyle.16"

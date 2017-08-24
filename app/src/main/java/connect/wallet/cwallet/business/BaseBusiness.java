@@ -413,14 +413,10 @@ public class BaseBusiness {
         } else if(response.getCode() == 2650){
             new InitWalletManager(mActivity, currencyEnum).checkWallet(false, new WalletListener<CurrencyEntity>() {
                 @Override
-                public void success(CurrencyEntity entity) {
-
-                }
+                public void success(CurrencyEntity entity) {}
 
                 @Override
-                public void fail(WalletError error) {
-
-                }
+                public void fail(WalletError error) {}
             });
         } else{
             ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();

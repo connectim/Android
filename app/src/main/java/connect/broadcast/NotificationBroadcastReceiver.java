@@ -7,7 +7,7 @@ import android.content.Intent;
 import java.io.Serializable;
 
 import connect.activity.chat.ChatActivity;
-import connect.activity.login.StartActivity;
+import connect.activity.login.StartPageActivity;
 import connect.activity.base.BaseApplication;
 import connect.utils.log.LogManager;
 
@@ -23,7 +23,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (BaseApplication.getInstance().isEmptyActivity()) {
             LogManager.getLogger().d(Tag, "TO START ACTIVITY");
-            intent = new Intent(context, StartActivity.class);
+            intent = new Intent(context, StartPageActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } else {

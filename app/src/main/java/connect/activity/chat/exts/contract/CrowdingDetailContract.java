@@ -13,13 +13,13 @@ import protos.Connect;
 public interface CrowdingDetailContract {
 
     interface BView extends BaseView<CrowdingDetailContract.Presenter> {
-void senderInfo(String avatar,String name);
+        void senderInfo(String avatar, String name);
 
         void showBalance(long balance);
 
         void showTips(String tips);
 
-        void showCrowdingInfo(long total,long each,int state,String address);
+        void showCrowdingInfo(long total, long each, int state, String address);
 
         void showPaidInfo(String info);
 

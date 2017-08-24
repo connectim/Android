@@ -79,7 +79,7 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
         linearLayoutManager = new LinearLayoutManager(activity);
 
         List<String> oldMembers = new ArrayList<>();
-        List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
+        List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         for (GroupMemberEntity memEntity : memberEntities) {
             oldMembers.add(memEntity.getPub_key());
         }

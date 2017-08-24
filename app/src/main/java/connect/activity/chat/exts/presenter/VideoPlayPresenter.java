@@ -10,6 +10,7 @@ import connect.utils.ExCountDownTimer;
 import connect.utils.TimeUtil;
 import connect.utils.VideoPlayerUtil;
 import connect.utils.system.SystemDataUtil;
+import connect.widget.video.inter.VideoListener;
 
 /**
  * Created by Administrator on 2017/8/10.
@@ -21,7 +22,7 @@ public class VideoPlayPresenter implements VideoPlayContract.Presenter{
 
     private String filePath;
     private int fileLength;
-    private VideoPlayerUtil.VideoPlayListener videoPlayListener;
+    private VideoListener videoPlayListener;
     private ExCountDownTimer countDownTimer;
 
     public VideoPlayPresenter(VideoPlayContract.BView view) {

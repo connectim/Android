@@ -25,11 +25,11 @@ import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.FriendSetAliasActivity;
-import connect.activity.contact.NewFriendActivity;
+import connect.activity.contact.FriendInfoAliasActivity;
+import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.ScanAddFriendActivity;
-import connect.activity.contact.SearchActivity;
-import connect.activity.contact.adapter.ContactAdapter;
+import connect.activity.contact.SearchFriendActivity;
+import connect.activity.home.adapter.ContactAdapter;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.model.ContactListManage;
 import connect.activity.home.HomeActivity;
@@ -43,7 +43,6 @@ import protos.Connect;
 
 /**
  * The address book contacts
- * Created by gtq on 2016/11/22.
  */
 public class ContactFragment extends BaseFragment {
 
@@ -56,10 +55,11 @@ public class ContactFragment extends BaseFragment {
 
     private FragmentActivity mActivity;
     private ContactAdapter adapter;
-    private ContactListManage contactManage;
-    private List<ContactBean> listRequest;
-    private List<ContactBean> groupList;
-    private HashMap<String, List<ContactBean>> friendMap;
+
+    public static ContactFragment startFragment() {
+        ContactFragment contactFragment = new ContactFragment();
+        return contactFragment;
+    }
 
     @Nullable
     @Override
@@ -68,11 +68,6 @@ public class ContactFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_contact, container, false);
         ButterKnife.bind(this, view);
         return view;
-    }
-
-    public static ContactFragment startFragment() {
-        ContactFragment contactFragment = new ContactFragment();
-        return contactFragment;
     }
 
     @Override
@@ -93,45 +88,16 @@ public class ContactFragment extends BaseFragment {
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new ContactAdapter(mActivity);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                adapter.closeMenu();
-            }
-        });
+        recyclerview.addOnScrollListener(onScrollListener);
+        siderbar.setOnTouchingLetterChangedListener(changedListener);
 
-        siderbar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
-            @Override
-            public void onTouchingLetterChanged(String s) {
-                int position = adapter.getPositionForSection(s.charAt(0));
-                if (position >= 0) {
-                    recyclerview.scrollToPosition(position);
-                }
-            }
-        });
-
-        adapter.setOnSideMenuListence(onSideMenuListence);
-        contactManage = new ContactListManage();
-        updataContact();
-    }
-
-    @Subscribe
-    public void onEventMainThread(ContactNotice notice) {
-        if (notice.getNotice() == ContactNotice.ConNotice.RecContact) {
-            updataContact();
-        } else if (notice.getNotice() == ContactNotice.ConNotice.RecAddFriend) {
-            updataRequest();
-        } else if (notice.getNotice() == ContactNotice.ConNotice.RecGroup) {
-            updataGroup();
-        } else if (notice.getNotice() == ContactNotice.ConNotice.RecFriend) {
-            updataFriend();
-        }
+        adapter.setOnSideMenuListener(onSideMenuListener);
+        adapter.updateContact(adapter.updateTypeContact);
     }
 
     @OnClick(R.id.left_img)
     void search(View view) {
-        ActivityUtil.next(mActivity, SearchActivity.class, android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityUtil.next(mActivity, SearchFriendActivity.class, android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @OnClick(R.id.right_lin)
@@ -139,13 +105,31 @@ public class ContactFragment extends BaseFragment {
         ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
     }
 
-    private ContactAdapter.OnItemChildListence onSideMenuListence = new ContactAdapter.OnItemChildListence() {
+    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener(){
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            adapter.closeMenu();
+        }
+    };
+
+    SideBar.OnTouchingLetterChangedListener changedListener = new SideBar.OnTouchingLetterChangedListener(){
+        @Override
+        public void onTouchingLetterChanged(String s) {
+            int position = adapter.getPositionForSection(s.charAt(0));
+            if (position >= 0) {
+                recyclerview.scrollToPosition(position);
+            }
+        }
+    };
+
+    private ContactAdapter.OnItemChildListener onSideMenuListener = new ContactAdapter.OnItemChildListener() {
         @Override
         public void itemClick(int position, ContactBean entity) {
             switch (entity.getStatus()) {
                 case 1:
                     ((HomeActivity) mActivity).setFragmentDot(1, 0);
-                    ActivityUtil.next(mActivity, NewFriendActivity.class);
+                    ActivityUtil.next(mActivity, AddFriendActivity.class);
                     break;
                 case 6:
                     ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE, "Connect"));
@@ -174,7 +158,7 @@ public class ContactFragment extends BaseFragment {
                     break;
                 case 3:
                 case 4:
-                    FriendSetAliasActivity.startActivity(mActivity, entity.getPub_key());
+                    FriendInfoAliasActivity.startActivity(mActivity, entity.getPub_key());
                     break;
                 default:
                     break;
@@ -182,91 +166,17 @@ public class ContactFragment extends BaseFragment {
         }
     };
 
-    private void updataContact() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                listRequest = contactManage.getContactRequest();
-                groupList = contactManage.getGroupData();
-                friendMap = contactManage.getFriendList();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                bindData();
-            }
-        }.execute();
-    }
-
-    private void updataRequest() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                listRequest = contactManage.getContactRequest();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                bindData();
-            }
-        }.execute();
-    }
-
-    private void updataGroup() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                groupList = contactManage.getGroupData();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                bindData();
-            }
-        }.execute();
-    }
-
-    private void updataFriend() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                friendMap = contactManage.getFriendList();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                bindData();
-            }
-        }.execute();
-    }
-
-    private void bindData() {
-        ArrayList<ContactBean> finalList = new ArrayList<>();
-        int friendSize = friendMap.get("friend").size() + friendMap.get("favorite").size();
-        int groupSize = groupList.size();
-        finalList.addAll(listRequest);
-        finalList.addAll(friendMap.get("favorite"));
-        finalList.addAll(groupList);
-        finalList.addAll(friendMap.get("friend"));
-        adapter.setStartPosition(finalList.size() - friendMap.get("friend").size());
-
-        String bottomTxt = "";
-        if (friendSize > 0 && groupSize == 0) {
-            bottomTxt = mActivity.getString(R.string.Link_contact_count, friendSize, "", "");
-        } else if (friendSize == 0 && groupSize > 0) {
-            bottomTxt = mActivity.getString(R.string.Link_group_count, groupSize);
-        } else if (friendSize > 0 && groupSize > 0) {
-            bottomTxt = String.format(mActivity.getString(R.string.Link_contact_count_group_count), friendSize, groupSize);
+    @Subscribe
+    public void onEventMainThread(ContactNotice notice) {
+        if (notice.getNotice() == ContactNotice.ConNotice.RecContact) {
+            adapter.updateContact(adapter.updateTypeContact);
+        } else if (notice.getNotice() == ContactNotice.ConNotice.RecAddFriend) {
+            adapter.updateContact(adapter.updateTypeRequest);
+        } else if (notice.getNotice() == ContactNotice.ConNotice.RecGroup) {
+            adapter.updateContact(adapter.updateTypeGroup);
+        } else if (notice.getNotice() == ContactNotice.ConNotice.RecFriend) {
+            adapter.updateContact(adapter.updateTypeFriend);
         }
-        adapter.setDataNotify(finalList, bottomTxt);
     }
 
     @Override
