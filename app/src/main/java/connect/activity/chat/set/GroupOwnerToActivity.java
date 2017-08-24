@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -78,7 +79,16 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
 
-        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey, MemoryDataManager.getInstance().getAddress());
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
+
+        String myPublicKey=MemoryDataManager.getInstance().getPubKey();
+        Iterator<GroupMemberEntity> iterator = groupMemEntities.iterator();
+        while (iterator.hasNext()) {
+            GroupMemberEntity memberEntity = iterator.next();
+            if (memberEntity.getPub_key().equals(myPublicKey)) {
+                iterator.remove();
+            }
+        }
         Collections.sort(groupMemEntities, new GroupMemberCompara());
 
         adapter = new GroupMemberSelectAdapter(activity, groupMemEntities);

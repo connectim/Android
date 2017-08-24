@@ -1,12 +1,10 @@
 package connect.activity.chat.model.fileload;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-
 import com.google.protobuf.ByteString;
-
 import java.io.File;
-
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileUpLoad;
 import connect.activity.chat.model.content.BaseChat;
@@ -23,6 +21,7 @@ import protos.Connect;
 public class PhotoUpload extends FileUpLoad {
 
     private String Tag = "PhotoUpload";
+    private String firstPath;
 
     public PhotoUpload(Context context, BaseChat baseChat, MsgExtEntity entity, FileUpListener listener) {
         this.context = context;
@@ -43,7 +42,7 @@ public class PhotoUpload extends FileUpLoad {
 
                     File firstFile = BitmapUtil.getInstance().compress(filePath);
                     File secondFile = BitmapUtil.getInstance().compress(firstFile.getAbsolutePath());
-                    String firstPath = firstFile.getAbsolutePath();
+                    firstPath = firstFile.getAbsolutePath();
                     String secondPath = secondFile.getAbsolutePath();
 
                     String priKey = MemoryDataManager.getInstance().getPriKey();
@@ -51,7 +50,7 @@ public class PhotoUpload extends FileUpLoad {
 
                     Connect.GcmData gcmData = null;
                     Connect.RichMedia richMedia = null;
-                    if (baseChat.chatType() == 2) {
+                    if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
                         richMedia = Connect.RichMedia.newBuilder().
                                 setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(firstPath))).
                                 setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(secondPath))).build();
@@ -86,6 +85,7 @@ public class PhotoUpload extends FileUpLoad {
     @Override
     public void fileUp() {
         resultUpFile(mediaFile, new FileResult() {
+
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {
                 String thumb = getThumbUrl(mediaFile.getUrl(), mediaFile.getToken());
@@ -93,8 +93,10 @@ public class PhotoUpload extends FileUpLoad {
 
                 try {
                     Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(msgExtEntity.getContents());
-                    photoMessage.toBuilder().setThum(thumb)
-                            .setUrl(url);
+                    photoMessage = photoMessage.toBuilder().setThum(thumb)
+                            .setUrl(url).build();
+
+                    msgExtEntity = (MsgExtEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(photoMessage.toByteArray());
                     uploadSuccess(msgExtEntity);
                 } catch (Exception e) {

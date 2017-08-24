@@ -111,7 +111,7 @@ public class ConvertUtil {
             protected void onPostExecute(HashMap<String,List<PhoneContactBean>> map) {
                 super.onPostExecute(map);
                 Message message = new Message();
-                message.what = FriendAddPresenter.UPDATA_CODE;
+                message.what = FriendAddPresenter.UPDATE_CODE;
                 message.obj = map;
                 handler.sendMessage(message);
             }

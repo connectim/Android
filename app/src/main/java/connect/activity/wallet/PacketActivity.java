@@ -12,7 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.set.PayFeeActivity;
+import connect.activity.set.SafetyPayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
 import connect.activity.wallet.bean.TransferBean;
 import connect.activity.wallet.contract.PacketContract;
@@ -153,7 +153,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
 
     @Override
     public void setPayFee() {
-        PayFeeActivity.startActivity(mActivity);
+        SafetyPayFeeActivity.startActivity(mActivity);
     }
 
     @Override

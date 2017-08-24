@@ -1,10 +1,8 @@
 package connect.activity.chat.model.fileload;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.netcompss.ffmpeg4android.CommandValidationException;
 import com.netcompss.ffmpeg4android.GeneralUtils;
 import com.netcompss.loader.LoadJNI;
@@ -15,7 +13,6 @@ import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileUpLoad;
 import connect.activity.chat.model.content.BaseChat;
 import connect.database.MemoryDataManager;
-import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -43,27 +40,23 @@ public class VideoUpload extends FileUpLoad {
                 try {
                     Connect.VideoMessage videoMessage= Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
 
+                    String comFist = videoMessage.getCover();
                     String filePath = videoMessage.getUrl();
-                    Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
 
                     filePath = videoCompress(filePath);
-                    File thumbFile = BitmapUtil.getInstance().bitmapSavePath(thumbBitmap);
-                    String comFist = thumbFile.getAbsolutePath();
 
                     String priKey = MemoryDataManager.getInstance().getPriKey();
                     String pubkey = MemoryDataManager.getInstance().getPubKey();
-                    if (baseChat.chatType() != 2) {
+                    if (baseChat.chatType() != Connect.ChatType.CONNECT_SYSTEM_VALUE) {
                         Connect.GcmData firstGcmData = encodeAESGCMStructData(comFist);
                         Connect.GcmData secondGcmData = encodeAESGCMStructData(filePath);
 
                         Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
                                 setThumbnail(firstGcmData.toByteString()).
                                 setEntity(secondGcmData.toByteString()).build();
-                        firstGcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT,priKey, richMedia.toByteString());
+                        firstGcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, priKey, richMedia.toByteString());
                         mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(firstGcmData).build();
                     }
-
-                    thumbFile.delete();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -91,12 +84,13 @@ public class VideoUpload extends FileUpLoad {
 
                 try {
                     Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
-                    videoMessage.toBuilder().setCover(thumb)
-                            .setUrl(url);
+                    videoMessage = videoMessage.toBuilder().setCover(thumb)
+                            .setUrl(url).build();
 
+                    msgExtEntity = (MsgExtEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(videoMessage.toByteArray());
                     uploadSuccess(msgExtEntity);
-                } catch (InvalidProtocolBufferException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

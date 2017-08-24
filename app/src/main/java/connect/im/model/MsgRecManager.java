@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import connect.activity.base.BaseApplication;
-import connect.activity.login.StartActivity;
+import connect.activity.login.StartPageActivity;
 import connect.database.MemoryDataManager;
 import connect.im.inter.InterParse;
 import connect.im.parser.CommandBean;
@@ -26,7 +26,7 @@ import connect.utils.system.SystemUtil;
  */
 public class MsgRecManager {
 
-    private String Tag = "MsgRecManager";
+    private String Tag = "_MsgRecManager";
     private static MsgRecManager receiverManager;
 
     public static MsgRecManager getInstance() {
@@ -111,7 +111,7 @@ public class MsgRecManager {
                 PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT,new byte[0], ByteBuffer.allocate(0));//close socket
                 if (SystemUtil.isRunBackGround()) {// run in front
                     Context context = BaseApplication.getInstance().getBaseContext();
-                    Intent intent = new Intent(context, StartActivity.class);
+                    Intent intent = new Intent(context, StartPageActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//keep a single instance
                     context.startActivity(intent);
                 }

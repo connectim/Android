@@ -5,10 +5,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import connect.utils.log.LogManager;
+
 /**
  * RecycleViewScroll Monitor helper class
  */
 public class RecycleViewScrollHelper extends RecyclerView.OnScrollListener {
+
+    private String Tag = "_RecycleViewScrollHelper";
+
     private RecyclerView mRvScroll = null;
     private OnScrollDirectionChangedListener mScrollDirectionChangedListener = null;
     //Monitoring event of sliding position change

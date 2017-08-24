@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -28,7 +29,7 @@ import connect.widget.TopToolBar;
 /**
  * group At ,select group member
  */
-public class GroupAtActivity extends BaseActivity implements GroupAtContract.BView{
+public class GroupAtActivity extends BaseActivity implements GroupAtContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -77,7 +78,16 @@ public class GroupAtActivity extends BaseActivity implements GroupAtContract.BVi
 
         groupKey = getIntent().getStringExtra("GROUP_KEY");
         linearLayoutManager = new LinearLayoutManager(activity);
-        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey, MemoryDataManager.getInstance().getAddress());
+
+        String myPublicKey = MemoryDataManager.getInstance().getPubKey();
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
+        Iterator<GroupMemberEntity> iterator = groupMemEntities.iterator();
+        while (iterator.hasNext()) {
+            GroupMemberEntity memberEntity = iterator.next();
+            if (memberEntity.getPub_key().equals(myPublicKey)) {
+                iterator.remove();
+            }
+        }
         Collections.sort(groupMemEntities, new GroupMemberCompara());
 
         adapter = new GroupMemberSelectAdapter(activity, groupMemEntities);

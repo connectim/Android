@@ -13,7 +13,7 @@ import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.FileUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.HightEqWidthImage;
+import connect.widget.HeightEqWidthImage;
 import connect.widget.TopToolBar;
 
 /**
@@ -25,7 +25,7 @@ public class PreviewPictureActivity extends BaseActivity{
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.preview_img)
-    HightEqWidthImage previewImg;
+    HeightEqWidthImage previewImg;
     @Bind(R.id.retake_rela)
     RelativeLayout retakeRela;
     @Bind(R.id.send_rela)

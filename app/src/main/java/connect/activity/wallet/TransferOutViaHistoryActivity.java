@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -38,6 +39,8 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
     RecyclerView recyclerview;
     @Bind(R.id.refreshview)
     SwipeRefreshLayout refreshview;
+    @Bind(R.id.no_data_lin)
+    LinearLayout noDataLin;
 
     private TransferOutViaHistoryActivity mActivity;
     private final int PAGESIZE_MAX = 10;
@@ -91,15 +94,15 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
                 sendOutBean.setType(PacketSendActivity.OUT_VIA);
                 sendOutBean.setUrl(billingInfo.getUrl());
                 sendOutBean.setDeadline(billingInfo.getDeadline());
-                if(billingInfo.getCancelled()){
+                if (billingInfo.getCancelled()) {
                     sendOutBean.setStatus(1);
-                }else if(billingInfo.getExpired()){
+                } else if (billingInfo.getExpired()) {
                     sendOutBean.setStatus(2);
-                }else if(billingInfo.getReceived()){
+                } else if (billingInfo.getReceived()) {
                     sendOutBean.setStatus(3);
                 }
 
-                PacketSendActivity.startActivity(mActivity,sendOutBean);
+                PacketSendActivity.startActivity(mActivity, sendOutBean);
             }
         });
 
@@ -125,12 +128,17 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
                     Connect.ExternalBillingInfos externalBillingInfos = Connect.ExternalBillingInfos.parseFrom(structData.getPlainData());
                     List<Connect.ExternalBillingInfo> list = externalBillingInfos.getExternalBillingInfosList();
 
-                    if (page > 1) {
-                        transferOutAdapter.setNotifyData(list, false);
+                    if (list == null || list.size() == 0) {
+                        noDataLin.setVisibility(View.VISIBLE);
+                        refreshview.setVisibility(View.GONE);
                     } else {
-                        transferOutAdapter.setNotifyData(list, true);
+                        if (page > 1) {
+                            transferOutAdapter.setNotifyData(list, false);
+                        } else {
+                            transferOutAdapter.setNotifyData(list, true);
+                        }
+                        refreshview.setRefreshing(false);
                     }
-                    refreshview.setRefreshing(false);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

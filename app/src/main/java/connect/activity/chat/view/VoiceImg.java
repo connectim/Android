@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -23,6 +24,7 @@ import java.util.TimerTask;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.RecExtBean;
+import connect.utils.ExCountDownTimer;
 import connect.utils.MediaUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
@@ -37,11 +39,11 @@ public class VoiceImg extends ImageView {
     private Paint mPaint = new Paint();
     private long voiceLength;
     private String voicePath = "";
-    private Timer timer;
-    private TimerTask timerTask;
     private int imgRes = R.mipmap.voice_play_icon2x;
     private String msgid;
     private MsgDirect msgDirect;
+
+    private ExCountDownTimer countDownTimer;
 
     public VoiceImg(Context context) {
         super(context);
@@ -144,7 +146,7 @@ public class VoiceImg extends ImageView {
 
     private final int VOICE_FREQUENCY = 500;
 
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -194,7 +196,8 @@ public class VoiceImg extends ImageView {
         startPlay(msgid, path, null);
     }
 
-    public void startPlay(String msgid, String path,VoicePlayListener listener) {
+    public void startPlay(String msgid, String path, VoicePlayListener listener) {
+
         this.msgid = msgid;
         this.voicePath = path;
         this.playListener = listener;
@@ -207,24 +210,32 @@ public class VoiceImg extends ImageView {
                 return;
             }
         }
-        timer = new Timer();
-        timerTask = new TimerTask() {
-            private int counttime = 0;
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        countDownTimer = new ExCountDownTimer(voiceLength * 1000, VOICE_FREQUENCY) {
 
             @Override
-            public void run() {
+            public void onTick(long millisUntilFinished, int percent) {
                 Message msg = new Message();
                 msg.what = 100;
-                msg.arg1 = counttime;
+                msg.arg1 = (int) millisUntilFinished;
+                mHandler.sendMessage(msg);
+            }
 
-                counttime += VOICE_FREQUENCY;
-                if (counttime >= voiceLength * 1000) {
-                    msg.what = 150;
-                }
+            @Override
+            public void onPause() {
+
+            }
+
+            @Override
+            public void onFinish() {
+                Message msg = new Message();
+                msg.what = 150;
                 mHandler.sendMessage(msg);
             }
         };
-        timer.schedule(timerTask, VOICE_FREQUENCY, VOICE_FREQUENCY);
         MediaUtil.getInstance().playVoice(path);
     }
 
@@ -256,13 +267,9 @@ public class VoiceImg extends ImageView {
     }
 
     private void cancelTimer() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (timerTask != null) {
-            timerTask.cancel();
-            timerTask.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
         }
     }
 
@@ -270,10 +277,6 @@ public class VoiceImg extends ImageView {
 
     public interface VoicePlayListener {
         void playFinish(String msgid, String filepath);
-    }
-
-    public void setPlayListener(VoicePlayListener playListener) {
-        this.playListener = playListener;
     }
 
     public void downLoading() {

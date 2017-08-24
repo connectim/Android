@@ -93,7 +93,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             holder.nameTxt.setText(inflater.getContext().getString(R.string.app_name));
             GlideUtil.loadImage(holder.headImg, R.mipmap.connect_logo);
             holder.bottomNotify.setVisibility(View.GONE);
-        } else if (roomAttr.getRoomtype() == 0 || roomAttr.getRoomtype() == 1) {
+        } else if (roomAttr.getRoomtype() == Connect.ChatType.PRIVATE_VALUE || roomAttr.getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE) {
             String showName = TextUtils.isEmpty(roomAttr.getName()) ? "" : roomAttr.getName();
             String showAvatar = TextUtils.isEmpty(roomAttr.getAvatar()) ? "" : roomAttr.getAvatar();
 

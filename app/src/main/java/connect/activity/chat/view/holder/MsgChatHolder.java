@@ -9,8 +9,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import connect.activity.chat.BaseChatActvity;
+import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
@@ -21,11 +21,13 @@ import connect.activity.chat.view.MsgStateView;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
-import connect.activity.set.ModifyInfoActivity;
+import connect.activity.set.UserInfoActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.GroupMemberEntity;
+import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
@@ -46,8 +48,6 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
     protected BurnProBar burnProBar;
     protected MsgStateView msgStateView;
     protected RelativeLayout contentLayout;
-
-    private Connect.MessageUserInfo userInfo;
 
     private PromptViewHelper pvHelper = null;
     protected PromptViewHelper.OnPromptClickListener promptClickListener = null;
@@ -102,16 +102,16 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
         switch (chatType) {
             case PRIVATE:
-                userInfo = RoomSession.getInstance().getUserInfo();
+                final Connect.MessageUserInfo userInfo = RoomSession.getInstance().getUserInfo();
                 GlideUtil.loadAvater(headImg, direct == MsgDirect.From ? userInfo.getAvatar() :
                         MemoryDataManager.getInstance().getAvatar());
-                headImg.setVisibility(RoomSession.getInstance().getBurntime() == 0 ? View.VISIBLE :
+                headImg.setVisibility(RoomSession.getInstance().getBurntime() <= 0 ? View.VISIBLE :
                         View.GONE);
                 headImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (direct == MsgDirect.To) {
-                            ModifyInfoActivity.startActivity((Activity) context);
+                            UserInfoActivity.startActivity((Activity) context);
                         } else if (direct == MsgDirect.From) {
                             ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
                             if (friend == null) {
@@ -123,59 +123,63 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                         }
                     }
                 });
+                if (memberTxt != null) {
+                    memberTxt.setVisibility(View.GONE);
+                }
                 if (burnProBar != null) {
                     long destructtime = msgExtEntity.parseDestructTime();
                     if (destructtime == 0) {
                         burnProBar.setVisibility(View.GONE);
                     } else {
-                        if (direct == MsgDirect.From || msgExtEntity.getRead_time() == 0) {
-                            burnProBar.setVisibility(View.VISIBLE);
-                            burnProBar.initBurnMsg(msgExtEntity);
-                            if (direct == MsgDirect.From && (msgExtEntity.getMessageType() == 1 || msgExtEntity.getMessageType() == 5)) {
-                                msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
-                                burnProBar.startBurnRead();
-                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNMSG_READ, msgExtEntity.getMessage_id(), direct);
-                            }
-                        } else {
-                            burnProBar.setVisibility(View.GONE);
+                        burnProBar.setVisibility(View.VISIBLE);
+                        burnProBar.setMsgExtEntity(msgExtEntity);
+
+                        MsgType msgType = MsgType.toMsgType(msgExtEntity.getMessageType());
+                        burnProBar.loadBurnMsg();
+                        if (direct == MsgDirect.From && (msgType == MsgType.Text || msgType == MsgType.Emotion)) {
+                            msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
+                            DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
                         }
                     }
                 }
                 break;
             case GROUPCHAT:
-                userInfo = msgExtEntity.getUserInfo();
                 headImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (direct == MsgDirect.To) {
-                            ModifyInfoActivity.startActivity((Activity) context);
+                            UserInfoActivity.startActivity((Activity) context);
                         } else if (direct == MsgDirect.From) {
-                            ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
+                            String memberKey=msgExtEntity.getMessage_from();
+                            ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(memberKey);
                             if (friend == null) {
-                                String address = SupportKeyUril.getAddressFromPubkey(userInfo.getUid());
+                                String address = SupportKeyUril.getAddressFromPubkey(memberKey);
                                 StrangerInfoActivity.startActivity((Activity) context, address, SourceType.GROUP);
                             } else {
-                                FriendInfoActivity.startActivity((Activity) context, userInfo.getUid());
+                                FriendInfoActivity.startActivity((Activity) context, memberKey);
                             }
                         }
                     }
                 });
 
                 if (direct == MsgDirect.To) {
+                    GlideUtil.loadAvater(headImg, MemoryDataManager.getInstance().getAvatar());
                     if (memberTxt != null) {
                         memberTxt.setVisibility(View.GONE);
                     }
                 } else if (direct == MsgDirect.From) {
                     memberTxt.setVisibility(View.VISIBLE);
-                    String showName = ((GroupChat) ((BaseChatActvity) context).getNormalChat()).nickName(userInfo.getUid());
-                    if (TextUtils.isEmpty(showName)) {
-                        showName = userInfo.getUsername();
-                    }
-                    memberTxt.setText(showName);
-                }
+                    String memberKey = msgExtEntity.getMessage_from();
+                    GroupMemberEntity memberEntity = ((GroupChat) ((BaseChatActvity) context).getNormalChat()).loadGroupMember(memberKey);
 
-                GlideUtil.loadAvater(headImg, direct == MsgDirect.To ? MemoryDataManager.getInstance().getAvatar() :
-                        userInfo.getAvatar());
+                    GlideUtil.loadAvater(headImg, memberEntity.getAvatar());
+
+                    String memberName = "";
+                    if (memberEntity != null) {
+                        memberName = TextUtils.isEmpty(memberEntity.getNick()) ? memberEntity.getUsername() : memberEntity.getNick();
+                    }
+                    memberTxt.setText(memberName);
+                }
 
                 if (burnProBar != null) {
                     burnProBar.setVisibility(View.GONE);

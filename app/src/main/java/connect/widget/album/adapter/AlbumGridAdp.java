@@ -13,7 +13,7 @@ import java.util.List;
 
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 
 /**
  * Created by pujin on 2017/3/22.
@@ -91,7 +91,8 @@ public class AlbumGridAdp extends BaseAdapter{
     }
 
     private static class AlbumGridHolder {
-        private View view;
+
+        View view;
         ImageView preImg;
         ImageView videoImg;
         CheckBox checkBox;

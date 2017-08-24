@@ -5,13 +5,12 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.inter.FileDownLoad;
+import connect.activity.chat.model.content.RobotChat;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.glide.BlurMaskTransformation;
@@ -79,16 +78,19 @@ public class BubbleImg extends RelativeLayout {
         }
     }
 
-
     public void loadUri(final MsgDirect direct, final Connect.ChatType chatType, final String pukkey, final String msgid, final String url, final float imgwidth, final float imgheight) {
         msgDirect = direct;
 
         imageView.setImageBitmap(null);
         String msgidToLocal = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
 
-        if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(msgidToLocal)) {
+        if (pukkey.equals(RobotChat.getInstance().chatKey()) || FileUtil.islocalFile(url) || FileUtil.isExistFilePath(msgidToLocal)) {
             progressBar.setVisibility(GONE);
-            localPath = FileUtil.islocalFile(url) ? url : msgidToLocal;
+            if (pukkey.equals(RobotChat.getInstance().chatKey())) {
+                localPath = url;
+            } else {
+                localPath = FileUtil.islocalFile(url) ? url : msgidToLocal;
+            }
             calculateSize(imgwidth,imgheight);
 
             Glide.with(BaseApplication.getInstance())

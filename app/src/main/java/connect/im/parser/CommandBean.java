@@ -495,6 +495,7 @@ public class CommandBean extends InterParse {
 
         Context context = BaseApplication.getInstance().getBaseContext();
         String groupKey = "";
+        String memberAddress="";
         String noticeStr = "";
 
         GroupEntity groupEntity = null;
@@ -578,27 +579,29 @@ public class CommandBean extends InterParse {
                 }
                 break;
             case 3://Group of personal information changes
-                groupKey = groupChange.getIdentifier();
                 Connect.ChangeGroupNick groupNick = Connect.ChangeGroupNick.parseFrom(groupChange.getDetail());
-                GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, groupNick.getAddress());
-                memEntity.setNick(groupNick.getNick());
-                ContactHelper.getInstance().inserGroupMemEntity(memEntity);
+
+                groupKey = groupChange.getIdentifier();
+                memberAddress = groupNick.getAddress();
+                String memberNick = groupNick.getNick();
+                ContactHelper.getInstance().updateGroupMemberNickName(groupKey, memberAddress, memberNick);
                 break;
             case 4://Group change
                 groupKey = groupChange.getIdentifier();
                 Connect.GroupAttorn groupAttorn = Connect.GroupAttorn.parseFrom(groupChange.getDetail());
-                groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(groupKey);
+                groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
                 if (groupMemEntities == null) {
                     break;
                 }
                 for (GroupMemberEntity member : groupMemEntities) {
                     if (member.getRole() == 1) {//The old group manager
-                        member.setRole(0);
-                        ContactHelper.getInstance().inserGroupMemEntity(member);
+                        memberAddress = member.getAddress();
+                        ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 0);
                     }
+
                     if (member.getAddress().equals(groupAttorn.getAddress())) {//The new group manager
-                        member.setRole(1);
-                        ContactHelper.getInstance().inserGroupMemEntity(member);
+                        memberAddress = member.getAddress();
+                        ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 1);
 
                         String showName = "";
                         if (groupAttorn.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {

@@ -1,37 +1,24 @@
 package connect.activity.set;
 
-import android.app.Dialog;
-import android.app.WallpaperInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import connect.activity.wallet.bean.WalletBean;
-import connect.database.MemoryDataManager;
-import connect.database.SharePreferenceUser;
-import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.CurrencyHelper;
-import connect.database.green.bean.CurrencyEntity;
-import connect.ui.activity.R;
-import connect.activity.login.bean.UserBean;
-import connect.utils.LoginPassCheckUtil;
-import connect.activity.base.BaseActivity;
-import connect.utils.ActivityUtil;
-import connect.utils.cryption.SupportKeyUril;
-import connect.wallet.cwallet.NativeWallet;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.jni.AllNativeMethod;
-import connect.widget.TopToolBar;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
+import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
+import connect.utils.LoginPassCheckUtil;
+import connect.widget.TopToolBar;
 
 /**
- * Account and security
- * Created by Administrator on 2016/12/1.
+ * Account and security.
  */
 public class SafetyActivity extends BaseActivity {
 
@@ -54,7 +41,6 @@ public class SafetyActivity extends BaseActivity {
 
     private SafetyActivity mActivity;
     private UserBean userBean;
-    private Dialog dialogPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +63,9 @@ public class SafetyActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_Account_security);
 
         userBean = SharedPreferenceUtil.getInstance().getUser();
-        if(userBean != null && TextUtils.isEmpty(userBean.getPhone())){
+        if (userBean != null && TextUtils.isEmpty(userBean.getPhone())) {
             phoneTv.setText(R.string.Set_Phone_unbinded);
-        }else{
+        } else {
             try {
                 String phoneNum = userBean.getPhone();
                 String[] spliteArr = phoneNum.split("-");
@@ -89,60 +75,57 @@ public class SafetyActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-        if(userBean != null && TextUtils.isEmpty(userBean.getSalt())){
+
+        if (userBean != null && TextUtils.isEmpty(userBean.getSalt())) {
             patternTv.setText(R.string.Set_Off);
-        }else{
+        } else {
             patternTv.setText(R.string.Set_On);
         }
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view){
+    void goback(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
     @OnClick(R.id.phone_ll)
-    void goLink(View view){
-        ActivityUtil.next(mActivity,LinkMobileActivity.class);
+    void goLink(View view) {
+        ActivityUtil.next(mActivity,SafetyPhoneActivity.class);
     }
 
     @OnClick(R.id.password_ll)
-    void goPassword(View view){
-        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListence() {
+    void goPassword(View view) {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
             @Override
             public void success(String priKey) {
-                ActivityUtil.next(mActivity,ModifyPassActivity.class);
+                ActivityUtil.next(mActivity,SafetyLoginPassActivity.class);
             }
 
             @Override
-            public void error() {
-
-            }
+            public void error() {}
         });
     }
 
     @OnClick(R.id.payment_ll)
-    void goPayMent(View view){
-        ActivityUtil.next(mActivity,PaymentActivity.class);
+    void goPayMent(View view) {
+        ActivityUtil.next(mActivity,SafetyPayActivity.class);
     }
 
     @OnClick(R.id.pattern_ll)
-    void goPattern(View view){
-        PatternActivity.startActivity(mActivity,PatternActivity.SET_STYPE);
+    void goPattern(View view) {
+        SafetyPatternActivity.startActivity(mActivity,SafetyPatternActivity.SET_TYPE);
     }
 
     @OnClick(R.id.pritkey_backup_ll)
-    void goBackUp(View view){
-        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListence() {
+    void goBackUp(View view) {
+        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
             @Override
             public void success(String priKey) {
-                ActivityUtil.next(mActivity,BackUpActivity.class);
+                ActivityUtil.next(mActivity,SafetyBackupActivity.class);
             }
 
             @Override
-            public void error() {
-
-            }
+            public void error() {}
         });
     }
 

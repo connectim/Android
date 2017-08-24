@@ -16,10 +16,6 @@ import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 import connect.widget.roundedimageview.RoundedImageView;
 
-/**
- * Created by Administrator on 2017/2/8.
- */
-
 public class RecentChatAdapter extends BaseAdapter {
 
     private ArrayList<ContactEntity> mDataList = new ArrayList<>();

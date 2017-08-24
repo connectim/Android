@@ -8,7 +8,7 @@ import java.util.List;
 
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.album.entity.ImageInfo;
+import connect.widget.album.model.ImageInfo;
 import connect.widget.photoview.PhotoView;
 
 /**

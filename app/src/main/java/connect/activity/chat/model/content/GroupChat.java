@@ -30,6 +30,7 @@ public class GroupChat extends NormalChat {
 
     private GroupEntity groupEntity;
     private GroupMemberEntity myGroupMember;
+    private Map<String, GroupMemberEntity> memEntityMap = null;
 
     public GroupChat(GroupEntity entity) {
         groupEntity = entity;
@@ -40,12 +41,8 @@ public class GroupChat extends NormalChat {
             RoomSession.getInstance().setGroupEcdh(groupEntity.getEcdh_key());
         }
 
-        myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
-        if (myGroupMember == null) {
-            myGroupMember = new GroupMemberEntity();
-            myGroupMember.setPub_key(MemoryDataManager.getInstance().getPubKey());
-            myGroupMember.setUsername(MemoryDataManager.getInstance().getName());
-        }
+        loadGroupMembersMap();
+        myGroupMember = memEntityMap.get(MemoryDataManager.getInstance().getPubKey());
     }
 
     @Override
@@ -59,6 +56,8 @@ public class GroupChat extends NormalChat {
         msgExtEntity.setMessage_from(mypublickey);
         msgExtEntity.setMessage_to(identify());
         msgExtEntity.setMessageType(type.type);
+        msgExtEntity.setRead_time(0L);
+        msgExtEntity.setSnap_time(0L);
         msgExtEntity.setCreatetime(TimeUtil.getCurrentTimeInLong());
         msgExtEntity.setSend_status(0);
         return msgExtEntity;
@@ -148,36 +147,27 @@ public class GroupChat extends NormalChat {
         myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
     }
 
-    private Map<String, GroupMemberEntity> memEntityMap = null;
+    public void loadGroupMembersMap() {
+        if (memEntityMap == null) {
+            memEntityMap = new HashMap<>();
+        }
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(chatKey());
+        for (GroupMemberEntity memEntity : groupMemEntities) {
+            memEntityMap.put(memEntity.getPub_key(), memEntity);
+        }
+    }
 
     public GroupMemberEntity loadGroupMember(String memberkey) {
         if (memEntityMap == null) {
-            memEntityMap = new HashMap<>();
-            List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntity(chatKey());
-            for (GroupMemberEntity memEntity : groupMemEntities) {
-                memEntityMap.put(memEntity.getPub_key(), memEntity);
-            }
+            loadGroupMembersMap();
         }
         return memEntityMap.get(memberkey);
-    }
-
-    public String nickName(String pubkey) {
-        String memberName = "";
-        GroupMemberEntity groupMemEntity = loadGroupMember(pubkey);
-        if (groupMemEntity != null) {
-            memberName = TextUtils.isEmpty(groupMemEntity.getNick()) ? groupMemEntity.getUsername() : groupMemEntity.getNick();
-        }
-        return memberName;
     }
 
     public void setNickName(String name){
         if (!TextUtils.isEmpty(name)) {
             groupEntity.setName(name);
         }
-    }
-
-    public void setHeadimg(String path) {
-        groupEntity.setAvatar(path);
     }
 
     public MsgExtEntity notMemberNotice() {
@@ -199,6 +189,18 @@ public class GroupChat extends NormalChat {
         Connect.NotifyMessage.Builder builder = Connect.NotifyMessage.newBuilder()
                 .setContent(tips);
 
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    public MsgExtEntity groupTxtMsg(String string, List<String> address) {
+        MsgExtEntity msgExtEntity = createBaseChat(MsgType.Text);
+        Connect.TextMessage.Builder builder = Connect.TextMessage.newBuilder()
+                .setContent(string);
+
+        for (String memberaddress : address) {
+            builder.addAtAddresses(memberaddress);
+        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }

@@ -8,9 +8,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.ScanLoginContract;
-import connect.activity.set.presenter.BackUpPresenter;
+import connect.activity.set.presenter.SafetyBackupPresenter;
 import connect.ui.activity.R;
 import connect.utils.ConfigUtil;
+import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
@@ -45,8 +46,9 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter {
             return;
         }
 
+        ProgressUtil.getInstance().dismissProgress();
         try {
-            String enStr = value.replace(BackUpPresenter.scanHead,"");
+            String enStr = value.replace(SafetyBackupPresenter.scanHead,"");
             if (TextUtils.isEmpty(enStr)) {
                 ToastUtil.getInstance().showToast(R.string.Login_scan_string_error);
             } else {
@@ -90,6 +92,7 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter {
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
+                        ProgressUtil.getInstance().dismissProgress();
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
@@ -120,6 +123,7 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter {
 
                     @Override
                     public void onError(Connect.HttpResponse response) {
+                        ProgressUtil.getInstance().dismissProgress();
                         if (response.getCode() == 2404) {
                             // The private key is not registered
                             mView.goIntoRegister(priKey);

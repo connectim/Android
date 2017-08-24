@@ -1717,14 +1717,14 @@ public final class WalletOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string pay_load = 1;</code>
+     * <code>optional string payload = 1;</code>
      */
-    java.lang.String getPayLoad();
+    java.lang.String getPayload();
     /**
-     * <code>optional string pay_load = 1;</code>
+     * <code>optional string payload = 1;</code>
      */
     com.google.protobuf.ByteString
-        getPayLoadBytes();
+        getPayloadBytes();
 
     /**
      * <code>optional int32 version = 2;</code>
@@ -1745,6 +1745,16 @@ public final class WalletOuterClass {
      */
     com.google.protobuf.ByteString
         getCheckSumBytes();
+
+    /**
+     * <code>optional string uuid = 100;</code>
+     */
+    java.lang.String getUuid();
+    /**
+     * <code>optional string uuid = 100;</code>
+     */
+    com.google.protobuf.ByteString
+        getUuidBytes();
   }
   /**
    * Protobuf type {@code wallet_gateway.Wallet}
@@ -1758,10 +1768,11 @@ public final class WalletOuterClass {
       super(builder);
     }
     private Wallet() {
-      payLoad_ = "";
+      payload_ = "";
       version_ = 0;
       ver_ = 0;
       checkSum_ = "";
+      uuid_ = "";
     }
 
     @java.lang.Override
@@ -1792,7 +1803,7 @@ public final class WalletOuterClass {
             case 10: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              payLoad_ = s;
+              payload_ = s;
               break;
             }
             case 16: {
@@ -1809,6 +1820,12 @@ public final class WalletOuterClass {
               java.lang.String s = input.readStringRequireUtf8();
 
               checkSum_ = s;
+              break;
+            }
+            case 802: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              uuid_ = s;
               break;
             }
           }
@@ -1834,34 +1851,34 @@ public final class WalletOuterClass {
               wallet_gateway.WalletOuterClass.Wallet.class, wallet_gateway.WalletOuterClass.Wallet.Builder.class);
     }
 
-    public static final int PAY_LOAD_FIELD_NUMBER = 1;
-    private volatile java.lang.Object payLoad_;
+    public static final int PAYLOAD_FIELD_NUMBER = 1;
+    private volatile java.lang.Object payload_;
     /**
-     * <code>optional string pay_load = 1;</code>
+     * <code>optional string payload = 1;</code>
      */
-    public java.lang.String getPayLoad() {
-      java.lang.Object ref = payLoad_;
+    public java.lang.String getPayload() {
+      java.lang.Object ref = payload_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        payLoad_ = s;
+        payload_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string pay_load = 1;</code>
+     * <code>optional string payload = 1;</code>
      */
     public com.google.protobuf.ByteString
-        getPayLoadBytes() {
-      java.lang.Object ref = payLoad_;
+        getPayloadBytes() {
+      java.lang.Object ref = payload_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        payLoad_ = b;
+        payload_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -1920,6 +1937,40 @@ public final class WalletOuterClass {
       }
     }
 
+    public static final int UUID_FIELD_NUMBER = 100;
+    private volatile java.lang.Object uuid_;
+    /**
+     * <code>optional string uuid = 100;</code>
+     */
+    public java.lang.String getUuid() {
+      java.lang.Object ref = uuid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        uuid_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string uuid = 100;</code>
+     */
+    public com.google.protobuf.ByteString
+        getUuidBytes() {
+      java.lang.Object ref = uuid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        uuid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1932,8 +1983,8 @@ public final class WalletOuterClass {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getPayLoadBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, payLoad_);
+      if (!getPayloadBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, payload_);
       }
       if (version_ != 0) {
         output.writeInt32(2, version_);
@@ -1944,6 +1995,9 @@ public final class WalletOuterClass {
       if (!getCheckSumBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, checkSum_);
       }
+      if (!getUuidBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 100, uuid_);
+      }
     }
 
     public int getSerializedSize() {
@@ -1951,8 +2005,8 @@ public final class WalletOuterClass {
       if (size != -1) return size;
 
       size = 0;
-      if (!getPayLoadBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, payLoad_);
+      if (!getPayloadBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, payload_);
       }
       if (version_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -1964,6 +2018,9 @@ public final class WalletOuterClass {
       }
       if (!getCheckSumBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, checkSum_);
+      }
+      if (!getUuidBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(100, uuid_);
       }
       memoizedSize = size;
       return size;
@@ -1981,14 +2038,16 @@ public final class WalletOuterClass {
       wallet_gateway.WalletOuterClass.Wallet other = (wallet_gateway.WalletOuterClass.Wallet) obj;
 
       boolean result = true;
-      result = result && getPayLoad()
-          .equals(other.getPayLoad());
+      result = result && getPayload()
+          .equals(other.getPayload());
       result = result && (getVersion()
           == other.getVersion());
       result = result && (getVer()
           == other.getVer());
       result = result && getCheckSum()
           .equals(other.getCheckSum());
+      result = result && getUuid()
+          .equals(other.getUuid());
       return result;
     }
 
@@ -1999,14 +2058,16 @@ public final class WalletOuterClass {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + PAY_LOAD_FIELD_NUMBER;
-      hash = (53 * hash) + getPayLoad().hashCode();
+      hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
+      hash = (53 * hash) + getPayload().hashCode();
       hash = (37 * hash) + VERSION_FIELD_NUMBER;
       hash = (53 * hash) + getVersion();
       hash = (37 * hash) + VER_FIELD_NUMBER;
       hash = (53 * hash) + getVer();
       hash = (37 * hash) + CHECK_SUM_FIELD_NUMBER;
       hash = (53 * hash) + getCheckSum().hashCode();
+      hash = (37 * hash) + UUID_FIELD_NUMBER;
+      hash = (53 * hash) + getUuid().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2125,13 +2186,15 @@ public final class WalletOuterClass {
       }
       public Builder clear() {
         super.clear();
-        payLoad_ = "";
+        payload_ = "";
 
         version_ = 0;
 
         ver_ = 0;
 
         checkSum_ = "";
+
+        uuid_ = "";
 
         return this;
       }
@@ -2155,10 +2218,11 @@ public final class WalletOuterClass {
 
       public wallet_gateway.WalletOuterClass.Wallet buildPartial() {
         wallet_gateway.WalletOuterClass.Wallet result = new wallet_gateway.WalletOuterClass.Wallet(this);
-        result.payLoad_ = payLoad_;
+        result.payload_ = payload_;
         result.version_ = version_;
         result.ver_ = ver_;
         result.checkSum_ = checkSum_;
+        result.uuid_ = uuid_;
         onBuilt();
         return result;
       }
@@ -2200,8 +2264,8 @@ public final class WalletOuterClass {
 
       public Builder mergeFrom(wallet_gateway.WalletOuterClass.Wallet other) {
         if (other == wallet_gateway.WalletOuterClass.Wallet.getDefaultInstance()) return this;
-        if (!other.getPayLoad().isEmpty()) {
-          payLoad_ = other.payLoad_;
+        if (!other.getPayload().isEmpty()) {
+          payload_ = other.payload_;
           onChanged();
         }
         if (other.getVersion() != 0) {
@@ -2212,6 +2276,10 @@ public final class WalletOuterClass {
         }
         if (!other.getCheckSum().isEmpty()) {
           checkSum_ = other.checkSum_;
+          onChanged();
+        }
+        if (!other.getUuid().isEmpty()) {
+          uuid_ = other.uuid_;
           onChanged();
         }
         onChanged();
@@ -2240,71 +2308,71 @@ public final class WalletOuterClass {
         return this;
       }
 
-      private java.lang.Object payLoad_ = "";
+      private java.lang.Object payload_ = "";
       /**
-       * <code>optional string pay_load = 1;</code>
+       * <code>optional string payload = 1;</code>
        */
-      public java.lang.String getPayLoad() {
-        java.lang.Object ref = payLoad_;
+      public java.lang.String getPayload() {
+        java.lang.Object ref = payload_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          payLoad_ = s;
+          payload_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string pay_load = 1;</code>
+       * <code>optional string payload = 1;</code>
        */
       public com.google.protobuf.ByteString
-          getPayLoadBytes() {
-        java.lang.Object ref = payLoad_;
+          getPayloadBytes() {
+        java.lang.Object ref = payload_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          payLoad_ = b;
+          payload_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>optional string pay_load = 1;</code>
+       * <code>optional string payload = 1;</code>
        */
-      public Builder setPayLoad(
+      public Builder setPayload(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   
-        payLoad_ = value;
+        payload_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string pay_load = 1;</code>
+       * <code>optional string payload = 1;</code>
        */
-      public Builder clearPayLoad() {
+      public Builder clearPayload() {
         
-        payLoad_ = getDefaultInstance().getPayLoad();
+        payload_ = getDefaultInstance().getPayload();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string pay_load = 1;</code>
+       * <code>optional string payload = 1;</code>
        */
-      public Builder setPayLoadBytes(
+      public Builder setPayloadBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
         
-        payLoad_ = value;
+        payload_ = value;
         onChanged();
         return this;
       }
@@ -2426,6 +2494,75 @@ public final class WalletOuterClass {
   checkByteStringIsUtf8(value);
         
         checkSum_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object uuid_ = "";
+      /**
+       * <code>optional string uuid = 100;</code>
+       */
+      public java.lang.String getUuid() {
+        java.lang.Object ref = uuid_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          uuid_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string uuid = 100;</code>
+       */
+      public com.google.protobuf.ByteString
+          getUuidBytes() {
+        java.lang.Object ref = uuid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          uuid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string uuid = 100;</code>
+       */
+      public Builder setUuid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        uuid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string uuid = 100;</code>
+       */
+      public Builder clearUuid() {
+        
+        uuid_ = getDefaultInstance().getUuid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string uuid = 100;</code>
+       */
+      public Builder setUuidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        uuid_ = value;
         onChanged();
         return this;
       }
@@ -23421,69 +23558,69 @@ public final class WalletOuterClass {
       "m\030\002 \001(\t\022\013\n\003ver\030\003 \001(\005\022\017\n\007version\030\004 \001(\005\"]\n" +
       "\016RespSyncWallet\022&\n\006wallet\030\001 \001(\0132\026.wallet" +
       "_gateway.Wallet\022#\n\005coins\030\002 \003(\0132\024.wallet_" +
-      "gateway.Coin\"K\n\006Wallet\022\020\n\010pay_load\030\001 \001(\t" +
-      "\022\017\n\007version\030\002 \001(\005\022\013\n\003ver\030\003 \001(\005\022\021\n\tcheck_" +
-      "sum\030\004 \001(\t\"*\n\007Balance\022\016\n\006amount\030\001 \001(\003\022\017\n\007" +
-      "pending\030\002 \001(\003\"n\n\021CreateCoinRequest\022\020\n\010cu" +
-      "rrency\030\001 \001(\005\022\026\n\016master_address\030\002 \001(\t\022\017\n\007",
-      "payload\030\003 \001(\t\022\020\n\010category\030\004 \001(\005\022\014\n\004salt\030" +
-      "\005 \001(\t\"z\n\004Coin\022\016\n\006status\030\001 \001(\005\022\020\n\010currenc" +
-      "y\030\002 \001(\005\022\020\n\010category\030\003 \001(\005\022\014\n\004salt\030\004 \001(\t\022" +
-      "\017\n\007balance\030\005 \001(\003\022\017\n\007payload\030\006 \001(\t\022\016\n\006amo" +
-      "unt\030\007 \001(\003\",\n\005Coins\022#\n\005Coins\030\001 \003(\0132\024.wall" +
-      "et_gateway.Coin\"^\n\013CoinsDetail\022\"\n\004coin\030\001" +
-      " \001(\0132\024.wallet_gateway.Coin\022+\n\tcoinInfos\030" +
-      "\002 \003(\0132\030.wallet_gateway.CoinInfo\"j\n\010CoinI" +
-      "nfo\022\r\n\005index\030\001 \001(\005\022\016\n\006status\030\002 \001(\005\022\017\n\007ad" +
-      "dress\030\003 \001(\t\022\r\n\005label\030\004 \001(\t\022\017\n\007balance\030\005 ",
-      "\001(\003\022\016\n\006amount\030\006 \001(\003\"d\n\021CreateCoinAccount" +
-      "\022\r\n\005index\030\001 \001(\005\022\017\n\007address\030\002 \001(\t\022\r\n\005labe" +
-      "l\030\003 \001(\t\022\016\n\006status\030\004 \001(\005\022\020\n\010currency\030\005 \001(" +
-      "\005\"\031\n\004Txin\022\021\n\taddresses\030\001 \003(\t\"(\n\005Txout\022\017\n" +
-      "\007address\030\001 \001(\t\022\016\n\006amount\030\002 \001(\003\"E\n\rSpentC" +
-      "urrency\022\020\n\010currency\030\001 \001(\005\022\"\n\004txin\030\002 \001(\0132" +
-      "\024.wallet_gateway.Txin\"\301\001\n\023LuckyPackageRe" +
-      "quest\0225\n\016spent_currency\030\001 \001(\0132\035.wallet_g" +
-      "ateway.SpentCurrency\022\033\n\023receiver_identif" +
-      "ier\030\002 \001(\t\022\013\n\003typ\030\003 \001(\005\022\020\n\010category\030\005 \001(\005",
-      "\022\014\n\004size\030\004 \001(\005\022\016\n\006amount\030\006 \001(\003\022\013\n\003fee\030\007 " +
-      "\001(\003\022\014\n\004tips\030\010 \001(\t\"o\n\013OutTransfer\0225\n\016spen" +
-      "t_currency\030\001 \001(\0132\035.wallet_gateway.SpentC" +
-      "urrency\022\016\n\006amount\030\002 \001(\003\022\013\n\003fee\030\003 \001(\003\022\014\n\004" +
-      "tips\030\004 \001(\t\"\212\001\n\017TransferRequest\0225\n\016spent_" +
-      "currency\030\001 \001(\0132\035.wallet_gateway.SpentCur" +
-      "rency\022%\n\006tx_out\030\002 \003(\0132\025.wallet_gateway.T" +
-      "xout\022\013\n\003fee\030\003 \001(\003\022\014\n\004tips\030\004 \001(\t\"m\n\023Crowd" +
-      "fundingRequest\022\020\n\010currency\030\001 \001(\005\022\030\n\020grou" +
-      "p_identifier\030\002 \001(\t\022\016\n\006amount\030\003 \001(\003\022\014\n\004si",
-      "ze\030\004 \001(\005\022\014\n\004tips\030\005 \001(\t\"+\n\014ConnectTxout\022\013" +
-      "\n\003uid\030\001 \001(\t\022\016\n\006amount\030\002 \001(\003\"\230\001\n\026ConnectT" +
-      "ransferRequest\0225\n\016spent_currency\030\001 \001(\0132\035" +
-      ".wallet_gateway.SpentCurrency\022,\n\006tx_out\030" +
-      "\002 \003(\0132\034.wallet_gateway.ConnectTxout\022\013\n\003f" +
-      "ee\030\003 \001(\003\022\014\n\004tips\030\004 \001(\t\"P\n\016ReceiveRequest" +
-      "\022\016\n\006sender\030\001 \001(\t\022\016\n\006amount\030\002 \001(\004\022\014\n\004tips" +
-      "\030\003 \001(\t\022\020\n\010currency\030\004 \001(\005\"p\n\007Payment\0225\n\016s" +
-      "pent_currency\030\001 \001(\0132\035.wallet_gateway.Spe" +
-      "ntCurrency\022\020\n\010pay_type\030\002 \001(\005\022\017\n\007hash_id\030",
-      "\003 \001(\t\022\013\n\003fee\030\004 \001(\003\"\035\n\nHashIdResp\022\017\n\007hash" +
-      "_id\030\001 \001(\t\"\331\001\n\023OriginalTransaction\022\017\n\007has" +
-      "h_id\030\001 \001(\t\022\016\n\006rawhex\030\002 \001(\t\022\013\n\003vts\030\003 \001(\t\022" +
-      "\013\n\003fee\030\004 \001(\003\022\021\n\taddresses\030\005 \003(\t\022\024\n\014estim" +
-      "ate_fee\030\006 \001(\003\022\022\n\nodd_change\030\007 \001(\003\022&\n\007tx_" +
-      "outs\030\010 \003(\0132\025.wallet_gateway.Txout\022\020\n\010cur" +
-      "rency\030\t \001(\005\022\020\n\010fixedFee\030\n \001(\003\"o\n\033Origina" +
-      "lTransactionResponse\022\014\n\004code\030\001 \001(\005\0221\n\004da" +
-      "ta\030\002 \001(\0132#.wallet_gateway.OriginalTransa" +
-      "ction\022\017\n\007message\030\003 \001(\t\"a\n\022PublishTransac",
-      "tion\022\030\n\020transaction_type\030\001 \001(\005\022\017\n\007hash_i" +
-      "d\030\002 \001(\t\022\016\n\006tx_hex\030\003 \001(\t\022\020\n\010currency\030\004 \001(" +
-      "\005\"\037\n\017ResponsePublish\022\014\n\004txid\030\001 \001(\t\"T\n\005Ge" +
-      "tTx\022\020\n\010currency\030\001 \001(\005\022\017\n\007address\030\002 \001(\t\022(" +
-      "\n\004page\030\003 \001(\0132\032.wallet_gateway.Pagination" +
-      "\"(\n\nPagination\022\014\n\004page\030\001 \001(\005\022\014\n\004size\030\002 \001" +
-      "(\005\"0\n\017RequestUserInfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010cu" +
-      "rrency\030\002 \001(\005b\006proto3"
+      "gateway.Coin\"X\n\006Wallet\022\017\n\007payload\030\001 \001(\t\022" +
+      "\017\n\007version\030\002 \001(\005\022\013\n\003ver\030\003 \001(\005\022\021\n\tcheck_s" +
+      "um\030\004 \001(\t\022\014\n\004uuid\030d \001(\t\"*\n\007Balance\022\016\n\006amo" +
+      "unt\030\001 \001(\003\022\017\n\007pending\030\002 \001(\003\"n\n\021CreateCoin" +
+      "Request\022\020\n\010currency\030\001 \001(\005\022\026\n\016master_addr",
+      "ess\030\002 \001(\t\022\017\n\007payload\030\003 \001(\t\022\020\n\010category\030\004" +
+      " \001(\005\022\014\n\004salt\030\005 \001(\t\"z\n\004Coin\022\016\n\006status\030\001 \001" +
+      "(\005\022\020\n\010currency\030\002 \001(\005\022\020\n\010category\030\003 \001(\005\022\014" +
+      "\n\004salt\030\004 \001(\t\022\017\n\007balance\030\005 \001(\003\022\017\n\007payload" +
+      "\030\006 \001(\t\022\016\n\006amount\030\007 \001(\003\",\n\005Coins\022#\n\005Coins" +
+      "\030\001 \003(\0132\024.wallet_gateway.Coin\"^\n\013CoinsDet" +
+      "ail\022\"\n\004coin\030\001 \001(\0132\024.wallet_gateway.Coin\022" +
+      "+\n\tcoinInfos\030\002 \003(\0132\030.wallet_gateway.Coin" +
+      "Info\"j\n\010CoinInfo\022\r\n\005index\030\001 \001(\005\022\016\n\006statu" +
+      "s\030\002 \001(\005\022\017\n\007address\030\003 \001(\t\022\r\n\005label\030\004 \001(\t\022",
+      "\017\n\007balance\030\005 \001(\003\022\016\n\006amount\030\006 \001(\003\"d\n\021Crea" +
+      "teCoinAccount\022\r\n\005index\030\001 \001(\005\022\017\n\007address\030" +
+      "\002 \001(\t\022\r\n\005label\030\003 \001(\t\022\016\n\006status\030\004 \001(\005\022\020\n\010" +
+      "currency\030\005 \001(\005\"\031\n\004Txin\022\021\n\taddresses\030\001 \003(" +
+      "\t\"(\n\005Txout\022\017\n\007address\030\001 \001(\t\022\016\n\006amount\030\002 " +
+      "\001(\003\"E\n\rSpentCurrency\022\020\n\010currency\030\001 \001(\005\022\"" +
+      "\n\004txin\030\002 \001(\0132\024.wallet_gateway.Txin\"\301\001\n\023L" +
+      "uckyPackageRequest\0225\n\016spent_currency\030\001 \001" +
+      "(\0132\035.wallet_gateway.SpentCurrency\022\033\n\023rec" +
+      "eiver_identifier\030\002 \001(\t\022\013\n\003typ\030\003 \001(\005\022\020\n\010c",
+      "ategory\030\005 \001(\005\022\014\n\004size\030\004 \001(\005\022\016\n\006amount\030\006 " +
+      "\001(\003\022\013\n\003fee\030\007 \001(\003\022\014\n\004tips\030\010 \001(\t\"o\n\013OutTra" +
+      "nsfer\0225\n\016spent_currency\030\001 \001(\0132\035.wallet_g" +
+      "ateway.SpentCurrency\022\016\n\006amount\030\002 \001(\003\022\013\n\003" +
+      "fee\030\003 \001(\003\022\014\n\004tips\030\004 \001(\t\"\212\001\n\017TransferRequ" +
+      "est\0225\n\016spent_currency\030\001 \001(\0132\035.wallet_gat" +
+      "eway.SpentCurrency\022%\n\006tx_out\030\002 \003(\0132\025.wal" +
+      "let_gateway.Txout\022\013\n\003fee\030\003 \001(\003\022\014\n\004tips\030\004" +
+      " \001(\t\"m\n\023CrowdfundingRequest\022\020\n\010currency\030" +
+      "\001 \001(\005\022\030\n\020group_identifier\030\002 \001(\t\022\016\n\006amoun",
+      "t\030\003 \001(\003\022\014\n\004size\030\004 \001(\005\022\014\n\004tips\030\005 \001(\t\"+\n\014C" +
+      "onnectTxout\022\013\n\003uid\030\001 \001(\t\022\016\n\006amount\030\002 \001(\003" +
+      "\"\230\001\n\026ConnectTransferRequest\0225\n\016spent_cur" +
+      "rency\030\001 \001(\0132\035.wallet_gateway.SpentCurren" +
+      "cy\022,\n\006tx_out\030\002 \003(\0132\034.wallet_gateway.Conn" +
+      "ectTxout\022\013\n\003fee\030\003 \001(\003\022\014\n\004tips\030\004 \001(\t\"P\n\016R" +
+      "eceiveRequest\022\016\n\006sender\030\001 \001(\t\022\016\n\006amount\030" +
+      "\002 \001(\004\022\014\n\004tips\030\003 \001(\t\022\020\n\010currency\030\004 \001(\005\"p\n" +
+      "\007Payment\0225\n\016spent_currency\030\001 \001(\0132\035.walle" +
+      "t_gateway.SpentCurrency\022\020\n\010pay_type\030\002 \001(",
+      "\005\022\017\n\007hash_id\030\003 \001(\t\022\013\n\003fee\030\004 \001(\003\"\035\n\nHashI" +
+      "dResp\022\017\n\007hash_id\030\001 \001(\t\"\331\001\n\023OriginalTrans" +
+      "action\022\017\n\007hash_id\030\001 \001(\t\022\016\n\006rawhex\030\002 \001(\t\022" +
+      "\013\n\003vts\030\003 \001(\t\022\013\n\003fee\030\004 \001(\003\022\021\n\taddresses\030\005" +
+      " \003(\t\022\024\n\014estimate_fee\030\006 \001(\003\022\022\n\nodd_change" +
+      "\030\007 \001(\003\022&\n\007tx_outs\030\010 \003(\0132\025.wallet_gateway" +
+      ".Txout\022\020\n\010currency\030\t \001(\005\022\020\n\010fixedFee\030\n \001" +
+      "(\003\"o\n\033OriginalTransactionResponse\022\014\n\004cod" +
+      "e\030\001 \001(\005\0221\n\004data\030\002 \001(\0132#.wallet_gateway.O" +
+      "riginalTransaction\022\017\n\007message\030\003 \001(\t\"a\n\022P",
+      "ublishTransaction\022\030\n\020transaction_type\030\001 " +
+      "\001(\005\022\017\n\007hash_id\030\002 \001(\t\022\016\n\006tx_hex\030\003 \001(\t\022\020\n\010" +
+      "currency\030\004 \001(\005\"\037\n\017ResponsePublish\022\014\n\004txi" +
+      "d\030\001 \001(\t\"T\n\005GetTx\022\020\n\010currency\030\001 \001(\005\022\017\n\007ad" +
+      "dress\030\002 \001(\t\022(\n\004page\030\003 \001(\0132\032.wallet_gatew" +
+      "ay.Pagination\"(\n\nPagination\022\014\n\004page\030\001 \001(" +
+      "\005\022\014\n\004size\030\002 \001(\005\"0\n\017RequestUserInfo\022\013\n\003ui" +
+      "d\030\001 \001(\t\022\020\n\010currency\030\002 \001(\005b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -23514,7 +23651,7 @@ public final class WalletOuterClass {
     internal_static_wallet_gateway_Wallet_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_wallet_gateway_Wallet_descriptor,
-        new java.lang.String[] { "PayLoad", "Version", "Ver", "CheckSum", });
+        new java.lang.String[] { "Payload", "Version", "Ver", "CheckSum", "Uuid", });
     internal_static_wallet_gateway_Balance_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_wallet_gateway_Balance_fieldAccessorTable = new

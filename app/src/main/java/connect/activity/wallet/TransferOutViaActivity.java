@@ -11,7 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.set.PayFeeActivity;
+import connect.activity.set.SafetyPayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
 import connect.activity.wallet.bean.TransferBean;
 import connect.database.green.DaoHelper.ParamManager;
@@ -93,7 +93,7 @@ public class TransferOutViaActivity extends BaseActivity {
 
         @Override
         public void setFee() {
-            PayFeeActivity.startActivity(mActivity);
+            SafetyPayFeeActivity.startActivity(mActivity);
         }
     };
 

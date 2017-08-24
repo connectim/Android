@@ -262,12 +262,12 @@ public class FileUtil {
         if (!file.exists()) {
             return 0;
         }
-        return (int)file.length() / 1024;
+        return (int)file.length();
     }
 
     public static String fileSize(int length) {
         String size = "";
-        FileSizeType sizeType = length < 1024 ? FileSizeType.KB : FileSizeType.M;
+        FileSizeType sizeType = length < 1024 * 1024 ? FileSizeType.KB : FileSizeType.M;
         switch (sizeType) {
             case KB:
                 size = length / 1024 + " KB";

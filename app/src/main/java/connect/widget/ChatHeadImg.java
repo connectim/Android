@@ -3,12 +3,12 @@ package connect.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import connect.activity.chat.bean.BurnNotice;
-import connect.widget.roundedimageview.RoundedImageView;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import connect.activity.chat.bean.DestructOpenBean;
+import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Created by gtq on 2016/12/13.
@@ -34,15 +34,12 @@ public class ChatHeadImg extends RoundedImageView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(BurnNotice notice) {
-        Object[] objects = (Object[]) notice.getObjs();
-        if (notice.getBurnType() == BurnNotice.BurnType.BURN_START) {
-            long burntime = (Long) objects[0];
-            if (burntime == 0) {
-                setVisibility(VISIBLE);
-            } else {
-                setVisibility(GONE);
-            }
+    public void onEventMainThread(DestructOpenBean openBean) {
+        long time = openBean.getTime();
+        if (time <= 0) {
+            setVisibility(VISIBLE);
+        } else {
+            setVisibility(GONE);
         }
     }
 

@@ -17,7 +17,7 @@ import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.album.ui.widget.HackyViewPager;
+import connect.widget.album.view.HackyViewPager;
 import connect.widget.photoview.PhotoView;
 import connect.widget.photoview.PhotoViewAttacher;
 

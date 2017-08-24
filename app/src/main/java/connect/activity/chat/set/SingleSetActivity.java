@@ -19,7 +19,7 @@ import connect.activity.chat.set.presenter.SingleSetPresenter;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
-import connect.activity.set.ModifyInfoActivity;
+import connect.activity.set.UserInfoActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -187,7 +187,7 @@ public class SingleSetActivity extends BaseActivity implements SingleSetContract
                 if (TextUtils.isEmpty(address)) {
                     GroupCreateActivity.startActivity(activity, roomKey);
                 } else if (MemoryDataManager.getInstance().getAddress().equals(address)) {
-                    ModifyInfoActivity.startActivity(activity);
+                    UserInfoActivity.startActivity(activity);
                 } else {
                     ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);
                     if (entity == null) {

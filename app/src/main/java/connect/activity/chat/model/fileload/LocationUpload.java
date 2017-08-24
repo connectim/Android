@@ -39,8 +39,8 @@ public class LocationUpload extends FileUpLoad {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(msgExtEntity.getContents());
-                    String filePath = photoMessage.getThum();
+                    Connect.LocationMessage locationMessage = Connect.LocationMessage.parseFrom(msgExtEntity.getContents());
+                    String filePath = locationMessage.getScreenShot();
 
                     File firstFile = BitmapUtil.getInstance().compress(filePath);
                     File secondFile = BitmapUtil.getInstance().compress(firstFile.getAbsolutePath());
@@ -94,7 +94,9 @@ public class LocationUpload extends FileUpLoad {
 
                 try {
                     Connect.LocationMessage locationMessage = Connect.LocationMessage.parseFrom(msgExtEntity.getContents());
-                    locationMessage.toBuilder().setScreenShot(thumb);
+                    locationMessage = locationMessage.toBuilder().setScreenShot(thumb).build();
+
+                    msgExtEntity = (MsgExtEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(locationMessage.toByteArray());
                     uploadSuccess(msgExtEntity);
                 } catch (Exception e) {

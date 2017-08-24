@@ -21,14 +21,11 @@ import protos.Connect;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Administrator on 2016/12/30.
- */
 public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<PhoneContactBean> mDataList = new ArrayList<>();
     private List<PhoneContactBean> selectList = new ArrayList<>();
-    private OnSeleListence onSeleListence;
+    private OnSelectListener onSelectListener;
     private int serverSize;
 
     private Activity activity;
@@ -176,8 +173,8 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 secview.setSelected(true);
             }
 
-            if(onSeleListence != null){
-                onSeleListence.seleFriend(selectList);
+            if(onSelectListener != null){
+                onSelectListener.selectFriend(selectList);
             }
         }
     };
@@ -191,8 +188,8 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(onSeleListence != null){
-                            onSeleListence.addFriend(positon,contactBean);
+                        if(onSelectListener != null){
+                            onSelectListener.addFriend(positon,contactBean);
                         }
                     }
                 });
@@ -220,8 +217,8 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
          return selectList;
     }
 
-    public void setOnSeleListence(OnSeleListence onSeleListence){
-        this.onSeleListence = onSeleListence;
+    public void setOnSelectListener(OnSelectListener onSelectListener){
+        this.onSelectListener = onSelectListener;
     }
 
     public void setServerSize(int size){
@@ -242,9 +239,9 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return -1;
     }
 
-    public interface OnSeleListence {
+    public interface OnSelectListener {
 
-        void seleFriend(List<PhoneContactBean> list);
+        void selectFriend(List<PhoneContactBean> list);
 
         void addFriend(int position,PhoneContactBean contactBean);
     }

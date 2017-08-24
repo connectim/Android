@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 /**
  * refresh fragment
- * Created by gtq on 2016/12/4.
  */
 public class MsgFragmReceiver implements Serializable {
 

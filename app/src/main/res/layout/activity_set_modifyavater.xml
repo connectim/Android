@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <connect.widget.HightEqWidthImage
+    <connect.widget.HeightEqWidthImage
         android:id="@+id/avatar_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

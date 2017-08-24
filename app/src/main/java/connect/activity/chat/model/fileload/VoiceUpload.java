@@ -70,8 +70,9 @@ public class VoiceUpload extends FileUpLoad {
 
                 try {
                     Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
-                    voiceMessage.toBuilder().setUrl(url);
+                    voiceMessage = voiceMessage.toBuilder().setUrl(url).build();
 
+                    msgExtEntity = (MsgExtEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(voiceMessage.toByteArray());
                     uploadSuccess(msgExtEntity);
                 } catch (Exception e) {

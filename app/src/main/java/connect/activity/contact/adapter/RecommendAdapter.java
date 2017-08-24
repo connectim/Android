@@ -24,15 +24,11 @@ import connect.utils.glide.GlideUtil;
 import connect.widget.SideScrollView;
 import connect.widget.roundedimageview.RoundedImageView;
 
-/**
- * Created by Administrator on 2017/1/21.
- */
-
 public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder> {
 
     private Activity activity;
     private ArrayList<RecommandFriendEntity> mList = new ArrayList<>();
-    private OnAddListence onAddListence;
+    private OnAddListener onAddListener;
 
     public RecommendAdapter(Activity activity) {
         this.activity = activity;
@@ -55,19 +51,19 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
         viewHolder.statusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddListence.add(position,recommendEntity);
+                onAddListener.add(position,recommendEntity);
             }
         });
         viewHolder.contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddListence.itemClick(position,recommendEntity);
+                onAddListener.itemClick(position,recommendEntity);
             }
         });
         viewHolder.deleteTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddListence.deleteItem(position,recommendEntity);
+                onAddListener.deleteItem(position,recommendEntity);
             }
         });
     }
@@ -147,11 +143,11 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
         }
     };
 
-    public void setOnAddListence(OnAddListence onAddListence) {
-        this.onAddListence = onAddListence;
+    public void setOnAddListener(OnAddListener onAddListener) {
+        this.onAddListener = onAddListener;
     }
 
-    public interface OnAddListence {
+    public interface OnAddListener {
 
         void add(int position, RecommandFriendEntity entity);
 

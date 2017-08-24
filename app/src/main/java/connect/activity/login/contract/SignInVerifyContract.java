@@ -22,7 +22,7 @@ public interface SignInVerifyContract {
 
         void changeBtnTiming(long time);
 
-        void changeBtnFinsh();
+        void changeBtnFinish();
     }
 
     interface Presenter extends BasePresenter {

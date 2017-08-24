@@ -47,7 +47,7 @@ public class KeepLiveActivity extends BaseActivity {
         params.height = 1;
         window.setAttributes(params);
 
-        receiver =new BroadcastReceiver() {
+        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 finish();

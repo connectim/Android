@@ -382,7 +382,7 @@
     <string name="Login_Encrypted_private_key">Шифрование приватного ключа</string>
     <string name="Login_Generated_Failure">Сбой при создании, пожалуйста  убедитесь, что вы настроили звук микрофона</string>
     <string name="Login_Generated_Successful">Успешное создание</string>
-    <string name="Login_Generating_Bitcoin_address">Создание биткоин адреса как подключиться к услуге ID</string>
+    <string name="Login_Generating_Bitcoin_address">Создание Btc адреса</string>
     <string name="Login_Generating_Private_and_Public_Key">Создание публичного и частного ключей...</string>
     <string name="Login_Import_private_key">Импорт приватного ключа</string>
     <string name="Login_Import_your_backup">Импорт резервной копии или другой приватный ключ</string>
@@ -709,6 +709,7 @@
     <string name="Wallet_You_already_open_this_luckypacket">Вы уже открыли этот "Денежный подарок"</string>
     <string name="Wallet_You_are_a_narcissism">Вы самовлюлюбленный человек</string>
     <string name="Wallet_You_do_not_have_any_Transactions">У вас нет никаких записей об операционных сделок</string>
+    <string name="Wallet_You_do_not_have_any_data">У вас нет каких-либо данных</string>
     <string name="Wallet_You_got_a_Lucky_Packet">Получение денежного подарка</string>
     <string name="Wallet_Your_Bitcoin_Address">адресс твоего биткоина \n\n%s</string>
     <string name="Wallet_Your_Bitcoin_Address_Title">адресс твоего биткоина</string>

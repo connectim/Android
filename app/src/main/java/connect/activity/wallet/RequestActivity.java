@@ -21,7 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.set.manager.EditInputFilterPrice;
+import connect.utils.filter.EditInputFilterPrice;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.ui.activity.R;
@@ -36,7 +36,6 @@ import connect.widget.zxing.utils.CreateScan;
 
 /**
  * payment
- * Created by Administrator on 2016/12/10.
  */
 public class RequestActivity extends BaseActivity {
 
