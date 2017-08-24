@@ -21,7 +21,7 @@ import butterknife.OnClick;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.activity.set.bean.PaySetBean;
-import connect.widget.EditInputFilterPrice;
+import connect.utils.filter.EditInputFilterPrice;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -108,7 +108,7 @@ public class SafetyPayFeeActivity extends BaseActivity {
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -121,7 +121,7 @@ public class SafetyPayFeeActivity extends BaseActivity {
             } else {
                 paySetBean.setFee(fee);
             }
-            requestSetpay();
+            requestSetPay();
         }
     }
 
@@ -156,7 +156,7 @@ public class SafetyPayFeeActivity extends BaseActivity {
         }
     };
 
-    private void requestSetpay() {
+    private void requestSetPay() {
         Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.newBuilder()
                 .setFee(paySetBean.getFee())
                 .setNoSecretPay(paySetBean.getNoSecretPay())

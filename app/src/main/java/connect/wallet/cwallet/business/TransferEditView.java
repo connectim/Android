@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.set.bean.PaySetBean;
-import connect.widget.EditInputFilterPrice;
+import connect.utils.filter.EditInputFilterPrice;
 import connect.activity.wallet.bean.RateBean;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;

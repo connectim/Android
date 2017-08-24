@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,8 @@ public class FriendInfoRecordActivity extends BaseActivity {
     RecyclerView recyclerview;
     @Bind(R.id.refreshview)
     SwipeRefreshLayout refreshview;
+    @Bind(R.id.no_data_lin)
+    LinearLayout noDataLin;
 
     private FriendInfoRecordActivity mActivity;
     private int page = 1;
@@ -89,14 +92,14 @@ public class FriendInfoRecordActivity extends BaseActivity {
         ActivityUtil.goBack(mActivity);
     }
 
-    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
             refreshview.setRefreshing(false);
         }
     };
 
-    EndlessScrollListener endlessScrollListener = new EndlessScrollListener(){
+    EndlessScrollListener endlessScrollListener = new EndlessScrollListener() {
         @Override
         public void onLoadMore() {
             page++;
@@ -104,7 +107,7 @@ public class FriendInfoRecordActivity extends BaseActivity {
         }
     };
 
-    FriendRecordAdapter.OnItemClickListener onItemClickListener = new FriendRecordAdapter.OnItemClickListener(){
+    FriendRecordAdapter.OnItemClickListener onItemClickListener = new FriendRecordAdapter.OnItemClickListener() {
         @Override
         public void itemClick(Connect.FriendBill friendBill) {
             BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, friendBill.getTxId());
@@ -125,17 +128,21 @@ public class FriendInfoRecordActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.FriendBillsMessage friendBillsMessage = Connect.FriendBillsMessage.parseFrom(structData.getPlainData());
-                    ArrayList<Connect.FriendBill> listBill = new ArrayList<>();
-                    for (Connect.FriendBill friendBill : friendBillsMessage.getFriendBillsList()) {
-                        if (ProtoBufUtil.getInstance().checkProtoBuf(friendBill)) {
-                            listBill.add(friendBill);
-                        }
-                    }
-
-                    if (page > 1) {
-                        adapter.setNotifyData(listBill, false);
+                    if (friendBillsMessage.getFriendBillsList().size() == 0) {
+                        noDataLin.setVisibility(View.VISIBLE);
+                        refreshview.setVisibility(View.GONE);
                     } else {
-                        adapter.setNotifyData(listBill, true);
+                        ArrayList<Connect.FriendBill> listBill = new ArrayList<>();
+                        for (Connect.FriendBill friendBill : friendBillsMessage.getFriendBillsList()) {
+                            if (ProtoBufUtil.getInstance().checkProtoBuf(friendBill)) {
+                                listBill.add(friendBill);
+                            }
+                        }
+                        if (page > 1) {
+                            adapter.setNotifyData(listBill, false);
+                        } else {
+                            adapter.setNotifyData(listBill, true);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

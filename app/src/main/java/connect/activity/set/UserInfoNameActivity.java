@@ -3,6 +3,7 @@ package connect.activity.set;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -19,6 +20,7 @@ import connect.activity.set.presenter.UserInfoNamePresenter;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
+import connect.utils.filter.NameLengthFilter;
 import connect.widget.TopToolBar;
 
 /**
@@ -121,6 +123,8 @@ public class UserInfoNameActivity extends BaseActivity implements UserInfoNameCo
         if (type.equals(TYPE_NUMBER)) {
             idTipTv.setVisibility(View.VISIBLE);
         }
+        InputFilter[] filters = { new NameLengthFilter(20) };
+        nameEt.setFilters(filters);
     }
 
     @Override

@@ -51,6 +51,7 @@ public class SafetyLoginPassPresenter implements SafetyLoginPassContract.Present
                         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                         userBean.setPassHint(hint);
                         userBean.setTalkKey(talkKey);
+                        SharedPreferenceUtil.getInstance().putUser(userBean);
                         mView.modifySuccess();
                     }
 

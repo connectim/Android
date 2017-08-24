@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -39,6 +40,8 @@ public class PacketHistoryActivity extends BaseActivity {
     RecyclerView recyclerview;
     @Bind(R.id.refreshview)
     SwipeRefreshLayout refreshview;
+    @Bind(R.id.no_data_lin)
+    LinearLayout noDataLin;
 
     private PacketHistoryActivity mActivity;
     private final int PAGESIZE_MAX = 10;
@@ -117,15 +120,17 @@ public class PacketHistoryActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.RedPackageInfos redPackageInfos = Connect.RedPackageInfos.parseFrom(structData.getPlainData());
-                    if (ProtoBufUtil.getInstance().checkProtoBuf(redPackageInfos)) {
-                        List<Connect.RedPackageInfo> list = redPackageInfos.getRedPackageInfosList();
+                    List<Connect.RedPackageInfo> list = redPackageInfos.getRedPackageInfosList();
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(redPackageInfos) && list.size() > 0) {
                         if (page > 1) {
                             redHistoryAdapter.setNotifyData(list, false);
                         } else {
                             redHistoryAdapter.setNotifyData(list, true);
                         }
-
-                       refreshview.setRefreshing(false);
+                        refreshview.setRefreshing(false);
+                    } else {
+                        noDataLin.setVisibility(View.VISIBLE);
+                        refreshview.setVisibility(View.GONE);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

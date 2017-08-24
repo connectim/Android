@@ -79,14 +79,15 @@ public class UserInfoActivity extends BaseActivity {
         nameTv.setText(userBean.getName());
         idTv.setText(userBean.getAddress());
         if (TextUtils.isEmpty(userBean.getConnectId())) {
-            numberTv.setText(R.string.Login_Not_set);
+            // numberTv.setText(R.string.Login_Not_set);
+            numberTv.setText(userBean.getAddress());
         } else {
             numberTv.setText(userBean.getConnectId());
         }
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 

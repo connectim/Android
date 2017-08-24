@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -25,6 +26,7 @@ import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.RegularUtil;
 import connect.utils.ToastEUtil;
+import connect.utils.filter.NameLengthFilter;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 import connect.widget.roundedimageview.RoundedImageView;
@@ -95,6 +97,8 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         passwordhintTv.setText(getString(R.string.Login_Password_Hint,""));
         nicnameEt.addTextChangedListener(textWatcher);
         userpasswordEt.addTextChangedListener(textWatcher);
+        InputFilter[] filters = { new NameLengthFilter(20) };
+        nicnameEt.setFilters(filters);
 
         new RegisterPresenter(this).start();
     }
@@ -120,7 +124,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     }
 
     @OnClick(R.id.userhead_img)
-    void seleAvater(View view) {
+    void seleAvatar(View view) {
         TakePictureActivity.startActivity(mActivity);
     }
 
@@ -137,14 +141,10 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
                     getString(R.string.Login_letter_number_and_character_must_be_included_in_your_login_password),
                     "", "", true, new DialogUtil.OnItemClickListener() {
                         @Override
-                        public void confirm(String value) {
-
-                        }
+                        public void confirm(String value) {}
 
                         @Override
-                        public void cancel() {
-
-                        }
+                        public void cancel() {}
                     });
         }
     }

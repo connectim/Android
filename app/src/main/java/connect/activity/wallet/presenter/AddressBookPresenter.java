@@ -78,9 +78,14 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
         if(null == listAddress){
             return;
         }
-        if(listAddress.contains(address)){
-            ToastEUtil.makeText(mView.getActivity(),R.string.Chat_Address_already_exists).show();
+
+        for(AddressBean addressBean : listAddress){
+            if(addressBean.getAddress().contains(address)){
+                ToastEUtil.makeText(mView.getActivity(),R.string.Chat_Address_already_exists).show();
+                return;
+            }
         }
+
         Connect.AddressBook.AddressInfo addressInfo = Connect.AddressBook.AddressInfo.newBuilder()
                 .setAddress(address)
                 .build();

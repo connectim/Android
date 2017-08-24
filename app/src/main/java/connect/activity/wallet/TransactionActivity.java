@@ -5,20 +5,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.home.view.LineDecoration;
 import connect.activity.wallet.adapter.TransactionAdapter;
-import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
@@ -44,6 +42,8 @@ public class TransactionActivity extends BaseActivity {
     RecyclerView recyclerview;
     @Bind(R.id.refreshview)
     SwipeRefreshLayout refreshview;
+    @Bind(R.id.no_data_lin)
+    LinearLayout noDataLin;
 
     private TransactionActivity mActivity;
     private final int PAGESIZE_MAX = 10;
@@ -122,19 +122,23 @@ public class TransactionActivity extends BaseActivity {
                     Connect.Transactions transactions = Connect.Transactions.parseFrom(structData.getPlainData());
 
                     List<Connect.Transaction> list = transactions.getTransactionsList();
-                    ArrayList<Connect.Transaction> listChecks = new ArrayList<>();
-                    for (Connect.Transaction transaction : list) {
-                        if (ProtoBufUtil.getInstance().checkProtoBuf(transaction)) {
-                            listChecks.add(transaction);
+                    if(list == null || list.size() == 0){
+                        noDataLin.setVisibility(View.VISIBLE);
+                        refreshview.setVisibility(View.GONE);
+                    }else{
+                        ArrayList<Connect.Transaction> listChecks = new ArrayList<>();
+                        for (Connect.Transaction transaction : list) {
+                            if (ProtoBufUtil.getInstance().checkProtoBuf(transaction)) {
+                                listChecks.add(transaction);
+                            }
                         }
+                        if (page > 1) {
+                            transactionAdapter.setNotifyData(listChecks, false);
+                        } else {
+                            transactionAdapter.setNotifyData(listChecks, true);
+                        }
+                        refreshview.setRefreshing(false);
                     }
-
-                    if (page > 1) {
-                        transactionAdapter.setNotifyData(listChecks, false);
-                    } else {
-                        transactionAdapter.setNotifyData(listChecks, true);
-                    }
-                    refreshview.setRefreshing(false);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

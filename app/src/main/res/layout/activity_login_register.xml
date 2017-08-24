@@ -28,7 +28,8 @@
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
         android:paddingLeft="@dimen/dp_10"
-        android:hint="@string/Set_Name"/>
+        android:hint="@string/Set_Name"
+        android:maxLength="10"/>
     <View
         style="@style/BaseViewLine.d1d5da"
         android:layout_marginTop="@dimen/dp_5"
