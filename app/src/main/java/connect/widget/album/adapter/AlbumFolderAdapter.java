@@ -42,6 +42,7 @@ public class AlbumFolderAdapter extends RecyclerView.Adapter<AlbumFolderAdapter.
         File frontCover = albumFolderInfo.getFrontCover();
         GlideUtil.loadAvater(holder.ivAlbumCover, frontCover.getAbsolutePath());
         String folderName = albumFolderInfo.getFolderName();
+        folderName = folderName.length() > 8 ? folderName.substring(0, 8) + "..." : folderName;
         holder.tvDirectoryName.setText(folderName);
 
         if (albumFolderInfo.getAlbumType() == AlbumType.Photo) {
