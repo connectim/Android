@@ -38,7 +38,7 @@ import connect.database.green.bean.GroupMemberEntity;
 import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.activity.contact.bean.ContactNotice;
-import connect.activity.home.bean.EstimatefeeBean;
+import connect.activity.home.bean.EstimateFeeBean;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.bean.PrivateSetBean;
@@ -238,7 +238,7 @@ public class HttpsService extends Service {
     }
 
     public static void sendEstimatefee() {
-        EstimatefeeBean estimatefeeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
+        EstimateFeeBean estimatefeeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
         if (estimatefeeBean != null) {
             long day = estimatefeeBean.getTime() / (1000 * 60 * 60 * 24);
             long currentDay = TimeUtil.getCurrentTimeInLong() / (1000 * 60 * 60 * 24);
@@ -593,8 +593,8 @@ public class HttpsService extends Service {
                     JSONObject jsonObject = new JSONObject(tempResponse);
                     code = jsonObject.getInt("code");
                     if (code == 2000) {
-                        Type type = new TypeToken<EstimatefeeBean>() {}.getType();
-                        EstimatefeeBean estimatefeeBean = new Gson().fromJson(jsonObject.toString(), type);
+                        Type type = new TypeToken<EstimateFeeBean>() {}.getType();
+                        EstimateFeeBean estimatefeeBean = new Gson().fromJson(jsonObject.toString(), type);
                         estimatefeeBean.setTime(TimeUtil.getCurrentTimeInLong());
                         SharedPreferenceUtil.getInstance().putEstimatefee(estimatefeeBean);
                     }

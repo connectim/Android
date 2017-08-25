@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.home.bean.EstimatefeeBean;
+import connect.activity.home.bean.EstimateFeeBean;
 import connect.activity.login.bean.UserBean;
 import connect.activity.base.BaseApplication;
 import connect.utils.log.LogManager;
@@ -168,7 +168,7 @@ public class SharedPreferenceUtil {
     /**
      * save estimate fee
      */
-    public void putEstimatefee(EstimatefeeBean estimatefeeBean) {
+    public void putEstimatefee(EstimateFeeBean estimatefeeBean) {
         SharedPreferences.Editor editor = sharePre.edit();
         editor.putString(ESTIMATE_FEE,new Gson().toJson(estimatefeeBean));
         editor.apply();
@@ -178,8 +178,8 @@ public class SharedPreferenceUtil {
      * get estimate fee
      * @return
      */
-    public EstimatefeeBean getEstimatefee(){
-        return new Gson().fromJson(getStringValue(ESTIMATE_FEE), EstimatefeeBean.class);
+    public EstimateFeeBean getEstimatefee(){
+        return new Gson().fromJson(getStringValue(ESTIMATE_FEE), EstimateFeeBean.class);
     }
 
 }

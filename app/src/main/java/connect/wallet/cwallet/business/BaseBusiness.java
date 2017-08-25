@@ -133,7 +133,6 @@ public class BaseBusiness {
     }
 
     /**
-     * Individual collection
      * Single payment
      *
      * @param amount
@@ -246,6 +245,8 @@ public class BaseBusiness {
     }
 
     /**
+     * send lucky packet
+     *
      * @param listAddress
      * @param receiverIdentifier // group id or user pubkey
      * @param type // private group outer //0：inner 1：outer
@@ -257,7 +258,7 @@ public class BaseBusiness {
      */
     public void luckyPacket(ArrayList<String> listAddress, String receiverIdentifier, int type, int category,
                             int size, long amount, String tips, final WalletListener<String> listener){
-        transactionType = TransferType.TransactionTypeLuckypackage;
+        transactionType = TransferType.TransactionTypeLuckyPackage;
         connectDialog = DialogUtil.showConnectPay(mActivity);
         WalletOuterClass.LuckyPackageRequest.Builder builder = WalletOuterClass.LuckyPackageRequest.newBuilder();
         WalletOuterClass.SpentCurrency.Builder builderSend = WalletOuterClass.SpentCurrency.newBuilder();
@@ -352,6 +353,7 @@ public class BaseBusiness {
 
     /**
      * Handling transfer results
+     *
      * @param response
      */
     private void showErrorToast(Connect.HttpResponse response){

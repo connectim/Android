@@ -164,18 +164,18 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
     public void initView(Double amount,Activity mActivity){
         this.mActivity = mActivity;
-        if(initWalletManager != null){
+        if (initWalletManager != null) {
             initWalletManager.setmActivity(mActivity);
         }
 
-        if(amount != null){
+        if (amount != null) {
             editDefault = RateFormatUtil.doubleToLongBtc(amount);
         }
         btcBean = RateDataUtil.getInstance().getRateBTC();
         otherRate = ParamManager.getInstance().getCountryRate();
         paySetBean = ParamManager.getInstance().getPaySet();
 
-        if(paySetBean == null){
+        if (paySetBean == null) {
             return;
         }
         editTitleTv.setText(context.getString(R.string.Wallet_Amount_BTC));
@@ -183,9 +183,9 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         amoutInputEt.addTextChangedListener(textWatcher);
         amoutInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
         amoutInputEt.setFilters(btcInputFilters);
-        if(paySetBean.isAutoFee()){
+        if (paySetBean.isAutoFee()) {
             feeTv.setText(R.string.Wallet_Auto_Calculate_Miner_Fee);
-        }else{
+        } else {
             feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
         }
         requestRate();
@@ -406,11 +406,9 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     }
 
     public interface OnEditListener {
-
         void onEdit(String value);
 
         void setFee();
-
     }
 
 }

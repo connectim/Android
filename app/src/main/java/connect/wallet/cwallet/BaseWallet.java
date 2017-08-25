@@ -33,12 +33,9 @@ import connect.wallet.cwallet.inter.WalletListener;
 import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
-import static connect.wallet.cwallet.inter.WalletListener.WalletError.NETError;
-
 /**
- * Created by Administrator on 2017/7/18.
+ * Wallet based function
  */
-
 public class BaseWallet {
 
     private String payPass;
@@ -51,6 +48,12 @@ public class BaseWallet {
         setPin(mActivity,listener);
     }
 
+    /**
+     * Set the wallet password
+     *
+     * @param mActivity
+     * @param listener
+     */
     private void setPin(final Activity mActivity, final WalletListener listener) {
         Integer title;
         if (TextUtils.isEmpty(payPass)) {
@@ -65,7 +68,7 @@ public class BaseWallet {
                     payPass = value;
                     setPin(mActivity,listener);
                 } else if (payPass.equals(value)) {
-                    //Set password complete
+                    // Set password complete
                     listener.success(value);
                 } else {
                     showSetNewPin(mActivity,listener);
@@ -74,9 +77,7 @@ public class BaseWallet {
             }
 
             @Override
-            public void cancel() {
-
-            }
+            public void cancel() {}
         });
     }
 
@@ -87,7 +88,7 @@ public class BaseWallet {
         DialogUtil.showPayEditView(activity, R.string.Wallet_Enter_your_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(final String value) {
-                new AsyncTask<Void,Void,PinBean>(){
+                new AsyncTask<Void,Void,PinBean>() {
                     @Override
                     protected PinBean doInBackground(Void... params) {
                         String baseSeed = SupportKeyUril.decodePinDefult(BaseCurrency.CATEGORY_BASESEED,payload, value);
@@ -112,6 +113,7 @@ public class BaseWallet {
                     }
                 }.execute();
             }
+
             @Override
             public void cancel() {}
         });
@@ -131,6 +133,7 @@ public class BaseWallet {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_CREATE, builder.build(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
+                // Save wallet data
                 WalletBean walletBean = new WalletBean();
                 walletBean.setVer(SupportKeyUril.PIN_VERSION);
                 walletBean.setPayload(encoPinBean.getPayload());
@@ -142,13 +145,12 @@ public class BaseWallet {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                listener.fail(NETError);
+                listener.fail(WalletListener.WalletError.NETError);
             }
         });
     }
 
     /**
-     * Update Wallet
      * Update the wallet
      */
     public void updateWallet(final WalletBean walletBean, final WalletListener listener) {
@@ -168,7 +170,7 @@ public class BaseWallet {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                listener.fail(NETError);
+                listener.fail(WalletListener.WalletError.NETError);
             }
         });
     }
@@ -197,7 +199,7 @@ public class BaseWallet {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                listener.fail(NETError);
+                listener.fail(WalletListener.WalletError.NETError);
                 Toast.makeText(BaseApplication.getInstance().getAppContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -234,10 +236,8 @@ public class BaseWallet {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                listener.fail(NETError);
-                Toast.makeText(BaseApplication.getInstance().getAppContext(),
-                        R.string.Wallet_synchronization_data_failed,
-                        Toast.LENGTH_SHORT).show();
+                listener.fail(WalletListener.WalletError.NETError);
+                Toast.makeText(BaseApplication.getInstance().getAppContext(), R.string.Wallet_synchronization_data_failed, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -253,7 +253,7 @@ public class BaseWallet {
      * @param listener
      */
     public void createCurrency(final CurrencyEnum currencyEnum, final String payload, final String salt,
-                               final int category, final String masterAddress, final WalletListener listener){
+                               final int category, final String masterAddress, final WalletListener listener) {
         WalletOuterClass.CreateCoinRequest.Builder builder = WalletOuterClass.CreateCoinRequest.newBuilder();
         builder.setSalt(salt);
         builder.setCurrency(currencyEnum.getCode());
@@ -282,7 +282,7 @@ public class BaseWallet {
                 addressEntity.setCurrency(currencyEnum.getCode());
                 addressEntity.setAddress(masterAddress);
                 addressEntity.setIndex(0);
-                currencyEntity.setAmount(0L);
+                addressEntity.setAmount(0L);
                 addressEntity.setLabel("");
                 CurrencyHelper.getInstance().insertCurrencyAddress(addressEntity);
 
