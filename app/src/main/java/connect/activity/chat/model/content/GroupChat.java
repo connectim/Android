@@ -172,8 +172,8 @@ public class GroupChat extends NormalChat {
         if (memEntityMap == null) {
             loadGroupMembersMap();
         }
-        //GroupMemberEntity memberEntity = memEntityMap.get(memberkey);
-        GroupMemberEntity memberEntity=null;
+
+        GroupMemberEntity memberEntity = memEntityMap.get(memberkey);
         if (memberEntity == null) {
             requestUserDetailInfo(memberkey, baseListener);
         } else {

@@ -4,21 +4,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import connect.activity.chat.bean.MsgSend;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
-import connect.utils.ToastEUtil;
-import connect.utils.log.LogManager;
-import connect.utils.log.Logger;
 import connect.widget.album.inter.IAlbumScanner;
 import connect.widget.album.presenter.AlbumPresenter;
 
@@ -30,7 +26,7 @@ public class AlbumScanner implements IAlbumScanner {
     private final static String Tag = "_AlbumScanner";
 
     private Context context;
-    private Map<String, ImageInfo> imageInfoMap = new HashMap<>();
+    private Map<String, ImageInfo> imageInfoMap = new LinkedHashMap<>();
 
     @Override
     public void startScanAlbum(final Context context, final AlbumType albumType, final AlbumPresenter.OnScanListener onScanListener) {
@@ -39,7 +35,7 @@ public class AlbumScanner implements IAlbumScanner {
         new AsyncTask<Void, Void, List<AlbumFolderInfo>>() {
             @Override
             protected List<AlbumFolderInfo> doInBackground(Void... params) {
-                HashMap<String, AlbumFolderInfo> albumFolderMap = new HashMap<>();
+                Map<String, AlbumFolderInfo> albumFolderMap = new LinkedHashMap<>();
                 switch (albumType) {
                     case Photo:
                         searchLocalPhoto(albumFolderMap);
@@ -89,7 +85,7 @@ public class AlbumScanner implements IAlbumScanner {
      *
      * @param albumFolderMap
      */
-    public void searchLocalPhoto(HashMap<String, AlbumFolderInfo> albumFolderMap) {
+    public void searchLocalPhoto(Map<String, AlbumFolderInfo> albumFolderMap) {
         Cursor cursor = MediaStore.Images.Media.query(context.getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME,
                         MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.Media.BUCKET_ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME}
@@ -130,7 +126,7 @@ public class AlbumScanner implements IAlbumScanner {
     /**
      * query local video
      */
-    public void searchLocalVideo(HashMap<String, AlbumFolderInfo> albumFolderMap) {
+    public void searchLocalVideo(Map<String, AlbumFolderInfo> albumFolderMap) {
         Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Video.Media._ID, MediaStore.Video.Media.DATA, MediaStore.Video.Media.DURATION, MediaStore.Video.Media.SIZE, MediaStore.Video.Media.TITLE, MediaStore.Video.Media.MIME_TYPE},
                 null, null, MediaStore.Video.Media.DATE_ADDED + " DESC");
@@ -179,7 +175,7 @@ public class AlbumScanner implements IAlbumScanner {
         cursor.close();
     }
 
-    public List<AlbumFolderInfo> sortAllAlbum(HashMap<String, AlbumFolderInfo> albumFolderMap) {
+    public List<AlbumFolderInfo> sortAllAlbum(Map<String, AlbumFolderInfo> albumFolderMap) {
         List<AlbumFolderInfo> albumFolderList = new ArrayList<>();
         for (AlbumFolderInfo info : albumFolderMap.values()) {
             albumFolderList.add(info);
