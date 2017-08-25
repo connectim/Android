@@ -171,6 +171,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 } else if (direct == MsgDirect.From) {
                     memberTxt.setVisibility(View.VISIBLE);
                     String memberKey = msgExtEntity.getMessage_from();
+
                     ((GroupChat) ((BaseChatActvity) context).getNormalChat()).loadGroupMember(memberKey, new BaseListener<GroupMemberEntity>() {
                         @Override
                         public void Success(GroupMemberEntity ts) {

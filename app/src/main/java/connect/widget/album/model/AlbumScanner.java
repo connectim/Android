@@ -36,6 +36,7 @@ public class AlbumScanner implements IAlbumScanner {
             @Override
             protected List<AlbumFolderInfo> doInBackground(Void... params) {
                 Map<String, AlbumFolderInfo> albumFolderMap = new LinkedHashMap<>();
+
                 switch (albumType) {
                     case Photo:
                         searchLocalPhoto(albumFolderMap);
@@ -67,6 +68,7 @@ public class AlbumScanner implements IAlbumScanner {
                     allfolderInfo.setImageInfoList(allImagesInfo);
                     albumFolderList.add(0, allfolderInfo);
                 }
+
                 return albumFolderList;
             }
 

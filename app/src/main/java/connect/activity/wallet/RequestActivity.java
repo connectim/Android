@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -33,6 +35,7 @@ import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
+import wallet_gateway.WalletOuterClass;
 
 /**
  * payment
@@ -100,15 +103,15 @@ public class RequestActivity extends BaseActivity {
             addressTv.setText(currencyAddress);
             showScanView(transferHeader(currencyBean) + currencyAddress);
         }else{
-            NativeWallet.getInstance().initAccount(currencyBean).requestAddressList(new WalletListener<String>() {
+            NativeWallet.getInstance().initAccount(currencyBean).requestAddressList(new WalletListener<List<WalletOuterClass.CoinInfo>>() {
                 @Override
-                public void success(String list) {
+                public void success(List<WalletOuterClass.CoinInfo> list) {
                     CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
                     if (entity == null) {
                         ActivityUtil.goBack(mActivity);
                     } else {
                         addressEntity = entity;
-                        currencyAddress=addressEntity.getAddress();
+                        currencyAddress = addressEntity.getAddress();
                         scanHead = transferHeader(currencyBean) +currencyAddress + "?" + "amount=";
                         addressTv.setText(currencyAddress);
                         showScanView(transferHeader(currencyBean) + currencyAddress);

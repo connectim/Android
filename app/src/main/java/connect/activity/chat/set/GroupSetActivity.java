@@ -165,7 +165,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     @Override
     public void groupNameClickable(boolean clickable) {
-        View view = findViewById(R.id.groupset_myname);
+        View view = findViewById(R.id.groupset_groupname);
         view.setEnabled(clickable);
     }
 
