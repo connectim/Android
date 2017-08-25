@@ -112,7 +112,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myPublicKey);
         String myAlias = "";
         if (myMember != null) {
-            myAlias = TextUtils.isEmpty(myMember.getUsername()) ? myMember.getNick() : myMember.getUsername();
+            myAlias = TextUtils.isEmpty(myMember.getNick()) ? myMember.getUsername() : myMember.getNick();
         }
         view.groupMyAlias(myAlias);
 

@@ -142,10 +142,6 @@
         <attr name='avatar' type='string'></attr>
     </GroupSettingInfo>
 
-    <GroupHash>
-        <attr name='hash' type='string'></attr>
-    </GroupHash>
-
     <GroupAttorn>
         <attr name='address' type='address'></attr>
         <attr name='identifier' type='reg'>^[^\u4e00-\u9fa5]{0,}$</attr>

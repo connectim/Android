@@ -26,7 +26,7 @@ import connect.utils.system.SystemUtil;
  */
 public class MsgRecManager {
 
-    private String Tag = "MsgRecManager";
+    private String Tag = "_MsgRecManager";
     private static MsgRecManager receiverManager;
 
     public static MsgRecManager getInstance() {

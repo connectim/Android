@@ -181,17 +181,22 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
     public void groupCreateBroadcast() {
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.newBuilder().setSecretKey(groupEcdh)
                 .setIdentifier(groupKey).build();
+
         String prikey = MemoryDataManager.getInstance().getPriKey();
         for (ContactEntity member : contactEntities) {
+            String msgid = TimeUtil.timestampToMsgid();
             byte[] groupecdhkey = SupportKeyUril.rawECDHkey(prikey, member.getPub_key());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, groupecdhkey, groupMessage.toByteString());
 
             Connect.ChatMessage chatMessage = Connect.ChatMessage.newBuilder()
-                    .setCipherData(gcmData)
-                    .setMsgId(TimeUtil.timestampToMsgid()).build();
+                    .setMsgId(msgid)
+                    .setTo(member.getPub_key())
+                    .setCipherData(gcmData).build();
 
             Connect.MessageData messageData = Connect.MessageData.newBuilder()
-                    .setChatMsg(chatMessage).build();
+                    .setChatMsg(chatMessage)
+                    .build();
+
             ChatSendManager.getInstance().sendChatAckMsg(SocketACK.GROUP_INVITE, groupKey, messageData);
         }
     }

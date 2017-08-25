@@ -94,6 +94,7 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
     }
 
     public void setTitle(String title) {
+        title = title.length() > 8 ? title.substring(0, 8) + "..." : title;
         titleTxt.setText(title);
         albumsTxt.setText(title);
     }

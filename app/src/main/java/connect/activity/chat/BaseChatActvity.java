@@ -187,7 +187,13 @@ public abstract class BaseChatActvity extends BaseActivity {
 
         switch (msgSend.getMsgType()) {
             case Text:
-                msgExtEntity = normalChat.txtMsg((String) objects[0]);
+                String txt = (String) objects[0];
+                if (normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
+                    List<String> atList = (List<String>) objects[1];
+                    msgExtEntity = ((GroupChat) normalChat).groupTxtMsg(txt, atList);
+                } else {
+                    msgExtEntity = normalChat.txtMsg(txt);
+                }
                 sendNormalMsg(true, msgExtEntity);
                 break;
             case Photo:

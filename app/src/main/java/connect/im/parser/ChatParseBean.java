@@ -3,6 +3,7 @@ package connect.im.parser;
 import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 import java.nio.ByteBuffer;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgExtEntity;
@@ -179,13 +180,17 @@ public class ChatParseBean extends InterParse {
                 normalChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
 
-                String content = "";
+                String content = msgExtEntity.showContent();
                 String myaddress = MemoryDataManager.getInstance().getAddress();
-                String ext = chatMessage.getExt();
-                if (ext.contains(myaddress)) {
-                    content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
-                } else {
-                    content = msgExtEntity.showContent();
+                if (chatMessage.getMsgType() == MsgType.Text.type) {
+                    try {
+                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);
+                        if (textMessage.getAtAddressesList().lastIndexOf(myaddress) != -1) {
+                            content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
+                        }
+                    } catch (InvalidProtocolBufferException e) {
+                        e.printStackTrace();
+                    }
                 }
                 pushNoticeMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
             }

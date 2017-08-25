@@ -2,10 +2,13 @@ package connect.activity.chat.model.content;
 
 import android.text.TextUtils;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import connect.activity.chat.bean.BaseListener;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RoomSession;
 import connect.database.MemoryDataManager;
@@ -15,10 +18,15 @@ import connect.database.green.bean.GroupMemberEntity;
 import connect.im.bean.MsgType;
 import connect.im.bean.SocketACK;
 import connect.im.model.ChatSendManager;
+import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
 /**
@@ -157,11 +165,17 @@ public class GroupChat extends NormalChat {
         }
     }
 
-    public GroupMemberEntity loadGroupMember(String memberkey) {
+    public void loadGroupMember(String memberkey, BaseListener<GroupMemberEntity> baseListener) {
         if (memEntityMap == null) {
             loadGroupMembersMap();
         }
-        return memEntityMap.get(memberkey);
+
+        GroupMemberEntity memberEntity = memEntityMap.get(memberkey);
+        if (memberEntity == null) {
+            requestUserDetailInfo(memberkey, baseListener);
+        } else {
+            baseListener.Success(memberEntity);
+        }
     }
 
     public void setNickName(String name){
@@ -191,5 +205,48 @@ public class GroupChat extends NormalChat {
 
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
+    }
+
+    public MsgExtEntity groupTxtMsg(String string, List<String> address) {
+        MsgExtEntity msgExtEntity = createBaseChat(MsgType.Text);
+        Connect.TextMessage.Builder builder = Connect.TextMessage.newBuilder()
+                .setContent(string);
+
+        for (String memberaddress : address) {
+            builder.addAtAddresses(memberaddress);
+        }
+        msgExtEntity.setContents(builder.build().toByteArray());
+        return msgExtEntity;
+    }
+
+    public void requestUserDetailInfo(String publickey, final BaseListener<GroupMemberEntity> baseListener) {
+        Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
+                .setCriteria(publickey)
+                .build();
+
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
+                        GroupMemberEntity memberEntity = new GroupMemberEntity();
+                        memberEntity.setAvatar(userInfo.getAvatar());
+                        memberEntity.setUsername(userInfo.getUsername());
+                        memEntityMap.put(userInfo.getPubKey(), memberEntity);
+                        baseListener.Success(memberEntity);
+                    }
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                baseListener.fail("");
+            }
+        });
     }
 }

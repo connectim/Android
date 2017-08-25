@@ -247,6 +247,7 @@ public class InputPanel {
             switch (v.getId()) {
                 case R.id.inputmore:
                     switchMoreView();
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.SCROLLBOTTOM);
                     break;
                 case R.id.inputface:
                     switchEmojView();
