@@ -679,7 +679,7 @@ public class HttpsService extends Service {
                 .setCurrency(0)
                 .setStatus(0).build();
 
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_CURRENCY_SET, coin, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_UPDATA, coin, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {

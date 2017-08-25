@@ -3,7 +3,6 @@ package connect.wallet.cwallet.bean;
 /**
  * type of currency
  */
-
 public enum CurrencyEnum {
     BTC(0);
 

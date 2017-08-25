@@ -20,7 +20,6 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
-import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -53,56 +52,6 @@ public class BaseBusiness {
     public BaseBusiness(Activity mActivity, CurrencyEnum currencyEnum) {
         this.mActivity = mActivity;
         this.currencyEnum = currencyEnum;
-    }
-
-    /**
-     * Assemble input Txin
-     *
-     * @param listAddress
-     * @return
-     */
-    private WalletOuterClass.Txin getTxin(ArrayList<String> listAddress){
-        if(listAddress != null && listAddress.size() > 0){
-            WalletOuterClass.Txin.Builder txin = WalletOuterClass.Txin.newBuilder();
-            for(String address : listAddress){
-                txin.addAddresses(address);
-            }
-            return txin.build();
-        }
-        return null;
-    }
-
-    /**
-     * Assemble the output Txouts
-     *
-     * @param outMap
-     * @return
-     */
-    private ArrayList<WalletOuterClass.Txout> getTxOut(HashMap<String,Long> outMap){
-        ArrayList<WalletOuterClass.Txout> list = new ArrayList<>();
-        for (HashMap.Entry<String, Long> entry : outMap.entrySet()) {
-            System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
-            WalletOuterClass.Txout txout = WalletOuterClass.Txout.newBuilder()
-                    .setAddress(entry.getKey())
-                    .setAmount(entry.getValue())
-                    .build();
-            list.add(txout);
-        }
-        return list;
-    }
-
-    /**
-     * Get a fee
-     *
-     * @return fee
-     */
-    private Long getFee(){
-        Long fee = 0L;
-        PaySetBean paySetBean = ParamManager.getInstance().getPaySet();
-        if(!paySetBean.isAutoFee()){
-            fee = paySetBean.getFee();
-        }
-        return fee;
     }
 
     /**
@@ -525,9 +474,9 @@ public class BaseBusiness {
 
         List<CurrencyAddressEntity> list = CurrencyHelper.getInstance().loadCurrencyAddress(addressList);
         if(addressList.size() != list.size()){
-            NativeWallet.getInstance().initAccount(CurrencyEnum.BTC).requestAddressList(new WalletListener<WalletOuterClass.Coin>() {
+            NativeWallet.getInstance().initAccount(CurrencyEnum.BTC).requestAddressList(new WalletListener<List<WalletOuterClass.CoinInfo>>() {
                 @Override
-                public void success(WalletOuterClass.Coin coin) {
+                public void success(List<WalletOuterClass.CoinInfo> coinInfoList) {
                     decodePayload(activity, addressList, transaction, pinListener);
                 }
 
@@ -587,6 +536,56 @@ public class BaseBusiness {
                 listener.success(priList);
             }
         });
+    }
+
+    /**
+     * Assemble input Txin
+     *
+     * @param listAddress
+     * @return
+     */
+    private WalletOuterClass.Txin getTxin(ArrayList<String> listAddress){
+        if(listAddress != null && listAddress.size() > 0){
+            WalletOuterClass.Txin.Builder txin = WalletOuterClass.Txin.newBuilder();
+            for(String address : listAddress){
+                txin.addAddresses(address);
+            }
+            return txin.build();
+        }
+        return null;
+    }
+
+    /**
+     * Assemble the output Txouts
+     *
+     * @param outMap
+     * @return
+     */
+    private ArrayList<WalletOuterClass.Txout> getTxOut(HashMap<String,Long> outMap){
+        ArrayList<WalletOuterClass.Txout> list = new ArrayList<>();
+        for (HashMap.Entry<String, Long> entry : outMap.entrySet()) {
+            System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
+            WalletOuterClass.Txout txout = WalletOuterClass.Txout.newBuilder()
+                    .setAddress(entry.getKey())
+                    .setAmount(entry.getValue())
+                    .build();
+            list.add(txout);
+        }
+        return list;
+    }
+
+    /**
+     * Get a fee
+     *
+     * @return fee
+     */
+    private Long getFee(){
+        Long fee = 0L;
+        PaySetBean paySetBean = ParamManager.getInstance().getPaySet();
+        if(!paySetBean.isAutoFee()){
+            fee = paySetBean.getFee();
+        }
+        return fee;
     }
 
 }
