@@ -9,6 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -20,6 +23,7 @@ import connect.activity.chat.set.contract.GroupSetContract;
 import connect.activity.chat.set.presenter.GroupSetPresenter;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
+import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.set.UserInfoActivity;
 import connect.database.MemoryDataManager;
@@ -84,6 +88,15 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
         groupKey = getIntent().getStringExtra(GROUP_KEY);
         new GroupSetPresenter(this).start();
         presenter.syncGroupInfo();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ContactNotice contactNotice) {
+        switch (contactNotice.getNotice()) {
+            case RecGroup:
+                initView();
+                break;
+        }
     }
 
     @OnClick(R.id.relativelayout_1)
@@ -165,8 +178,8 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     @Override
     public void groupNameClickable(boolean clickable) {
-        View view = findViewById(R.id.groupset_myname);
-        view.setEnabled(false);
+        View view = findViewById(R.id.groupset_groupname);
+        view.setEnabled(clickable);
     }
 
     @Override

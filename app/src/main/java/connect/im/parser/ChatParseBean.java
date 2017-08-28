@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-
 import java.nio.ByteBuffer;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgExtEntity;

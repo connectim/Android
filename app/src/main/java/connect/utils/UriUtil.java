@@ -127,8 +127,6 @@ public class UriUtil {
     public static String WALLET_V2_COINS_ADDRESS_DEFAULT = "/wallet/v2/coins/addresses/default";
     /** update coin */
     public static String WALLET_V2_COINS_ADDRESS_GET_DEFAULT = "/wallet/v2/coins/addresses/get_default";
-    /** update coin */
-    public static String WALLET_V2_COINS_CURRENCY_SET = "/wallet/v2/coins/update";
     /** service transfer */
     public static String WALLET_V2_SERVICE_TRANSFER = "/wallet/v2/service/transfer";
     /** coins addresses */
@@ -170,6 +168,8 @@ public class UriUtil {
     public static String CONNEXT_V1_USERS_RECOMMEND = "/connect/v1/users/recommend";
     /** Get friends transfer record */
     public static String CONNEXT_V1_USERS_FRIEND_RECORDS = "/connect/v1/users/friends/records";
+    /** Get users by search public key */
+    public static String CONNEXT_V1_USERS_SEARCHBYPUBKEY = "/connect/v1/users/searchByPubKey";
 
     /**======================================================================================
      *                                      setting group

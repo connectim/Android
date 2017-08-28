@@ -2,17 +2,7 @@ package connect.activity.home.bean;
 
 import java.io.Serializable;
 
-/**
- * Created by Administrator on 2016/12/16.
- */
-public class EstimatefeeBean implements Serializable{
-
-    /**
-     * code : 2000
-     * data : 0.000130
-     * message : success
-     */
-
+public class EstimateFeeBean implements Serializable{
     private int code;
     private String data;
     private String message;

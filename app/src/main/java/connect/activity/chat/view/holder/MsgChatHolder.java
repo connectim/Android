@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import connect.activity.chat.BaseChatActvity;
+import connect.activity.chat.bean.BaseListener;
 import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
@@ -170,15 +171,25 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 } else if (direct == MsgDirect.From) {
                     memberTxt.setVisibility(View.VISIBLE);
                     String memberKey = msgExtEntity.getMessage_from();
-                    GroupMemberEntity memberEntity = ((GroupChat) ((BaseChatActvity) context).getNormalChat()).loadGroupMember(memberKey);
 
-                    GlideUtil.loadAvater(headImg, memberEntity.getAvatar());
+                    ((GroupChat) ((BaseChatActvity) context).getNormalChat()).loadGroupMember(memberKey, new BaseListener<GroupMemberEntity>() {
+                        @Override
+                        public void Success(GroupMemberEntity ts) {
+                            GlideUtil.loadAvater(headImg, ts.getAvatar());
 
-                    String memberName = "";
-                    if (memberEntity != null) {
-                        memberName = TextUtils.isEmpty(memberEntity.getNick()) ? memberEntity.getUsername() : memberEntity.getNick();
-                    }
-                    memberTxt.setText(memberName);
+                            String memberName = "";
+                            if (ts != null) {
+                                memberName = TextUtils.isEmpty(ts.getNick()) ? ts.getUsername() : ts.getNick();
+                            }
+                            memberTxt.setText(memberName);
+                        }
+
+                        @Override
+                        public void fail(Object... objects) {
+                            GlideUtil.loadAvater(headImg, "");
+                            memberTxt.setText("");
+                        }
+                    });
                 }
 
                 if (burnProBar != null) {

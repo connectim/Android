@@ -39,10 +39,6 @@ public class ParamManager {
     /** The key to expand */
     public static final String GENERATE_TOKEN_SALT = "GENERATE_TOKEN_SALT";
     public static final String GENERATE_TOKEN_EXPIRED = "GENERATE_TOKEN_EXPIRED ";
-    /** The wallet balance */
-    public static final String WALLET_AMOUNT = "wallet_amount";
-    /** app join in group state 0:not deal 1:agree 2:refuse */
-    public static final String GROUP_JOIN = "GROUP_JOIN";
 
     public static ParamManager getInstance() {
         if (patamManager == null) {

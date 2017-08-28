@@ -29,20 +29,20 @@ import wallet_gateway.WalletOuterClass;
  */
 public class NativeWallet {
 
-    private static NativeWallet nativeWallet;
+    private static NativeWallet mNativeWallet;
     private BaseWallet baseWallet;
     private Map<CurrencyEnum, BaseCurrency> baseCurrencyMap;
     private Map<CurrencyEnum, CoinAccount> coinAccountMap;
 
     public static NativeWallet getInstance() {
-        if (nativeWallet == null) {
+        if (mNativeWallet == null) {
             synchronized (NativeWallet.class) {
-                if (nativeWallet == null) {
-                    nativeWallet = new NativeWallet();
+                if (mNativeWallet == null) {
+                    mNativeWallet = new NativeWallet();
                 }
             }
         }
-        return nativeWallet;
+        return mNativeWallet;
     }
 
     public NativeWallet() {
@@ -52,12 +52,12 @@ public class NativeWallet {
     }
 
     /**
-     * Access to designated account
+     * Access to designated account.
      *
      * @param currencyEnum
      * @return
      */
-    public CoinAccount initAccount (CurrencyEnum currencyEnum){
+    public CoinAccount initAccount(CurrencyEnum currencyEnum) {
         if (coinAccountMap == null) {
             coinAccountMap = new HashMap<>();
         }
@@ -68,6 +68,8 @@ public class NativeWallet {
                 case BTC:
                     coinAccount = new BtcCoinAccount();
                     coinAccountMap.put(currencyEnum, coinAccount);
+                    break;
+                default:
                     break;
             }
         }
@@ -130,9 +132,7 @@ public class NativeWallet {
             }
 
             @Override
-            public void fail(WalletError error) {
-
-            }
+            public void fail(WalletError error) {}
         });
     }
 
@@ -250,38 +250,4 @@ public class NativeWallet {
         });
     }
 
-    /**
-     * Currency total balance
-     *
-     * @param currencyEnum
-     */
-    public void balance(CurrencyEnum currencyEnum) {
-        CoinAccount coinAccount = initAccount(currencyEnum);
-        coinAccount.balance();
-    }
-
-    /**
-     * Hidden address
-     *
-     * @param currencyEnum
-     * @param address
-     */
-    public void hideAddress(CurrencyEnum currencyEnum,String address) {
-        CoinAccount coinAccount = initAccount (currencyEnum);
-        coinAccount.hideAddress(address);
-    }
-
-    /**
-     * Transfer accounts
-     *
-     * @param currencyEnum
-     * @param amount
-     * @param fromAddress
-     * @param toAddress
-     */
-    public void transfer(CurrencyEnum currencyEnum, double amount, List<String> fromAddress, List<String> toAddress, WalletListener walletListener) {
-        CoinAccount coinAccount = initAccount(currencyEnum);
-        BaseCurrency baseCurrency = initCurrency(currencyEnum);
-        //coinAccount.transfer(baseCurrency, amount, fromAddress, toAddress);
-    }
 }

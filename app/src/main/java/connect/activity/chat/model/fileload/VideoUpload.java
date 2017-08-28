@@ -43,7 +43,7 @@ public class VideoUpload extends FileUpLoad {
                     String comFist = videoMessage.getCover();
                     String filePath = videoMessage.getUrl();
 
-                    filePath = videoCompress(filePath);
+                    //filePath = videoCompress(filePath);
 
                     String priKey = MemoryDataManager.getInstance().getPriKey();
                     String pubkey = MemoryDataManager.getInstance().getPubKey();

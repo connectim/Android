@@ -148,7 +148,7 @@ public class MorePagerAdapter extends PagerAdapter {
             if (null == chatSetEntity) {
                 chatSetEntity = new ConversionSettingEntity();
                 chatSetEntity.setIdentifier(roomkey);
-                chatSetEntity.setSnap_time(0);
+                chatSetEntity.setSnap_time(-1);
             }
 
             if (!Long.valueOf(time).equals(chatSetEntity.getSnap_time())) {
@@ -193,7 +193,8 @@ public class MorePagerAdapter extends PagerAdapter {
         baseAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
             public void itemClick(int position) {
-                listener.itemTimerClick(destimes[position]);
+                int clickTime = destimes[position];
+                listener.itemTimerClick(clickTime);
                 dialog.dismiss();
             }
         });

@@ -89,8 +89,10 @@ public class LoginLocalActivity extends BaseActivity implements LocalLoginContra
     private TextWatcher textWatcher = new TextWatcher(){
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
         @Override
         public void afterTextChanged(Editable s) {
             if(!TextUtils.isEmpty(passwordEt.getText().toString()) && !TextUtils.isEmpty(nicknameTv.getText().toString())){
@@ -131,16 +133,16 @@ public class LoginLocalActivity extends BaseActivity implements LocalLoginContra
             nicknameTv.setText(userBean.getName());
             if (!TextUtils.isEmpty(userBean.getPassHint())) {
                 passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
-            }else{
+            } else {
                 passwordhintTv.setText("");
             }
             GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
         }else if(requestCode == SELECT_USER_CODE){
 
             List<UserBean> list = SharedPreferenceUtil.getInstance().getUserList();
-            if(list == null || list.size() == 0){
+            if (list == null || list.size() == 0) {
                 ActivityUtil.goBack(mActivity);
-            }else {
+            } else {
                 userBean = list.get(0);
                 nicknameTv.setText(userBean.getName());
                 if (!TextUtils.isEmpty(userBean.getPassHint())) {
