@@ -119,12 +119,11 @@ public class CameraTakeActivity extends BaseActivity {
             viewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
             surfaceViewRela.setBackgroundColor(mActivity.getResources().getColor(R.color.color_clear));
             videoBtn.setEnabled(true);
-            videoBtn.setOnTouchStatusListence(statusListence);
+            videoBtn.setOnTouchStatusListener(statusListener);
         }
 
         @Override
-        public void deny(String[] permissions) {
-        }
+        public void deny(String[] permissions) {}
     };
 
     @OnClick(R.id.close_img)
@@ -180,7 +179,7 @@ public class CameraTakeActivity extends BaseActivity {
         PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
     }
 
-    private VideoButtonView.OnTouchStatusListence statusListence = new VideoButtonView.OnTouchStatusListence() {
+    private VideoButtonView.OnTouchStatusListener statusListener = new VideoButtonView.OnTouchStatusListener() {
         @Override
         public void clickView() {
             if (mCamera != null && isTakePicture){

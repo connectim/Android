@@ -83,7 +83,9 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
                         @Override
                         public void onClick(View v) {
                             String groupName = edittxt1.getText().toString();
-                            presenter.updateGroupName(groupName);
+                            if (groupName.length() >= 4) {
+                                presenter.updateGroupName(groupName);
+                            }
                         }
                     });
                 }

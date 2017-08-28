@@ -20,7 +20,7 @@ public class VideoButtonView extends LinearLayout {
     private final ImageView outCircularImg;
     private final ImageView inCircularImg;
     private final CricleProgressbar progressbar;
-    private OnTouchStatusListence onTouchStatusListence;
+    private OnTouchStatusListener onTouchStatusListener;
     private boolean isLong = false;
     private long downTime;
     private final long LONG_TOUCH_TIME = 300;
@@ -52,18 +52,18 @@ public class VideoButtonView extends LinearLayout {
         } else if (action == MotionEvent.ACTION_UP) {
             long upTime = System.currentTimeMillis();
             if (upTime - downTime < LONG_TOUCH_TIME) { // click end
-                onTouchStatusListence.clickView();
+                onTouchStatusListener.clickView();
             } else { // long end
                 vidioIng = false;
                 progressbar.setVisibility(GONE);
                 showPictureAni();
-                onTouchStatusListence.cancleLongClick();
+                onTouchStatusListener.cancleLongClick();
             }
         } else {
             if (touchTime - downTime > LONG_TOUCH_TIME && !vidioIng) { // long start
                 vidioIng = true;
                 showVideoAni();
-                onTouchStatusListence.longClickView();
+                onTouchStatusListener.longClickView();
             }
         }
         return true;
@@ -102,11 +102,11 @@ public class VideoButtonView extends LinearLayout {
         }
     }
 
-    public void setOnTouchStatusListence(OnTouchStatusListence onTouchStatusListence) {
-        this.onTouchStatusListence = onTouchStatusListence;
+    public void setOnTouchStatusListener(OnTouchStatusListener onTouchStatusListener) {
+        this.onTouchStatusListener = onTouchStatusListener;
     }
 
-    public interface OnTouchStatusListence {
+    public interface OnTouchStatusListener {
         void clickView();
 
         void longClickView();

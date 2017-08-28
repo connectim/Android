@@ -1,12 +1,15 @@
 package connect.activity.contact.presenter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.Talker;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.model.content.NormalChat;
@@ -58,25 +61,31 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
     }
 
     @Override
-    public void shareFriendCard(Intent data, ContactEntity friendEntity) {
+    public void shareFriendCard(Activity activity, Intent data, ContactEntity friendEntity) {
         int type = data.getIntExtra("type", 0);
         String pubKey = data.getStringExtra("object");
         if (TextUtils.isEmpty(pubKey)) {
             return;
         }
 
+        Talker talker=null;
         NormalChat baseChat = null;
         if (type == 0) {
             ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubKey);
             baseChat = new FriendChat(acceptFriend);
+            talker = new Talker(acceptFriend);
         } else if (type == 1) {
             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubKey);
             baseChat = new GroupChat(groupEntity);
+            talker = new Talker(groupEntity);
         }
         MsgExtEntity msgExtEntity = baseChat.cardMsg(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAvatar());
         baseChat.sendPushMsg(msgExtEntity);
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         baseChat.updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgExtEntity.getCreatetime());
+
+        ChatActivity.startActivity(activity,talker);
+        activity.finish();
     }
 
     @Override
