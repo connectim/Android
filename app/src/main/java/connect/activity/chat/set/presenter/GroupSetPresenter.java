@@ -112,7 +112,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myPublicKey);
         String myAlias = "";
         if (myMember != null) {
-            myAlias = TextUtils.isEmpty(myMember.getUsername()) ? myMember.getNick() : myMember.getUsername();
+            myAlias = TextUtils.isEmpty(myMember.getNick()) ? myMember.getUsername() : myMember.getNick();
         }
         view.groupMyAlias(myAlias);
 
@@ -125,7 +125,10 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         view.groupManager(visiable);
 
         ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(roomKey);
-        boolean top = Integer.valueOf(1).equals(conversionEntity.getTop());
+        boolean top = false;
+        if (conversionEntity != null) {
+            top = Integer.valueOf(1).equals(conversionEntity.getTop());
+        }
         view.topSwitch(top);
 
         ConversionSettingEntity setEntity = ConversionSettingHelper.getInstance().loadSetEntity(roomKey);
@@ -159,8 +162,8 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
                         view.noticeSwitch(settingInfo.getMute());
 
                         if (settingInfo.getPublic()) {
-                            String myAddress = MemoryDataManager.getInstance().getAddress();
-                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myAddress);
+                            String myPublicKey = MemoryDataManager.getInstance().getPubKey();
+                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myPublicKey);
                             if (myMember == null || myMember.getRole() == 0) {
                                 view.groupNameClickable(false);
                             } else {

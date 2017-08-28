@@ -26,7 +26,7 @@ public class RoomSession {
     private int roomType = -1;
     private String roomKey;
     private String groupEcdh;
-    /** 0:close burn  5000+:start burn */
+
     private long burntime;
     Connect.MessageUserInfo userInfo;
 

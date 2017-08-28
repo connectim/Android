@@ -14,7 +14,7 @@ import java.util.List;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.activity.home.bean.EstimatefeeBean;
+import connect.activity.home.bean.EstimateFeeBean;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.SignRawBean;
 import connect.activity.wallet.bean.TranAddressBean;
@@ -51,7 +51,7 @@ public class TransferUtil {
         if(isAddChangeAddress){ // the change of address
             sentToLength++;
         }
-        EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
+        EstimateFeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
         int txSize = 148 * txs_length + 34 * sentToLength + 10;
         double estimateFee = (txSize + 20 + 4 + 34 + 4) / 1000.0 * Double.valueOf(feeBean.getData());
         return Math.round(estimateFee * Math.pow(10, 8));
@@ -61,7 +61,7 @@ public class TransferUtil {
      * whether is dusty transaction
      */
     public static boolean ishaveDustWithAmount(long amount) {
-        EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
+        EstimateFeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
         if(feeBean == null || TextUtils.isEmpty(feeBean.getData())){
             return false;
         }else{

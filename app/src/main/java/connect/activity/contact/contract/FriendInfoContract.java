@@ -30,7 +30,7 @@ public interface FriendInfoContract {
 
         ImageWatcher getImageWatcher();
 
-        void shareFriendCard(Intent data,ContactEntity friendEntity);
+        void shareFriendCard(Activity activity,Intent data,ContactEntity friendEntity);
     }
 
 }

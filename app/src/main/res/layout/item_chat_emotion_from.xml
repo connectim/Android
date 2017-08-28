@@ -34,7 +34,7 @@
             android:paddingRight="@dimen/dp_5"
             android:paddingTop="@dimen/dp_2">
 
-            <ImageView
+            <connect.widget.GifView
                 android:id="@id/emotionmsg"
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_60"

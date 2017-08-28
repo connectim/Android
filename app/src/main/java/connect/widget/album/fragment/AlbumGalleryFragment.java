@@ -1,6 +1,5 @@
 package connect.widget.album.fragment;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -11,9 +10,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import connect.activity.chat.exts.VideoPlayerActivity;
 import connect.ui.activity.R;
 import connect.widget.album.AlbumActivity;

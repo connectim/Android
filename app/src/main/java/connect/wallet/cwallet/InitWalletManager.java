@@ -16,9 +16,8 @@ import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.random.RandomVoiceActivity;
 
 /**
- * Created by Administrator on 2017/8/2 0002.
+ * Wallet initialization management
  */
-
 public class InitWalletManager {
 
     private Activity mActivity;
@@ -30,17 +29,20 @@ public class InitWalletManager {
         this.currencyEnum = currencyEnum;
     }
 
-    public void checkWallet(boolean isUpdateAmount, WalletListener listener){
+    public void checkWallet(boolean isUpdateAmount, WalletListener listener) {
         this.listener = listener;
         CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
         if (currencyEntity == null || isUpdateAmount) {
             syncWallet();
-        }else{
+        } else {
             listener.success(currencyEntity);
         }
     }
 
-    public void syncWallet(){
+    /**
+     * Synchronize wallet information
+     */
+    public void syncWallet() {
         NativeWallet.getInstance().syncWalletInfo(new WalletListener<Integer>() {
             @Override
             public void success(Integer status) {
@@ -57,18 +59,24 @@ public class InitWalletManager {
                         break;
                 }
             }
+
             @Override
             public void fail(WalletError error) {}
         });
     }
 
-    public void createWallet(final int status){
+    /**
+     * Random number of mobile phone
+     *
+     * @param status create/update
+     */
+    public void createWallet(final int status) {
         String massage = "";
         String okMassage = "";
-        if(status == 1){
+        if (status == 1) {
             massage = mActivity.getString(R.string.Wallet_not_update_wallet);
             okMassage = mActivity.getString(R.string.Wallet_Immediately_update);
-        }else if(status == 2){
+        } else if (status == 2) {
             massage = mActivity.getString(R.string.Wallet_not_create_wallet);
             okMassage = mActivity.getString(R.string.Wallet_Immediately_create);
         }
@@ -89,18 +97,25 @@ public class InitWalletManager {
                 });
     }
 
-    public void requestCreateWallet(final String baseSend, final String pin, final int status){
+    /**
+     * Create wallet and currency
+     *
+     * @param baseSend send
+     * @param pin pass
+     * @param status category
+     */
+    public void requestCreateWallet(final String baseSend, final String pin, final int status) {
         NativeWallet.getInstance().createWallet(baseSend, pin, new WalletListener<WalletBean>() {
             @Override
             public void success(WalletBean walletBean) {
                 int category = 0;
                 String value = "";
                 String masterAddress = "";
-                if(status == 1){
+                if (status == 1) {
                     category = BaseCurrency.CATEGORY_PRIKEY;
                     value = MemoryDataManager.getInstance().getPriKey();
                     masterAddress = MemoryDataManager.getInstance().getAddress();
-                }else if(status == 2){
+                } else if (status == 2) {
                     category = BaseCurrency.CATEGORY_BASESEED;
                     value = baseSend;
                     masterAddress = "";
@@ -111,16 +126,18 @@ public class InitWalletManager {
                             public void success(CurrencyEntity currencyEntity) {
                                 listener.success(currencyEntity);
                             }
+
                             @Override
                             public void fail(WalletError error) {}
                         });
             }
+
             @Override
             public void fail(WalletError error) {}
         });
     }
 
-    public void setListener(WalletListener listener){
+    public void setListener(WalletListener listener) {
         this.listener = listener;
     }
 

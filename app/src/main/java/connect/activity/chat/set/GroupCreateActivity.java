@@ -106,7 +106,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         adapter.setOnSeleFriendListence(new MulContactAdapter.OnSeleFriendListence() {
             @Override
             public void seleFriend(List<ContactEntity> list) {
-                if (list == null || list.size() < 1) {
+                if (list == null || list.size() < 2) {
                     toolbar.setRightTextColor(R.color.color_6d6e75);
                     toolbar.setRightListence(null);
                 } else {

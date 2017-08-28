@@ -45,8 +45,8 @@ public class VideoPlayPresenter implements VideoPlayContract.Presenter{
             height = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
             width = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
         } else {
-            width = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-            height = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+            width = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+            height = Float.parseFloat(retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
         }
 
         if (width != 0 && height != 0) {

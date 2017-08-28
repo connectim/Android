@@ -51,7 +51,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     /** Input box currency symbol */
     TextView editSymbolTv;
     /** Currency input box */
-    EditText amoutinputEt;
+    EditText amoutInputEt;
     /** Handling fee (external) */
     TextView feeTv;
     /** note */
@@ -105,7 +105,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         View view = View.inflate(context, R.layout.item_transfer_edit, this);
         editTitleTv = (TextView)view.findViewById(R.id.edit_title_tv);
         editSymbolTv = (TextView)view.findViewById(R.id.edit_symbol_tv);
-        amoutinputEt = (EditText)view.findViewById(R.id.amoutinput_et);
+        amoutInputEt = (EditText)view.findViewById(R.id.amoutinput_et);
         amountTv = (TextView)view.findViewById(R.id.amount_tv);
         feeTv = (TextView)view.findViewById(R.id.fee_tv);
         feeTv.setOnClickListener(this);
@@ -115,7 +115,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         transferTv.setOnClickListener(this);
 
         // Shielding EditText paste function
-        amoutinputEt.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+        amoutInputEt.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 return false;
@@ -132,9 +132,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
             }
 
             @Override
-            public void onDestroyActionMode(ActionMode mode) {
-
-            }
+            public void onDestroyActionMode(ActionMode mode) {}
         });
         amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
                 RateFormatUtil.longToDoubleBtc(0L)));
@@ -153,9 +151,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
             }
 
             @Override
-            public void fail(WalletError error) {
-
-            }
+            public void fail(WalletError error) {}
         });
     }
 
@@ -168,28 +164,28 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
     public void initView(Double amount,Activity mActivity){
         this.mActivity = mActivity;
-        if(initWalletManager != null){
+        if (initWalletManager != null) {
             initWalletManager.setmActivity(mActivity);
         }
 
-        if(amount != null){
+        if (amount != null) {
             editDefault = RateFormatUtil.doubleToLongBtc(amount);
         }
         btcBean = RateDataUtil.getInstance().getRateBTC();
         otherRate = ParamManager.getInstance().getCountryRate();
         paySetBean = ParamManager.getInstance().getPaySet();
 
-        if(paySetBean == null){
+        if (paySetBean == null) {
             return;
         }
         editTitleTv.setText(context.getString(R.string.Wallet_Amount_BTC));
         editSymbolTv.setText(btcBean.getSymbol());
-        amoutinputEt.addTextChangedListener(textWatcher);
-        amoutinputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
-        amoutinputEt.setFilters(btcInputFilters);
-        if(paySetBean.isAutoFee()){
+        amoutInputEt.addTextChangedListener(textWatcher);
+        amoutInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
+        amoutInputEt.setFilters(btcInputFilters);
+        if (paySetBean.isAutoFee()) {
             feeTv.setText(R.string.Wallet_Auto_Calculate_Miner_Fee);
-        }else{
+        } else {
             feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
         }
         requestRate();
@@ -206,18 +202,18 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                 if(isEditBTC){
                     isEditBTC = false;
                     editSymbolTv.setText(otherRate.getSymbol());
-                    amoutinputEt.setFilters(otherInputFilters);
+                    amoutInputEt.setFilters(otherInputFilters);
 
-                    amoutinputEt.setText(transferTv.getText().toString().replaceAll("[^\\d.]*", ""));
+                    amoutInputEt.setText(transferTv.getText().toString().replaceAll("[^\\d.]*", ""));
                     transferTv.setText(context.getResources().getString(R.string.Set_BTC_symbol) + " " + currentBtc);
                     editTitleTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Amount_Symbol,otherRate.getCode()));
                 }else{
                     isEditBTC = true;
                     editSymbolTv.setText(R.string.Set_BTC_symbol);
-                    amoutinputEt.setFilters(btcInputFilters);
+                    amoutInputEt.setFilters(btcInputFilters);
 
-                    transferTv.setText(otherRate.getSymbol() + " " + amoutinputEt.getText().toString());
-                    amoutinputEt.setText(currentBtc);
+                    transferTv.setText(otherRate.getSymbol() + " " + amoutInputEt.getText().toString());
+                    amoutInputEt.setText(currentBtc);
                     editTitleTv.setText(R.string.Wallet_Amount_BTC);
                 }
                 break;
@@ -245,14 +241,10 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -316,7 +308,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         HttpRequest.getInstance().get(otherRate.getUrl(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                amoutinputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
+                amoutInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
             }
 
             @Override
@@ -324,7 +316,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                 String tempResponse =  response.body().string();
                 Type type = new TypeToken<RateBean>() {}.getType();
                 RateBean rateBean = new Gson().fromJson(tempResponse, type);
-                amoutinputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
+                amoutInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
                 otherRate.setRate(rateBean.getRate());
                 ParamManager.getInstance().putCountryRate(otherRate);
             }
@@ -414,11 +406,9 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     }
 
     public interface OnEditListener {
-
         void onEdit(String value);
 
         void setFee();
-
     }
 
 }

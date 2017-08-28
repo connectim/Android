@@ -228,7 +228,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ConversationActivity.CODE_REQUEST && requestCode == ConversationActivity.CODE_REQUEST) {
-            presenter.shareFriendCard(data,friendEntity);
+            presenter.shareFriendCard(mActivity ,data,friendEntity);
         }
     }
 

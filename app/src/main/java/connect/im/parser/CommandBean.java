@@ -552,9 +552,15 @@ public class CommandBean extends InterParse {
                     for (GroupMemberEntity memEntity : memEntities) {
                         String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
                         if (groupChange.hasInviteBy()) {
-                            String invitorname = memEntity.getAddress().equals(MemoryDataManager.getInstance().getAddress()) ?
+                            String myAddress = MemoryDataManager.getInstance().getAddress();
+
+                            Connect.UserInfo inviteBy = groupChange.getInviteBy();
+                            String inviteByName = inviteBy.getAddress().equals(myAddress) ?
+                                    context.getString(R.string.Chat_You) : inviteBy.getUsername();
+
+                            String invitorname = memEntity.getAddress().equals(myAddress) ?
                                     context.getString(R.string.Chat_You) : memberName;
-                            noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, groupChange.getInviteBy().getUsername(), invitorname);
+                            noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, inviteByName, invitorname);
                         } else {
                             noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
                         }
@@ -573,6 +579,7 @@ public class CommandBean extends InterParse {
                 break;
             case 2://Remove the group members
                 groupKey = groupChange.getIdentifier();
+
                 Connect.QuitGroupUserAddress quitGroup = Connect.QuitGroupUserAddress.parseFrom(groupChange.getDetail());
                 for (String address : quitGroup.getAddressesList()) {
                     ContactHelper.getInstance().removeMemberEntity(groupKey, address);

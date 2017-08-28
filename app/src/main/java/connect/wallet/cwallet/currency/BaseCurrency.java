@@ -6,13 +6,11 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.wallet.cwallet.inter.WalletListener;
 
 /**
- * The currency base class defines the currency base method
- * Created by Administrator on 2017/7/18.
  * The currency base class defines the method of the currency base
  */
 
 public abstract class BaseCurrency {
-
+    // private key
     public static final int CATEGORY_PRIKEY = 1;
     // baseSeed
     public static final int CATEGORY_BASESEED = 2;
@@ -22,9 +20,7 @@ public abstract class BaseCurrency {
     /**
      * Signature transaction
      */
-    public void signRawTx(String signraw) {
-
-    }
+    public void signRawTx(String signraw) {}
 
     /**
      * Get currency information

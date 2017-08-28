@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import connect.activity.home.bean.EstimatefeeBean;
+import connect.activity.home.bean.EstimateFeeBean;
 import connect.activity.wallet.bean.SignRawBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
@@ -25,20 +25,16 @@ import wallet_gateway.WalletOuterClass;
 
 /**
  * BTC Currency management
- * Created by Administrator on 2017/7/18.
  */
-
 public class BtcCurrency extends BaseCurrency {
 
     /** BTC (decimal turn o tLong) */
     public static final double BTC_TO_LONG = Math.pow(10,8);
-    /** Bitcoin input format */
+    /** BitCoin input format */
     public static final String PATTERN_BTC = "##0.00000000";
 
     @Override
-    public void fee() {
-
-    }
+    public void fee() {}
 
     @Override
     public CurrencyEntity getCurrencyData(){
@@ -53,8 +49,8 @@ public class BtcCurrency extends BaseCurrency {
 
     @Override
     public String createPriKey(String baseSeed, String salt,int index){
-        String currencySeend = SupportKeyUril.xor(baseSeed, salt);
-        String priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(currencySeend,44,0,0,0,index);
+        String currencySeed = SupportKeyUril.xor(baseSeed, salt);
+        String priKey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(currencySeed,44,0,0,0,index);
         return priKey;
     }
 
@@ -64,10 +60,10 @@ public class BtcCurrency extends BaseCurrency {
     @Override
     public void setCurrencyInfo(String payload, Integer status, final WalletListener listener){
         WalletOuterClass.Coin.Builder builder = WalletOuterClass.Coin.newBuilder();
-        if(!TextUtils.isEmpty(payload)){
+        if (!TextUtils.isEmpty(payload)) {
             builder.setPayload(payload);
         }
-        if(status != null){
+        if (status != null) {
             builder.setStatus(status);
         }
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_UPDATA, builder.build(), new ResultCall<Connect.HttpResponse>() {
@@ -120,14 +116,15 @@ public class BtcCurrency extends BaseCurrency {
 
     /**
      * Signature transaction
+     *
      * @param priList PriKey array
      * @param tvs input string
-     * @param rowhex The original transaction
+     * @param rowHex The original transaction
      * @return
      */
     @Override
-    public String getSignRawTrans(ArrayList<String> priList, String tvs, String rowhex) {
-        String signTransfer = rowhex + " " +
+    public String getSignRawTrans(ArrayList<String> priList, String tvs, String rowHex) {
+        String signTransfer = rowHex + " " +
                 tvs + " " +
                 new Gson().toJson(priList);
         String signRawTransfer = AllNativeMethod.cdSignRawTranscation(signTransfer);
@@ -144,8 +141,8 @@ public class BtcCurrency extends BaseCurrency {
     }
 
     public String longToDoubleCurrency(long value) {
-        DecimalFormat myformat = new DecimalFormat(PATTERN_BTC);
-        String format = myformat.format(value / BTC_TO_LONG);
+        DecimalFormat myFormat = new DecimalFormat(PATTERN_BTC);
+        String format = myFormat.format(value / BTC_TO_LONG);
         return format.replace(",", ".");
     }
 
@@ -153,7 +150,7 @@ public class BtcCurrency extends BaseCurrency {
      * Determine whether the amount is dirty
      */
     public static boolean isHaveDustWithAmount(long amount) {
-        EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
+        EstimateFeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
         if(feeBean == null || TextUtils.isEmpty(feeBean.getData())){
             return false;
         }else{
@@ -165,10 +162,11 @@ public class BtcCurrency extends BaseCurrency {
      * Automatic calculation fee
      */
     public static long getAutoFeeWithUnspentLength(boolean isAddChangeAddress,int txs_length, int sentToLength) {
-        if(isAddChangeAddress){ // the change of address
+        // the change of address
+        if(isAddChangeAddress){
             sentToLength++;
         }
-        EstimatefeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
+        EstimateFeeBean feeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
         int txSize = 148 * txs_length + 34 * sentToLength + 10;
         double estimateFee = (txSize + 20 + 4 + 34 + 4) / 1000.0 * Double.valueOf(feeBean.getData());
         return Math.round(estimateFee * Math.pow(10, 8));

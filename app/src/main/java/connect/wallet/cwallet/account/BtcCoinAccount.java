@@ -1,11 +1,8 @@
 package connect.wallet.cwallet.account;
 
-import com.google.protobuf.GeneratedMessageV3;
-
 import java.util.List;
 
 import connect.database.green.DaoHelper.CurrencyHelper;
-import connect.database.green.bean.CurrencyEntity;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -17,20 +14,14 @@ import wallet_gateway.WalletOuterClass;
 
 /**
  * BTC Currency account
- * Created by Administrator on 2017/7/18.
  */
-
 public class BtcCoinAccount implements CoinAccount {
 
     @Override
-    public void balance() {
-
-    }
+    public void balance() {}
 
     @Override
-    public void hideAddress(String address) {
-
-    }
+    public void hideAddress(String address) {}
 
     @Override
     public void requestAddressList(final WalletListener listener) {
@@ -45,21 +36,7 @@ public class BtcCoinAccount implements CoinAccount {
                     WalletOuterClass.CoinsDetail coinsDetail = WalletOuterClass.CoinsDetail.parseFrom(structData.getPlainData());
                     List<WalletOuterClass.CoinInfo> list = coinsDetail.getCoinInfosList();
                     CurrencyHelper.getInstance().insertCurrencyAddressListCoinInfo(list, CurrencyEnum.BTC.getCode());
-
-                    WalletOuterClass.Coin.Builder coinBuilder = WalletOuterClass.Coin.newBuilder();
-                    coinBuilder.setSalt(coinsDetail.getCoin().getSalt());
-                    coinBuilder.setCurrency(coinsDetail.getCoin().getCurrency());
-                    coinBuilder.setCategory(coinsDetail.getCoin().getCategory());
-                    coinBuilder.setPayload(coinsDetail.getCoin().getPayload());
-                    coinBuilder.setStatus(coinsDetail.getCoin().getStatus());
-                    for (WalletOuterClass.CoinInfo coinInfo : list) {
-                        coinBuilder.setAmount(coinBuilder.getAmount() + coinInfo.getAmount());
-                        coinBuilder.setBalance(coinBuilder.getBalance() + coinInfo.getBalance());
-                    }
-
-                    WalletOuterClass.Coin localCoin = coinBuilder.build();
-                    CurrencyHelper.getInstance().insertCurrencyCoin(localCoin);
-                    listener.success(localCoin);
+                    listener.success(list);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -72,8 +49,4 @@ public class BtcCoinAccount implements CoinAccount {
         });
     }
 
-    @Override
-    public void transfer(String url, GeneratedMessageV3 body, WalletListener listener) {
-
-    }
 }

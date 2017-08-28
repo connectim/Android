@@ -18,7 +18,7 @@
         <item>1800000</item>
         <item>3600000</item>
         <item>86400000</item>
-        <item>0</item>
+        <item>-1</item>
     </integer-array>
 
     <string-array name="prompt_txt">
