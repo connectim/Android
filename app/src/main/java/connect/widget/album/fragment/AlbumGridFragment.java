@@ -21,8 +21,6 @@ import connect.widget.album.model.ImageInfo;
  */
 public class AlbumGridFragment extends BaseFragment implements View.OnClickListener{
 
-    private static AlbumGridFragment gridFragment;
-
     private AlbumActivity activity;
     private GridView gridView;
     private AlbumGridAdp albumGridAdp;
@@ -37,10 +35,7 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
     private List<ImageInfo> imageInfos;
 
     public static AlbumGridFragment newInstance() {
-        if (gridFragment == null) {
-            gridFragment = new AlbumGridFragment();
-        }
-        return gridFragment;
+        return new AlbumGridFragment();
     }
 
     @Override

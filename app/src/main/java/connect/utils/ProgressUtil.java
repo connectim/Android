@@ -60,6 +60,7 @@ public class ProgressUtil {
         if(dialog != null){
             try {
                 dialog.dismiss();
+                dialog = null;
             }catch (Exception e){
                 e.printStackTrace();
             }
