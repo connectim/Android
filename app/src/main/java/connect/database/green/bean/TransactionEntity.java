@@ -16,6 +16,7 @@ public class TransactionEntity implements Serializable {
     @Id(autoincrement = true)
     private Long _id;
     @NotNull
+    @Unique
     private String message_id;
     @NotNull
     @Unique
