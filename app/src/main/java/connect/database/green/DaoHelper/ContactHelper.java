@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import connect.activity.home.bean.ConversationType;
+import connect.activity.home.bean.RoomAttrs;
 import connect.database.green.BaseDao;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
@@ -438,8 +439,8 @@ public class ContactHelper extends BaseDao {
         MessageHelper.getInstance().deleteRoomMsg(pubkey);
         FileUtil.deleteContactFile(pubkey);
 
-        ConversationAction.conversationAction.sendConversationEvent(ConversationType.REMOVE, pubkey, Connect.ChatType.PRIVATE_VALUE,
-                TimeUtil.getCurrentTimeInLong(), 0, "");
+        RoomAttrs.roomAttrs.removeRoomAttr(pubkey);
+        ConversationAction.conversationAction.sendConversationLoad();
     }
 
     public void deleteEntity(String address) {
@@ -470,8 +471,8 @@ public class ContactHelper extends BaseDao {
         quitGroup(groupKey);
 
         ContactNotice.receiverGroup();
-        ConversationAction.conversationAction.sendConversationEvent(ConversationType.REMOVE, groupKey, Connect.ChatType.GROUPCHAT_VALUE,
-                TimeUtil.getCurrentTimeInLong(), 0, "");
+        RoomAttrs.roomAttrs.removeRoomAttr(groupKey);
+        ConversationAction.conversationAction.sendConversationLoad();
     }
 
     /**

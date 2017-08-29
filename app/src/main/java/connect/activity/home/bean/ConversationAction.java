@@ -42,29 +42,26 @@ public class ConversationAction extends BaseEvent {
      */
     public void sendConversationEvent(ConversationType conversationType, Serializable publicKey, Serializable chatType,
                                       Serializable name, Serializable avatar, Serializable timeStamp, Serializable unRead,
-                                      Serializable content, Serializable draft, Serializable disturb,Serializable top,
+                                      Serializable content, Serializable draft, Serializable disturb, Serializable top,
                                       Serializable at, Serializable stranger) {
-        sendEvent(conversationType, publicKey, chatType, name, avatar, timeStamp, unRead, content, draft, disturb,top, at, stranger);
+        sendEvent(conversationType, publicKey, chatType, name, avatar, timeStamp, unRead, content, draft, disturb, top, at, stranger);
     }
 
     public void sendConversationClear() {
         sendEvent(ConversationType.CLEAR);
     }
 
+    public void sendConversationLoad() {
+        sendEvent(ConversationType.LOAD);
+    }
+
     public void sendConversationUserInfo(Serializable publicKey, Serializable chatType,
-                                         Serializable name, Serializable avatar,
-                                         Serializable timeStamp) {
-        sendEvent(ConversationType.UPDATE, publicKey, chatType, name, avatar, timeStamp, -1, "", "", "", -1,-1, -1);
+                                         Serializable name, Serializable avatar) {
+        sendEvent(ConversationType.UPDATE, publicKey, chatType, name, avatar, -1, -1, "", "", "", -1, -1, -1);
     }
 
     public void sendConversationSetting(Serializable publicKey, Serializable chatType, Serializable disturb, Serializable top) {
         sendEvent(ConversationType.UPDATE, publicKey, chatType, "", "", -1, -1, "", "", disturb, top, -1, -1);
-    }
-
-    public void sendConversationMessage(Serializable publicKey, Serializable chatType,
-                                        Serializable timeStamp, Serializable unRead, Serializable content,
-                                        Serializable draft, Serializable at, Serializable stranger) {
-        sendEvent(ConversationType.UPDATE, publicKey, chatType, "", "", timeStamp, unRead, content, draft, -1, -1,at, stranger);
     }
 
     @Override

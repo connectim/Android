@@ -22,7 +22,6 @@ import connect.activity.base.BaseFragment;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ChatListAdapter;
 import connect.activity.home.bean.ConversationAction;
-import connect.activity.home.bean.ConversationType;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.bean.RoomAttrs;
 import connect.activity.home.view.ConnectStateView;

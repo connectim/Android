@@ -100,8 +100,8 @@ public class FriendInfoAliasActivity extends BaseActivity {
                     ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
                     ContactNotice.receiverFriend();
 
-                    ConversationAction.conversationAction.sendConversationEvent(ConversationType.NAME, friendEntity.getPub_key(), Connect.ChatType.PRIVATE_VALUE,
-                            TimeUtil.getCurrentTimeInLong(), -1, "");
+                    ConversationAction.conversationAction.sendConversationUserInfo(friendEntity.getPub_key(), Connect.ChatType.PRIVATE_VALUE,
+                            friendEntity.getRemark(),friendEntity.getAvatar());
                     ActivityUtil.goBack(mActivity);
                 }
                 break;

@@ -65,7 +65,7 @@ public class RoomAttrs {
         return getAttrBeanList();
     }
 
-    private void removeRoomAttr(String publicKey){
+    public void removeRoomAttr(String publicKey){
         Iterator<RoomAttrBean> iterator = roomAttrBeanList.iterator();
         while (iterator.hasNext()) {
             RoomAttrBean attrBean = iterator.next();

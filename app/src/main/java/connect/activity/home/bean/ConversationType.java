@@ -7,13 +7,6 @@ package connect.activity.home.bean;
 public enum ConversationType {
     CLEAR,
     REMOVE,
-    NAME,
-    AVATAR,
-    CONTENT,
-    DRAFT,
-    DISTURB,
-    AT,
-    STRANGER,
 
     UPDATE,
     LOAD,

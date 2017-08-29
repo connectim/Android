@@ -226,7 +226,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     index.badgeTxt.setBadgeCount(select ? 1 : 0, unRead);
                     int disturb = select ? 1 : 0;
                     ConversionSettingHelper.getInstance().updateDisturb(roomid, disturb);
-                    ConversationAction.conversationAction.sendEvent(ConversationType.NOTIFY, roomid, disturb);
+
+                    roomAttr.setDisturb(disturb);
+                    ConversationAction.conversationAction.sendConversationSetting(roomid, roomAttr.getRoomtype(), disturb, -1);
 
                     if (roomAttrBeanList.get(position).getRoomtype() == 1) {
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupNotificaton, roomid, disturb);

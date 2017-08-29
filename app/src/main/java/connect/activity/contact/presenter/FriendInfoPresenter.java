@@ -105,6 +105,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     ContactHelper.getInstance().deleteEntity(sendBean.getAddress());
                     ContactHelper.getInstance().deleteRequestEntity(sendBean.getPubkey());
                     ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
+
                     ContactNotice.receiverContact();
                     ToastEUtil.makeText(mView.getActivity(), R.string.Link_Delete_Successful).show();
                     ActivityUtil.goBack(mView.getActivity());
@@ -158,10 +159,8 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     // Update the message list user information
                     ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
                     if (roomEntity != null) {
-                        ConversationAction.conversationAction.sendConversationEvent(ConversationType.NAME, friendEntity.getPub_key(), Connect.ChatType.PRIVATE_VALUE,
-                                TimeUtil.getCurrentTimeInLong(), -1, userInfo.getUsername());
-                        ConversationAction.conversationAction.sendConversationEvent(ConversationType.AVATAR, friendEntity.getPub_key(), Connect.ChatType.PRIVATE_VALUE,
-                                TimeUtil.getCurrentTimeInLong(), -1, userInfo.getAvatar());
+                        ConversationAction.conversationAction.sendConversationUserInfo(friendEntity.getPub_key(), Connect.ChatType.PRIVATE_VALUE,
+                                userInfo.getUsername(), userInfo.getAvatar());
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

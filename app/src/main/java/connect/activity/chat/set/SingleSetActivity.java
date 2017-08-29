@@ -19,6 +19,7 @@ import connect.activity.chat.set.presenter.SingleSetPresenter;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.set.UserInfoActivity;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -31,6 +32,7 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
 /**
  * private chat setting
@@ -121,6 +123,8 @@ public class SingleSetActivity extends BaseActivity implements SingleSetContract
                 }
                 conversionEntity.setTop(top);
                 ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
+
+                ConversationAction.conversationAction.sendConversationSetting(roomKey, Connect.ChatType.PRIVATE_VALUE,-1,top);
             }
         });
     }
@@ -147,6 +151,8 @@ public class SingleSetActivity extends BaseActivity implements SingleSetContract
                 }
                 settingEntity.setDisturb(disturb);
                 ConversionSettingHelper.getInstance().insertSetEntity(settingEntity);
+
+                ConversationAction.conversationAction.sendConversationSetting(roomKey, Connect.ChatType.PRIVATE_VALUE, disturb, -1);
             }
         });
     }

@@ -386,10 +386,9 @@ public class CommandBean extends InterParse {
                             MsgExtEntity msgExtEntity = normalChat.txtMsg(content);
                             msgExtEntity.setMessage_from(pubKey);
                             msgExtEntity.setMessage_to(mypublickey);
+                            normalChat.updateRoomMsg("", content, TimeUtil.getCurrentTimeInLong(), -1, 1);
 
                             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                            ConversationAction.conversationAction.sendConversationEvent(ConversationType.CONTENT, pubKey, Connect.ChatType.PRIVATE_VALUE,
-                                    TimeUtil.getCurrentTimeInLong(), 1, content);
                         }
                         FailMsgsManager.getInstance().receiveFailMsgs(pubKey);
                         break;
@@ -575,7 +574,7 @@ public class CommandBean extends InterParse {
                             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
                             RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgExtEntity);
-                            normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+                            normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
                         }
                     }
                 }
@@ -626,7 +625,7 @@ public class CommandBean extends InterParse {
                         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
                         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgExtEntity);
-                        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+                        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
                     }
                 }
                 break;
@@ -828,7 +827,7 @@ public class CommandBean extends InterParse {
                     msgExtEntity.setMessage_to(mypublickey);
 
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                    RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+                    RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
                     HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT,
                             new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE,
                                     BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
@@ -850,7 +849,7 @@ public class CommandBean extends InterParse {
                     msgExtEntity.setMessage_to(mypublickey);
 
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                    normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+                    normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
                     HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
                 }
                 break;

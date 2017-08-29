@@ -67,8 +67,7 @@ public class NotificationManager {
             String content = bundle.getString("CONTENT");
             showNotification(identify, type, content);
 
-            ConversationAction.conversationAction.sendConversationEvent(ConversationType.LOAD, identify, type,
-                    TimeUtil.getCurrentTimeInLong(), 1, content);
+            ConversationAction.conversationAction.sendConversationLoad();
         }
     };
 
