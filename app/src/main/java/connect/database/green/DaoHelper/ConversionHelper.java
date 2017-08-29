@@ -1,6 +1,7 @@
 package connect.database.green.DaoHelper;
 
 import android.database.Cursor;
+import android.text.TextUtils;
 
 import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -42,16 +43,20 @@ public class ConversionHelper extends BaseDao {
      *
      * @return
      */
-    public List<RoomAttrBean> loadRoomEnitites() {
+    public List<RoomAttrBean> loadRoomEntites() {
+        return loadRoomEntities("");
+    }
+
+    public List<RoomAttrBean> loadRoomEntities(String publicKey) {
         String sql = "SELECT R.*, S.DISTURB FROM CONVERSION_ENTITY R " +
                 " LEFT OUTER JOIN CONVERSION_SETTING_ENTITY S ON R.IDENTIFIER = S.IDENTIFIER " +
+                (TextUtils.isEmpty(publicKey) ? "" : " WHERE R.IDENTIFIER = " + publicKey) +
                 " GROUP BY R.IDENTIFIER ORDER BY IFNULL(R.TOP, 0) DESC,IFNULL(R.LAST_TIME, 0) DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
 
-        RoomAttrBean attrBean = null;
         List<RoomAttrBean> attrBeanList = new ArrayList<>();
         while (cursor.moveToNext()) {
-            attrBean = new RoomAttrBean();
+            RoomAttrBean attrBean = new RoomAttrBean();
             attrBean.setRoomid(cursorGetString(cursor, "IDENTIFIER"));
             attrBean.setRoomtype(cursorGetInt(cursor, "TYPE"));
             attrBean.setDisturb(cursorGetInt(cursor, "DISTURB"));

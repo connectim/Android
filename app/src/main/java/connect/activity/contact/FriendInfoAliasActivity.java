@@ -13,18 +13,21 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.home.bean.ConversationType;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
-import connect.activity.home.bean.MsgFragmReceiver;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.TimeUtil;
 import connect.utils.ToastUtil;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
 /**
  * Modify your friend's alias
@@ -96,7 +99,9 @@ public class FriendInfoAliasActivity extends BaseActivity {
                 if(sendBean.getType() == MsgSendBean.SendType.TypeFriendRemark){
                     ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
                     ContactNotice.receiverFriend();
-                    MsgFragmReceiver.refreshRoom();
+
+                    ConversationAction.conversationAction.sendConversationEvent(ConversationType.NAME, friendEntity.getPub_key(), Connect.ChatType.PRIVATE_VALUE,
+                            TimeUtil.getCurrentTimeInLong(), -1, "");
                     ActivityUtil.goBack(mActivity);
                 }
                 break;

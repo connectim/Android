@@ -11,6 +11,8 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.model.content.NormalChat;
+import connect.activity.home.bean.ConversationAction;
+import connect.activity.home.bean.ConversationType;
 import connect.activity.home.bean.HttpRecBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -112,7 +114,9 @@ public class ChatParseBean extends InterParse {
                 NormalChat normalChat = new FriendChat(contactEntity);
                 String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
                 MsgExtEntity msgExtEntity = normalChat.noticeMsg(showTxt);
-                normalChat.updateRoomMsg(null, showTxt, msgExtEntity.getCreatetime(), -1, true);
+
+                ConversationAction.conversationAction.sendConversationEvent(ConversationType.CONTENT, chatMessage.getFrom(), Connect.ChatType.PRIVATE_VALUE,
+                        TimeUtil.getCurrentTimeInLong(), 1, showTxt);
 
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.chatKey(), msgExtEntity);
@@ -137,11 +141,8 @@ public class ChatParseBean extends InterParse {
                 default:
                     MessageHelper.getInstance().insertMessageEntity(msgExtEntity);
 
-                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
-                    if (contactEntity != null) {
-                        NormalChat normalChat = new FriendChat(contactEntity);
-                        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
-                    }
+                    ConversationAction.conversationAction.sendConversationEvent(ConversationType.CONTENT, chatMessage.getFrom(),
+                            Connect.ChatType.PRIVATE_VALUE, chatMessage.getMsgTime(), 1, msgExtEntity.showContent());
                     break;
             }
 
@@ -176,8 +177,9 @@ public class ChatParseBean extends InterParse {
                         chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
                 MessageHelper.getInstance().insertMessageEntity(msgExtEntity);
 
-                NormalChat normalChat = new GroupChat(groupEntity);
-                normalChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, true, false);
+                ConversationAction.conversationAction.sendConversationEvent(ConversationType.CONTENT, groupIdentify,
+                        Connect.ChatType.GROUPCHAT_VALUE, chatMessage.getMsgTime(), 1, msgExtEntity.showContent());
+
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
 
                 String content = msgExtEntity.showContent();

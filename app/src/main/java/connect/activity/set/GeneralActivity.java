@@ -8,15 +8,18 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.home.bean.ConversationType;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.activity.home.bean.MsgFragmReceiver;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.TimeUtil;
 import connect.utils.ToastUtil;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
 /**
  * The user general Settings
@@ -93,7 +96,8 @@ public class GeneralActivity extends BaseActivity {
         ConversionHelper.getInstance().clearRooms();
         MessageHelper.getInstance().clearChatMsgs();
 
-        MsgFragmReceiver.refreshRoom();
+        ConversationAction.conversationAction.sendConversationEvent(ConversationType.CLEAR, "", Connect.ChatType.PRIVATE_VALUE,
+                TimeUtil.getCurrentTimeInLong(), -1, "");
         ToastUtil.getInstance().showToast(getResources().getString(R.string.Link_Delete_Successful));
     }
 }

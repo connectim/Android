@@ -16,7 +16,8 @@ import connect.activity.chat.model.content.NormalChat;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.contract.FriendInfoContract;
-import connect.activity.home.bean.MsgFragmReceiver;
+import connect.activity.home.bean.ConversationAction;
+import connect.activity.home.bean.ConversationType;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -27,6 +28,7 @@ import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
+import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
@@ -156,7 +158,10 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     // Update the message list user information
                     ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
                     if (roomEntity != null) {
-                        MsgFragmReceiver.refreshRoom();
+                        ConversationAction.conversationAction.sendConversationEvent(ConversationType.NAME, friendEntity.getPub_key(), Connect.ChatType.PRIVATE_VALUE,
+                                TimeUtil.getCurrentTimeInLong(), -1, userInfo.getUsername());
+                        ConversationAction.conversationAction.sendConversationEvent(ConversationType.AVATAR, friendEntity.getPub_key(), Connect.ChatType.PRIVATE_VALUE,
+                                TimeUtil.getCurrentTimeInLong(), -1, userInfo.getAvatar());
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

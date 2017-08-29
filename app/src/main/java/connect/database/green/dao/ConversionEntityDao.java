@@ -52,7 +52,7 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CONVERSION_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
-                "\"IDENTIFIER\" TEXT UNIQUE ," + // 1: identifier
+                "\"IDENTIFIER\" TEXT NOT NULL UNIQUE ," + // 1: identifier
                 "\"TYPE\" INTEGER," + // 2: type
                 "\"NAME\" TEXT," + // 3: name
                 "\"AVATAR\" TEXT," + // 4: avatar
@@ -79,11 +79,7 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
- 
-        String identifier = entity.getIdentifier();
-        if (identifier != null) {
-            stmt.bindString(2, identifier);
-        }
+        stmt.bindString(2, entity.getIdentifier());
  
         Integer type = entity.getType();
         if (type != null) {
@@ -144,11 +140,7 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
- 
-        String identifier = entity.getIdentifier();
-        if (identifier != null) {
-            stmt.bindString(2, identifier);
-        }
+        stmt.bindString(2, entity.getIdentifier());
  
         Integer type = entity.getType();
         if (type != null) {
@@ -210,7 +202,7 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
     public ConversionEntity readEntity(Cursor cursor, int offset) {
         ConversionEntity entity = new ConversionEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // identifier
+            cursor.getString(offset + 1), // identifier
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // type
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // avatar
@@ -228,7 +220,7 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
     @Override
     public void readEntity(Cursor cursor, ConversionEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setIdentifier(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setIdentifier(cursor.getString(offset + 1));
         entity.setType(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setAvatar(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));

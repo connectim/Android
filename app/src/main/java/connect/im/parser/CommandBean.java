@@ -24,6 +24,8 @@ import connect.activity.chat.model.content.NormalChat;
 import connect.activity.chat.model.content.RobotChat;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.model.ConvertUtil;
+import connect.activity.home.bean.ConversationAction;
+import connect.activity.home.bean.ConversationType;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.MsgNoticeBean;
@@ -386,7 +388,8 @@ public class CommandBean extends InterParse {
                             msgExtEntity.setMessage_to(mypublickey);
 
                             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                            normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+                            ConversationAction.conversationAction.sendConversationEvent(ConversationType.CONTENT, pubKey, Connect.ChatType.PRIVATE_VALUE,
+                                    TimeUtil.getCurrentTimeInLong(), 1, content);
                         }
                         FailMsgsManager.getInstance().receiveFailMsgs(pubKey);
                         break;

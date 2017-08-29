@@ -6,13 +6,15 @@ import java.io.Serializable;
 import java.util.List;
 
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.home.bean.MsgFragmReceiver;
+import connect.activity.home.bean.ConversationAction;
+import connect.activity.home.bean.ConversationType;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
 import connect.utils.StringUtil;
+import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
@@ -94,14 +96,14 @@ public abstract class BaseChat<T> implements Serializable {
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at) {
-        updateRoomMsg(draft, showText, msgtime, at, false);
+        updateRoomMsg(draft, showText, msgtime, at, 0);
     }
 
-    public void updateRoomMsg(String draft, String showText, long msgtime, int at, boolean newmsg) {
+    public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg) {
         updateRoomMsg(draft,showText,msgtime,at,newmsg,true);
     }
 
-    public void updateRoomMsg(String draft, String showText, long msgtime, int at, boolean newmsg,boolean broad) {
+    public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg,boolean broad) {
         if (TextUtils.isEmpty(chatKey())) {
             return;
         }
@@ -134,7 +136,9 @@ public abstract class BaseChat<T> implements Serializable {
 
         ConversionHelper.getInstance().insertRoomEntity(roomEntity);
         if (broad) {
-            MsgFragmReceiver.refreshRoom();
+            ConversationAction.conversationAction.sendConversationEvent(ConversationType.UPDATE,
+                    chatKey(), chatType(),nickName(),headImg(),msgtime,
+                    TimeUtil.getCurrentTimeInLong(), 1, newmsg,showText,draft,-1,at,isStranger?1:0);
         }
     }
 

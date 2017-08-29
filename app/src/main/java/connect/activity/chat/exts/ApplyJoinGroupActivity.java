@@ -136,8 +136,12 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
             txt1.setText(infoBase.getName());
             txt2.setText(getString(R.string.Chat_Member_Max, infoBase.getCount(), 200));
 
-            String profile = TextUtils.isEmpty(infoBase.getSummary()) ? getString(R.string.Link_Group_brief) : infoBase.getSummary();
-            txt3.setText(profile);
+            String profile = infoBase.getSummary();
+            if (TextUtils.isEmpty(profile)) {
+                txt3.setVisibility(View.GONE);
+            } else {
+                txt3.setText(profile);
+            }
 
             boolean isJoin = infoBase.getJoined();
             if (isJoin) {
