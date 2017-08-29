@@ -172,7 +172,7 @@ public class GroupChat extends NormalChat {
 
         GroupMemberEntity memberEntity = memEntityMap.get(memberkey);
         if (memberEntity == null) {
-            requestUserDetailInfo(memberkey, baseListener);
+            requestGroupMemberDetailInfo(memberkey, baseListener);
         } else {
             baseListener.Success(memberEntity);
         }
@@ -219,12 +219,11 @@ public class GroupChat extends NormalChat {
         return msgExtEntity;
     }
 
-    public void requestUserDetailInfo(String publickey, final BaseListener<GroupMemberEntity> baseListener) {
+    public void requestGroupMemberDetailInfo(String publickey, final BaseListener<GroupMemberEntity> baseListener) {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(publickey)
                 .build();
-
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_SEARCHBYPUBKEY, searchUser, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {

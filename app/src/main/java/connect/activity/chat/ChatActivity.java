@@ -123,10 +123,15 @@ public class ChatActivity extends BaseChatActvity {
             toolbar.setRightImg(R.mipmap.menu_white);
         }
 
-        ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
-        long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? 0 : chatSetEntity.getSnap_time();
-        roomSession.setBurntime(burntime);
-        updateBurnState(burntime == 0 ? 0 : 1);
+        if (normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
+            roomSession.setBurntime(-1);
+            updateBurnState(0);
+        } else {
+            ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
+            long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? -1 : chatSetEntity.getSnap_time();
+            roomSession.setBurntime(burntime);
+            updateBurnState(burntime);
+        }
 
         chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
         recyclerChat.setLayoutManager(linearLayoutManager);

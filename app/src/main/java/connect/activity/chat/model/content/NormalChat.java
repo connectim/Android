@@ -121,7 +121,7 @@ public abstract class NormalChat extends BaseChat {
     public MsgExtEntity destructMsg(int time) {
         MsgExtEntity msgExtEntity = (MsgExtEntity) createBaseChat(MsgType.Self_destruct_Notice);
         Connect.DestructMessage.Builder builder = Connect.DestructMessage.newBuilder()
-                .setTime(time <= 0 ? -1 : time);
+                .setTime(time);
 
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;

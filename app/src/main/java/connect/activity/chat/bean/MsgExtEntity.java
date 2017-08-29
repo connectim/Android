@@ -102,7 +102,7 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
     }
 
     public long parseDestructTime() {
-        long destructtime = 0;
+        long destructtime = -1;
         try {
             Connect.ChatType chatType = Connect.ChatType.forNumber(getChatType());
             if (chatType == Connect.ChatType.PRIVATE) {

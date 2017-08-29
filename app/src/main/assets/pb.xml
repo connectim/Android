@@ -21,8 +21,6 @@
     <UserInfo>
         <attr name='username' type='string'></attr>
         <attr name='avatar' type='string'></attr>
-        <attr name='pubKey' type='string'></attr>
-        <attr name='address' type='address'></attr>
     </UserInfo>
 
     <SearchUser>
@@ -137,10 +135,6 @@
         <attr name='group' type='proto'></attr>
         <attr name='members' type='list'></attr>
     </GroupInfo>
-
-    <GroupSettingInfo>
-        <attr name='avatar' type='string'></attr>
-    </GroupSettingInfo>
 
     <GroupAttorn>
         <attr name='address' type='address'></attr>

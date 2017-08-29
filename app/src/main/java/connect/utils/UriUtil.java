@@ -168,6 +168,8 @@ public class UriUtil {
     public static String CONNEXT_V1_USERS_RECOMMEND = "/connect/v1/users/recommend";
     /** Get friends transfer record */
     public static String CONNEXT_V1_USERS_FRIEND_RECORDS = "/connect/v1/users/friends/records";
+    /** Get users by search public key */
+    public static String CONNEXT_V1_USERS_SEARCHBYPUBKEY = "/connect/v1/users/searchByPubKey";
 
     /**======================================================================================
      *                                      setting group

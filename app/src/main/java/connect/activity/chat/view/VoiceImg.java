@@ -104,6 +104,8 @@ public class VoiceImg extends ImageView {
     public void loadVoice(MsgDirect direct ,int sec) {
         this.msgDirect = direct;
         this.voiceLength = sec;
+
+        sec = sec <= 1 ? 2 : sec;
         this.setLayoutParams(new RelativeLayout.LayoutParams(calculateBubbleWidth(sec, 60), SystemUtil.dipToPx(40)));
     }
 
@@ -180,7 +182,7 @@ public class VoiceImg extends ImageView {
                     break;
                 case 150:
                     stopPlay();
-                    if (playListener != null) {
+                    if (playListener != null && !TextUtils.isEmpty(msgid)) {
                         playListener.playFinish(msgid, voicePath);
                     }
                     break;
@@ -236,6 +238,7 @@ public class VoiceImg extends ImageView {
                 mHandler.sendMessage(msg);
             }
         };
+        countDownTimer.start();
         MediaUtil.getInstance().playVoice(path);
     }
 
