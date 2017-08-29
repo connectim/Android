@@ -295,9 +295,9 @@ public class FileUtil {
      *
      * @param pubkey
      */
-    public static void deleteContactFile(String pubkey) {
+    public static boolean deleteContactFile(String pubkey) {
         String path = DIR_ROOT + File.separator + pubkey;
-        deleteDirectory(path);
+        return deleteDirectory(path);
     }
 
     /**

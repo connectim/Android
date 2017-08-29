@@ -65,10 +65,16 @@ public class StringUtilTest {
 
     @Test
     public void VersionComparison() {
-        String ver1 = "1.2.3";
+        String ver1 = "1.2.2";
         String ver2 = "0.5.1";
-        int value = StringUtil.VersionComparison(ver1, ver2);
-        assertTrue(value == 1);
+        int value = StringUtil.VersionComparison(ver1, ver2); // 1
+        int value1 = StringUtil.VersionComparison(ver1, ver1); // 0
+        int value2 = StringUtil.VersionComparison(ver2, ver1); // -1
+        if(value == 1 && value1 == 0 && value2 == -1){
+            assertTrue(true);
+        }else{
+            assertTrue(false);
+        }
     }
 
 }

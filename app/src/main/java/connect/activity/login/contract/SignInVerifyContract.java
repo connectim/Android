@@ -31,6 +31,8 @@ public interface SignInVerifyContract {
         void reSendCode(int type);
 
         void requestBindMobile(String type);
+
+        void pauseDownTimer();
     }
 
 }
