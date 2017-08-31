@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,7 +22,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * The user basic information.
@@ -41,7 +41,7 @@ public class UserInfoActivity extends BaseActivity {
     @Bind(R.id.id_ll)
     RelativeLayout idLl;
     @Bind(R.id.avatar_iv)
-    RoundedImageView avatarIv;
+    ImageView avatarIv;
     @Bind(R.id.number_tv)
     TextView numberTv;
     @Bind(R.id.number_ll)
@@ -75,7 +75,9 @@ public class UserInfoActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_My_Profile);
 
         userBean = SharedPreferenceUtil.getInstance().getUser();
-        GlideUtil.loadAvater(avatarIv, userBean.getAvatar());
+        // GlideUtil.loadAvater(avatarIv, userBean.getAvatar());
+        GlideUtil.loadAvatarRound(avatarIv, userBean.getAvatar());
+
         nameTv.setText(userBean.getName());
         idTv.setText(userBean.getAddress());
         if (TextUtils.isEmpty(userBean.getConnectId())) {

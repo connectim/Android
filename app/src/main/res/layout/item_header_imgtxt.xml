@@ -21,7 +21,7 @@
         android:background="@color/color_white"
         android:orientation="horizontal">
 
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@id/roundimg"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"

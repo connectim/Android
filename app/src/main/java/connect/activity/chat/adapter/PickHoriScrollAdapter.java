@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
@@ -46,16 +45,16 @@ public class PickHoriScrollAdapter {
         }
 
         String path = paths.get(position);
-        GlideUtil.loadAvater(holder.roundimg, path);
+        GlideUtil.loadAvatarRound(holder.roundimg, path);
         return convertView;
     }
 
     static class PickHolder {
-        RoundedImageView roundimg;
+        ImageView roundimg;
         ImageView state;
 
         public PickHolder(View view){
-            roundimg= (RoundedImageView) view.findViewById(R.id.roundimg);
+            roundimg= (ImageView) view.findViewById(R.id.roundimg);
             state= (ImageView) view.findViewById(R.id.state);
         }
     }

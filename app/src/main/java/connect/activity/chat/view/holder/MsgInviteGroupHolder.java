@@ -2,6 +2,7 @@ package connect.activity.chat.view.holder;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
@@ -9,7 +10,6 @@ import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -18,7 +18,7 @@ import protos.Connect;
 
 public class MsgInviteGroupHolder extends MsgChatHolder {
 
-    private RoundedImageView cardHead;
+    private ImageView cardHead;
     private TextView txt1;
     private TextView txt2;
 
@@ -26,7 +26,7 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
 
     public MsgInviteGroupHolder(View itemView) {
         super(itemView);
-        cardHead = (RoundedImageView) itemView.findViewById(R.id.roundimg1);
+        cardHead = (ImageView) itemView.findViewById(R.id.roundimg1);
         txt1 = (TextView) itemView.findViewById(R.id.txt1);
         txt2 = (TextView) itemView.findViewById(R.id.txt2);
     }
@@ -36,7 +36,7 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.JoinGroupMessage joinGroupMessage = Connect.JoinGroupMessage.parseFrom(msgExtEntity.getContents());
 
-        GlideUtil.loadAvater(cardHead, joinGroupMessage.getAvatar());
+        GlideUtil.loadAvatarRound(cardHead, joinGroupMessage.getAvatar());
         String showTxt = msgExtEntity.parseDirect() == MsgDirect.From ? context.getString(R.string.Link_Invite_you_to_join, joinGroupMessage.getGroupName()) :
                 context.getString(R.string.Link_Invite_friend_to_join, joinGroupMessage.getGroupName());
         txt1.setText(showTxt);

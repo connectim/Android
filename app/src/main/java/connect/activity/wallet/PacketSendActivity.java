@@ -30,7 +30,6 @@ import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import connect.widget.zxing.utils.CreateScan;
 import protos.Connect;
 
@@ -43,7 +42,7 @@ public class PacketSendActivity extends BaseActivity {
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.avater_rimg)
-    RoundedImageView avaterRimg;
+    ImageView avaterRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
     @Bind(R.id.left_send_img)
@@ -105,7 +104,7 @@ public class PacketSendActivity extends BaseActivity {
             }
         }
 
-        GlideUtil.loadAvater(avaterRimg, MemoryDataManager.getInstance().getAvatar());
+        GlideUtil.loadAvatarRound(avaterRimg, MemoryDataManager.getInstance().getAvatar(), 12);
         nameTv.setText(MemoryDataManager.getInstance().getName());
         CreateScan createScan = new CreateScan();
         if(sendOutBean.getStatus() == 1){

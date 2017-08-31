@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
 import connect.utils.PinyinUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Created by pujin on 2017/1/18.
@@ -43,7 +43,7 @@ public class GroupMemberSelectAdapter extends RecyclerView.Adapter<GroupMemberSe
     public void onBindViewHolder(GroupMemberSelectAdapter.GroupMemberHolder holder, int position) {
         GroupMemberEntity entity = groupMemEntities.get(position);
 
-        GlideUtil.loadAvater(holder.roundimg, entity.getAvatar());
+        GlideUtil.loadAvatarRound(holder.roundimg, entity.getAvatar());
         String curName = TextUtils.isEmpty(entity.getNick()) ? entity.getUsername() : entity.getNick();
         if (TextUtils.isEmpty(curName)) return;
 
@@ -107,13 +107,13 @@ public class GroupMemberSelectAdapter extends RecyclerView.Adapter<GroupMemberSe
 
     static class GroupMemberHolder extends RecyclerView.ViewHolder {
         TextView txt;
-        RoundedImageView roundimg;
+        ImageView roundimg;
         TextView name;
 
         GroupMemberHolder(View view) {
             super(view);
             txt = (TextView) view.findViewById(R.id.txt);
-            roundimg = (RoundedImageView) view.findViewById(R.id.roundimg);
+            roundimg = (ImageView) view.findViewById(R.id.roundimg);
             name = (TextView) view.findViewById(R.id.name);
         }
     }

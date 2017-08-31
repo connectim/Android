@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,7 +16,6 @@ import java.util.List;
 import butterknife.Bind;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.ViewHolder> {
@@ -40,7 +40,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder,final int position) {
         final Connect.UserInfo userInfo = mDataList.get(position);
-        GlideUtil.loadAvater(holder.avatarRimg, userInfo.getAvatar());
+        GlideUtil.loadAvatarRound(holder.avatarRimg, userInfo.getAvatar());
         holder.nicknameTv.setText(userInfo.getUsername());
         holder.statusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +78,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.avatar_rimg)
-        RoundedImageView avatarRimg;
+        ImageView avatarRimg;
         @Bind(R.id.nickname_tv)
         TextView nicknameTv;
         @Bind(R.id.status_btn)
@@ -88,7 +88,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
 
         ViewHolder(View itemview) {
             super(itemview);
-            avatarRimg = (RoundedImageView) itemview.findViewById(R.id.avatar_rimg);
+            avatarRimg = (ImageView) itemview.findViewById(R.id.avatar_rimg);
             nicknameTv = (TextView) itemview.findViewById(R.id.nickname_tv);
             statusBtn = (Button) itemview.findViewById(R.id.status_btn);
             contentRela = (RelativeLayout) itemview.findViewById(R.id.content_rela);

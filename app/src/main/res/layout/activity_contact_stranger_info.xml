@@ -28,12 +28,11 @@
             android:gravity="right"
             android:visibility="gone"/>
 
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
             android:layout_marginTop="@dimen/dp_30"
-            app:riv_corner_radius="@dimen/px_6"
             android:layout_gravity="center_horizontal"
             android:scaleType="fitXY"/>
         <TextView

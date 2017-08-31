@@ -5,20 +5,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import connect.activity.contact.adapter.FriendRecordAdapter;
-import connect.ui.activity.R;
 import connect.activity.home.bean.RoomAttrBean;
+import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
-import protos.Connect;
 
 /**
  * share card
@@ -47,7 +42,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         final RoomAttrBean roomAttrBean = roomList.get(position);
         holder.txt.setVisibility(View.GONE);
         holder.name.setText(roomAttrBean.getName());
-        GlideUtil.loadAvater(holder.roundimg,roomAttrBean.getAvatar());
+        GlideUtil.loadAvatarRound(holder.roundimg,roomAttrBean.getAvatar());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,13 +74,13 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView txt;
-        RoundedImageView roundimg;
+        ImageView roundimg;
         TextView name;
 
         ViewHolder(View itemview) {
             super(itemview);
             this.txt = (TextView) itemview.findViewById(R.id.txt);
-            this.roundimg = (RoundedImageView) itemview.findViewById(R.id.roundimg);
+            this.roundimg = (ImageView) itemview.findViewById(R.id.roundimg);
             this.name = (TextView) itemview.findViewById(R.id.tvName);
 
         }

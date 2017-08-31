@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -41,7 +42,6 @@ import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.business.TransferType;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -53,7 +53,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg)
-    RoundedImageView roundimg;
+    ImageView roundimg;
     @Bind(R.id.txt1)
     TextView txt1;
     @Bind(R.id.txt2)
@@ -163,7 +163,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
                             txt4.setVisibility(View.VISIBLE);
                         }
                         if (entity != null) {
-                            GlideUtil.loadAvater(roundimg, entity.getAvatar());
+                            GlideUtil.loadAvatarRound(roundimg, entity.getAvatar());
                         }
 
                         if (TextUtils.isEmpty(billDetail.getTips())) {

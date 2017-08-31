@@ -15,7 +15,7 @@
             android:layout_height="@dimen/dp_70"
             android:layout_centerVertical="true">
 
-            <connect.widget.roundedimageview.RoundedImageView
+            <ImageView
                 android:id="@id/roundimg_head"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"

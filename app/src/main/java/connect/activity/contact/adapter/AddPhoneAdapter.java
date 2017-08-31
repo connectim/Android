@@ -6,20 +6,18 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-
-import connect.ui.activity.R;
-import connect.activity.base.BaseApplication;
-import connect.utils.PinyinUtil;
-import connect.activity.contact.bean.PhoneContactBean;
-import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
-import protos.Connect;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import connect.activity.base.BaseApplication;
+import connect.activity.contact.bean.PhoneContactBean;
+import connect.ui.activity.R;
+import connect.utils.PinyinUtil;
+import connect.utils.glide.GlideUtil;
 
 public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -76,7 +74,7 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(type==ITEMTYPE.VIEW_TYP_TITLE.ordinal()){
                 ((TitleViewHolder)holder).titleTv.setText(R.string.Set_Installed);
             }else if(type==ITEMTYPE.VIEW_TYP_SERVER.ordinal()){
-                GlideUtil.loadAvater(((ServerHolder)holder).avater,contactBean.getAvater());
+                GlideUtil.loadAvatarRound(((ServerHolder)holder).avater,contactBean.getAvater());
                 ((ServerHolder)holder).nameTvS.setText(contactBean.getName());
                 ((ServerHolder)holder).nicName.setText(contactBean.getNickName());
                 showStatus(position,contactBean,((ServerHolder)holder).addBtn);
@@ -129,14 +127,14 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     class ServerHolder extends RecyclerView.ViewHolder{
 
-        RoundedImageView avater;
+        ImageView avater;
         TextView nameTvS;
         TextView nicName;
         Button addBtn;
 
         public ServerHolder(View itemView) {
             super(itemView);
-            avater = (RoundedImageView)itemView.findViewById(R.id.avatar_rimg);
+            avater = (ImageView)itemView.findViewById(R.id.avatar_rimg);
             nameTvS = (TextView)itemView.findViewById(R.id.nickname_tv);
             nicName = (TextView)itemView.findViewById(R.id.hint_tv);
             addBtn = (Button) itemView.findViewById(R.id.status_btn);

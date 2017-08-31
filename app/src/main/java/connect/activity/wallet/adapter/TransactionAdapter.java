@@ -2,22 +2,20 @@ package connect.activity.wallet.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -61,7 +59,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                         arrayList.add(userInfoBalance.getAvatar());
                     }
                     viewHolder.avaterRimg.setVisibility(View.VISIBLE);
-                    GlideUtil.loadAvater(viewHolder.avaterRimg,list.get(0).getAvatar());
+                    GlideUtil.loadAvatarRound(viewHolder.avaterRimg,list.get(0).getAvatar());
                 }else{
                     viewHolder.avaterRimg.setVisibility(View.VISIBLE);
                     viewHolder.avaterRimg.setImageResource(R.mipmap.bitcoin_luckybag3x);
@@ -134,7 +132,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        RoundedImageView avaterRimg;
+        ImageView avaterRimg;
         RelativeLayout leftRela;
         TextView nameTv;
         TextView balanceTv;
@@ -143,7 +141,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         ViewHolder(View itemview) {
             super(itemview);
-            avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
+            avaterRimg = (ImageView) itemview.findViewById(R.id.avater_rimg);
             leftRela = (RelativeLayout) itemview.findViewById(R.id.left_rela);
             nameTv = (TextView) itemview.findViewById(R.id.name_tv);
             balanceTv = (TextView) itemview.findViewById(R.id.balance_tv);

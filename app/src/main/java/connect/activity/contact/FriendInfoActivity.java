@@ -40,7 +40,6 @@ import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Friends details.
@@ -50,7 +49,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.avatar_rimg)
-    RoundedImageView avatarRimg;
+    ImageView avatarRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
     @Bind(R.id.message_img)
@@ -126,7 +125,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @Override
     public void updateView(ContactEntity friendEntity) {
         this.friendEntity = friendEntity;
-        GlideUtil.loadAvater(avatarRimg, (null == friendEntity || null == friendEntity.getAvatar()) ? "" : friendEntity.getAvatar());
+        GlideUtil.loadAvatarRound(avatarRimg, (null == friendEntity || null == friendEntity.getAvatar()) ? "" : friendEntity.getAvatar());
         nameTv.setText(friendEntity.getUsername());
         addressTv.setText(friendEntity.getAddress());
         sourceTv.setText(friendEntity.getSource() == null ? SourceType.UNKOWN.getString() : SourceType.getString(friendEntity.getSource()));

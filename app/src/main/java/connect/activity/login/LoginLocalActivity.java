@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,7 +30,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * local login
@@ -41,7 +41,7 @@ public class LoginLocalActivity extends BaseActivity implements LocalLoginContra
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.userhead_img)
-    RoundedImageView userheadImg;
+    ImageView userheadImg;
     @Bind(R.id.nickname_tv)
     TextView nicknameTv;
     @Bind(R.id.password_et)
@@ -81,7 +81,7 @@ public class LoginLocalActivity extends BaseActivity implements LocalLoginContra
             if (!TextUtils.isEmpty(userBean.getPassHint())) {
                 passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
             }
-            GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
+            GlideUtil.loadAvatarRound(userheadImg,userBean.getAvatar());
         }
         new LocalLoginPresenter(this).start();
     }
@@ -136,7 +136,7 @@ public class LoginLocalActivity extends BaseActivity implements LocalLoginContra
             } else {
                 passwordhintTv.setText("");
             }
-            GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
+            GlideUtil.loadAvatarRound(userheadImg,userBean.getAvatar());
         }else if(requestCode == SELECT_USER_CODE){
 
             List<UserBean> list = SharedPreferenceUtil.getInstance().getUserList();
@@ -150,7 +150,7 @@ public class LoginLocalActivity extends BaseActivity implements LocalLoginContra
                 }else{
                     passwordhintTv.setText("");
                 }
-                GlideUtil.loadAvater(userheadImg,userBean.getAvatar());
+                GlideUtil.loadAvatarRound(userheadImg,userBean.getAvatar());
             }
 
         }

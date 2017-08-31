@@ -24,7 +24,6 @@ import connect.utils.PinyinUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.SideScrollView;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Contact adapter.
@@ -112,7 +111,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     // Have a friend request
                     ((RequestHolder) holder).contentLayout.setBackgroundColor(BaseApplication.getInstance()
                             .getResources().getColor(R.color.color_c8ccd5));
-                    GlideUtil.loadImage(((RequestHolder) holder).avatar, currBean.getAvatar());
+                    GlideUtil.loadAvatarRound(((RequestHolder) holder).avatar, currBean.getAvatar());
                     ((RequestHolder) holder).name.setText(currBean.getName());
                     ((RequestHolder) holder).tips.setText(currBean.getTips());
                     ((RequestHolder) holder).count.setVisibility(View.VISIBLE);
@@ -146,7 +145,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             break;
                     }
                 }
-                GlideUtil.loadAvater(((FriendHolder) holder).avater, currBean.getAvatar());
+                GlideUtil.loadAvatarRound(((FriendHolder) holder).avater, currBean.getAvatar());
                 ((FriendHolder) holder).name.setText(currBean.getName());
                 break;
             case STATUS_FRIEND_CONNECT:
@@ -199,7 +198,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     class RequestHolder extends RecyclerView.ViewHolder {
 
         TextView name;
-        RoundedImageView avatar;
+        ImageView avatar;
         TextView tips;
         TextView count;
         RelativeLayout contentLayout;
@@ -207,7 +206,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public RequestHolder(View itemView) {
             super(itemView);
             contentLayout = (RelativeLayout) itemView.findViewById(R.id.new_friend_layout);
-            avatar = (RoundedImageView) itemView.findViewById(R.id.avatar_img);
+            avatar = (ImageView) itemView.findViewById(R.id.avatar_img);
             name = (TextView) itemView.findViewById(R.id.name_tv);
             tips = (TextView) itemView.findViewById(R.id.tips_tv);
             count = (TextView) itemView.findViewById(R.id.count_tv);
@@ -216,7 +215,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     class FriendHolder extends RecyclerView.ViewHolder {
 
         TextView name;
-        RoundedImageView avater;
+        ImageView avater;
         TextView topTv;
         SideScrollView sideView;
         RelativeLayout contentLayout;
@@ -228,7 +227,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             sideView = (SideScrollView) itemView.findViewById(R.id.side_scroll_view);
             bottomSetImg = (ImageView) itemView.findViewById(R.id.bottom_set_img);
             contentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
-            avater = (RoundedImageView) itemView.findViewById(R.id.avatar_rimg);
+            avater = (ImageView) itemView.findViewById(R.id.avatar_rimg);
             name = (TextView) itemView.findViewById(R.id.name_tv);
             contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
             sideView.setSideScrollListener(sideScrollListener);

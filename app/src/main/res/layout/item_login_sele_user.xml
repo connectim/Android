@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
-                <connect.widget.roundedimageview.RoundedImageView
+                <ImageView
                     android:id="@+id/avater_rimg"
                     android:layout_width="@dimen/dp_38"
                     android:layout_height="@dimen/dp_38"

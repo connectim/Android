@@ -14,7 +14,6 @@ import connect.activity.login.bean.UserBean;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.SideScrollView;
-import connect.widget.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +56,7 @@ public class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.Us
         }else{
             holder.statusImg.setVisibility(View.GONE);
         }
-        GlideUtil.loadAvater(holder.avater,msgRoomEntities.get(position).getAvatar());
+        GlideUtil.loadAvatarRound(holder.avater,msgRoomEntities.get(position).getAvatar());
         holder.name.setText(msgRoomEntities.get(position).getName());
 
         holder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
@@ -89,14 +88,14 @@ public class SelectUserAdapter extends RecyclerView.Adapter<SelectUserAdapter.Us
     public class UserHolder extends RecyclerView.ViewHolder {
         private final ImageView bottomClear;
         private final RelativeLayout contentLayout;
-        private final RoundedImageView avater;
+        private final ImageView avater;
         private final TextView name;
         private final ImageView statusImg;
         public UserHolder(View itemView) {
             super(itemView);
             contentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
             bottomClear = (ImageView) itemView.findViewById(R.id.bottom_clear);
-            avater = (RoundedImageView) itemView.findViewById(R.id.avater_rimg);
+            avater = (ImageView) itemView.findViewById(R.id.avater_rimg);
             name = (TextView)itemView.findViewById(R.id.name_tv);
             statusImg = (ImageView)itemView.findViewById(R.id.status_img);
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,7 +24,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Transfer details
@@ -33,9 +33,9 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg1)
-    RoundedImageView roundimg1;
+    ImageView roundimg1;
     @Bind(R.id.roundimg2)
-    RoundedImageView roundimg2;
+    ImageView roundimg2;
     @Bind(R.id.txt1)
     TextView txt1;
     @Bind(R.id.txt2)
@@ -184,10 +184,10 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
     @Override
     public void showUserInfo(int direct, String avatar, String name) {
         if (direct == 0) {
-            GlideUtil.loadAvater(roundimg1, avatar);
+            GlideUtil.loadAvatarRound(roundimg1, avatar);
             txt5.setText(name);
         } else if (direct == 1) {
-            GlideUtil.loadAvater(roundimg2, avatar);
+            GlideUtil.loadAvatarRound(roundimg2, avatar);
             txt6.setText(name);
         }
     }

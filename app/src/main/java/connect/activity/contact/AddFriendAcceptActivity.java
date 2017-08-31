@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,7 +29,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Receive a friend to add a request
@@ -40,7 +40,7 @@ public class AddFriendAcceptActivity extends BaseActivity {
     @Bind(R.id.source_tv)
     TextView sourceTv;
     @Bind(R.id.avater_rimg)
-    RoundedImageView avaterRimg;
+    ImageView avaterRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
     @Bind(R.id.tips_tv)
@@ -78,7 +78,7 @@ public class AddFriendAcceptActivity extends BaseActivity {
         toolbar.setTitle(null, R.string.Link_New_Friends);
 
         requestEntity = (FriendRequestEntity) getIntent().getExtras().getSerializable("bean");
-        GlideUtil.loadAvater(avaterRimg, requestEntity.getAvatar());
+        GlideUtil.loadAvatarRound(avaterRimg, requestEntity.getAvatar());
         nameTv.setText(requestEntity.getUsername());
         sourceTv.setText(SourceType.getString(requestEntity.getSource()));
         if (!TextUtils.isEmpty(requestEntity.getTips())) {

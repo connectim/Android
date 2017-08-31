@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -43,7 +43,7 @@ public class RedDerailAdapter extends RecyclerView.Adapter<RedDerailAdapter.View
 
     @Override
     public void onBindViewHolder(RedDerailAdapter.ViewHolder viewHolder, final int position) {
-        GlideUtil.loadAvater(viewHolder.avaterRimg,mListData.get(position).getUserinfo().getAvatar());
+        GlideUtil.loadAvatarRound(viewHolder.avaterRimg,mListData.get(position).getUserinfo().getAvatar());
         viewHolder.nameTv.setText(mListData.get(position).getUserinfo().getUsername());
         viewHolder.timeTv.setText(TimeUtil.getTime(mListData.get(position).getCreatedAt() * 1000,TimeUtil.DATE_FORMAT_MONTH_HOUR));
         viewHolder.moneyTv.setText(RateFormatUtil.longToDoubleBtc(mListData.get(position).getAmount()) + " BTC");
@@ -74,7 +74,7 @@ public class RedDerailAdapter extends RecyclerView.Adapter<RedDerailAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.avater_rimg)
-        RoundedImageView avaterRimg;
+        ImageView avaterRimg;
         @Bind(R.id.name_tv)
         TextView nameTv;
         @Bind(R.id.money_tv)
@@ -86,7 +86,7 @@ public class RedDerailAdapter extends RecyclerView.Adapter<RedDerailAdapter.View
 
         ViewHolder(View itemview) {
             super(itemview);
-            avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
+            avaterRimg = (ImageView) itemview.findViewById(R.id.avater_rimg);
             nameTv = (TextView) itemview.findViewById(R.id.name_tv);
             moneyTv = (TextView) itemview.findViewById(R.id.money_tv);
             timeTv = (TextView) itemview.findViewById(R.id.time_tv);

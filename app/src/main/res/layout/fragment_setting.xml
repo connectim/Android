@@ -22,12 +22,11 @@
         android:paddingRight="@dimen/dp_15"
         android:paddingTop="20dp">
 
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/ivAvatar"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"
-            android:scaleType="fitXY"
-            app:riv_corner_radius="@dimen/px_6"/>
+            android:scaleType="fitXY"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"

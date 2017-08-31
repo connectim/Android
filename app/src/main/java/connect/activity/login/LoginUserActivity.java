@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -26,7 +27,6 @@ import connect.utils.ProgressUtil;
 import connect.utils.RegularUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Login phone number verification.
@@ -36,7 +36,7 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.userhead_img)
-    RoundedImageView userheadImg;
+    ImageView userheadImg;
     @Bind(R.id.nickname_et)
     TextView nicknameEt;
     @Bind(R.id.password_et)
@@ -97,7 +97,7 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
 
         passwordEt.addTextChangedListener(textWatcher);
         nicknameEt.setText(userBean.getName());
-        GlideUtil.loadAvater(userheadImg, userBean.getAvatar());
+        GlideUtil.loadAvatarRound(userheadImg, userBean.getAvatar());
         if (TextUtils.isEmpty(token)) {
             if (!TextUtils.isEmpty(userBean.getPassHint())) {
                 passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));

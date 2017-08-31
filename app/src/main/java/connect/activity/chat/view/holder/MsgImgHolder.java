@@ -100,10 +100,9 @@ public class MsgImgHolder extends MsgChatHolder {
                 File file = BitmapUtil.getInstance().bitmapSavePathDCIM(resource);
                 filePath = file.getAbsolutePath();
                 try {
-                    MediaStore.Images.Media.insertImage(context.getContentResolver(), filePath, "", null);
                     scanner.connect();
                     ToastEUtil.makeText(context, R.string.Login_Save_successful).show();
-                } catch (FileNotFoundException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

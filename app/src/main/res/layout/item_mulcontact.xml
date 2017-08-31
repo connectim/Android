@@ -30,7 +30,7 @@
             android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/sec_pickstate"/>
 
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@id/roundimg"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"

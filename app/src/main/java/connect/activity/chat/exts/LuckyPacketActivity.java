@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,7 +28,6 @@ import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.business.TransferEditView;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * send lucky packet
@@ -38,7 +38,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg)
-    RoundedImageView roundimg;
+    ImageView roundimg;
     @Bind(R.id.txt1)
     TextView txt1;
     @Bind(R.id.layout_first)
@@ -188,7 +188,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
 
     @Override
     public void showUserInfo(String avatar, String name) {
-        GlideUtil.loadAvater(roundimg, name);
+        GlideUtil.loadAvatarRound(roundimg, name);
         txt1.setText(getString(R.string.Wallet_Send_Lucky_Packet_to, name));
     }
 

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,7 +18,6 @@ import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapter.ViewHolder> {
@@ -45,7 +45,7 @@ public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapte
         final Connect.FriendBill friendBill = mListData.get(position);
         viewHolder.avaterRimg.setVisibility(View.VISIBLE);
 
-        GlideUtil.loadAvater(viewHolder.avaterRimg, friendEntity.getAvatar());
+        GlideUtil.loadAvatarRound(viewHolder.avaterRimg, friendEntity.getAvatar());
         String curName = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
         viewHolder.nameTv.setText(curName);
         viewHolder.timeTv.setText(TimeUtil.getTime(friendBill.getCreatedAt() * 1000, TimeUtil.DATE_FORMAT_MONTH_HOUR));
@@ -89,7 +89,7 @@ public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        RoundedImageView avaterRimg;
+        ImageView avaterRimg;
         RelativeLayout leftRela;
         TextView nameTv;
         TextView balanceTv;
@@ -98,7 +98,7 @@ public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapte
 
         ViewHolder(View itemview) {
             super(itemview);
-            avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
+            avaterRimg = (ImageView) itemview.findViewById(R.id.avater_rimg);
             leftRela = (RelativeLayout) itemview.findViewById(R.id.left_rela);
             nameTv = (TextView) itemview.findViewById(R.id.name_tv);
             balanceTv = (TextView) itemview.findViewById(R.id.balance_tv);

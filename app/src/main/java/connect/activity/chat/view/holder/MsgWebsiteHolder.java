@@ -3,6 +3,7 @@ package connect.activity.chat.view.holder;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.protobuf.ByteString;
@@ -21,7 +22,6 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -31,13 +31,13 @@ public class MsgWebsiteHolder extends MsgChatHolder {
 
     private TextView titleTxt;
     private TextView contentTxt;
-    private RoundedImageView typeImg;
+    private ImageView typeImg;
 
     public MsgWebsiteHolder(View itemView) {
         super(itemView);
         titleTxt = (TextView) itemView.findViewById(R.id.txt2);
         contentTxt = (TextView) itemView.findViewById(R.id.txt3);
-        typeImg = (RoundedImageView) itemView.findViewById(R.id.roundimg1);
+        typeImg = (ImageView) itemView.findViewById(R.id.roundimg1);
     }
 
     @Override
@@ -51,16 +51,16 @@ public class MsgWebsiteHolder extends MsgChatHolder {
         String content = websiteMessage.getUrl();
         if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE)) {
             if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE_TRANSFER)) {//outer transfer
-                GlideUtil.loadImage(typeImg, R.mipmap.message_send_bitcoin2x);
+                GlideUtil.loadAvatarRound(typeImg, R.mipmap.message_send_bitcoin2x);
             } else if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE_PACKET)) {//outer lucky packet
-                GlideUtil.loadImage(typeImg, R.mipmap.luckybag3x);
+                GlideUtil.loadAvatarRound(typeImg, R.mipmap.luckybag3x);
             } else if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE_PAY)) {//outer gather
-                GlideUtil.loadImage(typeImg, R.mipmap.message_send_payment2x);
+                GlideUtil.loadAvatarRound(typeImg, R.mipmap.message_send_payment2x);
             }
         } else {//outer link
             String imgUrl = TextUtils.isEmpty(websiteMessage.getImg()) ? "" : websiteMessage.getImg();
             if (TextUtils.isEmpty(imgUrl)) {
-                GlideUtil.loadImage(typeImg, R.mipmap.message_link2x);
+                GlideUtil.loadAvatarRound(typeImg, R.mipmap.message_link2x);
             } else {
                 GlideUtil.loadImage(typeImg, imgUrl,R.mipmap.message_link2x);
             }
@@ -72,7 +72,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
             public void onClick(View v) {
                 String content = (String) v.getTag();
                 if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE_TRANSFER)) {//outer transfer
-                    GlideUtil.loadImage(typeImg, R.mipmap.message_send_bitcoin2x);
+                    GlideUtil.loadAvatarRound(typeImg, R.mipmap.message_send_bitcoin2x);
 
                     int transStart = content.indexOf("token") + 6;
                     int transEnd = content.indexOf("&");
@@ -84,7 +84,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                     UserOrderBean userOrderBean = new UserOrderBean();
                     userOrderBean.outerTransfer(transToken);
                 } else if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE_PACKET)) {//outer lucky packet
-                    GlideUtil.loadImage(typeImg, R.mipmap.luckybag3x);
+                    GlideUtil.loadAvatarRound(typeImg, R.mipmap.luckybag3x);
 
                     int packetStart = content.indexOf("token") + 6;
                     int packetEnd = content.indexOf("&");

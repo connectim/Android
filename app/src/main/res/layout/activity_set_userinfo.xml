@@ -27,7 +27,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/Set_Profile_Photo" />
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/avatar_iv"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"

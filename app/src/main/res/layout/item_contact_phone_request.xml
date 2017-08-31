@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_rela"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -59,12 +58,11 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
 
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
             android:scaleType="fitXY"
-            app:riv_corner_radius="@dimen/px_6"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />

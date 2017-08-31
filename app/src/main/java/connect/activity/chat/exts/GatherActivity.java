@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,7 +30,6 @@ import connect.wallet.cwallet.business.BaseBusiness;
 import connect.wallet.cwallet.business.TransferEditView;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -41,7 +41,7 @@ public class GatherActivity extends BaseActivity {
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg)
-    RoundedImageView roundimg;
+    ImageView roundimg;
     @Bind(R.id.txt1)
     TextView txt1;
     @Bind(R.id.layout_first)
@@ -152,7 +152,7 @@ public class GatherActivity extends BaseActivity {
                     return;
                 }
             }
-            GlideUtil.loadAvater(roundimg, friendEntity.getAvatar());
+            GlideUtil.loadAvatarRound(roundimg, friendEntity.getAvatar());
             String nameTxt = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
             txt1.setText(nameTxt);
             btn.setText(getString(R.string.Wallet_Receipt));

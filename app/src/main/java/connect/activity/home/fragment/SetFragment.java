@@ -19,12 +19,12 @@ import connect.activity.base.BaseFragment;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.AboutActivity;
-import connect.activity.set.UserAddressActivity;
 import connect.activity.set.GeneralActivity;
-import connect.activity.set.UserInfoActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
+import connect.activity.set.UserAddressActivity;
+import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.im.bean.UserOrderBean;
 import connect.im.model.FailMsgsManager;
@@ -34,7 +34,6 @@ import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Set the main interface.
@@ -42,7 +41,7 @@ import connect.widget.roundedimageview.RoundedImageView;
 public class SetFragment extends BaseFragment {
 
     @Bind(R.id.ivAvatar)
-    RoundedImageView ivAvatar;
+    ImageView ivAvatar;
     @Bind(R.id.tvName)
     TextView tvName;
     @Bind(R.id.tvId)
@@ -99,7 +98,8 @@ public class SetFragment extends BaseFragment {
         toolbarTop.setTitle(null, R.string.Set_Setting);
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        GlideUtil.loadAvater(ivAvatar, userBean.getAvatar());
+        GlideUtil.loadAvatarRound(ivAvatar, userBean.getAvatar());
+
         tvName.setText(userBean.getName());
         if (TextUtils.isEmpty(userBean.getConnectId())) {
             tvId.setText(userBean.getAddress());

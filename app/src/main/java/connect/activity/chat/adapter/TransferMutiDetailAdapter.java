@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.protobuf.InvalidProtocolBufferException;
 import connect.ui.activity.R;
@@ -17,7 +18,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -74,7 +74,7 @@ public class TransferMutiDetailAdapter extends RecyclerView.Adapter<TransferMuti
                                 String avatar = userInfo.getAvatar();
                                 String name = userInfo.getUsername();
 
-                                GlideUtil.loadAvater(holder.avatarImg, avatar);
+                                GlideUtil.loadAvatarRound(holder.avatarImg, avatar);
                                 holder.receiverTxt.setText(name);
                                 holder.amountTxt.setText(context.getString(R.string.Set_BTC_symbol) + "" + RateFormatUtil.longToDoubleBtc(amount));
                             }
@@ -101,13 +101,13 @@ public class TransferMutiDetailAdapter extends RecyclerView.Adapter<TransferMuti
 
     static class MutiDetailHolder extends RecyclerView.ViewHolder {
 
-        private RoundedImageView avatarImg;
+        private ImageView avatarImg;
         private TextView receiverTxt;
         private TextView amountTxt;
 
         MutiDetailHolder(View view) {
             super(view);
-            avatarImg = (RoundedImageView) view.findViewById(R.id.roundimg);
+            avatarImg = (ImageView) view.findViewById(R.id.roundimg);
             receiverTxt = (TextView) view.findViewById(R.id.txt1);
             amountTxt = (TextView) view.findViewById(R.id.txt2);
         }

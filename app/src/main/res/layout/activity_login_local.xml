@@ -27,7 +27,7 @@
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:background="@drawable/selector_list_item_bg">
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@id/userhead_img"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"

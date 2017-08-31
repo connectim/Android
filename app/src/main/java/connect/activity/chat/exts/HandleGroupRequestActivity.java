@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,7 +32,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -42,7 +42,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg1)
-    RoundedImageView roundimg1;
+    ImageView roundimg1;
     @Bind(R.id.txt1)
     TextView txt1;
     @Bind(R.id.txt2)
@@ -54,7 +54,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
     @Bind(R.id.btn2)
     Button btn2;
     @Bind(R.id.roundimg)
-    RoundedImageView roundimg;
+    ImageView roundimg;
     @Bind(R.id.linearlayout)
     LinearLayout linearlayout;
     @Bind(R.id.txt4)
@@ -110,7 +110,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
         messageId = getIntent().getStringExtra("MESSAGEID");
 
         Connect.UserInfo userInfo = reviewed.getUserInfo();
-        GlideUtil.loadAvater(roundimg1, userInfo.getAvatar());
+        GlideUtil.loadAvatarRound(roundimg1, userInfo.getAvatar());
         txt4.setText(userInfo.getUsername());
         String tips = TextUtils.isEmpty(reviewed.getTips()) ? getString(R.string.Link_apply_to_join_group) : reviewed.getTips();
         txt5.setText(tips);
@@ -195,7 +195,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
 
     @Override
     public void showGroupInfo(String avatar, String name, String summary, int member) {
-        GlideUtil.loadAvater(roundimg, avatar);
+        GlideUtil.loadAvatarRound(roundimg, avatar);
         txt1.setText(name);
         txt2.setText(getString(R.string.Chat_Member_Max, member, 200));
 

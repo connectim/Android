@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.PinyinUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Created by gtq on 2016/12/15.
@@ -71,7 +71,7 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
     public void onBindViewHolder(MulHolder holder, int position) {
        final ContactEntity entity = friendEntities.get(position);
 
-        GlideUtil.loadAvater(holder.roundimg, entity.getAvatar());
+        GlideUtil.loadAvatarRound(holder.roundimg, entity.getAvatar());
         String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
         if (TextUtils.isEmpty(curName)) return;
         holder.name.setText(entity.getUsername());
@@ -155,14 +155,14 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
     static class MulHolder extends RecyclerView.ViewHolder {
         TextView txt;
         View secView;
-        RoundedImageView roundimg;
+        ImageView roundimg;
         TextView name;
 
         MulHolder(View view) {
             super(view);
             txt = (TextView) view.findViewById(R.id.txt);
             secView = view.findViewById(R.id.select);
-            roundimg = (RoundedImageView) view.findViewById(R.id.roundimg);
+            roundimg = (ImageView) view.findViewById(R.id.roundimg);
             name = (TextView) view.findViewById(R.id.name);
         }
     }

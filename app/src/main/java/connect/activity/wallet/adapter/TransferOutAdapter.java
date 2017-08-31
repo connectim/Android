@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,7 +18,6 @@ import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -44,10 +44,10 @@ public class TransferOutAdapter extends RecyclerView.Adapter<TransferOutAdapter.
     public void onBindViewHolder(TransferOutAdapter.ViewHolder viewHolder, final int position) {
         viewHolder.avaterRimg.setVisibility(View.VISIBLE);
         if(TextUtils.isEmpty(mListData.get(position).getReceiverInfo().getAvatar())){
-            GlideUtil.loadAvater(viewHolder.avaterRimg, MemoryDataManager.getInstance().getAvatar());
+            GlideUtil.loadAvatarRound(viewHolder.avaterRimg, MemoryDataManager.getInstance().getAvatar());
             viewHolder.nameTv.setText(mListData.get(position).getSender());
         }else{
-            GlideUtil.loadAvater(viewHolder.avaterRimg,mListData.get(position).getReceiverInfo().getAvatar());
+            GlideUtil.loadAvatarRound(viewHolder.avaterRimg,mListData.get(position).getReceiverInfo().getAvatar());
             viewHolder.nameTv.setText(mListData.get(position).getReceiverInfo().getUsername());
         }
 
@@ -89,7 +89,7 @@ public class TransferOutAdapter extends RecyclerView.Adapter<TransferOutAdapter.
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        RoundedImageView avaterRimg;
+        ImageView avaterRimg;
         RelativeLayout leftRela;
         TextView nameTv;
         TextView balanceTv;
@@ -98,7 +98,7 @@ public class TransferOutAdapter extends RecyclerView.Adapter<TransferOutAdapter.
 
         ViewHolder(View itemview) {
             super(itemview);
-            avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
+            avaterRimg = (ImageView) itemview.findViewById(R.id.avater_rimg);
             leftRela = (RelativeLayout) itemview.findViewById(R.id.left_rela);
             nameTv = (TextView) itemview.findViewById(R.id.name_tv);
             balanceTv = (TextView) itemview.findViewById(R.id.balance_tv);

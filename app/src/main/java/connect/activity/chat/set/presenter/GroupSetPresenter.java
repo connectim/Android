@@ -30,7 +30,6 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -75,7 +74,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         showMemberEntities.add(addEntity);
         for (GroupMemberEntity entity : showMemberEntities) {
             View headerview = LayoutInflater.from(activity).inflate(R.layout.linear_contact, null);
-            RoundedImageView headimg = (RoundedImageView) headerview.findViewById(R.id.roundimg);
+            ImageView headimg = (ImageView) headerview.findViewById(R.id.roundimg);
             ImageView adminImg = (ImageView) headerview.findViewById(R.id.img1);
             TextView name = (TextView) headerview.findViewById(R.id.name);
 
@@ -97,9 +96,9 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
             }
 
             if (TAG_ADD.equals(entity.getAvatar())) {
-                GlideUtil.loadImage(headimg, R.mipmap.message_add_friends2x);
+                GlideUtil.loadAvatarRound(headimg, R.mipmap.message_add_friends2x);
             } else {
-                GlideUtil.loadAvater(headimg, entity.getAvatar());
+                GlideUtil.loadAvatarRound(headimg, entity.getAvatar());
             }
 
             headerview.setTag(entity.getAddress());
