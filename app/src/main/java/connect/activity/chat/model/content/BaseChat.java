@@ -7,14 +7,12 @@ import java.util.List;
 
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.home.bean.ConversationAction;
-import connect.activity.home.bean.ConversationType;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
 import connect.utils.StringUtil;
-import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
@@ -129,7 +127,7 @@ public abstract class BaseChat<T> implements Serializable {
         if (newmsg == 0) {
             roomEntity.setUnread_count(0);
         } else if (newmsg > 0) {
-            int unread = (null == roomEntity.getUnread_count()) ? 0 : roomEntity.getUnread_count();
+            int unread = (null == roomEntity.getUnread_count()) ? 1 : 1+roomEntity.getUnread_count();
             roomEntity.setUnread_count(unread);
         }
 
@@ -142,9 +140,7 @@ public abstract class BaseChat<T> implements Serializable {
 
         ConversionHelper.getInstance().insertRoomEntity(roomEntity);
         if (broad) {
-            ConversationAction.conversationAction.sendConversationEvent(ConversationType.UPDATE,
-                    chatKey(), chatType(), nickName(), headImg(), msgtime, -1, showText,
-                    draft, -1, -1, at, isStranger ? 1 : 0);
+            ConversationAction.conversationAction.sendEvent();
         }
     }
 

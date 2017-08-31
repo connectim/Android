@@ -123,5 +123,4 @@ public class ConversionEntity implements Serializable {
     public void setLast_time(Long last_time) {
         this.last_time = last_time;
     }
-
 }

@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import connect.activity.home.bean.ConversationType;
-import connect.activity.home.bean.RoomAttrs;
+import connect.activity.base.BaseApplication;
+import connect.activity.contact.bean.ContactNotice;
+import connect.activity.home.bean.ConversationAction;
 import connect.database.green.BaseDao;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
@@ -24,11 +25,7 @@ import connect.database.green.dao.GroupEntityDao;
 import connect.database.green.dao.GroupMemberEntityDao;
 import connect.database.green.dao.RecommandFriendEntityDao;
 import connect.ui.activity.R;
-import connect.activity.contact.bean.ContactNotice;
-import connect.activity.home.bean.ConversationAction;
-import connect.activity.base.BaseApplication;
 import connect.utils.FileUtil;
-import connect.utils.TimeUtil;
 import protos.Connect;
 
 /**
@@ -439,8 +436,7 @@ public class ContactHelper extends BaseDao {
         MessageHelper.getInstance().deleteRoomMsg(pubkey);
         FileUtil.deleteContactFile(pubkey);
 
-        RoomAttrs.roomAttrs.removeRoomAttr(pubkey);
-        ConversationAction.conversationAction.sendConversationLoad();
+        ConversationAction.conversationAction.sendEvent();
     }
 
     public void deleteEntity(String address) {
@@ -471,8 +467,7 @@ public class ContactHelper extends BaseDao {
         quitGroup(groupKey);
 
         ContactNotice.receiverGroup();
-        RoomAttrs.roomAttrs.removeRoomAttr(groupKey);
-        ConversationAction.conversationAction.sendConversationLoad();
+        ConversationAction.conversationAction.sendEvent();
     }
 
     /**

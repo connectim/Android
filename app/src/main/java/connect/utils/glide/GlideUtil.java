@@ -24,6 +24,18 @@ public class GlideUtil {
         loadImage(imageView,path,R.mipmap.default_user_avatar);
     }
 
+    public static void loadAvatarRound(ImageView imageView, Object path){
+        loadAvatarRound(imageView, path, 6);
+    }
+
+    public static void loadAvatarRound(ImageView imageView, Object path, int dpRound){
+        Glide.with(BaseApplication.getInstance())
+                .load(path)
+                .transform(new GlideRoundTransform(BaseApplication.getInstance().getAppContext(), dpRound))
+                .error(R.mipmap.default_user_avatar)
+                .into(imageView);
+    }
+
     public static void loadImageAssets(ImageView imageView, Object path){
         loadImage(imageView,"file:///android_asset/" + path);
     }
@@ -37,7 +49,7 @@ public class GlideUtil {
                 .load(path)
                 .error(errorId)
                 //.placeholder(errorId)
-                //.thumbnail(0.2f)
+                .thumbnail(0.5f)
                 .into(imageView);
     }
 
@@ -47,7 +59,7 @@ public class GlideUtil {
                 .transform(transformations)
                 //.placeholder(R.mipmap.img_default)
                 .error(R.mipmap.img_default)
-                //.thumbnail(0.2f)
+                .thumbnail(0.5f)
                 .into(imageView);
     }
 

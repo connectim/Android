@@ -24,8 +24,6 @@ import connect.widget.album.view.HackyViewPager;
 
 public class AlbumGalleryFragment extends Fragment implements View.OnClickListener{
 
-    private static AlbumGalleryFragment galleryFragment;
-
     private AlbumActivity activity;
     private HackyViewPager viewPager;
     private ImageView videoImg;
@@ -42,10 +40,7 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
     private List<ImageInfo> imageInfos;
 
     public static AlbumGalleryFragment newInstance() {
-        if (galleryFragment == null) {
-            galleryFragment = new AlbumGalleryFragment();
-        }
-        return galleryFragment;
+        return new AlbumGalleryFragment();
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -35,7 +36,6 @@ import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -46,7 +46,7 @@ public class StrangerInfoActivity extends BaseActivity {
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.avatar_rimg)
-    RoundedImageView avatarRimg;
+    ImageView avatarRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
     @Bind(R.id.address_tv)
@@ -100,7 +100,7 @@ public class StrangerInfoActivity extends BaseActivity {
     private void updataView() {
         if (sendUserInfo == null)
             return;
-        GlideUtil.loadAvater(avatarRimg, sendUserInfo.getAvatar());
+        GlideUtil.loadAvatarRound(avatarRimg, sendUserInfo.getAvatar());
         nameTv.setText(sendUserInfo.getUsername());
     }
 

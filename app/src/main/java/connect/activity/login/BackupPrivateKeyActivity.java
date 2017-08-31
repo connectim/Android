@@ -104,10 +104,9 @@ public class BackupPrivateKeyActivity extends BaseActivity {
         File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bitmap);
         pathDcim = file.getAbsolutePath();
         try {
-            MediaStore.Images.Media.insertImage(getContentResolver(), pathDcim, "", null);
             scanner.connect();
             ToastEUtil.makeText(mActivity,R.string.Login_Save_successful).show();
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

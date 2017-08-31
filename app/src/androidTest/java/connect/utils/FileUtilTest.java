@@ -2,6 +2,11 @@ package connect.utils;
 
 import org.junit.Test;
 
+import java.io.File;
+
+import connect.database.SharePreferenceUser;
+import connect.database.SharedPreferenceUtil;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -23,77 +28,50 @@ public class FileUtilTest {
 
     @Test
     public void newTempFile() throws Exception {
-
+        File file = FileUtil.newTempFile(FileUtil.FileType.IMG);
+        if(file == null){
+            assertTrue(false);
+        }else{
+            assertTrue(true);
+        }
     }
 
     @Test
-    public void createNewFile() throws Exception {
-
-    }
-
-    @Test
-    public void createAbsNewFile() throws Exception {
-
-    }
-
-    @Test
-    public void newContactFileName() throws Exception {
-
+    public void newContactFile() throws Exception {
+        File file = FileUtil.newContactFile(FileUtil.FileType.IMG);
+        if(file == null){
+            assertTrue(false);
+        }else{
+            assertTrue(true);
+        }
     }
 
     @Test
     public void islocalFile() throws Exception {
-
-    }
-
-    @Test
-    public void realFileName() throws Exception {
-
-    }
-
-    @Test
-    public void isExistFilePath() throws Exception {
-
-    }
-
-    @Test
-    public void isExistExternalStore() throws Exception {
-
+        boolean isLocal = FileUtil.islocalFile(FileUtil.DIR_ROOT + File.separator + "aaa.png");
+        assertTrue(isLocal);
     }
 
     @Test
     public void hasExtentsion() throws Exception {
-
+        boolean isHave = FileUtil.hasExtentsion("aaa.png");
+        assertTrue(isHave);
     }
 
     @Test
     public void subExtentsion() throws Exception {
-
-    }
-
-    @Test
-    public void byteArrayToFile() throws Exception {
-
-    }
-
-    @Test
-    public void filePathToByteArray() throws Exception {
-
-    }
-
-    @Test
-    public void fileSize() throws Exception {
-
-    }
-
-    @Test
-    public void fileSize1() throws Exception {
-
+        String name = FileUtil.subExtentsion("aaa.png");
+        if (name.equals("aaa")) {
+            assertTrue(true);
+        } else {
+            assertTrue(false);
+        }
     }
 
     @Test
     public void deleteContactFile() throws Exception {
-
+        String pubKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        assertTrue(FileUtil.deleteContactFile(pubKey));
     }
 
 }

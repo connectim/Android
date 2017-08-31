@@ -1,5 +1,7 @@
 package connect.utils.data;
 
+import android.text.TextUtils;
+
 import java.text.DecimalFormat;
 
 /**
@@ -22,7 +24,11 @@ public class RateFormatUtil {
     }
 
     public static long stringToLongBtc(String value){
-        return doubleToLongBtc(Double.valueOf(value));
+        if (TextUtils.isEmpty(value)) {
+            return 0;
+        } else {
+            return doubleToLongBtc(Double.valueOf(value));
+        }
     }
 
     public static long doubleToLongBtc(double value){

@@ -1,20 +1,20 @@
 package connect.im.parser;
 
 import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+
 import java.nio.ByteBuffer;
+
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.model.content.NormalChat;
-import connect.activity.home.bean.ConversationAction;
-import connect.activity.home.bean.ConversationType;
 import connect.activity.home.bean.HttpRecBean;
-import connect.activity.home.bean.RoomAttrs;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -116,8 +116,8 @@ public class ChatParseBean extends InterParse {
                 String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
                 MsgExtEntity msgExtEntity = normalChat.noticeMsg(showTxt);
 
-                RoomAttrs.roomAttrs.updateRoomAttr(chatMessage.getFrom(), Connect.ChatType.PRIVATE_VALUE,
-                        TimeUtil.getCurrentTimeInLong(), 1, showTxt, "", -1, -1);
+                FriendChat friendChat = new FriendChat(friendEntity);
+                friendChat.updateRoomMsg(null, showTxt, chatMessage.getMsgTime(), -1, 1, false);
 
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.chatKey(), msgExtEntity);
@@ -142,8 +142,8 @@ public class ChatParseBean extends InterParse {
                 default:
                     MessageHelper.getInstance().insertMessageEntity(msgExtEntity);
 
-                    RoomAttrs.roomAttrs.updateRoomAttr(chatMessage.getFrom(), Connect.ChatType.PRIVATE_VALUE,
-                            TimeUtil.getCurrentTimeInLong(), 1, msgExtEntity.showContent(), "", -1, -1);
+                    FriendChat friendChat = new FriendChat(friendEntity);
+                    friendChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
                     break;
             }
 
@@ -178,8 +178,8 @@ public class ChatParseBean extends InterParse {
                         chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
                 MessageHelper.getInstance().insertMessageEntity(msgExtEntity);
 
-                RoomAttrs.roomAttrs.updateRoomAttr(chatMessage.getFrom(), Connect.ChatType.GROUPCHAT_VALUE,
-                        TimeUtil.getCurrentTimeInLong(), 1, msgExtEntity.showContent(), "", -1, -1);
+                GroupChat groupChat = new GroupChat(groupEntity);
+                groupChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
 
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
 

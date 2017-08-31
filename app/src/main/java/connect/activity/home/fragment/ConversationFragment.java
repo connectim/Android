@@ -23,9 +23,9 @@ import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ChatListAdapter;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.RoomAttrBean;
-import connect.activity.home.bean.RoomAttrs;
 import connect.activity.home.view.ConnectStateView;
 import connect.activity.home.view.LineDecoration;
+import connect.database.green.DaoHelper.ConversionHelper;
 import connect.ui.activity.R;
 import connect.utils.log.LogManager;
 /**
@@ -63,7 +63,6 @@ public class ConversationFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ConversationAction action) {
         LogManager.getLogger().d(Tag, "onEventMainThread()");
-        RoomAttrs.roomAttrs.insertAttrContent(action.getType(), action.getObject());
         loadRooms();
     }
 
@@ -75,7 +74,7 @@ public class ConversationFragment extends BaseFragment {
 
             @Override
             protected List<RoomAttrBean> doInBackground(Void... params) {
-                return RoomAttrs.roomAttrs.getAttrBeanList();
+                return ConversionHelper.getInstance().loadRoomEntites();
             }
 
             @Override

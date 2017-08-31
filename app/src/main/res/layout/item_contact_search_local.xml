@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_eceef3"
     android:orientation="vertical">
 
@@ -23,13 +22,12 @@
         android:paddingBottom="@dimen/dp_10"
         android:paddingLeft="@dimen/dp_15"
         android:background="@drawable/selector_list_item_bg">
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
-            android:scaleType="fitXY"
-            app:riv_corner_radius="@dimen/px_6"/>
+            android:scaleType="fitXY"/>
         <TextView
             android:id="@+id/name_tv"
             style="@style/BaseTextStyle.14"

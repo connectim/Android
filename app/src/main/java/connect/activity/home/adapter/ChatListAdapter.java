@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.bean.Talker;
-import connect.activity.home.bean.ConversationType;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.ConversationAction;
@@ -38,7 +37,6 @@ import connect.utils.glide.GlideUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.MaterialBadgeTextView;
 import connect.widget.SideScrollView;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 import static connect.widget.SideScrollView.SideScrollListener;
@@ -92,7 +90,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
 
         if (roomAttr.getRoomtype() == 2) {
             holder.nameTxt.setText(inflater.getContext().getString(R.string.app_name));
-            GlideUtil.loadImage(holder.headImg, R.mipmap.connect_logo);
+            GlideUtil.loadAvatarRound(holder.headImg, R.mipmap.connect_logo);
             holder.bottomNotify.setVisibility(View.GONE);
         } else if (roomAttr.getRoomtype() == Connect.ChatType.PRIVATE_VALUE || roomAttr.getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE) {
             String showName = TextUtils.isEmpty(roomAttr.getName()) ? "" : roomAttr.getName();
@@ -123,7 +121,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             }
 
             holder.nameTxt.setText(showName);
-            GlideUtil.loadAvater(holder.headImg, showAvatar);
+            GlideUtil.loadAvatarRound(holder.headImg, showAvatar);
             holder.bottomNotify.setVisibility(View.VISIBLE);
         }
 
@@ -204,8 +202,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
 
                 roomAttrBeanList.remove(roomAttr);
                 notifyItemRemoved(position);
-
-                ConversationAction.conversationAction.sendEvent(ConversationType.REMOVE, roomid);
             }
         });
         holder.bottomNotify.setTag(holder.itemView);
@@ -228,9 +224,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     ConversionSettingHelper.getInstance().updateDisturb(roomid, disturb);
 
                     roomAttr.setDisturb(disturb);
-                    ConversationAction.conversationAction.sendConversationSetting(roomid, roomAttr.getRoomtype(), disturb, -1);
-
-                    if (roomAttrBeanList.get(position).getRoomtype() == 1) {
+                    if (roomAttrBeanList.get(position).getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE) {
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupNotificaton, roomid, disturb);
                     }
                 }
@@ -252,7 +246,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
 
     class ListChatHolder extends RecyclerView.ViewHolder {
 
-        private RoundedImageView headImg;
+        private ImageView headImg;
         private TextView nameTxt;
         private ShowTextView directTxt;
         private TextView timeTxt;
@@ -276,7 +270,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             bottomTrash = (RelativeLayout) itemView.findViewById(R.id.bottom_trash);
             bottomNotify = (RelativeLayout) itemView.findViewById(R.id.bottom_notify);
 
-            headImg = (RoundedImageView) itemView.findViewById(R.id.roundimg_head);
+            headImg = (ImageView) itemView.findViewById(R.id.roundimg_head);
             nameTxt = (TextView) itemView.findViewById(R.id.usernameText);
             directTxt = (ShowTextView) itemView.findViewById(R.id.directTxtView);
 

@@ -11,6 +11,9 @@ import android.util.Log;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
+import connect.utils.system.SystemDataUtil;
+import connect.utils.system.SystemUtil;
+
 /**
  * Images rounded processor
  */
@@ -21,9 +24,9 @@ public class GlideRoundTransform extends BitmapTransformation {
         this(context, 20);
     }
 
-    public GlideRoundTransform(Context context, int dx) {
+    public GlideRoundTransform(Context context, int dpRound) {
         super(context);
-        this.radius = dx;
+        this.radius = SystemUtil.dipToPx(dpRound);
         //this.radius = Resources.getSystem().getDisplayMetrics().density * dp;
     }
 

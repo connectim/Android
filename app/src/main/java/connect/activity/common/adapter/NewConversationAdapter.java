@@ -7,20 +7,18 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.activity.contact.model.ContactListManage;
 import connect.activity.home.bean.ContactBean;
 import connect.ui.activity.R;
 import connect.utils.PinyinUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
-import protos.Connect;
 
 /**
  * Created by Administrator on 2017/2/20.
@@ -75,7 +73,7 @@ public class NewConversationAdapter extends RecyclerView.Adapter<NewConversation
                     break;
             }
         }
-        GlideUtil.loadAvater(holder.roundimg, contactBean.getAvatar());
+        GlideUtil.loadAvatarRound(holder.roundimg, contactBean.getAvatar());
         holder.name.setText(contactBean.getName());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,14 +124,14 @@ public class NewConversationAdapter extends RecyclerView.Adapter<NewConversation
         @Bind(R.id.txt)
         TextView txt;
         @Bind(R.id.roundimg)
-        RoundedImageView roundimg;
+        ImageView roundimg;
         @Bind(R.id.tvName)
         TextView name;
 
         ViewHolder(View itemview) {
             super(itemview);
             txt = (TextView) itemview.findViewById(R.id.txt);
-            roundimg = (RoundedImageView) itemview.findViewById(R.id.roundimg);
+            roundimg = (ImageView) itemview.findViewById(R.id.roundimg);
             name = (TextView) itemview.findViewById(R.id.tvName);
         }
     }

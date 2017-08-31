@@ -148,6 +148,8 @@ public abstract class NormalChat extends BaseChat {
                 .setTips(tips);
 
         msgExtEntity.setContents(builder.build().toByteArray());
+        msgExtEntity.setCrowdCount(membersize);
+        msgExtEntity.setPayCount(0);
         return msgExtEntity;
     }
 

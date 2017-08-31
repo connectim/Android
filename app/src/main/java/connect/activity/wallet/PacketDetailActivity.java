@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,7 +25,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -36,7 +36,7 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.avater_rimg)
-    RoundedImageView avaterRimg;
+    ImageView avaterRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
     @Bind(R.id.btc)
@@ -95,7 +95,7 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
         type = bundle.getInt("type", 0);
         //system packet
         if (0 != type) {
-            GlideUtil.loadImage(avaterRimg, R.mipmap.connect_logo);
+            GlideUtil.loadAvatarRound(avaterRimg, R.mipmap.connect_logo, 58);
         }
         presenter.requestRedDetail(hashId, type);
     }
@@ -107,7 +107,7 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
 
     @Override
     public void updataSendView(Connect.UserInfo sendUserInfo) {
-        GlideUtil.loadAvater(avaterRimg, sendUserInfo.getAvatar());
+        GlideUtil.loadAvatarRound(avaterRimg, sendUserInfo.getAvatar(), 58);
         nameTv.setText(sendUserInfo.getUsername());
     }
 

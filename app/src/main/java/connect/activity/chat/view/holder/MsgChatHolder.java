@@ -104,7 +104,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         switch (chatType) {
             case PRIVATE:
                 final Connect.MessageUserInfo userInfo = RoomSession.getInstance().getUserInfo();
-                GlideUtil.loadAvater(headImg, direct == MsgDirect.From ? userInfo.getAvatar() :
+                GlideUtil.loadAvatarRound(headImg, direct == MsgDirect.From ? userInfo.getAvatar() :
                         MemoryDataManager.getInstance().getAvatar());
                 headImg.setVisibility(RoomSession.getInstance().getBurntime() <= 0 ? View.VISIBLE :
                         View.GONE);
@@ -164,7 +164,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 });
 
                 if (direct == MsgDirect.To) {
-                    GlideUtil.loadAvater(headImg, MemoryDataManager.getInstance().getAvatar());
+                    GlideUtil.loadAvatarRound(headImg, MemoryDataManager.getInstance().getAvatar());
                     if (memberTxt != null) {
                         memberTxt.setVisibility(View.GONE);
                     }
@@ -175,7 +175,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     ((GroupChat) ((BaseChatActvity) context).getNormalChat()).loadGroupMember(memberKey, new BaseListener<GroupMemberEntity>() {
                         @Override
                         public void Success(GroupMemberEntity ts) {
-                            GlideUtil.loadAvater(headImg, ts.getAvatar());
+                            GlideUtil.loadAvatarRound(headImg, ts.getAvatar());
 
                             String memberName = "";
                             if (ts != null) {
@@ -186,7 +186,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
 
                         @Override
                         public void fail(Object... objects) {
-                            GlideUtil.loadAvater(headImg, "");
+                            GlideUtil.loadAvatarRound(headImg, "");
                             memberTxt.setText("");
                         }
                     });
@@ -204,10 +204,10 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     memberTxt.setVisibility(View.GONE);
                 }
                 if (direct == MsgDirect.From) {
-                    GlideUtil.loadImage(headImg, R.mipmap.connect_logo);
+                    GlideUtil.loadAvatarRound(headImg, R.mipmap.connect_logo);
                 } else {
                     String imgpath = MemoryDataManager.getInstance().getAvatar();
-                    GlideUtil.loadAvater(headImg, imgpath);
+                    GlideUtil.loadAvatarRound(headImg, imgpath);
                 }
                 break;
         }

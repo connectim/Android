@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,7 +33,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -43,7 +43,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg)
-    RoundedImageView roundimg;
+    ImageView roundimg;
     @Bind(R.id.txt1)
     TextView senderNameTxt;
     @Bind(R.id.txt2)
@@ -159,7 +159,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
             Connect.CrowdfundingRecord crowdRecord = crowdRecords.get(position);
             Connect.UserInfo userInfo = crowdRecord.getUser();
 
-            GlideUtil.loadAvater(holder.avaterRimg, userInfo.getAvatar());
+            GlideUtil.loadAvatarRound(holder.avaterRimg, userInfo.getAvatar());
             holder.nameTv.setText(userInfo.getUsername());
 
             holder.balanceTv.setText(RateFormatUtil.longToDoubleBtc(crowdRecord.getAmount()) + getResources().getString(R.string.Set_BTC_symbol));
@@ -209,7 +209,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
     protected class ViewHolder extends RecyclerView.ViewHolder {
 
         View itemView;
-        RoundedImageView avaterRimg;
+        ImageView avaterRimg;
         RelativeLayout leftRela;
         TextView nameTv;
         TextView balanceTv;
@@ -219,7 +219,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
         public ViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            avaterRimg = (RoundedImageView) itemView.findViewById(R.id.avater_rimg);
+            avaterRimg = (ImageView) itemView.findViewById(R.id.avater_rimg);
             leftRela = (RelativeLayout) itemView.findViewById(R.id.left_rela);
             nameTv = (TextView) itemView.findViewById(R.id.name_tv);
             balanceTv = (TextView) itemView.findViewById(R.id.balance_tv);
@@ -240,7 +240,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
 
     @Override
     public void senderInfo(String avatar, String name) {
-        GlideUtil.loadAvater(roundimg, avatar);
+        GlideUtil.loadAvatarRound(roundimg, avatar);
         senderNameTxt.setText(getString(R.string.Chat_Crowd_funding_by_who, name));
     }
 

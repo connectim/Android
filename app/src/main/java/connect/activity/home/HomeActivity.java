@@ -121,13 +121,11 @@ public class HomeActivity extends BaseFragmentActivity {
         activity = this;
         setDefaultFragment();
 
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        SharePreferenceUser.initSharePreferrnce(userBean.getPubKey());
-        HttpsService.startService(activity);
-
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
+                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                SharePreferenceUser.initSharePreferrnce(userBean.getPubKey());
                 Session.getInstance().clearUserCookie();
                 DaoManager.getInstance().closeDataBase();
                 DaoManager.getInstance().switchDataBase();
@@ -142,7 +140,7 @@ public class HomeActivity extends BaseFragmentActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 LogManager.getLogger().d(Tag, "onPostExecute");
-
+                HttpsService.startService(activity);
                 ConnectState.getInstance().sendEvent(ConnectState.ConnectType.CONNECT);
                 requestAppUpdata();
                 checkWebOpen();

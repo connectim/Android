@@ -16,7 +16,6 @@ import connect.ui.activity.R;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.SideScrollView;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Created by Administrator on 2017/1/18.
@@ -46,7 +45,7 @@ public class FriendDelAdapter extends RecyclerView.Adapter<FriendDelAdapter.Frie
     public void onBindViewHolder(final FriendDelAdapter.FriendHolder holder, final int position) {
         holder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
         final ContactEntity friendEntity = list.get(position);
-        GlideUtil.loadAvater(holder.avater,friendEntity.getAvatar());
+        GlideUtil.loadAvatarRound(holder.avater,friendEntity.getAvatar());
         holder.name.setText(friendEntity.getUsername());
         holder.deleteTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,13 +65,13 @@ public class FriendDelAdapter extends RecyclerView.Adapter<FriendDelAdapter.Frie
     class FriendHolder extends RecyclerView.ViewHolder{
         private final ImageView deleteTv;
         private final RelativeLayout contentLayout;
-        private final RoundedImageView avater;
+        private final ImageView avater;
         private final TextView name;
         public FriendHolder(View itemView) {
             super(itemView);
             contentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
             deleteTv = (ImageView) itemView.findViewById(R.id.delete_tv);
-            avater = (RoundedImageView) itemView.findViewById(R.id.avater_rimg);
+            avater = (ImageView) itemView.findViewById(R.id.avater_rimg);
             name = (TextView)itemView.findViewById(R.id.name_tv);
 
             ((SideScrollView) itemView).setSideScrollListener(sideScrollListener);

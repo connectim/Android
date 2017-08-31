@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,7 +23,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
-import connect.widget.roundedimageview.RoundedImageView;
 import connect.wallet.cwallet.business.TransferEditView;
 
 /**
@@ -34,7 +34,7 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg)
-    RoundedImageView roundimg;
+    ImageView roundimg;
     @Bind(R.id.txt1)
     TextView txt1;
     @Bind(R.id.layout_first)
@@ -187,7 +187,7 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
 
     @Override
     public void showTransferInfo(String avatar, String tansferinfo) {
-        GlideUtil.loadAvater(roundimg, avatar);
+        GlideUtil.loadAvatarRound(roundimg, avatar);
         txt1.setText(tansferinfo);
     }
 

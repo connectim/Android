@@ -26,7 +26,6 @@ import connect.utils.DialogUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import connect.widget.zxing.utils.CreateScan;
 
 /**
@@ -38,7 +37,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg1)
-    RoundedImageView roundimg1;
+    ImageView roundimg1;
     @Bind(R.id.txt1)
     TextView txt1;
     @Bind(R.id.img1)
@@ -137,7 +136,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
 
     @Override
     public void groupAvatar(String avatar) {
-        GlideUtil.loadAvater(roundimg1, avatar);
+        GlideUtil.loadAvatarRound(roundimg1, avatar);
     }
 
     @Override

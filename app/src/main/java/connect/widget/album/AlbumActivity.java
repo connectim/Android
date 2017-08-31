@@ -46,7 +46,7 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
     /** request code */
     public final static int OPEN_ALBUM_CODE = 502;
 
-    private List<ImageInfo> imageInfos;
+    private List<ImageInfo> imageInfos = new ArrayList<>();
     private List<AlbumFolderInfo> folderInfos;
     private AlbumContract.Presenter presenter;
 

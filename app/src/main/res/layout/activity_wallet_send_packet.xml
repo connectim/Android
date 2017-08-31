@@ -28,12 +28,11 @@
         android:paddingBottom="@dimen/dp_10"
         android:background="@color/color_f0f0f6">
 
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/avater_rimg"
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_80"
-            android:scaleType="centerCrop"
-            app:riv_corner_radius="@dimen/px_12"/>
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/name_tv"

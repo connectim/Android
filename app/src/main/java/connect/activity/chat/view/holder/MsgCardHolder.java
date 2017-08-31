@@ -2,6 +2,7 @@ package connect.activity.chat.view.holder;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.contact.FriendInfoActivity;
@@ -12,7 +13,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -20,12 +20,12 @@ import protos.Connect;
  */
 public class MsgCardHolder extends MsgChatHolder {
 
-    private RoundedImageView cardHead;
+    private ImageView cardHead;
     private TextView cardName;
 
     public MsgCardHolder(View itemView) {
         super(itemView);
-        cardHead = (RoundedImageView) itemView.findViewById(R.id.roundimg_head_small);
+        cardHead = (ImageView) itemView.findViewById(R.id.roundimg_head_small);
         cardName = (TextView) itemView.findViewById(R.id.tvName);
     }
 
@@ -34,7 +34,7 @@ public class MsgCardHolder extends MsgChatHolder {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.CardMessage cardMessage = Connect.CardMessage.parseFrom(msgExtEntity.getContents());
 
-        GlideUtil.loadAvater(cardHead, cardMessage.getAvatar());
+        GlideUtil.loadAvatarRound(cardHead, cardMessage.getAvatar());
         cardName.setText(cardMessage.getUsername());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,6 +3,7 @@ package connect.activity.chat.view.holder;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,7 +13,6 @@ import connect.activity.set.AboutActivity;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -24,7 +24,7 @@ public class MsgSysAdHolder extends MsgBaseHolder {
     private LinearLayout sysAdLayout;
     private TextView titleTxt;
     private TextView timeTxt;
-    private RoundedImageView converImg;
+    private ImageView converImg;
     private TextView contentTxt;
 
     public MsgSysAdHolder(View itemView) {
@@ -32,7 +32,7 @@ public class MsgSysAdHolder extends MsgBaseHolder {
         sysAdLayout = (LinearLayout) itemView.findViewById(R.id.linearlayout);
         titleTxt = (TextView) itemView.findViewById(R.id.txt1);
         timeTxt = (TextView) itemView.findViewById(R.id.txt2);
-        converImg = (RoundedImageView) itemView.findViewById(R.id.roundimg1);
+        converImg = (ImageView) itemView.findViewById(R.id.roundimg1);
         contentTxt = (TextView) itemView.findViewById(R.id.txt3);
     }
 
@@ -53,7 +53,7 @@ public class MsgSysAdHolder extends MsgBaseHolder {
             converImg.setVisibility(View.GONE);
         } else {
             converImg.setVisibility(View.VISIBLE);
-            GlideUtil.loadImage(converImg, conversurl);
+            GlideUtil.loadAvatarRound(converImg, conversurl);
         }
 
         String content = announcement.getContent();

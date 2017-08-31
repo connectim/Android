@@ -7,6 +7,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,7 +28,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -38,7 +38,7 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg)
-    RoundedImageView roundimg;
+    ImageView roundimg;
     @Bind(R.id.txt1)
     TextView txt1;
     @Bind(R.id.txt2)
@@ -129,32 +129,27 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
     }
 
     protected void requestBaseInfoSucces() {
+        btn.setEnabled(true);
+        GlideUtil.loadAvater(roundimg, infoBase.getAvatar());
+        txt1.setText(infoBase.getName());
+        txt2.setText(getString(R.string.Chat_Member_Max, infoBase.getCount(), 200));
+
+        String profile = infoBase.getSummary();
+        if (TextUtils.isEmpty(profile)) {
+            txt3.setVisibility(View.GONE);
+        } else {
+            txt3.setText(profile);
+        }
+
         if (infoBase.getPublic()) {
-            btn.setVisibility(View.VISIBLE);
-            txt4.setVisibility(View.GONE);
-            GlideUtil.loadAvater(roundimg, infoBase.getAvatar());
-            txt1.setText(infoBase.getName());
-            txt2.setText(getString(R.string.Chat_Member_Max, infoBase.getCount(), 200));
-
-            String profile = infoBase.getSummary();
-            if (TextUtils.isEmpty(profile)) {
-                txt3.setVisibility(View.GONE);
-            } else {
-                txt3.setText(profile);
-            }
-
             boolean isJoin = infoBase.getJoined();
             if (isJoin) {
                 handler.sendEmptyMessageDelayed(120, 500);
             }
         } else {
-            requestBaseInfoFail();
+            txt4.setVisibility(View.VISIBLE);
+            btn.setEnabled(false);
         }
-    }
-
-    protected void requestBaseInfoFail() {
-        btn.setVisibility(View.GONE);
-        txt4.setVisibility(View.VISIBLE);
     }
 
     protected void applyJoinDialog() {
@@ -242,7 +237,6 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
 
     @Override
     public void showFailInfo() {
-        btn.setVisibility(View.GONE);
-        txt4.setVisibility(View.VISIBLE);
+        btn.setEnabled(false);
     }
 }

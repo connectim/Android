@@ -124,20 +124,18 @@ public class StringUtil {
             int[] number1 = getValue(version1, index1);
             int[] number2 = getValue(version2, index2);
 
-            if (number1[0] < number2[0]){
+            if (number1[0] < number2[0]) {
                 return -1;
-            }
-            else if (number1[0] > number2[0]){
+            } else if (number1[0] > number2[0]) {
                 return 1;
-            }
-            else {
+            } else {
                 index1 = number1[1] + 1;
                 index2 = number2[1] + 1;
             }
         }
-        if (index1 == version1.length() && index2 == version2.length())
+        if (index1 -1 == version1.length() && index2 - 1 == version2.length())
             return 0;
-        if (index1 < version1.length())
+        if (index1 - 1 < version1.length())
             return 1;
         else
             return -1;

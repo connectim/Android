@@ -31,6 +31,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
     private final int CODE_PHONE_ABSENT = 2404;
     private String phone;
     private int countryCode;
+    private ExCountDownTimer exCountDownTimer;
 
     /**
      * The constructor.
@@ -133,7 +134,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
     }
 
     private void countdownTime(){
-        ExCountDownTimer exCountDownTimer = new ExCountDownTimer(120*1000,1000){
+        exCountDownTimer = new ExCountDownTimer(120*1000,1000){
             @Override
             public void onTick(long millisUntilFinished, int percent) {
                 mView.changeBtnTiming(millisUntilFinished / 1000);
@@ -148,6 +149,11 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
             }
         };
         exCountDownTimer.start();
+    }
+
+    @Override
+    public void pauseDownTimer(){
+        exCountDownTimer.pause();
     }
 
     @Override

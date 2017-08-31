@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -29,7 +30,6 @@ import connect.utils.ToastEUtil;
 import connect.utils.filter.NameLengthFilter;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import connect.widget.takepicture.TakePictureActivity;
 
 /**
@@ -40,7 +40,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.userhead_img)
-    RoundedImageView userheadImg;
+    ImageView userheadImg;
     @Bind(R.id.password_et)
     EditText userpasswordEt;
     @Bind(R.id.passwordhint_tv)
@@ -196,7 +196,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
 
     @Override
     public void showAvatar(String path) {
-        GlideUtil.loadAvater(userheadImg,path);
+        GlideUtil.loadAvatarRound(userheadImg,path);
     }
 
     @Override

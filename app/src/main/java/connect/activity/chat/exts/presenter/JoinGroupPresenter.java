@@ -1,6 +1,7 @@
 package connect.activity.chat.exts.presenter;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import connect.activity.chat.exts.contract.JoinGroupContract;
 import connect.ui.activity.R;
@@ -64,6 +65,12 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
             @Override
             public void onError(Connect.HttpResponse response) {
                 view.showFailInfo();
+                String contentTxt = response.getMessage();
+                if (TextUtils.isEmpty(contentTxt)) {
+                    ToastEUtil.makeText(activity, activity.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                } else {
+                    ToastEUtil.makeText(activity, contentTxt, 2).show();
+                }
             }
         });
     }
@@ -90,6 +97,12 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
             @Override
             public void onError(Connect.HttpResponse response) {
                 view.showFailInfo();
+                String contentTxt = response.getMessage();
+                if (TextUtils.isEmpty(contentTxt)) {
+                    ToastEUtil.makeText(activity, activity.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                } else {
+                    ToastEUtil.makeText(activity, contentTxt, 2).show();
+                }
             }
         });
     }
@@ -117,6 +130,12 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
             @Override
             public void onError(Connect.HttpResponse response) {
                 view.showFailInfo();
+                String contentTxt = response.getMessage();
+                if (TextUtils.isEmpty(contentTxt)) {
+                    ToastEUtil.makeText(activity, activity.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                } else {
+                    ToastEUtil.makeText(activity, contentTxt, 2).show();
+                }
             }
         });
     }
@@ -138,6 +157,13 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
             public void onError(Connect.HttpResponse response) {
                 if(response.getCode() == 2430){
                     ToastEUtil.makeText(activity, R.string.Link_Qr_code_is_invalid,ToastEUtil.TOAST_STATUS_FAILE).show();
+                }else{
+                    String contentTxt = response.getMessage();
+                    if (TextUtils.isEmpty(contentTxt)) {
+                        ToastEUtil.makeText(activity, activity.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                    } else {
+                        ToastEUtil.makeText(activity, contentTxt, 2).show();
+                    }
                 }
             }
         });
@@ -160,6 +186,13 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
             public void onError(Connect.HttpResponse response) {
                 if (response.getCode() == 2403) {
                     ToastEUtil.makeText(activity, R.string.Link_have_joined_the_group, ToastEUtil.TOAST_STATUS_FAILE).show();
+                }else{
+                    String contentTxt = response.getMessage();
+                    if (TextUtils.isEmpty(contentTxt)) {
+                        ToastEUtil.makeText(activity, activity.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                    } else {
+                        ToastEUtil.makeText(activity, contentTxt, 2).show();
+                    }
                 }
             }
         });

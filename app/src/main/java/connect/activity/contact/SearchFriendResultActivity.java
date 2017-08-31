@@ -34,7 +34,6 @@ import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 
 /**
@@ -91,11 +90,11 @@ public class SearchFriendResultActivity extends BaseActivity {
         if(userInfo != null){
             noResultTv.setVisibility(View.GONE);
             View view = LayoutInflater.from(mActivity).inflate(R.layout.item_contact_search_result,null);
-            RoundedImageView avatar = (RoundedImageView)view.findViewById(R.id.avatar_rimg);
+            ImageView avatar = (ImageView)view.findViewById(R.id.avatar_rimg);
             TextView nickname = (TextView)view.findViewById(R.id.nickname_tv);
             Button statusBtn = (Button)view.findViewById(R.id.status_btn);
             statusBtn.setText(R.string.Link_Add);
-            GlideUtil.loadAvater(avatar,userInfo.getAvatar());
+            GlideUtil.loadAvatarRound(avatar,userInfo.getAvatar());
             nickname.setText(userInfo.getUsername());
 
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());

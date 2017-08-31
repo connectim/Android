@@ -118,7 +118,9 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
             @Override
             public void onError(Connect.HttpResponse response) {
                 String contentTxt = response.getMessage();
-                if (!TextUtils.isEmpty(contentTxt)) {
+                if (TextUtils.isEmpty(contentTxt)) {
+                    ToastEUtil.makeText(activity, activity.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                } else {
                     ToastEUtil.makeText(activity, contentTxt, 2).show();
                 }
             }

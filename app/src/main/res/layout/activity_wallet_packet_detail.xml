@@ -21,16 +21,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/avater_rimg"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
             android:layout_alignParentBottom="true"
             android:scaleType="fitXY"
-            android:layout_centerHorizontal="true"
-            app:riv_corner_radius="29dp"
-            app:riv_border_width="@dimen/dp_1"
-            app:riv_border_color="@color/color_858998"/>
+            android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
     <LinearLayout

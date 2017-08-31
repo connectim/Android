@@ -214,7 +214,6 @@
         <attr name='name' type='reg'>^.{4,32}$</attr>
         <attr name='count' type='int'></attr>
         <attr name='hash' type='string'></attr>
-        <attr name='public' type='bool'></attr>
     </GroupInfoBaseShare>
 
     <GroupInviteUser>

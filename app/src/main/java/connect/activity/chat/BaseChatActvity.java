@@ -374,7 +374,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 String talkKey = talker.getTalkKey();
                 LuckyPacketActivity.startActivity(activity, talkType, talkKey);
                 break;
-            case GATHER:
+            case PAYMENT:
                 PaymentActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
                 break;
             case NAMECARD:
@@ -423,8 +423,12 @@ public abstract class BaseChatActvity extends BaseActivity {
                 adapterInsetItem(msgExtEntity);
                 break;
             case GROUP_UPDATENAME://update group name
-                ((GroupChat) normalChat).setNickName((String) objects[0]);
-                updateBurnState(RoomSession.getInstance().getBurntime() == 0 ? 0 : 1);
+                String identify = (String) objects[0];
+                if (identify.equals(normalChat.chatKey())) {
+                    String groupName = (String) objects[1];
+                    ((GroupChat) normalChat).setNickName(groupName);
+                    updateBurnState(RoomSession.getInstance().getBurntime() <= 0 ? 0 : 1);
+                }
                 break;
             case GROUP_UPDATEMYNAME://update my nick in group
                 ((GroupChat) normalChat).updateMyNickName();

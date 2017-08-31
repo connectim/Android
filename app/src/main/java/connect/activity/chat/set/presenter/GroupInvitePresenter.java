@@ -99,7 +99,7 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                ToastEUtil.makeText(activity, activity.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
             }
         });
     }

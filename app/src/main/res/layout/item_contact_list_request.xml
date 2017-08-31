@@ -25,7 +25,7 @@
         android:paddingRight="@dimen/dp_20"
         android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_10">
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/avatar_img"
             android:scaleType="fitXY"
             android:layout_width="@dimen/dp_38"

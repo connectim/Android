@@ -19,7 +19,6 @@ import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.SideScrollView;
-import connect.widget.roundedimageview.RoundedImageView;
 
 public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.ViewHolder> {
 
@@ -75,7 +74,7 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
             viewHolder.topRela.setVisibility(View.GONE);
         }
 
-        GlideUtil.loadAvater(viewHolder.avatarRimg, friendRequestEntity.getAvatar() + "?size=80");
+        GlideUtil.loadAvatarRound(viewHolder.avatarRimg, friendRequestEntity.getAvatar() + "?size=80");
         viewHolder.nicknameTv.setText(friendRequestEntity.getUsername());
         viewHolder.hintTv.setText(friendRequestEntity.getTips());
         showRequestBtn(viewHolder.statusBtn, friendRequestEntity, position);
@@ -155,7 +154,7 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
         TextView txt;
         ImageView deleteTv;
         RelativeLayout bottomLayout;
-        RoundedImageView avatarRimg;
+        ImageView avatarRimg;
         TextView nicknameTv;
         TextView hintTv;
         Button statusBtn;
@@ -170,7 +169,7 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
             txt= (TextView) itemview.findViewById(R.id.txt);
             deleteTv= (ImageView) itemview.findViewById(R.id.delete_tv);
             bottomLayout= (RelativeLayout) itemview.findViewById(R.id.bottom_layout);
-            avatarRimg= (RoundedImageView) itemview.findViewById(R.id.avatar_rimg);
+            avatarRimg= (ImageView) itemview.findViewById(R.id.avatar_rimg);
             nicknameTv= (TextView) itemview.findViewById(R.id.nickname_tv);
             hintTv= (TextView) itemview.findViewById(R.id.hint_tv);
             statusBtn= (Button) itemview.findViewById(R.id.status_btn);

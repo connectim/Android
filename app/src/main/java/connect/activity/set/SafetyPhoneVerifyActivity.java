@@ -153,4 +153,10 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements SignInVer
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.pauseDownTimer();
+    }
+
 }

@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,14 +14,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import connect.database.green.bean.RecommandFriendEntity;
 import connect.ui.activity.R;
-import connect.utils.system.SystemDataUtil;
 import connect.utils.glide.GlideUtil;
+import connect.utils.system.SystemDataUtil;
 import connect.widget.SideScrollView;
-import connect.widget.roundedimageview.RoundedImageView;
 
 public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder> {
 
@@ -46,7 +42,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final RecommandFriendEntity recommendEntity = mList.get(position);
         viewHolder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
-        GlideUtil.loadAvater(viewHolder.avatarRimg,recommendEntity.getAvatar() + "?size=80");
+        GlideUtil.loadAvatarRound(viewHolder.avatarRimg,recommendEntity.getAvatar() + "?size=80");
         viewHolder.nicknameTv.setText(recommendEntity.getUsername());
         viewHolder.statusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +89,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
 
         ImageView deleteTv;
         RelativeLayout bottomLayout;
-        RoundedImageView avatarRimg;
+        ImageView avatarRimg;
         TextView nicknameTv;
         Button statusBtn;
         RelativeLayout contentLayout;
@@ -104,7 +100,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
             super(itemview);
             deleteTv = (ImageView) itemview.findViewById(R.id.delete_tv);
             bottomLayout = (RelativeLayout) itemview.findViewById(R.id.bottom_layout);
-            avatarRimg = (RoundedImageView) itemview.findViewById(R.id.avatar_rimg);
+            avatarRimg = (ImageView) itemview.findViewById(R.id.avatar_rimg);
             nicknameTv = (TextView) itemview.findViewById(R.id.nickname_tv);
             statusBtn = (Button) itemview.findViewById(R.id.status_btn);
             contentLayout = (RelativeLayout) itemview.findViewById(R.id.content_layout);

@@ -37,6 +37,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
 
     private AlbumGridFragment gridFragment;
     private AlbumGalleryFragment galleryFragment;
+    private AlbumScanner scannerModel;
 
     public AlbumPresenter(AlbumContract.BView view) {
         this.bView = view;
@@ -46,11 +47,11 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     @Override
     public void start() {
         activity = bView.getActivity();
+        scannerModel = new AlbumScanner();
     }
 
     @Override
     public void albumScan(OnScanListener listener) {
-        AlbumScanner scannerModel = new AlbumScanner();
         scannerModel.startScanAlbum(activity, bView.getAlbumType(), listener);
     }
 

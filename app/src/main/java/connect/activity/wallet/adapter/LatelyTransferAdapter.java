@@ -5,17 +5,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.activity.wallet.bean.TransferBean;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
-import protos.Connect;
 
 /**
  *
@@ -56,7 +54,7 @@ public class LatelyTransferAdapter extends RecyclerView.Adapter<LatelyTransferAd
                 viewHolder.nameTv.setText(transEntity.getAddress());
                 break;
             case 4:
-                GlideUtil.loadAvater(viewHolder.avaterRimg,transEntity.getAvater());
+                GlideUtil.loadAvatarRound(viewHolder.avaterRimg,transEntity.getAvater());
                 viewHolder.nameTv.setText(transEntity.getName());
                 break;
             case 5:
@@ -96,12 +94,12 @@ public class LatelyTransferAdapter extends RecyclerView.Adapter<LatelyTransferAd
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        RoundedImageView avaterRimg;
+        ImageView avaterRimg;
         TextView nameTv;
 
         ViewHolder(View itemview) {
             super(itemview);
-            avaterRimg = (RoundedImageView) itemview.findViewById(R.id.avater_rimg);
+            avaterRimg = (ImageView) itemview.findViewById(R.id.avater_rimg);
             nameTv = (TextView) itemview.findViewById(R.id.name_tv);
         }
     }

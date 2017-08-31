@@ -39,7 +39,7 @@ public class SupportKeyUrilTest {
 
     @Test
     public void encoPinDefult() throws Exception {
-        String value = "12345678910adb";
+        String value = "L12LREW9xUHDADSi37RckeML7wVX17FWLaRmtfWgdRVHs3SM8cEY";
         EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(1,value,"1234");
         String deValue = SupportKeyUril.decodePinDefult(1,encoPinBean.getPayload(),"1234");
         if(value.equals(deValue)){

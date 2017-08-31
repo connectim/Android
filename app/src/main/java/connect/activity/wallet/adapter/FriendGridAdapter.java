@@ -5,12 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ public class FriendGridAdapter extends BaseAdapter {
         if(TextUtils.isEmpty(mListData.get(position).getAvatar())){
             viewHolder.avaterRimg.setImageResource(R.mipmap.message_add_friends2x);
         }else{
-            GlideUtil.loadAvater(viewHolder.avaterRimg,mListData.get(position).getAvatar());
+            GlideUtil.loadAvatarRound(viewHolder.avaterRimg,mListData.get(position).getAvatar());
             viewHolder.nameTv.setText(mListData.get(position).getUsername());
         }
 
@@ -71,7 +71,7 @@ public class FriendGridAdapter extends BaseAdapter {
 
     static class ViewHolder {
         @Bind(R.id.avater_rimg)
-        RoundedImageView avaterRimg;
+        ImageView avaterRimg;
         @Bind(R.id.name_tv)
         TextView nameTv;
 

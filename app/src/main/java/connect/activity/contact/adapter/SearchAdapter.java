@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,7 +17,6 @@ import java.util.List;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 
 import static connect.activity.contact.adapter.SearchAdapter.ViewType.VIEW_TYP_NOSEARCHS;
 
@@ -86,7 +86,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 } else {
                     ((LocalHolder)holder).txt.setVisibility(View.GONE);
                 }
-                GlideUtil.loadAvater(((LocalHolder)holder).avatar, mDataList.get(position).getAvatar());
+                GlideUtil.loadAvatarRound(((LocalHolder)holder).avatar, mDataList.get(position).getAvatar());
                 ((LocalHolder)holder).nameTv.setText(mDataList.get(position).getUsername());
                 ((LocalHolder)holder).contentRela.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -132,7 +132,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         TextView nameTv;
         TextView txt;
-        RoundedImageView avatar;
+        ImageView avatar;
         RelativeLayout contentRela;
 
         public LocalHolder(View itemView) {
@@ -140,7 +140,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             contentRela = (RelativeLayout) itemView.findViewById(R.id.content_rela);
             nameTv = (TextView) itemView.findViewById(R.id.name_tv);
             txt = (TextView) itemView.findViewById(R.id.txt);
-            avatar = (RoundedImageView) itemView.findViewById(R.id.avatar_rimg);
+            avatar = (ImageView) itemView.findViewById(R.id.avatar_rimg);
         }
     }
 

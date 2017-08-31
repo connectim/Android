@@ -19,7 +19,6 @@ import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Created by Administrator on 2017/8/7.
@@ -79,7 +78,7 @@ public class SingleSetPresenter implements SingleSetContract.Presenter {
         entities.add(new ContactEntity());
         for (ContactEntity entity : entities) {
             View headerview = LayoutInflater.from(activity).inflate(R.layout.linear_contact, null);
-            RoundedImageView headimg = (RoundedImageView) headerview.findViewById(R.id.roundimg);
+            ImageView headimg = (ImageView) headerview.findViewById(R.id.roundimg);
             ImageView adminImg = (ImageView) headerview.findViewById(R.id.img1);
             TextView name = (TextView) headerview.findViewById(R.id.name);
 
@@ -93,9 +92,9 @@ public class SingleSetPresenter implements SingleSetContract.Presenter {
             }
 
             if (TextUtils.isEmpty(entity.getAvatar())) {
-                GlideUtil.loadImage(headimg, R.mipmap.message_add_friends2x);
+                GlideUtil.loadAvatarRound(headimg, R.mipmap.message_add_friends2x);
             } else {
-                GlideUtil.loadAvater(headimg, entity.getAvatar());
+                GlideUtil.loadAvatarRound(headimg, entity.getAvatar());
             }
             headerview.setTag(entity.getAddress());
             view.showContactInfo(headerview);

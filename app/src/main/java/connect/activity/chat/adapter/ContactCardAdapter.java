@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -14,7 +15,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.PinyinUtil;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Created by gtq on 2016/12/13.
@@ -41,7 +41,7 @@ public class ContactCardAdapter extends RecyclerView.Adapter<ContactCardAdapter.
     public void onBindViewHolder(CardHolder holder, int position) {
         ContactEntity entity = friendEntities.get(position);
 
-        GlideUtil.loadImage(holder.roundimg, entity.getAvatar());
+        GlideUtil.loadAvatarRound(holder.roundimg, entity.getAvatar());
         String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
         holder.name.setText(curName);
 
@@ -94,13 +94,13 @@ public class ContactCardAdapter extends RecyclerView.Adapter<ContactCardAdapter.
 
     static class CardHolder extends RecyclerView.ViewHolder {
         TextView txt;
-        RoundedImageView roundimg;
+        ImageView roundimg;
         TextView name;
 
         CardHolder(View view) {
             super(view);
             txt = (TextView) view.findViewById(R.id.txt);
-            roundimg = (RoundedImageView) view.findViewById(R.id.roundimg);
+            roundimg = (ImageView) view.findViewById(R.id.roundimg);
             name = (TextView) view.findViewById(R.id.tvName);
         }
     }

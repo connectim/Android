@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import butterknife.ButterKnife;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.roundedimageview.RoundedImageView;
 
 public class RecentChatAdapter extends BaseAdapter {
 
@@ -47,7 +47,7 @@ public class RecentChatAdapter extends BaseAdapter {
         }
 
         ContactEntity friendEntity = mDataList.get(position);
-        GlideUtil.loadAvater(viewHolder.avatarRimg,friendEntity.getAvatar());
+        GlideUtil.loadAvatarRound(viewHolder.avatarRimg,friendEntity.getAvatar());
         viewHolder.nameTv.setText(friendEntity.getUsername());
 
         return convertView;
@@ -61,7 +61,7 @@ public class RecentChatAdapter extends BaseAdapter {
 
     static class ViewHolder {
         @Bind(R.id.avatar_rimg)
-        RoundedImageView avatarRimg;
+        ImageView avatarRimg;
         @Bind(R.id.name_tv)
         TextView nameTv;
 

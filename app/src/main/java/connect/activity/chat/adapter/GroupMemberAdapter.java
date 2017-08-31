@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -33,7 +34,6 @@ import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.SideScrollView;
-import connect.widget.roundedimageview.RoundedImageView;
 import protos.Connect;
 /**
  * Created by gtq on 2016/12/15.
@@ -79,7 +79,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
         GroupMemberEntity memEntity = groupMemEntities.get(position);
         String name = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
         holder.nameTxt.setText(name);
-        GlideUtil.loadAvater(holder.headImg, memEntity.getAvatar());
+        GlideUtil.loadAvatarRound(holder.headImg, memEntity.getAvatar());
 
         if (TextUtils.isEmpty(name)) name = "#";
         String curFirst = PinyinUtil.chatToPinyin(name.charAt(0));
@@ -156,7 +156,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
 
     class MemberReHolder extends RecyclerView.ViewHolder {
 
-        private RoundedImageView headImg;
+        private ImageView headImg;
         private TextView txt;
         private TextView nameTxt;
         private View contentLayout;
@@ -165,7 +165,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
         public MemberReHolder(View itemView) {
             super(itemView);
             txt= (TextView) itemView.findViewById(R.id.txt);
-            headImg = (RoundedImageView) itemView.findViewById(R.id.roundimg);
+            headImg = (ImageView) itemView.findViewById(R.id.roundimg);
             nameTxt = (TextView) itemView.findViewById(R.id.tvName);
             contentLayout = itemView.findViewById(R.id.content_layout);
             trashLayout = itemView.findViewById(R.id.bottom_layout);

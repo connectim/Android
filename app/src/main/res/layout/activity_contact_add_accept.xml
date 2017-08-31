@@ -26,7 +26,7 @@
             android:layout_marginRight="@dimen/dp_30"
             android:gravity="right" />
 
-        <connect.widget.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/avater_rimg"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"

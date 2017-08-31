@@ -24,8 +24,6 @@ import connect.activity.chat.model.content.NormalChat;
 import connect.activity.chat.model.content.RobotChat;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.model.ConvertUtil;
-import connect.activity.home.bean.ConversationAction;
-import connect.activity.home.bean.ConversationType;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.MsgNoticeBean;
@@ -514,11 +512,12 @@ public class CommandBean extends InterParse {
                     FailMsgsManager.getInstance().insertReceiveMsg(group.getIdentifier(), TimeUtil.timestampToMsgid(), context.getString(R.string.Link_Join_Group));
                 } else {
                     String groupname = group.getName();
-                    if (TextUtils.isEmpty(groupname)) {
-                        groupname = "groupname2";
-                    }
                     groupEntity.setName(groupname);
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
+                    GroupChat groupChat = new GroupChat(groupEntity);
+                    groupChat.updateRoomMsg(null, "", -1, -1, -1);
+
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATENAME, groupKey, groupname);
                     ContactNotice.receiverGroup();
                 }
                 break;

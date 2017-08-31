@@ -72,7 +72,7 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                             if (resource != null) {
-                                saveNotigy(resource);
+                                saveNotify(resource);
                             } else {
                                 ToastEUtil.makeText(mView.getActivity(),R.string.Set_Save_Failed);
                             }
@@ -81,14 +81,13 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
         }
     }
 
-    private void saveNotigy(Bitmap bmp) {
+    private void saveNotify(Bitmap bmp) {
         File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bmp);
         pathDcim = file.getAbsolutePath();
         try {
-            MediaStore.Images.Media.insertImage(mView.getActivity().getContentResolver(), pathDcim, "", null);
             scanner.connect();
             ToastEUtil.makeText(mView.getActivity(), R.string.Login_Save_successful).show();
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

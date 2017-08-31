@@ -1,6 +1,7 @@
 package connect.widget.album.adapter;
 
 import android.support.v4.view.PagerAdapter;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -45,7 +46,9 @@ public class AlbumGalleryAdp extends PagerAdapter {
 
         ImageInfo imageInfo = imageInfos.get(position);
         PhotoView galleryPhotoView = (PhotoView) galleryItemView.findViewById(R.id.iv_show_image);
-        GlideUtil.loadImage(galleryPhotoView, imageInfo.getImageFile().getAbsolutePath());
+
+        String showPath = imageInfo.getImageFile().getAbsolutePath();
+        GlideUtil.loadImage(galleryPhotoView, showPath);
         container.addView(galleryItemView);
         return galleryItemView;
     }

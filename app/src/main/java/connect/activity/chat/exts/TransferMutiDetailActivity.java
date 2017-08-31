@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -24,14 +25,13 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
-import connect.widget.roundedimageview.RoundedImageView;
 
 public class TransferMutiDetailActivity extends BaseActivity implements TransferMutiDetailContract.BView{
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg)
-    RoundedImageView roundimg;
+    ImageView roundimg;
     @Bind(R.id.txt1)
     TextView txt1;
     @Bind(R.id.txt2)
@@ -125,7 +125,7 @@ public class TransferMutiDetailActivity extends BaseActivity implements Transfer
 
     @Override
     public void showSenderInfo(String avatar, String name) {
-        GlideUtil.loadAvater(roundimg, avatar);
+        GlideUtil.loadAvatarRound(roundimg, avatar);
         txt1.setText(name);
     }
 }

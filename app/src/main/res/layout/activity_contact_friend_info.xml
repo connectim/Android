@@ -35,14 +35,13 @@
                     android:gravity="right"
                     android:textColor="@color/color_858998"/>
 
-                <connect.widget.roundedimageview.RoundedImageView
+                <ImageView
                     android:id="@+id/avatar_rimg"
                     android:layout_width="@dimen/dp_60"
                     android:layout_height="@dimen/dp_60"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:scaleType="fitXY"
-                    app:riv_corner_radius="@dimen/px_6"/>
+                    android:scaleType="fitXY"/>
 
                 <TextView
                     android:id="@+id/name_tv"

@@ -2,18 +2,18 @@ package connect.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import connect.activity.chat.bean.DestructOpenBean;
-import connect.widget.roundedimageview.RoundedImageView;
 
 /**
  * Created by gtq on 2016/12/13.
  */
-public class ChatHeadImg extends RoundedImageView {
+public class ChatHeadImg extends ImageView {
 
     public ChatHeadImg(Context context) {
         super(context);
