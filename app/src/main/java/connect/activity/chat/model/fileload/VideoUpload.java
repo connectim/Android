@@ -54,7 +54,7 @@ public class VideoUpload extends FileUpLoad {
                         Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
                                 setThumbnail(firstGcmData.toByteString()).
                                 setEntity(secondGcmData.toByteString()).build();
-                        firstGcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, priKey, richMedia.toByteString());
+                        firstGcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, priKey, richMedia.toByteString());
                         mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(firstGcmData).build();
                     }
                 } catch (Exception e) {

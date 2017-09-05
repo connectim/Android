@@ -3,10 +3,12 @@ package connect.activity.base;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -189,7 +191,7 @@ public abstract class BaseScanActivity extends BaseActivity {
     }
 
     public void getAblamString(final String path, final Handler handler){
-        /*ProgressUtil.getInstance().showProgress(this);
+        ProgressUtil.getInstance().showProgress(this);
         new Thread(new DecodeImageThread(path, new DecodeImageCallback() {
             @Override
             public void decodeSucceed(Result result) {
@@ -204,8 +206,8 @@ public abstract class BaseScanActivity extends BaseActivity {
                 ProgressUtil.getInstance().dismissProgress();
                 ToastUtil.getInstance().showToast("Scan failed!");
             }
-        })).start();*/
-        new Thread(new Runnable() {
+        })).start();
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 Bitmap scanBitmap = BitmapUtil.getInstance().compress(path, 480, 800);
@@ -225,7 +227,7 @@ public abstract class BaseScanActivity extends BaseActivity {
                     ToastUtil.getInstance().showToast("Scan failed!");
                 }
             }
-        }).start();
+        }).start();*/
     }
 
     /**

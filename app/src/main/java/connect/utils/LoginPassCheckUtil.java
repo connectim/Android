@@ -73,9 +73,9 @@ public class LoginPassCheckUtil {
             protected void onPostExecute(String priKey) {
                 super.onPostExecute(priKey);
                 ProgressUtil.getInstance().dismissProgress();
-                if(priKey != null && SupportKeyUril.checkPrikey(priKey)){
+                if(priKey != null && SupportKeyUril.checkPriKey(priKey)){
                     onResultListener.success(priKey);
-                }else {
+                } else {
                     ToastEUtil.makeText(mContext,R.string.Login_Password_incorrect,ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
             }

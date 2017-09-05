@@ -19,6 +19,7 @@ import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
@@ -129,7 +130,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
     private void requestRegister(Connect.RegisterUser registerUser, final UserBean userBean) {
         OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_SIGN_UP,
                 registerUser,
-                SupportKeyUril.EcdhExts.EMPTY,
+                EncryptionUtil.ExtendedECDH.EMPTY,
                 userBean.getPriKey(),
                 userBean.getPubKey(),
                 new ResultCall<Connect.HttpResponse>() {

@@ -58,7 +58,7 @@ public class TransferMutiDetailAdapter extends RecyclerView.Adapter<TransferMuti
 
     @Override
     public void onBindViewHolder(final MutiDetailHolder holder, int position) {
-        String address = SupportKeyUril.getAddressFromPubkey(receivers[position]);
+        String address = SupportKeyUril.getAddressFromPubKey(receivers[position]);
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(address)
                 .build();

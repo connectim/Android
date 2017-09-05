@@ -84,12 +84,12 @@ public class BubbleImg extends RelativeLayout {
         imageView.setImageBitmap(null);
         String msgidToLocal = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
 
-        if (pukkey.equals(RobotChat.getInstance().chatKey()) || FileUtil.islocalFile(url) || FileUtil.isExistFilePath(msgidToLocal)) {
+        if (pukkey.equals(RobotChat.getInstance().chatKey()) || FileUtil.isLocalFile(url) || FileUtil.isExistFilePath(msgidToLocal)) {
             progressBar.setVisibility(GONE);
             if (pukkey.equals(RobotChat.getInstance().chatKey())) {
                 localPath = url;
             } else {
-                localPath = FileUtil.islocalFile(url) ? url : msgidToLocal;
+                localPath = FileUtil.isLocalFile(url) ? url : msgidToLocal;
             }
             calculateSize(imgwidth,imgheight);
 

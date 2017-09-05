@@ -14,12 +14,11 @@ import java.util.Map;
 import connect.activity.base.BaseApplication;
 
 /**
- * Created by gtq on 2016/12/26.
+ * Configuration file read
  */
 public class ConfigUtil {
     private static ConfigUtil configUtil;
 
-    private String Tag = "ConfigUtil";
     private Map<String, String> keyMaps = null;
 
     public ConfigUtil() {
@@ -40,6 +39,12 @@ public class ConfigUtil {
         }
     }
 
+    /**
+     * Parse the configuration xml file
+     * @param mode
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
     public void xmlParser(String mode) throws XmlPullParserException, IOException {
         InputStream inputStream = BaseApplication.getInstance().getApplicationContext().getAssets().open("config.xml");
 
@@ -127,7 +132,7 @@ public class ConfigUtil {
         return "true".equals(mode);
     }
 
-    public String serverPubkey() {
+    public String serverPubKey() {
         return keyMaps.get(SERVER_PUBKEY);
     }
 

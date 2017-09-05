@@ -76,7 +76,7 @@ public class GroupChat extends NormalChat {
         Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
 
         byte[] groupecdh = StringUtil.hexStringToBytes(groupEntity.getEcdh_key());
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, groupecdh, msgExtEntity.getContents());
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, groupecdh, msgExtEntity.getContents());
         chatMessageBuilder.setCipherData(gcmData);
 
         //messageData

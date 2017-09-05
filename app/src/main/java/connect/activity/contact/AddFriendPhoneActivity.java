@@ -72,7 +72,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements FriendAddCon
         adapter.setOnSelectListener(onSelectListener);
         recyclerview.setAdapter(adapter);
         siderbar.setOnTouchingLetterChangedListener(letterChangedListener);
-        PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_CONTACTS}, permissomCallBack);
+        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_CONTACTS}, permissomCallBack);
     }
 
     @OnClick(R.id.left_img)
@@ -82,7 +82,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements FriendAddCon
 
     @OnClick(R.id.right_text)
     void goinvite(View view) {
-        PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_SMS}, permissomCallBack);
+        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_SMS}, permissomCallBack);
     }
 
     SideBar.OnTouchingLetterChangedListener letterChangedListener = new SideBar.OnTouchingLetterChangedListener() {
@@ -99,9 +99,9 @@ public class AddFriendPhoneActivity extends BaseActivity implements FriendAddCon
         @Override
         public void granted(String[] permissions) {
             if (permissions != null && permissions.length > 0) {
-                if (permissions[0].equals(PermissionUtil.PERMISSIM_CONTACTS)) {
+                if (permissions[0].equals(PermissionUtil.PERMISSION_CONTACTS)) {
                     presenter.requestContact();
-                } else if (permissions[0].equals(PermissionUtil.PERMISSIM_SMS)) {
+                } else if (permissions[0].equals(PermissionUtil.PERMISSION_SMS)) {
                     String numbers = "";
                     List<PhoneContactBean> seleList = adapter.getSeleList();
                     for (PhoneContactBean contactBean : seleList) {

@@ -18,7 +18,6 @@ import connect.utils.DialogUtil;
 
 /**
  * Rights management tools
- * Created by Administrator on 2017/3/21.
  */
 
 public class PermissionUtil {
@@ -28,19 +27,19 @@ public class PermissionUtil {
     private final String PACKAGE_URL_SCHEME = "package:";
     private final String NOT_ALLOW = "NOT_ALLOW";
     /** Camera rights group */
-    public static final String PERMISSIM_CAMERA = Manifest.permission.CAMERA;
+    public static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
     /** Recording rights group */
-    public static final String PERMISSIM_RECORD_AUDIO = Manifest.permission.RECORD_AUDIO;
+    public static final String PERMISSION_RECORD_AUDIO = Manifest.permission.RECORD_AUDIO;
     /** Read and write external memory card authorization group */
-    public static final String PERMISSIM_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE;
+    public static final String PERMISSION_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE;
     /** Contact group */
-    public static final String PERMISSIM_CONTACTS = Manifest.permission.READ_CONTACTS;
+    public static final String PERMISSION_CONTACTS = Manifest.permission.READ_CONTACTS;
     /** Location permission group */
-    public static final String PERMISSIM_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    public static final String PERMISSION_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     /** SMS group */
-    public static final String PERMISSIM_SMS = Manifest.permission.SEND_SMS;
+    public static final String PERMISSION_SMS = Manifest.permission.SEND_SMS;
     /** Mobile status rights group */
-    public static final String PERMISSIM_PHONE = Manifest.permission.READ_PHONE_STATE;
+    public static final String PERMISSION_PHONE = Manifest.permission.READ_PHONE_STATE;
 
     public static PermissionUtil getInstance() {
         if (instance == null) {
@@ -51,26 +50,27 @@ public class PermissionUtil {
 
     /**
      * Request permission
+     *
      * @param activity
      * @param permissions
      * @param resultCallBack
      */
-    public void requestPermissom(Activity activity,String[] permissions,ResultCallBack resultCallBack){
+    public void requestPermission(Activity activity,String[] permissions,ResultCallBack resultCallBack){
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            checkPermissiomLow(activity,permissions,resultCallBack);
+            checkPermissionLow(activity,permissions,resultCallBack);
             return;
         }
 
-        ArrayList<String> permissinNotAllowed = new ArrayList<>();
+        ArrayList<String> permissionNotAllowed = new ArrayList<>();
         for(String name : permissions){
             if (ContextCompat.checkSelfPermission(activity, name) != PackageManager.PERMISSION_GRANTED){
-                permissinNotAllowed.add(name);
+                permissionNotAllowed.add(name);
             }
         }
 
-        if(permissinNotAllowed.size() > 0){
-            String [] string = new String [permissinNotAllowed.size()] ;
-            permissinNotAllowed.toArray(string);
+        if(permissionNotAllowed.size() > 0){
+            String [] string = new String [permissionNotAllowed.size()] ;
+            permissionNotAllowed.toArray(string);
             ActivityCompat.requestPermissions(activity, string,PERMISSIONS_REQUEST_CODE);
         }else{
             resultCallBack.granted(permissions);
@@ -79,6 +79,7 @@ public class PermissionUtil {
 
     /**
      * To deal with the callback returns the result
+     *
      * @param target
      * @param requestCode
      * @param permissions
@@ -99,7 +100,6 @@ public class PermissionUtil {
                                 return;
                             }
                         }
-
                     }
                     showDialog(target,NOT_ALLOW);
                 }
@@ -111,6 +111,7 @@ public class PermissionUtil {
 
     /**
      * whether permissions are allowed
+     *
      * @param grantResults
      * @return
      */
@@ -128,6 +129,7 @@ public class PermissionUtil {
 
     /**
      * Tick is not a reminder to remind the listener
+     *
      * @param activity
      * @param permissions
      * @return
@@ -144,11 +146,12 @@ public class PermissionUtil {
 
     /**
      * 6.0 before check special privileges (mainly for the third party system custom permissions manager)
+     *
      * @param activity
      * @param permissions
      * @param resultCallBack
      */
-    private void checkPermissiomLow(Activity activity,String[] permissions,ResultCallBack resultCallBack){
+    private void checkPermissionLow(Activity activity,String[] permissions,ResultCallBack resultCallBack){
         boolean isAllow = true;
         for(String name : permissions){
             switch (name){
@@ -156,7 +159,9 @@ public class PermissionUtil {
                     isAllow = checkCamera(activity);
                     break;
                 case Manifest.permission.RECORD_AUDIO:
-                    isAllow = chechVoice(activity);
+                    isAllow = checkVoice(activity);
+                    break;
+                default:
                     break;
             }
             //If one item is refused to directly not through
@@ -172,6 +177,7 @@ public class PermissionUtil {
 
     /**
      * Version 6.0 to determine whether a camera available before (now mainly rely on the try... catch... catch exceptions)
+     *
      * @param activity
      * @return
      */
@@ -196,10 +202,11 @@ public class PermissionUtil {
 
     /**
      * To determine whether the recording permission is available
+     *
      * @param activity
      * @return
      */
-    private boolean chechVoice(Activity activity){
+    private boolean checkVoice(Activity activity){
         boolean isAllow = CheckAudioPermission.isHasPermission();
         if(!isAllow){
             showDialog(activity,Manifest.permission.RECORD_AUDIO);
@@ -209,25 +216,26 @@ public class PermissionUtil {
 
     /**
      * No permission prompt
+     *
      * @param activity
      * @param permissom
      */
     private void showDialog(final Activity activity, String permissom){
         String message = "";
         switch (permissom){
-            case PERMISSIM_CAMERA:
+            case PERMISSION_CAMERA:
                 message = activity.getString(R.string.Link_Unable_to_get_the_camera_data);
                 break;
-            case PERMISSIM_RECORD_AUDIO:
+            case PERMISSION_RECORD_AUDIO:
                 message = activity.getString(R.string.Link_Unable_to_get_the_voice_data);
                 break;
-            case PERMISSIM_STORAGE:
+            case PERMISSION_STORAGE:
                 message = activity.getString(R.string.Link_Unable_to_access_permissom_storage);
                 break;
-            case PERMISSIM_CONTACTS:
+            case PERMISSION_CONTACTS:
                 message = activity.getString(R.string.Link_contact_loading_failed_check_the_contact_pression);
                 break;
-            case PERMISSIM_SMS:
+            case PERMISSION_SMS:
                 message = activity.getString(R.string.Link_Unable_to_get_the_sms_data);
                 break;
             case NOT_ALLOW:
@@ -250,6 +258,7 @@ public class PermissionUtil {
 
     /**
      * Jump to permission settings page
+     *
      * @param activity
      */
     private void startSystemSettings(Activity activity) {

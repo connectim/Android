@@ -170,8 +170,8 @@ public class SafetyPatterDrawActivity extends BaseActivity {
         } else {
             String value = StringUtil.listToString(idGestureLockViewGroup.getMChoose());
             if (TextUtils.isEmpty(idGestureLockViewGroup.getAnswer())) {
-                String patterSalt = SupportKeyUril.cdSaltPri();
-                String gcmStr = SupportKeyUril.encodePri(MemoryDataManager.getInstance().getPriKey(),patterSalt,value);
+                String patterSalt = SupportKeyUril.getSaltPri();
+                String gcmStr = SupportKeyUril.encryptionPri(MemoryDataManager.getInstance().getPriKey(),patterSalt,value);
                 drawPatterGestop.setChooseData(idGestureLockViewGroup.getMChoose());
                 idGestureLockViewGroup.setAnswer(gcmStr,patterSalt);
                 showErrorHint(getString(R.string.Set_Draw_pattern_again),false);

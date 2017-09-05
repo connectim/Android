@@ -22,7 +22,7 @@ import connect.utils.StringUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncoPinBean;
+import connect.utils.cryption.EncryptionPinBean;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -91,7 +91,7 @@ public class BaseWallet {
                 new AsyncTask<Void,Void,PinBean>() {
                     @Override
                     protected PinBean doInBackground(Void... params) {
-                        String baseSeed = SupportKeyUril.decodePinDefult(BaseCurrency.CATEGORY_BASESEED,payload, value);
+                        String baseSeed = SupportKeyUril.decryptionPinDefault(BaseCurrency.CATEGORY_BASESEED,payload, value);
                         if (TextUtils.isEmpty(baseSeed)) {
                             return null;
                         } else {
@@ -124,7 +124,7 @@ public class BaseWallet {
      */
     public void createWallet(String baseSeed, String pwd, final WalletListener listener) {
         WalletOuterClass.RequestWalletInfo.Builder builder = WalletOuterClass.RequestWalletInfo.newBuilder();
-        final EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(BaseCurrency.CATEGORY_BASESEED,baseSeed, pwd);
+        final EncryptionPinBean encoPinBean = SupportKeyUril.encryptionPinDefault(BaseCurrency.CATEGORY_BASESEED,baseSeed, pwd);
         final String checkSum = StringUtil.cdHash256(SupportKeyUril.PIN_VERSION + "" + encoPinBean.getPayload());
         builder.setPayload(encoPinBean.getPayload());
         builder.setCheckSum(checkSum);

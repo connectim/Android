@@ -6,9 +6,6 @@ import android.text.TextUtils;
 
 import java.io.File;
 
-/**
- * Created by gtq on 2016/11/28.
- */
 public class AudioUtil {
     private static AudioUtil audioUtil;
 
@@ -21,6 +18,8 @@ public class AudioUtil {
     /** Recording address */
     private String recordPath=null;
     private MediaRecorder mediaRecorder;
+    public AudioRecordListener recordListener;
+    private static int BASE = 40;
 
     public static AudioUtil getInstance() {
         if (audioUtil == null) {
@@ -107,20 +106,6 @@ public class AudioUtil {
         }
     }
 
-    public AudioRecordListener recordListener;
-
-    public interface AudioRecordListener {
-        void startError();
-
-        void wellPrepared();
-
-        void recording(long recordtime,int decibel);
-
-        void recordFinish(String path);
-    }
-
-    private static int BASE = 40;
-
     public void setOnAudioRecordListener(AudioRecordListener listener) {
         recordListener = listener;
     }
@@ -158,4 +143,15 @@ public class AudioUtil {
             finishRecorder();//60s Forced recording complete
         }
     }
+
+    public interface AudioRecordListener {
+        void startError();
+
+        void wellPrepared();
+
+        void recording(long recordtime,int decibel);
+
+        void recordFinish(String path);
+    }
+
 }

@@ -79,7 +79,7 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
         albumType = (maxSelect == 1 ? AlbumType.Photo : AlbumType.All);
 
         new AlbumPresenter(activity).start();
-        PermissionUtil.getInstance().requestPermissom(activity, new String[]{PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
+        PermissionUtil.getInstance().requestPermission(activity, new String[]{PermissionUtil.PERMISSION_STORAGE}, permissomCallBack);
     }
 
     private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack() {

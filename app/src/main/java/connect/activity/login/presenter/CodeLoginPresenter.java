@@ -10,6 +10,7 @@ import connect.ui.activity.R;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -66,7 +67,7 @@ public class CodeLoginPresenter implements CodeLoginContract.Presenter {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 ProgressUtil.getInstance().dismissProgress();
-                if (s != null && SupportKeyUril.checkPrikey(s)) {
+                if (s != null && SupportKeyUril.checkPriKey(s)) {
                     userBean.setPriKey(s);
                     userBean.setPubKey(AllNativeMethod.cdGetPubKeyFromPrivKey(userBean.getPriKey()));
                     userBean.setAddress(AllNativeMethod.cdGetBTCAddrFromPubKey(userBean.getPubKey()));
@@ -105,7 +106,7 @@ public class CodeLoginPresenter implements CodeLoginContract.Presenter {
             protected void onPostExecute(Connect.UserPrivateSign userPrivateSign) {
                 super.onPostExecute(userPrivateSign);
                 ProgressUtil.getInstance().dismissProgress();
-                OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_PRIVATE_SIGN, userPrivateSign, SupportKeyUril.EcdhExts.EMPTY,
+                OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_PRIVATE_SIGN, userPrivateSign, EncryptionUtil.ExtendedECDH.EMPTY,
                         userBean.getPriKey(), userBean.getPubKey(), new ResultCall<Connect.HttpResponse>() {
                             @Override
                             public void onResponse(Connect.HttpResponse response) {

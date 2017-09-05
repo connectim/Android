@@ -15,10 +15,6 @@ import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 
-/**
- * Created by pujin on 2017/6/1.
- */
-
 public class BlurMaskTransformation implements Transformation<Bitmap> {
 
     private static Paint sMaskingPaint = new Paint();

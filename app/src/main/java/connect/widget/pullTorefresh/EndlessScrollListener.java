@@ -33,7 +33,7 @@ public abstract class EndlessScrollListener extends  RecyclerView.OnScrollListen
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
         if ((visibleItemCount > 0 && currentScrollState == RecyclerView.SCROLL_STATE_IDLE &&
-                (lastVisibleItemPosition) >= totalItemCount - 1)) {
+                (lastVisibleItemPosition) > totalItemCount - 1)) {
             onLoadMore();
         }
     }

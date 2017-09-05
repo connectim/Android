@@ -33,7 +33,6 @@ public class GlobalLanguageUtil {
         return globalLanguageUtil;
     }
 
-    private String Tag = "GlobalLanguageUtil";
     private Map<String, String> languageMap = new HashMap<>();
 
     public GlobalLanguageUtil() {

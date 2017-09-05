@@ -10,6 +10,11 @@ import connect.activity.base.BaseApplication;
 
 public class ActivityUtil {
 
+    /**
+     * Go to the next Activity
+     * @param curActivity
+     * @param nextActivity
+     */
     public static void next(Activity curActivity, Class nextActivity) {
         next(curActivity, nextActivity, null);
     }
@@ -49,6 +54,10 @@ public class ActivityUtil {
         curActivity.overridePendingTransition(inAnimId,outAnimId);
     }
 
+    /**
+     * Return to the previous Activity
+     * @param curActivity
+     */
     public static void goBack(Activity curActivity) {
         goBackWithResult(curActivity, 0,null);
     }

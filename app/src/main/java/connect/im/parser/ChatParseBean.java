@@ -28,6 +28,7 @@ import connect.ui.activity.R;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
@@ -78,7 +79,7 @@ public class ChatParseBean extends InterParse {
             requestFriendsByVersion();
         }
 
-        SupportKeyUril.EcdhExts ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
+        EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
         if (TextUtils.isEmpty(chatSession.getPubKey())) {//old protocol
             priKey = MemoryDataManager.getInstance().getPriKey();
             pubkey = friendPubKey;
@@ -87,7 +88,7 @@ public class ChatParseBean extends InterParse {
 
             ByteString fromSalt = chatSession.getSalt();
             pubkey = chatSession.getPubKey();
-            ecdhExts = SupportKeyUril.EcdhExts.OTHER;
+            ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
             ecdhExts.setBytes(fromSalt.toByteArray());
         } else {//both random
             ByteString fromSalt = chatSession.getSalt();
@@ -101,7 +102,7 @@ public class ChatParseBean extends InterParse {
             UserCookie toCookie = new Gson().fromJson(toSaltEntity.getValue(), UserCookie.class);
             priKey = toCookie.getPriKey();
             pubkey = chatSession.getPubKey();
-            ecdhExts = SupportKeyUril.EcdhExts.OTHER;
+            ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
             ecdhExts.setBytes(SupportKeyUril.xor(fromSalt.toByteArray(), toSalt.toByteArray()));
         }
 
@@ -167,7 +168,7 @@ public class ChatParseBean extends InterParse {
             FailMsgsManager.getInstance().insertReceiveMsg(groupIdentify, chatMessage.getMsgId(), msgpost);
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupIdentify);
         } else {
-            byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
+            byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
             if (contents.length < 3) {
                 HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupIdentify);
             } else {
@@ -206,7 +207,7 @@ public class ChatParseBean extends InterParse {
     protected void inviteJoinGroup(Connect.MessagePost msgpost) throws Exception {
         String prikey = MemoryDataManager.getInstance().getPriKey();
         Connect.GcmData gcmData = msgpost.getMsgData().getChatMsg().getCipherData();
-        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
+        Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                 prikey, msgpost.getPubKey(), gcmData);
 
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData());

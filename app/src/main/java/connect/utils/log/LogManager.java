@@ -30,8 +30,4 @@ public final class LogManager {
         return logger;
     }
 
-    public static void setLogger(Logger newLogger) {
-        logger = newLogger;
-    }
-
 }

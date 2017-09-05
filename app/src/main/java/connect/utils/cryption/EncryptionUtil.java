@@ -1,7 +1,12 @@
 package connect.utils.cryption;
 
 import com.google.protobuf.ByteString;
+
+import java.security.SecureRandom;
+
+import connect.database.green.DaoHelper.ParamManager;
 import connect.utils.ConfigUtil;
+import connect.utils.StringUtil;
 import connect.wallet.jni.AllNativeMethod;
 import connect.wallet.jni.GCMModel;
 import protos.Connect;
@@ -11,97 +16,98 @@ import protos.Connect;
  */
 public class EncryptionUtil {
 
-    private static String Tag = "EncryptionUtil";
-
     /**
-     * Random private key
-     *
-     * @return
+     * Take byteArray encryption
      */
-    public static String randomPriKey() {
-        return AllNativeMethod.cdCreateNewPrivKey();
-    }
-
-    /**
-     * Random public key
-     *
-     * @param key
-     * @return
-     */
-    public static String randomPubKey(String key) {
-        return AllNativeMethod.cdGetPubKeyFromPrivKey(key);
-    }
-
-    /**
-     * Data encapsulation into StructData
-     *
-     * @param bytes
-     * @return
-     */
-    public static Connect.StructData transStructData(ByteString bytes) {
-        ByteString random = ByteString.copyFrom(SupportKeyUril.createrBinaryRandom());
-        Connect.StructData structData = Connect.StructData.newBuilder()
-                .setRandom(random)
-                .setPlainData(bytes)
-                .build();
-        return structData;
+    public static Connect.GcmData encodeAESGCM(ExtendedECDH extendedECDH, String priKey, String ServerPubKey, byte[] encodes) {
+        byte[] rawECDHKey = SupportKeyUril.getRawECDHKey(priKey, ServerPubKey);
+        return encodeAESGCM(extendedECDH, rawECDHKey, encodes);
     }
 
     /**
      * Take struct encryption
-     *
-     * @param exts
-     * @param prikey
-     * @param bytes
-     * @return
      */
-    public static Connect.GcmData encodeAESGCMStructData(SupportKeyUril.EcdhExts exts, String prikey, ByteString bytes) {
-        return encodeAESGCMStructData(exts, prikey, ConfigUtil.getInstance().serverPubkey(), bytes);
+    public static Connect.GcmData encodeAESGCMStructData(ExtendedECDH extendedECDH, String priKey, ByteString bytes) {
+        return encodeAESGCMStructData(extendedECDH, priKey, ConfigUtil.getInstance().serverPubKey(), bytes);
     }
 
-    public static Connect.GcmData encodeAESGCMStructData(SupportKeyUril.EcdhExts exts, String prikey, String ServerPubkey, ByteString bytes) {
-        byte[] ecdhKey = SupportKeyUril.rawECDHkey(prikey, ServerPubkey);
-        if(null == ecdhKey){
+    public static Connect.GcmData encodeAESGCMStructData(ExtendedECDH extendedECDH, String priKey, String serverPubKey, ByteString bytes) {
+        byte[] rawECDHKey = SupportKeyUril.getRawECDHKey(priKey, serverPubKey);
+        if(null == rawECDHKey){
             return null;
         }
-        return encodeAESGCMStructData(exts, ecdhKey, bytes);
+        return encodeAESGCMStructData(extendedECDH, rawECDHKey, bytes);
     }
 
-    public static Connect.GcmData encodeAESGCMStructData(SupportKeyUril.EcdhExts exts, byte[] ecdhbytes, ByteString bytes) {
-        Connect.StructData structData = transStructData(bytes);
-        return encodeAESGCM(exts, ecdhbytes, structData.toByteArray());
+    public static Connect.GcmData encodeAESGCMStructData(ExtendedECDH extendedECDH, byte[] rawECDHKey, ByteString bytes) {
+        ByteString random = ByteString.copyFrom(SupportKeyUril.createBinaryRandom());
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setRandom(random)
+                .setPlainData(bytes)
+                .build();
+        return encodeAESGCM(extendedECDH, rawECDHKey, structData.toByteArray());
     }
 
-    /**
-     * Take byteArray encryption
-     *
-     * @param exts
-     * @param prikey
-     * @param ServerPubkey
-     * @param encodes
-     * @return
-     */
-    public static Connect.GcmData encodeAESGCM(SupportKeyUril.EcdhExts exts, String prikey, String ServerPubkey, byte[] encodes) {
-        byte[] ecdhKey = SupportKeyUril.rawECDHkey(prikey, ServerPubkey);
-        return encodeAESGCM(exts, ecdhKey, encodes);
-    }
-
-    public static Connect.GcmData encodeAESGCM(SupportKeyUril.EcdhExts exts, byte[] ecdhKey, byte[] encodes) {
-        //ecdhkey extension
-        ecdhKey = SupportKeyUril.ecdhKeyExtends(exts, ecdhKey);
+    public static Connect.GcmData encodeAESGCM(ExtendedECDH extendedECDH, byte[] rawECDHKey, byte[] encodes) {
+        rawECDHKey = getKeyExtendedECDH(extendedECDH, rawECDHKey);
 
         byte[] ab = "ConnectEncrypted".getBytes();
-        ByteString iv = ByteString.copyFrom(SupportKeyUril.cdJNISeed());
+        ByteString iv = ByteString.copyFrom(SecureRandom.getSeed(16));
         byte[] ib = iv.toByteArray();
 
         GCMModel gc = AllNativeMethod.cdxtalkEncodeAESGCM(encodes, encodes.length,
-                ab, ab.length, ecdhKey, ecdhKey.length, ib, ib.length);
+                ab, ab.length, rawECDHKey, rawECDHKey.length, ib, ib.length);
 
         ByteString enc = ByteString.copyFrom(gc.encrypt);
-        ByteString mytag = ByteString.copyFrom(gc.tag);
+        ByteString tag = ByteString.copyFrom(gc.tag);
 
         Connect.GcmData gcmData = Connect.GcmData.newBuilder().setIv(iv).
-                setAad(ByteString.copyFrom(ab)).setCiphertext(enc).setTag(mytag).build();
+                setAad(ByteString.copyFrom(ab)).setCiphertext(enc).setTag(tag).build();
         return gcmData;
     }
+
+    /**
+     * ExtendedECDH type
+     */
+    public enum ExtendedECDH {
+        NONE,//Don't need to extension
+        EMPTY,//Empty salt extension
+        SALT,//token salt
+        OTHER;//other extension
+
+        byte[] bytes;
+
+        public byte[] getBytes() {
+            return bytes;
+        }
+
+        public void setBytes(byte[] bytes) {
+            this.bytes = bytes;
+        }
+    }
+
+    public static synchronized byte[] getKeyExtendedECDH(ExtendedECDH extendedECDH, byte[] rawECDHKey) {
+        byte[] salts = null;
+        switch (extendedECDH) {
+            case NONE:
+                break;
+            case EMPTY:
+                salts = new byte[64];
+                rawECDHKey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(rawECDHKey, rawECDHKey.length, salts, salts.length, 12, 32);
+                break;
+            case SALT:
+                String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
+                salts = StringUtil.hexStringToBytes(index);
+                rawECDHKey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(rawECDHKey, rawECDHKey.length, salts, salts.length, 12, 32);
+                break;
+            case OTHER:
+                salts = extendedECDH.getBytes();
+                rawECDHKey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(rawECDHKey, rawECDHKey.length, salts, salts.length, 12, 32);
+                break;
+            default:
+                break;
+        }
+        return rawECDHKey;
+    }
+
 }

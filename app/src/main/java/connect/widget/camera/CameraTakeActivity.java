@@ -100,8 +100,8 @@ public class CameraTakeActivity extends BaseActivity {
         recorderManager = new RecorderManager();
         videoBtn.setEnabled(false);
 
-        PermissionUtil.getInstance().requestPermissom(mActivity, new String[]{PermissionUtil.PERMISSIM_CAMERA,
-                PermissionUtil.PERMISSIM_RECORD_AUDIO, PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
+        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_CAMERA,
+                PermissionUtil.PERMISSION_RECORD_AUDIO, PermissionUtil.PERMISSION_STORAGE}, permissomCallBack);
     }
 
     private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack() {

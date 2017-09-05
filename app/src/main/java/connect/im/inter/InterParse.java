@@ -56,7 +56,7 @@ public abstract class InterParse {
             throw new Exception("Validation fails");
         }
 
-        byte[] bytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,
+        byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE,
                 Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), imTransferData.getCipherData());
         return Connect.StructData.parseFrom(bytes);
     }
@@ -77,7 +77,7 @@ public abstract class InterParse {
         Connect.Ack ack = Connect.Ack.newBuilder().setType(type).setMsgId(msgid).build();
         String priKey = MemoryDataManager.getInstance().getPriKey();
 
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE,
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE,
                 Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), ack.toByteString());
 
         String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());

@@ -73,7 +73,7 @@ public class ShakeHandBean extends InterParse {
         }
 
         String priKey = MemoryDataManager.getInstance().getPriKey();
-        byte[] bytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, priKey, ConfigUtil.getInstance().serverPubkey(), response.getCipherData());
+        byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, priKey, ConfigUtil.getInstance().serverPubKey(), response.getCipherData());
         Connect.StructData structData = Connect.StructData.parseFrom(bytes);
         Connect.NewConnection newConnection = Connect.NewConnection.parser().parseFrom(structData.getPlainData());
 
@@ -82,7 +82,7 @@ public class ShakeHandBean extends InterParse {
         UserCookie tempCookie = Session.getInstance().getUserCookie("TEMPCOOKIE");
         byte[] saltXor = SupportKeyUril.xor(tempCookie.getSalt(),
                 salt.toByteArray());
-        byte[] ecdHkey = SupportKeyUril.rawECDHkey(tempCookie.getPriKey(),
+        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(tempCookie.getPriKey(),
                 StringUtil.bytesToHexString(pubKey.toByteArray()));
         byte[] saltByte = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdHkey,
                 ecdHkey.length, saltXor, saltXor.length, 12, 32);
@@ -115,7 +115,7 @@ public class ShakeHandBean extends InterParse {
         }
 
         Connect.DeviceInfo deviceInfo = deviceBuilder.build();
-        Connect.GcmData gcmDataTemp = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE, saltByte, deviceInfo.toByteString());
+        Connect.GcmData gcmDataTemp = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE, saltByte, deviceInfo.toByteString());
 
         //imTransferData
         String signHash = SupportKeyUril.signHash(priKey, gcmDataTemp.toByteArray());
@@ -243,8 +243,8 @@ public class ShakeHandBean extends InterParse {
         tempCookie.setSalt(cdSeed.getBytes());
         Session.getInstance().setUserCookie("TEMPCOOKIE", tempCookie);
 
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
-                priKey, ConfigUtil.getInstance().serverPubkey(), newConnection.toByteString());
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
+                priKey, ConfigUtil.getInstance().serverPubKey(), newConnection.toByteString());
 
         String pukkey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
         String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());

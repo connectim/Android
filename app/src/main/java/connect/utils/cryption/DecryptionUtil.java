@@ -13,28 +13,33 @@ import protos.Connect;
 public class DecryptionUtil {
 
     /**
-     * Decryption Gcmdata returned to StructData
-     *
-     * @param gcmData
-     * @return StructData
+     * Decryption gcmData returns a byteArray containing
+     */
+    public static byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
+        byte[] rawECDHkey = SupportKeyUril.getRawECDHKey(priKey, pubKey);
+        return DecryptionUtil.decodeAESGCM(extendedECDH, rawECDHkey, gcmData);
+    }
+
+    /**
+     * Decryption GcmData returned to StructData
      */
     public static Connect.StructData decodeAESGCMStructData(Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, MemoryDataManager.getInstance().getPriKey(), gcmData);
+        return decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, MemoryDataManager.getInstance().getPriKey(), gcmData);
     }
 
-    public static Connect.StructData decodeAESGCMStructData(SupportKeyUril.EcdhExts exts, String priKey, Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(exts, priKey, ConfigUtil.getInstance().serverPubkey(), gcmData);
+    public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, Connect.GcmData gcmData) {
+        return decodeAESGCMStructData(extendedECDH, priKey, ConfigUtil.getInstance().serverPubKey(), gcmData);
     }
 
-    public static Connect.StructData decodeAESGCMStructData(SupportKeyUril.EcdhExts exts, String priKey, String pukkey, Connect.GcmData gcmData) {
-        byte[] rss = SupportKeyUril.rawECDHkey(priKey, pukkey);
-        return decodeAESGCMStructData(exts, rss, gcmData);
+    public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
+        byte[] rss = SupportKeyUril.getRawECDHKey(priKey, pubKey);
+        return decodeAESGCMStructData(extendedECDH, rss, gcmData);
     }
 
-    public static Connect.StructData decodeAESGCMStructData(SupportKeyUril.EcdhExts exts, byte[] ecdhKey, Connect.GcmData gcmData) {
+    public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, byte[] byteECDH, Connect.GcmData gcmData) {
         try {
-            byte[] structs = DecryptionUtil.decodeAESGCM(exts, ecdhKey, gcmData);
-            Connect.StructData structData = Connect.StructData.parseFrom(structs);
+            byte[] dataAESGCM = DecryptionUtil.decodeAESGCM(extendedECDH, byteECDH, gcmData);
+            Connect.StructData structData = Connect.StructData.parseFrom(dataAESGCM);
             return structData;
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
@@ -42,32 +47,17 @@ public class DecryptionUtil {
         return null;
     }
 
-    /**
-     * Decryption Gcmdata returns a byteArray containing
-     *
-     * @param exts
-     * @param priKey
-     * @param pukkey
-     * @param gcmData
-     * @return
-     */
-    public static byte[] decodeAESGCM(SupportKeyUril.EcdhExts exts, String priKey, String pukkey, Connect.GcmData gcmData) {
-        byte[] rss = SupportKeyUril.rawECDHkey(priKey, pukkey);
-        return DecryptionUtil.decodeAESGCM(exts, rss, gcmData);
-    }
-
-    public static synchronized byte[] decodeAESGCM(SupportKeyUril.EcdhExts exts, byte[] ecdhKey, Connect.GcmData gcmData) {
-        //ecdhkey extension
-        ecdhKey = SupportKeyUril.ecdhKeyExtends(exts, ecdhKey);
+    public static synchronized byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
+        rawECDHkey = EncryptionUtil.getKeyExtendedECDH(extendedECDH, rawECDHkey);
 
         byte[] iv = gcmData.getIv().toByteArray();
         byte[] add = "ConnectEncrypted".getBytes();
         byte[] cipher = gcmData.getCiphertext().toByteArray();
         byte[] tag = gcmData.getTag().toByteArray();
 
-        byte[] rss = ecdhKey;
-        byte[] rawData = AllNativeMethod.cdxtalkDecodeAESGCM(cipher, cipher.length,
+        byte[] rss = rawECDHkey;
+        byte[] dataAESGCM = AllNativeMethod.cdxtalkDecodeAESGCM(cipher, cipher.length,
                 add, add.length, rss, rss.length, iv, iv.length, tag, tag.length);
-        return rawData;
+        return dataAESGCM;
     }
 }

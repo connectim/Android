@@ -70,7 +70,7 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
     public MessageEntity transToMessageEntity() {
         String content = getContent();
         if (TextUtils.isEmpty(content)) {
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, SupportKeyUril.localHashKey().getBytes(), getContents());
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SupportKeyUril.localHashKey().getBytes(), getContents());
             content = StringUtil.bytesToHexString(gcmData.toByteArray());
         }
 

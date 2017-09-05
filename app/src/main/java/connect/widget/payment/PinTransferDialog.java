@@ -210,7 +210,7 @@ public class PinTransferDialog implements View.OnClickListener{
                 @Override
                 protected String doInBackground(Void... params) {
                     CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
-                    String decodeStr = SupportKeyUril.decodePinDefult(currencyEntity.getCategory() ,payload ,pass);
+                    String decodeStr = SupportKeyUril.decryptionPinDefault(currencyEntity.getCategory() ,payload ,pass);
                     return decodeStr;
                 }
 

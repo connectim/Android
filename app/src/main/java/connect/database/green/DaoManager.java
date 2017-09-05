@@ -99,7 +99,7 @@ public class DaoManager {
     public String OldDbPwd(String oldSecret) {
         String salt = SharePreferenceUser.getInstance().getStringValue(SharePreferenceUser.DB_SALT);
         String priKey = MemoryDataManager.getInstance().getPriKey();
-        return SupportKeyUril.decodePri(oldSecret, salt, priKey);
+        return SupportKeyUril.decryptionPri(oldSecret, salt, priKey);
     }
 
     public String newDbPwd() {
@@ -111,7 +111,7 @@ public class DaoManager {
 
         String salt = "";
         if (TextUtils.isEmpty(pubKeyTemp)) {
-            salt = SupportKeyUril.cdSaltPri();
+            salt = SupportKeyUril.getSaltPri();
             pubKeyTemp = AllNativeMethod.cdGetPubKeyFromPrivKey(AllNativeMethod.cdCreateNewPrivKey());
             SharePreferenceUser.getInstance().putString(SharePreferenceUser.DB_PUBKEY, pubKeyTemp);
             SharePreferenceUser.getInstance().putString(SharePreferenceUser.DB_SALT, salt);
@@ -119,7 +119,7 @@ public class DaoManager {
             salt = SharePreferenceUser.getInstance().getStringValue(SharePreferenceUser.DB_SALT);
         }
         byte[] saltByte = salt.getBytes();
-        byte[] ecdHkey = SupportKeyUril.rawECDHkey(priKey, pubKeyTemp);
+        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(priKey, pubKeyTemp);
         byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdHkey, ecdHkey.length, saltByte, saltByte.length, 12, 32);
         return AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(pbkdf));
     }

@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Text filter, Chinese is half the length of English
+ * Filter the length of the input text
  */
 public class NameLengthFilter implements InputFilter{
     int MAX_EN;

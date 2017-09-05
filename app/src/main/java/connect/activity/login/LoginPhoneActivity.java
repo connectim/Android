@@ -146,7 +146,7 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
 
     @Override
     public void scanPermission() {
-        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_CAMERA}, permissionCallBack);
+        PermissionUtil.getInstance().requestPermission(mActivity,new String[]{PermissionUtil.PERMISSION_CAMERA}, permissionCallBack);
     }
 
     @Override

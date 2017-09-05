@@ -94,7 +94,7 @@ public class AboutActivity extends BaseActivity {
                         public void confirm(String value) {
                             if(!TextUtils.isEmpty(versionResponse.getUpgradeUrl())){
                                 downLoadPath = versionResponse.getUpgradeUrl();
-                                PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_STORAGE},permissionCallBack);
+                                PermissionUtil.getInstance().requestPermission(mActivity,new String[]{PermissionUtil.PERMISSION_STORAGE},permissionCallBack);
                             }
                         }
 

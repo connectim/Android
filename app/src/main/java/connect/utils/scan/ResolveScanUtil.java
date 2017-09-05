@@ -55,49 +55,115 @@ public class ResolveScanUtil {
     public void analysisUrl(final String value){
         //Determine whether to link types
         if(RegularUtil.matches(value, Url_Matches)){
-            try {
-                URL url = new URL(value);
-                if(RegularUtil.matches(value,Url_Packet_Transfer_Group)){
-                    String[] pathArray = url.getPath().split("/");
-                    String token = Uri.parse(value).getQueryParameter("token");
-
-                    ScanResultBean resultBean = new ScanResultBean();
-                    resultBean.setType(pathArray[pathArray.length-1]);
-                    resultBean.setToken(token);
-                    resultBean.setTip(ResolveUrlUtil.TYPE_OPEN_SCAN);
-                    new ResolveUrlUtil(activity).dealResult(resultBean,true);
-                }else{
-                    OuterWebsiteActivity.startActivity(activity,value);
-                    ActivityUtil.goBack(activity);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            dealScanUrl(value);
             return;
         }
 
         // Determine whether to join the group of links
         if(value.contains(TYPE_WEB_GROUP_)){
-            String[] valueArray = value.replace(TYPE_WEB_GROUP_,"").split("/");
-            ApplyJoinGroupActivity.startActivity(activity, ApplyJoinGroupActivity.EApplyGroup.QRSCAN, valueArray[0],value);
-            ActivityUtil.goBack(activity);
+            dealScanGroup(value);
             return;
         }
 
         // Determine whether to address
         if(SupportKeyUril.checkAddress(value)){
-            checkIsFriend(value, new OnResultBack() {
+            dealScanAddress(value);
+            return;
+        }
+
+        // Determine whether to transfer links
+        if(value.contains(TRANSFER_SCAN_HEAD)) {
+            dealScanTransfer(value);
+            return;
+        }
+        ToastEUtil.makeText(activity, R.string.Login_scan_string_error).show();
+    }
+
+    /**
+     * Two-dimensional code is a web link
+     */
+    private void dealScanUrl(String value){
+        try {
+            URL url = new URL(value);
+            if(RegularUtil.matches(value,Url_Packet_Transfer_Group)){
+                String[] pathArray = url.getPath().split("/");
+                String token = Uri.parse(value).getQueryParameter("token");
+
+                ScanResultBean resultBean = new ScanResultBean();
+                resultBean.setType(pathArray[pathArray.length-1]);
+                resultBean.setToken(token);
+                resultBean.setTip(ResolveUrlUtil.TYPE_OPEN_SCAN);
+                new ResolveUrlUtil(activity).dealResult(resultBean,true);
+            }else{
+                OuterWebsiteActivity.startActivity(activity,value);
+                ActivityUtil.goBack(activity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Two-dimensional code is a group application link
+     */
+    private void dealScanGroup(String value){
+        String[] valueArray = value.replace(TYPE_WEB_GROUP_,"").split("/");
+        ApplyJoinGroupActivity.startActivity(activity, ApplyJoinGroupActivity.EApplyGroup.QRSCAN, valueArray[0],value);
+        ActivityUtil.goBack(activity);
+    }
+
+    /**
+     * The two-dimensional code is the address
+     */
+    private void dealScanAddress(final String value){
+        checkIsFriend(value, new OnResultBack() {
+            @Override
+            public void call(String status) {
+                switch (status){
+                    case ID_FRIEND:
+                        FriendInfoActivity.startActivity(activity, value);
+                        break;
+                    case ID_STRANGER:
+                        StrangerInfoActivity.startActivity(activity, value, SourceType.QECODE);
+                        break;
+                    case ID_INEXISTENCE:
+                        TransferAddressActivity.startActivity(activity,value,null);
+                        break;
+                    default:
+                        break;
+                }
+                ActivityUtil.goBack(activity);
+            }
+        });
+    }
+
+    /**
+     * The two-dimensional code is the transfer link
+     */
+    private void dealScanTransfer(String value){
+        Double amount = null;
+        String valueBitCoin = value.replace(TRANSFER_SCAN_HEAD,"");
+        if(valueBitCoin.contains("amount")) {
+            String amountStr = Uri.parse(valueBitCoin).getQueryParameter("amount");
+            amount = Double.valueOf(amountStr);
+            String[] data = value.split("\\?" + "amount=");
+            valueBitCoin = data[0].replace(TRANSFER_SCAN_HEAD,"");
+        }
+        if(SupportKeyUril.checkAddress(valueBitCoin)){
+            final String finalValueBitCoin = valueBitCoin;
+            final Double finalAmount = amount;
+            checkIsFriend(valueBitCoin, new OnResultBack() {
                 @Override
                 public void call(String status) {
                     switch (status){
                         case ID_FRIEND:
-                            FriendInfoActivity.startActivity(activity, value);
+                            TransferToActivity.startActivity(activity, finalValueBitCoin, finalAmount);
                             break;
                         case ID_STRANGER:
-                            StrangerInfoActivity.startActivity(activity, value, SourceType.QECODE);
+                            TransferToActivity.startActivity(activity,finalValueBitCoin,finalAmount);
                             break;
                         case ID_INEXISTENCE:
-                            TransferAddressActivity.startActivity(activity,value,null);
+                            TransferAddressActivity.startActivity(activity,finalValueBitCoin,finalAmount);
                             break;
                         default:
                             break;
@@ -107,45 +173,6 @@ public class ResolveScanUtil {
             });
             return;
         }
-
-        // Determine whether to transfer links
-        if(value.contains(TRANSFER_SCAN_HEAD)) {
-            Double amount = null;
-            String valueBitcoin = value.replace(TRANSFER_SCAN_HEAD,"");
-            if(valueBitcoin.contains("amount")) {
-                String amountStr = Uri.parse(valueBitcoin).getQueryParameter("amount");
-                amount = Double.valueOf(amountStr);
-                String[] data = value.split("\\?" + "amount=");
-                valueBitcoin = data[0].replace(TRANSFER_SCAN_HEAD,"");
-            }
-            if(SupportKeyUril.checkAddress(valueBitcoin)){
-                final String finalValueBitcoin = valueBitcoin;
-                final Double finalAmount = amount;
-                checkIsFriend(valueBitcoin, new OnResultBack() {
-                    @Override
-                    public void call(String status) {
-                        switch (status){
-                            case ID_FRIEND:
-                                TransferToActivity.startActivity(activity, finalValueBitcoin, finalAmount);
-                                break;
-                            case ID_STRANGER:
-                                TransferToActivity.startActivity(activity,finalValueBitcoin,finalAmount);
-                                break;
-                            case ID_INEXISTENCE:
-                                TransferAddressActivity.startActivity(activity,finalValueBitcoin,finalAmount);
-                                break;
-                            default:
-                                break;
-                        }
-                        ActivityUtil.goBack(activity);
-                    }
-                });
-                return;
-            }
-            return;
-        }
-
-        ToastEUtil.makeText(activity, R.string.Login_scan_string_error).show();
     }
 
     /**

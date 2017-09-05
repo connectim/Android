@@ -89,7 +89,7 @@ public class PrivateActivity extends BaseActivity {
 
     @OnClick(R.id.contacts_update_img)
     void updateContact(View view) {
-        PermissionUtil.getInstance().requestPermissom(mActivity,new String[]{PermissionUtil.PERMISSIM_CONTACTS},permissionCallBack);
+        PermissionUtil.getInstance().requestPermission(mActivity,new String[]{PermissionUtil.PERMISSION_CONTACTS},permissionCallBack);
     }
 
     @OnClick(R.id.black_list_ll)
@@ -224,7 +224,7 @@ public class PrivateActivity extends BaseActivity {
         Connect.PhoneBook.Builder builder = Connect.PhoneBook.newBuilder();
         for (int i = 0; i < list.size(); i++) {
             String phone = StringUtil.filterNumber(list.get(i).getPhone());
-            String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.HmacSalt);
+            String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.SaltHMAC);
             Connect.PhoneInfo phoneInfo = Connect.PhoneInfo.newBuilder()
                     .setMobile(phoneHmac)
                     .build();

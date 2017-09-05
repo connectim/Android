@@ -1,7 +1,6 @@
 package connect.activity.set;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,21 +16,16 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.LoginPassCheckUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.EncoPinBean;
+import connect.utils.cryption.EncryptionPinBean;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.bean.PinBean;
 import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**
@@ -124,13 +118,13 @@ public class SafetyPayActivity extends BaseActivity {
      */
     private void requestPayload(final PinBean pinBean, final String pinNew) {
         final CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
-        final EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(BaseCurrency.CATEGORY_BASESEED, pinBean.getBaseSeed(),pinNew);
+        final EncryptionPinBean encoPinBean = SupportKeyUril.encryptionPinDefault(BaseCurrency.CATEGORY_BASESEED, pinBean.getBaseSeed(),pinNew);
         NativeWallet.getInstance().updateWallet(encoPinBean.getPayload(), encoPinBean.getVersion(), new WalletListener<WalletBean>() {
             @Override
             public void success(WalletBean bean) {
                 if (currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY) {
-                    String priKey = SupportKeyUril.decodePinDefult(BaseCurrency.CATEGORY_PRIKEY, currencyEntity.getPayload(), pinBean.getPin());
-                    EncoPinBean priEncoPinBean = SupportKeyUril.encoPinDefult(BaseCurrency.CATEGORY_PRIKEY, priKey, pinNew);
+                    String priKey = SupportKeyUril.decryptionPinDefault(BaseCurrency.CATEGORY_PRIKEY, currencyEntity.getPayload(), pinBean.getPin());
+                    EncryptionPinBean priEncoPinBean = SupportKeyUril.encryptionPinDefault(BaseCurrency.CATEGORY_PRIKEY, priKey, pinNew);
 
                     NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).setCurrencyInfo(priEncoPinBean.getPayload(), null,
                             new WalletListener<WalletOuterClass.Coin>() {

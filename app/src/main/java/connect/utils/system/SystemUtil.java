@@ -23,9 +23,6 @@ import connect.activity.base.BaseApplication;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
-/**
- * Created by john on 2016/11/19.
- */
 public class SystemUtil {
 
     /**
@@ -113,8 +110,8 @@ public class SystemUtil {
      * @return Object
      * @Exception
      */
-    public static void sendPhoneSMS(Context context, String phonenumber, String inviteText) {
-        Uri smsToUri = Uri.parse("smsto:" + phonenumber);
+    public static void sendPhoneSMS(Context context, String phoneNumber, String inviteText) {
+        Uri smsToUri = Uri.parse("smsto:" + phoneNumber);
         Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
         intent.putExtra("sms_body", inviteText);
         context.startActivity(intent);

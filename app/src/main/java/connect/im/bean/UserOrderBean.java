@@ -33,7 +33,7 @@ public class UserOrderBean extends InterParse {
         String priKey = MemoryDataManager.getInstance().getPriKey();
         Connect.GcmData gcmData = null;
         try {
-            gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, priKey, (String) objects[1], ((String) objects[2]).getBytes("utf-8"));
+            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, priKey, (String) objects[1], ((String) objects[2]).getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

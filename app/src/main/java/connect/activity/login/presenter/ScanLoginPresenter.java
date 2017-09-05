@@ -17,6 +17,7 @@ import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -41,7 +42,7 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter {
      */
     @Override
     public void checkString(String value) {
-        if (SupportKeyUril.checkPrikey(value)) {
+        if (SupportKeyUril.checkPriKey(value)) {
             requestExisted(value);
             return;
         }
@@ -85,8 +86,8 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter {
      */
     private void requestExisted(final String priKey) {
         OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_PRIVATE_EXISTED,
-                ByteString.copyFrom(SupportKeyUril.createrBinaryRandom()),
-                SupportKeyUril.EcdhExts.EMPTY,
+                ByteString.copyFrom(SupportKeyUril.createBinaryRandom()),
+                EncryptionUtil.ExtendedECDH.EMPTY,
                 priKey,
                 SupportKeyUril.getPubKeyFromPriKey(priKey),
                 new ResultCall<Connect.HttpResponse>() {
@@ -95,7 +96,7 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter {
                         ProgressUtil.getInstance().dismissProgress();
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY,
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                                     priKey,imResponse.getCipherData());
                             if (structData == null) {
                                 ToastEUtil.makeText(mView.getActivity(),R.string.Network_equest_failed_please_try_again_later,

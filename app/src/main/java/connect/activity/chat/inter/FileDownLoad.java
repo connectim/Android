@@ -4,6 +4,7 @@ import connect.activity.chat.bean.RoomSession;
 import connect.database.MemoryDataManager;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.DownLoadFile;
 import protos.Connect;
@@ -42,9 +43,9 @@ public class FileDownLoad {
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(data);
                         Connect.StructData structData = null;
                         if (roomType == Connect.ChatType.PRIVATE) {//private chat
-                            structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, MemoryDataManager.getInstance().getPriKey(), pukkey, gcmData);
+                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, MemoryDataManager.getInstance().getPriKey(), pukkey, gcmData);
                         } else if (roomType == Connect.ChatType.GROUPCHAT) {//group chat
-                            structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(RoomSession.getInstance().getGroupEcdh()), gcmData);
+                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(RoomSession.getInstance().getGroupEcdh()), gcmData);
                         }
                         byte[] dataFile = structData.getPlainData().toByteArray();
                         fileDownLoad.successDown(dataFile);

@@ -48,6 +48,7 @@ import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import connect.wallet.jni.AllNativeMethod;
@@ -311,9 +312,9 @@ public class CommandBean extends InterParse {
                     GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
                     if (groupEntity == null) {
                         String randPubkey = collaboratives[0];
-                        byte[] ecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), randPubkey);
+                        byte[] ecdhkey = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(), randPubkey);
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
-                        byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, gcmData);
+                        byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, ecdhkey, gcmData);
                         String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
 
                         groupEntity = new GroupEntity();

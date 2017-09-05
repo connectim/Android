@@ -41,7 +41,7 @@ public class BtcCurrencyTest {
         String baseSeed = StringUtil.bytesToHexString(SecureRandom.getSeed(64));
         String salt = StringUtil.bytesToHexString(SecureRandom.getSeed(64));
         String priKey = baseCurrency.createPriKey(baseSeed, salt, 0);
-        assertTrue(SupportKeyUril.checkPrikey(priKey));
+        assertTrue(SupportKeyUril.checkPriKey(priKey));
     }
 
     @Test

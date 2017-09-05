@@ -28,13 +28,7 @@ import connect.utils.GlobalLanguageUtil;
 import connect.utils.log.LogManager;
 import connect.wallet.jni.AllNativeMethod;
 
-/**
- * Created by Administrator on 2017/4/27 0027.
- */
-
 public class SystemDataUtil {
-
-    private static String Tag = "SystemDataUtil";
 
     /**
      * Get the APP version Name
@@ -73,7 +67,6 @@ public class SystemDataUtil {
 
     /**
      * android device id
-     *
      * @return
      */
     public static String getDeviceId() {

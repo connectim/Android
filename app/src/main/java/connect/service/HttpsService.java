@@ -256,7 +256,7 @@ public class HttpsService extends Service {
                 String prikey = MemoryDataManager.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.SALT, prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, prikey, imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
                         if (tokenResponse.getExpired() <= 400) {
@@ -282,14 +282,14 @@ public class HttpsService extends Service {
         final byte[] bytes = SecureRandom.getSeed(64);
 
         Connect.GenerateToken generateToken = Connect.GenerateToken.newBuilder().setSalt(ByteString.copyFrom(bytes)).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_USER_SALT, generateToken, SupportKeyUril.EcdhExts.EMPTY,
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_USER_SALT, generateToken, EncryptionUtil.ExtendedECDH.EMPTY,
                 new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 String prikey = MemoryDataManager.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, prikey, imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
                         byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray());
@@ -370,12 +370,12 @@ public class HttpsService extends Service {
 
     public void groupBackUp(String groupkey, String groupecdhkey) {
         try {
-            String ranprikey = EncryptionUtil.randomPriKey();
-            String randpubkey = EncryptionUtil.randomPubKey(ranprikey);
+            String ranprikey = SupportKeyUril.getNewPriKey();
+            String randpubkey = SupportKeyUril.getPubKeyFromPriKey(ranprikey);
 
             String priKey = MemoryDataManager.getInstance().getPriKey();
-            byte[] ecdhkey = SupportKeyUril.rawECDHkey(priKey, randpubkey);
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdhkey, groupecdhkey.getBytes("UTF-8"));
+            byte[] ecdhkey = SupportKeyUril.getRawECDHKey(priKey, randpubkey);
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, ecdhkey, groupecdhkey.getBytes("UTF-8"));
 
             String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
             String collaFormat = String.format("%1$s/%2$s", randpubkey, groupHex);
@@ -415,9 +415,9 @@ public class HttpsService extends Service {
                     if (infos.length < 2) {
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownGroupBackUp, pubkey);
                     } else {
-                        byte[] ecdHkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
+                        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
-                        ecdHkey = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.EMPTY, ecdHkey, gcmData);
+                        ecdHkey = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, ecdHkey, gcmData);
 
                         try {
                             String groupEcdh = new String(ecdHkey, "UTF-8");
@@ -454,9 +454,9 @@ public class HttpsService extends Service {
 
                     String[] infos = backUpResp.getBackup().split("/");
                     if (infos.length >= 2) {
-                        byte[] ecdHkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
+                        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
-                        structData = DecryptionUtil.decodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, ecdHkey, gcmData);
+                        structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, ecdHkey, gcmData);
                         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData().toByteArray());
                         String groupEcdh = groupMessage.getSecretKey();
                         downGroupBackUpSuccess(pubkey, groupEcdh);
@@ -491,7 +491,7 @@ public class HttpsService extends Service {
     }
 
     public void requestSetPayInfo() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SUNC, ByteString.copyFrom(SupportKeyUril.createrBinaryRandom()),
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SUNC, ByteString.copyFrom(SupportKeyUril.createBinaryRandom()),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {

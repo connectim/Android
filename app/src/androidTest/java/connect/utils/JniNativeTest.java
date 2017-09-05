@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.security.SecureRandom;
 
-import connect.utils.cryption.EncoPinBean;
+import connect.utils.cryption.EncryptionPinBean;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import connect.wallet.jni.AllNativeMethod;
@@ -31,7 +31,7 @@ public class JniNativeTest {
         String prikey = "L58QekqQYviopx1uLxm6rj5Lpbn6i9meP8895rPcMZvrbjkYwsU1";
         byte[] prikeyBytes = prikey.getBytes();
         String prikeyHex = StringUtil.bytesToHexString(prikeyBytes);
-        EncoPinBean pinBean = SupportKeyUril.encoPinDefult(1,prikeyHex, "1234");
+        EncryptionPinBean pinBean = SupportKeyUril.encryptionPinDefault(1,prikeyHex, "1234");
         if(!TextUtils.isEmpty(pinBean.getPayload()) && pinBean.getPayload().contains("error")){
             pinBean.setPayload("");
         }

@@ -44,8 +44,8 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
     }
 
     private void chechPeission(){
-        PermissionUtil.getInstance().requestPermissom(mView.getActivity(),new String[]{PermissionUtil.PERMISSIM_RECORD_AUDIO,
-                PermissionUtil.PERMISSIM_STORAGE},permissomCallBack);
+        PermissionUtil.getInstance().requestPermission(mView.getActivity(),new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO,
+                PermissionUtil.PERMISSION_STORAGE},permissomCallBack);
     }
 
     @Override

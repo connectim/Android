@@ -37,7 +37,7 @@ public class LocalLoginPresenter implements LocalLoginContract.Presenter {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 ProgressUtil.getInstance().dismissProgress();
-                if(s != null && SupportKeyUril.checkPrikey(s)){
+                if(s != null && SupportKeyUril.checkPriKey(s)){
                     userBean.setPriKey(s);
                     userBean.setPubKey(AllNativeMethod.cdGetPubKeyFromPrivKey(userBean.getPriKey()));
                     userBean.setAddress(AllNativeMethod.cdGetBTCAddrFromPubKey(userBean.getPubKey()));

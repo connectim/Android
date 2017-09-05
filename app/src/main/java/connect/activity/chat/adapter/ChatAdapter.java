@@ -217,7 +217,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
                         try {
                             Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(index.getContents());
                             String thumb = photoMessage.getThum();
-                            String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(index.getMessage_ower(), index.getMessage_id(), FileUtil.FileType.IMG);
+                            String path = FileUtil.isLocalFile(thumb) ? thumb : FileUtil.newContactFileName(index.getMessage_ower(), index.getMessage_id(), FileUtil.FileType.IMG);
                             imgList.add(path);
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();

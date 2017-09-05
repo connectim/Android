@@ -160,7 +160,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
                 String invitor = reviewed.getUserInfo().getPubKey();
                 ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(invitor);
                 if (friend == null) {
-                    String address = SupportKeyUril.getAddressFromPubkey(invitor);
+                    String address = SupportKeyUril.getAddressFromPubKey(invitor);
                     StrangerInfoActivity.startActivity(activity, address, SourceType.GROUP);
                 } else {
                     FriendInfoActivity.startActivity(activity, invitor);

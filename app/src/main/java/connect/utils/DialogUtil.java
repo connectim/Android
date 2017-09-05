@@ -34,7 +34,6 @@ import connect.widget.payment.PayEditView;
 
 /**
  * Dialog Tooltip tool
- * Created by Administrator on 2016/8/18.
  */
 public class DialogUtil {
 
@@ -46,19 +45,17 @@ public class DialogUtil {
      * @param message
      * @param cancelButton
      * @param okButton
-     * @param iscancel
+     * @param isCancel
      * @param onItemClickListener
      * @return
      */
-    public static Dialog showAlertTextView(Context mContext, String title,
-                                           String message, String cancelButton, String okButton, boolean iscancel,
-                                           final OnItemClickListener onItemClickListener) {
-        return showAlertTextView(mContext,title,message,cancelButton,okButton,iscancel,onItemClickListener,true);
+    public static Dialog showAlertTextView(Context mContext, String title, String message, String cancelButton, String okButton,
+                                           boolean isCancel, final OnItemClickListener onItemClickListener) {
+        return showAlertTextView(mContext,title,message,cancelButton,okButton,isCancel,onItemClickListener,true);
     }
 
-    public static Dialog showAlertTextView(Context mContext, String title,
-                                           String message, String cancelButton, String okButton, boolean iscancel,
-                                           final OnItemClickListener onItemClickListener,boolean Outside) {
+    public static Dialog showAlertTextView(Context mContext, String title, String message, String cancelButton, String okButton,
+                                           boolean isCancel, final OnItemClickListener onItemClickListener,boolean Outside) {
         final Dialog dialog = new Dialog(mContext, R.style.Dialog);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.dialog_hint, null);
@@ -75,7 +72,7 @@ public class DialogUtil {
         }
 
         messageTextView.setText(message);
-        if (iscancel) {
+        if (isCancel) {
             view.findViewById(R.id.centre_line).setVisibility(View.GONE);
             cancelBtn.setVisibility(View.GONE);
         } else {
@@ -120,8 +117,8 @@ public class DialogUtil {
      * @param onItemClickListener
      * @return
      */
-    public static Dialog showEditView(Context mContext, String title, String leftStr, String rightStr,
-                                      String message, String hinit,String text,boolean isGone ,int maxLength,final OnItemClickListener onItemClickListener) {
+    public static Dialog showEditView(Context mContext, String title, String leftStr, String rightStr, String message, String hinit,
+                                      String text,boolean isGone ,int maxLength,final OnItemClickListener onItemClickListener) {
         final Dialog dialog = new Dialog(mContext, R.style.Dialog);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.dialog_edit, null);

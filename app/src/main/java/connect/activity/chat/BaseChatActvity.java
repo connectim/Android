@@ -350,7 +350,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 chatAdapter.removeItem((MsgExtEntity) objects[0]);
                 break;
             case RECENT_ALBUM://Picture taken recently
-                PermissionUtil.getInstance().requestPermissom(activity, new String[]{PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
+                PermissionUtil.getInstance().requestPermission(activity, new String[]{PermissionUtil.PERMISSION_STORAGE}, permissomCallBack);
                 break;
             case OPEN_ALBUM://Open the photo album
                 AlbumActivity.startActivity(activity, AlbumActivity.OPEN_ALBUM_CODE);
@@ -578,9 +578,9 @@ public abstract class BaseChatActvity extends BaseActivity {
         @Override
         public void granted(String[] permissions) {
             if (permissions != null || permissions.length > 0) {
-                if (permissions[0].equals(PermissionUtil.PERMISSIM_RECORD_AUDIO)) {
+                if (permissions[0].equals(PermissionUtil.PERMISSION_RECORD_AUDIO)) {
                     isOpenRecord = true;
-                } else if (permissions[0].equals(PermissionUtil.PERMISSIM_STORAGE)) {
+                } else if (permissions[0].equals(PermissionUtil.PERMISSION_STORAGE)) {
                     DialogView dialogView = new DialogView();
                     dialogView.showPhotoPick(activity);
                 }
@@ -590,7 +590,7 @@ public abstract class BaseChatActvity extends BaseActivity {
         @Override
         public void deny(String[] permissions) {
             if (permissions != null || permissions.length > 0) {
-                if (permissions[0].equals(PermissionUtil.PERMISSIM_RECORD_AUDIO)) {
+                if (permissions[0].equals(PermissionUtil.PERMISSION_RECORD_AUDIO)) {
                     isOpenRecord = false;
                 }
             }

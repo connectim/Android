@@ -14,6 +14,7 @@ import connect.database.green.bean.MessageEntity;
 import connect.im.bean.MsgType;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
@@ -158,7 +159,7 @@ public abstract class BaseChat<T> implements Serializable {
         for (MsgExtEntity detailEntity : detailEntities) {
             try {
                 Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(detailEntity.getContent()));
-                byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, localHashKeys, gcmData);
+                byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
                 detailEntity.setContents(contents);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -181,7 +182,7 @@ public abstract class BaseChat<T> implements Serializable {
 
         byte[] localHashKeys = SupportKeyUril.localHashKey().getBytes();
         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(messageEntity.getContent()));
-        byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, localHashKeys, gcmData);
+        byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
 
         MsgExtEntity msgExtEntity = messageEntity.transToExtEntity();
         msgExtEntity.setContents(contents);

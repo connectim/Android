@@ -82,8 +82,8 @@ public class FileUtil {
         String index = randomFileName();
         index = index + type.getFileType();
 
-        String contactkey = RoomSession.getInstance().getRoomKey();
-        index = TextUtils.isEmpty(contactkey) ? index : contactkey + "/" + index;
+        String contactKey = RoomSession.getInstance().getRoomKey();
+        index = TextUtils.isEmpty(contactKey) ? index : contactKey + "/" + index;
         return createNewFile(index);
     }
 
@@ -142,7 +142,7 @@ public class FileUtil {
      * ==========================================================================
      */
 
-    public static boolean islocalFile(String path) {
+    public static boolean isLocalFile(String path) {
         return !RegularUtil.matches(path, RegularUtil.VERIFICATION_HTTP);
     }
 

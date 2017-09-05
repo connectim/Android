@@ -148,8 +148,8 @@ public class ChatActivity extends BaseChatActvity {
         scrollHelper.attachToRecycleView(recyclerChat);
         loadChatInfor();
 
-        PermissionUtil.getInstance().requestPermissom(activity,
-                new String[]{PermissionUtil.PERMISSIM_RECORD_AUDIO, PermissionUtil.PERMISSIM_STORAGE},
+        PermissionUtil.getInstance().requestPermission(activity,
+                new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO, PermissionUtil.PERMISSION_STORAGE},
                 permissomCallBack);
     }
 

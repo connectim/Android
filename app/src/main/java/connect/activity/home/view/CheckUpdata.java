@@ -71,7 +71,7 @@ public class CheckUpdata {
                     public void confirm(String value) {
                         if (!TextUtils.isEmpty(versionResponse.getUpgradeUrl())) {
                             downLoadpath = versionResponse.getUpgradeUrl();
-                            PermissionUtil.getInstance().requestPermissom(activity, new String[]{PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
+                            PermissionUtil.getInstance().requestPermission(activity, new String[]{PermissionUtil.PERMISSION_STORAGE}, permissomCallBack);
                         }
                     }
 

@@ -1,10 +1,6 @@
 package connect.utils.cryption;
 
-/**
- * Created by Administrator on 2017/7/13 0013.
- */
-
-public class EncoPinBean {
+public class EncryptionPinBean {
     private String payload;
     private int version;
     private int n;

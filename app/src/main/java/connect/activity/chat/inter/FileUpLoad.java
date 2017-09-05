@@ -60,9 +60,9 @@ public abstract class FileUpLoad {
         LogManager.getLogger().d(Tag, "ByteString size:" + fileBytes.size());
 
         if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
-            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, priKey, baseChat.chatKey(), fileBytes);
+            gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, priKey, baseChat.chatKey(), fileBytes);
         } else if (baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-            gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), fileBytes);
+            gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), fileBytes);
         }
         return gcmData;
     }

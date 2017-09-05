@@ -249,10 +249,10 @@ public class PaymentPwd implements View.OnClickListener{
     private void decodePass(String pass){
         if(!TextUtils.isEmpty(paySetBean.getPayPin())){
             try {
-                byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),
+                byte[] ecdh  = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(),
                         MemoryDataManager.getInstance().getPubKey());
                 byte[] valueByte = StringUtil.hexStringToBytes(paySetBean.getPayPin());
-                byte[] passByte = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,ecdh,Connect.GcmData.parseFrom(valueByte));
+                byte[] passByte = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE,ecdh,Connect.GcmData.parseFrom(valueByte));
                 String payPass = new String(passByte,"UTF-8");
                 if (pass.equals(payPass)) {// Enter the payment password correctly
                     onTrueListener.onTrue(pass);
@@ -386,7 +386,7 @@ public class PaymentPwd implements View.OnClickListener{
      * @param pass
      */
     public void requestSetPayInfo(final String pass) {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SUNC, ByteString.copyFrom(SupportKeyUril.createrBinaryRandom()),
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SUNC, ByteString.copyFrom(SupportKeyUril.createBinaryRandom()),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
@@ -416,9 +416,9 @@ public class PaymentPwd implements View.OnClickListener{
      * @param pass
      */
     private void requestSetPay(String pass){
-        byte[] ecdh  = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(),MemoryDataManager.getInstance().getPubKey());
+        byte[] ecdh  = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(),MemoryDataManager.getInstance().getPubKey());
         try {
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, ecdh, pass.getBytes("UTF-8"));
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, ecdh, pass.getBytes("UTF-8"));
             byte[] gcmDataByte = gcmData.toByteArray();
             final String encryPass = StringUtil.bytesToHexString(gcmDataByte);
             Connect.PayPin payPin = Connect.PayPin.newBuilder()

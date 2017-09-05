@@ -122,7 +122,7 @@ public class TransactionActivity extends BaseActivity {
                     Connect.Transactions transactions = Connect.Transactions.parseFrom(structData.getPlainData());
 
                     List<Connect.Transaction> list = transactions.getTransactionsList();
-                    if(list == null || list.size() == 0){
+                    if((list == null || list.size() == 0) && page == 1){
                         noDataLin.setVisibility(View.VISIBLE);
                         refreshview.setVisibility(View.GONE);
                     }else{

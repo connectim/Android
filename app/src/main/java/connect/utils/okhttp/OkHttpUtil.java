@@ -34,12 +34,9 @@ public class OkHttpUtil {
         return mInstance;
     }
 
-    public void get(String url, final ResultCall resultCall){
-        HttpRequest.getInstance().get(url,resultCall);
-    }
-
     /**
      * post(receive ProtoBuff)
+     *
      * @param url
      * @param body
      * @param resultCall
@@ -52,6 +49,7 @@ public class OkHttpUtil {
 
     /**
      * post(receive ByteString)
+     *
      * @param url
      * @param bytes
      * @param resultCall
@@ -66,12 +64,13 @@ public class OkHttpUtil {
 
     /**
      * post(receive ProtoBuff)
+     *
      * @param url
      * @param body
      * @param exts
      * @param resultCall
      */
-    public void postEncrySelf(String url, GeneratedMessageV3 body,SupportKeyUril.EcdhExts exts, final ResultCall resultCall){
+    public void postEncrySelf(String url, GeneratedMessageV3 body,EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
         LogManager.getLogger().http("param:" + body.toString());
         ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
         Connect.IMRequest imRequest = getIMRequest(exts,MemoryDataManager.getInstance().getPriKey(),
@@ -91,17 +90,27 @@ public class OkHttpUtil {
      * @param pubKey
      * @param resultCall
      */
-    public void postEncry(String url, GeneratedMessageV3 body, SupportKeyUril.EcdhExts exts, String priKey, String pubKey,final ResultCall resultCall){
+    public void postEncry(String url, GeneratedMessageV3 body, EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey,final ResultCall resultCall){
         LogManager.getLogger().http("param:" + body.toString());
         ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
         postEncry(url,bytes,exts,priKey,pubKey,resultCall);
     }
 
-    public void postEncry(String url, ByteString body, SupportKeyUril.EcdhExts exts, String priKey, String pubKey,final ResultCall resultCall){
+    public void postEncry(String url, ByteString body, EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey,final ResultCall resultCall){
         Connect.IMRequest imRequest = getIMRequest(exts,priKey,pubKey,body);
         if(null == imRequest)
             return;
         HttpRequest.getInstance().post(url,imRequest,resultCall);
+    }
+
+    /**
+     * get request
+     *
+     * @param url
+     * @param resultCall
+     */
+    public void get(String url, final ResultCall resultCall){
+        HttpRequest.getInstance().get(url,resultCall);
     }
 
     /**
@@ -119,10 +128,10 @@ public class OkHttpUtil {
             Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_Request_Error,Toast.LENGTH_LONG).show();
             return null;
         }
-        return getIMRequest(SupportKeyUril.EcdhExts.SALT, priKey, pubKey, bytes);
+        return getIMRequest(EncryptionUtil.ExtendedECDH.SALT, priKey, pubKey, bytes);
     }
 
-    private Connect.IMRequest getIMRequest(SupportKeyUril.EcdhExts exts, String priKey, String pubKey, ByteString bytes) {
+    private Connect.IMRequest getIMRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey, ByteString bytes) {
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
         if(null == gcmData){
             LogManager.getLogger().i("-----ecdh-----","ecdh null");

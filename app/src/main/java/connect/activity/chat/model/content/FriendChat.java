@@ -82,7 +82,7 @@ public class FriendChat extends NormalChat {
 
             loadUserCookie();
             loadFriendCookie(chatKey());
-            SupportKeyUril.EcdhExts ecdhExts = null;
+            EncryptionUtil.ExtendedECDH ecdhExts = null;
             Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
             Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
 
@@ -90,14 +90,14 @@ public class FriendChat extends NormalChat {
                 case NORMAL:
                     priKey = MemoryDataManager.getInstance().getPriKey();
                     friendKey = chatKey();
-                    ecdhExts = SupportKeyUril.EcdhExts.EMPTY;
+                    ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
                     break;
                 case HALF:
                     priKey = userCookie.getPriKey();
                     randomSalt = userCookie.getSalt();
 
                     friendKey = chatKey();
-                    ecdhExts = SupportKeyUril.EcdhExts.OTHER;
+                    ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
                     ecdhExts.setBytes(randomSalt);
                     sessionBuilder.setSalt(ByteString.copyFrom(randomSalt))
                             .setPubKey(userCookie.getPubKey());
@@ -113,7 +113,7 @@ public class FriendChat extends NormalChat {
                         sendPushMsg(msgExtEntity);
                         return;
                     }
-                    ecdhExts = SupportKeyUril.EcdhExts.OTHER;
+                    ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
                     ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt));
                     sessionBuilder.setSalt(ByteString.copyFrom(randomSalt)).
                             setPubKey(userCookie.getPubKey()).

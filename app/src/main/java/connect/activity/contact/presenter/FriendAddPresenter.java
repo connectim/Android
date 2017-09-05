@@ -171,7 +171,7 @@ public class FriendAddPresenter implements FriendAddContract.Presenter{
         Connect.PhoneBook.Builder builder = Connect.PhoneBook.newBuilder();
         for (int i = 0; i < localList.size(); i++) {
             String phone = StringUtil.filterNumber(localList.get(i).getPhone());
-            String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.HmacSalt);
+            String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.SaltHMAC);
             Connect.PhoneInfo phoneInfo = Connect.PhoneInfo.newBuilder()
                     .setMobile(phoneHmac)
                     .build();

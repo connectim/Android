@@ -132,7 +132,7 @@ public class TransferSingleDetailPresenter implements TransferSingleDetailContra
                 avatar = friendEntity.getAvatar();
                 name = friendEntity.getUsername();
             } else {
-                String address = SupportKeyUril.getAddressFromPubkey(pubkey);
+                String address = SupportKeyUril.getAddressFromPubKey(pubkey);
                 Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                         .setCriteria(address)
                         .build();

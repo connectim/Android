@@ -116,7 +116,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                         } else if (direct == MsgDirect.From) {
                             ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
                             if (friend == null) {
-                                String address = SupportKeyUril.getAddressFromPubkey(userInfo.getUid());
+                                String address = SupportKeyUril.getAddressFromPubKey(userInfo.getUid());
                                 StrangerInfoActivity.startActivity((Activity) context, address, SourceType.GROUP);
                             } else {
                                 FriendInfoActivity.startActivity((Activity) context, userInfo.getUid());
@@ -154,7 +154,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                             String memberKey=msgExtEntity.getMessage_from();
                             ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(memberKey);
                             if (friend == null) {
-                                String address = SupportKeyUril.getAddressFromPubkey(memberKey);
+                                String address = SupportKeyUril.getAddressFromPubKey(memberKey);
                                 StrangerInfoActivity.startActivity((Activity) context, address, SourceType.GROUP);
                             } else {
                                 FriendInfoActivity.startActivity((Activity) context, memberKey);

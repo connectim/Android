@@ -49,8 +49,8 @@ public class RandomSendPresenter implements RandomSendContract.Presenter {
     }
 
     private void chechPeission() {
-        PermissionUtil.getInstance().requestPermissom(mView.getActivity(),
-                new String[]{PermissionUtil.PERMISSIM_RECORD_AUDIO, PermissionUtil.PERMISSIM_STORAGE},permissionCallBack);
+        PermissionUtil.getInstance().requestPermission(mView.getActivity(),
+                new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO, PermissionUtil.PERMISSION_STORAGE},permissionCallBack);
     }
 
     @Override
@@ -99,6 +99,9 @@ public class RandomSendPresenter implements RandomSendContract.Presenter {
      * Collect voice countdown
      */
     private void timing() {
+        if (iMediaRecorder == null) {
+            return;
+        }
         dbArray = new ArrayList<Double>();
         videoLength = 0;
         runnable = new Runnable() {

@@ -135,7 +135,7 @@ public class ChatSendManager {
                 ByteBuffer byteBuffer = null;
                 if (transfer) { // transferData,Encapsulating server checksum data
                     String priKey = MemoryDataManager.getInstance().getPriKey();
-                    Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.NONE,
+                    Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE,
                             Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), bytes);
                     String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
                     Connect.IMTransferData transferData = Connect.IMTransferData.newBuilder().

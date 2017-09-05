@@ -67,7 +67,7 @@ public class MsgVideoHolder extends MsgChatHolder {
             @Override
             public void onClick(View v) {
                 String url = videoMessage.getUrl();
-                if (FileUtil.islocalFile(url)) {
+                if (FileUtil.isLocalFile(url)) {
                     startPlayVideo(url, videoMessage.getTimeLength(), "");
                 } else {
                     final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(),
@@ -113,7 +113,7 @@ public class MsgVideoHolder extends MsgChatHolder {
 
         if (videoProView != null) {
             String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
-            if (FileUtil.islocalFile(videoMessage.getUrl()) || FileUtil.isExistFilePath(localPath)) {
+            if (FileUtil.isLocalFile(videoMessage.getUrl()) || FileUtil.isExistFilePath(localPath)) {
                 videoProView.loadState(true, 0);
             } else {
                 videoProView.loadState(false, 0);
@@ -131,7 +131,7 @@ public class MsgVideoHolder extends MsgChatHolder {
         try {
             Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
             String url = videoMessage.getUrl();
-            if (FileUtil.islocalFile(url)) {
+            if (FileUtil.isLocalFile(url)) {
                 isDown = true;
             } else {
                 final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
@@ -157,7 +157,7 @@ public class MsgVideoHolder extends MsgChatHolder {
             String url = videoMessage.getUrl();
             final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
 
-            if (FileUtil.islocalFile(url)) {
+            if (FileUtil.isLocalFile(url)) {
                 ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), url, videoMessage.getTimeLength());
             } else if (FileUtil.isExistFilePath(localPath)) {
                 ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());

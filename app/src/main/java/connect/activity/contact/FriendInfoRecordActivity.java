@@ -128,7 +128,7 @@ public class FriendInfoRecordActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.FriendBillsMessage friendBillsMessage = Connect.FriendBillsMessage.parseFrom(structData.getPlainData());
-                    if (friendBillsMessage.getFriendBillsList().size() == 0) {
+                    if (friendBillsMessage.getFriendBillsList().size() == 0 && page == 1) {
                         noDataLin.setVisibility(View.VISIBLE);
                         refreshview.setVisibility(View.GONE);
                     } else {

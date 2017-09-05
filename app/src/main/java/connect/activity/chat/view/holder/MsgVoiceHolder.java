@@ -61,7 +61,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                 msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
-                if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(url)) {
+                if (FileUtil.isLocalFile(url) || FileUtil.isExistFilePath(url)) {
                     voiceImg.startPlay(url);
                 } else {
                     msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());

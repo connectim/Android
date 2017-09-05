@@ -87,7 +87,7 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
                 long createTime = cursorGetLong(cursor, "CREATETIME");
 
                 Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(tempContent));
-                byte[] contents = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, localHashKeys, gcmData);
+                byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
                 MsgDefinBean definBean = new Gson().fromJson(new String(contents), MsgDefinBean.class);
 
 
@@ -244,7 +244,7 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
     }
 
     public String encryptMessageByteArray(byte[] messageByteArray) {
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, SupportKeyUril.localHashKey().getBytes(), messageByteArray);
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SupportKeyUril.localHashKey().getBytes(), messageByteArray);
         return StringUtil.bytesToHexString(gcmData.toByteArray());
     }
 

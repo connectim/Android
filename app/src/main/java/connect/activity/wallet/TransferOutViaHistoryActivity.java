@@ -29,7 +29,6 @@ import protos.Connect;
 
 /**
  * External transfer history
- * Created by Administrator on 2016/12/20.
  */
 public class TransferOutViaHistoryActivity extends BaseActivity {
 
@@ -128,7 +127,7 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
                     Connect.ExternalBillingInfos externalBillingInfos = Connect.ExternalBillingInfos.parseFrom(structData.getPlainData());
                     List<Connect.ExternalBillingInfo> list = externalBillingInfos.getExternalBillingInfosList();
 
-                    if (list == null || list.size() == 0) {
+                    if ((list == null || list.size() == 0) && page == 1) {
                         noDataLin.setVisibility(View.VISIBLE);
                         refreshview.setVisibility(View.GONE);
                     } else {

@@ -311,8 +311,8 @@ public class GestureLockViewGroup extends RelativeLayout {
             return false;
         }
 
-        priKey = SupportKeyUril.decodePri(mAnswer, salt, value);
-        return priKey != null && SupportKeyUril.checkPrikey(priKey);
+        priKey = SupportKeyUril.decryptionPri(mAnswer, salt, value);
+        return priKey != null && SupportKeyUril.checkPriKey(priKey);
     }
 
     public String getPriKey() {

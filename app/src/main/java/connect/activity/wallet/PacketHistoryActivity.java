@@ -121,16 +121,17 @@ public class PacketHistoryActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.RedPackageInfos redPackageInfos = Connect.RedPackageInfos.parseFrom(structData.getPlainData());
                     List<Connect.RedPackageInfo> list = redPackageInfos.getRedPackageInfosList();
-                    if (ProtoBufUtil.getInstance().checkProtoBuf(redPackageInfos) && list.size() > 0) {
+
+                    if ((!ProtoBufUtil.getInstance().checkProtoBuf(redPackageInfos) || list.size() == 0) && page == 1) {
+                        noDataLin.setVisibility(View.VISIBLE);
+                        refreshview.setVisibility(View.GONE);
+                    } else {
                         if (page > 1) {
                             redHistoryAdapter.setNotifyData(list, false);
                         } else {
                             redHistoryAdapter.setNotifyData(list, true);
                         }
                         refreshview.setRefreshing(false);
-                    } else {
-                        noDataLin.setVisibility(View.VISIBLE);
-                        refreshview.setVisibility(View.GONE);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

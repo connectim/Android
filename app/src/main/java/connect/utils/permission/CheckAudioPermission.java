@@ -1,8 +1,5 @@
 package connect.utils.permission;
 
-/**
- * Created by Administrator on 2017/3/4.
- */
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;

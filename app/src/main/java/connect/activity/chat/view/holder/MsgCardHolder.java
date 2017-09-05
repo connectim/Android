@@ -41,7 +41,7 @@ public class MsgCardHolder extends MsgChatHolder {
             public void onClick(View v) {
                 ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(cardMessage.getUid());
                 if (entity == null) {
-                    String address = SupportKeyUril.getAddressFromPubkey(cardMessage.getUid());
+                    String address = SupportKeyUril.getAddressFromPubKey(cardMessage.getUid());
                     StrangerInfoActivity.startActivity((Activity) context, address, SourceType.CARD);
                 } else {
                     FriendInfoActivity.startActivity((Activity) context, cardMessage.getUid());

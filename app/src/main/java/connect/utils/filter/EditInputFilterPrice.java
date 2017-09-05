@@ -9,46 +9,46 @@ import java.util.regex.Pattern;
 import connect.utils.RegularUtil;
 
 /**
- * Input price of filters.
+ * Filter the size of the input number
  */
 public class EditInputFilterPrice implements InputFilter {
 
     private double maxValue = 1000;
     private int pontintLength = 2;
-    Pattern p;
+    Pattern pattern;
 
     public EditInputFilterPrice(){
-        p = Pattern.compile("[0-9]*");
+        pattern = Pattern.compile("[0-9]*");
     }
 
     public EditInputFilterPrice(Double maxValue, int pontintLength) {
-        p = Pattern.compile("[0-9]*");
+        pattern = Pattern.compile("[0-9]*");
         this.maxValue = maxValue;
         this.pontintLength = pontintLength;
     }
 
     @Override
     public CharSequence filter(CharSequence src, int start, int end, Spanned dest, int dstart, int dend) {
-        String oldtext =  dest.toString();
-        System.out.println(oldtext);
+        String oldText =  dest.toString();
+        System.out.println(oldText);
         if ("".equals(src.toString())) {
             return null;
         }
-        Matcher m = p.matcher(src);
-        if (oldtext.contains(".")) {
-            if (!m.matches()) {
+        Matcher matcher = pattern.matcher(src);
+        if (oldText.contains(".")) {
+            if (!matcher.matches()) {
                 return null;
             }
         } else {
-            if (!m.matches() && !src.equals(".")) {
+            if (!matcher.matches() && !src.equals(".")) {
                 return null;
             }
         }
-        if (!src.toString().equals("") && RegularUtil.matches(oldtext, RegularUtil.VERIFICATION_AMOUT)) {
-            if ((oldtext + src.toString()).equals(".")) {
+        if (!src.toString().equals("") && RegularUtil.matches(oldText, RegularUtil.VERIFICATION_AMOUT)) {
+            if ((oldText + src.toString()).equals(".")) {
                 return "";
             }
-            StringBuffer oldStr = new StringBuffer(oldtext);
+            StringBuffer oldStr = new StringBuffer(oldText);
             oldStr.insert(dstart,src + "");
             double dold = Double.parseDouble(oldStr.toString());
             if (dold > maxValue) {
@@ -59,9 +59,9 @@ public class EditInputFilterPrice implements InputFilter {
                 }
             }
         }
-        if (oldtext.contains(".")) {
-            int index = oldtext.indexOf(".");
-            int len = oldtext.length() - 1 - index;
+        if (oldText.contains(".")) {
+            int index = oldText.indexOf(".");
+            int len = oldText.length() - 1 - index;
             if (index < dstart) {
                 len ++;
             }

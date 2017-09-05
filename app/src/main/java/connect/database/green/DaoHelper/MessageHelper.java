@@ -107,7 +107,7 @@ public class MessageHelper extends BaseDao {
     }
 
     public MsgExtEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(SupportKeyUril.EcdhExts.NONE, SupportKeyUril.localHashKey().getBytes(), contents);
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SupportKeyUril.localHashKey().getBytes(), contents);
 
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.setMessage_id(messageid);

@@ -31,8 +31,8 @@ public class TakePicturePresenter implements TakePictureContract.Presenter{
     @Override
     public void start() {
         cameraManager = new CameraManager();
-        PermissionUtil.getInstance().requestPermissom(mView.getActivity(), new String[]{PermissionUtil.PERMISSIM_CAMERA,
-                PermissionUtil.PERMISSIM_STORAGE}, permissionCallBack);
+        PermissionUtil.getInstance().requestPermission(mView.getActivity(), new String[]{PermissionUtil.PERMISSION_CAMERA,
+                PermissionUtil.PERMISSION_STORAGE}, permissionCallBack);
     }
 
     private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {

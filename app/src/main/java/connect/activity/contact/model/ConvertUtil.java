@@ -17,6 +17,7 @@ import connect.database.green.bean.FriendRequestEntity;
 import connect.activity.contact.presenter.FriendAddPresenter;
 import connect.activity.contact.bean.PhoneContactBean;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
@@ -36,7 +37,7 @@ public class ConvertUtil {
         requestEntity.setPub_key(receiver.getSender().getPubKey());
         requestEntity.setStatus(1);
         requestEntity.setRead(0);
-        byte[] tipsByte = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE, MemoryDataManager.getInstance().getPriKey(),
+        byte[] tipsByte = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, MemoryDataManager.getInstance().getPriKey(),
                 receiver.getSender().getPubKey(),receiver.getTips());
         String rusult = "";
         try {
@@ -89,7 +90,7 @@ public class ConvertUtil {
                 }
 
                 for (PhoneContactBean contactBean : localList) {
-                    String phoneHmac = SupportKeyUril.hmacSHA512(contactBean.getPhone(),SupportKeyUril.HmacSalt);
+                    String phoneHmac = SupportKeyUril.hmacSHA512(contactBean.getPhone(),SupportKeyUril.SaltHMAC);
                     boolean isAdd = true;
                     for(PhoneContactBean serverContactBean : arrayList){
                         if (serverContactBean.getPhone().equals(phoneHmac)) {

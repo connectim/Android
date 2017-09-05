@@ -29,6 +29,9 @@ public class CreateScan {
 
     public Bitmap generateQRCode(String content,int colorBg) {
         try {
+            if(content == null){
+                content = "";
+            }
             QRCodeWriter writer = new QRCodeWriter();
             Hashtable hints = new Hashtable();
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8");

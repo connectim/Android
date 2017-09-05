@@ -1,7 +1,6 @@
 package connect.wallet.cwallet;
 
 import android.app.Activity;
-import android.text.TextUtils;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
@@ -10,10 +9,9 @@ import java.util.Map;
 
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.SharePreferenceUser;
-import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyEntity;
 import connect.utils.StringUtil;
-import connect.utils.cryption.EncoPinBean;
+import connect.utils.cryption.EncryptionPinBean;
 import connect.utils.cryption.SupportKeyUril;
 import connect.wallet.cwallet.account.BtcCoinAccount;
 import connect.wallet.cwallet.account.CoinAccount;
@@ -224,7 +222,7 @@ public class NativeWallet {
         String salt = "";
         switch (category){
             case BaseCurrency.CATEGORY_PRIKEY:
-                EncoPinBean encoPinBean = SupportKeyUril.encoPinDefult(BaseCurrency.CATEGORY_PRIKEY,value,pin);
+                EncryptionPinBean encoPinBean = SupportKeyUril.encryptionPinDefault(BaseCurrency.CATEGORY_PRIKEY,value,pin);
                 payload = encoPinBean.getPayload();
                 break;
             case BaseCurrency.CATEGORY_BASESEED:

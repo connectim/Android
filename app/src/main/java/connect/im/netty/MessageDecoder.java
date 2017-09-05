@@ -7,6 +7,7 @@ import java.util.List;
 import connect.im.bean.Session;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -86,7 +87,7 @@ public class MessageDecoder extends ByteToMessageDecoder{
             throw new Exception("Validation fails");
         }
 
-        byte[] bytes = DecryptionUtil.decodeAESGCM(SupportKeyUril.EcdhExts.NONE,
+        byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE,
                 Session.getInstance().getUserCookie("TEMPCOOKIE").getSalt(), imTransferData.getCipherData());
         return Connect.StructData.parseFrom(bytes);
     }

@@ -58,7 +58,7 @@ public class MsgImgHolder extends MsgChatHolder {
             @Override
             public void onClick(View v) {
                 String thumb = photoMessage.getThum();
-                String path = FileUtil.islocalFile(thumb) ? thumb : FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.IMG);
+                String path = FileUtil.isLocalFile(thumb) ? thumb : FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.IMG);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.IMGVIEWER, path);
 
                 if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
@@ -125,8 +125,8 @@ public class MsgImgHolder extends MsgChatHolder {
         String localPath = FileUtil.newContactFileName(getMsgExtEntity().getMessage_ower(),
                 getMsgExtEntity().getMessage_id(), FileUtil.FileType.IMG);
 
-        if (FileUtil.islocalFile(url) || FileUtil.isExistFilePath(localPath)) {
-            String local = FileUtil.islocalFile(url) ? url : localPath;
+        if (FileUtil.isLocalFile(url) || FileUtil.isExistFilePath(localPath)) {
+            String local = FileUtil.isLocalFile(url) ? url : localPath;
             ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(getMsgExtEntity().getMessageType()), local);
         }
     }

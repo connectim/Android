@@ -86,8 +86,8 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     public void agreeRequest(String pubkey,String code,String address) {
         Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
                 .setSecretKey(groupEntity.getEcdh_key()).build();
-        byte[] memberecdhkey = SupportKeyUril.rawECDHkey(MemoryDataManager.getInstance().getPriKey(), pubkey);
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(SupportKeyUril.EcdhExts.EMPTY, memberecdhkey, createGroupMessage.toByteString());
+        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(), pubkey);
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
         String mypubkey = MemoryDataManager.getInstance().getPubKey();
         String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
