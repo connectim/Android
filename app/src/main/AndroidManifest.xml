@@ -361,38 +361,55 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
 
-        <activity android:name="connect.activity.chat.exts.TransferSingleDetailActivity"/>
-        <activity android:name="connect.activity.chat.set.GroupNameActivity">
+        <activity android:name="connect.activity.chat.exts.TransferSingleDetailActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name="connect.activity.chat.set.GroupNameActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.set.GroupMyNameActivity">
+        <activity android:name="connect.activity.chat.set.GroupMyNameActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.set.GroupManageActivity">
+        <activity android:name="connect.activity.chat.set.GroupManageActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.set.GroupQRActivity">
+        <activity android:name="connect.activity.chat.set.GroupQRActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.set.GroupIntroduceActivity">
+        <activity android:name="connect.activity.chat.set.GroupIntroduceActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.set.GroupOwnerToActivity">
+        <activity android:name="connect.activity.chat.set.GroupOwnerToActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.exts.HandleGroupRequestActivity">
+        <activity android:name="connect.activity.chat.exts.HandleGroupRequestActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.exts.GroupCrowdingRecordsActivity">
+        <activity android:name="connect.activity.chat.exts.GroupCrowdingRecordsActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.exts.ApplyJoinGroupActivity">
+        <activity android:name="connect.activity.chat.exts.ApplyJoinGroupActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.exts.OuterWebsiteActivity">
+        <activity android:name="connect.activity.chat.exts.OuterWebsiteActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.common.selefriend.ConversationActivity">
+        <activity android:name="connect.activity.common.selefriend.ConversationActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.common.selefriend.NewConversationActivity">
+        <activity android:name="connect.activity.common.selefriend.NewConversationActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.exts.GroupAtActivity">
+        <activity android:name="connect.activity.chat.exts.GroupAtActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.exts.GoogleMapActivity">
+        <activity android:name="connect.activity.chat.exts.GoogleMapActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.widget.album.AlbumActivity">
+        <activity android:name="connect.widget.album.AlbumActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.home.DBUpdateActivity">
+        <activity android:name="connect.activity.home.DBUpdateActivity"
+                  android:screenOrientation="portrait">
         </activity>
 
         <service
@@ -403,17 +420,21 @@
             </intent-filter>
         </service>
 
-        <activity android:name="connect.activity.wallet.CAddressListActivty">
+        <activity android:name="connect.activity.wallet.CAddressListActivty"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.wallet.BackUpCurrencyActivity">
+        <activity android:name="connect.activity.wallet.BackUpCurrencyActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.set.GroupCreateActivity">
+        <activity android:name="connect.activity.chat.set.GroupCreateActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name="connect.activity.chat.set.GroupInviteActivity">
+        <activity android:name="connect.activity.chat.set.GroupInviteActivity"
+                  android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name="connect.activity.chat.exts.TransferMutiDetailActivity">
+            android:name="connect.activity.chat.exts.TransferMutiDetailActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
-
 </manifest>

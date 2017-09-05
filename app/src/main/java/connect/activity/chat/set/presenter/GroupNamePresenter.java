@@ -59,7 +59,7 @@ public class GroupNamePresenter implements GroupNameContract.Presenter{
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
 
                     ContactNotice.receiverGroup();
-                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATENAME, groupName);
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATENAME, groupKey,groupName);
                 }
                 GroupSetActivity.startActivity(activity,groupKey);
             }

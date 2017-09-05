@@ -46,7 +46,7 @@ public class TransactionEntityDao extends AbstractDao<TransactionEntity, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"TRANSACTION_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
-                "\"MESSAGE_ID\" TEXT NOT NULL UNIQUE ," + // 1: message_id
+                "\"MESSAGE_ID\" TEXT NOT NULL ," + // 1: message_id
                 "\"HASHID\" TEXT NOT NULL UNIQUE ," + // 2: hashid
                 "\"STATUS\" INTEGER," + // 3: status
                 "\"PAY_COUNT\" INTEGER," + // 4: pay_count

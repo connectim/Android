@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.home.bean.MsgFragmReceiver;
+import connect.activity.home.bean.ConversationAction;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ConversionEntity;
@@ -95,14 +95,14 @@ public abstract class BaseChat<T> implements Serializable {
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at) {
-        updateRoomMsg(draft, showText, msgtime, at, false);
+        updateRoomMsg(draft, showText, msgtime, at, 0);
     }
 
-    public void updateRoomMsg(String draft, String showText, long msgtime, int at, boolean newmsg) {
+    public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg) {
         updateRoomMsg(draft,showText,msgtime,at,newmsg,true);
     }
 
-    public void updateRoomMsg(String draft, String showText, long msgtime, int at, boolean newmsg,boolean broad) {
+    public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad) {
         if (TextUtils.isEmpty(chatKey())) {
             return;
         }
@@ -119,23 +119,29 @@ public abstract class BaseChat<T> implements Serializable {
         if (!TextUtils.isEmpty(showText)) {
             roomEntity.setContent(showText);
         }
-        if (msgtime != 0) {
+        if (msgtime > 0) {
             roomEntity.setLast_time(msgtime);
         }
         roomEntity.setStranger(isStranger ? 1 : 0);
 
-        int unread = (null == roomEntity.getUnread_count()) ? 0 : roomEntity.getUnread_count();
-        roomEntity.setUnread_count(newmsg ? ++unread : 0);
+
+        if (newmsg == 0) {
+            roomEntity.setUnread_count(0);
+        } else if (newmsg > 0) {
+            int unread = (null == roomEntity.getUnread_count()) ? 1 : 1+roomEntity.getUnread_count();
+            roomEntity.setUnread_count(unread);
+        }
+
         if (draft != null) {
             roomEntity.setDraft(draft);
         }
-        if (at == 0 || at == 1) {
+        if (at >= 0) {
             roomEntity.setNotice(at);
         }
 
         ConversionHelper.getInstance().insertRoomEntity(roomEntity);
         if (broad) {
-            MsgFragmReceiver.refreshRoom();
+            ConversationAction.conversationAction.sendEvent();
         }
     }
 

@@ -98,7 +98,7 @@ public class MsgParseBean extends InterParse {
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
         String content = msgExtEntity.showContent();
-        RobotChat.getInstance().updateRoomMsg(null, content, msgExtEntity.getCreatetime(), -1, true);
+        RobotChat.getInstance().updateRoomMsg(null, content, msgExtEntity.getCreatetime(), -1, 1);
         pushNoticeMsg(robotname, 2, content);
     }
 

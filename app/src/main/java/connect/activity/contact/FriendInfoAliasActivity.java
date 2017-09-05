@@ -13,13 +13,13 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.chat.model.content.FriendChat;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
-import connect.activity.home.bean.MsgFragmReceiver;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
@@ -96,7 +96,10 @@ public class FriendInfoAliasActivity extends BaseActivity {
                 if(sendBean.getType() == MsgSendBean.SendType.TypeFriendRemark){
                     ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
                     ContactNotice.receiverFriend();
-                    MsgFragmReceiver.refreshRoom();
+
+                    FriendChat friendChat = new FriendChat(friendEntity);
+                    friendChat.updateRoomMsg(null, "", -1, -1, -1);
+
                     ActivityUtil.goBack(mActivity);
                 }
                 break;

@@ -129,28 +129,27 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
     }
 
     protected void requestBaseInfoSucces() {
-        if (infoBase.getPublic()) {
-            btn.setVisibility(View.VISIBLE);
-            txt4.setVisibility(View.GONE);
-            GlideUtil.loadAvatarRound(roundimg, infoBase.getAvatar());
-            txt1.setText(infoBase.getName());
-            txt2.setText(getString(R.string.Chat_Member_Max, infoBase.getCount(), 200));
+        btn.setEnabled(true);
+        GlideUtil.loadAvatarRound(roundimg, infoBase.getAvatar());
+        txt1.setText(infoBase.getName());
+        txt2.setText(getString(R.string.Chat_Member_Max, infoBase.getCount(), 200));
 
-            String profile = TextUtils.isEmpty(infoBase.getSummary()) ? getString(R.string.Link_Group_brief) : infoBase.getSummary();
+        String profile = infoBase.getSummary();
+        if (TextUtils.isEmpty(profile)) {
+            txt3.setVisibility(View.GONE);
+        } else {
             txt3.setText(profile);
+        }
 
+        if (infoBase.getPublic()) {
             boolean isJoin = infoBase.getJoined();
             if (isJoin) {
                 handler.sendEmptyMessageDelayed(120, 500);
             }
         } else {
-            requestBaseInfoFail();
+            txt4.setVisibility(View.VISIBLE);
+            btn.setEnabled(false);
         }
-    }
-
-    protected void requestBaseInfoFail() {
-        btn.setVisibility(View.GONE);
-        txt4.setVisibility(View.VISIBLE);
     }
 
     protected void applyJoinDialog() {
@@ -238,7 +237,6 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
 
     @Override
     public void showFailInfo() {
-        btn.setVisibility(View.GONE);
-        txt4.setVisibility(View.VISIBLE);
+        btn.setEnabled(false);
     }
 }

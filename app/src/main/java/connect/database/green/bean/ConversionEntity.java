@@ -2,6 +2,7 @@ package connect.database.green.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ public class ConversionEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
+    @NotNull
     @Unique
     private String identifier;
 
@@ -28,10 +30,11 @@ public class ConversionEntity implements Serializable {
     private Integer stranger;
     private Long last_time;
 
-    @Generated(hash = 2038489396)
-    public ConversionEntity(Long _id, String identifier, Integer type, String name,
-            String avatar, String draft, String content, Integer unread_count,
-            Integer top, Integer notice, Integer stranger, Long last_time) {
+    @Generated(hash = 562503235)
+    public ConversionEntity(Long _id, @NotNull String identifier, Integer type,
+            String name, String avatar, String draft, String content,
+            Integer unread_count, Integer top, Integer notice, Integer stranger,
+            Long last_time) {
         this._id = _id;
         this.identifier = identifier;
         this.type = type;
@@ -120,5 +123,4 @@ public class ConversionEntity implements Serializable {
     public void setLast_time(Long last_time) {
         this.last_time = last_time;
     }
-
 }

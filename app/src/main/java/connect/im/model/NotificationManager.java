@@ -11,11 +11,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
+
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.HttpRecBean;
-import connect.activity.home.bean.MsgFragmReceiver;
 import connect.broadcast.NotificationBroadcastReceiver;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -65,7 +66,8 @@ public class NotificationManager {
             String identify = bundle.getString("KEY");
             String content = bundle.getString("CONTENT");
             showNotification(identify, type, content);
-            MsgFragmReceiver.refreshRoom();
+
+            ConversationAction.conversationAction.sendEvent();
         }
     };
 

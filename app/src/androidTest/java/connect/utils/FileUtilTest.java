@@ -48,7 +48,7 @@ public class FileUtilTest {
 
     @Test
     public void islocalFile() throws Exception {
-        boolean isLocal = FileUtil.islocalFile(FileUtil.DIR_ROOT + File.separator + "aaa.png");
+        boolean isLocal = FileUtil.isLocalFile(FileUtil.DIR_ROOT + File.separator + "aaa.png");
         assertTrue(isLocal);
     }
 

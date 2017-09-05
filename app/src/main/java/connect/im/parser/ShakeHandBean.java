@@ -157,7 +157,7 @@ public class ShakeHandBean extends InterParse {
         msgExtEntity.setMessage_to(mypublickey);
 
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-        RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+        RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
     }
 
     /**

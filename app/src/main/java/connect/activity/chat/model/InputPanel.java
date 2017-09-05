@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -122,10 +123,18 @@ public class InputPanel {
     }
 
     private boolean isSoftShowing() {
-        int screenHeight = (((Activity) context).getWindow()).getDecorView().getHeight();
-        Rect rect = new Rect();
-        (((Activity) context).getWindow()).getDecorView().getWindowVisibleDisplayFrame(rect);
-        return screenHeight - rect.bottom != 0;
+//        int screenHeight = (((Activity) context).getWindow()).getDecorView().getHeight();
+//        Rect rect = new Rect();
+//        (((Activity) context).getWindow()).getDecorView().getWindowVisibleDisplayFrame(rect);
+//        return screenHeight - rect.bottom != 0;
+
+        final int softKeyboardHeight = 100;
+        View rootView = (((Activity) context).getWindow()).getDecorView();
+        Rect r = new Rect();
+        rootView.getWindowVisibleDisplayFrame(r);
+        DisplayMetrics dm = rootView.getResources().getDisplayMetrics();
+        int heightDiff = rootView.getBottom() - r.bottom;
+        return heightDiff > softKeyboardHeight * dm.density;
     }
 
     protected void focusEdit() {

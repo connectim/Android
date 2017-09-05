@@ -44,7 +44,7 @@ public class ConversionSettingEntityDao extends AbstractDao<ConversionSettingEnt
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CONVERSION_SETTING_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
-                "\"IDENTIFIER\" TEXT UNIQUE ," + // 1: identifier
+                "\"IDENTIFIER\" TEXT NOT NULL UNIQUE ," + // 1: identifier
                 "\"SNAP_TIME\" INTEGER," + // 2: snap_time
                 "\"DISTURB\" INTEGER);"); // 3: disturb
     }
@@ -63,11 +63,7 @@ public class ConversionSettingEntityDao extends AbstractDao<ConversionSettingEnt
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
- 
-        String identifier = entity.getIdentifier();
-        if (identifier != null) {
-            stmt.bindString(2, identifier);
-        }
+        stmt.bindString(2, entity.getIdentifier());
  
         Integer snap_time = entity.getSnap_time();
         if (snap_time != null) {
@@ -88,11 +84,7 @@ public class ConversionSettingEntityDao extends AbstractDao<ConversionSettingEnt
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
- 
-        String identifier = entity.getIdentifier();
-        if (identifier != null) {
-            stmt.bindString(2, identifier);
-        }
+        stmt.bindString(2, entity.getIdentifier());
  
         Integer snap_time = entity.getSnap_time();
         if (snap_time != null) {
@@ -114,7 +106,7 @@ public class ConversionSettingEntityDao extends AbstractDao<ConversionSettingEnt
     public ConversionSettingEntity readEntity(Cursor cursor, int offset) {
         ConversionSettingEntity entity = new ConversionSettingEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // identifier
+            cursor.getString(offset + 1), // identifier
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // snap_time
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3) // disturb
         );
@@ -124,7 +116,7 @@ public class ConversionSettingEntityDao extends AbstractDao<ConversionSettingEnt
     @Override
     public void readEntity(Cursor cursor, ConversionSettingEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setIdentifier(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setIdentifier(cursor.getString(offset + 1));
         entity.setSnap_time(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setDisturb(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
      }

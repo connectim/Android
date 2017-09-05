@@ -1,5 +1,6 @@
 package connect.widget.album.model;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -88,18 +89,43 @@ public class AlbumScanner implements IAlbumScanner {
      * @param albumFolderMap
      */
     public void searchLocalPhoto(Map<String, AlbumFolderInfo> albumFolderMap) {
-        Cursor cursor = MediaStore.Images.Media.query(context.getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME,
-                        MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.Media.BUCKET_ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME}
-                , null, MediaStore.Images.Media.DATE_ADDED + " DESC");
+        ContentResolver contentResolver = context.getContentResolver();
+        String[] projections = new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.Media.BUCKET_ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
+        String selections = MediaStore.Images.Media.MIME_TYPE + "=? or "
+                + MediaStore.Images.Media.MIME_TYPE + "=?";
+        String[] selectArgs = new String[]{"image/jpeg", "image/png"};
+
+        Cursor cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projections,
+                selections,
+                selectArgs,
+                MediaStore.Images.Media.DATE_ADDED + " DESC");
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String imagePath = cursor.getString(1);
-
             ExFile albumFolder = new ExFile(imagePath, 0);
             if (albumFolder.length() < 1024 * 5) {
                 continue;
             }
+
+            /*String thumbPath = null;
+            String[] thumbProjections = {
+                    MediaStore.Images.Thumbnails.DATA
+            };
+            int id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
+            Cursor thumbCursor = contentResolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                    thumbProjections,
+                    MediaStore.Images.Thumbnails.IMAGE_ID + "=" + id,
+                    null,
+                    null);
+            if (thumbCursor != null) {
+                if (thumbCursor.moveToFirst()) {
+                    thumbPath = thumbCursor.getString(thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA));
+                }
+                thumbCursor.close();
+            }
+            albumFolder.setThumbPath(thumbPath);*/
 
             //picture directory is already loaded into the list
             String albumName = albumFolder.getParentFile().getName();

@@ -97,7 +97,7 @@ public class TransactionParseBean extends InterParse {
         msgExtEntity.setMessage_to(receiverInfo.getPubKey());
 
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.chatKey(), msgExtEntity);
     }
 
@@ -155,7 +155,7 @@ public class TransactionParseBean extends InterParse {
         MsgExtEntity msgExtEntity = normalChat.noticeMsg(content);
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, normalChat.chatKey(), msgExtEntity);
-        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
     }
 
     private void singleBillPaymentNotice(Connect.BillNotice billNotice) {
@@ -175,7 +175,7 @@ public class TransactionParseBean extends InterParse {
             NormalChat normalChat = new FriendChat(friendEntity);
             MsgExtEntity msgExtEntity = normalChat.noticeMsg(content);
             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-            normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+            normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
 
             RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
         }
@@ -221,14 +221,14 @@ public class TransactionParseBean extends InterParse {
             if (!TextUtils.isEmpty(content)) {
                 MsgExtEntity msgExtEntity = normalChat.noticeMsg(content);
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+                normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupid, msgExtEntity);
             }
 
             if (transEntity.getPay_count() == transEntity.getCrowd_count()) {
                 MsgExtEntity msgExtEntity = normalChat.noticeMsg(context.getString(R.string.Chat_Founded_complete));
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+                normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupid, msgExtEntity);
             }
         }
@@ -267,7 +267,7 @@ public class TransactionParseBean extends InterParse {
         msgExtEntity.setMessage_to(mypublickey);
 
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, true);
+        normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
         HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
     }
 }

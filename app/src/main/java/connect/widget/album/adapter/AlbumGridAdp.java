@@ -1,5 +1,6 @@
 package connect.widget.album.adapter;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,9 @@ public class AlbumGridAdp extends BaseAdapter{
         }
 
         ImageInfo imageInfo = imageInfos.get(position);
-        GlideUtil.loadImage(gridHolder.preImg, imageInfo.getImageFile().getAbsolutePath());
+        String showPath = imageInfo.getImageFile().getAbsolutePath();
+        GlideUtil.loadImage(gridHolder.preImg, showPath);
+
         boolean selectstate = albumGridListener.itemIsSelect(imageInfo);
         gridHolder.checkBox.setSelected(selectstate);
 

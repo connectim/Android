@@ -35,7 +35,7 @@ public class RecExtBean extends BaseEvent {
         CLEAR_HISTORY,//clear message
         NOTICE,//notice
         NOTICE_NOTFRIEND,//notice not friend
-        GATHER,//gather
+        PAYMENT,//gather
         TRANSFER,//transaction
         REDPACKET,//lucky packet
         NAMECARD,//name card

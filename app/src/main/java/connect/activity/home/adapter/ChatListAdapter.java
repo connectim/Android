@@ -19,7 +19,7 @@ import java.util.List;
 import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
-import connect.activity.home.bean.MsgFragmReceiver;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
 import connect.database.MemoryDataManager;
@@ -202,8 +202,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
 
                 roomAttrBeanList.remove(roomAttr);
                 notifyItemRemoved(position);
-
-                MsgFragmReceiver.refreshRoom();
             }
         });
         holder.bottomNotify.setTag(holder.itemView);
@@ -219,13 +217,14 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     index.bottomNotify.setSelected(select);
                     index.conNotify.setVisibility(select ? View.VISIBLE : View.GONE);
 
+                    String roomid = roomAttrBeanList.get(position).getRoomid();
                     int unRead = roomAttrBeanList.get(position).getUnread();
                     index.badgeTxt.setBadgeCount(select ? 1 : 0, unRead);
                     int disturb = select ? 1 : 0;
-                    ConversionSettingHelper.getInstance().updateDisturb(roomAttrBeanList.get(position).getRoomid(), disturb);
-                    MsgFragmReceiver.refreshRoom();
-                    if (roomAttrBeanList.get(position).getRoomtype() == 1) {
-                        String roomid = roomAttrBeanList.get(position).getRoomid();
+                    ConversionSettingHelper.getInstance().updateDisturb(roomid, disturb);
+
+                    roomAttr.setDisturb(disturb);
+                    if (roomAttrBeanList.get(position).getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE) {
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupNotificaton, roomid, disturb);
                     }
                 }

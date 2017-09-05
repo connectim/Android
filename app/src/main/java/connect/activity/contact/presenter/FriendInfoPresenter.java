@@ -16,7 +16,6 @@ import connect.activity.chat.model.content.NormalChat;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.contract.FriendInfoContract;
-import connect.activity.home.bean.MsgFragmReceiver;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -103,6 +102,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     ContactHelper.getInstance().deleteEntity(sendBean.getAddress());
                     ContactHelper.getInstance().deleteRequestEntity(sendBean.getPubkey());
                     ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
+
                     ContactNotice.receiverContact();
                     ToastEUtil.makeText(mView.getActivity(), R.string.Link_Delete_Successful).show();
                     ActivityUtil.goBack(mView.getActivity());
@@ -154,9 +154,10 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     mView.updateView(friendEntity);
                     ContactHelper.getInstance().insertContact(friendEntity);
                     // Update the message list user information
-                    ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
-                    if (roomEntity != null) {
-                        MsgFragmReceiver.refreshRoom();
+                    ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
+                    if (conversionEntity != null) {
+                        FriendChat friendChat = new FriendChat(friendEntity);
+                        friendChat.updateRoomMsg(null, "", -1, -1, -1);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

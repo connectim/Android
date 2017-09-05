@@ -96,7 +96,7 @@ public class MorePagerAdapter extends PagerAdapter {
                         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.REDPACKET);
                         break;
                     case R.string.Wallet_Receipt:
-                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GATHER);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.PAYMENT);
                         break;
                     case R.string.Chat_Read_Burn:
                         String roomkey = RoomSession.getInstance().getRoomKey();

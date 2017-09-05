@@ -18,15 +18,15 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.database.green.DaoHelper.ConversionHelper;
-import connect.ui.activity.R;
+import connect.activity.base.BaseFragment;
 import connect.activity.home.HomeActivity;
-import connect.activity.home.bean.MsgFragmReceiver;
+import connect.activity.home.adapter.ChatListAdapter;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ConnectStateView;
 import connect.activity.home.view.LineDecoration;
-import connect.activity.home.adapter.ChatListAdapter;
-import connect.activity.base.BaseFragment;
+import connect.database.green.DaoHelper.ConversionHelper;
+import connect.ui.activity.R;
 import connect.utils.log.LogManager;
 /**
  * Created by gtq on 2016/11/21.
@@ -61,7 +61,7 @@ public class ConversationFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(MsgFragmReceiver receiver) {
+    public void onEventMainThread(ConversationAction action) {
         LogManager.getLogger().d(Tag, "onEventMainThread()");
         loadRooms();
     }
@@ -74,7 +74,7 @@ public class ConversationFragment extends BaseFragment {
 
             @Override
             protected List<RoomAttrBean> doInBackground(Void... params) {
-                return ConversionHelper.getInstance().loadRoomEnitites();
+                return ConversionHelper.getInstance().loadRoomEntites();
             }
 
             @Override

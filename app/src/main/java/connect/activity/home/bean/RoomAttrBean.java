@@ -18,7 +18,6 @@ public class RoomAttrBean implements Serializable {
     private int unread;
     private String draft;
     private String showtxt;
-    private String address;
     private int stranger;
     private int at;
 
@@ -100,14 +99,6 @@ public class RoomAttrBean implements Serializable {
 
     public void setContent(String content) {
         this.showtxt = content;
-    }
-
-    public String getShowtxt() {
-        return showtxt;
-    }
-
-    public void setShowtxt(String showtxt) {
-        this.showtxt = showtxt;
     }
 
     public int getStranger() {

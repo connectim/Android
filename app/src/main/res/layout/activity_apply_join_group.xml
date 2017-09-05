@@ -53,20 +53,17 @@
             android:maxLines="2"
             android:textColor="@color/color_858998"
             android:textSize="@dimen/sp_14"/>
-    </LinearLayout>
 
-    <TextView
-        android:id="@id/txt4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/linearlayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_30"
-        android:maxWidth="@dimen/dp_100"
-        android:text="@string/Link_The_group_is_not_public"
-        android:textColor="@color/color_black"
-        android:textSize="@dimen/sp_16"
-        android:visibility="gone"/>
+        <TextView
+            android:id="@id/txt4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:textColor="@color/color_cc999999"
+            android:textSize="@dimen/sp_12"
+            android:text="@string/Link_The_group_is_not_public"
+            android:visibility="gone"/>
+    </LinearLayout>
 
     <Button
         android:id="@id/btn"
@@ -75,6 +72,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_30"
         android:enabled="true"
-        android:text="@string/Link_Join_Group"
-        android:visibility="gone"/>
+        android:text="@string/Link_Join_Group"/>
 </RelativeLayout>
