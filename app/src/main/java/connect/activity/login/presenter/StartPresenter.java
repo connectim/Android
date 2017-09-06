@@ -17,6 +17,7 @@ import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.StartContract;
 import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoManager;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;

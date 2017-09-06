@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -36,7 +37,7 @@ import connect.utils.scan.ResolveUrlUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.ScanBgView;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.model.AlbumFile;
 import connect.widget.zxing.utils.CreateScan;
 
 /**
@@ -91,10 +92,14 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         setViewFind(capturePreview, captureCropView, captureContainer);
 
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(MemoryDataManager.getInstance().getAddress(), getResources().getColor(R.color.color_00ffbf));
+        String address = MemoryDataManager.getInstance().getAddress();
+        if (TextUtils.isEmpty(address)) {
+            return;
+        }
+        Bitmap bitmap = createScan.generateQRCode(address, getResources().getColor(R.color.color_00ffbf));
         scanImg.setImageBitmap(bitmap);
         bottomScanImg.setImageBitmap(bitmap);
-        addressTv.setText(MemoryDataManager.getInstance().getAddress());
+        addressTv.setText(address);
         resolveScanUtil = new ResolveScanUtil(mActivity);
     }
 
@@ -203,9 +208,9 @@ public class ScanAddFriendActivity extends BaseScanActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == AlbumActivity.OPEN_ALBUM_CODE && requestCode == AlbumActivity.OPEN_ALBUM_CODE){
-            List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
+            List<AlbumFile> strings = (List<AlbumFile>) data.getSerializableExtra("list");
             if (strings != null && strings.size() > 0) {
-                getAblamString(strings.get(0).getImageFile().getAbsolutePath(),mLocalHandler);
+                getAblamString(strings.get(0).getPath(),mLocalHandler);
             }
         }
     }

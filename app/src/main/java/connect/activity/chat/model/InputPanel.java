@@ -281,6 +281,10 @@ public class InputPanel {
                         MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, string, title,sub,"");
                     } else {
                         MsgSend.sendOuterMsg(MsgType.Text, inputEdit.getText().toString(), inputEdit.groupAts());
+
+//                        for (int i = 0; i < 100; i++) {
+//                            MsgSend.sendOuterMsg(MsgType.Text, i+"", inputEdit.groupAts());
+//                        }
                     }
                     inputEdit.setText("");
                     break;

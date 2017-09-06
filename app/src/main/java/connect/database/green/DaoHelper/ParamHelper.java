@@ -50,22 +50,6 @@ public class ParamHelper extends BaseDao {
         return paramEntities.get(0);
     }
 
-    public ParamEntity loadParamEntityDESC(String key) {
-        QueryBuilder<ParamEntity> queryBuilder = paramEntityDao.queryBuilder();
-        queryBuilder.where(ParamEntityDao.Properties.Key.eq(key)).orderDesc(ParamEntityDao.Properties._id).limit(1).build();
-        List<ParamEntity> paramEntities = queryBuilder.list();
-        if (null == paramEntities || paramEntities.size() == 0) {
-            return null;
-        }
-        return paramEntities.get(0);
-    }
-
-    public List<ParamEntity> loadParamEntities(String key) {
-        QueryBuilder<ParamEntity> queryBuilder = paramEntityDao.queryBuilder();
-        queryBuilder.where(ParamEntityDao.Properties.Key.eq(key)).build();
-        return queryBuilder.list();
-    }
-
     public List<ParamEntity> likeParamEntities(String key) {
         QueryBuilder<ParamEntity> queryBuilder = paramEntityDao.queryBuilder();
         queryBuilder.where(ParamEntityDao.Properties.Key.like("%" + key + "%")).build();

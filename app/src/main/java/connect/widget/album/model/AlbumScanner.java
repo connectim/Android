@@ -5,16 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.support.annotation.WorkerThread;
+import android.text.TextUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import connect.activity.chat.bean.MsgSend;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.widget.album.inter.IAlbumScanner;
 import connect.widget.album.presenter.AlbumPresenter;
@@ -27,60 +27,99 @@ public class AlbumScanner implements IAlbumScanner {
     private final static String Tag = "_AlbumScanner";
 
     private Context context;
-    private Map<String, ImageInfo> imageInfoMap = new LinkedHashMap<>();
+
+    /**
+     * Image attribute.
+     */
+    private static final String[] IMAGES = {
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.TITLE,
+            MediaStore.Images.Media.BUCKET_ID,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.MIME_TYPE,
+            MediaStore.Images.Media.DATE_ADDED,
+            MediaStore.Images.Media.DATE_MODIFIED,
+            MediaStore.Images.Media.LATITUDE,
+            MediaStore.Images.Media.LONGITUDE,
+            MediaStore.Images.Media.SIZE
+    };
+
+    /**
+     * Video attribute.
+     */
+    private static final String[] VIDEOS = {
+            MediaStore.Video.Media._ID,
+            MediaStore.Video.Media.DATA,
+            MediaStore.Video.Media.DISPLAY_NAME,
+            MediaStore.Video.Media.TITLE,
+            MediaStore.Video.Media.BUCKET_ID,
+            MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Video.Media.MIME_TYPE,
+            MediaStore.Video.Media.DATE_ADDED,
+            MediaStore.Video.Media.DATE_MODIFIED,
+            MediaStore.Video.Media.LATITUDE,
+            MediaStore.Video.Media.LONGITUDE,
+            MediaStore.Video.Media.SIZE,
+            MediaStore.Video.Media.DURATION,
+            MediaStore.Video.Media.RESOLUTION
+    };
+
 
     @Override
-    public void startScanAlbum(final Context context, final AlbumType albumType, final AlbumPresenter.OnScanListener onScanListener) {
+    public void startScanAlbum(final Context context, final AlbumFolderType albumFolderType, final AlbumPresenter.OnScanListener onScanListener) {
         this.context = context;
 
-        new AsyncTask<Void, Void, List<AlbumFolderInfo>>() {
+        new AsyncTask<Void, Void, List<AlbumFolder>>() {
             @Override
-            protected List<AlbumFolderInfo> doInBackground(Void... params) {
-                Map<String, AlbumFolderInfo> albumFolderMap = new LinkedHashMap<>();
-
-                switch (albumType) {
+            protected List<AlbumFolder> doInBackground(Void... params) {
+                ArrayList<AlbumFolder> albumFolders;
+                switch (albumFolderType) {
                     case Photo:
-                        searchLocalPhoto(albumFolderMap);
+                        albumFolders = getLocalPhoto();
                         break;
                     case Video:
-                        break;
-                    case All:
-                        searchLocalPhoto(albumFolderMap);
-                        searchLocalVideo(albumFolderMap);
+                        albumFolders = getLocalVideos();
                         break;
                     default:
+                        albumFolders = getAllMedias();
                         break;
                 }
 
-                List<AlbumFolderInfo> albumFolderList = sortAllAlbum(albumFolderMap);
-                if (!imageInfoMap.isEmpty()) {
-                    ImageInfo coverInfo = null;
-                    ArrayList<ImageInfo> allImagesInfo = new ArrayList<>();
-                    for (ImageInfo imageInfo : imageInfoMap.values()) {
-                        allImagesInfo.add(imageInfo);
-                        if (coverInfo == null) {
-                            coverInfo = imageInfo;
-                        }
-                    }
-
-                    String allAlbumName = context.getString(R.string.Chat_All_Image_Video);
-                    AlbumFolderInfo allfolderInfo = new AlbumFolderInfo(coverInfo.getImageFile(), allAlbumName);
-                    allfolderInfo.setAlbumType(AlbumType.All);
-                    allfolderInfo.setImageInfoList(allImagesInfo);
-                    albumFolderList.add(0, allfolderInfo);
-                }
-
-                return albumFolderList;
+                return albumFolders;
             }
 
             @Override
-            protected void onPostExecute(List<AlbumFolderInfo> albumFolderInfos) {
-                super.onPostExecute(albumFolderInfos);
-                if (onScanListener != null && albumFolderInfos != null) {
-                    onScanListener.onScanFinish(albumFolderInfos);
+            protected void onPostExecute(List<AlbumFolder> albumFolders) {
+                super.onPostExecute(albumFolders);
+                if (onScanListener != null && albumFolders != null) {
+                    onScanListener.onScanFinish(albumFolders);
                 }
             }
         }.execute();
+    }
+
+    @WorkerThread
+    public ArrayList<AlbumFolder> getLocalPhoto() {
+        Map<String, AlbumFolder> albumFolderMap = new HashMap<>();
+
+        String allAlbumName = context.getString(R.string.Chat_All_Image);
+        AlbumFolder allFileFolder = new AlbumFolder(allAlbumName);
+        allFileFolder.setAlbumFolderType(AlbumFolderType.Photo);
+
+        searchLocalPhoto(albumFolderMap, allFileFolder);
+
+        ArrayList<AlbumFolder> albumFolders = new ArrayList<>();
+        for (Map.Entry<String, AlbumFolder> folderEntry : albumFolderMap.entrySet()) {
+            AlbumFolder albumFolder = folderEntry.getValue();
+            Collections.sort(albumFolder.getAlbumFiles());
+            albumFolders.add(albumFolder);
+        }
+
+        Collections.sort(allFileFolder.getAlbumFiles());
+        albumFolders.add(0, allFileFolder);
+        return albumFolders;
     }
 
     /**
@@ -88,144 +127,184 @@ public class AlbumScanner implements IAlbumScanner {
      *
      * @param albumFolderMap
      */
-    public void searchLocalPhoto(Map<String, AlbumFolderInfo> albumFolderMap) {
+    @WorkerThread
+    public void searchLocalPhoto(Map<String, AlbumFolder> albumFolderMap,AlbumFolder albumFolder) {
         ContentResolver contentResolver = context.getContentResolver();
-        String[] projections = new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.Media.BUCKET_ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
-        String selections = MediaStore.Images.Media.MIME_TYPE + "=? or "
-                + MediaStore.Images.Media.MIME_TYPE + "=?";
-        String[] selectArgs = new String[]{"image/jpeg", "image/png"};
-
         Cursor cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projections,
-                selections,
-                selectArgs,
-                MediaStore.Images.Media.DATE_ADDED + " DESC");
+                IMAGES,
+                null,
+                null,
+                MediaStore.Images.Media.DATE_ADDED);
 
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            String imagePath = cursor.getString(1);
-            ExFile albumFolder = new ExFile(imagePath, 0);
-            if (albumFolder.length() < 1024 * 5) {
-                continue;
-            }
-
-            /*String thumbPath = null;
-            String[] thumbProjections = {
-                    MediaStore.Images.Thumbnails.DATA
-            };
-            int id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
-            Cursor thumbCursor = contentResolver.query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-                    thumbProjections,
-                    MediaStore.Images.Thumbnails.IMAGE_ID + "=" + id,
-                    null,
-                    null);
-            if (thumbCursor != null) {
-                if (thumbCursor.moveToFirst()) {
-                    thumbPath = thumbCursor.getString(thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA));
-                }
-                thumbCursor.close();
-            }
-            albumFolder.setThumbPath(thumbPath);*/
-
-            //picture directory is already loaded into the list
-            String albumName = albumFolder.getParentFile().getName();
-            ImageInfo imageFile = new ImageInfo(albumFolder, 0);
-
-            if (imageInfoMap.containsKey(imagePath)) {
-                MsgSend.sendOuterMsg(MsgType.Text, imagePath);
-            }
-            imageInfoMap.put(imagePath, imageFile);
-
-            AlbumFolderInfo folderInfo = albumFolderMap.get(albumName);
-            if (folderInfo == null) {
-                folderInfo = new AlbumFolderInfo(albumFolder, albumName);
-                folderInfo.setAlbumType(AlbumType.Photo);
-                ArrayList<ImageInfo> albumImageFiles = new ArrayList<>();
-                folderInfo.setImageInfoList(albumImageFiles);
-                albumFolderMap.put(albumName, folderInfo);
-            }
-            folderInfo.getImageInfoList().add(imageFile);
-        }
         if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex(IMAGES[0]));
+
+                String imagePath = cursor.getString(cursor.getColumnIndex(IMAGES[1]));
+                File file = new File(imagePath);
+                if (!file.exists() || !file.canRead() || file.length() < 5 * 1024) continue;
+
+                String name = cursor.getString(cursor.getColumnIndex(IMAGES[2]));
+                String title = cursor.getString(cursor.getColumnIndex(IMAGES[3]));
+                int bucketId = cursor.getInt(cursor.getColumnIndex(IMAGES[4]));
+                String bucketName = cursor.getString(cursor.getColumnIndex(IMAGES[5]));
+                String mimeType = cursor.getString(cursor.getColumnIndex(IMAGES[6]));
+                long addDate = cursor.getLong(cursor.getColumnIndex(IMAGES[7]));
+                long modifyDate = cursor.getLong(cursor.getColumnIndex(IMAGES[8]));
+                float latitude = cursor.getFloat(cursor.getColumnIndex(IMAGES[9]));
+                float longitude = cursor.getFloat(cursor.getColumnIndex(IMAGES[10]));
+                long size = cursor.getLong(cursor.getColumnIndex(IMAGES[11]));
+
+                AlbumFile albumFile = new AlbumFile();
+                albumFile.setMediaType(AlbumFile.TYPE_IMAGE);
+                albumFile.setId(id);
+                albumFile.setPath(imagePath);
+                albumFile.setName(name);
+                albumFile.setTitle(title);
+                albumFile.setBucketId(bucketId);
+                albumFile.setBucketName(bucketName);
+                albumFile.setMimeType(mimeType);
+                albumFile.setAddDate(addDate);
+                albumFile.setModifyDate(modifyDate);
+                albumFile.setLatitude(latitude);
+                albumFile.setLongitude(longitude);
+                albumFile.setSize(size);
+
+                albumFolder.addAlbumFile(albumFile);
+
+                AlbumFolder folderInfo = albumFolderMap.get(bucketName);
+                if (folderInfo == null) {
+                    folderInfo = new AlbumFolder(bucketName);
+                    folderInfo.setAlbumFolderType(AlbumFolderType.Photo);
+                    folderInfo.addAlbumFile(albumFile);
+
+                    albumFolderMap.put(bucketName, folderInfo);
+                } else {
+                    folderInfo.addAlbumFile(albumFile);
+                }
+            }
+
             cursor.close();
         }
+    }
+
+    @WorkerThread
+    public ArrayList<AlbumFolder> getLocalVideos() {
+        Map<String, AlbumFolder> albumFolderMap = new HashMap<>();
+
+        String allAlbumName = context.getString(R.string.Chat_All_Video);
+        AlbumFolder allFileFolder = new AlbumFolder(allAlbumName);
+        allFileFolder.setAlbumFolderType(AlbumFolderType.Video);
+
+        searchLocalVideo(albumFolderMap, allFileFolder);
+
+        ArrayList<AlbumFolder> albumFolders = new ArrayList<>();
+        for (Map.Entry<String, AlbumFolder> folderEntry : albumFolderMap.entrySet()) {
+            AlbumFolder albumFolder = folderEntry.getValue();
+            Collections.sort(albumFolder.getAlbumFiles());
+            albumFolders.add(albumFolder);
+        }
+
+        Collections.sort(allFileFolder.getAlbumFiles());
+        albumFolders.add(0, allFileFolder);
+        return albumFolders;
     }
 
     /**
      * query local video
      */
-    public void searchLocalVideo(Map<String, AlbumFolderInfo> albumFolderMap) {
-        Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Video.Media._ID, MediaStore.Video.Media.DATA, MediaStore.Video.Media.DURATION, MediaStore.Video.Media.SIZE, MediaStore.Video.Media.TITLE, MediaStore.Video.Media.MIME_TYPE},
-                null, null, MediaStore.Video.Media.DATE_ADDED + " DESC");
+    @WorkerThread
+    public void searchLocalVideo(Map<String, AlbumFolder> albumFolderMap,AlbumFolder albumFolder) {
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor cursor = contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                VIDEOS,
+                null,
+                null,
+                MediaStore.Video.Media.DATE_ADDED);
 
-        //Add folder video
-        AlbumFolderInfo videosInfo = null;
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            String imagePath = cursor.getString(1);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex(VIDEOS[0]));
+                String path = cursor.getString(cursor.getColumnIndex(VIDEOS[1]));
 
-            ExFile albumFolder = new ExFile(imagePath, 0);
-            albumFolder.setVideoLength(cursor.getLong(2));
-            long size = cursor.getLong(3);
-            if (size > 1024 * 1024 * 10 || size < 1024 * 100) {
-                continue;
-            }
+                File file = new File(path);
+                if (!file.exists() || !file.canRead()) continue;
 
-            //Picture directory is already loaded into the list
-            String albumPath = albumFolder.getParentFile().getName();
-            AlbumFolderInfo folderInfo = albumFolderMap.get(albumPath);
+                String name = cursor.getString(cursor.getColumnIndex(VIDEOS[2]));
+                String title = cursor.getString(cursor.getColumnIndex(VIDEOS[3]));
+                int bucketId = cursor.getInt(cursor.getColumnIndex(VIDEOS[4]));
+                String bucketName = cursor.getString(cursor.getColumnIndex(VIDEOS[5]));
+                String mimeType = cursor.getString(cursor.getColumnIndex(VIDEOS[6]));
+                long addDate = cursor.getLong(cursor.getColumnIndex(VIDEOS[7]));
+                long modifyDate = cursor.getLong(cursor.getColumnIndex(VIDEOS[8]));
+                float latitude = cursor.getFloat(cursor.getColumnIndex(VIDEOS[9]));
+                float longitude = cursor.getFloat(cursor.getColumnIndex(VIDEOS[10]));
+                long size = cursor.getLong(cursor.getColumnIndex(VIDEOS[11]));
+                long duration = cursor.getLong(cursor.getColumnIndex(VIDEOS[12]));
+                String resolution = cursor.getString(cursor.getColumnIndex(VIDEOS[13]));
 
-            ImageInfo imageFile = new ImageInfo(albumFolder, 1);
-            if (imageInfoMap.containsKey(imagePath)) {
-                MsgSend.sendOuterMsg(MsgType.Text, imagePath);
-            }
-            imageInfoMap.put(imagePath, imageFile);
+                AlbumFile videoFile = new AlbumFile();
+                videoFile.setMediaType(AlbumFile.TYPE_VIDEO);
+                videoFile.setId(id);
+                videoFile.setPath(path);
+                videoFile.setName(name);
+                videoFile.setTitle(title);
+                videoFile.setBucketId(bucketId);
+                videoFile.setBucketName(bucketName);
+                videoFile.setMimeType(mimeType);
+                videoFile.setAddDate(addDate);
+                videoFile.setModifyDate(modifyDate);
+                videoFile.setLatitude(latitude);
+                videoFile.setLongitude(longitude);
+                videoFile.setSize(size);
+                videoFile.setDuration(duration);
 
-            if (folderInfo == null) {
-                folderInfo = new AlbumFolderInfo(albumFolder, albumPath);
-                folderInfo.setAlbumType(AlbumType.Video);
-                ArrayList<ImageInfo> albumImageFiles = new ArrayList<>();
-                folderInfo.setImageInfoList(albumImageFiles);
-                albumFolderMap.put(albumPath, folderInfo);
-            }
-
-            if (videosInfo == null) {
-                String videoAlbumName = context.getString(R.string.Chat_All_Video);
-                videosInfo = new AlbumFolderInfo(albumFolder, videoAlbumName);
-                videosInfo.setAlbumType(AlbumType.Video);
-                ArrayList<ImageInfo> videoImagesInfo = new ArrayList<>();
-                videosInfo.setImageInfoList(videoImagesInfo);
-                albumFolderMap.put(videoAlbumName, videosInfo);
-            }
-            folderInfo.getImageInfoList().add(imageFile);
-            videosInfo.getImageInfoList().add(imageFile);
-        }
-        cursor.close();
-    }
-
-    public List<AlbumFolderInfo> sortAllAlbum(Map<String, AlbumFolderInfo> albumFolderMap) {
-        List<AlbumFolderInfo> albumFolderList = new ArrayList<>();
-        for (AlbumFolderInfo info : albumFolderMap.values()) {
-            albumFolderList.add(info);
-        }
-        sortByFileLastModified(albumFolderList);
-        return albumFolderList;
-    }
-
-    /**
-     * In accordance with the file to modify the time to sort, the more recent changes in the row before the more
-     */
-    private void sortByFileLastModified(List<AlbumFolderInfo> files) {
-        Collections.sort(files, new Comparator<AlbumFolderInfo>() {
-            @Override
-            public int compare(AlbumFolderInfo lhs, AlbumFolderInfo rhs) {
-                if (lhs.getFrontCover().lastModified() > rhs.getFrontCover().lastModified()) {
-                    return -1;
-                } else if (lhs.getFrontCover().lastModified() < rhs.getFrontCover().lastModified()) {
-                    return 1;
+                int width = 0, height = 0;
+                if (!TextUtils.isEmpty(resolution) && resolution.contains("x")) {
+                    String[] resolutionArray = resolution.split("x");
+                    width = Integer.valueOf(resolutionArray[0]);
+                    height = Integer.valueOf(resolutionArray[1]);
                 }
-                return 0;
+                videoFile.setWidth(width);
+                videoFile.setHeight(height);
+
+                albumFolder.addAlbumFile(videoFile);
+
+                AlbumFolder folderInfo = albumFolderMap.get(bucketName);
+                if (folderInfo == null) {
+                    folderInfo = new AlbumFolder(bucketName);
+                    folderInfo.setAlbumFolderType(AlbumFolderType.Photo);
+                    folderInfo.addAlbumFile(videoFile);
+
+                    albumFolderMap.put(bucketName, folderInfo);
+                } else {
+                    folderInfo.addAlbumFile(videoFile);
+                }
             }
-        });
+            cursor.close();
+        }
+    }
+
+    @WorkerThread
+    public ArrayList<AlbumFolder> getAllMedias() {
+        Map<String, AlbumFolder> albumFolderMap = new HashMap<>();
+
+        String allAlbumName = context.getString(R.string.Chat_All_Image_Video);
+        AlbumFolder allFileFolder = new AlbumFolder(allAlbumName);
+        allFileFolder.setAlbumFolderType(AlbumFolderType.All);
+
+        searchLocalPhoto(albumFolderMap, allFileFolder);
+        searchLocalVideo(albumFolderMap, allFileFolder);
+
+        ArrayList<AlbumFolder> albumFolders = new ArrayList<>();
+        for (Map.Entry<String, AlbumFolder> folderEntry : albumFolderMap.entrySet()) {
+            AlbumFolder albumFolder = folderEntry.getValue();
+            Collections.sort(albumFolder.getAlbumFiles());
+            albumFolders.add(albumFolder);
+        }
+
+        Collections.sort(allFileFolder.getAlbumFiles());
+        albumFolders.add(0, allFileFolder);
+        return albumFolders;
     }
 }

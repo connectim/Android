@@ -21,6 +21,7 @@ import java.util.Map;
 
 import connect.activity.base.BaseScanActivity;
 import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
 
 final class DecodeHandler extends Handler {
 
@@ -47,7 +48,11 @@ final class DecodeHandler extends Handler {
     public void handleMessage(Message message) {
         switch (message.what) {
             case R.id.decode:
-                decode((byte[]) message.obj, message.arg1, message.arg2);
+                if (message.obj == null) {
+                    ActivityUtil.goBack(mActivity);
+                } else {
+                    decode((byte[]) message.obj, message.arg1, message.arg2);
+                }
                 break;
             case R.id.quit:
                 Looper looper = Looper.myLooper();
@@ -67,46 +72,48 @@ final class DecodeHandler extends Handler {
      * @param height The height of the preview frame.
      */
     private void decode(byte[] data, int width, int height) {
-        if (null == mRotatedData) {
-            mRotatedData = new byte[width * height];
-        } else {
-            if (mRotatedData.length < width * height) {
-                mRotatedData = new byte[width * height];
-            }
-        }
-        Arrays.fill(mRotatedData, (byte) 0);
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (x + y * width >= data.length) {
-                    break;
-                }
-                mRotatedData[x * height + height - y - 1] = data[x + y * width];
-            }
-        }
-        // Here we are swapping, that's the difference to
-        int tmp = width;
-        width = height;
-        height = tmp;
-
-        Result rawResult = null;
         try {
+            if (null == mRotatedData) {
+                mRotatedData = new byte[width * height];
+            } else {
+                if (mRotatedData.length < width * height) {
+                    mRotatedData = new byte[width * height];
+                }
+            }
+            Arrays.fill(mRotatedData, (byte) 0);
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (x + y * width >= data.length) {
+                        break;
+                    }
+                    mRotatedData[x * height + height - y - 1] = data[x + y * width];
+                }
+            }
+            // Here we are swapping, that's the difference to
+            int tmp = width;
+            width = height;
+            height = tmp;
+
+            Result rawResult = null;
+
             PlanarYUVLuminanceSource source =
                     new PlanarYUVLuminanceSource(mRotatedData, width, height, 0, 0, width, height, false);
             BinaryBitmap bitmap1 = new BinaryBitmap(new HybridBinarizer(source));
             rawResult = mMultiFormatReader.decode(bitmap1, mHints);
+
+
+            Handler handler = mActivity.getHandler();
+            if (rawResult != null && handler != null) {
+                Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
+                message.sendToTarget();
+            } else if (handler != null) {
+                Message message = Message.obtain(handler, R.id.decode_failed);
+                message.sendToTarget();
+            }
         } catch (ReaderException ignored) {
 
         } finally {
             mMultiFormatReader.reset();
-        }
-
-        Handler handler = mActivity.getHandler();
-        if (rawResult != null && handler != null) {
-            Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
-            message.sendToTarget();
-        }else if (handler != null){
-            Message message = Message.obtain(handler, R.id.decode_failed);
-            message.sendToTarget();
         }
     }
 }

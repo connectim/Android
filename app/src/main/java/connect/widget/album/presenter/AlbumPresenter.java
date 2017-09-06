@@ -22,9 +22,9 @@ import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.album.adapter.AlbumFolderAdapter;
 import connect.widget.album.contract.AlbumContract;
-import connect.widget.album.model.AlbumFolderInfo;
-import connect.widget.album.fragment.AlbumGalleryFragment;
-import connect.widget.album.fragment.AlbumGridFragment;
+import connect.widget.album.model.AlbumFolder;
+import connect.widget.album.fragment.AlbumPreviewFragment;
+import connect.widget.album.fragment.AlbumListFragment;
 import connect.widget.album.model.AlbumScanner;
 
 /**
@@ -35,8 +35,8 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     private Activity activity;
     private AlbumContract.BView bView;
 
-    private AlbumGridFragment gridFragment;
-    private AlbumGalleryFragment galleryFragment;
+    private AlbumListFragment gridFragment;
+    private AlbumPreviewFragment galleryFragment;
     private AlbumScanner scannerModel;
 
     public AlbumPresenter(AlbumContract.BView view) {
@@ -52,12 +52,12 @@ public class AlbumPresenter implements AlbumContract.Presenter {
 
     @Override
     public void albumScan(OnScanListener listener) {
-        scannerModel.startScanAlbum(activity, bView.getAlbumType(), listener);
+        scannerModel.startScanAlbum(activity, bView.getAlbumFolderType(), listener);
     }
 
     public interface OnScanListener {
 
-        void onScanFinish(List<AlbumFolderInfo> infoList);
+        void onScanFinish(List<AlbumFolder> infoList);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
             fragmentTransaction.hide(galleryFragment);
         }
         if (gridFragment == null) {
-            gridFragment = AlbumGridFragment.newInstance();
+            gridFragment = AlbumListFragment.newInstance();
             fragmentTransaction.add(R.id.framelayout, gridFragment);
         } else {
             gridFragment.loadData();
@@ -88,7 +88,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
             fragmentTransaction.hide(gridFragment);
         }
         if (galleryFragment == null) {
-            galleryFragment = AlbumGalleryFragment.newInstance();
+            galleryFragment = AlbumPreviewFragment.newInstance();
             fragmentTransaction.add(R.id.framelayout, galleryFragment);
         } else {
             fragmentTransaction.show(galleryFragment);
@@ -110,8 +110,8 @@ public class AlbumPresenter implements AlbumContract.Presenter {
         recyclerView.setLayoutManager(linearLayoutManager);
         LinearLayout list_lin = (LinearLayout) view.findViewById(R.id.list_lin);
 
-        final List<AlbumFolderInfo> folderInfos=bView.getFolderInfos();
-        AlbumFolderAdapter folderAdapter = new AlbumFolderAdapter(folderInfos);
+        final List<AlbumFolder> albumFolders = bView.getAlbumFolders();
+        AlbumFolderAdapter folderAdapter = new AlbumFolderAdapter(albumFolders);
         if (folderAdapter != null) {
             list_lin.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -133,9 +133,9 @@ public class AlbumPresenter implements AlbumContract.Presenter {
 
             @Override
             public void itemClick(int position) {
-                AlbumFolderInfo albumFolderInfo = folderInfos.get(position);
-                gridFragment.setTitle(albumFolderInfo.getFolderName());
-                bView.setImageInfos(albumFolderInfo.getImageInfoList());
+                AlbumFolder albumFolder = albumFolders.get(position);
+                gridFragment.setTitle(albumFolder.getFolderName());
+                bView.setAlbumFiles(albumFolder.getAlbumFiles());
 
                 gridAlbumFragment();
                 dialog.dismiss();

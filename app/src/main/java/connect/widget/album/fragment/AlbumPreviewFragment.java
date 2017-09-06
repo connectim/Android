@@ -18,11 +18,11 @@ import java.util.Locale;
 import connect.activity.chat.exts.VideoPlayerActivity;
 import connect.ui.activity.R;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.adapter.AlbumGalleryAdp;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.adapter.AlbumPreviewAdapter;
+import connect.widget.album.model.AlbumFile;
 import connect.widget.album.view.HackyViewPager;
 
-public class AlbumGalleryFragment extends Fragment implements View.OnClickListener{
+public class AlbumPreviewFragment extends Fragment implements View.OnClickListener{
 
     private AlbumActivity activity;
     private HackyViewPager viewPager;
@@ -31,16 +31,16 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
     private TextView titleTxt;
     private TextView sendTxt;
     private CheckBox checkBox;
-    private AlbumGalleryAdp galleryAdp;
+    private AlbumPreviewAdapter galleryAdp;
 
     /** Preview status true: preview false: view selected pictures */
     private boolean preViewState = false;
     /** Preview loaded image location */
     private int previewPosition;
-    private List<ImageInfo> imageInfos;
+    private List<AlbumFile> albumFiles;
 
-    public static AlbumGalleryFragment newInstance() {
-        return new AlbumGalleryFragment();
+    public static AlbumPreviewFragment newInstance() {
+        return new AlbumPreviewFragment();
     }
 
     @Override
@@ -63,18 +63,18 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int currentPosition = viewPager.getCurrentItem();
-                ImageInfo imageInfo = imageInfos.get(currentPosition);
-                boolean selectstate = !activity.isSelectImg(imageInfo);
+                AlbumFile albumFile = albumFiles.get(currentPosition);
+                boolean selectstate = !albumFile.isChecked();
                 if (selectstate && !activity.canSelectImg()) {
                     return;
                 }
 
-                activity.updateSelectInfos(selectstate, imageInfos.get(currentPosition));
+                activity.updateSelectInfos(selectstate, albumFiles.get(currentPosition));
                 refreshSelectedViewState(currentPosition);
             }
         });
 
-        galleryAdp = new AlbumGalleryAdp();
+        galleryAdp = new AlbumPreviewAdapter();
         viewPager.setAdapter(galleryAdp);
         initImgInfos();
 
@@ -98,11 +98,13 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
     }
 
     public void initImgInfos(){
-        List<ImageInfo> infos = preViewState ? activity.getSelectInfoList() : activity.getImageInfos();
-        imageInfos = new ArrayList<>(infos);
-        galleryAdp.setData(imageInfos);
-        viewPager.setCurrentItem(previewPosition, false);//Cancel the animation
-        refreshSelectedViewState(previewPosition);
+        List<AlbumFile> infos = preViewState ? activity.getSelectInfoList() : activity.getAlbumFiles();
+        albumFiles = new ArrayList<>(infos);
+        galleryAdp.setData(albumFiles);
+        if (albumFiles.size() >= previewPosition) {
+            viewPager.setCurrentItem(previewPosition, false);//Cancel the animation
+            refreshSelectedViewState(previewPosition);
+        }
     }
 
     public void setPreViewState(boolean prestate, int posi) {
@@ -119,7 +121,7 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
     }
 
     public void refreshSelectedViewState(int position) {
-        String title = String.format(Locale.ENGLISH, "%1$d/%2$d", position + 1, imageInfos.size());
+        String title = String.format(Locale.ENGLISH, "%1$d/%2$d", position + 1, albumFiles.size());
         titleTxt.setText(title);
 
         int selectNum = activity.getSelectSize();
@@ -129,14 +131,13 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
             sendTxt.setText(getString(R.string.Chat_Select_Count, selectNum));
         }
 
-        ImageInfo imageInfo = imageInfos.get(position);
-        boolean isChecked = activity.isSelectImg(imageInfo);
+        AlbumFile albumFile = albumFiles.get(position);
+        boolean isChecked = albumFile.isChecked();
         checkBox.setSelected(isChecked);
-        if (imageInfo.getFileType() == 0) {
+        if (albumFile.getMediaType() == AlbumFile.TYPE_IMAGE) {
             videoImg.setVisibility(View.GONE);
         } else {
             videoImg.setVisibility(View.VISIBLE);
-            videoImg.setTag(imageInfo);
         }
     }
 
@@ -149,15 +150,15 @@ public class AlbumGalleryFragment extends Fragment implements View.OnClickListen
             case R.id.txt:
                 if (activity.getSelectSize() == 0) {
                     int currentPosition = viewPager.getCurrentItem();
-                    ImageInfo imageInfo = imageInfos.get(currentPosition);
-                    activity.updateSelectInfos(true, imageInfo);
+                    AlbumFile albumFile = albumFiles.get(currentPosition);
+                    activity.updateSelectInfos(true, albumFile);
                 }
                 activity.sendImgInfos();
                 break;
             case R.id.img2:
-                ImageInfo imageInfo = (ImageInfo) v.getTag();
-                int videolength = (int) (imageInfo.getImageFile().getVideoLength() / 1000);
-                String filepath = imageInfo.getImageFile().getAbsolutePath();
+                AlbumFile albumFile = (AlbumFile) v.getTag();
+                int videolength = (int) (albumFile.getDuration() / 1000);
+                String filepath = albumFile.getPath();
                 String length = String.valueOf(videolength);
                 VideoPlayerActivity.startActivity(activity, filepath, length, null);
                 break;

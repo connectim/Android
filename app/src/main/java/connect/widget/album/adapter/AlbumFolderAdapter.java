@@ -7,23 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import java.io.File;
+
 import java.util.List;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.album.model.AlbumFolderInfo;
-import connect.widget.album.model.AlbumType;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.model.AlbumFile;
+import connect.widget.album.model.AlbumFolder;
+import connect.widget.album.model.AlbumFolderType;
 
 /**
  * Created by Administrator on 2017/8/21.
  */
 public class AlbumFolderAdapter extends RecyclerView.Adapter<AlbumFolderAdapter.ViewHolder> {
 
-    private List<AlbumFolderInfo> folderInfos;
+    private List<AlbumFolder> albumFolders;
 
-    public AlbumFolderAdapter(List<AlbumFolderInfo> folderInfos) {
-        this.folderInfos = folderInfos;
+    public AlbumFolderAdapter(List<AlbumFolder> albumFolders) {
+        this.albumFolders = albumFolders;
     }
 
     @Override
@@ -37,23 +37,23 @@ public class AlbumFolderAdapter extends RecyclerView.Adapter<AlbumFolderAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        AlbumFolderInfo albumFolderInfo = folderInfos.get(position);
+        AlbumFolder albumFolder = albumFolders.get(position);
 
-        File frontCover = albumFolderInfo.getFrontCover();
-        GlideUtil.loadAvater(holder.ivAlbumCover, frontCover.getAbsolutePath());
-        String folderName = albumFolderInfo.getFolderName();
+        AlbumFile frontCover = albumFolder.getAlbumFiles().get(0);
+        GlideUtil.loadAvater(holder.ivAlbumCover, frontCover.getPath());
+
+        String folderName = albumFolder.getFolderName();
         folderName = folderName.length() > 8 ? folderName.substring(0, 8) + "..." : folderName;
 
         holder.tvDirectoryName.setText(folderName);
-
-        if (albumFolderInfo.getAlbumType() == AlbumType.Photo) {
+        if (albumFolder.getAlbumFolderType() == AlbumFolderType.Photo) {
             holder.videoStateImg.setVisibility(View.GONE);
         } else {
             holder.videoStateImg.setVisibility(View.VISIBLE);
         }
 
-        List<ImageInfo> imageInfoList = albumFolderInfo.getImageInfoList();
-        holder.tvChildCount.setText(imageInfoList.size() + "");
+        List<AlbumFile> albumFiles = albumFolder.getAlbumFiles();
+        holder.tvChildCount.setText(albumFiles.size() + "");
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,8 +71,8 @@ public class AlbumFolderAdapter extends RecyclerView.Adapter<AlbumFolderAdapter.
     @Override
     public int getItemCount() {
         int size = 0;
-        if (folderInfos != null) {
-            size = folderInfos.size();
+        if (albumFolders != null) {
+            size = albumFolders.size();
         }
         return size;
     }

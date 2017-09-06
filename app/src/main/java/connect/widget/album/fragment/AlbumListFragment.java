@@ -1,29 +1,32 @@
 package connect.widget.album.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
+
+import connect.activity.home.view.LineDecoration;
 import connect.ui.activity.R;
 import connect.activity.base.BaseFragment;
 import connect.utils.ActivityUtil;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.adapter.AlbumGridAdp;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.adapter.AlbumListAdapter;
+import connect.widget.album.model.AlbumFile;
 
 /**
  * All pictures show photo albums
  */
-public class AlbumGridFragment extends BaseFragment implements View.OnClickListener{
+public class AlbumListFragment extends BaseFragment implements View.OnClickListener{
 
     private AlbumActivity activity;
-    private GridView gridView;
-    private AlbumGridAdp albumGridAdp;
+    private RecyclerView recyclerView;
+    private AlbumListAdapter albumListAdapter;
 
     private TextView titleTxt;
     private TextView noImg;
@@ -32,17 +35,17 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
     private TextView albumsTxt;
     private TextView preTxt;
 
-    private List<ImageInfo> imageInfos;
+    private List<AlbumFile> albumFiles;
 
-    public static AlbumGridFragment newInstance() {
-        return new AlbumGridFragment();
+    public static AlbumListFragment newInstance() {
+        return new AlbumListFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = (AlbumActivity) getActivity();
         View rootView = inflater.inflate(R.layout.fragment_album_grid, container, false);
-        gridView = (GridView) rootView.findViewById(R.id.gridview);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         backImg= (ImageView) rootView.findViewById(R.id.iv_back);
         titleTxt= (TextView) rootView.findViewById(R.id.tv_dir_title);
         sendTxt= (TextView) rootView.findViewById(R.id.tv_selected_ok);
@@ -50,14 +53,18 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
         albumsTxt= (TextView) rootView.findViewById(R.id.txt);
         preTxt= (TextView) rootView.findViewById(R.id.txt1);
 
-        albumGridAdp = new AlbumGridAdp();
-        gridView.setAdapter(albumGridAdp);
-        List<ImageInfo> infos = new ArrayList<>(activity.getImageInfos());
-        albumGridAdp.setData(infos);
-        albumGridAdp.setAlbumGridListener(new AlbumGridAdp.AlbumGridListener() {
+        GridLayoutManager layoutManager = new GridLayoutManager(activity, 3);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new LineDecoration(activity));
+
+        albumListAdapter = new AlbumListAdapter();
+        recyclerView.setAdapter(albumListAdapter);
+        List<AlbumFile> infos = activity.getAlbumFiles();
+        albumListAdapter.setData(infos);
+        albumListAdapter.setAlbumGridListener(new AlbumListAdapter.AlbumGridListener() {
 
             @Override
-            public boolean itemIsSelect(ImageInfo imageInfo) {
+            public boolean itemIsSelect(AlbumFile imageInfo) {
                 return activity.isSelectImg(imageInfo);
             }
 
@@ -67,12 +74,12 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
             }
 
             @Override
-            public boolean ItemCheck(boolean isChecked, ImageInfo imageInfo) {
+            public boolean ItemCheck(boolean isChecked, AlbumFile albumFile) {
                 boolean canselect = true;
                 if (isChecked && !activity.canSelectImg()) {
                     canselect = false;
                 } else {
-                    activity.updateSelectInfos(isChecked, imageInfo);
+                    activity.updateSelectInfos(isChecked, albumFile);
                     refreshSelectedViewState();
                 }
                 return canselect;
@@ -95,9 +102,9 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
     }
 
     public void loadData() {
-        if (activity.getImageInfos() != null) {
-            imageInfos = new ArrayList<>(activity.getImageInfos());
-            albumGridAdp.setData(imageInfos);
+        if (activity.getAlbumFiles() != null) {
+            albumFiles = activity.getAlbumFiles();
+            albumListAdapter.setData(albumFiles);
         }
     }
 
@@ -121,10 +128,6 @@ public class AlbumGridFragment extends BaseFragment implements View.OnClickListe
             preTxt.setEnabled(true);
             preTxt.setText(getString(R.string.Chat_Preview_Num, selectNum));
         }
-    }
-
-    public void setImageInfos(List<ImageInfo> imageInfos) {
-        this.imageInfos = imageInfos;
     }
 
     @Override

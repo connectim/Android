@@ -1,6 +1,5 @@
 package connect.activity.home.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -13,10 +12,6 @@ import android.view.ViewGroup;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,15 +19,14 @@ import connect.activity.base.BaseFragment;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
+import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.FriendInfoAliasActivity;
-import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.ScanAddFriendActivity;
 import connect.activity.contact.SearchFriendActivity;
-import connect.activity.home.adapter.ContactAdapter;
 import connect.activity.contact.bean.ContactNotice;
-import connect.activity.contact.model.ContactListManage;
 import connect.activity.home.HomeActivity;
+import connect.activity.home.adapter.ContactAdapter;
 import connect.activity.home.bean.ContactBean;
 import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;

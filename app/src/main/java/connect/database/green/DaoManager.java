@@ -124,7 +124,7 @@ public class DaoManager {
         return AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(pbkdf));
     }
 
-    public synchronized DaoSession getDaoSession() {
+    public DaoSession getDaoSession() {
         if (null == mDaoSession) {
             if (null == mDaoMaster) {
                 mDaoMaster = getDaoMaster();

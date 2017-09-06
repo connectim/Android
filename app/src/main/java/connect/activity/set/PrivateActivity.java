@@ -223,7 +223,10 @@ public class PrivateActivity extends BaseActivity {
         // Do the Hmac to telephone number
         Connect.PhoneBook.Builder builder = Connect.PhoneBook.newBuilder();
         for (int i = 0; i < list.size(); i++) {
-            String phone = StringUtil.filterNumber(list.get(i).getPhone());
+            PhoneContactBean contactBean = list.get(i);
+            String phone = contactBean.getPhone();
+            phone = TextUtils.isEmpty(phone) ? "" : phone;
+            phone = StringUtil.filterNumber(phone);
             String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.HmacSalt);
             Connect.PhoneInfo phoneInfo = Connect.PhoneInfo.newBuilder()
                     .setMobile(phoneHmac)

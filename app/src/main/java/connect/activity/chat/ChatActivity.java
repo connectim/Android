@@ -57,7 +57,7 @@ import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.model.AlbumFile;
 import connect.widget.camera.CameraTakeActivity;
 import protos.Connect;
 
@@ -275,19 +275,19 @@ public class ChatActivity extends BaseChatActvity {
                 MsgSend.sendOuterMsg(MsgType.Video, path, length);
             }
         } else if (requestCode == AlbumActivity.OPEN_ALBUM_CODE && data != null) {
-            List<ImageInfo> imageInfos = (List<ImageInfo>) data.getSerializableExtra("list");
-            if (imageInfos != null && imageInfos.size() > 0) {
-                for (ImageInfo info : imageInfos) {
-                    String filePath = info.getImageFile().getAbsolutePath();
+            List<AlbumFile> albumFiles = (List<AlbumFile>) data.getSerializableExtra("list");
+            if (albumFiles != null && albumFiles.size() > 0) {
+                for (AlbumFile albumFile : albumFiles) {
+                    String filePath = albumFile.getPath();
                     File tempFile = new File(filePath);
                     if (tempFile.exists() && tempFile.length() > 0) {
-                        if (info.getFileType() == 0) {
+                        if (albumFile.getMediaType() == AlbumFile.TYPE_IMAGE) {
                             List<String> paths = new ArrayList<>();
-                            paths.add(info.getImageFile().getAbsolutePath());
+                            paths.add(albumFile.getPath());
                             MsgSend.sendOuterMsg(MsgType.Photo, paths);
                         } else {
-                            int length = (int) (info.getImageFile().getVideoLength() / 1000);
-                            MsgSend.sendOuterMsg(MsgType.Video, info.getImageFile().getAbsolutePath(), length);
+                            int length = (int) (albumFile.getDuration() / 1000);
+                            MsgSend.sendOuterMsg(MsgType.Video, albumFile.getPath(), length);
                         }
                     }
                 }

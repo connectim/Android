@@ -1,7 +1,6 @@
 package connect.widget.album.adapter;
 
 import android.support.v4.view.PagerAdapter;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -9,26 +8,26 @@ import java.util.List;
 
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.model.AlbumFile;
 import connect.widget.photoview.PhotoView;
 
 /**
  * Created by pujin on 2017/3/22.
  */
-public class AlbumGalleryAdp extends PagerAdapter {
+public class AlbumPreviewAdapter extends PagerAdapter {
 
-    private List<ImageInfo> imageInfos;
+    private List<AlbumFile> albumFiles;
 
-    public void setData(List<ImageInfo> imgs){
-        this.imageInfos = imgs;
+    public void setData(List<AlbumFile> imgs){
+        this.albumFiles = imgs;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
         int size = 0;
-        if (imageInfos != null) {
-            size = imageInfos.size();
+        if (albumFiles != null) {
+            size = albumFiles.size();
         }
         return size;
     }
@@ -44,10 +43,10 @@ public class AlbumGalleryAdp extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View galleryItemView = View.inflate(container.getContext(), R.layout.preview_image_item, null);
 
-        ImageInfo imageInfo = imageInfos.get(position);
         PhotoView galleryPhotoView = (PhotoView) galleryItemView.findViewById(R.id.iv_show_image);
 
-        String showPath = imageInfo.getImageFile().getAbsolutePath();
+        AlbumFile albumFile = albumFiles.get(position);
+        String showPath = albumFile.getPath();
         GlideUtil.loadImage(galleryPhotoView, showPath);
         container.addView(galleryItemView);
         return galleryItemView;

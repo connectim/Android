@@ -19,9 +19,9 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.album.contract.AlbumContract;
-import connect.widget.album.model.AlbumFolderInfo;
-import connect.widget.album.model.AlbumType;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.model.AlbumFile;
+import connect.widget.album.model.AlbumFolder;
+import connect.widget.album.model.AlbumFolderType;
 import connect.widget.album.presenter.AlbumPresenter;
 
 /**
@@ -41,16 +41,17 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
     /** Maximum number of choices */
     private int maxSelect;
 
-    /** The selected image list */
-    private Map<String,ImageInfo> imageInfoMap = new HashMap<>();
+
     /** request code */
     public final static int OPEN_ALBUM_CODE = 502;
 
-    private List<ImageInfo> imageInfos = new ArrayList<>();
-    private List<AlbumFolderInfo> folderInfos;
-    private AlbumContract.Presenter presenter;
+    /** The selected image list */
+    private Map<String,AlbumFile> imageInfoMap = new HashMap<>();
+    private List<AlbumFolder> folderInfos;
+    private ArrayList<AlbumFile> albumFiles = new ArrayList<>();
 
-    private AlbumType albumType;
+    private AlbumContract.Presenter presenter;
+    private AlbumFolderType albumFolderType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,7 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
         activity = this;
         requestCode = getIntent().getIntExtra("CODE_REQUEST", 0);
         maxSelect = getIntent().getIntExtra("MAX_SELECT", 9);
-        albumType = (maxSelect == 1 ? AlbumType.Photo : AlbumType.All);
+        albumFolderType = (maxSelect == 1 ? AlbumFolderType.Photo : AlbumFolderType.All);
 
         new AlbumPresenter(activity).start();
         PermissionUtil.getInstance().requestPermissom(activity, new String[]{PermissionUtil.PERMISSIM_STORAGE}, permissomCallBack);
@@ -88,14 +89,11 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
         public void granted(String[] permissions) {
             presenter.albumScan(new AlbumPresenter.OnScanListener() {
                 @Override
-                public void onScanFinish(List<AlbumFolderInfo> infoList) {
+                public void onScanFinish(List<AlbumFolder> infoList) {
                     if (infoList != null) {
                         folderInfos = infoList;
+                        albumFiles = infoList.get(0).getAlbumFiles();
 
-                        imageInfos = new ArrayList<ImageInfo>();
-                        for (AlbumFolderInfo folderInfo : folderInfos) {
-                            imageInfos.addAll(folderInfo.getImageInfoList());
-                        }
                         presenter.gridAlbumFragment();
                     }
                 }
@@ -114,15 +112,15 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
     }
 
     public void sendImgInfos() {
-        ArrayList<ImageInfo> imageInfos = new ArrayList<>();
-        for (ImageInfo info : imageInfoMap.values()) {
-            if (info.getImageFile().length() > 1024 * 1024 * 10) {
+        ArrayList<AlbumFile> albumFiles = new ArrayList<>();
+        for (AlbumFile albumFile : imageInfoMap.values()) {
+            if (albumFile.getSize() > 1024 * 1024 * 10) {
                 continue;
             }
-            imageInfos.add(info);
+            albumFiles.add(albumFile);
         }
         Bundle bundle = new Bundle();
-        bundle.putSerializable("list", imageInfos);
+        bundle.putSerializable("list", albumFiles);
         ActivityUtil.goBackWithResult(activity, requestCode, bundle);
     }
 
@@ -138,11 +136,12 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
         return maxSelect > getSelectSize();
     }
 
-    public void updateSelectInfos(boolean add, ImageInfo info) {
+    public void updateSelectInfos(boolean add, AlbumFile albumFile) {
+        albumFile.setChecked(add);
         if (add) {
-            imageInfoMap.put(info.getImageFile().getAbsolutePath(),info);
+            imageInfoMap.put(albumFile.getPath(),albumFile);
         } else {
-            imageInfoMap.remove(info.getImageFile().getAbsolutePath());
+            imageInfoMap.remove(albumFile.getPath());
         }
     }
 
@@ -150,14 +149,14 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
         return imageInfoMap.size();
     }
 
-    public boolean isSelectImg(ImageInfo info){
-        return imageInfoMap.containsKey(info.getImageFile().getAbsolutePath());
+    public boolean isSelectImg(AlbumFile file){
+        return imageInfoMap.containsKey(file.getPath());
     }
 
-    public List<ImageInfo> getSelectInfoList() {
-        List<ImageInfo> selectInfos = new ArrayList<>();
-        for (ImageInfo info : imageInfoMap.values()) {
-            selectInfos.add(info);
+    public List<AlbumFile> getSelectInfoList() {
+        List<AlbumFile> selectInfos = new ArrayList<>();
+        for (AlbumFile albumFile : imageInfoMap.values()) {
+            selectInfos.add(albumFile);
         }
         return selectInfos;
     }
@@ -189,23 +188,22 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
         return presenter;
     }
 
-    @Override
-    public AlbumType getAlbumType() {
-        return albumType;
+    public AlbumFolderType getAlbumFolderType() {
+        return albumFolderType;
     }
 
     @Override
-    public List<AlbumFolderInfo> getFolderInfos() {
+    public List<AlbumFolder> getAlbumFolders() {
         return folderInfos;
     }
 
     @Override
-    public List<ImageInfo> getImageInfos() {
-        return imageInfos;
+    public ArrayList<AlbumFile> getAlbumFiles() {
+        return albumFiles;
     }
 
     @Override
-    public void setImageInfos(List<ImageInfo> imageInfos) {
-        this.imageInfos = imageInfos;
+    public void setAlbumFiles(ArrayList<AlbumFile> albumFiles) {
+        this.albumFiles = albumFiles;
     }
 }

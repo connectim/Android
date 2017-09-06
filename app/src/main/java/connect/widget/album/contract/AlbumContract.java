@@ -2,13 +2,14 @@ package connect.widget.album.contract;
 
 import android.app.Activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
-import connect.widget.album.model.AlbumFolderInfo;
-import connect.widget.album.model.AlbumType;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.model.AlbumFile;
+import connect.widget.album.model.AlbumFolder;
+import connect.widget.album.model.AlbumFolderType;
 import connect.widget.album.presenter.AlbumPresenter;
 
 /**
@@ -23,13 +24,13 @@ public interface AlbumContract {
 
         Presenter getPresenter();
 
-        AlbumType getAlbumType();
+        AlbumFolderType getAlbumFolderType();
 
-        List<AlbumFolderInfo> getFolderInfos();
+        List<AlbumFolder> getAlbumFolders();
 
-        List<ImageInfo> getImageInfos();
+        ArrayList<AlbumFile> getAlbumFiles();
 
-        void setImageInfos(List<ImageInfo> imageInfos);
+        void setAlbumFiles(ArrayList<AlbumFile> albumFiles);
     }
 
     interface Presenter extends BasePresenter {
