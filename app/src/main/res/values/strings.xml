@@ -658,6 +658,7 @@
     <string name="Wallet_Receipt">Request</string>
     <string name="Wallet_Receivables_from">Receivables from(%d)</string>
     <string name="Wallet_Received">Received</string>
+    <string name="Wallet_Not_received">Not received</string>
     <string name="Wallet_Recent_transfer">Recent transfers</string>
     <string name="Wallet_Reset_password">Reset password</string>
     <string name="Wallet_Result_is_not_a_bitcoin_address">It is not a bitcoin address</string>

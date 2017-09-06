@@ -34,6 +34,7 @@ import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.activity.wallet.bean.RateBean;
 import connect.activity.wallet.bean.WalletBean;
 import connect.database.MemoryDataManager;
+import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
@@ -136,6 +137,7 @@ public class WalletFragment extends BaseFragment {
         });
         amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(0));
         List<CurrencyEntity> listCurrency = CurrencyHelper.getInstance().loadCurrencyList();
+        WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
         if (listCurrency == null || listCurrency.size() == 0) {
             syncWallet();
         }

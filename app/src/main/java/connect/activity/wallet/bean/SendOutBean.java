@@ -13,6 +13,7 @@ public class SendOutBean implements Serializable{
     private long deadline;
     private String hashId;
     private int status = 0; // 1:cancel 2:past due
+    private long amount;
 
     public String getType() {
         return type;
@@ -60,5 +61,13 @@ public class SendOutBean implements Serializable{
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(long amount) {
+        this.amount = amount;
     }
 }

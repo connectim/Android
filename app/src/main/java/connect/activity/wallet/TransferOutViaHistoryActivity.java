@@ -100,7 +100,8 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
                 } else if (billingInfo.getReceived()) {
                     sendOutBean.setStatus(3);
                 }
-
+                sendOutBean.setHashId(billingInfo.getHash());
+                sendOutBean.setAmount(billingInfo.getAmount());
                 PacketSendActivity.startActivity(mActivity, sendOutBean);
             }
         });

@@ -58,13 +58,16 @@ public class TransferOutAdapter extends RecyclerView.Adapter<TransferOutAdapter.
 
         if (mListData.get(position).getReceived()) {
             viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_767a82));
-            viewHolder.statusTv.setText(activity.getString(R.string.Wallet_Confirmed));
-        } else if(mListData.get(position).getCancelled()){
+            viewHolder.statusTv.setText(activity.getString(R.string.Wallet_Received));
+        } else if (mListData.get(position).getCancelled()) {
             viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_f04a5f));
             viewHolder.statusTv.setText(activity.getString(R.string.Wallet_Canceled));
+        } else if (mListData.get(position).getDeadline() <= 0) {
+            viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_767a82));
+            viewHolder.statusTv.setText(activity.getString(R.string.Network_Timeout));
         } else {
             viewHolder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_f04a5f));
-            viewHolder.statusTv.setText(activity.getString(R.string.Wallet_Unconfirmed));
+            viewHolder.statusTv.setText(activity.getString(R.string.Wallet_Not_received));
         }
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

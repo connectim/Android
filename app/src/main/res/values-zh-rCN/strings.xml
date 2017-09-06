@@ -658,6 +658,7 @@
     <string name="Wallet_Receipt">收款</string>
     <string name="Wallet_Receivables_from">众筹(%d人)</string>
     <string name="Wallet_Received">已接收</string>
+    <string name="Wallet_Not_received">未接收</string>
     <string name="Wallet_Recent_transfer">最近转账</string>
     <string name="Wallet_Reset_password">重置密码</string>
     <string name="Wallet_Result_is_not_a_bitcoin_address">不是一个地址</string>

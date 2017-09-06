@@ -26,6 +26,8 @@ import connect.utils.ExCountDownTimer;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
+import connect.utils.data.RateDataUtil;
+import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -35,7 +37,6 @@ import protos.Connect;
 
 /**
  * send outer lucky packet
- * Created by Administrator on 2016/12/16.
  */
 public class PacketSendActivity extends BaseActivity {
 
@@ -96,7 +97,8 @@ public class PacketSendActivity extends BaseActivity {
         } else if (sendOutBean.getType().equals(OUT_VIA)) {
             toolbarTop.setTitle(null, R.string.Wallet_Transfer);
             leftSendImg.setImageResource(R.mipmap.bitcoin_message3x);
-            describeTv.setText(R.string.Wallet_Transfer_Out_Send_User_Connect);
+            describeTv.setText(getString(R.string.Link_Send) + "bitcoin\n"
+                    + RateFormatUtil.longToDoubleBtc(sendOutBean.getAmount()) + " BTC");
             hintTv.setText(R.string.Wallet_Wallet_Out_Send_Share);
             if(sendOutBean.getStatus() == 0){
                 toolbarTop.setRightImg(R.mipmap.menu_white);
@@ -137,7 +139,7 @@ public class PacketSendActivity extends BaseActivity {
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -181,8 +183,8 @@ public class PacketSendActivity extends BaseActivity {
         });
     }
 
-    public void bangPunchTimer(final long leavetime) {
-        ExCountDownTimer exCountDownTimer = new ExCountDownTimer(leavetime, 1000) {
+    public void bangPunchTimer(final long leaveTime) {
+        ExCountDownTimer exCountDownTimer = new ExCountDownTimer(leaveTime, 1000) {
             @Override
             public void onTick(long millisUntilFinished, int percent) {
                 timeTv.setText(TimeUtil.showTimeCount(millisUntilFinished));

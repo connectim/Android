@@ -658,6 +658,7 @@
     <string name="Wallet_Receipt">Получение средств</string>
     <string name="Wallet_Receivables_from">Краудфандинг (%d человек)</string>
     <string name="Wallet_Received">Получено</string>
+    <string name="Wallet_Not_received">Не получено</string>
     <string name="Wallet_Recent_transfer">Последний перевод денежный средств</string>
     <string name="Wallet_Reset_password">Восстановить пароль</string>
     <string name="Wallet_Result_is_not_a_bitcoin_address">Не тот адресс</string>

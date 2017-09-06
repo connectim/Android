@@ -142,6 +142,8 @@ public class TransferOutViaActivity extends BaseActivity {
                     sendOutBean.setType(PacketSendActivity.OUT_VIA);
                     sendOutBean.setUrl(billingInfo.getUrl());
                     sendOutBean.setDeadline(billingInfo.getDeadline());
+                    sendOutBean.setHashId(billingInfo.getHash());
+                    sendOutBean.setAmount(billingInfo.getAmount());
                     PacketSendActivity.startActivity(mActivity,sendOutBean);
                 }catch (Exception e){
                     e.printStackTrace();
