@@ -3,9 +3,6 @@ package connect.widget.prompt;
 import android.content.Context;
 import android.view.View;
 
-/**
- * Created by chenpengfei on 2016/11/2.
- */
 public class ChatPromptViewManager extends PromptViewHelper.PromptViewManager {
 
     public ChatPromptViewManager(Context activity, String[] dataArray) {

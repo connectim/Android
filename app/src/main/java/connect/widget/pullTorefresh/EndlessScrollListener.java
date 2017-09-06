@@ -1,9 +1,5 @@
 package connect.widget.pullTorefresh;
 
-/**
- * Created by Administrator on 2017/7/14.
- */
-
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

@@ -13,10 +13,6 @@ import android.view.View;
 
 import connect.ui.activity.R;
 
-/**
- * Created by Administrator on 2017/2/17.
- */
-
 public class ScanBgView extends View{
 
     private Paint paint;
@@ -51,14 +47,14 @@ public class ScanBgView extends View{
         super.onDraw(canvas);
         canvas.drawRect(0,0,getWidth(),getHeight(),paint);
 
-        Paint painta = new Paint(Paint.ANTI_ALIAS_FLAG);
-        painta.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        painta.setColor(getResources().getColor(R.color.color_00ffbf));
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        paint.setColor(getResources().getColor(R.color.color_00ffbf));
         RectF rect = new RectF();
         rect.left = 0;
         rect.right = getWidth();
         rect.top = 0 ;
         rect.bottom = getHeight();
-        canvas.drawRoundRect(rect,20,20,painta);
+        canvas.drawRoundRect(rect,20,20,paint);
     }
 }

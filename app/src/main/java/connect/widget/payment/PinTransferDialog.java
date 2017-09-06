@@ -2,7 +2,6 @@ package connect.widget.payment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,13 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import connect.activity.common.adapter.ViewPagerAdapter;
 import connect.activity.set.bean.PaySetBean;
-import connect.database.SharePreferenceUser;
-import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -34,17 +30,12 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.data.RateFormatUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.widget.ControlScrollViewPager;
 import connect.widget.MdStyleProgress;
 import wallet_gateway.WalletOuterClass;
-
-/**
- * Created by Administrator on 2017/7/12 0012.
- */
 
 public class PinTransferDialog implements View.OnClickListener{
 
@@ -53,7 +44,7 @@ public class PinTransferDialog implements View.OnClickListener{
     private Dialog dialog;
 
     private MdStyleProgress progressBar;
-    private PaymentPwd.OnTrueListener onTrueListener;
+    private OnTrueListener onTrueListener;
     private PaySetBean paySetBean;
     private VirtualKeyboardView keyboardView;
     private Activity activity;
@@ -72,7 +63,7 @@ public class PinTransferDialog implements View.OnClickListener{
     /**
      * show pay the password box
      */
-    public Dialog showPaymentPwd(Activity activity, ArrayList<String> inputsList, List<WalletOuterClass.Txout> txouts, long fee, long fixedFee,int currency, String payload, final PaymentPwd.OnTrueListener onTrueListener) {
+    public Dialog showPaymentPwd(Activity activity, ArrayList<String> inputsList, List<WalletOuterClass.Txout> txouts, long fee, long fixedFee,int currency, String payload, final OnTrueListener onTrueListener) {
         this.activity = activity;
         this.payload = payload;
         this.txouts = txouts;
@@ -115,7 +106,7 @@ public class PinTransferDialog implements View.OnClickListener{
 
         viewPager.setAdapter(new ViewPagerAdapter(arrayList));
         viewPager.addOnPageChangeListener(pageChangeListener);
-        viewPager.setScrollble(false);
+        viewPager.setScroll(false);
 
         initEditPay(editPass);
         initPassForget(passForget);
@@ -282,7 +273,7 @@ public class PinTransferDialog implements View.OnClickListener{
         closeStatusDialog(status, null);
     }
 
-    public void closeStatusDialog(final MdStyleProgress.Status status, final PaymentPwd.OnAnimationListener onAnimationListener) {
+    public void closeStatusDialog(final MdStyleProgress.Status status, final OnAnimationListener onAnimationListener) {
         //Sleep 2s Loading
         Handler handler = new Handler(Looper.getMainLooper()){
             @Override
@@ -303,7 +294,7 @@ public class PinTransferDialog implements View.OnClickListener{
         handler.sendEmptyMessageDelayed(1,1000);
     }
 
-    private void sleepCloseDialog(final PaymentPwd.OnAnimationListener onAnimationListener){
+    private void sleepCloseDialog(final OnAnimationListener onAnimationListener){
         Handler handler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message msg) {
@@ -319,6 +310,10 @@ public class PinTransferDialog implements View.OnClickListener{
 
     public interface OnTrueListener {
         void onTrue(String decodeStr);
+    }
+
+    public interface OnAnimationListener {
+        void onComplete();
     }
 
 }

@@ -12,10 +12,6 @@ import android.view.View;
 import connect.ui.activity.R;
 import connect.utils.system.SystemUtil;
 
-/**
- * Created by pujin on 17-5-2.
- */
-
 public class DBUpgradeView extends View {
 
     private String Tag = "DBUpgradeView";

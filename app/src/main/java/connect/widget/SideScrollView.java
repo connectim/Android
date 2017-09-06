@@ -1,9 +1,5 @@
 package connect.widget;
 
-/**
- * Created by MJJ on 2015/7/25.
- */
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;

@@ -27,10 +27,6 @@ import connect.widget.album.AlbumActivity;
 import connect.widget.album.model.ImageInfo;
 import connect.widget.clip.ClipImageActivity;
 
-/**
- * Created by Administrator on 2017/6/28 0028.
- */
-
 public class TakePictureActivity extends BaseActivity implements TakePictureContract.View{
 
     @Bind(R.id.toolbar_top)

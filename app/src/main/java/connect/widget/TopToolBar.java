@@ -16,9 +16,6 @@ import android.widget.TextView;
 import connect.ui.activity.R;
 import connect.activity.base.BaseApplication;
 
-/**
- * Created by john on 2016/11/22.
- */
 public class TopToolBar extends LinearLayout{
 
     private final Context context;

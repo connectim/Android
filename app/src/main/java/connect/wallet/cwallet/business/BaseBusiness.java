@@ -33,7 +33,6 @@ import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.currency.BaseCurrency;
 import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.MdStyleProgress;
-import connect.widget.payment.PaymentPwd;
 import connect.widget.payment.PinTransferDialog;
 import protos.Connect;
 import wallet_gateway.WalletOuterClass;
@@ -334,7 +333,7 @@ public class BaseBusiness {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_SERVICE_PUBLISH, publishTransaction, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(final Connect.HttpResponse response) {
-                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PaymentPwd.OnAnimationListener() {
+                pinTransferDialog.closeStatusDialog(MdStyleProgress.Status.LoadSuccess, new PinTransferDialog.OnAnimationListener() {
                     @Override
                     public void onComplete() {
                         listener.success(hashId);
@@ -438,7 +437,7 @@ public class BaseBusiness {
                                 connectDialog.dismiss();
                         }
                     });
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -513,7 +512,7 @@ public class BaseBusiness {
 
         pinTransferDialog = new PinTransferDialog();
         pinTransferDialog.showPaymentPwd(activity, addressList,transaction.getTxOutsList(), transaction.getFee(), transaction.getFixedFee(), transaction.getCurrency(),
-                payload, new PaymentPwd.OnTrueListener() {
+                payload, new PinTransferDialog.OnTrueListener() {
             @Override
             public void onTrue(String decodeStr) {
                 ArrayList<String> priList = new ArrayList<>();

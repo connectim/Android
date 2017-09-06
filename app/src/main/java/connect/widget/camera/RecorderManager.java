@@ -7,9 +7,6 @@ import android.view.SurfaceHolder;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by Administrator on 2016/12/13.
- */
 public class RecorderManager {
 
     private int widthSize = 1280;

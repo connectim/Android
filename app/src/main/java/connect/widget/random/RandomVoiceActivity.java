@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.security.SecureRandom;
-import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -21,13 +20,8 @@ import connect.utils.ToastEUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.inter.WalletListener;
-import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
-import connect.widget.camera.CricleProgressbar;
-
-/**
- * Created by Administrator on 2017/7/7 0007.
- */
+import connect.widget.camera.CircleProgressbar;
 
 public class RandomVoiceActivity extends BaseActivity implements RandomVoiceContract.View{
 
@@ -36,7 +30,7 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
     @Bind(R.id.start_img)
     ImageView startImg;
     @Bind(R.id.myProgressBar)
-    CricleProgressbar myProgressBar;
+    CircleProgressbar myProgressBar;
     @Bind(R.id.status_tv)
     TextView statusTv;
     @Bind(R.id.jump_tv)
@@ -73,7 +67,7 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 

@@ -14,10 +14,6 @@ import android.util.TypedValue;
 import android.view.View;
 import connect.ui.activity.R;
 
-/**
- * Created by Administrator on 2017/3/1.
- */
-
 public class MdStyleProgress extends View {
 
     private static final int PROGRESS_COLOR = Color.parseColor("#007aff");

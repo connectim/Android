@@ -16,9 +16,6 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by chenpengfei on 2016/10/27.
- */
 public class PromptView extends View {
 
     private Paint mPaint;

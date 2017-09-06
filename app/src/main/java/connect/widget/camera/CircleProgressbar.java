@@ -9,26 +9,22 @@ import android.view.View;
 
 import connect.ui.activity.R;
 
-/**
- * Created by Administrator on 2017/2/7.
- */
-
-public class CricleProgressbar extends View{
+public class CircleProgressbar extends View{
 
     private Paint paint;
     private int mWidth;
     private int lineWidth = 8;
     private float sweepAngle = 0;
 
-    public CricleProgressbar(Context context) {
+    public CircleProgressbar(Context context) {
         this(context,null);
     }
 
-    public CricleProgressbar(Context context, AttributeSet attrs) {
+    public CircleProgressbar(Context context, AttributeSet attrs) {
         this(context, attrs,0);
     }
 
-    public CricleProgressbar(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CircleProgressbar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
     }

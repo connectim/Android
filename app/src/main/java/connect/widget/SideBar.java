@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by gtq on 2016/12/13.
+ * Letter search
  */
 public class SideBar extends View {
     private OnTouchingLetterChangedListener onTouchingLetterChangedListener;

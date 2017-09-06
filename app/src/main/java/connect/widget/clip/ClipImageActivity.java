@@ -25,7 +25,6 @@ import connect.widget.TopToolBar;
 /**
  * Picture cut
  */
-
 public class ClipImageActivity extends BaseActivity {
 
     @Bind(R.id.id_clipImageLayout)
@@ -85,14 +84,10 @@ public class ClipImageActivity extends BaseActivity {
                     getString(R.string.Chat_Album_Permission_Get),
                     "", "", true, new DialogUtil.OnItemClickListener() {
                         @Override
-                        public void confirm(String value) {
-
-                        }
+                        public void confirm(String value) {}
 
                         @Override
-                        public void cancel() {
-
-                        }
+                        public void cancel() {}
                     }, false);
         }
     }

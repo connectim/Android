@@ -12,10 +12,6 @@ import connect.utils.FileUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.camera.CameraManager;
 
-/**
- * Created by Administrator on 2017/6/29 0029.
- */
-
 public class TakePicturePresenter implements TakePictureContract.Presenter{
 
     private TakePictureContract.View mView;

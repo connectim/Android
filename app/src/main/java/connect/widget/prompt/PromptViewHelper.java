@@ -11,9 +11,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.PopupWindow;
 
-/**
- * Created by chenpengfei on 2016/11/2.
- */
 public class PromptViewHelper {
 
     private PromptViewManager promptViewManager;

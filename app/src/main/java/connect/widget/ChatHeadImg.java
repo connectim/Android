@@ -10,9 +10,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import connect.activity.chat.bean.DestructOpenBean;
 
-/**
- * Created by gtq on 2016/12/13.
- */
 public class ChatHeadImg extends ImageView {
 
     public ChatHeadImg(Context context) {

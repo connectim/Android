@@ -19,7 +19,6 @@ import java.util.List;
 
 /**
  * Frame animation
- * Created by gtq on 2016/12/28.
  */
 public class FrameAnimationDrawable {
 

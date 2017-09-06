@@ -11,20 +11,16 @@ import android.widget.LinearLayout;
 
 import connect.ui.activity.R;
 
-/**
- * Created by Administrator on 2017/6/8 0008.
- */
-
 public class VideoButtonView extends LinearLayout {
 
     private final ImageView outCircularImg;
     private final ImageView inCircularImg;
-    private final CricleProgressbar progressbar;
+    private final CircleProgressbar progressbar;
     private OnTouchStatusListener onTouchStatusListener;
     private boolean isLong = false;
     private long downTime;
     private final long LONG_TOUCH_TIME = 300;
-    private boolean vidioIng = false;
+    private boolean videoIng = false;
 
     public VideoButtonView(Context context) {
         this(context, null);
@@ -39,7 +35,7 @@ public class VideoButtonView extends LinearLayout {
         View view = View.inflate(context, R.layout.view_video_btn, this);
         outCircularImg = (ImageView) view.findViewById(R.id.out_circular_img);
         inCircularImg = (ImageView) view.findViewById(R.id.in_circular_img);
-        progressbar = (CricleProgressbar) view.findViewById(R.id.myProgressBar);
+        progressbar = (CircleProgressbar) view.findViewById(R.id.myProgressBar);
         this.setClipChildren(false);
     }
 
@@ -51,17 +47,20 @@ public class VideoButtonView extends LinearLayout {
             downTime = System.currentTimeMillis();
         } else if (action == MotionEvent.ACTION_UP) {
             long upTime = System.currentTimeMillis();
-            if (upTime - downTime < LONG_TOUCH_TIME) { // click end
+            if (upTime - downTime < LONG_TOUCH_TIME) {
+                // click end
                 onTouchStatusListener.clickView();
-            } else { // long end
-                vidioIng = false;
+            } else {
+                // long end
+                videoIng = false;
                 progressbar.setVisibility(GONE);
                 showPictureAni();
                 onTouchStatusListener.cancleLongClick();
             }
         } else {
-            if (touchTime - downTime > LONG_TOUCH_TIME && !vidioIng) { // long start
-                vidioIng = true;
+            if (touchTime - downTime > LONG_TOUCH_TIME && !videoIng) {
+                // long start
+                videoIng = true;
                 showVideoAni();
                 onTouchStatusListener.longClickView();
             }

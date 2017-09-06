@@ -16,10 +16,6 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.permission.PermissionUtil;
 import connect.wallet.jni.AllNativeMethod;
 
-/**
- * Created by Administrator on 2017/7/7 0007.
- */
-
 public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
 
     private RandomVoiceContract.View mView;

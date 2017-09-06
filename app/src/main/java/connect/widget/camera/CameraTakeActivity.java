@@ -33,10 +33,6 @@ import connect.utils.FileUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.ToastUtil;
 
-/**
- * Created by Administrator on 2017/2/7.
- */
-
 public class CameraTakeActivity extends BaseActivity {
 
     @Bind(R.id.change_img)

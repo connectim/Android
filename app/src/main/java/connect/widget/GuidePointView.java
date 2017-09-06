@@ -10,7 +10,6 @@ import connect.ui.activity.R;
 
 /**
  * Boot dot
- * Created by Administrator on 2017/1/5.
  */
 public class GuidePointView extends LinearLayout {
 

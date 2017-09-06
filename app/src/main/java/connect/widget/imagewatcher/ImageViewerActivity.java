@@ -23,7 +23,6 @@ import connect.widget.photoview.PhotoViewAttacher;
 
 /**
  * Image viewer
- * Created by gtq on 2017/1/3.
  */
 public class ImageViewerActivity extends BaseActivity {
 

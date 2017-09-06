@@ -6,10 +6,6 @@ import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
 import connect.utils.permission.PermissionUtil;
 
-/**
- * Created by Administrator on 2017/7/7 0007.
- */
-
 public interface RandomVoiceContract {
 
     interface View extends BaseView<RandomVoiceContract.Presenter> {

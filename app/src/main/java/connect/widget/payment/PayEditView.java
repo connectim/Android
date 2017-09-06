@@ -18,13 +18,13 @@ import connect.ui.activity.R;
 
 /**
  * Pay the password input box
- * Created by Administrator on 2016/12/7.
  */
 public class PayEditView extends RelativeLayout {
 
     private ImageView[] imageViews;
     public EditText editText;
-    private StringBuffer stringBuffer = new StringBuffer();//Store password characters
+    // Store password characters
+    private StringBuffer stringBuffer = new StringBuffer();
     private InputCompleteListener inputCompleteListener;
 
     public PayEditView(Context context) {
@@ -52,14 +52,10 @@ public class PayEditView extends RelativeLayout {
     private void setListener() {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable editable) {

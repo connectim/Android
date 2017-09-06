@@ -25,7 +25,7 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.permission.PermissionUtil;
 import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
-import connect.widget.camera.CricleProgressbar;
+import connect.widget.camera.CircleProgressbar;
 
 /**
  * Voice to generate random number.
@@ -37,7 +37,7 @@ public class RegisterGetRandomActivity extends BaseActivity implements RandomSen
     @Bind(R.id.start_img)
     ImageView startImg;
     @Bind(R.id.myProgressBar)
-    CricleProgressbar myProgressBar;
+    CircleProgressbar myProgressBar;
     @Bind(R.id.status_tv)
     TextView statusTv;
     @Bind(R.id.jump_tv)

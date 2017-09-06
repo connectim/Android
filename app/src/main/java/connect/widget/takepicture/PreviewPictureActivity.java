@@ -16,10 +16,6 @@ import connect.utils.glide.GlideUtil;
 import connect.widget.HeightEqWidthImage;
 import connect.widget.TopToolBar;
 
-/**
- * Created by Administrator on 2017/6/28 0028.
- */
-
 public class PreviewPictureActivity extends BaseActivity{
 
     @Bind(R.id.toolbar_top)

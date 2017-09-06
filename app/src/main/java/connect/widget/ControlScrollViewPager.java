@@ -7,11 +7,10 @@ import android.view.MotionEvent;
 
 /**
  * Disable / open gestures sliding ViewPager
- * Created by Administrator on 2016/12/14.
  */
 public class ControlScrollViewPager extends ViewPager {
 
-    private boolean scrollble = true;
+    private boolean scroll = true;
 
     public ControlScrollViewPager(Context context) {
         super(context);
@@ -24,16 +23,15 @@ public class ControlScrollViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return !scrollble||super.onTouchEvent(ev);
+        return !scroll||super.onTouchEvent(ev);
     }
 
-
-    public boolean isScrollble() {
-        return scrollble;
+    public boolean isScroll() {
+        return scroll;
     }
 
-    public void setScrollble(boolean scrollble) {
-        this.scrollble = scrollble;
+    public void setScroll(boolean scroll) {
+        this.scroll = scroll;
     }
 
 }
