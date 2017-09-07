@@ -22,28 +22,31 @@ public class CheckAudioPermission {
     /**
      * To determine whether there is a recording authority
      */
-    public static boolean isHasPermission(){
-        bufferSizeInBytes = 0;
-        bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
-                channelConfig, audioFormat);
-        //Start to record audio
-        AudioRecord audioRecord = null;
-        try{
-            audioRecord =  new AudioRecord(audioSource, sampleRateInHz,
+    public static boolean isHasPermission() {
+        try {
+            bufferSizeInBytes = 0;
+            bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
+                    channelConfig, audioFormat);
+            //Start to record audio
+            AudioRecord audioRecord = null;
+
+            audioRecord = new AudioRecord(audioSource, sampleRateInHz,
                     channelConfig, audioFormat, bufferSizeInBytes);
             // Prevent certain mobile collapse, such as lenovo
             audioRecord.startRecording();
-        }catch (Exception e){
+
+            /**
+             * According to the beginning of recording to determine whether there is a recording authority
+             */
+            if (null == audioRecord || audioRecord.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) {
+                return false;
+            }
+            audioRecord.stop();
+            audioRecord.release();
+            return true;
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        /**
-         * According to the beginning of recording to determine whether there is a recording authority
-         */
-        if (null == audioRecord || audioRecord.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) {
             return false;
         }
-        audioRecord.stop();
-        audioRecord.release();
-        return true;
     }
 }

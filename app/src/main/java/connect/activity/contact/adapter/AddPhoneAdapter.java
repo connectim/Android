@@ -224,13 +224,14 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public int getPositionForSection(char selectchar) {
-        if(mDataList.size() - serverSize == 0)
+        if (mDataList.size() - serverSize == 0)
             return -1;
         for (int i = serverSize; i < mDataList.size(); i++) {
             PhoneContactBean entity = mDataList.get(i);
             String showName = entity.getName();
-            String firstChar = PinyinUtil.chatToPinyin(showName.charAt(0));
-            if (firstChar.charAt(0) == selectchar) {
+            char firstChar = TextUtils.isEmpty(showName) ? '#' : showName.charAt(0);
+            String pinyin = PinyinUtil.chatToPinyin(firstChar);
+            if (pinyin.charAt(0) == selectchar) {
                 return i;
             }
         }

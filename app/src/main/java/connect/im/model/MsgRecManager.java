@@ -112,7 +112,7 @@ public class MsgRecManager {
                 if (SystemUtil.isRunBackGround()) {// run in front
                     Context context = BaseApplication.getInstance().getBaseContext();
                     Intent intent = new Intent(context, StartPageActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//keep a single instance
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//keep a single instance
                     context.startActivity(intent);
                 }
             }

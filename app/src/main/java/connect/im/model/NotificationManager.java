@@ -12,6 +12,9 @@ import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
@@ -22,8 +25,10 @@ import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
+import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.GlobalLanguageUtil;
@@ -133,23 +138,25 @@ public class NotificationManager {
         Intent intent = new Intent();
 
         String tickerTitle = "Connnect";
-        Talker talker=null;
-        switch (type) {
-            case 0:
+        Talker talker = null;
+
+        Connect.ChatType chatType = Connect.ChatType.forNumber(type);
+        switch (chatType) {
+            case PRIVATE:
                 ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(roomid);
                 if (friend != null) {
                     talker = new Talker(friend);
-                    tickerTitle= TextUtils.isEmpty(friend.getRemark())?friend.getUsername():friend.getRemark();
+                    tickerTitle = TextUtils.isEmpty(friend.getRemark()) ? friend.getUsername() : friend.getRemark();
                 }
                 break;
-            case 1:
+            case GROUPCHAT:
                 GroupEntity group = ContactHelper.getInstance().loadGroupEntity(roomid);
                 if (group != null) {
                     talker = new Talker(group);
                     tickerTitle = group.getName();
                 }
                 break;
-            case 2:
+            case CONNECT_SYSTEM:
                 talker = new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE, BaseApplication.getInstance().getString(R.string.app_name));
                 break;
         }

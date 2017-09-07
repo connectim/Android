@@ -190,6 +190,11 @@ public class CameraTakeActivity extends BaseActivity {
                 return;
             try {
                 file = FileUtil.newTempFile(FileUtil.FileType.VIDEO);
+                if (file == null) {
+                    ToastUtil.getInstance().showToast("Shooting video error");
+                    ActivityUtil.goBack(mActivity);
+                    return;
+                }
                 mediaRecorder = recorderManager.initMediaRecorder(mCamera, viewHolder, file, cameraManager.getCameraPosition());
                 mediaRecorder.start();
 
@@ -248,6 +253,11 @@ public class CameraTakeActivity extends BaseActivity {
         public void onPictureTaken(byte[] data, Camera camera) {
             isTakePicture = true;
             file = FileUtil.byteArrayToFile(data, FileUtil.FileType.IMG);
+            if (file == null) {
+                ToastUtil.getInstance().showToast("Shooting video error");
+                ActivityUtil.goBack(mActivity);
+                return;
+            }
             fileType = 0;
             releasedCamera();
             switchView(true);
@@ -270,6 +280,9 @@ public class CameraTakeActivity extends BaseActivity {
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
+            //java.lang.RuntimeException: Camera is being used after Camera.release() was called
+            holder.removeCallback(this);
+
             releasedCamera();
             stopRecorder();
             releasedPlay();

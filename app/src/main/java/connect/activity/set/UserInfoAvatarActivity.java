@@ -23,7 +23,7 @@ import connect.utils.glide.GlideUtil;
 import connect.widget.HeightEqWidthImage;
 import connect.widget.TopToolBar;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.model.AlbumFile;
 import connect.widget.clip.ClipImageActivity;
 import connect.widget.takepicture.TakePictureActivity;
 
@@ -105,9 +105,9 @@ public class UserInfoAvatarActivity extends BaseActivity implements UserInfoAvat
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == AlbumActivity.OPEN_ALBUM_CODE && requestCode == AlbumActivity.OPEN_ALBUM_CODE){
-            List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
+            List<AlbumFile> strings = (List<AlbumFile>) data.getSerializableExtra("list");
             if (strings != null && strings.size() > 0) {
-                ClipImageActivity.startActivity(mActivity,strings.get(0).getImageFile().getAbsolutePath(),ClipImageActivity.REQUEST_CODE);
+                ClipImageActivity.startActivity(mActivity,strings.get(0).getPath(),ClipImageActivity.REQUEST_CODE);
             }
         }
 

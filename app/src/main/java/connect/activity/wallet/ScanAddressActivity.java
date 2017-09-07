@@ -22,7 +22,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
 import connect.widget.ScanBgView;
 import connect.widget.album.AlbumActivity;
-import connect.widget.album.model.ImageInfo;
+import connect.widget.album.model.AlbumFile;
 
 /**
  * Scan the qr code address added
@@ -78,9 +78,9 @@ public class ScanAddressActivity extends BaseScanActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == AlbumActivity.OPEN_ALBUM_CODE && requestCode == AlbumActivity.OPEN_ALBUM_CODE){
-            List<ImageInfo> strings = (List<ImageInfo>) data.getSerializableExtra("list");
+            List<AlbumFile> strings = (List<AlbumFile>) data.getSerializableExtra("list");
             if (strings != null && strings.size() > 0) {
-                getAblamString(strings.get(0).getImageFile().getAbsolutePath(),mLocalHandler);
+                getAblamString(strings.get(0).getPath(),mLocalHandler);
             }
         }
     }

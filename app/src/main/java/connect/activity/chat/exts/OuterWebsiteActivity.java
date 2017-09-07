@@ -166,7 +166,7 @@ public class OuterWebsiteActivity extends BaseActivity {
         intent.setAction("android.intent.action.VIEW");
         Uri content_url = Uri.parse(url);
         intent.setData(content_url);
-        startActivity(intent);
+        activity.startActivity(intent);
     }
 
     final class InJavaScriptLocalObj {

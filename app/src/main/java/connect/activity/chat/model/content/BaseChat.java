@@ -107,39 +107,39 @@ public abstract class BaseChat<T> implements Serializable {
             return;
         }
 
-        ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(chatKey());
-        if (roomEntity == null) {
-            roomEntity = new ConversionEntity();
-            roomEntity.setIdentifier(chatKey());
+        ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(chatKey());
+        if (conversionEntity == null) {
+            conversionEntity = new ConversionEntity();
+            conversionEntity.setIdentifier(chatKey());
         }
 
-        roomEntity.setName(nickName());
-        roomEntity.setAvatar(headImg());
-        roomEntity.setType(chatType());
+        conversionEntity.setName(nickName());
+        conversionEntity.setAvatar(headImg());
+        conversionEntity.setType(chatType());
         if (!TextUtils.isEmpty(showText)) {
-            roomEntity.setContent(showText);
+            conversionEntity.setContent(showText);
         }
         if (msgtime > 0) {
-            roomEntity.setLast_time(msgtime);
+            conversionEntity.setLast_time(msgtime);
         }
-        roomEntity.setStranger(isStranger ? 1 : 0);
+        conversionEntity.setStranger(isStranger ? 1 : 0);
 
 
         if (newmsg == 0) {
-            roomEntity.setUnread_count(0);
+            conversionEntity.setUnread_count(0);
         } else if (newmsg > 0) {
-            int unread = (null == roomEntity.getUnread_count()) ? 1 : 1+roomEntity.getUnread_count();
-            roomEntity.setUnread_count(unread);
+            int unread = (null == conversionEntity.getUnread_count()) ? 1 : 1 + conversionEntity.getUnread_count();
+            conversionEntity.setUnread_count(unread);
         }
 
         if (draft != null) {
-            roomEntity.setDraft(draft);
+            conversionEntity.setDraft(draft);
         }
         if (at >= 0) {
-            roomEntity.setNotice(at);
+            conversionEntity.setNotice(at);
         }
 
-        ConversionHelper.getInstance().insertRoomEntity(roomEntity);
+        ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         if (broad) {
             ConversationAction.conversationAction.sendEvent();
         }

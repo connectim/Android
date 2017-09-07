@@ -25,7 +25,9 @@ public class TransactionHelper extends BaseDao {
 
     public static TransactionHelper getInstance() {
         if (transactionHelper == null) {
-            transactionHelper = new TransactionHelper();
+            synchronized (TransactionHelper.class) {
+                transactionHelper = new TransactionHelper();
+            }
         }
         return transactionHelper;
     }
