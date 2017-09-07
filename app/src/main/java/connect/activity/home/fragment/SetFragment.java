@@ -65,8 +65,9 @@ public class SetFragment extends BaseFragment {
     @Bind(R.id.address_scan_img)
     ImageView addressScanImg;
 
-    private String Tag = "SetFragment";
     private FragmentActivity mActivity;
+
+    private String test = "1111";
 
     public static SetFragment startFragment() {
         SetFragment setFragment = new SetFragment();
