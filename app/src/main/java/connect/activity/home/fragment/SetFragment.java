@@ -18,13 +18,13 @@ import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
+import connect.activity.set.AboutActivity;
 import connect.activity.set.GeneralActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
 import connect.activity.set.UserAddressActivity;
 import connect.activity.set.UserInfoActivity;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.im.bean.UserOrderBean;
 import connect.im.model.FailMsgsManager;
@@ -33,12 +33,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.http.HttpCallListener;
-import connect.utils.http.HttpUtil;
-import connect.utils.okhttp.HttpRequest;
 import connect.widget.TopToolBar;
-import io.reactivex.Observable;
-import protos.Connect;
 
 /**
  * Set the main interface.
@@ -143,22 +138,7 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.llAbout)
     void intoAbout(View view) {
-        //AboutActivity.startActivity(mActivity);
-        Connect.SettingUserInfo userInfo = Connect.SettingUserInfo.newBuilder()
-                .setUsername("1111")
-                .build();
-        HttpUtil.getInstance().request(mActivity, HttpUtil.getBaseApi().setUserInfo(HttpUtil.getIMRequest(userInfo.toByteString())),
-                new HttpCallListener<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                int a = 12;
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                int a = 12;
-            }
-        });
+        AboutActivity.startActivity(mActivity);
     }
 
     @OnClick(R.id.address_scan_img)
