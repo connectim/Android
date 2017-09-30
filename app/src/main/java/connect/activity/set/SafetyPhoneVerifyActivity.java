@@ -14,8 +14,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.ui.activity.R;
 import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.SignInVerifyContract;
-import connect.activity.login.presenter.SignInVerifyPresenter;
+import connect.activity.login.contract.LoginPhoneVerifyContract;
+import connect.activity.login.presenter.LoginPhoneVerifyPresenter;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -24,7 +24,7 @@ import connect.widget.TopToolBar;
 /**
  * Verify the authentication code, binding or binding mobile phone number.
  */
-public class SafetyPhoneVerifyActivity extends BaseActivity implements SignInVerifyContract.View {
+public class SafetyPhoneVerifyActivity extends BaseActivity implements LoginPhoneVerifyContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -38,7 +38,7 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements SignInVer
     Button nextBtn;
 
     private SafetyPhoneVerifyActivity mActivity;
-    private SignInVerifyContract.Presenter presenter;
+    private LoginPhoneVerifyContract.Presenter presenter;
     private String type;
 
     public static void startActivity(Activity activity, String countrycode, String phone, String type) {
@@ -71,11 +71,11 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements SignInVer
         phoneTv.setText("+" + countryCode + " " + phone);
         codeEt.addTextChangedListener(textWatcher);
         ToastEUtil.makeText(mActivity,R.string.Login_SMS_code_has_been_send).show();
-        new SignInVerifyPresenter(this,countryCode,phone).start();
+        new LoginPhoneVerifyPresenter(this,countryCode,phone).start();
     }
 
     @Override
-    public void setPresenter(SignInVerifyContract.Presenter presenter) {
+    public void setPresenter(LoginPhoneVerifyContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -131,10 +131,10 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements SignInVer
     }
 
     @Override
-    public void goinCodeLogin(UserBean userBean) {}
+    public void launchCodeLogin(UserBean userBean) {}
 
     @Override
-    public void goinRandomSend(String phone, String token) {}
+    public void launchRandomSend(String phone, String token) {}
 
     @Override
     public void changeBtnTiming(long time) {

@@ -14,24 +14,22 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.home.HomeActivity;
 import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.CodeLoginContract;
-import connect.activity.login.presenter.CodeLoginPresenter;
+import connect.activity.login.contract.LoginUserContract;
+import connect.activity.login.presenter.LoginUserPresenter;
 import connect.activity.set.SafetyPatternActivity;
-import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.RegularUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 
 /**
  * Login phone number verification.
  */
-public class LoginUserActivity extends BaseActivity implements CodeLoginContract.View {
+public class LoginUserActivity extends BaseActivity implements LoginUserContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -45,13 +43,10 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
     TextView passwordhintTv;
     @Bind(R.id.next_btn)
     Button nextBtn;
-    @Bind(R.id.passwordedit_tv)
-    TextView passwordeditTv;
 
     private LoginUserActivity mActivity;
-    private CodeLoginContract.Presenter presenter;
+    private LoginUserContract.Presenter presenter;
     private UserBean userBean;
-    private String token = "";
 
     /**
      * Login phone number verification.
@@ -60,20 +55,8 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
      * @param userBean The user information
      */
     public static void startActivity(Activity activity, UserBean userBean) {
-        startActivity(activity, userBean, "");
-    }
-
-    /**
-     * Scan the private key to log in.
-     *
-     * @param activity
-     * @param userBean The user information
-     * @param token Change the password token
-     */
-    public static void startActivity(Activity activity, UserBean userBean, String token) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("user", userBean);
-        bundle.putString("token", token);
         ActivityUtil.next(activity, LoginUserActivity.class, bundle);
     }
 
@@ -92,13 +75,17 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
         toolbarTop.setTitleImg(R.mipmap.logo_black_middle);
         Bundle bundle = getIntent().getExtras();
         userBean = (UserBean) bundle.getSerializable("user");
-        token = bundle.getString("token", "");
-        new CodeLoginPresenter(this).start();
+        new LoginUserPresenter(this).start();
 
         passwordEt.addTextChangedListener(textWatcher);
         nicknameEt.setText(userBean.getName());
         GlideUtil.loadAvatarRound(userheadImg, userBean.getAvatar());
-        if (TextUtils.isEmpty(token)) {
+        if (!TextUtils.isEmpty(userBean.getPassHint())) {
+            passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
+        }
+        passwordEt.setHint(R.string.Login_Password);
+
+        /*if (TextUtils.isEmpty(token)) {
             if (!TextUtils.isEmpty(userBean.getPassHint())) {
                 passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
             }
@@ -107,7 +94,7 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
         } else {
             passwordhintTv.setText(getString(R.string.Login_Password_Hint, getString(R.string.Login_Not_set)));
             nextBtn.setText(R.string.Login_Reset_Password_And_Login);
-        }
+        }*/
     }
 
     @OnClick(R.id.left_img)
@@ -117,7 +104,9 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
 
     @OnClick(R.id.next_btn)
     void nextBtn(View view) {
-        if (TextUtils.isEmpty(token)) {//Login password directly
+        ProgressUtil.getInstance().showProgress(mActivity);
+        presenter.checkPassWord(userBean.getTalkKey(), passwordEt.getText().toString(),userBean);
+        /*if (TextUtils.isEmpty(token)) {//Login password directly
             ProgressUtil.getInstance().showProgress(mActivity);
             presenter.checkTalkKey(userBean.getTalkKey(), passwordEt.getText().toString(),userBean);
         } else {//Scan the private key to log in
@@ -134,10 +123,10 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
                             public void cancel() {}
                         });
             }
-        }
+        }*/
     }
 
-    @OnClick(R.id.passwordedit_tv)
+    /*@OnClick(R.id.passwordedit_tv)
     void editPasswordHint(View view){
         DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Login_Login_Password_Hint_Title),"", "", "", "", "", false,15,
                 new DialogUtil.OnItemClickListener() {
@@ -149,7 +138,7 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
             @Override
             public void cancel() {}
         });
-    }
+    }*/
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -163,7 +152,7 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
     };
 
     @Override
-    public void setPresenter(CodeLoginContract.Presenter presenter) {
+    public void setPresenter(LoginUserContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -178,12 +167,12 @@ public class LoginUserActivity extends BaseActivity implements CodeLoginContract
     }
 
     @Override
-    public void setPasswordhint(String text) {
+    public void setPasswordHint(String text) {
         passwordhintTv.setText(text);
     }
 
     @Override
-    public void goinHome(boolean isBack) {
+    public void launchHome(boolean isBack) {
         if(isBack){
             HomeActivity.startActivity(mActivity);
         }else{

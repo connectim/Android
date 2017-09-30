@@ -11,17 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.home.HomeActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RegisterContract;
 import connect.activity.login.presenter.RegisterPresenter;
-import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
@@ -35,9 +34,16 @@ import connect.widget.takepicture.TakePictureActivity;
 /**
  * The new user registration.
  */
-public class RegisterActivity extends BaseActivity implements RegisterContract.View{
-
+public class RegisterActivity extends BaseActivity implements RegisterContract.View {
     @Bind(R.id.toolbar_top)
+    TopToolBar toolbarTop;
+    @Bind(R.id.userhead_img)
+    ImageView userheadImg;
+    @Bind(R.id.nickname_et)
+    EditText nicknameEt;
+    @Bind(R.id.next_btn)
+    Button nextBtn;
+    /*@Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
     @Bind(R.id.userhead_img)
     ImageView userheadImg;
@@ -50,7 +56,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     @Bind(R.id.next_btn)
     Button nextBtn;
     @Bind(R.id.nickname_et)
-    EditText nicnameEt;
+    EditText nicnameEt;*/
 
     private RegisterActivity mActivity;
     private RegisterContract.Presenter presenter;
@@ -63,7 +69,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
      * @param userBean priKey pubKey address
      */
     public static void startActivity(Activity activity, UserBean userBean) {
-        startActivity(activity, userBean,"");
+        startActivity(activity, userBean, "");
     }
 
     /**
@@ -71,13 +77,13 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
      *
      * @param activity
      * @param userBean priKey pubKey address
-     * @param token Check the phone number token
+     * @param token    Check the phone number token
      */
-    public static void startActivity(Activity activity, UserBean userBean,String token) {
+    public static void startActivity(Activity activity, UserBean userBean, String token) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("user",userBean);
-        bundle.putString("token",token);
-        ActivityUtil.next(activity, RegisterActivity.class,bundle);
+        bundle.putSerializable("user", userBean);
+        bundle.putString("token", token);
+        ActivityUtil.next(activity, RegisterActivity.class, bundle);
     }
 
     @Override
@@ -93,12 +99,13 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         mActivity = this;
         toolbarTop.setLeftImg(R.mipmap.back_black);
         toolbarTop.setTitleImg(R.mipmap.logo_black_middle);
+        nicknameEt.addTextChangedListener(textWatcher);
 
-        passwordhintTv.setText(getString(R.string.Login_Password_Hint,""));
+        /*passwordhintTv.setText(getString(R.string.Login_Password_Hint, ""));
         nicnameEt.addTextChangedListener(textWatcher);
         userpasswordEt.addTextChangedListener(textWatcher);
-        InputFilter[] filters = { new NameLengthFilter(20) };
-        nicnameEt.setFilters(filters);
+        InputFilter[] filters = {new NameLengthFilter(20)};
+        nicnameEt.setFilters(filters);*/
 
         new RegisterPresenter(this).start();
     }
@@ -108,20 +115,21 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         ActivityUtil.goBack(mActivity);
     }
 
-    @OnClick(R.id.passwordedit_tv)
+    /*@OnClick(R.id.passwordedit_tv)
     void editPasswordHint(View view) {
         DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Login_Login_Password_Hint_Title), "", "", "", "", "",
-                false, 15,new DialogUtil.OnItemClickListener() {
-            @Override
-            public void confirm(String value) {
-                presenter.setPasswordHintData(value);
-                passwordhintTv.setText(getString(R.string.Login_Password_Hint, value));
-            }
+                false, 15, new DialogUtil.OnItemClickListener() {
+                    @Override
+                    public void confirm(String value) {
+                        presenter.setPasswordHintData(value);
+                        passwordhintTv.setText(getString(R.string.Login_Password_Hint, value));
+                    }
 
-            @Override
-            public void cancel() {}
-        });
-    }
+                    @Override
+                    public void cancel() {
+                    }
+                });
+    }*/
 
     @OnClick(R.id.userhead_img)
     void seleAvatar(View view) {
@@ -130,38 +138,44 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
 
     @OnClick(R.id.next_btn)
     void registerAccount(View view) {
-        if (RegularUtil.matches(userpasswordEt.getText().toString(), RegularUtil.PASSWORD)) {
+        ProgressUtil.getInstance().showProgress(mActivity);
+        String nicName = nicknameEt.getText().toString();
+        String smsToken = getIntent().getExtras().getString("token", "");
+        UserBean userBean = (UserBean) getIntent().getExtras().getSerializable("user");
+        presenter.registerUser(nicName, smsToken, userBean);
+
+        /*if (RegularUtil.matches(userpasswordEt.getText().toString(), RegularUtil.PASSWORD)) {
             ProgressUtil.getInstance().showProgress(mActivity);
             presenter.registerUser(nicnameEt.getText().toString(),
                     userpasswordEt.getText().toString(),
-                    getIntent().getExtras().getString("token",""),
-                    (UserBean)getIntent().getExtras().getSerializable("user"));
+                    getIntent().getExtras().getString("token", ""),
+                    (UserBean) getIntent().getExtras().getSerializable("user"));
         } else {
             DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
                     getString(R.string.Login_letter_number_and_character_must_be_included_in_your_login_password),
                     "", "", true, new DialogUtil.OnItemClickListener() {
                         @Override
-                        public void confirm(String value) {}
+                        public void confirm(String value) {
+                        }
 
                         @Override
-                        public void cancel() {}
+                        public void cancel() {
+                        }
                     });
-        }
+        }*/
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
         @Override
         public void afterTextChanged(Editable s) {
-            if (!TextUtils.isEmpty(userpasswordEt.getText().toString()) && !TextUtils.isEmpty(nicnameEt.getText().toString().trim())) {
-                nextBtn.setEnabled(true);
-            }else{
+            if (TextUtils.isEmpty(nicknameEt.getText().toString().trim())) {
                 nextBtn.setEnabled(false);
+            } else {
+                nextBtn.setEnabled(true);
             }
         }
     };
@@ -174,7 +188,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
             if (!TextUtils.isEmpty(pathLocal)) {
                 presenter.requestUserHead(pathLocal);
             } else {
-                ToastEUtil.makeText(mActivity,R.string.Login_Avatar_upload_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
+                ToastEUtil.makeText(mActivity, R.string.Login_Avatar_upload_failed, ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         }
     }
@@ -189,14 +203,14 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         return mActivity;
     }
 
-    @Override
+    /*@Override
     public void setPasswordhint(String text) {
         passwordhintTv.setText(text);
-    }
+    }*/
 
     @Override
     public void showAvatar(String path) {
-        GlideUtil.loadAvatarRound(userheadImg,path);
+        GlideUtil.loadAvatarRound(userheadImg, path);
     }
 
     @Override
@@ -204,7 +218,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         if (isBack) {
             HomeActivity.startActivity(mActivity);
         } else {
-            ActivityUtil.next(mActivity,BackupPrivateKeyActivity.class);
+            ActivityUtil.next(mActivity, BackupPrivateKeyActivity.class);
         }
         mActivity.finish();
     }

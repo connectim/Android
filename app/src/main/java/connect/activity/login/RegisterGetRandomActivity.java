@@ -14,8 +14,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.RandomSendContract;
-import connect.activity.login.presenter.RandomSendPresenter;
+import connect.activity.login.contract.RegisterGetRandomContract;
+import connect.activity.login.presenter.RegisterGetRandomPresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -30,7 +30,7 @@ import connect.widget.camera.CircleProgressbar;
 /**
  * Voice to generate random number.
  */
-public class RegisterGetRandomActivity extends BaseActivity implements RandomSendContract.View {
+public class RegisterGetRandomActivity extends BaseActivity implements RegisterGetRandomContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -44,7 +44,7 @@ public class RegisterGetRandomActivity extends BaseActivity implements RandomSen
     TextView jumpTv;
 
     private RegisterGetRandomActivity mActivity;
-    private RandomSendContract.Presenter presenter;
+    private RegisterGetRandomContract.Presenter presenter;
     private int errorMax = 3;
 
     /**
@@ -88,7 +88,7 @@ public class RegisterGetRandomActivity extends BaseActivity implements RandomSen
         myProgressBar.setLineWidth(4);
         startImg.setEnabled(false);
 
-        new RandomSendPresenter(this).start();
+        new RegisterGetRandomPresenter(this).start();
     }
 
     @OnClick(R.id.left_img)
@@ -118,7 +118,7 @@ public class RegisterGetRandomActivity extends BaseActivity implements RandomSen
     }
 
     @Override
-    public void setPresenter(RandomSendContract.Presenter presenter) {
+    public void setPresenter(RegisterGetRandomContract.Presenter presenter) {
         this.presenter = presenter;
     }
 

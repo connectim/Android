@@ -35,7 +35,7 @@
         android:layout_marginTop="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"/>
-    <EditText
+    <!--<EditText
         android:id="@id/password_et"
         style="@style/EditStyle.16"
         android:layout_height="@dimen/dp_40"
@@ -49,9 +49,9 @@
     <View
         style="@style/BaseViewLine.d1d5da"
         android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"/>
+        android:layout_marginRight="@dimen/dp_20"/>-->
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -69,19 +69,19 @@
             android:paddingRight="@dimen/dp_10"
             android:text="@string/Login_Edit"
             android:textColor="@color/color_007aff"/>
-    </LinearLayout>
+    </LinearLayout>-->
 
-    <TextView
+    <!--<TextView
         style="@style/BaseTextStyle"
         android:layout_width="match_parent"
         android:layout_marginLeft="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_5"
-        android:text="@string/Login_Password_explain"/>
+        android:text="@string/Login_Password_explain"/>-->
 
     <Button
         style="@style/ButtonLongStyle"
         android:id="@id/next_btn"
-        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_30"
         android:enabled="false"
         android:text="@string/Chat_Complete"/>
 

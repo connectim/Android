@@ -10,7 +10,7 @@ import java.util.List;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.SignInVerifyContract;
+import connect.activity.login.contract.LoginPhoneVerifyContract;
 import connect.activity.set.SafetyPhoneNumberActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
@@ -25,9 +25,9 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
+public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Presenter {
 
-    private SignInVerifyContract.View mView;
+    private LoginPhoneVerifyContract.View mView;
     private final int CODE_PHONE_ABSENT = 2404;
     private String phone;
     private int countryCode;
@@ -40,7 +40,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
      * @param countryCode country code
      * @param phone phone number
      */
-    public SignInVerifyPresenter(SignInVerifyContract.View mView, String countryCode, String phone) {
+    public LoginPhoneVerifyPresenter(LoginPhoneVerifyContract.View mView, String countryCode, String phone) {
         this.mView = mView;
         this.countryCode = Integer.valueOf(countryCode);
         this.phone = phone;
@@ -65,6 +65,8 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
         HttpRequest.getInstance().post(UriUtil.CONNECT_V1_SIGN_IN, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
+                // 用户存在 走登录流程
+                // 判断是否有二次密码认证
                 ProgressUtil.getInstance().dismissProgress();
                 try {
                     Connect.UserInfoDetail userInfoDetail = Connect.UserInfoDetail.parseFrom(response.getBody());
@@ -76,7 +78,7 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
                         userBean.setTalkKey(userInfoDetail.getEncryptionPri());
                         userBean.setPassHint(userInfoDetail.getPasswordHint());
                         userBean.setConnectId(userInfoDetail.getConnectId());
-                        mView.goinCodeLogin(userBean);
+                        mView.launchCodeLogin(userBean);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -86,12 +88,8 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
                 ProgressUtil.getInstance().dismissProgress();
-                if(response.getCode() == 2416){
-                    ToastEUtil.makeText(mView.getActivity(), R.string.Login_Verification_code_error,ToastEUtil.TOAST_STATUS_FAILE).show();
-                    return;
-                }
-
                 if (response.getCode() == CODE_PHONE_ABSENT) {
+                    // 用户不存在 走注册流程
                     ByteString bytes = response.getBody();
                     Connect.SecurityToken securityToken;
                     try {
@@ -99,10 +97,13 @@ public class SignInVerifyPresenter implements SignInVerifyContract.Presenter {
                         Bundle bundle = new Bundle();
                         bundle.putString("token", securityToken.getToken());
                         bundle.putString("phone", countryCode + "-" + phone);
-                        mView.goinRandomSend(countryCode + "-" + phone,securityToken.getToken());
+                        mView.launchRandomSend(countryCode + "-" + phone,securityToken.getToken());
                     } catch (InvalidProtocolBufferException e) {
                         e.printStackTrace();
                     }
+                } else if(response.getCode() == 2416) {
+                    // 验证码错误
+                    ToastEUtil.makeText(mView.getActivity(), R.string.Login_Verification_code_error,ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
             }
         });

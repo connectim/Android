@@ -30,8 +30,8 @@ public class RegisterPresenter implements RegisterContract.Presenter {
 
     private RegisterContract.View mView;
     private String passwordHint = "";
-    private String talkKey;
     private String headPath = "https://short.connect.im/avatar/v1/b040e0a970bc6d80b675586c5a55f9e9109168ba.png";
+    private String talkKey;
 
     public RegisterPresenter(RegisterContract.View mView) {
         this.mView = mView;
@@ -41,10 +41,10 @@ public class RegisterPresenter implements RegisterContract.Presenter {
     @Override
     public void start() {}
 
-    @Override
+    /*@Override
     public void setPasswordHintData(String passwordHint) {
         this.passwordHint = passwordHint;
-    }
+    }*/
 
     /**
      * Upload the picture.
@@ -93,27 +93,62 @@ public class RegisterPresenter implements RegisterContract.Presenter {
      * Registered users.
      *
      * @param nicName
-     * @param password
      * @param token Check the phone number of the token
      * @param userBean
      */
     @Override
-    public void registerUser(final String nicName, final String password, final String token, final UserBean userBean) {
-        new AsyncTask<Void,Void,Connect.RegisterUser>() {
+    public void registerUser(final String nicName, final String token, final UserBean userBean) {
+        Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder();
+        builder.setUsername(nicName);
+        builder.setToken(token);
+        builder.setMobile(userBean.getPhone());
+        builder.setAvatar(headPath);
+
+        OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_SIGN_UP, builder.build(),
+                EncryptionUtil.ExtendedECDH.EMPTY,
+                userBean.getPriKey(),
+                userBean.getPubKey(),
+                new ResultCall<Connect.HttpResponse>() {
+                    @Override
+                    public void onResponse(Connect.HttpResponse response) {
+                        ProgressUtil.getInstance().dismissProgress();
+                        userBean.setAvatar(headPath);
+                        userBean.setPassHint(passwordHint);
+                        userBean.setName(nicName);
+                        SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
+                        mView.complete(userBean.isBack());
+                    }
+
+                    @Override
+                    public void onError(Connect.HttpResponse response) {
+                        if (response.getCode() == 2101) {
+                            Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
+                        } else if(response.getCode() == 2102){
+                            Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                        ProgressUtil.getInstance().dismissProgress();
+                    }
+                });
+
+        /*new AsyncTask<Void,Void,Connect.RegisterUser>() {
             @Override
             protected Connect.RegisterUser doInBackground(Void... params) {
                 Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder();
                 builder.setUsername(nicName);
-                builder.setPasswordHint(passwordHint);
+                // builder.setPasswordHint(passwordHint);
                 // Determine whether the binding number
-                if (!TextUtils.isEmpty(token)) {
+                *//*if (!TextUtils.isEmpty(token)) {
                     builder.setToken(token);
                     builder.setMobile(userBean.getPhone());
-                }
+                }*//*
+                builder.setToken(token);
+                builder.setMobile(userBean.getPhone());
                 builder.setAvatar(headPath);
                 // Password encryption private key
-                talkKey = SupportKeyUril.createTalkKey(userBean.getPriKey(),userBean.getAddress(),password);
-                builder.setEncryptionPri(talkKey);
+                *//*talkKey = SupportKeyUril.createTalkKey(userBean.getPriKey(),userBean.getAddress(),password);
+                builder.setEncryptionPri(talkKey);*//*
                 Connect.RegisterUser registerUser = builder.build();
                 return registerUser;
             }
@@ -124,10 +159,10 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                 userBean.setName(nicName);
                 requestRegister(registerUser,userBean);
             }
-        }.execute();
+        }.execute();*/
     }
 
-    private void requestRegister(Connect.RegisterUser registerUser, final UserBean userBean) {
+    /*private void requestRegister(Connect.RegisterUser registerUser, final UserBean userBean) {
         OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_SIGN_UP,
                 registerUser,
                 EncryptionUtil.ExtendedECDH.EMPTY,
@@ -137,7 +172,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
                         ProgressUtil.getInstance().dismissProgress();
-                        userBean.setTalkKey(talkKey);
+                        //userBean.setTalkKey(talkKey);
                         userBean.setAvatar(headPath);
                         userBean.setPassHint(passwordHint);
                         SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
@@ -156,7 +191,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                         ProgressUtil.getInstance().dismissProgress();
                     }
                 });
-    }
+    }*/
 
 
 }

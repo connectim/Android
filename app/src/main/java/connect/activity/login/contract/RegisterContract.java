@@ -11,8 +11,6 @@ public interface RegisterContract {
     interface View extends BaseView<RegisterContract.Presenter> {
         Activity getActivity();
 
-        void setPasswordhint(String text);
-
         void showAvatar(String path);
 
         void complete(boolean isBack);
@@ -21,9 +19,7 @@ public interface RegisterContract {
     interface Presenter extends BasePresenter {
         void requestUserHead(String localPaths);
 
-        void registerUser(String nicname, String password,String token, UserBean userBean);
-
-        void setPasswordHintData(String passwordHint);
+        void registerUser(String nicname, String token, UserBean userBean);
     }
 
 }

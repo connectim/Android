@@ -64,7 +64,7 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter {
         });
     }
 
-    @Override
+    /*@Override
     public void showMore() {
         ArrayList<String> list = new ArrayList<>();
         list.add(mView.getActivity().getString(R.string.Login_Scan_your_backup_for_login));
@@ -89,5 +89,5 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter {
                 }
             }
         });
-    }
+    }*/
 }

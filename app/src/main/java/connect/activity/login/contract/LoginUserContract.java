@@ -6,26 +6,22 @@ import connect.activity.login.bean.UserBean;
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
 
-public interface CodeLoginContract {
+public interface LoginUserContract {
 
-    interface View extends BaseView<CodeLoginContract.Presenter> {
+    interface View extends BaseView<LoginUserContract.Presenter> {
         Activity getActivity();
 
         void setNextBtnEnable(boolean isEnable);
 
-        void setPasswordhint(String text);
+        void setPasswordHint(String text);
 
-        void goinHome(boolean isBack);
+        void launchHome(boolean isBack);
     }
 
     interface Presenter extends BasePresenter {
         void passEditChange(String pass,String nick);
 
-        void checkTalkKey(String talkKey,String passWord,UserBean userBean);
-
-        void requestSetPassword(String password,UserBean userBean,String token);
-
-        void setPasswordHintData(String passwordHint);
+        void checkPassWord(String talkKey,String passWord,UserBean userBean);
     }
 
 }

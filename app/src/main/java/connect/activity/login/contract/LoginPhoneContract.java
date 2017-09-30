@@ -10,18 +10,10 @@ public interface LoginPhoneContract {
     interface View extends BaseView<LoginPhoneContract.Presenter> {
         void verifySuccess();
 
-        void scanPermission();
-
-        void goIntoRandomSend();
-
-        void goIntoLocalLogin();
-
         Activity getActivity();
     }
 
     interface Presenter extends BasePresenter {
-        void showMore();
-
         void request(String mobile);
     }
 }

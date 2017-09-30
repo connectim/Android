@@ -1,24 +1,23 @@
 package connect.activity.login.contract;
 
 import android.app.Activity;
-import android.text.TextWatcher;
 
 import connect.activity.login.bean.UserBean;
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
 
-public interface SignInVerifyContract {
+public interface LoginPhoneVerifyContract {
 
-    interface View extends BaseView<SignInVerifyContract.Presenter> {
+    interface View extends BaseView<LoginPhoneVerifyContract.Presenter> {
         Activity getActivity();
 
         String getCode();
 
         void setVoiceVisi();
 
-        void goinCodeLogin(UserBean userBean);
+        void launchCodeLogin(UserBean userBean);
 
-        void goinRandomSend(String phone,String token);
+        void launchRandomSend(String phone,String token);
 
         void changeBtnTiming(long time);
 

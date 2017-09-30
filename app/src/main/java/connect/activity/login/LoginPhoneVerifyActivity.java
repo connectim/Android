@@ -14,8 +14,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.ui.activity.R;
 import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.SignInVerifyContract;
-import connect.activity.login.presenter.SignInVerifyPresenter;
+import connect.activity.login.contract.LoginPhoneVerifyContract;
+import connect.activity.login.presenter.LoginPhoneVerifyPresenter;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -24,7 +24,7 @@ import connect.widget.TopToolBar;
 /**
  * Verify the sms.
  */
-public class LoginPhoneVerifyActivity extends BaseActivity implements SignInVerifyContract.View {
+public class LoginPhoneVerifyActivity extends BaseActivity implements LoginPhoneVerifyContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -40,7 +40,7 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements SignInVeri
     TextView textView3;
 
     private LoginPhoneVerifyActivity mActivity;
-    private SignInVerifyContract.Presenter presenter;
+    private LoginPhoneVerifyContract.Presenter presenter;
 
     /**
      * Check the verification code into the interface, the incoming telephone number.
@@ -73,7 +73,7 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements SignInVeri
         Bundle bundle = getIntent().getExtras();
         String phone = bundle.getString("phone");
         String countryCode = bundle.getString("countryCode");
-        new SignInVerifyPresenter(this,countryCode,phone).start();
+        new LoginPhoneVerifyPresenter(this,countryCode,phone).start();
 
         phoneTv.setText("+" + countryCode + " " + phone);
         codeEt.addTextChangedListener(textWatcher);
@@ -102,7 +102,7 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements SignInVeri
     }
 
     @Override
-    public void setPresenter(SignInVerifyContract.Presenter presenter) {
+    public void setPresenter(LoginPhoneVerifyContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -139,14 +139,15 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements SignInVeri
     }
 
     @Override
-    public void goinCodeLogin(UserBean userBean) {
+    public void launchCodeLogin(UserBean userBean) {
         LoginUserActivity.startActivity(mActivity, userBean);
         mActivity.finish();
     }
 
     @Override
-    public void goinRandomSend(String phone, String token) {
+    public void launchRandomSend(String phone, String token) {
         RegisterGetRandomActivity.startActivity(mActivity, phone, token);
+        mActivity.finish();
     }
 
     @Override

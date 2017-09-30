@@ -122,7 +122,7 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
         if (TextUtils.isEmpty(token)) {
             LoginUserActivity.startActivity(mActivity,userBean);
         } else {
-            LoginUserActivity.startActivity(mActivity,userBean,token);
+            //LoginUserActivity.startActivity(mActivity,userBean,token);
         }
         finish();
     }

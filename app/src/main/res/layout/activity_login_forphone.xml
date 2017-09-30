@@ -67,7 +67,7 @@
         android:enabled="false"
         android:text="@string/Set_Verify_Phone"/>
 
-    <TextView
+    <!--<TextView
         style="@style/BaseTextStyle"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="@dimen/dp_20"
@@ -88,6 +88,6 @@
             android:padding="@dimen/dp_5"
             android:textColor="@color/color_007aff"
             android:text="@string/Set_Import_your_local_private_key_backup"/>
-    </LinearLayout>
+    </LinearLayout>-->
 
 </LinearLayout>

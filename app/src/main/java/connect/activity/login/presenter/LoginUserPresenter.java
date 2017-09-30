@@ -4,39 +4,27 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.CodeLoginContract;
+import connect.activity.login.contract.LoginUserContract;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.wallet.jni.AllNativeMethod;
-import protos.Connect;
 
 /**
  * User login Presenter.
  */
-public class CodeLoginPresenter implements CodeLoginContract.Presenter {
-    private CodeLoginContract.View mView;
-    private String passwordHint = "";
-    private String talkKey;
+public class LoginUserPresenter implements LoginUserContract.Presenter {
+    private LoginUserContract.View mView;
 
-    public CodeLoginPresenter(CodeLoginContract.View mView) {
+    public LoginUserPresenter(LoginUserContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
     }
 
     @Override
     public void start() {}
-
-    @Override
-    public void setPasswordHintData(String passwordHint) {
-        this.passwordHint = passwordHint;
-    }
 
     @Override
     public void passEditChange(String pass, String nick) {
@@ -55,7 +43,7 @@ public class CodeLoginPresenter implements CodeLoginContract.Presenter {
      * @param userBean The user information
      */
     @Override
-    public void checkTalkKey(final String talkKey, final String passWord, final UserBean userBean) {
+    public void checkPassWord(final String talkKey, final String passWord, final UserBean userBean) {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
@@ -72,7 +60,7 @@ public class CodeLoginPresenter implements CodeLoginContract.Presenter {
                     userBean.setPubKey(AllNativeMethod.cdGetPubKeyFromPrivKey(userBean.getPriKey()));
                     userBean.setAddress(AllNativeMethod.cdGetBTCAddrFromPubKey(userBean.getPubKey()));
                     SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
-                    mView.goinHome(userBean.isBack());
+                    mView.launchHome(userBean.isBack());
                 } else {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Login_Password_incorrect,ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
@@ -87,7 +75,7 @@ public class CodeLoginPresenter implements CodeLoginContract.Presenter {
      * @param userBean The user information
      * @param token Change the password token
      */
-    @Override
+    /*@Override
     public void requestSetPassword(final String password, final UserBean userBean, final String token) {
         new AsyncTask<Void,Void, Connect.UserPrivateSign>() {
             @Override
@@ -121,5 +109,5 @@ public class CodeLoginPresenter implements CodeLoginContract.Presenter {
                         });
             }
         }.execute();
-    }
+    }*/
 }

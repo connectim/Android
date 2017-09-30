@@ -11,7 +11,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.RandomSendContract;
+import connect.activity.login.contract.RegisterGetRandomContract;
 import connect.utils.FileUtil;
 import connect.utils.StringUtil;
 import connect.utils.cryption.SupportKeyUril;
@@ -21,9 +21,9 @@ import connect.wallet.jni.AllNativeMethod;
 /**
  * Registered mobile phone number presenter.
  */
-public class RandomSendPresenter implements RandomSendContract.Presenter {
+public class RegisterGetRandomPresenter implements RegisterGetRandomContract.Presenter {
 
-    private RandomSendContract.View mView;
+    private RegisterGetRandomContract.View mView;
     /** The longest collection time */
     private final int MAX_LENGTH = 5000;
     private Runnable runnable;
@@ -38,7 +38,7 @@ public class RandomSendPresenter implements RandomSendContract.Presenter {
     private ArrayList<Double> dbArray;
     private HashMap<String, String> hashMap;
 
-    public RandomSendPresenter(RandomSendContract.View mView) {
+    public RegisterGetRandomPresenter(RegisterGetRandomContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
     }

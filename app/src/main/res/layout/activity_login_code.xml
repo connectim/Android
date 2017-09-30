@@ -75,13 +75,13 @@
             android:id="@id/passwordhint_tv"
             style="@style/BaseTextStyle.14"
             android:text=""/>
-        <TextView
+        <!--<TextView
             android:id="@id/passwordedit_tv"
             style="@style/BaseTextStyle"
             android:paddingLeft="@dimen/dp_10"
             android:paddingRight="@dimen/dp_10"
             android:text="@string/Login_Edit"
-            android:textColor="@color/color_007aff"/>
+            android:textColor="@color/color_007aff"/>-->
     </LinearLayout>
 
     <Button

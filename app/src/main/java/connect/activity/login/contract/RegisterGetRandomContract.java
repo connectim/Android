@@ -9,9 +9,9 @@ import connect.activity.base.contract.BaseView;
 import connect.activity.login.bean.UserBean;
 import connect.utils.permission.PermissionUtil;
 
-public interface RandomSendContract {
+public interface RegisterGetRandomContract {
 
-    interface View extends BaseView<RandomSendContract.Presenter> {
+    interface View extends BaseView<RegisterGetRandomContract.Presenter> {
         Activity getActivity();
 
         void denyPression();

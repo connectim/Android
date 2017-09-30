@@ -41,8 +41,8 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
     TextView countryTv;
     @Bind(R.id.country_rela)
     RelativeLayout countryRela;
-    @Bind(R.id.backup_local_tv)
-    TextView backupLocalTv;
+    /*@Bind(R.id.backup_local_tv)
+    TextView backupLocalTv;*/
 
     private LoginPhoneActivity mActivity;
     private LoginPhoneContract.Presenter presenter;
@@ -74,10 +74,10 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
     }
 
 
-    @OnClick(R.id.backup_local_tv)
+    /*@OnClick(R.id.backup_local_tv)
     void otherLoginClick(View view) {
         presenter.showMore();
-    }
+    }*/
 
     @OnClick(R.id.next_btn)
     public void nextBtn(View view) {
@@ -144,7 +144,7 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
         LoginPhoneVerifyActivity.startActivity(mActivity, countryBean.getCode(),phoneEt.getText().toString());
     }
 
-    @Override
+    /*@Override
     public void scanPermission() {
         PermissionUtil.getInstance().requestPermission(mActivity,new String[]{PermissionUtil.PERMISSION_CAMERA}, permissionCallBack);
     }
@@ -157,7 +157,7 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
     @Override
     public void goIntoLocalLogin() {
         ActivityUtil.next(mActivity, LoginLocalActivity.class);
-    }
+    }*/
 
     @Override
     public Activity getActivity() {
