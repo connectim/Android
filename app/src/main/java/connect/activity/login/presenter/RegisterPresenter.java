@@ -113,7 +113,6 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                     public void onResponse(Connect.HttpResponse response) {
                         ProgressUtil.getInstance().dismissProgress();
                         userBean.setAvatar(headPath);
-                        userBean.setPassHint(passwordHint);
                         userBean.setName(nicName);
                         SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
                         mView.complete(userBean.isBack());

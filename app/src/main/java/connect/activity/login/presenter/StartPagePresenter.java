@@ -12,12 +12,18 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Random;
+
 import connect.activity.login.bean.StartImagesBean;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.StartContract;
 import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoManager;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
@@ -26,25 +32,18 @@ import connect.utils.okhttp.HttpRequest;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Random;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-import org.json.JSONObject;
-
-public class StartPresenter implements StartContract.Presenter {
+public class StartPagePresenter implements StartContract.Presenter {
 
     private StartImagesBean imagesBean;
     private String sharedStr;
     private int imageLoadInt;
     private StartContract.View mView;
 
-    public StartPresenter(StartContract.View mView) {
+    public StartPagePresenter(StartContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
     }

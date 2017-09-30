@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.home.HomeActivity;
 import connect.activity.login.contract.StartContract;
-import connect.activity.login.presenter.StartPresenter;
+import connect.activity.login.presenter.StartPagePresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 
@@ -24,6 +24,7 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
     ImageView startImg;
 
     private StartPageActivity mActivity;
+    private StartContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +37,12 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
     @Override
     public void initView() {
         mActivity = this;
-        new StartPresenter(this).start();
+        new StartPagePresenter(this).start();
     }
 
     @Override
     public void setPresenter(StartContract.Presenter presenter) {
-
+        this.presenter = presenter;
     }
 
     @Override

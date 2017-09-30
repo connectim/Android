@@ -2,15 +2,10 @@ package connect.wallet;
 
 import org.junit.Test;
 
-import java.security.SecureRandom;
-
-import connect.utils.StringUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.wallet.cwallet.NativeWallet;
 import connect.wallet.cwallet.account.CoinAccount;
 import connect.wallet.cwallet.bean.CurrencyEnum;
 import connect.wallet.cwallet.currency.BaseCurrency;
-import connect.wallet.jni.AllNativeMethod;
 
 import static org.junit.Assert.assertTrue;
 
