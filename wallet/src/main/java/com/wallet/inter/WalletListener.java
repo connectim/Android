@@ -1,7 +1,7 @@
 package com.wallet.inter;
 
 /**
- * 钱包调用回调
+ * The purse the callback
  */
 public interface WalletListener<T> {
 

@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 public class WalletUtil {
 
     /**
-     * 获取随机数种子
+     * For the random number seed
      */
     public static String getRandomSeed(){
         String random = bytesToHexString(SecureRandom.getSeed(64));
@@ -13,7 +13,7 @@ public class WalletUtil {
     }
 
     /**
-     * byte转Hex
+     * Byte transfer Hex
      */
     public synchronized static String bytesToHexString(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder("");
@@ -32,7 +32,7 @@ public class WalletUtil {
     }
 
     /**
-     * Hex转byte
+     * Hex transfer byte
      */
     public static byte[] hexStringToBytes(String hexString) {
         if (hexString == null || hexString.equals("")) {
@@ -51,7 +51,7 @@ public class WalletUtil {
     }
 
     /**
-     * 两个字符串做异或
+     * Do different or two strings
      */
     public static String xor(String strHex1,String strHex2){
         if(strHex1.length() != strHex2.length()){
@@ -64,7 +64,7 @@ public class WalletUtil {
     }
 
     /**
-     * 两个byte[]做异或
+     * Do different or two byte
      */
     public static byte[] xor(byte[] byte1, byte[] byte2) {
         if(byte1.length != byte2.length){

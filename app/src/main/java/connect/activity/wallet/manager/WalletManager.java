@@ -38,7 +38,7 @@ import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 
 /**
- * 钱包业务层管理类
+ * Wallet business layer management class
  */
 
 public class WalletManager {
@@ -59,7 +59,7 @@ public class WalletManager {
     }
 
     /**
-     * 显示创建钱包dialog
+     * According to create the wallet dialog
      * @param activity
      * @param status
      */
@@ -91,7 +91,7 @@ public class WalletManager {
     }
 
     /**
-     * 同步钱包信息
+     * Synchronous wallet information
      * @param listener
      */
     public void syncWallet(final WalletListener listener) {
@@ -130,7 +130,7 @@ public class WalletManager {
     }
 
     /**
-     * 获取用户状态
+     * Get the user state
      * @param listener
      */
     public void requestUserStatus(final WalletListener listener) {
@@ -161,7 +161,7 @@ public class WalletManager {
     }
 
     /**
-     * 得到声音随机数种子后，创建钱包和货币
+     * Get voice after the random number seed, create the wallet and money
      * @param baseSend
      * @param pin
      * @param status
@@ -218,7 +218,7 @@ public class WalletManager {
     }
 
     /**
-     * 创建钱包
+     * Create a wallet
      * @param baseSend
      * @param pin
      * @param listener
@@ -252,7 +252,7 @@ public class WalletManager {
     }
 
     /**
-     * 添加币种
+     * Add the currency
      * @param currencyEnum
      * @param payload
      * @param salt
@@ -305,7 +305,7 @@ public class WalletManager {
     }
 
     /**
-     * 获取货币信息
+     * Currency information
      * @param listener
      */
     public void requestCoinInfo(CurrencyEnum currencyEnum ,final WalletListener listener) {
@@ -334,7 +334,7 @@ public class WalletManager {
     }
 
     /**
-     * 获取地址列表
+     * To obtain the address list
      */
     public void requestAddress(CurrencyEnum currencyEnum, final WalletListener listener){
         WalletOuterClass.Coin.Builder builder = WalletOuterClass.Coin.newBuilder();
@@ -362,7 +362,7 @@ public class WalletManager {
     }
 
     /**
-     * 设置货币信息
+     * Set the currency information
      * @param payload
      * @param status
      * @param listener
@@ -398,7 +398,7 @@ public class WalletManager {
     }
 
     /**
-     * 更新钱包信息
+     * Update the wallet information
      * @param payload
      * @param listener
      */
@@ -429,7 +429,7 @@ public class WalletManager {
     }
 
     /**
-     * 转换成Long型
+     * Into a Long
      * @param value
      * @return
      */
@@ -438,7 +438,7 @@ public class WalletManager {
     }
 
     /**
-     * 转换成Double型
+     * Converted to Double type
      * @param value
      * @return
      */

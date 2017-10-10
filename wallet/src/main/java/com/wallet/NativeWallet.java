@@ -39,10 +39,10 @@ public class NativeWallet {
     }
 
     /**
-     * 获取对应币种管理器
+     * To obtain corresponding currency manager
      *
-     * @param currencyEnum 币种类型
-     * @return 币种管理类实例
+     * @param currencyEnum Currency type
+     * @return Currency management class instance
      */
     public BaseCurrency initCurrency(CurrencyEnum currencyEnum) {
         if (baseCurrencyMap == null) {
@@ -63,7 +63,7 @@ public class NativeWallet {
     }
 
     /**
-     * 创建币种
+     * Create a currency
      */
     public void createCurrency(CurrencyEnum currencyEnum, int type, String value, WalletListener walletListener){
         BaseCurrency baseCurrency = initCurrency(currencyEnum);
@@ -72,7 +72,7 @@ public class NativeWallet {
     }
 
     /**
-     * 在对应币种增加address(一个币种可对应多个地址)
+     * In the corresponding currency increase address,a currency can correspond to multiple addresses
      */
     public void addCurrencyAddress(CurrencyEnum currencyEnum, String baseSeed, String salt, int index, WalletListener walletListener){
         BaseCurrency baseCurrency = initCurrency(currencyEnum);
@@ -81,7 +81,7 @@ public class NativeWallet {
     }
 
     /**
-     * 获取对应地址的私钥
+     * Access to the private key for the address
      */
     public void getPriKeyFromAddressIndex(CurrencyEnum currencyEnum, String baseSeed, String salt, List<Integer> indexList, WalletListener walletListener){
         BaseCurrency baseCurrency = initCurrency(currencyEnum);
@@ -90,7 +90,7 @@ public class NativeWallet {
     }
 
     /**
-     * 签名交易
+     * Signature trading
      */
     public void getSignRawTrans(CurrencyEnum currencyEnum, ArrayList<String> priList, String tvs, String rowHex, WalletListener walletListener){
         BaseCurrency baseCurrency = initCurrency(currencyEnum);
@@ -99,28 +99,28 @@ public class NativeWallet {
     }
 
     /**
-     * 生成助记词
+     * Generate the mnemonic word
      */
     public String getWordsFromVale(String value){
         return baseWallet.getWordsFromVale(value);
     }
 
     /**
-     * 解密助记词
+     * Decryption mnemonic word
      */
     public String getValueFromWords(String words){
         return baseWallet.getValueFromWords(words);
     }
 
     /**
-     * 支付密码加密数据
+     * Pay the password to encrypt data
      */
     public EncryptionPinBean encryptionPin(int category, String value, String pass){
         return baseWallet.encryptionPinDefault(category, value, pass);
     }
 
     /**
-     * 支付密码解密数据
+     * Pay the password to decrypt the data
      */
     public String decryptionPin(int category, String value, String pass){
         return baseWallet.decryptionPinDefault(category, value, pass);

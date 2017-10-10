@@ -7,21 +7,21 @@ import com.wallet.utils.WalletUtil;
 import connect.wallet.jni.AllNativeMethod;
 
 /**
- * 基础钱包功能
+ * Basic purse function
  */
 
 public class BaseWallet {
 
-    /** 密码加密版本 */
+    /** Password encryption version */
     public static final int PIN_VERSION = 1;
-    /** 加密难度 */
+    /** Encryption is difficult */
     public static final int ENCRYPTION_N = 17;
 
     /**
-     * 生成助记词
+     * Generate the mnemonic word
      *
-     * @param vale 需要生成的字符串
-     * @return 助记词
+     * @param vale Need to generate a string
+     * @return The mnemonic word
      */
     public String getWordsFromVale(String vale){
         String words = AllNativeMethod.cdGetBIP39WordsFromSeed(vale);
@@ -29,10 +29,10 @@ public class BaseWallet {
     }
 
     /**
-     * 解密助记词
+     * Decryption mnemonic word
      *
-     * @param words 助记词
-     * @return 助记词
+     * @param words The mnemonic word
+     * @return Data
      */
     public String getValueFromWords(String words){
         String value = AllNativeMethod.cdGetSeedFromBIP39Words("", words);
@@ -40,7 +40,7 @@ public class BaseWallet {
     }
 
     /**
-     * 加密支付密码
+     * Pay password encryption
      */
     public EncryptionPinBean encryptionPinDefault(int category, String value, String pass){
         return encryptionPin(category,value,pass,ENCRYPTION_N);
@@ -59,7 +59,7 @@ public class BaseWallet {
     }
 
     /**
-     * 解密支付密码
+     * Pay decryption password
      */
     public String decryptionPinDefault(int category, String value, String pass){
         return decryptionPin(category ,value, pass, PIN_VERSION);

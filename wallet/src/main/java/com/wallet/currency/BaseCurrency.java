@@ -6,62 +6,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 基础货币管理类
+ * The monetary base management class
  */
 
 public interface BaseCurrency {
 
-    /** 纯私钥版本 */
+    /** Pure private key version */
     int CATEGORY_PRIKEY = 1;
-    /** 原始种子版本 */
+    /** The original seed version */
     int CATEGORY_BASESEED = 2;
-    /** 货币种子版本 */
+    /** Currency seed version */
     int CATEGORY_CURRENCY = 3;
 
     /**
-     * 创建货币
+     * Create a currency
      *
-     * @param type 原始种子
-     * @param baseSeed 原始种子 私钥 货币种子
-     * @return 货币信息(baseSeed currencySeed salt index masterAddress)
+     * @param type The original seed
+     * @param baseSeed original seed  private key  currency
+     * @return Currency information(baseSeed currencySeed salt index masterAddress)
      */
     CurrencyBean createCurrency(int type, String baseSeed);
 
     /**
-     * 增加货币的地址
+     * Increase the money's address
      *
-     * @param baseSeed 原始种子
-     * @param salt 生成货币种子的盐
-     * @param index 位数
-     * @return 货币信息(baseSeed currencySeed salt index masterAddress)
+     * @param baseSeed The original seed
+     * @param salt Generate monetary seeds of salt
+     * @param index digits
+     * @return Currency information(baseSeed currencySeed salt index masterAddress)
      */
     CurrencyBean addCurrencyAddress(String baseSeed, String salt, int index);
 
     /**
-     * 获取对应地址的私钥
+     * Access to the private key for the address
      *
-     * @param baseSeed 原始种子
-     * @param salt 生成货币种子的盐
-     * @param indexList 生成地址位数数组
-     * @return 对应地址私钥数组
+     * @param baseSeed The original seed
+     * @param salt Generate monetary seeds of salt
+     * @param indexList To generate address digits array
+     * @return Corresponding address private key array
      */
     List<String> getPriKeyFromAddressIndex(String baseSeed, String salt, List<Integer> indexList);
 
     /**
-     * 签名交易
+     * Signature trading
      *
-     * @param priList 私钥数组
-     * @param tvs 输入字符串
-     * @param rowHex 原始交易
-     * @return 签名交易
+     * @param priList The private key array
+     * @param tvs The input string
+     * @param rowHex The original trading
+     * @return Signature trading
      */
     String getSignRawTrans(ArrayList<String> priList, String tvs, String rowHex);
 
     /**
-     * 广播交易
+     * Broadcasting deals
      *
-     * @param rawString 签名交易
-     * @return Tx用于查询交易详情
+     * @param rawString Signature trading
+     * @return Tx to query transaction details
      */
     String broadcastTransfer(String rawString);
 

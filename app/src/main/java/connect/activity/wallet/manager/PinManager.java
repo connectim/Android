@@ -11,10 +11,9 @@ import com.wallet.inter.WalletListener;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
 import connect.utils.ToastUtil;
-import connect.utils.cryption.SupportKeyUril;
 
 /**
- * Created by Administrator on 2017/10/10 0010.
+ * Pay the password management class
  */
 
 public class PinManager {
@@ -34,7 +33,7 @@ public class PinManager {
     }
 
     /**
-     * 设置支付密码
+     * Set up to pay the password
      */
     public void showSetNewPin(Activity mActivity, WalletListener listener) {
         payPass = "";
@@ -69,7 +68,8 @@ public class PinManager {
     }
 
     /**
-     * 检查支付密码
+     * Check payment password
+     *
      * @param activity
      * @param payload
      * @param listener
