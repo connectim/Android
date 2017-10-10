@@ -20,7 +20,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/Wallet_Transfer_via_other_APP_messges"/>
 
-    <connect.wallet.cwallet.business.TransferEditView
+    <connect.activity.wallet.manager.TransferEditView
         android:id="@+id/transfer_edit_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

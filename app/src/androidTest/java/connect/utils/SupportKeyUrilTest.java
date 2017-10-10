@@ -5,10 +5,10 @@ import android.text.TextUtils;
 import com.google.protobuf.ByteString;
 
 import org.junit.Test;
+
 import java.security.SecureRandom;
 
 import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionPinBean;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
@@ -25,18 +25,6 @@ public class SupportKeyUrilTest {
     public void hmacSHA512() throws Exception {
         String hmac = SupportKeyUril.hmacSHA512("12345678910",SupportKeyUril.SaltHMAC);
         assertTrue(!TextUtils.isEmpty(hmac));
-    }
-
-    @Test
-    public void encoPinDefult() throws Exception {
-        String value = "L12LREW9xUHDADSi37RckeML7wVX17FWLaRmtfWgdRVHs3SM8cEY";
-        EncryptionPinBean encoPinBean = SupportKeyUril.encryptionPinDefault(1,value,"1234");
-        String deValue = SupportKeyUril.decryptionPinDefault(1,encoPinBean.getPayload(),"1234");
-        if(value.equals(deValue)){
-            assertTrue(true);
-        }else{
-            assertTrue(false);
-        }
     }
 
     @Test

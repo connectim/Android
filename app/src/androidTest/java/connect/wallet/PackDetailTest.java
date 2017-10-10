@@ -6,9 +6,6 @@ import org.junit.Test;
 
 import connect.activity.wallet.contract.PacketDetailContract;
 import connect.activity.wallet.presenter.PacketDetailPresenter;
-import connect.wallet.cwallet.NativeWallet;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.currency.BaseCurrency;
 import protos.Connect;
 
 import static org.junit.Assert.assertTrue;

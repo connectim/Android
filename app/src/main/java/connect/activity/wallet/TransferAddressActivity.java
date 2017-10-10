@@ -9,6 +9,9 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.wallet.bean.CurrencyEnum;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +22,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.activity.set.SafetyPayFeeActivity;
 import connect.activity.wallet.bean.TransferBean;
+import connect.activity.wallet.manager.TransferManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
@@ -26,10 +30,8 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.cryption.SupportKeyUril;
-import connect.wallet.cwallet.business.TransferEditView;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.inter.WalletListener;
+import connect.activity.wallet.manager.TransferEditView;
+import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
 
@@ -50,7 +52,7 @@ public class TransferAddressActivity extends BaseActivity {
 
     private TransferAddressActivity mActivity;
     private final int BOOK_CODE = 100;
-    private BaseBusiness baseBusiness;
+    private TransferManager transferManager;
 
     public static void startActivity(Activity activity, String address) {
         startActivity(activity,address,null);
@@ -96,7 +98,7 @@ public class TransferAddressActivity extends BaseActivity {
         addressTv.addTextChangedListener(textWatcher);
         transferEditView.setEditListener(onEditListener);
 
-        baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
+        transferManager = new TransferManager(mActivity, CurrencyEnum.BTC);
     }
 
     @OnClick(R.id.left_img)
@@ -123,7 +125,7 @@ public class TransferAddressActivity extends BaseActivity {
 
         HashMap<String,Long> outMap = new HashMap<>();
         outMap.put(address,transferEditView.getCurrentBtcLong());
-        baseBusiness.transferAddress(null, outMap, new WalletListener<String>() {
+        transferManager.transferAddress(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(3,"","",addressTv.getText().toString()));

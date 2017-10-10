@@ -21,7 +21,7 @@ import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.system.SystemUtil;
-import connect.wallet.cwallet.business.TransferEditView;
+import connect.activity.wallet.manager.TransferEditView;
 
 /**
  * Created by Administrator on 2017/4/18 0018.

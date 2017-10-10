@@ -10,6 +10,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wallet.bean.CurrencyEnum;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.MsgSend;
+import connect.activity.wallet.manager.TransferManager;
 import connect.database.green.bean.ContactEntity;
 import connect.im.bean.MsgType;
 import connect.ui.activity.R;
@@ -31,10 +34,8 @@ import connect.activity.wallet.contract.TransferFriendContract;
 import connect.activity.wallet.presenter.TransferFriendPresenter;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.wallet.cwallet.business.TransferEditView;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.inter.WalletListener;
+import connect.activity.wallet.manager.TransferEditView;
+import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
 
@@ -63,7 +64,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
     private final int BACK_CODE = 102;
     private final int BACK_DEL_CODE = 103;
     private String pubGroup;
-    private BaseBusiness baseBusiness;
+    private TransferManager transferManager;
 
     public static void startActivity(Activity activity, List<ContactEntity> list,String pubGroup) {
         Bundle bundle = new Bundle();
@@ -109,7 +110,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         transferEditView.setEditListener(presenter.getOnEditListener());
         presenter.horizontal_layout(gridview);
 
-        baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
+        transferManager = new TransferManager(mActivity, CurrencyEnum.BTC);
     }
 
     @Override
@@ -164,7 +165,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         for (ContactEntity friendEntity : presenter.getListFriend()) {
             outMap.put(friendEntity.getPub_key(),transferEditView.getCurrentBtcLong());
         }
-        baseBusiness.transferConnectUser(null, outMap, new WalletListener<String>() {
+        transferManager.transferConnectUser(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {
                 ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();

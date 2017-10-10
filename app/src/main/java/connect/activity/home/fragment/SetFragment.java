@@ -34,6 +34,7 @@ import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
+import com.wallet.NativeWallet;
 
 /**
  * Set the main interface.
@@ -66,8 +67,6 @@ public class SetFragment extends BaseFragment {
     ImageView addressScanImg;
 
     private FragmentActivity mActivity;
-
-    private String test = "1111";
 
     public static SetFragment startFragment() {
         SetFragment setFragment = new SetFragment();

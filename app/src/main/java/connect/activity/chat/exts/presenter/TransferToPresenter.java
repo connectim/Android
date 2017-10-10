@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.text.TextUtils;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.wallet.bean.CurrencyEnum;
 
 import java.util.HashMap;
 
@@ -14,6 +15,7 @@ import connect.activity.chat.exts.contract.TransferToContract;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.NormalChat;
 import connect.activity.wallet.bean.TransferBean;
+import connect.activity.wallet.manager.TransferManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -29,9 +31,7 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.inter.WalletListener;
+import com.wallet.inter.WalletListener;
 import protos.Connect;
 
 /**
@@ -43,7 +43,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
     private TransferToContract.BView view;
     private Activity activity;
     private ContactEntity contactEntity;
-    private  BaseBusiness baseBusiness;
+    private TransferManager transferManager;
 
     public TransferToPresenter(TransferToContract.BView view) {
         this.view = view;
@@ -65,7 +65,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
             view.showTransferInfo(avatar, transferinfo);
         }
 
-        baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
+        transferManager = new TransferManager(activity, CurrencyEnum.BTC);
     }
 
     public void requestContactInfo(String address) {
@@ -108,7 +108,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
     public void requestSingleTransfer(Long currentlong) {
         HashMap<String,Long> outMap = new HashMap();
         outMap.put(contactEntity.getPub_key(),currentlong);
-        baseBusiness.transferConnectUser(null, outMap, new WalletListener<String>() {
+        transferManager.transferConnectUser(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {
                 long amount = view.getCurrentAmount();

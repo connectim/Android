@@ -8,6 +8,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.wallet.bean.CurrencyEnum;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -16,15 +18,14 @@ import connect.activity.set.SafetyPayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
 import connect.activity.wallet.bean.TransferBean;
 import connect.activity.wallet.contract.PacketContract;
+import connect.activity.wallet.manager.TransferManager;
 import connect.activity.wallet.presenter.PacketPresenter;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.business.TransferEditView;
-import connect.wallet.cwallet.inter.WalletListener;
+import connect.activity.wallet.manager.TransferEditView;
+import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
 
@@ -45,7 +46,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
     private PacketActivity mActivity;
     private PacketContract.Presenter presenter;
     private final String defilet_num = "1";
-    private BaseBusiness baseBusiness;
+    private TransferManager transferManager;
 
     public static void startActivity(Activity activity) {
         Bundle bundle = new Bundle();
@@ -81,7 +82,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
         transferEditView.setNote(getString(R.string.Wallet_Best_wishes));
         transferEditView.setEditListener(presenter.getEditListener());
         presenter.start();
-        baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
+        transferManager = new TransferManager(mActivity, CurrencyEnum.BTC);
     }
 
     @Override
@@ -106,7 +107,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
 
     @OnClick(R.id.pay)
     void finish(View view) {
-        baseBusiness.luckyPacket(null, "", 1, 0, Integer.valueOf(packetNumberEt.getText().toString()),
+        transferManager.luckyPacket(null, "", 1, 0, Integer.valueOf(packetNumberEt.getText().toString()),
                 transferEditView.getCurrentBtcLong(), transferEditView.getNote(), new WalletListener<String>() {
             @Override
             public void success(String hashId) {

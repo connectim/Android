@@ -22,7 +22,7 @@
         android:gravity="center"
         android:hint="@string/Link_Enter_Bitcoin_Address"/>
 
-    <connect.wallet.cwallet.business.TransferEditView
+    <connect.activity.wallet.manager.TransferEditView
         android:id="@+id/transfer_edit_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

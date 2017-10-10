@@ -18,7 +18,7 @@ import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.wallet.cwallet.bean.CurrencyEnum;
+import com.wallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 
 /**

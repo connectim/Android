@@ -31,7 +31,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.wallet.cwallet.bean.CurrencyEnum;
+import com.wallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import protos.Connect;
 

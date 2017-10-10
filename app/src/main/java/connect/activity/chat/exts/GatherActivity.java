@@ -10,12 +10,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.wallet.bean.CurrencyEnum;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.MsgSend;
+import connect.activity.wallet.manager.TransferManager;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
@@ -25,10 +28,8 @@ import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.business.TransferEditView;
-import connect.wallet.cwallet.inter.WalletListener;
+import connect.activity.wallet.manager.TransferEditView;
+import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -205,8 +206,8 @@ public class GatherActivity extends BaseActivity {
         final long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
         String senderAddress = friendEntity.getPub_key();
         String tips = transferEditView.getNote();
-        BaseBusiness baseBusiness = new BaseBusiness(activity, currencyEnum);
-        baseBusiness.friendReceiver(amount, senderAddress, tips, new WalletListener<Connect.Bill>() {
+        TransferManager transferManager = new TransferManager(activity, currencyEnum);
+        transferManager.friendReceiver(amount, senderAddress, tips, new WalletListener<Connect.Bill>() {
 
             @Override
             public void success(Connect.Bill bill) {
@@ -232,8 +233,8 @@ public class GatherActivity extends BaseActivity {
         long totalAmount = amount * member;
         String tips = transferEditView.getNote();
 
-        BaseBusiness baseBusiness = new BaseBusiness(activity, transferEditView.getCurrencyEnum());
-        baseBusiness.crowdFuning(gatherKey, totalAmount, member, tips, new WalletListener<Connect.Crowdfunding>() {
+        TransferManager transferManager = new TransferManager(activity, transferEditView.getCurrencyEnum());
+        transferManager.crowdFuning(gatherKey, totalAmount, member, tips, new WalletListener<Connect.Crowdfunding>() {
 
             @Override
             public void success(Connect.Crowdfunding crowdfunding) {

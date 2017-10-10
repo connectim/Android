@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.wallet.bean.CurrencyEnum;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -22,8 +24,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.RegularUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.wallet.cwallet.business.TransferEditView;
-import connect.wallet.cwallet.bean.CurrencyEnum;
+import connect.activity.wallet.manager.TransferEditView;
 import connect.widget.TopToolBar;
 
 /**

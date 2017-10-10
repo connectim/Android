@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.wallet.bean.CurrencyEnum;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,6 +23,7 @@ import connect.activity.chat.exts.contract.PaymentDetailContract;
 import connect.activity.chat.exts.presenter.PaymentDetailPresenter;
 import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.model.content.NormalChat;
+import connect.activity.wallet.manager.TransferManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
@@ -37,10 +39,8 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.business.TransferType;
-import connect.wallet.cwallet.inter.WalletListener;
+import connect.activity.wallet.manager.TransferType;
+import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -211,8 +211,8 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
     }
 
     protected void requestPayment(String hashid) {
-        BaseBusiness baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
-        baseBusiness.typePayment(hashid, TransferType.TransactionTypePayCrowding.getType(), new WalletListener<String>() {
+        TransferManager transferManager = new TransferManager(activity, CurrencyEnum.BTC);
+        transferManager.typePayment(hashid, TransferType.TransactionTypePayCrowding.getType(), new WalletListener<String>() {
             @Override
             public void success(String hashId) {
                 ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_ower());

@@ -15,7 +15,7 @@ import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.wallet.cwallet.inter.WalletListener;
+import com.wallet.inter.WalletListener;
 
 /**
  * Created by Administrator on 2017/8/11.

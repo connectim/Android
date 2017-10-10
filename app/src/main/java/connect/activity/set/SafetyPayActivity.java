@@ -5,26 +5,29 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.wallet.NativeWallet;
+import com.wallet.bean.CurrencyEnum;
+import com.wallet.bean.EncryptionPinBean;
+import com.wallet.currency.BaseCurrency;
+import com.wallet.inter.WalletListener;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.WalletBean;
+import connect.activity.wallet.manager.PinBean;
+import connect.activity.wallet.manager.PinManager;
+import connect.activity.wallet.manager.WalletManager;
+import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.EncryptionPinBean;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
-import connect.wallet.cwallet.NativeWallet;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.bean.PinBean;
-import connect.wallet.cwallet.currency.BaseCurrency;
-import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import wallet_gateway.WalletOuterClass;
 
@@ -90,11 +93,12 @@ public class SafetyPayActivity extends BaseActivity {
     @OnClick(R.id.pas_ll)
     void goSetPassword(View view) {
         // Check payment password
-        NativeWallet.getInstance().checkPin(mActivity,new WalletListener<PinBean>() {
+        WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
+        PinManager.getInstance().checkPwd(mActivity, walletBean.getPayload(), new WalletListener<PinBean>() {
             @Override
             public void success(final PinBean pinBean) {
                 // Set up to pay the password
-                NativeWallet.getInstance().showSetPin(mActivity, new WalletListener<String>() {
+                PinManager.getInstance().showSetNewPin(mActivity, new WalletListener<String>() {
                     @Override
                     public void success(String pin) {
                         requestPayload(pinBean, pin);
@@ -118,16 +122,16 @@ public class SafetyPayActivity extends BaseActivity {
      */
     private void requestPayload(final PinBean pinBean, final String pinNew) {
         final CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
-        final EncryptionPinBean encoPinBean = SupportKeyUril.encryptionPinDefault(BaseCurrency.CATEGORY_BASESEED, pinBean.getBaseSeed(),pinNew);
-        NativeWallet.getInstance().updateWallet(encoPinBean.getPayload(), encoPinBean.getVersion(), new WalletListener<WalletBean>() {
+        final EncryptionPinBean encoPinBean = NativeWallet.getInstance().encryptionPin(BaseCurrency.CATEGORY_BASESEED, pinBean.getBaseSeed(),pinNew);
+
+        WalletManager.getInstance().updateWallet(encoPinBean.getPayload(), encoPinBean.getVersion(), new WalletListener<WalletBean>() {
             @Override
             public void success(WalletBean bean) {
                 if (currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY) {
-                    String priKey = SupportKeyUril.decryptionPinDefault(BaseCurrency.CATEGORY_PRIKEY, currencyEntity.getPayload(), pinBean.getPin());
-                    EncryptionPinBean priEncoPinBean = SupportKeyUril.encryptionPinDefault(BaseCurrency.CATEGORY_PRIKEY, priKey, pinNew);
+                    String priKey = NativeWallet.getInstance().decryptionPin(BaseCurrency.CATEGORY_PRIKEY, currencyEntity.getPayload(), pinBean.getPin());
+                    EncryptionPinBean priEncoPinBean = NativeWallet.getInstance().encryptionPin(BaseCurrency.CATEGORY_PRIKEY, priKey, pinNew);
 
-                    NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).setCurrencyInfo(priEncoPinBean.getPayload(), null,
-                            new WalletListener<WalletOuterClass.Coin>() {
+                    WalletManager.getInstance().setCurrencyInfo(priEncoPinBean.getPayload(), null, new WalletListener<WalletOuterClass.Coin>() {
                         @Override
                         public void success(WalletOuterClass.Coin coin) {
                             ToastEUtil.makeText(mActivity,R.string.Set_Set_success).show();

@@ -2,6 +2,9 @@ package connect.activity.chat.exts.presenter;
 
 import android.app.Activity;
 
+import com.wallet.bean.CurrencyEnum;
+import com.wallet.inter.WalletListener;
+
 import java.util.List;
 
 import connect.activity.chat.bean.ContainerBean;
@@ -10,6 +13,8 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
 import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.model.content.NormalChat;
+import connect.activity.wallet.manager.TransferManager;
+import connect.activity.wallet.manager.TransferType;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
@@ -27,10 +32,6 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.business.TransferType;
-import connect.wallet.cwallet.inter.WalletListener;
 import protos.Connect;
 
 /**
@@ -121,8 +122,8 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
 
     @Override
     public void requestCrowdingPay(String hashid) {
-        BaseBusiness baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
-        baseBusiness.typePayment(hashid, TransferType.TransactionTypePayment.getType(), new WalletListener<String>() {
+        TransferManager transferManager = new TransferManager(activity, CurrencyEnum.BTC);
+        transferManager.typePayment(hashid, TransferType.TransactionTypePayment.getType(), new WalletListener<String>() {
             @Override
             public void success(String hashId) {
                 String contactName = crowdfunding.getSender().getUsername();

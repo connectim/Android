@@ -23,6 +23,7 @@ import java.util.List;
 
 import connect.activity.common.adapter.ViewPagerAdapter;
 import connect.activity.set.bean.PaySetBean;
+import connect.activity.wallet.manager.WalletManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -31,8 +32,9 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.system.SystemDataUtil;
-import connect.wallet.cwallet.NativeWallet;
-import connect.wallet.cwallet.bean.CurrencyEnum;
+
+import com.wallet.NativeWallet;
+import com.wallet.bean.CurrencyEnum;
 import connect.widget.ControlScrollViewPager;
 import connect.widget.MdStyleProgress;
 import wallet_gateway.WalletOuterClass;
@@ -121,7 +123,7 @@ public class PinTransferDialog implements View.OnClickListener{
 
         transferTv.setText(activity.getString(R.string.Wallet_Transfer_To_User,":"));
         feeTv.setText(activity.getString(R.string.Wallet_Fee_BTC,
-                Double.valueOf(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(fee + fixedFee))));
+                Double.valueOf(WalletManager.getInstance().longToDoubleCurrency(fee + fixedFee))));
 
         for (WalletOuterClass.Txout txout : txouts) {
             if(inputsList.contains(txout.getAddress())){
@@ -137,10 +139,10 @@ public class PinTransferDialog implements View.OnClickListener{
                 }else{
                     address.setText(txout.getAddress());
                 }
-                amount.setText(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(txout.getAmount()) + "BTC");
+                amount.setText(WalletManager.getInstance().longToDoubleCurrency(txout.getAmount()) + "BTC");
             }else{
                 address.setText(activity.getString(R.string.Wallet_The_Connect_system_address));
-                amount.setText(NativeWallet.getInstance().initCurrency(currencyEnum).longToDoubleCurrency(txout.getAmount() - fixedFee) + "BTC");
+                amount.setText(WalletManager.getInstance().longToDoubleCurrency(txout.getAmount() - fixedFee) + "BTC");
             }
             detailLin.addView(detailView);
         }
@@ -201,7 +203,7 @@ public class PinTransferDialog implements View.OnClickListener{
                 @Override
                 protected String doInBackground(Void... params) {
                     CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
-                    String decodeStr = SupportKeyUril.decryptionPinDefault(currencyEntity.getCategory() ,payload ,pass);
+                    String decodeStr = NativeWallet.getInstance().decryptionPin(currencyEntity.getCategory() ,payload ,pass);
                     return decodeStr;
                 }
 

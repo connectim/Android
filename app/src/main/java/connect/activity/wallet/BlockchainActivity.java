@@ -15,7 +15,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.wallet.cwallet.bean.CurrencyEnum;
+import com.wallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 
 /**

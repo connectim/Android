@@ -23,6 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.wallet.manager.WalletManager;
 import connect.utils.filter.EditInputFilterPrice;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
@@ -30,9 +31,7 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.ToastEUtil;
-import connect.wallet.cwallet.NativeWallet;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.inter.WalletListener;
+import com.wallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 import wallet_gateway.WalletOuterClass;
@@ -103,7 +102,7 @@ public class RequestActivity extends BaseActivity {
             addressTv.setText(currencyAddress);
             showScanView(transferHeader(currencyBean) + currencyAddress);
         }else{
-            NativeWallet.getInstance().initAccount(currencyBean).requestAddressList(new WalletListener<List<WalletOuterClass.CoinInfo>>() {
+            WalletManager.getInstance().requestAddress(CurrencyEnum.BTC, new com.wallet.inter.WalletListener<List<WalletOuterClass.CoinInfo>>() {
                 @Override
                 public void success(List<WalletOuterClass.CoinInfo> list) {
                     CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
@@ -121,6 +120,25 @@ public class RequestActivity extends BaseActivity {
                 @Override
                 public void fail(WalletError error) {}
             });
+
+            /*NativeWallet.getInstance().initAccount(currencyBean).requestAddressList(new WalletListener<List<WalletOuterClass.CoinInfo>>() {
+                @Override
+                public void success(List<WalletOuterClass.CoinInfo> list) {
+                    CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
+                    if (entity == null) {
+                        ActivityUtil.goBack(mActivity);
+                    } else {
+                        addressEntity = entity;
+                        currencyAddress = addressEntity.getAddress();
+                        scanHead = transferHeader(currencyBean) +currencyAddress + "?" + "amount=";
+                        addressTv.setText(currencyAddress);
+                        showScanView(transferHeader(currencyBean) + currencyAddress);
+                    }
+                }
+
+                @Override
+                public void fail(WalletError error) {}
+            });*/
         }
     }
 

@@ -17,7 +17,7 @@ import connect.database.MemoryDataManager;
 import connect.im.bean.Session;
 import connect.activity.base.BaseApplication;
 import connect.utils.StringUtil;
-import connect.wallet.cwallet.currency.BaseCurrency;
+import com.wallet.currency.BaseCurrency;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
@@ -230,43 +230,6 @@ public class SupportKeyUril {
             e.printStackTrace();
         }
         return null;
-    }
-
-    /**
-     * Pay password encryption
-     */
-    public static EncryptionPinBean encryptionPinDefault(int category, String value, String pass){
-        return encryptionPin(category,value,pass,ENCRYPTION_N);
-    }
-
-    public static EncryptionPinBean encryptionPin(int category, String value, String pass, int n){
-        if(BaseCurrency.CATEGORY_PRIKEY == category){
-            value = StringUtil.bytesToHexString(value.getBytes());
-        }
-        EncryptionPinBean encryptionPinBean = new EncryptionPinBean();
-        String payload = AllNativeMethod.connectWalletKeyEncrypt(value,pass,n,PIN_VERSION);
-        encryptionPinBean.setPayload(payload);
-        encryptionPinBean.setVersion(PIN_VERSION);
-        encryptionPinBean.setN(n);
-        return encryptionPinBean;
-    }
-
-    /**
-     * Pay decryption password
-     */
-    public static String decryptionPinDefault(int category, String value, String pass){
-        return decryptionPin(category ,value, pass, PIN_VERSION);
-    }
-
-    public static String decryptionPin(int category, String value, String pass,int verPin){
-        String seed = AllNativeMethod.connectWalletKeyDecrypt(value,pass,verPin);
-        if(seed.contains("error")){
-            return  "";
-        }
-        if(BaseCurrency.CATEGORY_PRIKEY == category){
-            seed = new String(StringUtil.hexStringToBytes(seed));
-        }
-        return seed;
     }
 
     /**

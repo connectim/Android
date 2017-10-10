@@ -3,10 +3,13 @@ package connect.activity.chat.exts.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import com.wallet.bean.CurrencyEnum;
+
 import java.util.List;
 
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.contract.PaymentContract;
+import connect.activity.wallet.manager.TransferManager;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
@@ -14,9 +17,7 @@ import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.inter.WalletListener;
+import com.wallet.inter.WalletListener;
 import protos.Connect;
 
 /**
@@ -70,9 +71,9 @@ public class PaymentPresenter implements PaymentContract.Presenter{
     }
 
     @Override
-    public void requestPayment(CurrencyEnum currencyEnum,final long amount,String tips) {
-        BaseBusiness baseBusiness = new BaseBusiness(activity, currencyEnum);
-        baseBusiness.friendReceiver(amount, view.getPubkey(), tips, new WalletListener<Connect.Bill>() {
+    public void requestPayment(CurrencyEnum currencyEnum, final long amount, String tips) {
+        TransferManager transferManager = new TransferManager(activity, currencyEnum);
+        transferManager.friendReceiver(amount, view.getPubkey(), tips, new WalletListener<Connect.Bill>() {
 
             @Override
             public void success(Connect.Bill bill) {
@@ -91,8 +92,8 @@ public class PaymentPresenter implements PaymentContract.Presenter{
     @Override
     public void requestCrowding(CurrencyEnum currencyEnum, long amount, final int size, String tips) {
         long totalamount = amount * size;
-        BaseBusiness baseBusiness = new BaseBusiness(activity, currencyEnum);
-        baseBusiness.crowdFuning(view.getPubkey(), totalamount, size, tips, new WalletListener<Connect.Crowdfunding>() {
+        TransferManager transferManager = new TransferManager(activity, currencyEnum);
+        transferManager.crowdFuning(view.getPubkey(), totalamount, size, tips, new WalletListener<Connect.Crowdfunding>() {
 
             @Override
             public void success(Connect.Crowdfunding crowdfunding) {

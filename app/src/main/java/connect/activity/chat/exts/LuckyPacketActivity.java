@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.wallet.bean.CurrencyEnum;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -19,13 +21,12 @@ import connect.activity.chat.exts.contract.LuckyPacketContract;
 import connect.activity.chat.exts.presenter.LuckyPacketPresenter;
 import connect.activity.set.SafetyPayFeeActivity;
 import connect.activity.wallet.PacketHistoryActivity;
+import connect.activity.wallet.manager.TransferManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.RegularUtil;
 import connect.utils.glide.GlideUtil;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.business.TransferEditView;
+import connect.activity.wallet.manager.TransferEditView;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
 
@@ -59,7 +60,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
     private int redType;
     /** packet address */
     private String redKey;
-    private BaseBusiness baseBusiness;
+    private TransferManager transferManager;
 
     private LuckyPacketContract.Presenter presenter;
 
@@ -108,7 +109,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
             layoutFirst.setVisibility(View.GONE);
             layoutSecond.setVisibility(View.VISIBLE);
         }
-        baseBusiness = new BaseBusiness(activity, CurrencyEnum.BTC);
+        transferManager = new TransferManager(activity, CurrencyEnum.BTC);
 
         new LuckyPacketPresenter(this).start();
         presenter.requestRoomEntity(redType);
@@ -198,7 +199,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
     }
 
     @Override
-    public BaseBusiness getBusiness() {
-        return baseBusiness;
+    public TransferManager getBusiness() {
+        return transferManager;
     }
 }

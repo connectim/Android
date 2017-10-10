@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.wallet.bean.CurrencyEnum;
+import com.wallet.inter.WalletListener;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -33,21 +35,15 @@ import connect.activity.wallet.TransferActivity;
 import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.activity.wallet.bean.RateBean;
 import connect.activity.wallet.bean.WalletBean;
-import connect.database.MemoryDataManager;
+import connect.activity.wallet.manager.WalletManager;
 import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
-import connect.wallet.cwallet.InitWalletManager;
-import connect.wallet.cwallet.NativeWallet;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.currency.BaseCurrency;
-import connect.wallet.cwallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
 import okhttp3.Call;
@@ -187,7 +183,7 @@ public class WalletFragment extends BaseFragment {
      */
     private void syncWallet() {
         relativelayout1.setVisibility(View.GONE);
-        NativeWallet.getInstance().syncWalletInfo(new WalletListener<Integer>() {
+        WalletManager.getInstance().syncWallet(new WalletListener<Integer>() {
             @Override
             public void success(Integer status) {
                 txt2.setTag(status);
@@ -227,26 +223,25 @@ public class WalletFragment extends BaseFragment {
     public void callBaseSeed(Bundle bundle) {
         final String baseSend = bundle.getString("random");
         final String pin = bundle.getString("pin");
-        int status = bundle.getInt("status");
+        final int status = bundle.getInt("status");
 
-        InitWalletManager walletManager = new InitWalletManager(mActivity, CurrencyEnum.BTC);
-        walletManager.setListener(new WalletListener<CurrencyEntity>() {
+        WalletManager.getInstance().createWallet(baseSend, pin, status ,new WalletListener<CurrencyEntity>(){
             @Override
             public void success(CurrencyEntity entity) {
                 relativelayout1.setVisibility(View.GONE);
                 currencyEntity = entity;
             }
+
             @Override
             public void fail(WalletError error) {}
         });
-        walletManager.requestCreateWallet(baseSend, pin, status);
     }
 
     /**
      * Get wallet balance
      */
     private void requestCurrencyCoin() {
-        NativeWallet.getInstance().initCurrency(CurrencyEnum.BTC).requestCoinInfo(new WalletListener<WalletOuterClass.Coin>() {
+        WalletManager.getInstance().requestCoinInfo(CurrencyEnum.BTC, new WalletListener<WalletOuterClass.Coin>() {
             @Override
             public void success(WalletOuterClass.Coin coin) {
                 if (coin != null) {

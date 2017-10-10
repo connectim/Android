@@ -2,7 +2,7 @@ package connect.activity.chat.exts.contract;
 
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
-import connect.wallet.cwallet.business.BaseBusiness;
+import connect.activity.wallet.manager.TransferManager;
 
 /**
  * Created by Administrator on 2017/8/11.
@@ -18,7 +18,7 @@ public interface LuckyPacketContract {
 
         void showGroupInfo(int count);
 
-        BaseBusiness getBusiness();
+        TransferManager getBusiness();
     }
 
     interface Presenter extends BasePresenter {

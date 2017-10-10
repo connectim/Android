@@ -23,7 +23,7 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
-import connect.wallet.cwallet.business.TransferEditView;
+import connect.activity.wallet.manager.TransferEditView;
 
 /**
  * transaction

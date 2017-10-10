@@ -23,7 +23,7 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.wallet.cwallet.bean.CurrencyEnum;
+import com.wallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 
 public class TransferMutiDetailActivity extends BaseActivity implements TransferMutiDetailContract.BView{

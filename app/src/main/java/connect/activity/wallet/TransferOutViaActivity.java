@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.wallet.bean.CurrencyEnum;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -14,23 +16,19 @@ import connect.activity.base.BaseActivity;
 import connect.activity.set.SafetyPayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
 import connect.activity.wallet.bean.TransferBean;
+import connect.activity.wallet.manager.TransferManager;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.cwallet.business.TransferEditView;
-import connect.wallet.cwallet.bean.CurrencyEnum;
-import connect.wallet.cwallet.business.BaseBusiness;
-import connect.wallet.cwallet.inter.WalletListener;
+import connect.activity.wallet.manager.TransferEditView;
+import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import connect.widget.random.RandomVoiceActivity;
 import protos.Connect;
@@ -48,7 +46,7 @@ public class TransferOutViaActivity extends BaseActivity {
     Button okBtn;
 
     private TransferOutViaActivity mActivity;
-    private BaseBusiness baseBusiness;
+    private TransferManager transferManager;
 
     public static void startActivity(Activity activity) {
         ActivityUtil.next(activity, TransferOutViaActivity.class);
@@ -77,7 +75,7 @@ public class TransferOutViaActivity extends BaseActivity {
         toolbarTop.setRightText(R.string.Chat_History);
         transferEditView.setEditListener(onEditListener);
 
-        baseBusiness = new BaseBusiness(mActivity, CurrencyEnum.BTC);
+        transferManager = new TransferManager(mActivity, CurrencyEnum.BTC);
     }
 
     private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
@@ -109,7 +107,7 @@ public class TransferOutViaActivity extends BaseActivity {
 
     @OnClick(R.id.ok_btn)
     void goTransferOut(View view) {
-        baseBusiness.outerTransfer(null, transferEditView.getCurrentBtcLong(), new WalletListener<String>() {
+        transferManager.outerTransfer(null, transferEditView.getCurrentBtcLong(), new WalletListener<String>() {
             @Override
             public void success(String value) {
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(2,"","",""));
