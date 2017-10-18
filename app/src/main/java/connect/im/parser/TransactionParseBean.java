@@ -88,7 +88,7 @@ public class TransactionParseBean extends InterParse {
             stranger.setUsername(senderInfo.getUsername());
             stranger.setAvatar(senderInfo.getAvatar());
             stranger.setPub_key(senderInfo.getPubKey());
-            stranger.setAddress(senderInfo.getAddress());
+            stranger.setAddress(senderInfo.getUid());
         }
 
         FriendChat normalChat = new FriendChat(stranger);
@@ -258,7 +258,7 @@ public class TransactionParseBean extends InterParse {
             friendEntity.setPub_key(userInfo.getPubKey());
             friendEntity.setAvatar(userInfo.getAvatar());
             friendEntity.setUsername(userInfo.getUsername());
-            friendEntity.setAddress(userInfo.getAddress());
+            friendEntity.setAddress(userInfo.getUid());
         }
 
         NormalChat normalChat = new FriendChat(friendEntity);

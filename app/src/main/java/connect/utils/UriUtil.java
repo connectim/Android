@@ -15,6 +15,8 @@ public class UriUtil {
     public static String CONNECT_V1_SMS_SEND = "/connect/v1/sms/send";
     /** Verify the authentication code are legal */
     public static String CONNECT_V1_SIGN_IN = "/connect/v1/sign_in";
+    /** Verify the authentication code are legal */
+    public static String CONNECT_V2_SMS_VALIDATE = "/connect/v2/sms/validate";
     /** Upload users avatar */
     public static String AVATAR_V1_UP = "/avatar/v1/up";
     /** registered */
@@ -25,6 +27,10 @@ public class UriUtil {
     public static String CONNECT_V1_PRIVATE_EXISTED = "/connect/v1/private/user_existed";
     /** The private key is registered */
     public static String CONNECT_V1_PRIVATE_SIGN = "/connect/v1/private/sign_in";
+    /** The private key is registered */
+    public static String CONNECT_V2_SIGN_IN_CA = "/connect/v2/sign_in/ca";
+    /** The private key is registered */
+    public static String CONNECT_V2_SIGN_UP = "/connect/v2/sign_up";
 
     /**======================================================================================
      *                                Login successfully initialized

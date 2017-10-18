@@ -15,6 +15,7 @@ public class UserBean implements Serializable{
     private String connectId;
     private String salt;
     private boolean isBack;
+    private String uid;
 
     public UserBean() {
     }
@@ -117,5 +118,13 @@ public class UserBean implements Serializable{
 
     public void setBack(boolean back) {
         isBack = back;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

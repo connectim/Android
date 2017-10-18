@@ -20,6 +20,7 @@ import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
 /**
  * Verify the authentication code, binding or binding mobile phone number.
@@ -159,4 +160,11 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements LoginPhon
         presenter.pauseDownTimer();
     }
 
+    @Override
+    public void launchHome(UserBean userBean) {
+
+    }
+
+    @Override
+    public void launchPassVerify(Connect.UserInfo userInfo) {}
 }

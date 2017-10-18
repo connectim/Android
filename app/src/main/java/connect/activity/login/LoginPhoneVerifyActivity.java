@@ -12,6 +12,8 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.home.HomeActivity;
+import connect.activity.set.SafetyPatternActivity;
 import connect.ui.activity.R;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneVerifyContract;
@@ -20,6 +22,7 @@ import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
 /**
  * Verify the sms.
@@ -168,4 +171,14 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements LoginPhone
         }
     }
 
+    @Override
+    public void launchHome(UserBean userBean) {
+        HomeActivity.startActivity(mActivity);
+        mActivity.finish();
+    }
+
+    @Override
+    public void launchPassVerify(Connect.UserInfo userInfo) {
+
+    }
 }

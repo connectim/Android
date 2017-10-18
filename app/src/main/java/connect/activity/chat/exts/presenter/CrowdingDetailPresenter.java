@@ -77,7 +77,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
                     Connect.UserInfo senderInfo = crowdfunding.getSender();
                     String avatar = senderInfo.getAvatar();
                     String senderName = "";
-                    if (MemoryDataManager.getInstance().getAddress().equals(senderInfo.getAddress())) {
+                    if (MemoryDataManager.getInstance().getAddress().equals(senderInfo.getUid())) {
                         senderName = activity.getString(R.string.Chat_You);
                     } else {
                         senderName = senderInfo.getUsername();
@@ -90,7 +90,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
                     view.showTips(crowdfunding.getTips());
 
                     long eachamont = crowdfunding.getTotal() / crowdfunding.getSize();
-                    view.showCrowdingInfo(crowdfunding.getTotal(), eachamont, (int) crowdfunding.getStatus(), senderInfo.getAddress());
+                    view.showCrowdingInfo(crowdfunding.getTotal(), eachamont, (int) crowdfunding.getStatus(), senderInfo.getUid());
 
                     int payMemCount = (int) (crowdfunding.getSize() - crowdfunding.getRemainSize());
                     int crowdSize = (int) crowdfunding.getSize();
@@ -103,7 +103,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
 
                     boolean state = false;
                     for (Connect.CrowdfundingRecord record : records) {
-                        if (MemoryDataManager.getInstance().getAddress().equals(record.getUser().getAddress())) {
+                        if (MemoryDataManager.getInstance().getAddress().equals(record.getUser().getUid())) {
                             state = true;
                         }
                     }

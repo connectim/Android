@@ -31,7 +31,7 @@ public class ConvertUtil {
             return null;
         FriendRequestEntity requestEntity = new FriendRequestEntity();
         requestEntity.setSource(receiver.getSource());
-        requestEntity.setAddress(receiver.getSender().getAddress());
+        requestEntity.setAddress(receiver.getSender().getUid());
         requestEntity.setAvatar(receiver.getSender().getAvatar());
         requestEntity.setUsername(receiver.getSender().getUsername());
         requestEntity.setPub_key(receiver.getSender().getPubKey());
@@ -68,7 +68,7 @@ public class ConvertUtil {
                     Connect.UserInfo userInfo = bookUserInfo.getUser();
                     PhoneContactBean contactBean = new PhoneContactBean();
                     contactBean.setNickName(userInfo.getUsername());
-                    contactBean.setAddress(userInfo.getAddress());
+                    contactBean.setAddress(userInfo.getUid());
                     contactBean.setPubKey(userInfo.getPubKey());
                     contactBean.setAvater(userInfo.getAvatar());
                     contactBean.setPhone(bookUserInfo.getPhoneHash());
@@ -77,7 +77,7 @@ public class ConvertUtil {
                     if (friendEntity != null) {
                         // Check whether as a friend
                         contactBean.setStatus(2);
-                    } else if (ContactHelper.getInstance().loadFriendRequest(userInfo.getAddress()) != null) {
+                    } else if (ContactHelper.getInstance().loadFriendRequest(userInfo.getUid()) != null) {
                         // Check whether there have been a friend request
                         contactBean.setStatus(3);
                     } else {

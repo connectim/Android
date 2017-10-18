@@ -15,6 +15,9 @@ import android.widget.TextView;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import java.security.SecureRandom;
+import java.util.Random;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -25,6 +28,8 @@ import connect.activity.login.presenter.LoginPhonePresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.StringUtil;
+import connect.utils.TimeUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.PhoneDataUtil;
 import connect.utils.permission.PermissionUtil;
 

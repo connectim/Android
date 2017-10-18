@@ -19,11 +19,13 @@ import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
 public class RegisterPresenter implements RegisterContract.Presenter {
@@ -98,38 +100,51 @@ public class RegisterPresenter implements RegisterContract.Presenter {
      */
     @Override
     public void registerUser(final String nicName, final String token, final UserBean userBean) {
-        Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder();
-        builder.setUsername(nicName);
-        builder.setToken(token);
-        builder.setMobile(userBean.getPhone());
-        builder.setAvatar(headPath);
+        Connect.RegisterUser registerUser = Connect.RegisterUser.newBuilder()
+                .setToken(token)
+                .setMobile(userBean.getPhone())
+                .setAvatar(headPath)
+                .setUsername(nicName)
+                .setCaPub(userBean.getPubKey())
+                .build();
+        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBean.getPriKey(), userBean.getPubKey(), registerUser.toByteString());
+        HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_UP, imRequest, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    ProgressUtil.getInstance().dismissProgress();
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
+                            userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
-        OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_SIGN_UP, builder.build(),
-                EncryptionUtil.ExtendedECDH.EMPTY,
-                userBean.getPriKey(),
-                userBean.getPubKey(),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        ProgressUtil.getInstance().dismissProgress();
-                        userBean.setAvatar(headPath);
-                        userBean.setName(nicName);
-                        SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
-                        mView.complete(userBean.isBack());
-                    }
+                    UserBean userBean = new UserBean();
+                    userBean.setAvatar(userInfo.getAvatar());
+                    userBean.setConnectId(userInfo.getConnectId());
+                    userBean.setName(userInfo.getUsername());
+                    userBean.setPhone(userBean.getPhone());
+                    userBean.setPriKey(userBean.getPriKey());
+                    userBean.setPubKey(userBean.getPubKey());
+                    userBean.setUid(userInfo.getUid());
+                    SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
+                    mView.complete(userBean.isBack());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-                        if (response.getCode() == 2101) {
-                            Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
-                        } else if(response.getCode() == 2102){
-                            Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                        ProgressUtil.getInstance().dismissProgress();
-                    }
-                });
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                if (response.getCode() == 2101) {
+                    Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
+                } else if(response.getCode() == 2102){
+                    Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                ProgressUtil.getInstance().dismissProgress();
+            }
+        });
 
         /*new AsyncTask<Void,Void,Connect.RegisterUser>() {
             @Override

@@ -123,7 +123,7 @@ public class StrangerInfoActivity extends BaseActivity {
                         msgSendBean.setTips(value);
 
                         UserOrderBean userOrderBean = new UserOrderBean();
-                        userOrderBean.requestAddFriend(sendUserInfo.getAddress(),sendUserInfo.getPubKey(),value,sourceType.getType(),msgSendBean);
+                        userOrderBean.requestAddFriend(sendUserInfo.getUid(),sendUserInfo.getPubKey(),value,sourceType.getType(),msgSendBean);
                     }
 
                     @Override
@@ -136,7 +136,7 @@ public class StrangerInfoActivity extends BaseActivity {
     @OnClick(R.id.transfer_btn)
     void goTransfer(View view) {
         if(sendUserInfo != null){
-            TransferToActivity.startActivity(mActivity, sendUserInfo.getAddress());
+            TransferToActivity.startActivity(mActivity, sendUserInfo.getUid());
         }
     }
 
@@ -155,7 +155,7 @@ public class StrangerInfoActivity extends BaseActivity {
                     requestEntity.setUsername(sendUserInfo.getUsername());
                     requestEntity.setPub_key(sendUserInfo.getPubKey());
                     requestEntity.setSource(sourceType.getType());
-                    requestEntity.setAddress(sendUserInfo.getAddress());
+                    requestEntity.setAddress(sendUserInfo.getUid());
                     requestEntity.setTips(msgSendBean.getTips());
                     requestEntity.setStatus(3);
                     requestEntity.setRead(1);

@@ -121,7 +121,7 @@ public class OkHttpUtil {
      * @param bytes
      * @return
      */
-    private Connect.IMRequest getIMRequest(String priKey, String pubKey, ByteString bytes) {
+    public Connect.IMRequest getIMRequest(String priKey, String pubKey, ByteString bytes) {
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
         if(TextUtils.isEmpty(index)){
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
@@ -131,7 +131,7 @@ public class OkHttpUtil {
         return getIMRequest(EncryptionUtil.ExtendedECDH.SALT, priKey, pubKey, bytes);
     }
 
-    private Connect.IMRequest getIMRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey, ByteString bytes) {
+    public Connect.IMRequest getIMRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey, ByteString bytes) {
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
         if(null == gcmData){
             LogManager.getLogger().i("-----ecdh-----","ecdh null");

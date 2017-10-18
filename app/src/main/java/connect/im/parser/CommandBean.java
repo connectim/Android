@@ -376,7 +376,7 @@ public class CommandBean extends InterParse {
                         entity.setUsername(userInfo.getUsername());
                         entity.setAvatar(userInfo.getAvatar());
                         entity.setPub_key(pubKey);
-                        entity.setAddress(userInfo.getAddress());
+                        entity.setAddress(userInfo.getUid());
                         ContactHelper.getInstance().insertContact(entity);
 
                         if (newFriend) { // Add a welcome message
@@ -530,7 +530,7 @@ public class CommandBean extends InterParse {
                 List<Connect.UserInfo> userInfos = usersInfo.getUsersList();
                 List<GroupMemberEntity> memEntities = new ArrayList<>();
                 for (Connect.UserInfo info : userInfos) {
-                    GroupMemberEntity groupMemEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, info.getAddress());
+                    GroupMemberEntity groupMemEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, info.getUid());
                     if (groupMemEntity == null) {
                         groupMemEntity = new GroupMemberEntity();
                         groupMemEntity.setIdentifier(groupKey);
@@ -538,7 +538,7 @@ public class CommandBean extends InterParse {
                         groupMemEntity.setUsername(info.getUsername());
                         groupMemEntity.setNick(info.getUsername());
                         groupMemEntity.setAvatar(info.getAvatar());
-                        groupMemEntity.setAddress(info.getAddress());
+                        groupMemEntity.setAddress(info.getUid());
                         groupMemEntity.setRole(0);
 
                         memEntities.add(groupMemEntity);
@@ -557,7 +557,7 @@ public class CommandBean extends InterParse {
                             String myAddress = MemoryDataManager.getInstance().getAddress();
 
                             Connect.UserInfo inviteBy = groupChange.getInviteBy();
-                            String inviteByName = inviteBy.getAddress().equals(myAddress) ?
+                            String inviteByName = inviteBy.getUid().equals(myAddress) ?
                                     context.getString(R.string.Chat_You) : inviteBy.getUsername();
 
                             String invitorname = memEntity.getAddress().equals(myAddress) ?
@@ -840,7 +840,7 @@ public class CommandBean extends InterParse {
                         friendEntity.setPub_key(userInfo.getPubKey());
                         friendEntity.setAvatar(userInfo.getAvatar());
                         friendEntity.setUsername(userInfo.getUsername());
-                        friendEntity.setAddress(userInfo.getAddress());
+                        friendEntity.setAddress(userInfo.getUid());
                     }
 
                     NormalChat normalChat = new FriendChat(friendEntity);

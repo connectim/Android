@@ -108,7 +108,7 @@ public class ScanLoginPresenter implements ScanLoginContract.Presenter {
                                 Connect.UserInfo userInfo = existedToken.getUserInfo();
                                 if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
                                     UserBean userBean = new UserBean();
-                                    userBean.setAddress(userInfo.getAddress());
+                                    userBean.setAddress(userInfo.getUid());
                                     userBean.setName(userInfo.getUsername());
                                     userBean.setAvatar(userInfo.getAvatar());
                                     userBean.setPriKey(priKey);

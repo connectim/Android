@@ -407,7 +407,7 @@ public class ContactHelper extends BaseDao {
             RecommandFriendEntity recommendEntity = new RecommandFriendEntity();
             recommendEntity.setPub_key(userInfo.getPubKey());
             recommendEntity.setUsername(userInfo.getUsername());
-            recommendEntity.setAddress(userInfo.getAddress());
+            recommendEntity.setAddress(userInfo.getUid());
             recommendEntity.setAvatar(userInfo.getAvatar());
             recommendEntity.setStatus(userInfo.getRecommend() ? 1 : 0);
             inserRecommendEntity(recommendEntity);

@@ -84,7 +84,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
                         contactEntity = new ContactEntity();
                         contactEntity.setPub_key(sendUserInfo.getPubKey());
                         contactEntity.setUsername(sendUserInfo.getUsername());
-                        contactEntity.setAddress(sendUserInfo.getAddress());
+                        contactEntity.setAddress(sendUserInfo.getUid());
                         contactEntity.setAvatar(sendUserInfo.getAvatar());
 
                         String avatar = contactEntity.getAvatar();

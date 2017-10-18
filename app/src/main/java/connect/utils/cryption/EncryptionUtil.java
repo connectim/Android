@@ -7,6 +7,7 @@ import java.security.SecureRandom;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
+import connect.utils.TimeUtil;
 import connect.wallet.jni.AllNativeMethod;
 import connect.wallet.jni.GCMModel;
 import protos.Connect;
@@ -51,7 +52,10 @@ public class EncryptionUtil {
     public static Connect.GcmData encodeAESGCM(ExtendedECDH extendedECDH, byte[] rawECDHKey, byte[] encodes) {
         rawECDHKey = getKeyExtendedECDH(extendedECDH, rawECDHKey);
 
-        byte[] ab = "ConnectEncrypted".getBytes();
+        //byte[] ab = "ConnectEncrypted".getBytes();
+        String abStr = TimeUtil.getCurrentTimeSecond() + "" + (int)((Math.random()*9+1)*100000);
+        byte[] ab = abStr.getBytes();
+
         ByteString iv = ByteString.copyFrom(SecureRandom.getSeed(16));
         byte[] ib = iv.toByteArray();
 

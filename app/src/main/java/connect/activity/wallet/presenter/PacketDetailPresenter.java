@@ -94,7 +94,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
         long openMoney = 0;
         long bestAmount = 0;
         for (Connect.GradRedPackageHistroy histroy : list) {
-            if (histroy.getUserinfo().getAddress().equals(address)) {
+            if (histroy.getUserinfo().getUid().equals(address)) {
                 isHava = true;
                 openMoney = histroy.getAmount();
             }

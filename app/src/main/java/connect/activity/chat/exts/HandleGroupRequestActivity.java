@@ -167,10 +167,10 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
                 }
                 break;
             case R.id.btn1:
-                presenter.agreeRequest(reviewed.getUserInfo().getPubKey(), reviewed.getVerificationCode(), reviewed.getUserInfo().getAddress());
+                presenter.agreeRequest(reviewed.getUserInfo().getPubKey(), reviewed.getVerificationCode(), reviewed.getUserInfo().getUid());
                 break;
             case R.id.btn2:
-                presenter.rejectRequest(reviewed.getUserInfo().getPubKey(), reviewed.getVerificationCode(), reviewed.getUserInfo().getAddress());
+                presenter.rejectRequest(reviewed.getUserInfo().getPubKey(), reviewed.getVerificationCode(), reviewed.getUserInfo().getUid());
                 break;
             case R.id.btn3:
                 presenter.groupChat();
