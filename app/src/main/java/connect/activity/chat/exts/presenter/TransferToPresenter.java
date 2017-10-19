@@ -8,12 +8,11 @@ import com.wallet.bean.CurrencyEnum;
 
 import java.util.HashMap;
 
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.exts.contract.TransferToContract;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.NormalChat;
 import connect.activity.wallet.bean.TransferBean;
 import connect.activity.wallet.manager.TransferManager;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -21,14 +20,17 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.MsgType;
+import connect.instant.model.CFriendChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.FriendChat;
+import instant.sender.model.NormalChat;
+import instant.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import com.wallet.inter.WalletListener;
@@ -115,10 +117,10 @@ public class TransferToPresenter implements TransferToContract.Presenter{
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(4, contactEntity.getAvatar(),
                         contactEntity.getUsername(), contactEntity.getAddress()));
                 if (view.getTransType() == TransferToActivity.TransferType.CHAT) {
-                    MsgSend.sendOuterMsg(MsgType.Transfer,0,value, amount, view.getTransferNote());
+                    MsgSend.sendOuterMsg(LinkMessageRow.Transfer,0,value, amount, view.getTransferNote());
                 } else if (view.getTransType() == TransferToActivity.TransferType.ADDRESS) {
-                    NormalChat friendChat = new FriendChat(contactEntity);
-                    MsgExtEntity msgExtEntity = friendChat.transferMsg(0,value, amount, view.getTransferNote());
+                    CFriendChat friendChat = new CFriendChat(contactEntity);
+                    ChatMsgEntity msgExtEntity = friendChat.transferMsg(0,value, amount, view.getTransferNote());
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                     friendChat.updateRoomMsg(null, msgExtEntity.showContent(), TimeUtil.getCurrentTimeInLong());
                     TransactionHelper.getInstance().updateTransEntity(value, msgExtEntity.getMessage_id(), 1);

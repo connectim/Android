@@ -1,18 +1,23 @@
 package connect.database.green.DaoHelper;
 
 import android.database.Cursor;
+import android.text.TextUtils;
 
 import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.BaseDao;
 import connect.database.green.bean.MessageEntity;
 import connect.database.green.dao.MessageEntityDao;
 import connect.utils.StringUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import connect.utils.cryption.DecryptionUtil;
+import instant.bean.ChatMsgEntity;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -22,6 +27,7 @@ import protos.Connect;
 public class MessageHelper extends BaseDao {
 
     private String Tag = "MessageHelper";
+
     private static MessageHelper messageHelper;
     private MessageEntityDao messageEntityDao;
 
@@ -46,16 +52,18 @@ public class MessageHelper extends BaseDao {
     }
 
     /********************************* select ***********************************/
-    public List<MsgExtEntity> loadMoreMsgEntities(String pubkey, long firsttime) {
+    public List<ChatMsgEntity> loadMoreMsgEntities(String pubkey, long firsttime) {
         String sql = "SELECT * FROM (SELECT C.* ,S.STATUS AS TRANS_STATUS,HASHID,PAY_COUNT,CROWD_COUNT FROM MESSAGE_ENTITY C LEFT OUTER JOIN TRANSACTION_ENTITY S ON C.MESSAGE_ID = S.MESSAGE_ID WHERE C.MESSAGE_OWER = ? " +
                 " AND C.CREATETIME < " + firsttime +
                 " ORDER BY C.CREATETIME DESC LIMIT 20) ORDER BY CREATETIME ASC;";
 
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{pubkey});
-        MsgExtEntity msgEntity = null;
-        List<MsgExtEntity> msgEntities = new ArrayList();
+        ChatMsgEntity msgEntity = null;
+        List<ChatMsgEntity> msgEntities = new ArrayList();
+
+        byte[] localHashKeys = connect.utils.cryption.SupportKeyUril.localHashKey().getBytes();
         while (cursor.moveToNext()) {
-            msgEntity = new MsgExtEntity();
+            msgEntity = new ChatMsgEntity();
             msgEntity.set_id(cursorGetLong(cursor, "_id"));
             msgEntity.setMessage_ower(cursorGetString(cursor, "MESSAGE_OWER"));
             msgEntity.setMessage_id(cursorGetString(cursor, "MESSAGE_ID"));
@@ -73,6 +81,16 @@ public class MessageHelper extends BaseDao {
             msgEntity.setHashid(cursorGetString(cursor, "HASHID"));
             msgEntity.setPayCount(cursorGetInt(cursor, "PAY_COUNT"));
             msgEntity.setCrowdCount(cursorGetInt(cursor, "CROWD_COUNT"));
+
+            if (!TextUtils.isEmpty(msgEntity.getContent())) {
+                try {
+                    Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(msgEntity.getContent()));
+                    byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
+                    msgEntity.setContents(contents);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             msgEntities.add(msgEntity);
         }
         if (cursor != null) {
@@ -81,14 +99,28 @@ public class MessageHelper extends BaseDao {
         return msgEntities;
     }
 
-    public MessageEntity loadMsgByMsgid(String msgid) {
+    public ChatMsgEntity loadMsgByMsgid(String msgid) {
         QueryBuilder<MessageEntity> queryBuilder = messageEntityDao.queryBuilder();
         queryBuilder.where(MessageEntityDao.Properties.Message_id.eq(msgid)).limit(1).build();
         List<MessageEntity> detailEntities = queryBuilder.list();
         if (detailEntities.size() == 0) {
             return null;
         }
-        return detailEntities.get(0);
+
+        ChatMsgEntity chatMsgEntity = null;
+        try {
+            MessageEntity messageEntity = detailEntities.get(0);
+            byte[] localHashKeys = connect.utils.cryption.SupportKeyUril.localHashKey().getBytes();
+            Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(messageEntity.getContent()));
+            byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
+
+            chatMsgEntity = messageEntity.messageToChatEntity();
+            chatMsgEntity.setContents(contents);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return chatMsgEntity;
     }
 
     public MessageEntity loadMsgLessMsgid(String msgid) {
@@ -115,7 +147,7 @@ public class MessageHelper extends BaseDao {
         daoSession.getDatabase().execSQL(sql, objects);*/
     }
 
-    public MsgExtEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
+    public ChatMsgEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SupportKeyUril.localHashKey().getBytes(), contents);
 
         MessageEntity messageEntity = new MessageEntity();
@@ -131,13 +163,13 @@ public class MessageHelper extends BaseDao {
         messageEntity.setRead_time(0L);
         messageEntity.setSnap_time(0L);
 
-        MsgExtEntity msgExtEntity = messageEntity.transToExtEntity();
+        ChatMsgEntity msgExtEntity = messageEntity.messageToChatEntity();
         msgExtEntity.setContents(contents);
         return msgExtEntity;
     }
 
-    public void insertMsgExtEntity(MsgExtEntity msgExtEntity) {
-        MessageEntity messageEntity = msgExtEntity.transToMessageEntity();
+    public void insertMsgExtEntity(ChatMsgEntity chatMsgEntity) {
+        MessageEntity messageEntity = MessageEntity.chatMsgToMessageEntity(chatMsgEntity);
         insertMessageEntity(messageEntity);
     }
 

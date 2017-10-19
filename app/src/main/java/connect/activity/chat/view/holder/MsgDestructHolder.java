@@ -4,9 +4,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import connect.activity.chat.bean.MsgDirect;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.chat.bean.RoomSession;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -26,7 +26,7 @@ public class MsgDestructHolder extends MsgBaseHolder{
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         Connect.DestructMessage destructMessage = Connect.DestructMessage.parseFrom(msgExtEntity.getContents());
 

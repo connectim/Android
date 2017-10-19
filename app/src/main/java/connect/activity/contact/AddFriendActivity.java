@@ -29,12 +29,12 @@ import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ConfigUtil;
 import connect.utils.ToastEUtil;
 import connect.widget.TopToolBar;
+import instant.bean.UserOrderBean;
 
 /**
  * add new friend.

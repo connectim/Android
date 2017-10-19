@@ -12,6 +12,7 @@ import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.view.BaseContainer;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
+import instant.bean.ChatMsgEntity;
 
 /**
  * Handle all message common state (click/delivery status)
@@ -25,7 +26,7 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
 
     /** The message time interval */
     private long MSG_TIMESPACE = 5 * 1000 * 60;
-    private MsgExtEntity msgExtEntity;
+    private ChatMsgEntity msgExtEntity;
 
     public MsgBaseHolder(View itemView) {
         super(itemView);
@@ -34,7 +35,7 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
         timeTxt = (TextView) itemView.findViewById(R.id.showtime);
     }
 
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, ChatMsgEntity msgExtEntity) throws Exception {
         this.msgExtEntity = msgExtEntity;
         baseContainer.setBaseEntity(msgExtEntity);
     }
@@ -81,7 +82,7 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
         return context.getResources().getStringArray(R.array.prompt_delete);
     }
 
-    public MsgExtEntity getMsgExtEntity() {
+    public ChatMsgEntity getMsgExtEntity() {
         return msgExtEntity;
     }
 }

@@ -3,7 +3,7 @@ package connect.activity.chat.view.row;
 import android.view.LayoutInflater;
 
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDirect;
+import instant.bean.MsgDirect;
 import connect.activity.chat.view.BaseContainer;
 import connect.activity.chat.view.holder.MsgBaseHolder;
 import connect.activity.chat.view.holder.MsgTxtHolder;

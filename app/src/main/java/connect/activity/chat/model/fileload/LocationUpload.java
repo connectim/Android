@@ -9,12 +9,12 @@ import java.io.File;
 
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileUpLoad;
-import connect.activity.chat.model.content.BaseChat;
 import connect.database.MemoryDataManager;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.BaseChat;
+import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -25,7 +25,7 @@ public class LocationUpload extends FileUpLoad {
 
     private String Tag = "PhotoUpload";
 
-    public LocationUpload(Context context, BaseChat baseChat, MsgExtEntity entity, FileUpListener listener) {
+    public LocationUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUpListener listener) {
         this.context = context;
         this.baseChat = baseChat;
         this.msgExtEntity = entity;
@@ -96,7 +96,7 @@ public class LocationUpload extends FileUpLoad {
                     Connect.LocationMessage locationMessage = Connect.LocationMessage.parseFrom(msgExtEntity.getContents());
                     locationMessage = locationMessage.toBuilder().setScreenShot(thumb).build();
 
-                    msgExtEntity = (MsgExtEntity) msgExtEntity.clone();
+                    msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(locationMessage.toByteArray());
                     uploadSuccess(msgExtEntity);
                 } catch (Exception e) {

@@ -12,8 +12,8 @@ import java.util.List;
 
 import connect.activity.chat.model.EmoManager;
 import connect.service.HttpsService;
-import connect.service.SocketService;
 import connect.utils.ConfigUtil;
+import instant.ui.InstantSdk;
 
 /**
  * Created by john on 2016/11/19.
@@ -29,6 +29,7 @@ public class BaseApplication extends Application{
         super.onCreate();
         mApplication = this;
 
+        InstantSdk.instantSdk.initSdk(this);
         EmoManager.getInstance();
         UnCeHandler catchExcep = new UnCeHandler(this);
         Thread.setDefaultUncaughtExceptionHandler(catchExcep);
@@ -67,7 +68,7 @@ public class BaseApplication extends Application{
             }
         }
 
-        SocketService.stopServer(this.getAppContext());
+        InstantSdk.instantSdk.stopInstant();
         HttpsService.stopServer(this.getAppContext());
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);

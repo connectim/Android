@@ -21,10 +21,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.wallet.manager.TransferManager;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.set.SafetyPayFeeActivity;
@@ -171,7 +171,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                 ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
 
                 if (!TextUtils.isEmpty(pubGroup)) {
-                    MsgSend.sendOuterMsg(MsgType.Transfer, 1, value, transferEditView.getCurrentBtcLong(), transferEditView.getNote());
+                    MsgSend.sendOuterMsg(LinkMessageRow.Transfer, 1, value, transferEditView.getCurrentBtcLong(), transferEditView.getNote());
                 }
                 for (HashMap.Entry<String, Long> entry : outMap.entrySet()) {
                     presenter.sendTransferMessage(value, entry.getKey(), "");

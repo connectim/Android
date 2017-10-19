@@ -5,6 +5,7 @@ import connect.utils.ConfigUtil;
 import connect.wallet.jni.AllNativeMethod;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -15,30 +16,30 @@ public class DecryptionUtil {
     /**
      * Decryption gcmData returns a byteArray containing
      */
-    public static byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
-        byte[] rawECDHkey = SupportKeyUril.getRawECDHKey(priKey, pubKey);
-        return DecryptionUtil.decodeAESGCM(extendedECDH, rawECDHkey, gcmData);
+    public static byte[] decodeAESGCM(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
+        byte[] rawECDHkey = instant.utils.cryption.SupportKeyUril.getRawECDHKey(priKey, pubKey);
+        return instant.utils.cryption.DecryptionUtil.decodeAESGCM(extendedECDH, rawECDHkey, gcmData);
     }
 
     /**
      * Decryption GcmData returned to StructData
      */
     public static Connect.StructData decodeAESGCMStructData(Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, MemoryDataManager.getInstance().getPriKey(), gcmData);
+        return decodeAESGCMStructData(instant.utils.cryption.EncryptionUtil.ExtendedECDH.SALT, MemoryDataManager.getInstance().getPriKey(), gcmData);
     }
 
-    public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, Connect.GcmData gcmData) {
+    public static Connect.StructData decodeAESGCMStructData(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, String priKey, Connect.GcmData gcmData) {
         return decodeAESGCMStructData(extendedECDH, priKey, ConfigUtil.getInstance().serverPubKey(), gcmData);
     }
 
-    public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
-        byte[] rss = SupportKeyUril.getRawECDHKey(priKey, pubKey);
+    public static Connect.StructData decodeAESGCMStructData(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
+        byte[] rss = instant.utils.cryption.SupportKeyUril.getRawECDHKey(priKey, pubKey);
         return decodeAESGCMStructData(extendedECDH, rss, gcmData);
     }
 
-    public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, byte[] byteECDH, Connect.GcmData gcmData) {
+    public static Connect.StructData decodeAESGCMStructData(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, byte[] byteECDH, Connect.GcmData gcmData) {
         try {
-            byte[] dataAESGCM = DecryptionUtil.decodeAESGCM(extendedECDH, byteECDH, gcmData);
+            byte[] dataAESGCM = instant.utils.cryption.DecryptionUtil.decodeAESGCM(extendedECDH, byteECDH, gcmData);
             Connect.StructData structData = Connect.StructData.parseFrom(dataAESGCM);
             return structData;
         } catch (InvalidProtocolBufferException e) {
@@ -47,7 +48,7 @@ public class DecryptionUtil {
         return null;
     }
 
-    public static synchronized byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
+    public static synchronized byte[] decodeAESGCM(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
         rawECDHkey = EncryptionUtil.getKeyExtendedECDH(extendedECDH, rawECDHkey);
 
         byte[] iv = gcmData.getIv().toByteArray();

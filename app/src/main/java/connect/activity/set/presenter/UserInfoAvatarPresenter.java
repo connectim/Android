@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
@@ -15,7 +14,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
@@ -29,7 +27,7 @@ import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;

@@ -7,14 +7,12 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import java.io.File;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 
 import connect.utils.FileUtil;
 import connect.utils.StringUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.SupportKeyUril;
 import connect.utils.permission.PermissionUtil;
-import connect.wallet.jni.AllNativeMethod;
 
 public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
 

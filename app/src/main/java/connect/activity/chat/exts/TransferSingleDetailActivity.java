@@ -55,8 +55,6 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
 
     private TransferSingleDetailActivity activity;
     private int transferType;// 0:outer 1:inner 2:mul
-    private String senderKey;
-    private String receiverKey;
     private String hashId;
     private String msgId;
 
@@ -70,11 +68,9 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
         initView();
     }
 
-    public static void startActivity(Activity activity, int transferType, String sender, String receiver, String hashid, String msgid) {
+    public static void startActivity(Activity activity, int transferType, String hashid, String msgid) {
         Bundle bundle = new Bundle();
         bundle.putInt("TransferType", transferType);
-        bundle.putString("Sender", sender);
-        bundle.putString("Receiver", receiver);
         bundle.putString("Hash", hashid);
         bundle.putString("Msgid", msgid);
         ActivityUtil.next(activity, TransferSingleDetailActivity.class, bundle);
@@ -94,20 +90,16 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
         });
 
         transferType = getIntent().getIntExtra("TransferType", 0);
-        senderKey = getIntent().getStringExtra("Sender");
-        receiverKey = getIntent().getStringExtra("Receiver");
         hashId = getIntent().getStringExtra("Hash");
         msgId = getIntent().getStringExtra("Msgid");
 
         new TransferSingleDetailPresenter(this).start();
 
-        if (transferType == 0) {
+        if (transferType == 0 || transferType == 1) {
             presenter.requestTransferInnerDetail(hashId);
-        } else if (transferType == 1) {
+        } else if (transferType == 2) {
             presenter.requestTransferOuterDetail(hashId);
         }
-        presenter.requestUserInfo(0, senderKey);
-        presenter.requestUserInfo(1, receiverKey);
     }
 
     @OnClick({R.id.linearlayout})
@@ -165,20 +157,23 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
         switch (transferstate) {
             case 0://do not pay
                 state = getString(R.string.Chat_Unpaid);
-                txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                txt4.setBackgroundResource(R.drawable.shape_radius8_37c65c);
                 break;
             case 1://do not confirm
                 state = getString(R.string.Wallet_Unconfirmed);
-                txt4.setBackgroundResource(R.drawable.shape_stroke_red);
+                txt4.setBackgroundResource(R.drawable.shape_radius8_ff6c5a);
                 break;
             case 2://confirm
                 state = getString(R.string.Wallet_Confirmed);
-                txt4.setBackgroundResource(R.drawable.shape_stroke_green);
+                txt4.setBackgroundResource(R.drawable.shape_radius8_37c65c);
                 break;
         }
         txt4.setText(state);
-        TransactionHelper.getInstance().updateTransEntity(hashId, msgId, transferstate);
-        ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.TRANSFER_STATE, msgId, hashId);
+
+        if (!TextUtils.isEmpty(msgId)) {
+            TransactionHelper.getInstance().updateTransEntity(hashId, msgId, transferstate);
+            ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.TRANSFER_STATE, msgId, hashId);
+        }
     }
 
     @Override

@@ -8,7 +8,7 @@ import connect.activity.login.bean.UserBean;
 import connect.activity.set.contract.SafetyLoginPassContract;
 import connect.utils.ProgressUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;

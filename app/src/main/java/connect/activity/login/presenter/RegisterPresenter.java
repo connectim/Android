@@ -1,7 +1,6 @@
 package connect.activity.login.presenter;
 
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -19,8 +18,7 @@ import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;

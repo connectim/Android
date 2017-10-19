@@ -22,12 +22,12 @@ import java.util.List;
 
 import connect.activity.chat.bean.BaseAction;
 import connect.activity.chat.bean.DestructOpenBean;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.bean.ConversionSettingEntity;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
@@ -152,7 +152,7 @@ public class MorePagerAdapter extends PagerAdapter {
             }
 
             if (!Long.valueOf(time).equals(chatSetEntity.getSnap_time())) {
-                MsgSend.sendOuterMsg(MsgType.Self_destruct_Notice, time);
+                MsgSend.sendOuterMsg(LinkMessageRow.Self_destruct_Notice, time);
                 DestructOpenBean.sendDestructMsg(time);
 
                 chatSetEntity.setSnap_time(time);

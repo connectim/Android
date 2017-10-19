@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.im.bean.MsgType;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.GeoAddressBean;
@@ -208,7 +208,7 @@ public class GoogleMapActivity extends BaseActivity {
 
                 GeoAddressBean addressBean = new GeoAddressBean(latitude, lontitude, info,
                         file.getAbsolutePath(), bitmap.getWidth(), bitmap.getHeight());
-                MsgSend.sendOuterMsg(MsgType.Location, addressBean);
+                MsgSend.sendOuterMsg(LinkMessageRow.Location, addressBean);
                 ActivityUtil.goBack(activity);
             } catch (Exception e) {
                 e.printStackTrace();

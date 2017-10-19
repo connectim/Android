@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.chat.model.content.FriendChat;
 import connect.activity.chat.set.contract.GroupInviteContract;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
+import connect.instant.model.CFriendChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
@@ -21,6 +21,8 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.FriendChat;
 import protos.Connect;
 
 /**
@@ -74,8 +76,8 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
 
                             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(adddress);
                             if (friendEntity != null) {
-                                FriendChat friendChat = new FriendChat(friendEntity);
-                                MsgExtEntity msgExtEntity = friendChat.inviteJoinGroupMsg(groupEntity.getAvatar(), groupEntity.getName(),
+                                CFriendChat friendChat = new CFriendChat(friendEntity);
+                                ChatMsgEntity msgExtEntity = friendChat.inviteJoinGroupMsg(groupEntity.getAvatar(), groupEntity.getName(),
                                         groupEntity.getIdentifier(), token);
 
                                 friendChat.sendPushMsg(msgExtEntity);

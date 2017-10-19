@@ -20,7 +20,7 @@ import connect.activity.wallet.bean.AddressBean;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.SupportKeyUril;
 import connect.widget.SideScrollView;
 
 /**

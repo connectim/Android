@@ -19,7 +19,6 @@ import butterknife.OnClick;
 import connect.activity.contact.bean.ContactNotice;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.bean.SourceType;
@@ -29,6 +28,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
+import instant.bean.UserOrderBean;
 
 /**
  * Receive a friend to add a request

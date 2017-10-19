@@ -13,6 +13,7 @@ import protos.Connect;
  * Created by pujin on 2017/2/10.
  */
 public class Talker implements Serializable{
+
     private int talkType;
     private String talkKey;
     private String talkAvatar;

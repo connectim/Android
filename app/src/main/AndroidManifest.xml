@@ -344,7 +344,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="connect.broadcast.NetBroadcastReceiver"
+            android:name="instant.ui.broadcast.NetBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
@@ -352,9 +352,6 @@
         </receiver>
 
         <service android:name="connect.service.HttpsService"/>
-        <service
-            android:name="connect.service.SocketService"
-            android:exported="true"/>
         <service android:name="connect.service.UpdataService"/>
 
         <meta-data
@@ -411,14 +408,6 @@
         <activity android:name="connect.activity.home.DBUpdateActivity"
                   android:screenOrientation="portrait">
         </activity>
-
-        <service
-            android:name="connect.service.PushService"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.connect.push"/>
-            </intent-filter>
-        </service>
 
         <activity android:name="connect.activity.wallet.CAddressListActivty"
                   android:screenOrientation="portrait">

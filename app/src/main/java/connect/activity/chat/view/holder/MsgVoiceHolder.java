@@ -6,7 +6,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import connect.activity.chat.bean.DestructReadBean;
-import connect.activity.chat.bean.MsgDirect;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.chat.view.VoiceImg;
@@ -38,7 +39,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(final MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
 

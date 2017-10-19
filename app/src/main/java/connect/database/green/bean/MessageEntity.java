@@ -8,13 +8,11 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
 
-import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.database.MemoryDataManager;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.im.bean.MsgType;
-import connect.ui.activity.R;
+import connect.utils.StringUtil;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
+import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
 @Entity
@@ -64,8 +62,8 @@ public class MessageEntity implements Serializable {
     public MessageEntity() {
     }
 
-    public MsgExtEntity transToExtEntity() {
-        MsgExtEntity extEntity = new MsgExtEntity();
+    public ChatMsgEntity messageToChatEntity() {
+        ChatMsgEntity extEntity = new ChatMsgEntity();
         extEntity.set_id(get_id());
         extEntity.setMessage_id(getMessage_id());
         extEntity.setChatType(getChatType());
@@ -81,9 +79,24 @@ public class MessageEntity implements Serializable {
         return extEntity;
     }
 
-    public MsgDirect parseDirect() {
-        String mypubkey = MemoryDataManager.getInstance().getPubKey();
-        return mypubkey.equals(getMessage_from()) ? MsgDirect.To : MsgDirect.From;
+    public static MessageEntity chatMsgToMessageEntity(ChatMsgEntity chatMsgEntity) {
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SupportKeyUril.localHashKey().getBytes(), chatMsgEntity.getContents());
+        String content = StringUtil.bytesToHexString(gcmData.toByteArray());
+
+        MessageEntity messageEntity = new MessageEntity();
+        messageEntity.set_id(chatMsgEntity.get_id());
+        messageEntity.setMessage_id(chatMsgEntity.getMessage_id());
+        messageEntity.setChatType(chatMsgEntity.getChatType());
+        messageEntity.setMessage_ower(chatMsgEntity.getMessage_ower());
+        messageEntity.setMessageType(chatMsgEntity.getMessageType());
+        messageEntity.setMessage_from(chatMsgEntity.getMessage_from());
+        messageEntity.setMessage_to(chatMsgEntity.getMessage_to());
+        messageEntity.setContent(content);
+        messageEntity.setCreatetime(chatMsgEntity.getCreatetime());
+        messageEntity.setRead_time(chatMsgEntity.getRead_time());
+        messageEntity.setSend_status(chatMsgEntity.getSend_status());
+        messageEntity.setSnap_time(chatMsgEntity.getSnap_time());
+        return messageEntity;
     }
 
     public Long get_id() {
@@ -181,6 +194,4 @@ public class MessageEntity implements Serializable {
     public void setCreatetime(Long createtime) {
         this.createtime = createtime;
     }
-
-    
 }

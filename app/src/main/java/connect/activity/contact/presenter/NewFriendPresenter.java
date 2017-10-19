@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -23,7 +22,7 @@ import connect.activity.home.bean.WalletMenuBean;
 import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;

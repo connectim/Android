@@ -1,1 +1,1 @@
-include ':app', ':protoc', ':wallet', 'ffmpeg4android_lib'
+include ':app', ':protoc', ':wallet', ':instant', 'ffmpeg4android_lib'

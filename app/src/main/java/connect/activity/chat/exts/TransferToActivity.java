@@ -65,12 +65,12 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
         ADDRESS,
     }
 
-    public static void startActivity(Activity activity, String address) {
-        startActivity(activity, TransferType.CHAT, address, null);
+    public static void startActivity(Activity activity, String pulicKey) {
+        startActivity(activity, TransferType.CHAT, pulicKey, null);
     }
 
-    public static void startActivity(Activity activity, String address, Double amount) {
-        startActivity(activity, TransferType.ADDRESS, address, amount);
+    public static void startActivity(Activity activity, String pulicKey, Double amount) {
+        startActivity(activity, TransferType.ADDRESS, pulicKey, amount);
     }
 
     public static void startActivity(Activity activity, TransferType type, String address, Double amount) {

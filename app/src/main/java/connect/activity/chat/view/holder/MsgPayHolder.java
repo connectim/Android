@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
-import connect.activity.chat.bean.MsgDirect;
+
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.CrowdingDetailActivity;
 import connect.activity.chat.exts.PaymentDetailActivity;
@@ -35,7 +37,7 @@ public class MsgPayHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.PaymentMessage paymentMessage = Connect.PaymentMessage.parseFrom(msgExtEntity.getContents());
 
@@ -75,11 +77,9 @@ public class MsgPayHolder extends MsgChatHolder {
                         PaymentDetailActivity.startActivity((Activity) context, msgExtEntity);
                     } else {
                         int transferType = 0;
-                        String sender = msgExtEntity.getMessage_from();
-                        String receiver = msgExtEntity.getMessage_to();
                         String hashid = paymentMessage.getHashId();
                         String msgid = msgExtEntity.getMessage_id();
-                        TransferSingleDetailActivity.startActivity((Activity) context, transferType, sender, receiver, hashid, msgid);
+                        TransferSingleDetailActivity.startActivity((Activity) context, transferType, hashid, msgid);
                     }
                 } else {
                     CrowdingDetailActivity.startActivity((Activity) context, paymentMessage.getHashId(), msgExtEntity.getMessage_id());

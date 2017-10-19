@@ -3,6 +3,7 @@ package connect.activity.chat.view.holder;
 import android.view.View;
 
 import connect.activity.chat.bean.MsgExtEntity;
+import instant.bean.ChatMsgEntity;
 
 /**
  * Created by Administrator on 2017/8/16.
@@ -15,7 +16,7 @@ public class MsgEncryptHolder extends MsgBaseHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
     }
 }

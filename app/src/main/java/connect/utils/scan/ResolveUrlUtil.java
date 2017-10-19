@@ -6,7 +6,6 @@ import android.net.Uri;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.activity.chat.exts.TransferToActivity;
@@ -18,6 +17,7 @@ import connect.activity.home.bean.MsgNoticeBean;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
+import instant.bean.UserOrderBean;
 
 /**
  * Web Url parsing

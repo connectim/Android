@@ -17,12 +17,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.wallet.manager.TransferManager;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -213,7 +213,7 @@ public class GatherActivity extends BaseActivity {
             public void success(Connect.Bill bill) {
                 ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
 
-                MsgSend.sendOuterMsg(MsgType.Request_Payment, 0, bill.getHash(), amount, 1, bill.getTips());
+                MsgSend.sendOuterMsg(LinkMessageRow.Request_Payment, 0, bill.getHash(), amount, 1, bill.getTips());
                 ActivityUtil.goBack(activity);
             }
 
@@ -240,7 +240,7 @@ public class GatherActivity extends BaseActivity {
             public void success(Connect.Crowdfunding crowdfunding) {
                 int size = Integer.parseInt(edit.getText().toString());
 
-                MsgSend.sendOuterMsg(MsgType.Request_Payment, 1, crowdfunding.getHashId(), crowdfunding.getTotal() / size, size, crowdfunding.getTips());
+                MsgSend.sendOuterMsg(LinkMessageRow.Request_Payment, 1, crowdfunding.getHashId(), crowdfunding.getTotal() / size, size, crowdfunding.getTips());
                 ActivityUtil.goBack(activity);
             }
 

@@ -9,6 +9,7 @@ import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.model.EmoManager;
 import connect.ui.activity.R;
 import connect.widget.GifView;
+import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
 /**
@@ -23,7 +24,7 @@ public class MsgEmotionHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         Connect.EmotionMessage emotionMessage = Connect.EmotionMessage.parseFrom(msgExtEntity.getContents());
 

@@ -11,8 +11,8 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.base.BaseApplication;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import protos.Connect;
 

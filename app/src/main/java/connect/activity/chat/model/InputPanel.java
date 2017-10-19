@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import connect.activity.chat.ChatActivity;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.StickerCategory;
@@ -30,7 +31,6 @@ import connect.activity.chat.inter.IEmojiClickListener;
 import connect.activity.chat.view.ChatEditText;
 import connect.activity.chat.view.ExBottomLayout;
 import connect.activity.chat.view.RecordView;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.RegularUtil;
 import connect.utils.data.ResourceUtil;
@@ -117,7 +117,7 @@ public class InputPanel {
 
             @Override
             public void onEmtClick(String emt) {
-                MsgSend.sendOuterMsg(MsgType.Emotion, emt);
+                MsgSend.sendOuterMsg(LinkMessageRow.Emotion, emt);
             }
         });
     }
@@ -278,9 +278,9 @@ public class InputPanel {
                             title = context.getString(R.string.Wallet_Send_the_payment_connection);
                             sub = context.getString(R.string.Wallet_Click_to_transfer_bitcoin);
                         }
-                        MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, string, title,sub,"");
+                        MsgSend.sendOuterMsg(LinkMessageRow.OUTER_WEBSITE, string, title,sub,"");
                     } else {
-                        MsgSend.sendOuterMsg(MsgType.Text, inputEdit.getText().toString(), inputEdit.groupAts());
+                        MsgSend.sendOuterMsg(LinkMessageRow.Text, inputEdit.getText().toString(), inputEdit.groupAts());
 
 //                        for (int i = 0; i < 100; i++) {
 //                            MsgSend.sendOuterMsg(MsgType.Text, i+"", inputEdit.groupAts());

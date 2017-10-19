@@ -7,11 +7,26 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import connect.activity.chat.bean.MsgDirect;
+import connect.activity.base.BaseListener;
+import connect.activity.home.bean.ConversationAction;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionHelper;
+import connect.database.green.bean.ConversionEntity;
+import connect.database.green.bean.GroupMemberEntity;
+import connect.utils.ProtoBufUtil;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.StickerCategory;
 import connect.activity.contact.bean.MsgSendBean;
@@ -19,9 +34,10 @@ import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
-import connect.im.model.FailMsgsManager;
 import connect.utils.RegularUtil;
 import connect.utils.data.ResourceUtil;
+import instant.utils.manager.FailMsgsManager;
+import protos.Connect;
 
 
 /**
@@ -31,14 +47,13 @@ public class ChatMsgUtil {
 
     private static String Tag = "ChatMsgUtil";
 
-    /**
-     * sender, get the message sender direction
-     * @param from
-     * @return
-     */
-    public static MsgDirect parseMsgDirect(String from) {
-        String mypubkey = MemoryDataManager.getInstance().getPubKey();
-        return mypubkey.equals(from) ? MsgDirect.To : MsgDirect.From;
+    public static ChatMsgUtil chatMsgUtil = getIntance();
+
+    private synchronized static ChatMsgUtil getIntance() {
+        if (chatMsgUtil == null) {
+            chatMsgUtil = new ChatMsgUtil();
+        }
+        return chatMsgUtil;
     }
 
     /**
@@ -49,7 +64,7 @@ public class ChatMsgUtil {
      * @param state
      */
     public static void updateMsgSendState(String roomkey, String msgid, int state) {
-        MessageEntity msgEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
+        MessageEntity msgEntity = MessageEntity.chatMsgToMessageEntity(MessageHelper.getInstance().loadMsgByMsgid(msgid));
         if (msgEntity != null) {
             msgEntity.setSend_status(state);
             MessageHelper.getInstance().updateMsg(msgEntity);
@@ -93,5 +108,60 @@ public class ChatMsgUtil {
             }
         }
         return mSpannableString;
+    }
+
+    private Map<String, GroupMemberEntity> memEntityMap = null;
+
+    public void loadGroupMembersMap(String groupKey) {
+        if (memEntityMap == null) {
+            memEntityMap = new HashMap<>();
+        }
+        List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
+        for (GroupMemberEntity memEntity : groupMemEntities) {
+            memEntityMap.put(memEntity.getPub_key(), memEntity);
+        }
+    }
+
+    public void loadGroupMember(String groupKey, String memberkey, BaseListener<GroupMemberEntity> baseListener) {
+        if (memEntityMap == null) {
+            loadGroupMembersMap(groupKey);
+        }
+
+        GroupMemberEntity memberEntity = memEntityMap.get(memberkey);
+        if (memberEntity == null) {
+            requestGroupMemberDetailInfo(memberkey, baseListener);
+        } else {
+            baseListener.Success(memberEntity);
+        }
+    }
+
+    public void requestGroupMemberDetailInfo(String publickey, final BaseListener<GroupMemberEntity> baseListener) {
+        Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
+                .setCriteria(publickey)
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_SEARCHBYPUBKEY, searchUser, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
+                        GroupMemberEntity memberEntity = new GroupMemberEntity();
+                        memberEntity.setAvatar(userInfo.getAvatar());
+                        memberEntity.setUsername(userInfo.getUsername());
+                        memEntityMap.put(userInfo.getPubKey(), memberEntity);
+                        baseListener.Success(memberEntity);
+                    }
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                baseListener.fail("");
+            }
+        });
     }
 }

@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,8 +24,8 @@ import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.activity.contact.bean.PhoneContactBean;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;

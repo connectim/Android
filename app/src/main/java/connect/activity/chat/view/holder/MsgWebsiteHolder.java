@@ -13,12 +13,13 @@ import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.wallet.PacketDetailActivity;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
+import instant.bean.ChatMsgEntity;
+import instant.bean.UserOrderBean;
+import instant.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -41,7 +42,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         Connect.WebsiteMessage websiteMessage = Connect.WebsiteMessage.parseFrom(msgExtEntity.getContents());
 

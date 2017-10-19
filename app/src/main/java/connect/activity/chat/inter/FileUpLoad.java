@@ -5,24 +5,26 @@ import android.content.Context;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.chat.model.content.BaseChat;
-import connect.activity.chat.model.content.GroupChat;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.im.model.FailMsgsManager;
+import connect.instant.inter.ConversationListener;
+import connect.instant.model.CFriendChat;
+import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.BaseChat;
+import instant.sender.model.GroupChat;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
 /**
@@ -32,7 +34,7 @@ public abstract class FileUpLoad {
 
     private String Tag = "_FileUpLoad";
     protected Context context;
-    protected MsgExtEntity msgExtEntity;
+    protected ChatMsgEntity msgExtEntity;
     protected BaseChat baseChat;
     protected Connect.MediaFile mediaFile;
 
@@ -99,9 +101,9 @@ public abstract class FileUpLoad {
      *
      * @param msgExtEntity
      */
-    public void localEncryptionSuccess(MsgExtEntity msgExtEntity) {
+    public void localEncryptionSuccess(ChatMsgEntity msgExtEntity) {
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-        baseChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
+        ((ConversationListener) baseChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
     }
 
     /**
@@ -109,7 +111,7 @@ public abstract class FileUpLoad {
      *
      * @param msgExtEntity
      */
-    public void uploadSuccess(MsgExtEntity msgExtEntity) {
+    public void uploadSuccess(ChatMsgEntity msgExtEntity) {
         baseChat.sendPushMsg(msgExtEntity);
         fileUpListener.upSuccess(msgExtEntity.getMessage_id());
     }

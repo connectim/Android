@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
-import connect.activity.chat.bean.MsgDirect;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.TransferMutiDetailActivity;
 import connect.activity.chat.exts.TransferSingleDetailActivity;
@@ -29,7 +30,7 @@ public class MsgTransferHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.TransferMessage transferMessage = Connect.TransferMessage.parseFrom(msgExtEntity.getContents());
 
@@ -44,15 +45,13 @@ public class MsgTransferHolder extends MsgChatHolder {
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String sender = msgExtEntity.getMessage_from();
-                String receiver = msgExtEntity.getMessage_to();
                 String hashid = transferMessage.getHashId();
                 String msgid = msgExtEntity.getMessage_id();
 
                 int transferType = transferMessage.getTransferType();
-                if (transferType == 0 || transferType == 1) {
-                    TransferSingleDetailActivity.startActivity((Activity) context, transferType, sender, receiver, hashid, msgid);
-                } else if (transferType == 2) {
+                if (transferType == 0 || transferType == 2) {
+                    TransferSingleDetailActivity.startActivity((Activity) context, transferType, hashid, msgid);
+                } else if (transferType == 1) {
                     TransferMutiDetailActivity.startActivity((Activity) context, hashid, msgid);
                 }
             }

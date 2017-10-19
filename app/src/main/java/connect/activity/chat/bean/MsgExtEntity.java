@@ -2,17 +2,12 @@ package connect.activity.chat.bean;
 
 import android.text.TextUtils;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
-import connect.activity.base.BaseApplication;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.GroupMemberEntity;
+import connect.database.MemoryDataManager;
 import connect.database.green.bean.MessageEntity;
-import connect.im.bean.MsgType;
-import connect.ui.activity.R;
 import connect.utils.StringUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.bean.MsgDirect;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -67,6 +62,12 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
         this.contents = contents;
     }
 
+
+    public MsgDirect parseDirect() {
+        String mypubkey = MemoryDataManager.getInstance().getPubKey();
+        return mypubkey.equals(getMessage_from()) ? MsgDirect.To : MsgDirect.From;
+    }
+
     public MessageEntity transToMessageEntity() {
         String content = getContent();
         if (TextUtils.isEmpty(content)) {
@@ -99,125 +100,5 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
                 .setTo(getMessage_to())
                 .setMsgTime(getCreatetime());
         return builder;
-    }
-
-    public long parseDestructTime() {
-        long destructtime = -1;
-        try {
-            Connect.ChatType chatType = Connect.ChatType.forNumber(getChatType());
-            if (chatType == Connect.ChatType.PRIVATE) {
-                MsgType msgType = MsgType.toMsgType(getMessageType());
-                switch (msgType) {
-                    case Text:
-                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(getContents());
-                        destructtime = textMessage.getSnapTime();
-                        break;
-                    case Emotion:
-                        Connect.EmotionMessage emotionMessage = Connect.EmotionMessage.parseFrom(getContents());
-                        destructtime = emotionMessage.getSnapTime();
-                        break;
-                    case Photo:
-                        Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(getContents());
-                        destructtime = photoMessage.getSnapTime();
-                        break;
-                    case Voice:
-                        Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(getContents());
-                        destructtime = voiceMessage.getSnapTime();
-                        break;
-                    case Video:
-                        Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(getContents());
-                        destructtime = videoMessage.getSnapTime();
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return destructtime;
-    }
-
-    /**
-     * Display the list in the session
-     *
-     * @return
-     */
-    public String showContent() {
-        String content = "";
-        MsgType msgType = MsgType.toMsgType(getMessageType());
-        switch (msgType) {
-            case Text://text
-                if (contents != null) {
-                    try {
-                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);
-                        content = textMessage.getContent();
-                    } catch (InvalidProtocolBufferException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-            case Voice://voice
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Audio);
-                break;
-            case Photo://picture
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Picture);
-                break;
-            case Video://video
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Video);
-                break;
-            case Emotion://expression
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Expression);
-                break;
-            case Self_destruct_Notice://burn message
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Snapchat);
-                break;
-            case Self_destruct_Receipt://burn back
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Snapchat);
-                break;
-            case Request_Payment:
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Funding);
-                break;
-            case Transfer:
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Transfer);
-                break;
-            case Lucky_Packet:
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Red_packet);
-                break;
-            case Location:
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Location);
-                break;
-            case Name_Card:
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card);
-                break;
-            case INVITE_GROUP:
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Group_Namecard);
-                break;
-            case OUTER_WEBSITE:
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Group_certification);
-                break;
-            default:
-                content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Tips);
-                break;
-        }
-
-        Connect.ChatType chatType = Connect.ChatType.forNumber(getChatType());
-        switch (chatType) {
-            case PRIVATE:
-                break;
-            case GROUPCHAT://show group member nickname
-                GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(getMessage_ower(), getMessage_from());
-                if (memberEntity != null) {
-                    String memberName = TextUtils.isEmpty(memberEntity.getNick()) ? memberEntity.getUsername() : memberEntity.getNick();
-                    content = memberName + ": " + content;
-                }
-                break;
-            case CONNECT_SYSTEM:
-                break;
-        }
-        return content;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 }

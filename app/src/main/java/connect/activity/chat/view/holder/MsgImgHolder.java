@@ -5,16 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import java.io.File;
-import java.io.FileNotFoundException;
+
 import connect.activity.chat.bean.DestructReadBean;
-import connect.activity.chat.bean.MsgDirect;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.view.BubbleImg;
@@ -45,7 +45,7 @@ public class MsgImgHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         photoMessage = Connect.PhotoMessage.parseFrom(msgExtEntity.getContents());
 

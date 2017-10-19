@@ -33,13 +33,13 @@ import connect.activity.contact.presenter.FriendInfoPresenter;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
+import instant.bean.UserOrderBean;
 
 /**
  * Friends details.

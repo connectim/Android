@@ -47,7 +47,7 @@ public class SharedPreferenceUtil {
 
     }
 
-    public static String Tag = "SharedPreferenceUtil";
+    public static String Tag = "_SharedUtil";
 
     public static SharedPreferenceUtil getInstance() {
         return getInstance(BaseApplication.getInstance().getAppContext());

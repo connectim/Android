@@ -1,7 +1,5 @@
 package connect.activity.chat.bean;
 
-import connect.im.bean.MsgType;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
@@ -12,19 +10,19 @@ import java.io.Serializable;
  */
 public class MsgSend implements Serializable {
 
-    private MsgType msgType;
+    private LinkMessageRow msgType;
     private Object obj;
 
-    public MsgSend(MsgType type, Object obj) {
+    public MsgSend(LinkMessageRow type, Object obj) {
         this.msgType = type;
         this.obj = obj;
     }
 
-    public static void sendOuterMsg(MsgType type, Object... objs) {
+    public static void sendOuterMsg(LinkMessageRow type, Object... objs) {
         EventBus.getDefault().post(new MsgSend(type, objs));
     }
 
-    public MsgType getMsgType() {
+    public LinkMessageRow getMsgType() {
         return msgType;
     }
 

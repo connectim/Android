@@ -35,8 +35,6 @@ import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoManager;
 import connect.database.green.bean.FriendRequestEntity;
-import connect.im.bean.ConnectState;
-import connect.im.bean.Session;
 import connect.ui.activity.R;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
@@ -64,6 +62,8 @@ import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.MaterialBadgeTextView;
 import connect.widget.random.RandomVoiceActivity;
+import instant.bean.ConnectState;
+import instant.bean.Session;
 
 /**
  * Created by gtq on 2016/11/19.

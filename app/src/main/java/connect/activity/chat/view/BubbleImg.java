@@ -8,13 +8,13 @@ import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.MsgDirect;
+import instant.bean.MsgDirect;
 import connect.activity.chat.inter.FileDownLoad;
-import connect.activity.chat.model.content.RobotChat;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.glide.BlurMaskTransformation;
 import connect.utils.system.SystemUtil;
+import instant.sender.model.RobotChat;
 import protos.Connect;
 
 public class BubbleImg extends RelativeLayout {

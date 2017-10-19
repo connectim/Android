@@ -20,7 +20,7 @@ public class EncryptionUtil {
      * Take byteArray encryption
      */
     public static Connect.GcmData encodeAESGCM(ExtendedECDH extendedECDH, String priKey, String ServerPubKey, byte[] encodes) {
-        byte[] rawECDHKey = SupportKeyUril.getRawECDHKey(priKey, ServerPubKey);
+        byte[] rawECDHKey = instant.utils.cryption.SupportKeyUril.getRawECDHKey(priKey, ServerPubKey);
         return encodeAESGCM(extendedECDH, rawECDHKey, encodes);
     }
 
@@ -32,7 +32,7 @@ public class EncryptionUtil {
     }
 
     public static Connect.GcmData encodeAESGCMStructData(ExtendedECDH extendedECDH, String priKey, String serverPubKey, ByteString bytes) {
-        byte[] rawECDHKey = SupportKeyUril.getRawECDHKey(priKey, serverPubKey);
+        byte[] rawECDHKey = instant.utils.cryption.SupportKeyUril.getRawECDHKey(priKey, serverPubKey);
         if(null == rawECDHKey){
             return null;
         }
@@ -40,7 +40,7 @@ public class EncryptionUtil {
     }
 
     public static Connect.GcmData encodeAESGCMStructData(ExtendedECDH extendedECDH, byte[] rawECDHKey, ByteString bytes) {
-        ByteString random = ByteString.copyFrom(SupportKeyUril.createBinaryRandom());
+        ByteString random = ByteString.copyFrom(instant.utils.cryption.SupportKeyUril.createBinaryRandom());
         Connect.StructData structData = Connect.StructData.newBuilder()
                 .setRandom(random)
                 .setPlainData(bytes)

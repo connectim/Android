@@ -3,6 +3,7 @@ package connect.activity.chat.exts.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.contract.LuckyPacketContract;
 import connect.activity.wallet.bean.TransferBean;
@@ -11,7 +12,6 @@ import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -84,7 +84,7 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
                             friendEntity.getUsername(), friendEntity.getAddress()));
                 }
 
-                MsgSend.sendOuterMsg(MsgType.Lucky_Packet, 0, hashId, tips, amount);
+                MsgSend.sendOuterMsg(LinkMessageRow.Lucky_Packet, 0, hashId, tips, amount);
                 ToastEUtil.makeText(activity, R.string.Link_Send_successful).show();
                 ActivityUtil.goBack(activity);
             }
