@@ -42,11 +42,6 @@ public class UserInfoActivity extends BaseActivity {
     TextView idTv;
     @Bind(R.id.id_ll)
     RelativeLayout idLl;
-    @Bind(R.id.address_tv)
-    TextView addressTv;
-    @Bind(R.id.address_ll)
-    RelativeLayout addressLl;
-
 
     private UserInfoActivity mActivity;
     private UserBean userBean;
@@ -81,7 +76,6 @@ public class UserInfoActivity extends BaseActivity {
 
         nameTv.setText(userBean.getName());
         idTv.setText(userBean.getConnectId());
-        addressTv.setText("");
     }
 
     @OnClick(R.id.left_img)
@@ -106,13 +100,6 @@ public class UserInfoActivity extends BaseActivity {
         } else {
             ToastEUtil.makeText(mActivity, R.string.Set_CONNECT_ID_can_only_be_set_once, ToastEUtil.TOAST_STATUS_FAILE).show();
         }
-    }
-
-    @OnClick(R.id.address_ll)
-    void goId(View view) {
-        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        cm.setText("");
-        ToastEUtil.makeText(mActivity, R.string.Set_Copied).show();
     }
 
 }

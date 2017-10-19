@@ -117,7 +117,11 @@ public class ResolveUrlUtil {
         Double amount = null;
         if (resultBean.getAmount() != null)
             amount = Double.valueOf(resultBean.getAmount());
-        // qwert
+
+        TransferToActivity.startActivity(activity, resultBean.getAddress(), amount);
+        if(isCloseScan){
+            ActivityUtil.goBack(activity);
+        }
         /*if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
             TransferToActivity.startActivity(activity, resultBean.getAddress(), amount);
             if(isCloseScan){

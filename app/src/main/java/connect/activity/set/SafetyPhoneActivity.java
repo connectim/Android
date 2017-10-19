@@ -23,7 +23,7 @@ import connect.widget.TopToolBar;
 import protos.Connect;
 
 /**
- * Unbundling/binding mobile phone number
+ * binding mobile phone number
  */
 public class SafetyPhoneActivity extends BaseActivity {
 
@@ -71,7 +71,6 @@ public class SafetyPhoneActivity extends BaseActivity {
             hintTv.setText(R.string.Set_Your_cell_phone_number);
             linkBtn.setText(R.string.Set_Change_Mobile);
             toolbarTop.setRightTextEnable(true);
-            toolbarTop.setRightImg(R.mipmap.menu_white);
             mobileTv.setText("+" + userBean.getPhone());
         }
     }
@@ -81,45 +80,12 @@ public class SafetyPhoneActivity extends BaseActivity {
         ActivityUtil.goBack(mActivity);
     }
 
-    @OnClick(R.id.right_lin)
-    void rightMore(View view) {
-        ArrayList list = new ArrayList<>();
-        list.add(mActivity.getResources().getString(R.string.Set_Unlink));
-        DialogUtil.showBottomView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
-            @Override
-            public void confirm(int position) {
-                switch (position) {
-                    case 0:
-                        unLinkPhone();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-    }
-
     @OnClick(R.id.link_btn)
     void linkBtn(View view) {
         SafetyPhoneNumberActivity.startActivity(mActivity, SafetyPhoneNumberActivity.LINK_TYPE);
     }
 
-    private void unLinkPhone() {
-        DialogUtil.showAlertTextView(mActivity,
-                mActivity.getResources().getString(R.string.Set_Unlink_your_mobile_phone),
-                mActivity.getResources().getString(R.string.Set_unlink_Connect_not_find_friend_your_backup_deleted),
-                "", "", false, new DialogUtil.OnItemClickListener() {
-                    @Override
-                    public void confirm(String value) {
-                        requestBindMobile();
-                    }
-
-                    @Override
-                    public void cancel() {}
-                });
-    }
-
-    private void requestBindMobile() {
+    /*private void requestBindMobile() {
         ProgressUtil.getInstance().showProgress(mActivity);
         String[] phoneArray;
         // To obtain the binding mobile phone number
@@ -149,5 +115,5 @@ public class SafetyPhoneActivity extends BaseActivity {
                 ProgressUtil.getInstance().dismissProgress();
             }
         });
-    }
+    }*/
 }

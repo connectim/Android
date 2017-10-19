@@ -7,16 +7,13 @@ public class PrivateSetBean {
 
     private String updateTime;
     private Boolean phoneFind;
-    private Boolean addressFind;
     private Boolean recommend;
 
-    public PrivateSetBean() {
-    }
+    public PrivateSetBean() {}
 
-    public PrivateSetBean(String updateTime, Boolean phoneFind, Boolean addressFind,Boolean recommend) {
+    public PrivateSetBean(String updateTime, Boolean phoneFind,Boolean recommend) {
         this.updateTime = updateTime;
         this.phoneFind = phoneFind;
-        this.addressFind = addressFind;
         this.recommend = recommend;
     }
 
@@ -36,14 +33,6 @@ public class PrivateSetBean {
         this.phoneFind = phoneFind;
     }
 
-    public Boolean getAddressFind() {
-        return addressFind;
-    }
-
-    public void setAddressFind(Boolean addressFind) {
-        this.addressFind = addressFind;
-    }
-
     public Boolean getRecommend() {
         return recommend;
     }
@@ -53,6 +42,6 @@ public class PrivateSetBean {
     }
 
     public static PrivateSetBean initSetBean(){
-        return new PrivateSetBean("",true,true,false);
+        return new PrivateSetBean("",true,false);
     }
 }

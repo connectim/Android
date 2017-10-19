@@ -90,34 +90,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="@string/Link_Find_me_by_bitcoin_address" />
-        <View
-            android:id="@+id/find_address_tb"
-            style="@style/BtnSwitchStyle"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_ffffff">
-        <View
-            style="@style/BaseViewLine.eeeeee"
-            android:layout_marginLeft="@dimen/dp_15" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_52"
-        android:background="@drawable/selector_list_item_bg"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_15"
-        android:paddingRight="@dimen/dp_15">
-        <TextView
-            style="@style/BaseTextStyle.16"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
             android:text="@string/Chat_Find_me_from_the_recommendation" />
         <View
             android:id="@+id/find_recommend_tb"

@@ -42,16 +42,14 @@ public class PrivateActivity extends BaseActivity {
     TopToolBar toolbarTop;
     @Bind(R.id.find_phone_tb)
     View findPhoneTb;
-    @Bind(R.id.find_address_tb)
-    View findAddressTb;
+    @Bind(R.id.find_recommend_tb)
+    View findRecommendTb;
     @Bind(R.id.black_list_ll)
     LinearLayout blackListLl;
     @Bind(R.id.contacts_time_tv)
     TextView contactsTimeTv;
     @Bind(R.id.contacts_update_img)
     ImageView contactsUpdateImg;
-    @Bind(R.id.find_recommend_tb)
-    View findRecommendTb;
 
     private PrivateActivity mActivity;
     private PrivateSetBean privateSetBean;
@@ -74,7 +72,6 @@ public class PrivateActivity extends BaseActivity {
         privateSetBean = ParamManager.getInstance().getPrivateSet();
         if (privateSetBean != null) {
             findPhoneTb.setSelected(privateSetBean.getPhoneFind());
-            findAddressTb.setSelected(privateSetBean.getAddressFind());
             if (!TextUtils.isEmpty(privateSetBean.getUpdateTime())) {
                 contactsTimeTv.setText(mActivity.getString(R.string.Set_Updated_time,privateSetBean.getUpdateTime()));
             }
@@ -102,14 +99,6 @@ public class PrivateActivity extends BaseActivity {
         boolean isSelect = findPhoneTb.isSelected();
         findPhoneTb.setSelected(!isSelect);
         privateSetBean.setPhoneFind(!isSelect);
-        requestPrivate();
-    }
-
-    @OnClick(R.id.find_address_tb)
-    void switchFriendAddress(View view) {
-        boolean isSelect = findAddressTb.isSelected();
-        findAddressTb.setSelected(!isSelect);
-        privateSetBean.setAddressFind(!isSelect);
         requestPrivate();
     }
 
@@ -195,7 +184,6 @@ public class PrivateActivity extends BaseActivity {
     private void requestPrivate() {
         Connect.Privacy privacy = Connect.Privacy.newBuilder()
                 .setPhoneNum(privateSetBean.getPhoneFind())
-                .setAddress(privateSetBean.getAddressFind())
                 .setRecommend(privateSetBean.getRecommend())
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PRIVACY, privacy, new ResultCall<Connect.HttpResponse>() {

@@ -116,7 +116,7 @@ public class ResolveScanUtil {
      * The two-dimensional code is the address
      */
     private void dealScanAddress(final String value){
-        checkIsFriend(value, new OnResultBack() {
+        requestUserInfo(value, new OnResultBack() {
             @Override
             public void call(String status) {
                 switch (status){
@@ -152,13 +152,13 @@ public class ResolveScanUtil {
         if(SupportKeyUril.checkAddress(valueBitCoin)){
             final String finalValueBitCoin = valueBitCoin;
             final Double finalAmount = amount;
-            checkIsFriend(valueBitCoin, new OnResultBack() {
+            requestUserInfo(valueBitCoin, new OnResultBack() {
                 @Override
                 public void call(String status) {
                     switch (status){
-                        case ID_FRIEND:
+                        /*case ID_FRIEND:
                             TransferToActivity.startActivity(activity, finalValueBitCoin, finalAmount);
-                            break;
+                            break;*/
                         case ID_STRANGER:
                             TransferToActivity.startActivity(activity,finalValueBitCoin,finalAmount);
                             break;
@@ -180,7 +180,7 @@ public class ResolveScanUtil {
      * @param address
      * @param onResultBack
      */
-    private void checkIsFriend(final String address, final OnResultBack onResultBack) {
+    /*private void checkIsFriend(final String address, final OnResultBack onResultBack) {
         new AsyncTask<Void, Void, ContactEntity>() {
             @Override
             protected ContactEntity doInBackground(Void... params) {
@@ -197,16 +197,16 @@ public class ResolveScanUtil {
                 }
             }
         }.execute();
-    }
+    }*/
 
     /**
      * Request user information
-     * @param address
+     * @param value
      * @param onResultBack
      */
-    private void requestUserInfo(final String address, final OnResultBack onResultBack) {
+    private void requestUserInfo(final String value, final OnResultBack onResultBack) {
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
-                .setCriteria(address)
+                .setCriteria(value)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
             @Override
