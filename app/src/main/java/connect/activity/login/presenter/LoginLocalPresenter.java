@@ -40,7 +40,6 @@ public class LoginLocalPresenter implements LocalLoginContract.Presenter {
                 if(s != null && SupportKeyUril.checkPriKey(s)){
                     userBean.setPriKey(s);
                     userBean.setPubKey(AllNativeMethod.cdGetPubKeyFromPrivKey(userBean.getPriKey()));
-                    userBean.setAddress(AllNativeMethod.cdGetBTCAddrFromPubKey(userBean.getPubKey()));
                     SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
                     mView.complete(userBean.isBack());
                 }else{

@@ -26,6 +26,7 @@ import connect.activity.contact.presenter.NewFriendPresenter;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.home.view.LineDecoration;
 import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
@@ -108,7 +109,7 @@ public class AddFriendActivity extends BaseActivity implements NewFriendContract
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, ConfigUtil.getInstance().shareCardAddress()
-                        + "?address=" + MemoryDataManager.getInstance().getAddress());
+                        + "?address=" + SharedPreferenceUtil.getInstance().getUser().getUid());
                 shareIntent.setType("text/plain");
                 startActivity(Intent.createChooser(shareIntent, "share to"));
                 break;

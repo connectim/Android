@@ -125,7 +125,7 @@ public class MemoryDataManager {
      * Gets the current user's address
      * @return
      */
-    public String getAddress() {
+    /*public String getAddress() {
         String address = stringMap.get(PUB_ADDRESS);
         if (TextUtils.isEmpty(address)) {
             UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
@@ -133,7 +133,7 @@ public class MemoryDataManager {
             stringMap.put(PUB_ADDRESS, address);
         }
         return address;
-    }
+    }*/
 
     /**
      * Is there a current user private key

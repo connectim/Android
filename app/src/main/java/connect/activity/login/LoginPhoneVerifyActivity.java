@@ -12,13 +12,12 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
 import connect.activity.home.HomeActivity;
-import connect.activity.set.SafetyPatternActivity;
-import connect.ui.activity.R;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneVerifyContract;
 import connect.activity.login.presenter.LoginPhoneVerifyPresenter;
-import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.widget.TopToolBar;
@@ -142,12 +141,6 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements LoginPhone
     }
 
     @Override
-    public void launchCodeLogin(UserBean userBean) {
-        LoginUserActivity.startActivity(mActivity, userBean);
-        mActivity.finish();
-    }
-
-    @Override
     public void launchRandomSend(String phone, String token) {
         RegisterGetRandomActivity.startActivity(mActivity, phone, token);
         mActivity.finish();
@@ -173,12 +166,13 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements LoginPhone
 
     @Override
     public void launchHome(UserBean userBean) {
+        // 登录成功 进入主界面
         HomeActivity.startActivity(mActivity);
         mActivity.finish();
     }
 
     @Override
     public void launchPassVerify(Connect.UserInfo userInfo) {
-
+        // 密码二次验证
     }
 }

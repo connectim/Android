@@ -152,7 +152,8 @@ public class GroupChat extends NormalChat {
     }
 
     public void updateMyNickName(){
-        myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
+        // qwert
+        // myGroupMember = ContactHelper.getInstance().loadGroupMemberEntity(groupEntity.getIdentifier(), MemoryDataManager.getInstance().getAddress());
     }
 
     public void loadGroupMembersMap() {

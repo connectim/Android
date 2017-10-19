@@ -135,7 +135,8 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
                 if (TAG_ADD.equals(address)) {
                     GroupInviteActivity.startActivity(activity, groupKey);
                 } else {
-                    if (MemoryDataManager.getInstance().getAddress().equals(address)) {
+                    // qwert
+                    /*if (MemoryDataManager.getInstance().getAddress().equals(address)) {
                         UserInfoActivity.startActivity(activity);
                     } else {
                         ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);
@@ -144,7 +145,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
                         } else {
                             FriendInfoActivity.startActivity(activity, entity.getPub_key());
                         }
-                    }
+                    }*/
                 }
             }
         });

@@ -63,31 +63,4 @@ public class LoginPhonePresenter implements LoginPhoneContract.Presenter {
             }
         });
     }
-
-    /*@Override
-    public void showMore() {
-        ArrayList<String> list = new ArrayList<>();
-        list.add(mView.getActivity().getString(R.string.Login_Scan_your_backup_for_login));
-        list.add(mView.getActivity().getString(R.string.Login_Sign_In_Up_Local_account));
-        DialogUtil.showBottomView(mView.getActivity(), list, new DialogUtil.DialogListItemClickListener() {
-            @Override
-            public void confirm(int position) {
-                switch (position) {
-                    case 0://Scan the backup log in
-                        mView.scanPermission();
-                        break;
-                    case 1://Local account password to log in
-                        List<UserBean> list = SharedPreferenceUtil.getInstance().getUserList();
-                        if (list == null || list.size() == 0) {
-                            mView.goIntoRandomSend();
-                        } else {
-                            mView.goIntoLocalLogin();
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-    }*/
 }

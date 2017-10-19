@@ -10,7 +10,6 @@ public class UserBean implements Serializable{
     private String passHint;
     private String priKey;
     private String pubKey;
-    private String address;
     private String phone;
     private String connectId;
     private String salt;
@@ -20,14 +19,13 @@ public class UserBean implements Serializable{
     public UserBean() {
     }
 
-    public UserBean(String talkKey, String name, String avatar, String passHint, String priKey, String pubKey, String address, String phone,String connectId) {
+    public UserBean(String talkKey, String name, String avatar, String passHint, String priKey, String pubKey, String phone,String connectId) {
         this.talkKey = talkKey;
         this.name = name;
         this.avatar = avatar;
         this.passHint = passHint;
         this.priKey = priKey;
         this.pubKey = pubKey;
-        this.address = address;
         this.phone = phone;
         this.connectId = connectId;
     }
@@ -78,14 +76,6 @@ public class UserBean implements Serializable{
 
     public void setPubKey(String pubKey) {
         this.pubKey = pubKey;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhone() {

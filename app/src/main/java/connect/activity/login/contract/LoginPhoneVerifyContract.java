@@ -16,8 +16,6 @@ public interface LoginPhoneVerifyContract {
 
         void setVoiceVisi();
 
-        void launchCodeLogin(UserBean userBean);
-
         void launchHome(UserBean userBean);
 
         void launchPassVerify(Connect.UserInfo userInfo);

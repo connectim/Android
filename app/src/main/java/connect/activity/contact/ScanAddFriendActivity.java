@@ -29,6 +29,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseScanActivity;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
@@ -92,14 +93,14 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         setViewFind(capturePreview, captureCropView, captureContainer);
 
         CreateScan createScan = new CreateScan();
-        String address = MemoryDataManager.getInstance().getAddress();
-        if (TextUtils.isEmpty(address)) {
+        String connectId = SharedPreferenceUtil.getInstance().getUser().getConnectId();
+        if (TextUtils.isEmpty(connectId)) {
             return;
         }
-        Bitmap bitmap = createScan.generateQRCode(address, getResources().getColor(R.color.color_00ffbf));
+        Bitmap bitmap = createScan.generateQRCode(connectId, getResources().getColor(R.color.color_00ffbf));
         scanImg.setImageBitmap(bitmap);
         bottomScanImg.setImageBitmap(bitmap);
-        addressTv.setText(address);
+        addressTv.setText(connectId);
         resolveScanUtil = new ResolveScanUtil(mActivity);
     }
 

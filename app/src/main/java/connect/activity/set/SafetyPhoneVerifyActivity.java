@@ -132,9 +132,6 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements LoginPhon
     }
 
     @Override
-    public void launchCodeLogin(UserBean userBean) {}
-
-    @Override
     public void launchRandomSend(String phone, String token) {}
 
     @Override

@@ -48,7 +48,8 @@ public class PaymentPresenter implements PaymentContract.Presenter{
                 friendEntity = new ContactEntity();
                 friendEntity.setAvatar(MemoryDataManager.getInstance().getAvatar());
                 friendEntity.setUsername(MemoryDataManager.getInstance().getName());
-                friendEntity.setAddress(MemoryDataManager.getInstance().getAddress());
+                // qwert
+                // friendEntity.setAddress(MemoryDataManager.getInstance().getAddress());
             } else {
                 ActivityUtil.goBack(activity);
                 return;

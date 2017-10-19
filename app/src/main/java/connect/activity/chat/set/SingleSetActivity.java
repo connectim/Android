@@ -189,7 +189,8 @@ public class SingleSetActivity extends BaseActivity implements SingleSetContract
             @Override
             public void onClick(View v) {
                 String address = (String) v.getTag();
-                if (TextUtils.isEmpty(address)) {
+                // qwert
+                /*if (TextUtils.isEmpty(address)) {
                     GroupCreateActivity.startActivity(activity, roomKey);
                 } else if (MemoryDataManager.getInstance().getAddress().equals(address)) {
                     UserInfoActivity.startActivity(activity);
@@ -200,7 +201,7 @@ public class SingleSetActivity extends BaseActivity implements SingleSetContract
                     } else {
                         FriendInfoActivity.startActivity(activity, entity.getPub_key());
                     }
-                }
+                }*/
             }
         });
     }

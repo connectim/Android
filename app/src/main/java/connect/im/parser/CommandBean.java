@@ -553,7 +553,8 @@ public class CommandBean extends InterParse {
                     normalChat = new GroupChat(groupEntity);
                     for (GroupMemberEntity memEntity : memEntities) {
                         String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
-                        if (groupChange.hasInviteBy()) {
+                        // qwert
+                        /*if (groupChange.hasInviteBy()) {
                             String myAddress = MemoryDataManager.getInstance().getAddress();
 
                             Connect.UserInfo inviteBy = groupChange.getInviteBy();
@@ -565,7 +566,7 @@ public class CommandBean extends InterParse {
                             noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, inviteByName, invitorname);
                         } else {
                             noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
-                        }
+                        }*/
 
                         if (normalChat == null) {
                             FailMsgsManager.getInstance().insertReceiveMsg(groupKey, TimeUtil.timestampToMsgid(), noticeStr);
@@ -613,11 +614,12 @@ public class CommandBean extends InterParse {
                         ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 1);
 
                         String showName = "";
-                        if (groupAttorn.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
+                        // qwert
+                        /*if (groupAttorn.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
                             showName = context.getString(R.string.Chat_You);
                         } else {
                             showName = TextUtils.isEmpty(member.getNick()) ? member.getUsername() : member.getNick();
-                        }
+                        }*/
                         noticeStr = context.getString(R.string.Link_become_new_group_owner, showName);
 
                         normalChat = new GroupChat(groupEntity);

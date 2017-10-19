@@ -143,7 +143,6 @@ public class RegisterGetRandomPresenter implements RegisterGetRandomContract.Pre
                     UserBean userBean = new UserBean();
                     userBean.setPriKey(hashMap.get("priKey"));
                     userBean.setPubKey(hashMap.get("pubKey"));
-                    userBean.setAddress(hashMap.get("address"));
                     mView.goinRegister(userBean);
                 }
             };
@@ -175,11 +174,8 @@ public class RegisterGetRandomPresenter implements RegisterGetRandomContract.Pre
                 String random = StringUtil.bytesToHexString(SupportKeyUril.xor(valueByte, SecureRandom.getSeed(64)));
                 String prikey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(random, 44, 0, 0, 0, 0);
                 arrayList.add(prikey);
-
                 String pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
                 arrayList.add(pubKey);
-                String address = AllNativeMethod.cdGetBTCAddrFromPubKey(pubKey);
-                arrayList.add(address);
                 return arrayList;
             }
 
@@ -189,7 +185,6 @@ public class RegisterGetRandomPresenter implements RegisterGetRandomContract.Pre
                 hashMap = new HashMap<>();
                 hashMap.put("priKey", (String) arrayList.get(0));
                 hashMap.put("pubKey", (String) arrayList.get(1));
-                hashMap.put("address", (String) arrayList.get(2));
             }
         }.execute();
     }

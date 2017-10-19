@@ -17,6 +17,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.activity.wallet.BlockchainActivity;
 import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -116,7 +117,7 @@ public class FriendInfoRecordActivity extends BaseActivity {
 
     private void requestRecord() {
         Connect.FriendRecords friendRecords = Connect.FriendRecords.newBuilder()
-                .setSelfAddress(MemoryDataManager.getInstance().getAddress())
+                .setSelfAddress(SharedPreferenceUtil.getInstance().getUser().getUid())
                 .setFriendAddress(friendEntity.getAddress())
                 .setPageSize(MAX_RECOMMEND_COUNT)
                 .setPageIndex(page)

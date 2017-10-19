@@ -141,11 +141,9 @@ public class ScanLoginActivity extends BaseScanActivity implements ScanLoginCont
                     @Override
                     public void confirm(String value) {
                         String pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
-                        String address = AllNativeMethod.cdGetBTCAddrFromPubKey(pubKey);
                         UserBean userBean = new UserBean();
                         userBean.setPriKey(priKey);
                         userBean.setPubKey(pubKey);
-                        userBean.setAddress(address);
                         RegisterActivity.startActivity(mActivity,userBean);
                     }
 

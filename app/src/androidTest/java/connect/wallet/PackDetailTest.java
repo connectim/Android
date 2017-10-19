@@ -22,7 +22,7 @@ public class PackDetailTest {
     public void checkRadPackDetail() throws Exception {
         PacketDetailPresenter presenter = new PacketDetailPresenter(view);
         String address = "13RGdCp32GjxxwJ5YK35e1Z57BtP7sqdXH";
-        Connect.UserInfo userInfo = Connect.UserInfo.newBuilder().setAddress(address).build();
+        Connect.UserInfo userInfo = Connect.UserInfo.newBuilder().setUid(address).build();
         Connect.GradRedPackageHistroy packageHistroy = Connect.GradRedPackageHistroy.newBuilder()
                         .setUserinfo(userInfo)
                         .setAmount(100000)

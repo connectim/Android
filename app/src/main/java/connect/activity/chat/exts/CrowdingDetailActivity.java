@@ -267,11 +267,12 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
         if (state == 0) {
             layoutFirst.setVisibility(View.GONE);
             txt6.setVisibility(View.VISIBLE);
-            if (MemoryDataManager.getInstance().getAddress().equals(address)) {//You initiate the raise
+            // qwert
+            /*if (MemoryDataManager.getInstance().getAddress().equals(address)) {//You initiate the raise
                 btn.setVisibility(View.GONE);
             } else {
                 btn.setVisibility(View.VISIBLE);
-            }
+            }*/
         } else {
             layoutFirst.setVisibility(View.VISIBLE);
             txt6.setVisibility(View.GONE);

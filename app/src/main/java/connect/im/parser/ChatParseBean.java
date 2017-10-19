@@ -185,7 +185,8 @@ public class ChatParseBean extends InterParse {
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
 
                 String content = msgExtEntity.showContent();
-                String myaddress = MemoryDataManager.getInstance().getAddress();
+                // qwert
+                /*String myaddress = MemoryDataManager.getInstance().getAddress();
                 if (chatMessage.getMsgType() == MsgType.Text.type) {
                     try {
                         Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);
@@ -195,7 +196,7 @@ public class ChatParseBean extends InterParse {
                     } catch (InvalidProtocolBufferException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
                 pushNoticeMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
             }
         }

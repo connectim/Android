@@ -1,7 +1,6 @@
 package connect.activity.login.presenter;
 
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -21,19 +20,15 @@ import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
 public class RegisterPresenter implements RegisterContract.Presenter {
 
     private RegisterContract.View mView;
-    private String passwordHint = "";
     private String headPath = "https://short.connect.im/avatar/v1/b040e0a970bc6d80b675586c5a55f9e9109168ba.png";
-    private String talkKey;
 
     public RegisterPresenter(RegisterContract.View mView) {
         this.mView = mView;
@@ -42,11 +37,6 @@ public class RegisterPresenter implements RegisterContract.Presenter {
 
     @Override
     public void start() {}
-
-    /*@Override
-    public void setPasswordHintData(String passwordHint) {
-        this.passwordHint = passwordHint;
-    }*/
 
     /**
      * Upload the picture.
@@ -145,67 +135,6 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                 ProgressUtil.getInstance().dismissProgress();
             }
         });
-
-        /*new AsyncTask<Void,Void,Connect.RegisterUser>() {
-            @Override
-            protected Connect.RegisterUser doInBackground(Void... params) {
-                Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder();
-                builder.setUsername(nicName);
-                // builder.setPasswordHint(passwordHint);
-                // Determine whether the binding number
-                *//*if (!TextUtils.isEmpty(token)) {
-                    builder.setToken(token);
-                    builder.setMobile(userBean.getPhone());
-                }*//*
-                builder.setToken(token);
-                builder.setMobile(userBean.getPhone());
-                builder.setAvatar(headPath);
-                // Password encryption private key
-                *//*talkKey = SupportKeyUril.createTalkKey(userBean.getPriKey(),userBean.getAddress(),password);
-                builder.setEncryptionPri(talkKey);*//*
-                Connect.RegisterUser registerUser = builder.build();
-                return registerUser;
-            }
-
-            @Override
-            protected void onPostExecute(Connect.RegisterUser registerUser) {
-                super.onPostExecute(registerUser);
-                userBean.setName(nicName);
-                requestRegister(registerUser,userBean);
-            }
-        }.execute();*/
     }
-
-    /*private void requestRegister(Connect.RegisterUser registerUser, final UserBean userBean) {
-        OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_SIGN_UP,
-                registerUser,
-                EncryptionUtil.ExtendedECDH.EMPTY,
-                userBean.getPriKey(),
-                userBean.getPubKey(),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        ProgressUtil.getInstance().dismissProgress();
-                        //userBean.setTalkKey(talkKey);
-                        userBean.setAvatar(headPath);
-                        userBean.setPassHint(passwordHint);
-                        SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
-                        mView.complete(userBean.isBack());
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-                        if (response.getCode() == 2101) {
-                            Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
-                        } else if(response.getCode() == 2102){
-                            Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                        ProgressUtil.getInstance().dismissProgress();
-                    }
-                });
-    }*/
-
 
 }
