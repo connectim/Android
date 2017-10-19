@@ -6,11 +6,11 @@ package connect.instant.inter;
 
 public interface ConversationListener {
 
-    public void updateRoomMsg(String draft, String showText, long msgtime) ;
+    void updateRoomMsg(String draft, String showText, long msgtime);
 
-    public void updateRoomMsg(String draft, String showText, long msgtime, int at) ;
+    void updateRoomMsg(String draft, String showText, long msgtime, int at);
 
-    public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg) ;
+    void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg);
 
-    public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad);
+    void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad);
 }

@@ -237,7 +237,7 @@ public class CommandParser extends InterParse {
         if (TextUtils.isEmpty(version)) {
             Connect.SyncUserRelationship relationship = Connect.SyncUserRelationship.parseFrom(buffer);
             version = relationship.getRelationShip().getVersion();
-            CommandLocalReceiver.receiver.pullContacts(relationship);
+            CommandLocalReceiver.receiver.loadAllContacts(relationship);
         } else {
             Connect.ChangeRecords changeRecords = Connect.ChangeRecords.parseFrom(buffer);
             version = changeRecords.getVersion();

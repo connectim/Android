@@ -42,8 +42,8 @@ public class CommandLocalReceiver implements CommandListener {
     }
 
     @Override
-    public void pullContacts(Connect.SyncUserRelationship userRelationship) throws Exception {
-        getCommandListener().pullContacts(userRelationship);
+    public void loadAllContacts(Connect.SyncUserRelationship userRelationship) throws Exception {
+        getCommandListener().loadAllContacts(userRelationship);
     }
 
     @Override

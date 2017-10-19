@@ -1,6 +1,5 @@
 package instant.parser.inter;
 
-import instant.bean.UserCookie;
 import protos.Connect;
 
 /**
@@ -14,7 +13,7 @@ public interface CommandListener {
 
     void updateMsgSendState(String publickey,String msgid, int state);
 
-    void pullContacts(Connect.SyncUserRelationship userRelationship) throws Exception;
+    void loadAllContacts(Connect.SyncUserRelationship userRelationship) throws Exception;
 
     void contactChanges(Connect.ChangeRecords changeRecords);
 

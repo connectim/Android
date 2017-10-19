@@ -5,7 +5,6 @@ import connect.utils.ConfigUtil;
 import connect.wallet.jni.AllNativeMethod;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -48,7 +47,7 @@ public class DecryptionUtil {
         return null;
     }
 
-    public static synchronized byte[] decodeAESGCM(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
+    public static synchronized byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
         rawECDHkey = EncryptionUtil.getKeyExtendedECDH(extendedECDH, rawECDHkey);
 
         byte[] iv = gcmData.getIv().toByteArray();
