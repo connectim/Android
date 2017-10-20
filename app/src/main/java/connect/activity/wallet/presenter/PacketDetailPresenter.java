@@ -6,12 +6,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.List;
 
-import connect.database.MemoryDataManager;
 import connect.activity.wallet.contract.PacketDetailContract;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;

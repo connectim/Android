@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
+
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
@@ -32,7 +33,7 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.JoinGroupMessage joinGroupMessage = Connect.JoinGroupMessage.parseFrom(msgExtEntity.getContents());
 

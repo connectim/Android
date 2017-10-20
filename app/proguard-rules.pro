@@ -27,9 +27,9 @@
 -keep class connect.wallet.jni.** {*;}
 
 # connect
--keep class protos.Connect{*;}
+-keep class Connect{*;}
 
--keep class protos.Connect$*{
+-keep class Connect$*{
     *;
 }
 

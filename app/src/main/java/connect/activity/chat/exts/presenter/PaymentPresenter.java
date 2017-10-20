@@ -7,13 +7,13 @@ import com.wallet.bean.CurrencyEnum;
 
 import java.util.List;
 
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.contract.PaymentContract;
 import connect.activity.wallet.manager.TransferManager;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -79,7 +79,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
             @Override
             public void success(Connect.Bill bill) {
                 ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
-                MsgSend.sendOuterMsg(MsgType.Request_Payment, 0, bill.getHash(), amount, 1, bill.getTips());
+                MsgSend.sendOuterMsg(LinkMessageRow.Request_Payment, 0, bill.getHash(), amount, 1, bill.getTips());
                 ActivityUtil.goBack(activity);
             }
 
@@ -98,7 +98,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
 
             @Override
             public void success(Connect.Crowdfunding crowdfunding) {
-                MsgSend.sendOuterMsg(MsgType.Request_Payment, 1,crowdfunding.getHashId(),crowdfunding.getTotal(),size,crowdfunding.getTips());
+                MsgSend.sendOuterMsg(LinkMessageRow.Request_Payment, 1,crowdfunding.getHashId(),crowdfunding.getTotal(),size,crowdfunding.getTips());
                 ActivityUtil.goBack(activity);
             }
 

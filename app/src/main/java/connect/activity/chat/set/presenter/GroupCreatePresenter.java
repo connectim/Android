@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.set.contract.GroupCreateContract;
 import connect.activity.home.bean.HttpRecBean;
 import connect.database.MemoryDataManager;
@@ -20,8 +18,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.im.bean.SocketACK;
-import connect.im.model.ChatSendManager;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
@@ -34,6 +30,10 @@ import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import instant.bean.ChatMsgEntity;
+import instant.bean.SocketACK;
+import instant.sender.SenderManager;
+import instant.sender.model.GroupChat;
 import protos.Connect;
 
 /**
@@ -165,10 +165,10 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         }
         ContactHelper.getInstance().inserGroupMemEntity(memEntities);
 
-        GroupChat groupChat = new GroupChat(groupEntity);
+        GroupChat groupChat = new GroupChat(groupKey);
         stringMems = String.format(activity.getString(R.string.Link_enter_the_group), stringMems);
 
-        MsgExtEntity invite = groupChat.inviteNotice(stringMems);
+        ChatMsgEntity invite = groupChat.noticeMsg(0, stringMems, "");
         MessageHelper.getInstance().insertMsgExtEntity(invite);
 
         ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
@@ -199,7 +199,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
                     .setChatMsg(chatMessage)
                     .build();
 
-            ChatSendManager.getInstance().sendChatAckMsg(SocketACK.GROUP_INVITE, groupKey, messageData);
+            SenderManager.senderManager.sendAckMsg(SocketACK.GROUP_INVITE, groupKey,msgid, messageData.toByteString());
         }
     }
 }

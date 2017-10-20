@@ -11,11 +11,11 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.set.contract.ContactCardContract;
 import connect.activity.chat.set.presenter.ContactCardPresenter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RoomSession;
@@ -90,7 +90,7 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
             @Override
             public void onClick(View v) {
                 ContactEntity entity = (ContactEntity) v.getTag();
-                MsgSend.sendOuterMsg(MsgType.Name_Card,entity.getPub_key(),entity.getUsername(),entity.getAvatar());
+                MsgSend.sendOuterMsg(LinkMessageRow.Name_Card,entity.getPub_key(),entity.getUsername(),entity.getAvatar());
                 ActivityUtil.goBack(activity);
             }
         });

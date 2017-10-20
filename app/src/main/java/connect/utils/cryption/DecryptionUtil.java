@@ -15,9 +15,9 @@ public class DecryptionUtil {
     /**
      * Decryption gcmData returns a byteArray containing
      */
-    public static byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
-        byte[] rawECDHkey = SupportKeyUril.getRawECDHKey(priKey, pubKey);
-        return DecryptionUtil.decodeAESGCM(extendedECDH, rawECDHkey, gcmData);
+    public static byte[] decodeAESGCM(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
+        byte[] rawECDHkey = instant.utils.cryption.SupportKeyUril.getRawECDHKey(priKey, pubKey);
+        return instant.utils.cryption.DecryptionUtil.decodeAESGCM(extendedECDH, rawECDHkey, gcmData);
     }
 
     /**

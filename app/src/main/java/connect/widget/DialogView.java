@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.im.bean.MsgType;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
@@ -71,7 +71,7 @@ public class DialogView {
                 if (horScrollView.getClickLists().size() == 0) {
                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.OPEN_ALBUM);
                 } else {
-                    MsgSend.sendOuterMsg(MsgType.Photo,horScrollView.getClickLists());
+                    MsgSend.sendOuterMsg(LinkMessageRow.Photo,horScrollView.getClickLists());
                 }
                 dialog.cancel();
             }

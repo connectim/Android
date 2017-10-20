@@ -1,14 +1,12 @@
 package connect.activity.chat.set.presenter;
 
 import android.app.Activity;
-import android.text.TextUtils;
 
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.contract.GroupMyAliasContract;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;

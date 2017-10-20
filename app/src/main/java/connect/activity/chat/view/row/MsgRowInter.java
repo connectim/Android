@@ -2,7 +2,7 @@ package connect.activity.chat.view.row;
 
 import android.view.LayoutInflater;
 
-import connect.activity.chat.bean.MsgDirect;
+import instant.bean.MsgDirect;
 import connect.activity.chat.view.holder.MsgBaseHolder;
 
 /**

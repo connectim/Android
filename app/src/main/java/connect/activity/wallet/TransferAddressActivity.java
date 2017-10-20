@@ -29,7 +29,7 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.SupportKeyUril;
 import connect.activity.wallet.manager.TransferEditView;
 import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;

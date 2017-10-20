@@ -6,12 +6,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 
-import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.wallet.PacketDetailActivity;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -23,6 +20,8 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import protos.Connect;
 
 /**
@@ -38,7 +37,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.LuckPacketMessage packetMessage = Connect.LuckPacketMessage.parseFrom(msgExtEntity.getContents());
 
@@ -82,10 +81,10 @@ public class MsgLuckyHolder extends MsgChatHolder {
      * @param hashid
      */
     private void requestLuckPacket(final String hashid) {
-        MsgExtEntity msgExtEntity = getMsgExtEntity();
+        ChatMsgEntity msgExtEntity = getMsgExtEntity();
         msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
 
-        MessageEntity msgEntity = MessageHelper.getInstance().loadMsgByMsgid(msgExtEntity.getMessage_id());
+        ChatMsgEntity msgEntity = MessageHelper.getInstance().loadMsgByMsgid(msgExtEntity.getMessage_id());
         if (msgEntity != null) {
             msgExtEntity.setRead_time(TimeUtil.getCurrentTimeInLong());
             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);

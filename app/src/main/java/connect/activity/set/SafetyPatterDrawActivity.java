@@ -23,7 +23,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.LoginPassCheckUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.SupportKeyUril;
 import connect.widget.TopToolBar;
 import connect.widget.lockview.GestureLockViewGroup;
 import connect.widget.lockview.GestureTopView;

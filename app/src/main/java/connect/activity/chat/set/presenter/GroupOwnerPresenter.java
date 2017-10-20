@@ -7,8 +7,6 @@ import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.contract.GroupOwnerContract;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.GroupMemberEntity;
-import connect.ui.activity.R;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;

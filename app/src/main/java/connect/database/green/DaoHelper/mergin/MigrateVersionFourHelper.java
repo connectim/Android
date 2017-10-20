@@ -12,15 +12,14 @@ import java.io.Serializable;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.GeoAddressBean;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.database.MemoryDataManager;
 import connect.database.green.dao.MessageEntityDao;
-import connect.database.green.dao.RecommandFriendEntityDao;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.StringUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import protos.Connect;
 
@@ -116,7 +115,7 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
                     }
                 }
 
-                MsgType msgType = MsgType.toMsgType(definBean.getType());
+                LinkMessageRow msgType = LinkMessageRow.toMsgType(definBean.getType());
                 GeneratedMessageV3 messageV3 = null;
                 switch (msgType) {
                     case Text:

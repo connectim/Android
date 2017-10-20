@@ -22,16 +22,12 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.chat.adapter.ChatAdapter;
-import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.inter.FileUpLoad;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.GroupChat;
-import connect.activity.chat.model.content.NormalChat;
-import connect.activity.chat.model.content.RobotChat;
 import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.model.fileload.VideoUpload;
 import connect.activity.chat.set.GroupSetActivity;
@@ -46,7 +42,10 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.im.bean.MsgType;
+import connect.instant.inter.ConversationListener;
+import connect.instant.model.CFriendChat;
+import connect.instant.model.CGroupChat;
+import connect.instant.model.CRobotChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
@@ -59,6 +58,8 @@ import connect.widget.TopToolBar;
 import connect.widget.album.AlbumActivity;
 import connect.widget.album.model.AlbumFile;
 import connect.widget.camera.CameraTakeActivity;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.NormalChat;
 import protos.Connect;
 
 /**
@@ -156,17 +157,17 @@ public class ChatActivity extends BaseChatActvity {
     @Override
     public void loadChatInfor() {
         LogManager.getLogger().d(Tag, "loadChatInfor()");
-        new AsyncTask<Void, Void, List<MsgExtEntity>>() {
+        new AsyncTask<Void, Void, List<ChatMsgEntity>>() {
 
             @Override
-            protected List<MsgExtEntity> doInBackground(Void... params) {
-                return normalChat.loadMoreEntities(TimeUtil.getCurrentTimeInLong());
+            protected List<ChatMsgEntity> doInBackground(Void... params) {
+                return MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(),TimeUtil.getCurrentTimeInLong());
             }
 
             @Override
-            protected void onPostExecute(List<MsgExtEntity> entities) {
+            protected void onPostExecute(List<ChatMsgEntity> entities) {
                 super.onPostExecute(entities);
-                MsgExtEntity encryEntity = normalChat.encryptChatMsg();
+                ChatMsgEntity encryEntity = normalChat.encryptChatMsg();
                 if (entities.size() < 20 && encryEntity != null) {
                     long lastTime = entities.size() <= 0 ? TimeUtil.getCurrentTimeInLong() :
                             entities.get(0).getCreatetime();
@@ -182,20 +183,20 @@ public class ChatActivity extends BaseChatActvity {
     @Override
     public void loadMoreMsgs() {
         LogManager.getLogger().d(Tag, "loadMoreMsgs()");
-        new AsyncTask<Void, Void, List<MsgExtEntity>>() {
+        new AsyncTask<Void, Void, List<ChatMsgEntity>>() {
             @Override
-            protected List<MsgExtEntity> doInBackground(Void... params) {
+            protected List<ChatMsgEntity> doInBackground(Void... params) {
                 long lastCreateTime = 0;
-                List<MsgExtEntity> msgExtEntities = chatAdapter.getMsgEntities();
+                List<ChatMsgEntity> msgExtEntities = chatAdapter.getMsgEntities();
                 if (msgExtEntities.size() > 0) {
-                    MsgExtEntity baseEntity = msgExtEntities.get(0);
+                    ChatMsgEntity baseEntity = msgExtEntities.get(0);
                     lastCreateTime = baseEntity.getCreatetime();
                 }
-                return normalChat.loadMoreEntities(lastCreateTime);
+                return MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(),lastCreateTime);
             }
 
             @Override
-            protected void onPostExecute(List<MsgExtEntity> msgEntities) {
+            protected void onPostExecute(List<ChatMsgEntity> msgEntities) {
                 super.onPostExecute(msgEntities);
                 if (msgEntities.size() > 0) {
                     View firstChild = recyclerChat.getChildAt(0);
@@ -248,7 +249,7 @@ public class ChatActivity extends BaseChatActvity {
      * @param bean
      */
     @Override
-    public void adapterInsetItem(MsgExtEntity bean) {
+    public void adapterInsetItem(ChatMsgEntity bean) {
         chatAdapter.insertItem(bean);
         if (scrollHelper.isScrollBottom()) {
             RecExtBean.getInstance().sendEventDelay(RecExtBean.ExtType.SCROLLBOTTOM);
@@ -269,10 +270,10 @@ public class ChatActivity extends BaseChatActvity {
             if (type.equals(CameraTakeActivity.MEDIA_TYPE_PHOTO)) {
                 List<String> paths = new ArrayList<>();
                 paths.add(path);
-                MsgSend.sendOuterMsg(MsgType.Photo, paths);
+                MsgSend.sendOuterMsg(LinkMessageRow.Photo, paths);
             } else if (type.equals(CameraTakeActivity.MEDIA_TYPE_VEDIO)) {
                 int length = data.getIntExtra("length", 10);
-                MsgSend.sendOuterMsg(MsgType.Video, path, length);
+                MsgSend.sendOuterMsg(LinkMessageRow.Video, path, length);
             }
         } else if (requestCode == AlbumActivity.OPEN_ALBUM_CODE && data != null) {
             List<AlbumFile> albumFiles = (List<AlbumFile>) data.getSerializableExtra("list");
@@ -284,10 +285,10 @@ public class ChatActivity extends BaseChatActvity {
                         if (albumFile.getMediaType() == AlbumFile.TYPE_IMAGE) {
                             List<String> paths = new ArrayList<>();
                             paths.add(albumFile.getPath());
-                            MsgSend.sendOuterMsg(MsgType.Photo, paths);
+                            MsgSend.sendOuterMsg(LinkMessageRow.Photo, paths);
                         } else {
                             int length = (int) (albumFile.getDuration() / 1000);
-                            MsgSend.sendOuterMsg(MsgType.Video, albumFile.getPath(), length);
+                            MsgSend.sendOuterMsg(LinkMessageRow.Video, albumFile.getPath(), length);
                         }
                     }
                 }
@@ -311,30 +312,30 @@ public class ChatActivity extends BaseChatActvity {
         Serializable serializables = data.getSerializableExtra("Serializable");
         Object[] objects = (Object[]) serializables;
 
-        MsgExtEntity msgExtEntity = null;
+        ChatMsgEntity msgExtEntity = null;
         NormalChat normalChat = null;
         switch (roomType) {
             case 0:
                 ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(roomkey);
-                normalChat = new FriendChat(friendEntity);
+                normalChat = new CFriendChat(friendEntity);
                 break;
             case 1:
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomkey);
-                normalChat = new GroupChat(groupEntity);
+                normalChat = new CGroupChat(groupEntity);
                 break;
             case 2:
-                normalChat = new RobotChat();
+                normalChat = new CRobotChat();
                 break;
         }
 
         FileUpLoad fileUpLoad = null;
         String content = (String) objects[1];
-        MsgType msgType = MsgType.toMsgType(Integer.parseInt((String) objects[0]));
+        LinkMessageRow msgType = LinkMessageRow.toMsgType(Integer.parseInt((String) objects[0]));
         switch (msgType) {
             case Text:
                 msgExtEntity = normalChat.txtMsg(content);
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
+                ((ConversationListener)normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
                 normalChat.sendPushMsg(msgExtEntity);
                 break;
             case Photo:
@@ -371,7 +372,7 @@ public class ChatActivity extends BaseChatActvity {
     public void saveRoomInfo() {
         String draft = inputPanel.getDraft();
         if (chatAdapter.getMsgEntities().size() != 0) {
-            MsgExtEntity lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
+            ChatMsgEntity lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
             if (lastExtEntity != null) {
                 String showtxt = "";
                 long sendtime = 0;
@@ -380,7 +381,7 @@ public class ChatActivity extends BaseChatActvity {
                     showtxt = lastExtEntity.showContent();
                     sendtime = lastExtEntity.getCreatetime();
                 }
-                normalChat.updateRoomMsg(draft, showtxt, sendtime, 0);
+                ((ConversationListener)normalChat).updateRoomMsg(draft, showtxt, sendtime, 0);
             }
         }
     }

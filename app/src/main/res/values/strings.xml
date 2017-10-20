@@ -736,4 +736,6 @@
     <string name="Wallet_synchronization_data_failed">synchronization data failed</string>
     <string name="Set_please_enter_the_original_password">Enter the original password</string>
     <string name="Wallet_Failed_to_get_the_list_address">Failed to get the list address</string>
+    <string name="Chat_Message_Black_Friend_Notice">The message has been issued but is rejected by the other party</string>
+
 </resources>

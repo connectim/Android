@@ -26,6 +26,13 @@ import java.lang.reflect.Type;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+
+import connect.activity.contact.bean.ContactNotice;
+import connect.activity.home.bean.EstimateFeeBean;
+import connect.activity.home.bean.HttpRecBean;
+import connect.activity.set.bean.PaySetBean;
+import connect.activity.set.bean.PrivateSetBean;
+import connect.activity.wallet.bean.RateBean;
 import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -35,14 +42,13 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.im.model.FailMsgsManager;
+import connect.instant.receiver.CommandReceiver;
+import connect.instant.receiver.ConnectReceiver;
+import connect.instant.receiver.MessageReceiver;
+import connect.instant.receiver.RobotReceiver;
+import connect.instant.receiver.TransactionReceiver;
+import connect.instant.receiver.UnreachableReceiver;
 import connect.ui.activity.R;
-import connect.activity.contact.bean.ContactNotice;
-import connect.activity.home.bean.EstimateFeeBean;
-import connect.activity.home.bean.HttpRecBean;
-import connect.activity.set.bean.PaySetBean;
-import connect.activity.set.bean.PrivateSetBean;
-import connect.activity.wallet.bean.RateBean;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
@@ -58,6 +64,14 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
+import instant.parser.localreceiver.CommandLocalReceiver;
+import instant.parser.localreceiver.ConnectLocalReceiver;
+import instant.parser.localreceiver.MessageLocalReceiver;
+import instant.parser.localreceiver.RobotLocalReceiver;
+import instant.parser.localreceiver.TransactionLocalReceiver;
+import instant.parser.localreceiver.UnreachableLocalReceiver;
+import instant.ui.InstantSdk;
+import instant.utils.manager.FailMsgsManager;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -103,8 +117,7 @@ public class HttpsService extends Service {
         LogManager.getLogger().d(Tag, "***  onStartCommand start  ***");
 
         initSoundPool();
-        SocketService.startService(service);
-        PushService.startService(service);
+        initInstantSDK();
 
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
         if (TextUtils.isEmpty(index)) {
@@ -114,6 +127,19 @@ public class HttpsService extends Service {
             loginSuccessHttp();
         }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void initInstantSDK() {
+        String publicKey = MemoryDataManager.getInstance().getPubKey();
+        String privateKey = MemoryDataManager.getInstance().getPriKey();
+        InstantSdk.instantSdk.registerUserInfo(service, publicKey, privateKey);
+
+        ConnectLocalReceiver.receiver.registerConnect(ConnectReceiver.receiver);
+        CommandLocalReceiver.receiver.registerCommand(CommandReceiver.receiver);
+        TransactionLocalReceiver.localReceiver.registerTransactionListener(TransactionReceiver.receiver);
+        RobotLocalReceiver.localReceiver.registerRobotListener(RobotReceiver.receiver);
+        UnreachableLocalReceiver.localReceiver.registerUnreachableListener(UnreachableReceiver.receiver);
+        MessageLocalReceiver.localReceiver.registerMessageListener(MessageReceiver.receiver);
     }
 
     /** salt timeout */

@@ -20,11 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.ChatAdapter;
-import connect.activity.chat.bean.BaseListener;
+import connect.activity.base.BaseListener;
 import connect.activity.chat.bean.DestructOpenBean;
 import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.GeoAddressBean;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
@@ -35,11 +34,6 @@ import connect.activity.chat.exts.PaymentActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.inter.FileUpLoad;
 import connect.activity.chat.model.InputPanel;
-import connect.activity.chat.model.content.BaseChat;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.GroupChat;
-import connect.activity.chat.model.content.NormalChat;
-import connect.activity.chat.model.content.RobotChat;
 import connect.activity.chat.model.fileload.LocationUpload;
 import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.model.fileload.VideoUpload;
@@ -52,8 +46,6 @@ import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ConversionEntity;
-import connect.im.bean.MsgType;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
@@ -66,6 +58,13 @@ import connect.widget.camera.CameraTakeActivity;
 import connect.widget.imagewatcher.ImageViewerActivity;
 import connect.widget.imagewatcher.ImageWatcher;
 import connect.widget.imagewatcher.ImageWatcherUtil;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MessageType;
+import instant.sender.model.BaseChat;
+import instant.sender.model.FriendChat;
+import instant.sender.model.GroupChat;
+import instant.sender.model.NormalChat;
+import instant.sender.model.RobotChat;
 import protos.Connect;
 
 /**
@@ -115,16 +114,11 @@ public abstract class BaseChatActvity extends BaseActivity {
                         .setAvatar(talker.getFriendEntity().getAvatar()).build();
 
                 roomSession.setUserInfo(userInfo);
-                normalChat = new FriendChat(talker.getFriendEntity());
-
-                if (!TextUtils.isEmpty(normalChat.address())) {
-                    UserOrderBean userOrderBean = new UserOrderBean();
-                    userOrderBean.friendChatCookie(normalChat.chatKey());
-                }
+                normalChat = new FriendChat(talker.getTalkKey());
                 break;
             case GROUPCHAT:
                 roomSession.setGroupEcdh(talker.getGroupEntity().getEcdh_key());
-                normalChat = new GroupChat(talker.getGroupEntity());
+                normalChat = new GroupChat(talker.getTalkKey());
                 break;
             case CONNECT_SYSTEM:
                 normalChat = RobotChat.getInstance();
@@ -177,7 +171,7 @@ public abstract class BaseChatActvity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public synchronized void onEventMainThread(MsgSend msgSend) {
         String filePath = null;
-        MsgExtEntity msgExtEntity = null;
+        ChatMsgEntity chatMsgEntity = null;
         FileUpLoad upLoad = null;
 
         Object[] objects = null;
@@ -190,11 +184,11 @@ public abstract class BaseChatActvity extends BaseActivity {
                 String txt = (String) objects[0];
                 if (normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
                     List<String> atList = (List<String>) objects[1];
-                    msgExtEntity = ((GroupChat) normalChat).groupTxtMsg(txt, atList);
+                    chatMsgEntity = ((GroupChat) normalChat).groupTxtMsg(txt, atList);
                 } else {
-                    msgExtEntity = normalChat.txtMsg(txt);
+                    chatMsgEntity = normalChat.txtMsg(txt);
                 }
-                sendNormalMsg(true, msgExtEntity);
+                sendNormalMsg(true, chatMsgEntity);
                 break;
             case Photo:
                 List<String> paths = (List<String>) objects[0];
@@ -204,10 +198,10 @@ public abstract class BaseChatActvity extends BaseActivity {
                     options.inSampleSize = 1;
                     BitmapFactory.decodeFile(str, options);
 
-                    msgExtEntity = normalChat.photoMsg(str, str, FileUtil.fileSize(str), options.outWidth, options.outHeight);
+                    chatMsgEntity = normalChat.photoMsg(str, str, FileUtil.fileSize(str), options.outWidth, options.outHeight);
 
-                    adapterInsetItem(msgExtEntity);
-                    upLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                    adapterInsetItem(chatMsgEntity);
+                    upLoad = new PhotoUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUpListener() {
                         @Override
                         public void upSuccess(String msgid) {
                         }
@@ -216,10 +210,10 @@ public abstract class BaseChatActvity extends BaseActivity {
                 }
                 break;
             case Voice:
-                msgExtEntity = normalChat.voiceMsg((String) objects[0], (Integer) objects[1]);
+                chatMsgEntity = normalChat.voiceMsg((String) objects[0], (Integer) objects[1]);
 
-                adapterInsetItem(msgExtEntity);
-                upLoad = new VoiceUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                adapterInsetItem(chatMsgEntity);
+                upLoad = new VoiceUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -227,18 +221,18 @@ public abstract class BaseChatActvity extends BaseActivity {
                 upLoad.fileHandle();
                 break;
             case Emotion:
-                msgExtEntity = normalChat.emotionMsg((String) objects[0]);
-                sendNormalMsg(true, msgExtEntity);
+                chatMsgEntity = normalChat.emotionMsg((String) objects[0]);
+                sendNormalMsg(true, chatMsgEntity);
                 break;
             case Video:
                 filePath = (String) objects[0];
                 Bitmap thumbBitmap = BitmapUtil.thumbVideo(filePath);
                 File thumbFile = BitmapUtil.getInstance().bitmapSavePath(thumbBitmap);
-                msgExtEntity = normalChat.videoMsg(thumbFile.getAbsolutePath(), filePath, (Integer) objects[1],
+                chatMsgEntity = normalChat.videoMsg(thumbFile.getAbsolutePath(), filePath, (Integer) objects[1],
                         FileUtil.fileSizeOf(filePath), thumbBitmap.getWidth(), thumbBitmap.getHeight());
 
-                adapterInsetItem(msgExtEntity);
-                upLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                adapterInsetItem(chatMsgEntity);
+                upLoad = new VideoUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -246,20 +240,20 @@ public abstract class BaseChatActvity extends BaseActivity {
                 upLoad.fileHandle();
                 break;
             case Name_Card:
-                msgExtEntity = normalChat.cardMsg((String) objects[0], (String) objects[1], (String) objects[2]);
-                sendNormalMsg(true, msgExtEntity);
+                chatMsgEntity = normalChat.cardMsg((String) objects[0], (String) objects[1], (String) objects[2]);
+                sendNormalMsg(true, chatMsgEntity);
                 break;
             case Self_destruct_Notice:
                 int time = (int) objects[0];
                 RoomSession.getInstance().setBurntime(time);
                 ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
 
-                msgExtEntity = normalChat.destructMsg(time);
-                sendNormalMsg(true, msgExtEntity);
+                chatMsgEntity = normalChat.destructMsg(time);
+                sendNormalMsg(true, chatMsgEntity);
                 break;
             case Self_destruct_Receipt:
-                msgExtEntity = normalChat.receiptMsg((String) objects[0]);
-                normalChat.sendPushMsg(msgExtEntity);
+                chatMsgEntity = normalChat.receiptMsg((String) objects[0]);
+                normalChat.sendPushMsg(chatMsgEntity);
                 break;
             case Request_Payment:
                 int payType = (int) objects[0];
@@ -268,10 +262,10 @@ public abstract class BaseChatActvity extends BaseActivity {
                 int payMembers = (int) objects[3];
                 String payTips = (String) objects[4];
 
-                msgExtEntity = normalChat.paymentMsg(payType, payHashId, payAmount, payMembers, payTips);
-                sendNormalMsg(true, msgExtEntity);
+                chatMsgEntity = normalChat.paymentMsg(payType, payHashId, payAmount, payMembers, payTips);
+                sendNormalMsg(true, chatMsgEntity);
                 //add payment information
-                TransactionHelper.getInstance().updateTransEntity(payHashId, msgExtEntity.getMessage_id(), 0, payMembers);
+                TransactionHelper.getInstance().updateTransEntity(payHashId, chatMsgEntity.getMessage_id(), 0, payMembers);
                 break;
             case Transfer:
                 int transferType = (int) objects[0];
@@ -279,20 +273,20 @@ public abstract class BaseChatActvity extends BaseActivity {
                 long transferAmount = (long) objects[2];
                 String transferTips = (String) objects[3];
 
-                msgExtEntity = normalChat.transferMsg(transferType, transferHashId, transferAmount, transferTips);
-                sendNormalMsg(true, msgExtEntity);
+                chatMsgEntity = normalChat.transferMsg(transferType, transferHashId, transferAmount, transferTips);
+                sendNormalMsg(true, chatMsgEntity);
 
                 //add payment information
-                TransactionHelper.getInstance().updateTransEntity((String) objects[0], msgExtEntity.getMessage_id(), 1);
+                TransactionHelper.getInstance().updateTransEntity((String) objects[0], chatMsgEntity.getMessage_id(), 1);
                 break;
             case Location:
                 GeoAddressBean geoAddress = (GeoAddressBean) objects[0];
 
-                msgExtEntity = normalChat.locationMsg((float) geoAddress.getLocationLatitude(), (float) geoAddress.getLocationLongitude(),
+                chatMsgEntity = normalChat.locationMsg((float) geoAddress.getLocationLatitude(), (float) geoAddress.getLocationLongitude(),
                         geoAddress.getAddress(), geoAddress.getPath(), geoAddress.getImageOriginWidth(), geoAddress.getImageOriginHeight());
 
-                adapterInsetItem(msgExtEntity);
-                upLoad = new LocationUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                adapterInsetItem(chatMsgEntity);
+                upLoad = new LocationUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUpListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -305,8 +299,8 @@ public abstract class BaseChatActvity extends BaseActivity {
                 String luckyTips = (String) objects[2];
                 long luckyAmount = (long) objects[3];
 
-                msgExtEntity = normalChat.luckPacketMsg(luckyType, luckyHashId, luckyTips, luckyAmount);
-                sendNormalMsg(true, msgExtEntity);
+                chatMsgEntity = normalChat.luckPacketMsg(luckyType, luckyHashId, luckyAmount,luckyTips);
+                sendNormalMsg(true, chatMsgEntity);
                 break;
             case OUTER_WEBSITE:
                 String webUrl = (String) objects[0];
@@ -314,8 +308,8 @@ public abstract class BaseChatActvity extends BaseActivity {
                 String webSubtitle = (String) objects[2];
                 String webImage = (String) objects[3];
 
-                msgExtEntity = normalChat.outerWebsiteMsg(webUrl, webTitle, webSubtitle, webImage);
-                sendNormalMsg(true, msgExtEntity);
+                chatMsgEntity = normalChat.outerWebsiteMsg(webUrl, webTitle, webSubtitle, webImage);
+                sendNormalMsg(true, chatMsgEntity);
                 break;
         }
     }
@@ -333,7 +327,7 @@ public abstract class BaseChatActvity extends BaseActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public synchronized void onEventMainThread(RecExtBean bean) {
-        MsgExtEntity msgExtEntity = null;
+        ChatMsgEntity msgExtEntity = null;
 
         final Object[] objects;
         if (bean.getObj() == null) {
@@ -347,7 +341,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 inputPanel.hideBottomPanel();
                 break;
             case DELMSG:
-                chatAdapter.removeItem((MsgExtEntity) objects[0]);
+                chatAdapter.removeItem((ChatMsgEntity) objects[0]);
                 break;
             case RECENT_ALBUM://Picture taken recently
                 PermissionUtil.getInstance().requestPermission(activity, new String[]{PermissionUtil.PERMISSION_STORAGE}, permissomCallBack);
@@ -364,7 +358,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 break;
             case TRANSFER:
                 if (normalChat.chatType() == 0) {
-                    TransferToActivity.startActivity(activity, normalChat.address());
+                    TransferToActivity.startActivity(activity, normalChat.chatKey());
                 } else if (normalChat.chatType() == 1) {
                     SeleUsersActivity.startActivity(activity, SeleUsersActivity.SOURCE_GROUP, talker.getTalkKey(), null);
                 }
@@ -390,7 +384,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 }
                 break;
             case RESEND://resend message
-                reSendFailMsg((MsgExtEntity) objects[0]);
+                reSendFailMsg((ChatMsgEntity) objects[0]);
                 break;
             case IMGVIEWER://Image viewer
                 chatAdapter.showImgMsgs(new BaseListener<ArrayList<String>>() {
@@ -406,7 +400,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 });
                 break;
             case NOTICE://notice message
-                adapterInsetItem(normalChat.noticeMsg((String) objects[0]));
+                adapterInsetItem(normalChat.noticeMsg(0,(String) objects[0],""));
                 break;
             case SCROLLBOTTOM:
                 final int itemCounts = chatAdapter.getItemCount();
@@ -417,10 +411,12 @@ public abstract class BaseChatActvity extends BaseActivity {
                 chatAdapter.unReadVoice((String) objects[0]);
                 break;
             case NOTICE_NOTFRIEND://not friend
-                msgExtEntity = ((FriendChat) normalChat).strangerNotice();
+                if (normalChat.chatKey().equals(objects[0])) {
+                    msgExtEntity = normalChat.noticeMsg(4, "", normalChat.chatKey());
 
-                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                adapterInsetItem(msgExtEntity);
+                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                    adapterInsetItem(msgExtEntity);
+                }
                 break;
             case GROUP_UPDATENAME://update group name
                 String identify = (String) objects[0];
@@ -437,12 +433,11 @@ public abstract class BaseChatActvity extends BaseActivity {
                 GoogleMapActivity.startActivity(activity);
                 break;
             case LUCKPACKET_RECEIVE://receive a lucky packet
-                msgExtEntity = normalChat.clickReceiveLuckMsg((String) objects[0]);
+                msgExtEntity = normalChat.noticeMsg(3, (String) objects[0], (String) objects[1]);
                 sendNormalMsg(false, msgExtEntity);
                 break;
             case GROUP_REMOVE://dissolute group
                 if (normalChat.chatKey().equals(objects[0])) {
-                    ((GroupChat) normalChat).setGroupEntity(null);
                     ActivityUtil.backActivityWithClearTop(activity, HomeActivity.class);
                 }
                 break;
@@ -459,11 +454,11 @@ public abstract class BaseChatActvity extends BaseActivity {
                 break;
             case MESSAGE_RECEIVE:
                 if (objects[0].equals(talker.getTalkKey())) {
-                    msgExtEntity = (MsgExtEntity) objects[1];
+                    msgExtEntity = (ChatMsgEntity) objects[1];
                     int time = 0;
                     String msgid = null;
 
-                    switch (MsgType.toMsgType(msgExtEntity.getMessageType())) {
+                    switch (MessageType.toMessageType(msgExtEntity.getMessageType())) {
                         case Self_destruct_Notice://open burn message notice
                             try {
                                 Connect.DestructMessage destructMessage = Connect.DestructMessage.parseFrom(msgExtEntity.getContents());
@@ -509,9 +504,9 @@ public abstract class BaseChatActvity extends BaseActivity {
         }
     }
 
-    protected void reSendFailMsg(MsgExtEntity msgExtEntity) {
+    protected void reSendFailMsg(ChatMsgEntity msgExtEntity) {
         FileUpLoad upLoad = null;
-        MsgType msgType = MsgType.toMsgType(msgExtEntity.getMessageType());
+        MessageType msgType = MessageType.toMessageType(msgExtEntity.getMessageType());
         switch (msgType) {
             case Photo://picture message
                 upLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
@@ -551,7 +546,7 @@ public abstract class BaseChatActvity extends BaseActivity {
         }
     }
 
-    public void sendNormalMsg(boolean needSend, MsgExtEntity bean) {
+    public void sendNormalMsg(boolean needSend, ChatMsgEntity bean) {
         MessageHelper.getInstance().insertMsgExtEntity(bean);
         adapterInsetItem(bean);
         if (needSend) {
@@ -570,7 +565,7 @@ public abstract class BaseChatActvity extends BaseActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 150:
-                    MsgExtEntity msgExtEntity = (MsgExtEntity) msg.obj;
+                    ChatMsgEntity msgExtEntity = (ChatMsgEntity) msg.obj;
                     normalChat.sendPushMsg(msgExtEntity);
                     break;
             }
@@ -633,7 +628,7 @@ public abstract class BaseChatActvity extends BaseActivity {
     public abstract void saveRoomInfo();
 
     /** insert item into adapter */
-    public abstract void adapterInsetItem(MsgExtEntity bean);
+    public abstract void adapterInsetItem(ChatMsgEntity bean);
 
     /** update title bar */
     public abstract void updateBurnState(long time);

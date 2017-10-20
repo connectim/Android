@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import connect.im.bean.MsgType;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgSend;
 import connect.utils.AudioUtil;
@@ -101,7 +101,7 @@ public class RecordView extends LinearLayout {
                 if ((Math.abs(recordX) < SystemDataUtil.getScreenWidth() / 2) || dur < 2) {
                     FileUtil.deleteFile(path);
                 } else {
-                    MsgSend.sendOuterMsg(MsgType.Voice, path, dur);
+                    MsgSend.sendOuterMsg(LinkMessageRow.Voice, path, dur);
                 }
             }
         });

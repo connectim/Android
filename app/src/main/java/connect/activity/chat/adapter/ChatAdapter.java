@@ -18,18 +18,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import connect.activity.chat.bean.BaseListener;
+import connect.activity.base.BaseListener;
 import connect.activity.chat.bean.ItemViewType;
-import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.LinkMessageRow;
+import instant.bean.MsgDirect;
 import connect.activity.chat.view.holder.MsgBaseHolder;
 import connect.activity.chat.view.row.MsgBaseRow;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
+import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
 /**
@@ -39,9 +39,9 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     private LayoutInflater inflater;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
-    protected List<MsgExtEntity> msgEntities = new ArrayList<>();
+    protected List<ChatMsgEntity> msgEntities = new ArrayList<>();
 
-    private Map<String, MsgExtEntity> msgEntityMap = new HashMap<>();
+    private Map<String, ChatMsgEntity> msgEntityMap = new HashMap<>();
 
     public ChatAdapter(Activity activity, RecyclerView recycler, LinearLayoutManager manager) {
         this.inflater = LayoutInflater.from(activity);
@@ -49,7 +49,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         this.layoutManager = manager;
     }
 
-    public List<MsgExtEntity> getMsgEntities() {
+    public List<ChatMsgEntity> getMsgEntities() {
         return msgEntities;
     }
 
@@ -66,7 +66,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
      */
     @Override
     public int getItemViewType(int position) {
-        MsgExtEntity msgExtEntity = msgEntities.get(position);
+        ChatMsgEntity msgExtEntity = msgEntities.get(position);
         MsgDirect dirct = msgExtEntity.parseDirect();
         return msgExtEntity.getMessageType() * dirct.dirct;
     }
@@ -78,16 +78,16 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
 
         if (itemType == null) {
             itemType = ItemViewType.NOTICE_FROM;
-            baseRow = MsgType.NOTICE.msgBaseRow;
+            baseRow = LinkMessageRow.NOTICE.msgBaseRow;
         } else {
-            baseRow = itemType.msgType.msgBaseRow;
+            baseRow = itemType.messageRow.msgBaseRow;
         }
         return baseRow.buildRowView(inflater, MsgDirect.toDirect(itemType.direct));
     }
 
     @Override
     public void onBindViewHolder(MsgBaseHolder holder, int position) {
-        MsgExtEntity msgExtEntity = msgEntities.get(position);
+        ChatMsgEntity msgExtEntity = msgEntities.get(position);
 
         long lasttime = 0;
         if (position == 0) {
@@ -96,7 +96,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
                 lasttime = lastMsgEntity.getCreatetime();
             }
         } else {
-            MsgExtEntity lastMsgEntity = msgEntities.get(position - 1);
+            ChatMsgEntity lastMsgEntity = msgEntities.get(position - 1);
             lasttime = lastMsgEntity.getCreatetime();
         }
 
@@ -125,7 +125,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         }
     };
 
-    public void insertItem(final MsgExtEntity t) {
+    public void insertItem(final ChatMsgEntity t) {
         BaseListener listener = new BaseListener() {
             @Override
             public void Success(Object ts) {
@@ -148,14 +148,14 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         itemsUpdateHandler.sendMessage(message);
     }
 
-    public void insertItems(final List<MsgExtEntity> entities) {
+    public void insertItems(final List<ChatMsgEntity> entities) {
         BaseListener listener = new BaseListener() {
             @Override
             public void Success(Object ts) {
                 msgEntities.addAll(0, entities);
                 notifyDataSetChanged();
 
-                for (MsgExtEntity entity : entities) {
+                for (ChatMsgEntity entity : entities) {
                     msgEntityMap.put(entity.getMessage_id(), entity);
                 }
             }
@@ -172,7 +172,7 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         itemsUpdateHandler.sendMessage(message);
     }
 
-    public void removeItem(final MsgExtEntity t) {
+    public void removeItem(final ChatMsgEntity t) {
         BaseListener listener = new BaseListener() {
             @Override
             public void Success(Object ts) {
@@ -198,22 +198,22 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     }
 
     public void updateItemSendState(String msgid, int state) {
-        MsgExtEntity msgExtEntity = msgEntityMap.get(msgid);
+        ChatMsgEntity msgExtEntity = msgEntityMap.get(msgid);
         if (msgExtEntity != null) {
             msgExtEntity.setSend_status(state);
         }
     }
 
     public void showImgMsgs(final BaseListener listener) {
-        new AsyncTask<List<MsgExtEntity>, Void, ArrayList<String>>() {
+        new AsyncTask<List<ChatMsgEntity>, Void, ArrayList<String>>() {
             @Override
-            protected ArrayList<String> doInBackground(List<MsgExtEntity>... params) {
+            protected ArrayList<String> doInBackground(List<ChatMsgEntity>... params) {
                 ArrayList<String> imgList = new ArrayList<>();
                 for (int i = 0; i < msgEntities.size(); i++) {
-                    MsgExtEntity index = msgEntities.get(i);
+                    ChatMsgEntity index = msgEntities.get(i);
 
-                    MsgType msgType = MsgType.toMsgType(index.getMessageType());
-                    if (msgType == MsgType.Photo) {
+                    LinkMessageRow msgType = LinkMessageRow.toMsgType(index.getMessageType());
+                    if (msgType == LinkMessageRow.Photo) {
                         try {
                             Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(index.getContents());
                             String thumb = photoMessage.getThum();
@@ -236,19 +236,19 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     }
 
     public void unReadVoice(final String msgid) {
-        new AsyncTask<List<MsgExtEntity>, Void, Integer>() {
+        new AsyncTask<List<ChatMsgEntity>, Void, Integer>() {
             @Override
-            protected Integer doInBackground(List<MsgExtEntity>... params) {
+            protected Integer doInBackground(List<ChatMsgEntity>... params) {
                 int holdPosi = -1;
-                MsgExtEntity msgExtEntity = msgEntityMap.get(msgid);
+                ChatMsgEntity msgExtEntity = msgEntityMap.get(msgid);
                 if (msgExtEntity != null) {
-                    List<MsgExtEntity> msgEntities = params[0];
+                    List<ChatMsgEntity> msgEntities = params[0];
                     int readPosi = msgEntities.indexOf(msgExtEntity);
                     for (int i = readPosi; i < msgEntities.size(); i++) {
                         msgExtEntity = msgEntities.get(i);//Ergodic voice list
 
-                        MsgType msgType = MsgType.toMsgType(msgExtEntity.getMessageType());
-                        if (msgType == MsgType.Voice && msgExtEntity.getRead_time() == 0) {
+                        LinkMessageRow msgType = LinkMessageRow.toMsgType(msgExtEntity.getMessageType());
+                        if (msgType == LinkMessageRow.Voice && msgExtEntity.getRead_time() == 0) {
                             holdPosi = i;
                         }
                     }
@@ -275,17 +275,17 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
      * @param msgid
      */
     public void hasReadBurnMsg(String msgid) {
-        MsgExtEntity msgEntity = msgEntityMap.get(msgid);
+        ChatMsgEntity msgEntity = msgEntityMap.get(msgid);
         long burntime = TimeUtil.getCurrentTimeInLong();
         if (msgEntity != null) {
             msgEntity.setRead_time(burntime);
         }
 
         //Modify read time
-        MessageEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
+        ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity != null) {
             messageEntity.setSnap_time(burntime);
-            MessageHelper.getInstance().updateMsg(messageEntity);
+            MessageHelper.getInstance().updateMsg(MessageEntity.chatMsgToMessageEntity(messageEntity));
         }
     }
 

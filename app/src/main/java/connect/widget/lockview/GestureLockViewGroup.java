@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import connect.ui.activity.R;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.SupportKeyUril;
 import connect.widget.lockview.GestureLockView.Mode;
 /**
  * The whole contains n * n GestureLockView, each interval between GestureLockView mMarginBetweenLockView,

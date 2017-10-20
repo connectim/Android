@@ -30,7 +30,6 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.system.SystemDataUtil;
 
 import com.wallet.NativeWallet;

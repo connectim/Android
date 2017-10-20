@@ -6,11 +6,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.ui.activity.R;
 import connect.activity.wallet.bean.RateBean;
 
@@ -18,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
-import protos.Connect;
 
 /**
  * Created by Administrator on 2017/1/12.

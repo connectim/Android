@@ -1,18 +1,17 @@
 package connect.activity.chat.model.fileload;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import com.google.protobuf.ByteString;
 import java.io.File;
-import connect.activity.chat.bean.MsgExtEntity;
+
 import connect.activity.chat.inter.FileUpLoad;
-import connect.activity.chat.model.content.BaseChat;
 import connect.database.MemoryDataManager;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.BaseChat;
+import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -23,7 +22,7 @@ public class PhotoUpload extends FileUpLoad {
     private String Tag = "PhotoUpload";
     private String firstPath;
 
-    public PhotoUpload(Context context, BaseChat baseChat, MsgExtEntity entity, FileUpListener listener) {
+    public PhotoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUpListener listener) {
         this.context = context;
         this.baseChat = baseChat;
         this.msgExtEntity = entity;
@@ -96,7 +95,7 @@ public class PhotoUpload extends FileUpLoad {
                     photoMessage = photoMessage.toBuilder().setThum(thumb)
                             .setUrl(url).build();
 
-                    msgExtEntity = (MsgExtEntity) msgExtEntity.clone();
+                    msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(photoMessage.toByteArray());
                     uploadSuccess(msgExtEntity);
                 } catch (Exception e) {

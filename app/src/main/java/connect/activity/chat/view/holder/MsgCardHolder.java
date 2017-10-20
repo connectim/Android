@@ -4,14 +4,15 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import connect.activity.chat.bean.MsgExtEntity;
+
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.utils.cryption.SupportKeyUril;
+import instant.bean.ChatMsgEntity;
+import instant.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
 import protos.Connect;
 
@@ -30,7 +31,7 @@ public class MsgCardHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.CardMessage cardMessage = Connect.CardMessage.parseFrom(msgExtEntity.getContents());
 

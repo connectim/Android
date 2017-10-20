@@ -8,8 +8,6 @@ import android.widget.LinearLayout;
 
 import java.util.List;
 import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.NormalChat;
 import connect.activity.wallet.contract.TransferFriendContract;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -17,11 +15,15 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
+import connect.instant.model.CFriendChat;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.system.SystemUtil;
 import connect.activity.wallet.manager.TransferEditView;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.FriendChat;
+import instant.sender.model.NormalChat;
 
 /**
  * Created by Administrator on 2017/4/18 0018.
@@ -117,9 +119,9 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
     public void sendTransferMessage(String hashid, String address,String note) {
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
         if (friendEntity != null) {
-            NormalChat friendChat = new FriendChat(friendEntity);
+            CFriendChat friendChat = new CFriendChat(friendEntity);
             long amount = RateFormatUtil.stringToLongBtc(mView.getCurrentBtc());
-            MsgExtEntity msgExtEntity = friendChat.transferMsg(0,hashid, amount, note);
+            ChatMsgEntity msgExtEntity = friendChat.transferMsg(0,hashid, amount, note);
             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
             friendChat.sendPushMsg(msgExtEntity);

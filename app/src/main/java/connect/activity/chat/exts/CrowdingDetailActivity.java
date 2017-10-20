@@ -25,7 +25,6 @@ import connect.activity.base.BaseApplication;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
 import connect.activity.chat.exts.presenter.CrowdingDetailPresenter;
 import connect.activity.wallet.BlockchainActivity;
-import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.TimeUtil;
