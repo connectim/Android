@@ -260,22 +260,20 @@ public class CommandReceiver implements CommandListener {
                 Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(groupChange.getDetail());
                 List<Connect.UserInfo> userInfos = usersInfo.getUsersList();
                 List<GroupMemberEntity> memEntities = new ArrayList<>();
-                //qwert
-//                for (Connect.UserInfo info : userInfos) {
-//                    GroupMemberEntity groupMemEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, info.getAddress());
-//                    if (groupMemEntity == null) {
-//                        groupMemEntity = new GroupMemberEntity();
-//                        groupMemEntity.setIdentifier(groupKey);
-//                        groupMemEntity.setPub_key(info.getPubKey());
-//                        groupMemEntity.setUsername(info.getUsername());
-//                        groupMemEntity.setNick(info.getUsername());
-//                        groupMemEntity.setAvatar(info.getAvatar());
-//                        //groupMemEntity.setAddress(info.getAddress());
-//                        groupMemEntity.setRole(0);
-//
-//                        memEntities.add(groupMemEntity);
-//                    }
-//                }
+                for (Connect.UserInfo info : userInfos) {
+                    GroupMemberEntity groupMemEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, info.getUid());
+                    if (groupMemEntity == null) {
+                        groupMemEntity = new GroupMemberEntity();
+                        groupMemEntity.setIdentifier(groupKey);
+                        groupMemEntity.setUid(info.getUid());
+                        groupMemEntity.setUsername(info.getUsername());
+                        groupMemEntity.setNick(info.getUsername());
+                        groupMemEntity.setAvatar(info.getAvatar());
+                        groupMemEntity.setRole(0);
+
+                        memEntities.add(groupMemEntity);
+                    }
+                }
 
                 if (groupEntity == null) {//The request of details
                     HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
@@ -286,16 +284,15 @@ public class CommandReceiver implements CommandListener {
                     for (GroupMemberEntity memEntity : memEntities) {
                         String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
                         if (groupChange.hasInviteBy()) {
-                            //
-//                            String myAddress = MemoryDataManager.getInstance().getAddress();
-//
-//                            Connect.UserInfo inviteBy = groupChange.getInviteBy();
-//                            String inviteByName = inviteBy.getAddress().equals(myAddress) ?
-//                                    context.getString(R.string.Chat_You) : inviteBy.getUsername();
-//
-//                            String invitorname = memEntity.getAddress().equals(myAddress) ?
-//                                    context.getString(R.string.Chat_You) : memberName;
-//                            noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, inviteByName, invitorname);
+                            String myUid = MemoryDataManager.getInstance().getUid();
+
+                            Connect.UserInfo inviteBy = groupChange.getInviteBy();
+                            String inviteByName = inviteBy.getUid().equals(myUid) ?
+                                    context.getString(R.string.Chat_You) : inviteBy.getUsername();
+
+                            String invitorname = memEntity.getUid().equals(myUid) ?
+                                    context.getString(R.string.Chat_You) : memberName;
+                            noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, inviteByName, invitorname);
                         } else {
                             noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
                         }
@@ -346,12 +343,11 @@ public class CommandReceiver implements CommandListener {
                         ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 1);
 
                         String showName = "";
-                        //qwert
-//                        if (groupAttorn.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
-//                            showName = context.getString(R.string.Chat_You);
-//                        } else {
-//                            showName = TextUtils.isEmpty(member.getNick()) ? member.getUsername() : member.getNick();
-//                        }
+                        if (groupAttorn.getAddress().equals(MemoryDataManager.getInstance().getUid())) {
+                            showName = context.getString(R.string.Chat_You);
+                        } else {
+                            showName = TextUtils.isEmpty(member.getNick()) ? member.getUsername() : member.getNick();
+                        }
                         noticeStr = context.getString(R.string.Link_become_new_group_owner, showName);
 
                         normalChat = new CGroupChat(groupEntity);
@@ -407,8 +403,7 @@ public class CommandReceiver implements CommandListener {
                 friendEntity.setPub_key(userInfo.getPubKey());
                 friendEntity.setAvatar(userInfo.getAvatar());
                 friendEntity.setUsername(userInfo.getUsername());
-                //qwert
-                //friendEntity.setAddress(userInfo.getAddress());
+                friendEntity.setUid(userInfo.getUid());
             }
 
             CFriendChat normalChat = new CFriendChat(friendEntity);

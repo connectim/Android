@@ -80,14 +80,12 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         });
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
-        // qwert
-        // GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, MemoryDataManager.getInstance().getAddress());
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, MemoryDataManager.getInstance().getUid());
 
         layoutManager = new LinearLayoutManager(activity);
         recordview.setLayoutManager(layoutManager);
         final GroupMemberAdapter adapter = new GroupMemberAdapter(activity, recordview);
-        // qwert
-        // adapter.setCanScroll(myMember.getRole() == 1);
+        adapter.setCanScroll(myMember.getRole() == 1);
         recordview.setAdapter(adapter);
         recordview.addItemDecoration(new LineDecoration(activity));
         recordview.addOnScrollListener(new RecyclerView.OnScrollListener() {

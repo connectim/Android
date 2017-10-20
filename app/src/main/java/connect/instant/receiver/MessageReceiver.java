@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.home.bean.HttpRecBean;
+import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -126,18 +127,17 @@ public class MessageReceiver implements MessageListener {
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
 
                 String content = msgExtEntity.showContent();
-                // qwert
-//                String myaddress = MemoryDataManager.getInstance().getAddress();
-//                if (chatMessage.getMsgType() == MessageType.Text.type) {
-//                    try {
-//                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);
-//                        if (textMessage.getAtAddressesList().lastIndexOf(myaddress) != -1) {
-//                            content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
-//                        }
-//                    } catch (InvalidProtocolBufferException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
+                String myUid = MemoryDataManager.getInstance().getUid();
+                if (chatMessage.getMsgType() == MessageType.Text.type) {
+                    try {
+                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);
+                        if (textMessage.getAtAddressesList().lastIndexOf(myUid) != -1) {
+                            content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
             }
         }

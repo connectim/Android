@@ -94,8 +94,7 @@ public class ResolveUrlUtil {
      * @param isCloseScan
      */
     private void dealFriend(ScanResultBean resultBean, boolean isCloseScan){
-        // qwert
-        /*if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
+        if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getUid())) {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(resultBean.getAddress());
             if (friendEntity != null) {
                 FriendInfoActivity.startActivity(activity, resultBean.getAddress());
@@ -105,7 +104,7 @@ public class ResolveUrlUtil {
             if(isCloseScan){
                 ActivityUtil.goBack(activity);
             }
-        }*/
+        }
     }
 
     /**

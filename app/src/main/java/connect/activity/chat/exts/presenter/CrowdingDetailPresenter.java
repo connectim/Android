@@ -12,9 +12,12 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
 import connect.activity.wallet.manager.TransferManager;
 import connect.activity.wallet.manager.TransferType;
+import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
+import connect.database.green.bean.CurrencyEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
@@ -74,8 +77,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
                     Connect.UserInfo senderInfo = crowdfunding.getSender();
                     String avatar = senderInfo.getAvatar();
                     String senderName = "";
-                    // qwert
-                    /*if (MemoryDataManager.getInstance().getAddress().equals(senderInfo.getUid())) {
+                    if (MemoryDataManager.getInstance().getUid().equals(senderInfo.getUid())) {
                         senderName = activity.getString(R.string.Chat_You);
                     } else {
                         senderName = senderInfo.getUsername();
@@ -83,7 +85,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
                         if (currencyEntity != null) {
                             view.showBalance(currencyEntity.getBalance());
                         }
-                    }*/
+                    }
                     view.senderInfo(avatar, senderName);
                     view.showTips(crowdfunding.getTips());
 
@@ -101,10 +103,9 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
 
                     boolean state = false;
                     for (Connect.CrowdfundingRecord record : records) {
-                        // qwert
-                        /*if (MemoryDataManager.getInstance().getAddress().equals(record.getUser().getUid())) {
+                        if (MemoryDataManager.getInstance().getUid().equals(record.getUser().getUid())) {
                             state = true;
-                        }*/
+                        }
                     }
                     view.showCrowdingRecords(records, state);
                 } catch (Exception e) {

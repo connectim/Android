@@ -147,8 +147,7 @@ public class GatherActivity extends BaseActivity {
                     friendEntity = new ContactEntity();
                     friendEntity.setAvatar(MemoryDataManager.getInstance().getAvatar());
                     friendEntity.setUsername(MemoryDataManager.getInstance().getName());
-                    // qwert
-                    // friendEntity.setAddress(MemoryDataManager.getInstance().getAddress());
+                    friendEntity.setUid(MemoryDataManager.getInstance().getUid());
                 } else {
                     ActivityUtil.goBack(activity);
                     return;
