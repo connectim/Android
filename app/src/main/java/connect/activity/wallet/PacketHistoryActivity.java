@@ -139,9 +139,7 @@ public class PacketHistoryActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
+            public void onError(Connect.HttpResponse response) {}
         });
     }
 

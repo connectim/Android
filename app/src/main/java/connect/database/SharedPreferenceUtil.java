@@ -153,7 +153,7 @@ public class SharedPreferenceUtil {
             }
         }
         // Save the current user private key to memory
-        MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
+        // MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
     }
 
     /**

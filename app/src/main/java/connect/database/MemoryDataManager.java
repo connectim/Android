@@ -24,6 +24,8 @@ public class MemoryDataManager {
     public static final String PUB_AVATAR = "PUB_AVATAR";
     /** user NAME */
     public static final String PUB_NAME = "PUB_NAME";
+    /** user UID */
+    public static final String PUB_UID = "PUB_UID";
 
     public MemoryDataManager() {
         stringMap = new HashMap();
@@ -47,8 +49,14 @@ public class MemoryDataManager {
      * When modified the user profiles need to empty the memory data, and then synchronize the latest data
      */
     public void initMemoryData(){
-        putMapStr(PUB_AVATAR,"");
-        putMapStr(PUB_NAME,"");
+        // putMapStr(PUB_AVATAR,"");
+        // putMapStr(PUB_NAME,"");
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        putMapStr(KEY_PRIVATE,userBean.getPriKey());
+        putMapStr(KEY_PUBLIC,userBean.getPubKey());
+        putMapStr(PUB_AVATAR,userBean.getAvatar());
+        putMapStr(PUB_NAME,userBean.getName());
+        putMapStr(PUB_UID,userBean.getUid());
     }
 
     /**
@@ -91,8 +99,20 @@ public class MemoryDataManager {
         return pubkey;
     }
 
+    /**
+     * Gets the current user's uid
+     * @return
+     */
     public String getUid() {
-        return "";
+        String uid = stringMap.get(PUB_UID);
+        if (TextUtils.isEmpty(uid)) {
+            UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+            if (userBean != null) {
+                uid = userBean.getUid();
+                stringMap.put(PUB_UID, uid);
+            }
+        }
+        return uid;
     }
 
     /**
