@@ -8,17 +8,13 @@ import com.wallet.inter.WalletListener;
 import java.util.List;
 
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
 import connect.activity.wallet.manager.TransferManager;
 import connect.activity.wallet.manager.TransferType;
-import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
-import connect.database.green.bean.CurrencyEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
@@ -32,7 +28,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
-import instant.sender.model.GroupChat;
 import instant.sender.model.NormalChat;
 import protos.Connect;
 

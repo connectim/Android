@@ -179,7 +179,7 @@ public class CommandReceiver implements CommandListener {
                     entity.setUsername(userInfo.getUsername());
                     entity.setAvatar(userInfo.getAvatar());
                     entity.setPub_key(pubKey);
-                    entity.setAddress(userInfo.getAddress());
+                    //entity.setAddress(userInfo.getAddress());
                     ContactHelper.getInstance().insertContact(entity);
 
                     if (newFriend) { // Add a welcome message
@@ -261,21 +261,22 @@ public class CommandReceiver implements CommandListener {
                 Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(groupChange.getDetail());
                 List<Connect.UserInfo> userInfos = usersInfo.getUsersList();
                 List<GroupMemberEntity> memEntities = new ArrayList<>();
-                for (Connect.UserInfo info : userInfos) {
-                    GroupMemberEntity groupMemEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, info.getAddress());
-                    if (groupMemEntity == null) {
-                        groupMemEntity = new GroupMemberEntity();
-                        groupMemEntity.setIdentifier(groupKey);
-                        groupMemEntity.setPub_key(info.getPubKey());
-                        groupMemEntity.setUsername(info.getUsername());
-                        groupMemEntity.setNick(info.getUsername());
-                        groupMemEntity.setAvatar(info.getAvatar());
-                        groupMemEntity.setAddress(info.getAddress());
-                        groupMemEntity.setRole(0);
-
-                        memEntities.add(groupMemEntity);
-                    }
-                }
+                //qwert
+//                for (Connect.UserInfo info : userInfos) {
+//                    GroupMemberEntity groupMemEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, info.getAddress());
+//                    if (groupMemEntity == null) {
+//                        groupMemEntity = new GroupMemberEntity();
+//                        groupMemEntity.setIdentifier(groupKey);
+//                        groupMemEntity.setPub_key(info.getPubKey());
+//                        groupMemEntity.setUsername(info.getUsername());
+//                        groupMemEntity.setNick(info.getUsername());
+//                        groupMemEntity.setAvatar(info.getAvatar());
+//                        //groupMemEntity.setAddress(info.getAddress());
+//                        groupMemEntity.setRole(0);
+//
+//                        memEntities.add(groupMemEntity);
+//                    }
+//                }
 
                 if (groupEntity == null) {//The request of details
                     HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
@@ -286,15 +287,16 @@ public class CommandReceiver implements CommandListener {
                     for (GroupMemberEntity memEntity : memEntities) {
                         String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
                         if (groupChange.hasInviteBy()) {
-                            String myAddress = MemoryDataManager.getInstance().getAddress();
-
-                            Connect.UserInfo inviteBy = groupChange.getInviteBy();
-                            String inviteByName = inviteBy.getAddress().equals(myAddress) ?
-                                    context.getString(R.string.Chat_You) : inviteBy.getUsername();
-
-                            String invitorname = memEntity.getAddress().equals(myAddress) ?
-                                    context.getString(R.string.Chat_You) : memberName;
-                            noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, inviteByName, invitorname);
+                            //
+//                            String myAddress = MemoryDataManager.getInstance().getAddress();
+//
+//                            Connect.UserInfo inviteBy = groupChange.getInviteBy();
+//                            String inviteByName = inviteBy.getAddress().equals(myAddress) ?
+//                                    context.getString(R.string.Chat_You) : inviteBy.getUsername();
+//
+//                            String invitorname = memEntity.getAddress().equals(myAddress) ?
+//                                    context.getString(R.string.Chat_You) : memberName;
+//                            noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, inviteByName, invitorname);
                         } else {
                             noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
                         }
@@ -345,11 +347,12 @@ public class CommandReceiver implements CommandListener {
                         ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 1);
 
                         String showName = "";
-                        if (groupAttorn.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
-                            showName = context.getString(R.string.Chat_You);
-                        } else {
-                            showName = TextUtils.isEmpty(member.getNick()) ? member.getUsername() : member.getNick();
-                        }
+                        //qwert
+//                        if (groupAttorn.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
+//                            showName = context.getString(R.string.Chat_You);
+//                        } else {
+//                            showName = TextUtils.isEmpty(member.getNick()) ? member.getUsername() : member.getNick();
+//                        }
                         noticeStr = context.getString(R.string.Link_become_new_group_owner, showName);
 
                         normalChat = new CGroupChat(groupEntity);
@@ -405,7 +408,8 @@ public class CommandReceiver implements CommandListener {
                 friendEntity.setPub_key(userInfo.getPubKey());
                 friendEntity.setAvatar(userInfo.getAvatar());
                 friendEntity.setUsername(userInfo.getUsername());
-                friendEntity.setAddress(userInfo.getAddress());
+                //qwert
+                //friendEntity.setAddress(userInfo.getAddress());
             }
 
             CFriendChat normalChat = new CFriendChat(friendEntity);

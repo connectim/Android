@@ -23,7 +23,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.LinkMessageRow;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
@@ -60,10 +59,7 @@ import connect.widget.album.AlbumActivity;
 import connect.widget.album.model.AlbumFile;
 import connect.widget.camera.CameraTakeActivity;
 import instant.bean.ChatMsgEntity;
-import instant.sender.model.FriendChat;
-import instant.sender.model.GroupChat;
 import instant.sender.model.NormalChat;
-import instant.sender.model.RobotChat;
 import protos.Connect;
 
 /**

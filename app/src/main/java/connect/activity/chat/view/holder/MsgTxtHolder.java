@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.view.EmoTextView;
 import connect.activity.common.bean.ConverType;
 import connect.activity.common.selefriend.ConversationActivity;

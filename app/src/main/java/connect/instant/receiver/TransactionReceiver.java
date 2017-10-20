@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.HomeAction;
@@ -24,7 +23,6 @@ import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import instant.bean.ChatMsgEntity;
 import instant.parser.inter.TransactionListener;
-import instant.sender.model.GroupChat;
 import instant.sender.model.NormalChat;
 import instant.utils.ChatUtil;
 import instant.utils.manager.FailMsgsManager;
@@ -59,7 +57,8 @@ public class TransactionReceiver implements TransactionListener {
             stranger.setUsername(senderInfo.getUsername());
             stranger.setAvatar(senderInfo.getAvatar());
             stranger.setPub_key(senderInfo.getPubKey());
-            stranger.setAddress(senderInfo.getAddress());
+            //qwert
+            //stranger.setAddress(senderInfo.getAddress());
         }
 
         CFriendChat normalChat = new CFriendChat(stranger);
@@ -95,19 +94,20 @@ public class TransactionReceiver implements TransactionListener {
         if (normalChat != null) {
             String receiverAddress = notice.getReceiver();
             String receiverName = "";
-            if (MemoryDataManager.getInstance().getAddress().equals(receiverAddress)) {
-                receiverName = context.getString(R.string.Chat_You);
-            } else {
-                if (normalChat instanceof CFriendChat) {
-                    receiverName = normalChat.nickName();
-                } else if (normalChat instanceof CGroupChat) {
-                    receiverName = "*";
-                    GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(notice.getIdentifer(), receiverAddress);
-                    if (memEntity != null) {
-                        receiverName = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
-                    }
-                }
-            }
+            //qwert
+//            if (MemoryDataManager.getInstance().getAddress().equals(receiverAddress)) {
+//                receiverName = context.getString(R.string.Chat_You);
+//            } else {
+//                if (normalChat instanceof CFriendChat) {
+//                    receiverName = normalChat.nickName();
+//                } else if (normalChat instanceof CGroupChat) {
+//                    receiverName = "*";
+//                    GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(notice.getIdentifer(), receiverAddress);
+//                    if (memEntity != null) {
+//                        receiverName = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
+//                    }
+//                }
+//            }
 
             String senderName = context.getString(R.string.Chat_You);
             String content = context.getString(R.string.Chat_opened_Lucky_Packet_of, receiverName, senderName);
@@ -158,18 +158,22 @@ public class TransactionReceiver implements TransactionListener {
             receiverName = TextUtils.isEmpty(receiverEntity.getNick()) ? receiverEntity.getUsername() : receiverEntity.getNick();
         }
 
-        String senderName = "";
-        if (MemoryDataManager.getInstance().getAddress().equals(crowdfundingNotice.getSender())) {
-            senderName = context.getString(R.string.Chat_You);
-        } else {
-            GroupMemberEntity senderEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupid, crowdfundingNotice.getReceiver());
-            if (senderEntity != null) {
-                senderName = TextUtils.isEmpty(senderEntity.getNick()) ? senderEntity.getUsername() : senderEntity.getNick();
-            }
-        }
+        //qwert
+//        String senderName = "";
+//        if (MemoryDataManager.getInstance().getAddress().equals(crowdfundingNotice.getSender())) {
+//            senderName = context.getString(R.string.Chat_You);
+//        } else {
+//            GroupMemberEntity senderEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupid, crowdfundingNotice.getReceiver());
+//            if (senderEntity != null) {
+//                senderName = TextUtils.isEmpty(senderEntity.getNick()) ? senderEntity.getUsername() : senderEntity.getNick();
+//            }
+//        }
 
+        //qwert
+//        String content = context.getResources().getString(R.string.Chat_paid_the_bill_to,
+//                receiverName, senderName);
         String content = context.getResources().getString(R.string.Chat_paid_the_bill_to,
-                receiverName, senderName);
+                receiverName, "");
         TransactionEntity transEntity = TransactionHelper.getInstance().loadTransEntity(hashId);
         if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupid);
@@ -211,7 +215,8 @@ public class TransactionReceiver implements TransactionListener {
             friendEntity.setPub_key(friendInfo.getPubKey());
             friendEntity.setAvatar(friendInfo.getAvatar());
             friendEntity.setUsername(friendInfo.getUsername());
-            friendEntity.setAddress(friendInfo.getAddress());
+            //qwert
+            //friendEntity.setAddress(friendInfo.getAddress());
         }
 
         NormalChat normalChat = new CFriendChat(friendEntity);

@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.VideoPlayerActivity;
 import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.chat.view.BubbleImg;

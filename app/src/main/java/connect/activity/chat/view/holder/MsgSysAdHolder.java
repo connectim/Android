@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.set.AboutActivity;
 import connect.ui.activity.R;

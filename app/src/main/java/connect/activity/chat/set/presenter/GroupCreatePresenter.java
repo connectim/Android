@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.contract.GroupCreateContract;
 import connect.activity.home.bean.HttpRecBean;

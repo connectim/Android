@@ -9,18 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ParamHelper;
-import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.database.green.bean.ParamEntity;
 import connect.ui.activity.R;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;

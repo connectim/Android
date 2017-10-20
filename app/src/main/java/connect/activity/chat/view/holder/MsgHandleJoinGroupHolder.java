@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import connect.activity.chat.bean.ApplyGroupBean;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.HandleGroupRequestActivity;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;

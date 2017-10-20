@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.GoogleMapActivity;
 import connect.activity.chat.view.BubbleImg;
 import connect.ui.activity.R;

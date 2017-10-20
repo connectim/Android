@@ -16,7 +16,6 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.activity.wallet.BlockchainActivity;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;

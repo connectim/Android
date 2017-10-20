@@ -3,7 +3,6 @@ package connect.activity.chat.model.fileload;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileUpLoad;
 import connect.database.MemoryDataManager;
 import instant.bean.ChatMsgEntity;

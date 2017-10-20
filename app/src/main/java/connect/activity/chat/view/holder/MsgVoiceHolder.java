@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import connect.activity.chat.bean.DestructReadBean;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.chat.view.VoiceImg;
 import connect.database.green.DaoHelper.MessageHelper;

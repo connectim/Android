@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import instant.bean.ChatMsgEntity;
 import instant.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.CrowdingDetailActivity;
 import connect.activity.chat.exts.PaymentDetailActivity;
 import connect.activity.chat.exts.TransferSingleDetailActivity;

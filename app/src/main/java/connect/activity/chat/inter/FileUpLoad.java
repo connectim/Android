@@ -8,8 +8,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.instant.inter.ConversationListener;
-import connect.instant.model.CFriendChat;
-import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.ProtoBufUtil;

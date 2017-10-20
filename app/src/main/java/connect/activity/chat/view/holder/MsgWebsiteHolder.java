@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.wallet.PacketDetailActivity;

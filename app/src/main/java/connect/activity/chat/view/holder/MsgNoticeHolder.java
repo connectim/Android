@@ -11,16 +11,10 @@ import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.activity.chat.bean.LinkMessageRow;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.CrowdingDetailActivity;
 import connect.activity.chat.exts.TransferSingleDetailActivity;
-import connect.activity.contact.StrangerInfoActivity;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.wallet.PacketDetailActivity;
-import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.utils.cryption.SupportKeyUril;
 import instant.bean.ChatMsgEntity;

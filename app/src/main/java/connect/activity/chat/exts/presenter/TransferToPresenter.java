@@ -9,7 +9,6 @@ import com.wallet.bean.CurrencyEnum;
 import java.util.HashMap;
 
 import connect.activity.chat.bean.LinkMessageRow;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.exts.contract.TransferToContract;
@@ -28,8 +27,6 @@ import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import instant.bean.ChatMsgEntity;
-import instant.sender.model.FriendChat;
-import instant.sender.model.NormalChat;
 import instant.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;

@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import instant.bean.ChatMsgEntity;
 import instant.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;

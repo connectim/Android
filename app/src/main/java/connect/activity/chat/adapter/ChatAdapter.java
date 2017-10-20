@@ -22,7 +22,6 @@ import connect.activity.base.BaseListener;
 import connect.activity.chat.bean.ItemViewType;
 import connect.activity.chat.bean.LinkMessageRow;
 import instant.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.view.holder.MsgBaseHolder;
 import connect.activity.chat.view.row.MsgBaseRow;
 import connect.database.green.DaoHelper.MessageHelper;

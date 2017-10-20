@@ -9,7 +9,6 @@ import com.netcompss.loader.LoadJNI;
 
 import java.io.File;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileUpLoad;
 import connect.database.MemoryDataManager;
 import connect.utils.FileUtil;

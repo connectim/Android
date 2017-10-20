@@ -2,7 +2,6 @@ package connect.utils.scan;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -14,8 +13,6 @@ import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.wallet.TransferAddressActivity;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;

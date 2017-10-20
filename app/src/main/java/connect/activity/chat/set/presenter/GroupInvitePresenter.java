@@ -5,7 +5,6 @@ import android.app.Activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.set.contract.GroupInviteContract;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -22,7 +21,6 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
-import instant.sender.model.FriendChat;
 import protos.Connect;
 
 /**

@@ -1,13 +1,11 @@
 package connect.instant.receiver;
 
 import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
-import connect.database.green.bean.MessageEntity;
 import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;

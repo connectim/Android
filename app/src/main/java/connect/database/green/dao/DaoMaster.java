@@ -29,10 +29,10 @@ public class DaoMaster extends AbstractDaoMaster {
         FriendRequestEntityDao.createTable(db, ifNotExists);
         GroupEntityDao.createTable(db, ifNotExists);
         GroupMemberEntityDao.createTable(db, ifNotExists);
+        MessageEntityDao.createTable(db, ifNotExists);
         ParamEntityDao.createTable(db, ifNotExists);
         RecommandFriendEntityDao.createTable(db, ifNotExists);
         TransactionEntityDao.createTable(db, ifNotExists);
-        MessageEntityDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -45,10 +45,10 @@ public class DaoMaster extends AbstractDaoMaster {
         FriendRequestEntityDao.dropTable(db, ifExists);
         GroupEntityDao.dropTable(db, ifExists);
         GroupMemberEntityDao.dropTable(db, ifExists);
+        MessageEntityDao.dropTable(db, ifExists);
         ParamEntityDao.dropTable(db, ifExists);
         RecommandFriendEntityDao.dropTable(db, ifExists);
         TransactionEntityDao.dropTable(db, ifExists);
-        MessageEntityDao.dropTable(db, ifExists);
     }
 
     /**
@@ -75,10 +75,10 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(FriendRequestEntityDao.class);
         registerDaoClass(GroupEntityDao.class);
         registerDaoClass(GroupMemberEntityDao.class);
+        registerDaoClass(MessageEntityDao.class);
         registerDaoClass(ParamEntityDao.class);
         registerDaoClass(RecommandFriendEntityDao.class);
         registerDaoClass(TransactionEntityDao.class);
-        registerDaoClass(MessageEntityDao.class);
     }
 
     public DaoSession newSession() {

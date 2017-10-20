@@ -15,7 +15,6 @@ import java.io.File;
 import connect.activity.chat.bean.DestructReadBean;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.view.BubbleImg;
 import connect.activity.common.bean.ConverType;

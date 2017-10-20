@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import instant.bean.ChatMsgEntity;
 import instant.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.TransferMutiDetailActivity;
 import connect.activity.chat.exts.TransferSingleDetailActivity;
 import connect.database.green.DaoHelper.TransactionHelper;

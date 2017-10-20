@@ -8,7 +8,6 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.utils.StringUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
