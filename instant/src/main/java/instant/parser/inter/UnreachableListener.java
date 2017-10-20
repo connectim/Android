@@ -17,6 +17,4 @@ public interface UnreachableListener {
     void saltNotMatch(String msgid, String publicKey, Connect.ChatCookie cookie) throws Exception;
 
     void halfRandom(String msgid, String publicKey) throws Exception;
-
-    void receiveFailMsgs(String publicKey);
 }

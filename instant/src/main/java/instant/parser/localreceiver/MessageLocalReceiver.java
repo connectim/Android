@@ -32,8 +32,13 @@ public class MessageLocalReceiver implements MessageListener {
     }
 
     @Override
-    public void singleChat(Connect.ChatMessage chatMessages, String publicKey, byte[] contents) throws Exception {
-        getMessageListener().singleChat(chatMessages, publicKey, contents);
+    public long chatBurnTime(String publicKey) {
+        return getMessageListener().chatBurnTime(publicKey);
+    }
+
+    @Override
+    public void singleChat(Connect.ChatMessage chatMessage, String publicKey, byte[] contents) throws Exception {
+        getMessageListener().singleChat(chatMessage, publicKey, contents);
     }
 
     @Override

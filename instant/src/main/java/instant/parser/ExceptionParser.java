@@ -27,6 +27,6 @@ public class ExceptionParser extends InterParse {
      * Be offline
      */
    private void crowdedOffline() {
-       CommandLocalReceiver.receiver.homeExit();
+
    }
 }

@@ -736,4 +736,6 @@
     <string name="Wallet_synchronization_data_failed">Синхронные данные не удалось</string>
     <string name="Set_please_enter_the_original_password">Пожалуйста введите оригинальный пароль</string>
     <string name="Wallet_Failed_to_get_the_list_address">Не удалось получить список адресов</string>
+    <string name="Chat_Message_Black_Friend_Notice">Сообщение было выпущено, но отклонено другой стороной</string>
+
 </resources>

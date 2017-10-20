@@ -143,7 +143,8 @@ public class MessageParser extends InterParse {
                 Map<String, Object> friendFail = FailMsgsManager.getInstance().getFailMap(msgid);
                 if (friendFail != null) {
                     String friendkey= (String) friendFail.get("PUBKEY");
-                    UnreachableLocalReceiver.localReceiver.receiveFailMsgs(friendkey);
+                    FailMsgsManager.getInstance().receiveFailMsgs(friendkey);
+
                     UnreachableLocalReceiver.localReceiver.notFriendNotice(friendkey);
                 }
                 break;

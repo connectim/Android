@@ -1,5 +1,6 @@
 package connect.instant.receiver;
 
+import connect.database.green.DaoHelper.ConversionHelper;
 import connect.utils.NotificationBar;
 import instant.bean.ChatMsgEntity;
 import instant.bean.ConnectState;

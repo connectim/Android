@@ -54,9 +54,4 @@ public class UnreachableLocalReceiver implements UnreachableListener {
     public void halfRandom(String msgid, String publicKey) throws Exception {
         getUnreachableListener().halfRandom(msgid, publicKey);
     }
-
-    @Override
-    public void receiveFailMsgs(String publicKey) {
-        getUnreachableListener().receiveFailMsgs(publicKey);
-    }
 }

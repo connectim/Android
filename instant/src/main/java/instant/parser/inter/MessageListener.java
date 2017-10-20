@@ -8,9 +8,11 @@ import protos.Connect;
 
 public interface MessageListener {
 
-    void singleChat(Connect.ChatMessage chatMessages, String publicKey,byte[] contents) throws Exception;
+    long chatBurnTime(String publicKey);
+
+    void singleChat(Connect.ChatMessage chatMessage, String publicKey,byte[] contents) throws Exception;
 
     void groupChat(Connect.MessagePost messagePost);
 
-    void inviteJoinGroup( Connect.CreateGroupMessage groupMessage);
+    void inviteJoinGroup(Connect.CreateGroupMessage groupMessage);
 }

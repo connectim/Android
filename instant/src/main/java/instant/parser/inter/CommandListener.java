@@ -28,8 +28,4 @@ public interface CommandListener {
     void updateGroupChange( Connect.GroupChange groupChange) throws Exception;
 
     void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo);
-
-    long chatBurnTime();
-
-    void homeExit();
 }

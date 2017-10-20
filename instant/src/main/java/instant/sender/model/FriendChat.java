@@ -8,6 +8,7 @@ import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.bean.UserCookie;
 import instant.bean.UserOrderBean;
+import instant.parser.localreceiver.MessageLocalReceiver;
 import instant.sender.SenderManager;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.utils.SharedUtil;
@@ -145,7 +146,7 @@ public class FriendChat extends NormalChat {
 
     @Override
     public long destructReceipt() {
-        return CommandLocalReceiver.receiver.chatBurnTime();
+        return MessageLocalReceiver.localReceiver.chatBurnTime(friendKey);
     }
 
     @Override

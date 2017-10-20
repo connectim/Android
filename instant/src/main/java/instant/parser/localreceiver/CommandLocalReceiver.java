@@ -80,14 +80,4 @@ public class CommandLocalReceiver implements CommandListener {
     public void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo) {
         getCommandListener().handlerOuterRedPacket(packageInfo);
     }
-
-    @Override
-    public long chatBurnTime() {
-        return getCommandListener().chatBurnTime();
-    }
-
-    @Override
-    public void homeExit() {
-        getCommandListener().homeExit();
-    }
 }

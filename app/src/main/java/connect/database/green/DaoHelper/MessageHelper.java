@@ -9,15 +9,14 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.database.green.BaseDao;
 import connect.database.green.bean.MessageEntity;
 import connect.database.green.dao.MessageEntityDao;
 import connect.utils.StringUtil;
 import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import instant.bean.ChatMsgEntity;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
