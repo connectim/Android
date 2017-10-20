@@ -8,9 +8,9 @@ import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
 import connect.activity.contact.bean.PhoneContactBean;
 
-public interface FriendAddContract {
+public interface AddFriendPhoneContract {
 
-    interface View extends BaseView<FriendAddContract.Presenter> {
+    interface View extends BaseView<AddFriendPhoneContract.Presenter> {
         Activity getActivity();
 
         void updateView(int size, List<PhoneContactBean> list);

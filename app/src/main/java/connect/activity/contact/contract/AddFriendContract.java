@@ -9,9 +9,9 @@ import connect.database.green.bean.FriendRequestEntity;
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
 
-public interface NewFriendContract {
+public interface AddFriendContract {
 
-    interface View extends BaseView<NewFriendContract.Presenter> {
+    interface View extends BaseView<AddFriendContract.Presenter> {
         Activity getActivity();
 
         void itemClick(int tag);

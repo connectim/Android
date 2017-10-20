@@ -14,7 +14,7 @@ import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
-import connect.activity.contact.presenter.FriendAddPresenter;
+import connect.activity.contact.presenter.AddFriendPhonePresenter;
 import connect.activity.contact.bean.PhoneContactBean;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
@@ -112,7 +112,7 @@ public class ConvertUtil {
             protected void onPostExecute(HashMap<String,List<PhoneContactBean>> map) {
                 super.onPostExecute(map);
                 Message message = new Message();
-                message.what = FriendAddPresenter.UPDATE_CODE;
+                message.what = AddFriendPhonePresenter.UPDATE_CODE;
                 message.obj = map;
                 handler.sendMessage(message);
             }

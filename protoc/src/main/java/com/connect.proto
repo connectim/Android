@@ -119,16 +119,17 @@ message UserAddress {
 string address=1;
 }
 message UserInfo {
-    string username=1;
-    string avatar=2;
-    string pub_key=3;
-    string uid=4;
-    bool  recommend = 5;
-    string connectId=6;
-    int32  source=7;
-    int64  created_at=8;
+    string username = 1;
+    string avatar = 2;
+    string pub_key = 3;
+    string uid = 4;
+    bool recommend = 5;
+    string connectId = 6;
+    int32 source = 7;
+    int64 created_at = 8;
     bool update_connect_id = 9;
     bool password_check = 10;
+    string ca_pub = 11;
 }
 
 message UsersInfo {

@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +12,7 @@ import java.util.List;
 
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.activity.contact.contract.FriendAddContract;
+import connect.activity.contact.contract.AddFriendPhoneContract;
 import connect.activity.contact.model.ConvertUtil;
 import connect.activity.contact.model.PhoneListComparatorSort;
 import connect.activity.set.bean.PrivateSetBean;
@@ -31,16 +30,16 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-public class FriendAddPresenter implements FriendAddContract.Presenter{
+public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter{
 
-    private FriendAddContract.View mView;
+    private AddFriendPhoneContract.View mView;
     private List<PhoneContactBean> localList;
     private Connect.PhoneBookUsersInfo usersInfo;
     public static final int UPDATE_CODE = 151;
     private ArrayList<PhoneContactBean> listData = new ArrayList<>();
     private PhoneListComparatorSort comp = new PhoneListComparatorSort();
 
-    public FriendAddPresenter(FriendAddContract.View mView) {
+    public AddFriendPhonePresenter(AddFriendPhoneContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
     }

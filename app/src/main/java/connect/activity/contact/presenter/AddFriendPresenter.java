@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -12,13 +11,12 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.RecommandFriendEntity;
 import connect.ui.activity.R;
 import connect.activity.contact.bean.ContactNotice;
-import connect.activity.contact.contract.NewFriendContract;
+import connect.activity.contact.contract.AddFriendContract;
 import connect.activity.home.bean.WalletMenuBean;
 import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.utils.ProtoBufUtil;
@@ -28,14 +26,14 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-public class NewFriendPresenter implements NewFriendContract.Presenter{
+public class AddFriendPresenter implements AddFriendContract.Presenter{
 
-    private NewFriendContract.View mView;
+    private AddFriendContract.View mView;
     private ArrayList<FriendRequestEntity> listRecommend = new ArrayList<>();
     private ArrayList<FriendRequestEntity> listRuquest = new ArrayList<>();
     private final int MAX_RECOMMEND_COUNT = 4;
 
-    public NewFriendPresenter(NewFriendContract.View mView) {
+    public AddFriendPresenter(AddFriendContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
     }
@@ -52,7 +50,7 @@ public class NewFriendPresenter implements NewFriendContract.Presenter{
 
         WalletMenuAdapter walletMenuAdapter = new WalletMenuAdapter(menuList, mView.getActivity());
         recycler.setLayoutManager(new GridLayoutManager(mView.getActivity(), 3));
-        recycler.addItemDecoration(new LineDecoration(mView.getActivity()));
+        // recycler.addItemDecoration(new LineDecoration(mView.getActivity()));
         recycler.setAdapter(walletMenuAdapter);
         walletMenuAdapter.setOnItemClickListener(new WalletMenuAdapter.OnItemClickListener() {
             @Override
