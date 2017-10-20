@@ -8,11 +8,8 @@ import com.wallet.inter.WalletListener;
 import java.util.List;
 
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
-import connect.activity.chat.model.content.GroupChat;
-import connect.activity.chat.model.content.NormalChat;
 import connect.activity.wallet.manager.TransferManager;
 import connect.activity.wallet.manager.TransferType;
 import connect.database.MemoryDataManager;
@@ -22,6 +19,7 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.CurrencyEntity;
 import connect.database.green.bean.GroupEntity;
+import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
@@ -32,6 +30,8 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.NormalChat;
 import protos.Connect;
 
 /**
@@ -77,8 +77,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
                     Connect.UserInfo senderInfo = crowdfunding.getSender();
                     String avatar = senderInfo.getAvatar();
                     String senderName = "";
-                    // qwert
-                    /*if (MemoryDataManager.getInstance().getAddress().equals(senderInfo.getUid())) {
+                    if (MemoryDataManager.getInstance().getUid().equals(senderInfo.getUid())) {
                         senderName = activity.getString(R.string.Chat_You);
                     } else {
                         senderName = senderInfo.getUsername();
@@ -86,7 +85,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
                         if (currencyEntity != null) {
                             view.showBalance(currencyEntity.getBalance());
                         }
-                    }*/
+                    }
                     view.senderInfo(avatar, senderName);
                     view.showTips(crowdfunding.getTips());
 
@@ -104,10 +103,9 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
 
                     boolean state = false;
                     for (Connect.CrowdfundingRecord record : records) {
-                        // qwert
-                        /*if (MemoryDataManager.getInstance().getAddress().equals(record.getUser().getUid())) {
+                        if (MemoryDataManager.getInstance().getUid().equals(record.getUser().getUid())) {
                             state = true;
-                        }*/
+                        }
                     }
                     view.showCrowdingRecords(records, state);
                 } catch (Exception e) {
@@ -123,7 +121,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
     }
 
     @Override
-    public void requestCrowdingPay(String hashid) {
+    public void requestCrowdingPay(final String hashid) {
         TransferManager transferManager = new TransferManager(activity, CurrencyEnum.BTC);
         transferManager.typePayment(hashid, TransferType.TransactionTypePayment.getType(), new WalletListener<String>() {
             @Override
@@ -134,8 +132,8 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
 
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(crowdfunding.getGroupHash());
                 if (groupEntity != null) {
-                    NormalChat normalChat = new GroupChat(groupEntity);
-                    MsgExtEntity msgExtEntity = normalChat.noticeMsg(noticeContent);
+                    NormalChat normalChat = new CGroupChat(groupEntity);
+                    ChatMsgEntity msgExtEntity = normalChat.noticeMsg(2, noticeContent, hashid);
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                 }
 

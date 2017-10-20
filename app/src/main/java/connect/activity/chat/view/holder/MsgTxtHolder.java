@@ -6,11 +6,11 @@ import android.view.View;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.view.EmoTextView;
 import connect.activity.common.bean.ConverType;
 import connect.activity.common.selefriend.ConversationActivity;
 import connect.ui.activity.R;
+import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
 /**
@@ -27,7 +27,7 @@ public class MsgTxtHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(msgExtEntity.getContents());
 
@@ -47,7 +47,7 @@ public class MsgTxtHolder extends MsgChatHolder {
 
     @Override
     public void transPondTo() {
-        MsgExtEntity msgExtEntity = getMsgExtEntity();
+        ChatMsgEntity msgExtEntity = getMsgExtEntity();
         try {
             Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(msgExtEntity.getContents());
             ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), textMessage.getContent());

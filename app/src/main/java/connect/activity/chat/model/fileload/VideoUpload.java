@@ -9,13 +9,12 @@ import com.netcompss.loader.LoadJNI;
 
 import java.io.File;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileUpLoad;
-import connect.activity.chat.model.content.BaseChat;
 import connect.database.MemoryDataManager;
 import connect.utils.FileUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.BaseChat;
+import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -23,7 +22,7 @@ import protos.Connect;
  */
 public class VideoUpload extends FileUpLoad {
 
-    public VideoUpload(Context context, BaseChat baseChat, MsgExtEntity entity, FileUpListener listener) {
+    public VideoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUpListener listener) {
         this.context = context;
         this.context = context;
         this.baseChat = baseChat;
@@ -87,7 +86,7 @@ public class VideoUpload extends FileUpLoad {
                     videoMessage = videoMessage.toBuilder().setCover(thumb)
                             .setUrl(url).build();
 
-                    msgExtEntity = (MsgExtEntity) msgExtEntity.clone();
+                    msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(videoMessage.toByteArray());
                     uploadSuccess(msgExtEntity);
                 } catch (Exception e) {

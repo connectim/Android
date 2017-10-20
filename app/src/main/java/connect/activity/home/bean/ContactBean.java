@@ -7,7 +7,7 @@ package connect.activity.home.bean;
 public class ContactBean {
 
     private String pub_key;
-    private String address;
+    private String uid;
     private String name;
     private String avatar;
     /**
@@ -31,14 +31,6 @@ public class ContactBean {
 
     public void setPub_key(String pub_key) {
         this.pub_key = pub_key;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getName() {
@@ -79,5 +71,13 @@ public class ContactBean {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

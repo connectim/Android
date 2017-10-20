@@ -6,11 +6,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import connect.activity.chat.bean.ApplyGroupBean;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.HandleGroupRequestActivity;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
+import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
 /**
@@ -34,7 +34,7 @@ public class MsgHandleJoinGroupHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         Connect.Reviewed reviewed = Connect.Reviewed.parseFrom(msgExtEntity.getContents());
 

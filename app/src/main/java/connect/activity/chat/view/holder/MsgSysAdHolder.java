@@ -7,12 +7,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.set.AboutActivity;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.glide.GlideUtil;
+import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
 /**
@@ -37,7 +37,7 @@ public class MsgSysAdHolder extends MsgBaseHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.Announcement announcement = Connect.Announcement.parseFrom(msgExtEntity.getContents());
 

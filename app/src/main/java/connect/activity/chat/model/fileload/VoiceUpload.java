@@ -3,12 +3,12 @@ package connect.activity.chat.model.fileload;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.inter.FileUpLoad;
-import connect.activity.chat.model.content.BaseChat;
 import connect.database.MemoryDataManager;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.BaseChat;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -16,7 +16,7 @@ import protos.Connect;
  */
 public class VoiceUpload extends FileUpLoad {
 
-    public VoiceUpload(Context context, BaseChat baseChat, MsgExtEntity entity, FileUpListener listener) {
+    public VoiceUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUpListener listener) {
         this.context = context;
         this.context = context;
         this.baseChat = baseChat;
@@ -72,7 +72,7 @@ public class VoiceUpload extends FileUpLoad {
                     Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
                     voiceMessage = voiceMessage.toBuilder().setUrl(url).build();
 
-                    msgExtEntity = (MsgExtEntity) msgExtEntity.clone();
+                    msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(voiceMessage.toByteArray());
                     uploadSuccess(msgExtEntity);
                 } catch (Exception e) {

@@ -70,7 +70,7 @@ public class OkHttpUtil {
      * @param exts
      * @param resultCall
      */
-    public void postEncrySelf(String url, GeneratedMessageV3 body,EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
+    public void postEncrySelf(String url, GeneratedMessageV3 body, EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
         LogManager.getLogger().http("param:" + body.toString());
         ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
         Connect.IMRequest imRequest = getIMRequest(exts,MemoryDataManager.getInstance().getPriKey(),

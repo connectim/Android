@@ -13,10 +13,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.chat.model.content.FriendChat;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.UserOrderBean;
+import connect.instant.model.CFriendChat;
 import connect.ui.activity.R;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
@@ -25,6 +24,8 @@ import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastUtil;
 import connect.widget.TopToolBar;
+import instant.bean.UserOrderBean;
+import instant.sender.model.FriendChat;
 
 /**
  * Modify your friend's alias
@@ -81,7 +82,7 @@ public class FriendInfoAliasActivity extends BaseActivity {
         boolean common = friendEntity.getCommon() != null && friendEntity.getCommon() == 1;
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.setFriend(friendEntity.getAddress(), friendEntity.getRemark(), common, msgSendBean);
+        userOrderBean.setFriend(friendEntity.getUid(), friendEntity.getRemark(), common, msgSendBean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -97,7 +98,7 @@ public class FriendInfoAliasActivity extends BaseActivity {
                     ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
                     ContactNotice.receiverFriend();
 
-                    FriendChat friendChat = new FriendChat(friendEntity);
+                    CFriendChat friendChat = new CFriendChat(friendEntity);
                     friendChat.updateRoomMsg(null, "", -1, -1, -1);
 
                     ActivityUtil.goBack(mActivity);

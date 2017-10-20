@@ -736,4 +736,5 @@
     <string name="Wallet_synchronization_data_failed">同步数据失败</string>
     <string name="Set_please_enter_the_original_password">请输入原密码</string>
     <string name="Wallet_Failed_to_get_the_list_address">获取地址列表失败</string>
+    <string name="Chat_Message_Black_Friend_Notice">消息已发出，但被对方拒收了</string>
 </resources>

@@ -26,15 +26,14 @@ import connect.activity.set.SupportActivity;
 import connect.activity.set.UserAddressActivity;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
-import connect.im.bean.UserOrderBean;
-import connect.im.model.FailMsgsManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import com.wallet.NativeWallet;
+import instant.bean.UserOrderBean;
+import instant.utils.manager.FailMsgsManager;
 
 /**
  * Set the main interface.

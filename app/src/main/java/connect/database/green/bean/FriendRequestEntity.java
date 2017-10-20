@@ -15,9 +15,7 @@ public class FriendRequestEntity implements Serializable {
     @Id(autoincrement = true)
     private Long _id;
     @NotNull
-    private String pub_key;
-    @NotNull
-    private String address;
+    private String uid;
 
     private String avatar;
     private String username;
@@ -26,13 +24,16 @@ public class FriendRequestEntity implements Serializable {
     private Integer status;
     private Integer read;
 
-    @Generated(hash = 1099393682)
-    public FriendRequestEntity(Long _id, @NotNull String pub_key,
-            @NotNull String address, String avatar, String username, String tips,
-            Integer source, Integer status, Integer read) {
+
+    @Generated(hash = 651915895)
+    public FriendRequestEntity() {
+    }
+    @Generated(hash = 1967598621)
+    public FriendRequestEntity(Long _id, @NotNull String uid, String avatar,
+            String username, String tips, Integer source, Integer status,
+            Integer read) {
         this._id = _id;
-        this.pub_key = pub_key;
-        this.address = address;
+        this.uid = uid;
         this.avatar = avatar;
         this.username = username;
         this.tips = tips;
@@ -40,26 +41,11 @@ public class FriendRequestEntity implements Serializable {
         this.status = status;
         this.read = read;
     }
-    @Generated(hash = 651915895)
-    public FriendRequestEntity() {
-    }
     public Long get_id() {
         return this._id;
     }
     public void set_id(Long _id) {
         this._id = _id;
-    }
-    public String getPub_key() {
-        return this.pub_key;
-    }
-    public void setPub_key(String pub_key) {
-        this.pub_key = pub_key;
-    }
-    public String getAddress() {
-        return this.address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
     }
     public String getAvatar() {
         return this.avatar;
@@ -98,4 +84,11 @@ public class FriendRequestEntity implements Serializable {
         this.read = read;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 }

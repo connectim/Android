@@ -91,6 +91,10 @@ public class MemoryDataManager {
         return pubkey;
     }
 
+    public String getUid() {
+        return "";
+    }
+
     /**
      * Gets the current user's name
      * @return

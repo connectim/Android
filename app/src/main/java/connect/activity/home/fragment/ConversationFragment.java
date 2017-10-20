@@ -14,13 +14,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseFragment;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ChatListAdapter;
 import connect.activity.home.bean.ConversationAction;
@@ -28,10 +26,7 @@ import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ConnectStateView;
 import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ConversionHelper;
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
-import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
 /**
  * Created by gtq on 2016/11/21.

@@ -3,9 +3,8 @@ package connect.activity.chat.inter;
 import connect.activity.chat.bean.RoomSession;
 import connect.database.MemoryDataManager;
 import connect.utils.StringUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.DownLoadFile;
 import protos.Connect;
 

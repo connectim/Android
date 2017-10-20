@@ -89,7 +89,7 @@ public class ContactListManage {
             String name = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
             contactBean.setName(name);
             contactBean.setAvatar(friendEntity.getAvatar());
-            contactBean.setAddress(friendEntity.getAddress());
+            contactBean.setUid(friendEntity.getUid());
             contactBean.setPub_key(friendEntity.getPub_key());
             if(friendEntity.getSource() != null && friendEntity.getSource() == -1){
                 contactBean.setStatus(6);

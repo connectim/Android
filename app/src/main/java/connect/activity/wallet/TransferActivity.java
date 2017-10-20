@@ -85,13 +85,13 @@ public class TransferActivity extends BaseActivity {
                         TransferOutViaActivity.startActivity(mActivity);
                         break;
                     case 3:
-                        TransferAddressActivity.startActivity(mActivity, transferBean.getAddress());
+                        TransferAddressActivity.startActivity(mActivity, transferBean.getUid());
                         break;
                     case 4:
-                        TransferToActivity.startActivity(mActivity, transferBean.getAddress());
+                        TransferToActivity.startActivity(mActivity, transferBean.getUid());
                         break;
                     case 5:
-                        LuckyPacketActivity.startActivity(mActivity, 0, transferBean.getAddress());
+                        LuckyPacketActivity.startActivity(mActivity, 0, transferBean.getUid());
                         break;
                     default:
                         break;

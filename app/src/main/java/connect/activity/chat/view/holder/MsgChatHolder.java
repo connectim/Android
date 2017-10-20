@@ -9,14 +9,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import connect.activity.chat.BaseChatActvity;
-import connect.activity.chat.bean.BaseListener;
+
+import connect.activity.base.BaseListener;
 import connect.activity.chat.bean.DestructReadBean;
-import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
+import connect.activity.chat.bean.LinkMessageRow;
+import connect.activity.chat.model.ChatMsgUtil;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.model.content.GroupChat;
 import connect.activity.chat.view.BurnProBar;
 import connect.activity.chat.view.MsgStateView;
 import connect.activity.contact.FriendInfoActivity;
@@ -28,11 +28,11 @@ import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.bean.ChatMsgEntity;
+import instant.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
 import connect.widget.ChatHeadImg;
 import connect.widget.prompt.ChatPromptViewManager;
@@ -82,7 +82,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final MsgDirect direct = msgExtEntity.parseDirect();
         try {
@@ -135,9 +135,9 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                         burnProBar.setVisibility(View.VISIBLE);
                         burnProBar.setMsgExtEntity(msgExtEntity);
 
-                        MsgType msgType = MsgType.toMsgType(msgExtEntity.getMessageType());
+                        LinkMessageRow msgType = LinkMessageRow.toMsgType(msgExtEntity.getMessageType());
                         burnProBar.loadBurnMsg();
-                        if (direct == MsgDirect.From && (msgType == MsgType.Text || msgType == MsgType.Emotion)) {
+                        if (direct == MsgDirect.From && (msgType == LinkMessageRow.Text || msgType == LinkMessageRow.Emotion)) {
                             msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                             DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
                         }
@@ -170,9 +170,10 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     }
                 } else if (direct == MsgDirect.From) {
                     memberTxt.setVisibility(View.VISIBLE);
+                    String groupKey=msgExtEntity.getMessage_ower();
                     String memberKey = msgExtEntity.getMessage_from();
 
-                    ((GroupChat) ((BaseChatActvity) context).getNormalChat()).loadGroupMember(memberKey, new BaseListener<GroupMemberEntity>() {
+                    ChatMsgUtil.chatMsgUtil.loadGroupMember(groupKey,memberKey, new BaseListener<GroupMemberEntity>() {
                         @Override
                         public void Success(GroupMemberEntity ts) {
                             GlideUtil.loadAvatarRound(headImg, ts.getAvatar());
@@ -214,7 +215,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
     }
 
     public void deleteChatMsg() {
-        MsgExtEntity msgExtEntity = getMsgExtEntity();
+        ChatMsgEntity msgExtEntity = getMsgExtEntity();
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.DELMSG, msgExtEntity);
         MessageHelper.getInstance().deleteMsgByid(msgExtEntity.getMessage_id());
     }

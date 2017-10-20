@@ -1,10 +1,7 @@
 package connect.activity.login.presenter;
 
-import connect.database.SharedPreferenceUtil;
 import connect.activity.login.bean.CountryBean;
-import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneContract;
-import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -12,8 +9,6 @@ import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-import java.util.ArrayList;
-import java.util.List;
 import connect.ui.activity.R;
 
 /**

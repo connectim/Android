@@ -26,7 +26,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
     public static class Properties {
         public final static Property _id = new Property(0, Long.class, "_id", true, "_id");
         public final static Property Pub_key = new Property(1, String.class, "pub_key", false, "PUB_KEY");
-        public final static Property Address = new Property(2, String.class, "address", false, "ADDRESS");
+        public final static Property Uid = new Property(2, String.class, "uid", false, "UID");
         public final static Property ConnectId = new Property(3, String.class, "connectId", false, "CONNECT_ID");
         public final static Property Username = new Property(4, String.class, "username", false, "USERNAME");
         public final static Property Avatar = new Property(5, String.class, "avatar", false, "AVATAR");
@@ -51,7 +51,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"CONTACT_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
                 "\"PUB_KEY\" TEXT NOT NULL UNIQUE ," + // 1: pub_key
-                "\"ADDRESS\" TEXT UNIQUE ," + // 2: address
+                "\"UID\" TEXT," + // 2: uid
                 "\"CONNECT_ID\" TEXT," + // 3: connectId
                 "\"USERNAME\" TEXT," + // 4: username
                 "\"AVATAR\" TEXT," + // 5: avatar
@@ -77,9 +77,9 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         }
         stmt.bindString(2, entity.getPub_key());
  
-        String address = entity.getAddress();
-        if (address != null) {
-            stmt.bindString(3, address);
+        String uid = entity.getUid();
+        if (uid != null) {
+            stmt.bindString(3, uid);
         }
  
         String connectId = entity.getConnectId();
@@ -128,9 +128,9 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         }
         stmt.bindString(2, entity.getPub_key());
  
-        String address = entity.getAddress();
-        if (address != null) {
-            stmt.bindString(3, address);
+        String uid = entity.getUid();
+        if (uid != null) {
+            stmt.bindString(3, uid);
         }
  
         String connectId = entity.getConnectId();
@@ -179,7 +179,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         ContactEntity entity = new ContactEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
             cursor.getString(offset + 1), // pub_key
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // address
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // uid
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // connectId
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // username
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // avatar
@@ -195,7 +195,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
     public void readEntity(Cursor cursor, ContactEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setPub_key(cursor.getString(offset + 1));
-        entity.setAddress(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setUid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setConnectId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setUsername(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setAvatar(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));

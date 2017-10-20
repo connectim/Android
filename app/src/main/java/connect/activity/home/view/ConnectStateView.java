@@ -11,9 +11,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import connect.im.bean.ConnectState;
 import connect.ui.activity.R;
 import connect.utils.log.LogManager;
+import instant.bean.ConnectState;
 
 /**
  * Created by pujin on 2017/2/6.

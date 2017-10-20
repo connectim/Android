@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.GoogleMapActivity;
 import connect.activity.chat.view.BubbleImg;
 import connect.ui.activity.R;
+import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
 /**
@@ -24,7 +24,7 @@ public class MsgLocationHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.LocationMessage locationMessage = Connect.LocationMessage.parseFrom(msgExtEntity.getContents());
 

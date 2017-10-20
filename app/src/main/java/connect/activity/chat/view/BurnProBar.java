@@ -12,12 +12,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import connect.activity.chat.bean.DestructReadBean;
-import connect.activity.chat.bean.MsgDirect;
+import connect.activity.chat.bean.LinkMessageRow;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.im.bean.MsgType;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.system.SystemUtil;
@@ -33,7 +34,7 @@ public class BurnProBar extends View {
     private Paint paint;
 
     private BurnCountTimer burnTimer = null;
-    private MsgExtEntity msgExtEntity;
+    private ChatMsgEntity msgExtEntity;
 
     public BurnProBar(Context context) {
         super(context);
@@ -64,7 +65,7 @@ public class BurnProBar extends View {
         invalidate();
     }
 
-    public void setMsgExtEntity(MsgExtEntity msgExtEntity) {
+    public void setMsgExtEntity(ChatMsgEntity msgExtEntity) {
         this.msgExtEntity = msgExtEntity;
     }
 
@@ -92,7 +93,7 @@ public class BurnProBar extends View {
 
         MsgDirect direct = msgExtEntity.parseDirect();
         if (direct == MsgDirect.From) {
-            MsgSend.sendOuterMsg(MsgType.Self_destruct_Receipt, msgExtEntity.getMessage_id());
+            MsgSend.sendOuterMsg(LinkMessageRow.Self_destruct_Receipt, msgExtEntity.getMessage_id());
         }
     }
 

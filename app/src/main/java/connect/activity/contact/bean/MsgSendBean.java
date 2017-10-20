@@ -12,7 +12,7 @@ public class MsgSendBean implements Serializable {
     private String username;
     private String avatar;
     private String pubkey;
-    private String address;
+    private String uid;
     private Boolean common;
     private Integer source;
     private String remark;
@@ -53,14 +53,6 @@ public class MsgSendBean implements Serializable {
 
     public void setPubkey(String pubkey) {
         this.pubkey = pubkey;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public Boolean getCommon() {
@@ -109,5 +101,13 @@ public class MsgSendBean implements Serializable {
 
     public void setTips(String tips) {
         this.tips = tips;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

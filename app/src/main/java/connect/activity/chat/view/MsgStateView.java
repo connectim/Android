@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.ui.activity.R;
+import instant.bean.ChatMsgEntity;
 
 /**
  * State news component
@@ -30,7 +31,7 @@ public class MsgStateView extends RelativeLayout {
     /** The message delay processing */
     private static final long MESSAGE_DELAY = 1000;
     /** Send the failure message */
-    private MsgExtEntity msgExtEntity;
+    private ChatMsgEntity msgExtEntity;
 
     public MsgStateView(Context context) {
         super(context);
@@ -52,7 +53,7 @@ public class MsgStateView extends RelativeLayout {
         }
     };
 
-    public void setMsgEntity(MsgExtEntity entity) {
+    public void setMsgEntity(ChatMsgEntity entity) {
         this.msgExtEntity = entity;
     }
 

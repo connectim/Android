@@ -6,7 +6,6 @@ import android.net.Uri;
 import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.activity.chat.exts.TransferToActivity;
@@ -18,6 +17,7 @@ import connect.activity.home.bean.MsgNoticeBean;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
+import instant.bean.UserOrderBean;
 
 /**
  * Web Url parsing
@@ -94,8 +94,7 @@ public class ResolveUrlUtil {
      * @param isCloseScan
      */
     private void dealFriend(ScanResultBean resultBean, boolean isCloseScan){
-        // qwert
-        /*if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
+        if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getUid())) {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(resultBean.getAddress());
             if (friendEntity != null) {
                 FriendInfoActivity.startActivity(activity, resultBean.getAddress());
@@ -105,7 +104,7 @@ public class ResolveUrlUtil {
             if(isCloseScan){
                 ActivityUtil.goBack(activity);
             }
-        }*/
+        }
     }
 
     /**

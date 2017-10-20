@@ -188,14 +188,13 @@ public class SeleUsersActivity extends BaseActivity {
         ArrayList<ContactEntity> list = new ArrayList<>();
         List<GroupMemberEntity> allMembers = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         for (GroupMemberEntity groupMemEntity : allMembers) {
-            if (MemoryDataManager.getInstance().getPubKey().equals(groupMemEntity.getPub_key()))
+            if (MemoryDataManager.getInstance().getPubKey().equals(groupMemEntity.getUid()))
                 continue;
             ContactEntity friendEntity = new ContactEntity();
             friendEntity.setAvatar(groupMemEntity.getAvatar());
-            friendEntity.setAddress(groupMemEntity.getAddress());
+            friendEntity.setUid(groupMemEntity.getUid());
             String name = TextUtils.isEmpty(groupMemEntity.getUsername()) ? groupMemEntity.getNick() : groupMemEntity.getUsername();
             friendEntity.setUsername(name);
-            friendEntity.setPub_key(groupMemEntity.getPub_key());
             list.add(friendEntity);
         }
         return list;

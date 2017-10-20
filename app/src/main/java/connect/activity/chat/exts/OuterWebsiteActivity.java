@@ -26,12 +26,10 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.GroupChat;
-import connect.activity.chat.model.content.NormalChat;
 import connect.activity.common.bean.ConverType;
 import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.home.bean.MsgNoticeBean;
@@ -39,13 +37,18 @@ import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
-import connect.im.bean.MsgType;
+import connect.instant.model.CFriendChat;
+import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.RegularUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.TopToolBar;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.FriendChat;
+import instant.sender.model.GroupChat;
+import instant.sender.model.NormalChat;
 
 public class OuterWebsiteActivity extends BaseActivity {
 
@@ -278,23 +281,31 @@ public class OuterWebsiteActivity extends BaseActivity {
 
             NormalChat baseChat = null;
             if (RoomSession.getInstance().getRoomKey().equals(pubkey)) {
-                MsgSend.sendOuterMsg(MsgType.OUTER_WEBSITE, inUrl, title,TextUtils.isEmpty(subtitle) ? inUrl : subtitle,imgUrl);
+                MsgSend.sendOuterMsg(LinkMessageRow.OUTER_WEBSITE, inUrl, title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
             } else {
                 switch (type) {
                     case 0:
                         ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(pubkey);
-                        baseChat = new FriendChat(friend);
+                        baseChat = new CFriendChat(friend);
                         break;
                     case 1:
                         GroupEntity group = ContactHelper.getInstance().loadGroupEntity(pubkey);
-                        baseChat = new GroupChat(group);
+                        baseChat = new CGroupChat(group);
                         break;
                 }
 
-                MsgExtEntity msgExtEntity = baseChat.outerWebsiteMsg(inUrl, title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
+                ChatMsgEntity msgExtEntity = baseChat.outerWebsiteMsg(inUrl, title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
                 baseChat.sendPushMsg(msgExtEntity);
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                baseChat.updateRoomMsg(null, getString(R.string.Chat_Sharelink), msgExtEntity.getCreatetime());
+
+                switch (type) {
+                    case 0:
+                        ((CFriendChat) baseChat).updateRoomMsg(null, getString(R.string.Chat_Sharelink), msgExtEntity.getCreatetime());
+                        break;
+                    case 1:
+                        ((CGroupChat) baseChat).updateRoomMsg(null, getString(R.string.Chat_Sharelink), msgExtEntity.getCreatetime());
+                        break;
+                }
             }
         }
     }

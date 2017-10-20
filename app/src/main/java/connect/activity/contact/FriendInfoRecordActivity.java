@@ -16,14 +16,13 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.FriendRecordAdapter;
 import connect.activity.wallet.BlockchainActivity;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import com.wallet.bean.CurrencyEnum;
@@ -118,7 +117,7 @@ public class FriendInfoRecordActivity extends BaseActivity {
     private void requestRecord() {
         Connect.FriendRecords friendRecords = Connect.FriendRecords.newBuilder()
                 .setSelfAddress(SharedPreferenceUtil.getInstance().getUser().getUid())
-                .setFriendAddress(friendEntity.getAddress())
+                .setFriendAddress(friendEntity.getUid())
                 .setPageSize(MAX_RECOMMEND_COUNT)
                 .setPageIndex(page)
                 .build();

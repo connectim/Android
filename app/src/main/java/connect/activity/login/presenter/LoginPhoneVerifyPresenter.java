@@ -3,10 +3,6 @@ package connect.activity.login.presenter;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-
-import java.security.SecureRandom;
 import java.util.List;
 
 import connect.activity.base.BaseApplication;
@@ -18,8 +14,6 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ExCountDownTimer;
 import connect.utils.ProgressUtil;
-import connect.utils.ProtoBufUtil;
-import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
@@ -30,7 +24,6 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
-import wallet_gateway.WalletOuterClass;
 
 public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Presenter {
 

@@ -19,7 +19,6 @@ import java.util.List;
 import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
-import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
 import connect.database.MemoryDataManager;

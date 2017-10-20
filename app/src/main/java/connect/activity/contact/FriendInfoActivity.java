@@ -33,13 +33,13 @@ import connect.activity.contact.presenter.FriendInfoPresenter;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
+import instant.bean.UserOrderBean;
 
 /**
  * Friends details.
@@ -119,7 +119,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         updateView(friendEntity);
 
         new FriendInfoPresenter(this).start();
-        presenter.requestUserInfo(friendEntity.getAddress(), friendEntity);
+        presenter.requestUserInfo(friendEntity.getUid(), friendEntity);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         this.friendEntity = friendEntity;
         GlideUtil.loadAvatarRound(avatarRimg, (null == friendEntity || null == friendEntity.getAvatar()) ? "" : friendEntity.getAvatar());
         nameTv.setText(friendEntity.getUsername());
-        addressTv.setText(friendEntity.getAddress());
+        addressTv.setText(friendEntity.getConnectId());
         sourceTv.setText(friendEntity.getSource() == null ? SourceType.UNKOWN.getString() : SourceType.getString(friendEntity.getSource()));
         aliasTv.setText(TextUtils.isEmpty(friendEntity.getRemark()) ? "" : friendEntity.getRemark());
         addFavoritesTb.setSelected(friendEntity.getCommon() == null ? false : friendEntity.getCommon() == 1);
@@ -147,7 +147,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @OnClick(R.id.id_lin)
     void copyAddress(View view) {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        cm.setText(friendEntity.getAddress());
+        cm.setText(friendEntity.getConnectId());
         ToastEUtil.makeText(mActivity, R.string.Set_Copied).show();
     }
 
@@ -158,7 +158,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.transfer_imgs)
     void goSendTransfer(View view) {
-        TransferToActivity.startActivity(mActivity, friendEntity.getAddress(), null);
+        TransferToActivity.startActivity(mActivity, friendEntity.getUid(), null);
     }
 
     @OnClick(R.id.share_img)
@@ -185,13 +185,13 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         String remark = friendEntity.getRemark() == null ? "" : friendEntity.getRemark();
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.setFriend(friendEntity.getAddress(), remark, !isSele, msgSendBean);
+        userOrderBean.setFriend(friendEntity.getUid(), remark, !isSele, msgSendBean);
     }
 
     @OnClick(R.id.add_block_tb)
     void switchBlock(View view) {
         boolean isSele = addBlockTb.isSelected();
-        presenter.requestBlock(!isSele, friendEntity.getAddress());
+        presenter.requestBlock(!isSele, friendEntity.getUid());
     }
 
     @OnClick(R.id.delete_friend_tv)
@@ -205,11 +205,11 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
                     case 0:
                         MsgSendBean msgSendBean = new MsgSendBean();
                         msgSendBean.setPubkey(friendEntity.getPub_key());
-                        msgSendBean.setAddress(friendEntity.getAddress());
+                        msgSendBean.setUid(friendEntity.getUid());
                         msgSendBean.setType(MsgSendBean.SendType.TypeDeleteFriend);
 
                         UserOrderBean userOrderBean = new UserOrderBean();
-                        userOrderBean.removeRelation(friendEntity.getAddress(), msgSendBean);
+                        userOrderBean.removeRelation(friendEntity.getUid(), msgSendBean);
                         break;
                     default:
                         break;

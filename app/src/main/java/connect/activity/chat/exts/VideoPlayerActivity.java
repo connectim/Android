@@ -21,12 +21,14 @@ import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.contract.VideoPlayContract;
 import connect.activity.chat.exts.presenter.VideoPlayPresenter;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.TimeUtil;
 import connect.utils.VideoPlayerUtil;
 import connect.widget.TopToolBar;
 import connect.widget.video.inter.VideoListener;
+import instant.bean.ChatMsgEntity;
 
 /**
  * play Local video files
@@ -117,7 +119,7 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
         @Override
         public void onVidePlayFinish() {
             if (!TextUtils.isEmpty(messageId)) {
-                MsgExtEntity msgExtEntity = MessageHelper.getInstance().loadMsgByMsgid(messageId).transToExtEntity();
+                ChatMsgEntity msgExtEntity = MessageHelper.getInstance().loadMsgByMsgid(messageId);
                 msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 

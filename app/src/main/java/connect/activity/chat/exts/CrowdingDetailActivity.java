@@ -260,19 +260,18 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
     }
 
     @Override
-    public void showCrowdingInfo(long total, long each, int state, String address) {
+    public void showCrowdingInfo(long total, long each, int state, String uid) {
         txt3.setText(String.format(getString(R.string.Wallet_Goal), RateFormatUtil.longToDoubleBtc(total)));
         txt4.setText(String.format(getString(R.string.Wallet_BTC_Each), RateFormatUtil.longToDoubleBtc(each)));
 
         if (state == 0) {
             layoutFirst.setVisibility(View.GONE);
             txt6.setVisibility(View.VISIBLE);
-            // qwert
-            /*if (MemoryDataManager.getInstance().getAddress().equals(address)) {//You initiate the raise
+            if (MemoryDataManager.getInstance().getPubKey().equals(uid)) {//You initiate the raise
                 btn.setVisibility(View.GONE);
             } else {
                 btn.setVisibility(View.VISIBLE);
-            }*/
+            }
         } else {
             layoutFirst.setVisibility(View.VISIBLE);
             txt6.setVisibility(View.GONE);

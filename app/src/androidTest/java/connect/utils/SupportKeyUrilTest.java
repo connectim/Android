@@ -8,9 +8,9 @@ import org.junit.Test;
 
 import java.security.SecureRandom;
 
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 import static org.junit.Assert.assertTrue;

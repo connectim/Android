@@ -80,13 +80,11 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
         toolbar.setRightListence(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // qwert
-                //GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, MemoryDataManager.getInstance().getAddress());
+                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, MemoryDataManager.getInstance().getUid());
                 final ArrayList<String> list = new ArrayList<>();
-                // qwert
-                /*if (myMember.getRole() == 1) {
+                if (myMember.getRole() == 1) {
                     list.add(activity.getResources().getString(R.string.Link_Refresh_QR_Code));
-                }*/
+                }
                 list.add(getString(R.string.Link_Share));
                 list.add(getString(R.string.Set_Save_Photo));
                 DialogUtil.showBottomView(activity, list, new DialogUtil.DialogListItemClickListener() {

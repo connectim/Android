@@ -2,7 +2,6 @@ package connect.activity.chat.set;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,16 +10,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.chat.set.contract.GroupManagerContract;
 import connect.activity.chat.set.presenter.GroupManagerPresenter;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.UriUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import protos.Connect;
 
 public class GroupManageActivity extends BaseActivity implements GroupManagerContract.BView{
 

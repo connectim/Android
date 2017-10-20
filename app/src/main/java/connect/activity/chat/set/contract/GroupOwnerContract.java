@@ -16,7 +16,7 @@ public interface GroupOwnerContract {
 
     interface Presenter extends BasePresenter {
 
-        void groupOwnerTo(String memberKey,String address);
+        void groupOwnerTo(String memberKey,String uid);
 
     }
 }

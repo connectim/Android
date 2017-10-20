@@ -17,6 +17,7 @@ import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.MsgExtEntity;
 import connect.ui.activity.R;
 import connect.utils.system.SystemUtil;
+import instant.bean.ChatMsgEntity;
 
 /**
  * News of outer display (time)
@@ -58,7 +59,7 @@ public class BaseContainer extends RelativeLayout {
     }
 
     private Context context;
-    private MsgExtEntity baseEntity;
+    private ChatMsgEntity baseEntity;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ContainerBean bean) {
@@ -113,7 +114,7 @@ public class BaseContainer extends RelativeLayout {
         EventBus.getDefault().unregister(this);
     }
 
-    public void setBaseEntity(MsgExtEntity baseEntity) {
+    public void setBaseEntity(ChatMsgEntity baseEntity) {
         this.baseEntity = baseEntity;
     }
 

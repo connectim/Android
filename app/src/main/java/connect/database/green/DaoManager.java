@@ -21,7 +21,7 @@ import connect.database.green.dao.DaoMaster;
 import connect.database.green.dao.DaoSession;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import connect.wallet.jni.AllNativeMethod;
 

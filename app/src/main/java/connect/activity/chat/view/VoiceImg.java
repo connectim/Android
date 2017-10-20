@@ -18,11 +18,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgDirect;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.RecExtBean;
 import connect.utils.ExCountDownTimer;
 import connect.utils.MediaUtil;

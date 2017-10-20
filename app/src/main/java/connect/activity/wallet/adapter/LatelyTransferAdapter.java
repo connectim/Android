@@ -51,7 +51,7 @@ public class LatelyTransferAdapter extends RecyclerView.Adapter<LatelyTransferAd
                 break;
             case 3:
                 viewHolder.avaterRimg.setBackgroundResource(R.mipmap.bitcoin_luckybag3x);
-                viewHolder.nameTv.setText(transEntity.getAddress());
+                viewHolder.nameTv.setText(transEntity.getUid());
                 break;
             case 4:
                 GlideUtil.loadAvatarRound(viewHolder.avaterRimg,transEntity.getAvater());

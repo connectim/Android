@@ -8,11 +8,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.GroupChat;
-import connect.activity.chat.model.content.NormalChat;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.contract.FriendInfoContract;
@@ -23,13 +19,18 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.GroupEntity;
+import connect.instant.inter.ConversationListener;
+import connect.instant.model.CFriendChat;
+import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.NormalChat;
+import instant.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.imagewatcher.ImageWatcher;
@@ -71,17 +72,17 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
         NormalChat baseChat = null;
         if (type == 0) {
             ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubKey);
-            baseChat = new FriendChat(acceptFriend);
+            baseChat = new CFriendChat(acceptFriend);
             talker = new Talker(acceptFriend);
         } else if (type == 1) {
             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubKey);
-            baseChat = new GroupChat(groupEntity);
+            baseChat = new CGroupChat(groupEntity);
             talker = new Talker(groupEntity);
         }
-        MsgExtEntity msgExtEntity = baseChat.cardMsg(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAvatar());
+        ChatMsgEntity msgExtEntity = baseChat.cardMsg(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAvatar());
         baseChat.sendPushMsg(msgExtEntity);
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-        baseChat.updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgExtEntity.getCreatetime());
+        ((ConversationListener)baseChat).updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgExtEntity.getCreatetime());
 
         ChatActivity.startActivity(activity,talker);
         activity.finish();
@@ -99,7 +100,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                 if (sendBean.getType() == MsgSendBean.SendType.TypeAddFavorites) {
                     mView.setCommon(sendBean.getCommon());
                 } else if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
-                    ContactHelper.getInstance().deleteEntity(sendBean.getAddress());
+                    ContactHelper.getInstance().deleteEntity(sendBean.getUid());
                     ContactHelper.getInstance().deleteRequestEntity(sendBean.getPubkey());
                     ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
 
@@ -112,7 +113,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                 Integer errorCode = (Integer) objs[1];
                 if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Link_Delete_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
-                    ContactHelper.getInstance().deleteEntity(sendBean.getAddress());
+                    ContactHelper.getInstance().deleteEntity(sendBean.getUid());
                     ContactHelper.getInstance().deleteRequestEntity(sendBean.getPubkey());
                     ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
                     ContactNotice.receiverContact();
@@ -156,7 +157,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     // Update the message list user information
                     ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
                     if (conversionEntity != null) {
-                        FriendChat friendChat = new FriendChat(friendEntity);
+                        CFriendChat friendChat = new CFriendChat(friendEntity);
                         friendChat.updateRoomMsg(null, "", -1, -1, -1);
                     }
                 } catch (InvalidProtocolBufferException e) {
@@ -196,5 +197,4 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             public void onError(Connect.HttpResponse response) {}
         });
     }
-
 }

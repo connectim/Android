@@ -96,7 +96,7 @@ public class SingleSetPresenter implements SingleSetContract.Presenter {
             } else {
                 GlideUtil.loadAvatarRound(headimg, entity.getAvatar());
             }
-            headerview.setTag(entity.getAddress());
+            headerview.setTag(entity.getUid());
             view.showContactInfo(headerview);
         }
     }

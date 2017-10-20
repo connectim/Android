@@ -19,7 +19,7 @@ public interface CrowdingDetailContract {
 
         void showTips(String tips);
 
-        void showCrowdingInfo(long total, long each, int state, String address);
+        void showCrowdingInfo(long total, long each, int state, String uid);
 
         void showPaidInfo(String info);
 

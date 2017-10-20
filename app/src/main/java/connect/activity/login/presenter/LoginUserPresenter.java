@@ -9,7 +9,7 @@ import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.SupportKeyUril;
 import connect.wallet.jni.AllNativeMethod;
 
 /**

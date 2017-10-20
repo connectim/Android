@@ -35,14 +35,12 @@ public class GroupMyAliasPresenter implements GroupMyAliasContract.Presenter {
     public void start() {
         groupKey = view.getRoomKey();
         activity = view.getActivity();
-
-        // qwert
-        /*String myAddress = MemoryDataManager.getInstance().getAddress();
-        GroupMemberEntity myMemberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, myAddress);
+        String myUid = MemoryDataManager.getInstance().getUid();
+        GroupMemberEntity myMemberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, myUid);
         if (null != myMemberEntity) {
-            String myGroupName=TextUtils.isEmpty(myMemberEntity.getNick()) ? myMemberEntity.getUsername() : myMemberEntity.getNick();
+            String myGroupName= TextUtils.isEmpty(myMemberEntity.getNick()) ? myMemberEntity.getUsername() : myMemberEntity.getNick();
             view.myNameInGroup(myGroupName);
-        }*/
+        }
     }
 
     @Override

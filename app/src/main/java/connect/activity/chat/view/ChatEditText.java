@@ -51,7 +51,7 @@ public class ChatEditText extends EditText{
         switch (bean.getExtType()) {
             case GROUP_AT:
                 GroupMemberEntity memEntity = (GroupMemberEntity) objects[0];
-                atMemberMap.put(memEntity.getAddress(), memEntity);
+                atMemberMap.put(memEntity.getUid(), memEntity);
 
                 int start = getSelectionStart();
                 getText().delete(start - 1, 1);
@@ -88,7 +88,7 @@ public class ChatEditText extends EditText{
             showName = "@" + showName + " ";
 
             if (contents.contains(showName)) {
-                addressList.add(memEntity.getAddress());
+                addressList.add(memEntity.getUid());
             }
         }
         return addressList;

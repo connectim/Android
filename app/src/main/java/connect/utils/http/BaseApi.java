@@ -1,13 +1,10 @@
 package connect.utils.http;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.GeneratedMessageV3;
 
-import connect.utils.okhttp.HttpRequest;
 import io.reactivex.Observable;
 import protos.Connect;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;

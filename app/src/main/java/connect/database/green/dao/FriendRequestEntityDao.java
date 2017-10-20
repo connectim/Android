@@ -25,14 +25,13 @@ public class FriendRequestEntityDao extends AbstractDao<FriendRequestEntity, Lon
      */
     public static class Properties {
         public final static Property _id = new Property(0, Long.class, "_id", true, "_id");
-        public final static Property Pub_key = new Property(1, String.class, "pub_key", false, "PUB_KEY");
-        public final static Property Address = new Property(2, String.class, "address", false, "ADDRESS");
-        public final static Property Avatar = new Property(3, String.class, "avatar", false, "AVATAR");
-        public final static Property Username = new Property(4, String.class, "username", false, "USERNAME");
-        public final static Property Tips = new Property(5, String.class, "tips", false, "TIPS");
-        public final static Property Source = new Property(6, Integer.class, "source", false, "SOURCE");
-        public final static Property Status = new Property(7, Integer.class, "status", false, "STATUS");
-        public final static Property Read = new Property(8, Integer.class, "read", false, "READ");
+        public final static Property Uid = new Property(1, String.class, "uid", false, "UID");
+        public final static Property Avatar = new Property(2, String.class, "avatar", false, "AVATAR");
+        public final static Property Username = new Property(3, String.class, "username", false, "USERNAME");
+        public final static Property Tips = new Property(4, String.class, "tips", false, "TIPS");
+        public final static Property Source = new Property(5, Integer.class, "source", false, "SOURCE");
+        public final static Property Status = new Property(6, Integer.class, "status", false, "STATUS");
+        public final static Property Read = new Property(7, Integer.class, "read", false, "READ");
     }
 
 
@@ -49,14 +48,13 @@ public class FriendRequestEntityDao extends AbstractDao<FriendRequestEntity, Lon
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"FRIEND_REQUEST_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
-                "\"PUB_KEY\" TEXT NOT NULL ," + // 1: pub_key
-                "\"ADDRESS\" TEXT NOT NULL ," + // 2: address
-                "\"AVATAR\" TEXT," + // 3: avatar
-                "\"USERNAME\" TEXT," + // 4: username
-                "\"TIPS\" TEXT," + // 5: tips
-                "\"SOURCE\" INTEGER," + // 6: source
-                "\"STATUS\" INTEGER," + // 7: status
-                "\"READ\" INTEGER);"); // 8: read
+                "\"UID\" TEXT NOT NULL ," + // 1: uid
+                "\"AVATAR\" TEXT," + // 2: avatar
+                "\"USERNAME\" TEXT," + // 3: username
+                "\"TIPS\" TEXT," + // 4: tips
+                "\"SOURCE\" INTEGER," + // 5: source
+                "\"STATUS\" INTEGER," + // 6: status
+                "\"READ\" INTEGER);"); // 7: read
     }
 
     /** Drops the underlying database table. */
@@ -73,37 +71,36 @@ public class FriendRequestEntityDao extends AbstractDao<FriendRequestEntity, Lon
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getPub_key());
-        stmt.bindString(3, entity.getAddress());
+        stmt.bindString(2, entity.getUid());
  
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(4, avatar);
+            stmt.bindString(3, avatar);
         }
  
         String username = entity.getUsername();
         if (username != null) {
-            stmt.bindString(5, username);
+            stmt.bindString(4, username);
         }
  
         String tips = entity.getTips();
         if (tips != null) {
-            stmt.bindString(6, tips);
+            stmt.bindString(5, tips);
         }
  
         Integer source = entity.getSource();
         if (source != null) {
-            stmt.bindLong(7, source);
+            stmt.bindLong(6, source);
         }
  
         Integer status = entity.getStatus();
         if (status != null) {
-            stmt.bindLong(8, status);
+            stmt.bindLong(7, status);
         }
  
         Integer read = entity.getRead();
         if (read != null) {
-            stmt.bindLong(9, read);
+            stmt.bindLong(8, read);
         }
     }
 
@@ -115,37 +112,36 @@ public class FriendRequestEntityDao extends AbstractDao<FriendRequestEntity, Lon
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getPub_key());
-        stmt.bindString(3, entity.getAddress());
+        stmt.bindString(2, entity.getUid());
  
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(4, avatar);
+            stmt.bindString(3, avatar);
         }
  
         String username = entity.getUsername();
         if (username != null) {
-            stmt.bindString(5, username);
+            stmt.bindString(4, username);
         }
  
         String tips = entity.getTips();
         if (tips != null) {
-            stmt.bindString(6, tips);
+            stmt.bindString(5, tips);
         }
  
         Integer source = entity.getSource();
         if (source != null) {
-            stmt.bindLong(7, source);
+            stmt.bindLong(6, source);
         }
  
         Integer status = entity.getStatus();
         if (status != null) {
-            stmt.bindLong(8, status);
+            stmt.bindLong(7, status);
         }
  
         Integer read = entity.getRead();
         if (read != null) {
-            stmt.bindLong(9, read);
+            stmt.bindLong(8, read);
         }
     }
 
@@ -158,14 +154,13 @@ public class FriendRequestEntityDao extends AbstractDao<FriendRequestEntity, Lon
     public FriendRequestEntity readEntity(Cursor cursor, int offset) {
         FriendRequestEntity entity = new FriendRequestEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
-            cursor.getString(offset + 1), // pub_key
-            cursor.getString(offset + 2), // address
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // avatar
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // username
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // tips
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // source
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // status
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8) // read
+            cursor.getString(offset + 1), // uid
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // avatar
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // username
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // tips
+            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // source
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // status
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7) // read
         );
         return entity;
     }
@@ -173,14 +168,13 @@ public class FriendRequestEntityDao extends AbstractDao<FriendRequestEntity, Lon
     @Override
     public void readEntity(Cursor cursor, FriendRequestEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setPub_key(cursor.getString(offset + 1));
-        entity.setAddress(cursor.getString(offset + 2));
-        entity.setAvatar(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setUsername(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setTips(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setSource(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
-        entity.setStatus(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setRead(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
+        entity.setUid(cursor.getString(offset + 1));
+        entity.setAvatar(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setUsername(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setTips(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setSource(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
+        entity.setStatus(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setRead(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
      }
     
     @Override

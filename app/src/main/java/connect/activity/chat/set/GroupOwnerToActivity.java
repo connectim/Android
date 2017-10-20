@@ -85,7 +85,7 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
         Iterator<GroupMemberEntity> iterator = groupMemEntities.iterator();
         while (iterator.hasNext()) {
             GroupMemberEntity memberEntity = iterator.next();
-            if (memberEntity.getPub_key().equals(myPublicKey)) {
+            if (memberEntity.getUid().equals(myPublicKey)) {
                 iterator.remove();
             }
         }
@@ -124,8 +124,8 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
                             @Override
                             public void confirm(String value) {
                                 String memberKey = memEntity.getIdentifier();
-                                String address = memEntity.getAddress();
-                                presenter.groupOwnerTo(memberKey, address);
+                                String uid = memEntity.getUid();
+                                presenter.groupOwnerTo(memberKey, uid);
                             }
 
                             @Override

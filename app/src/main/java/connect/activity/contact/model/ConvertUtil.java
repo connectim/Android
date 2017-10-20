@@ -16,9 +16,9 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.activity.contact.presenter.AddFriendPhonePresenter;
 import connect.activity.contact.bean.PhoneContactBean;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -31,10 +31,9 @@ public class ConvertUtil {
             return null;
         FriendRequestEntity requestEntity = new FriendRequestEntity();
         requestEntity.setSource(receiver.getSource());
-        requestEntity.setAddress(receiver.getSender().getUid());
+        requestEntity.setUid(receiver.getSender().getUid());
         requestEntity.setAvatar(receiver.getSender().getAvatar());
         requestEntity.setUsername(receiver.getSender().getUsername());
-        requestEntity.setPub_key(receiver.getSender().getPubKey());
         requestEntity.setStatus(1);
         requestEntity.setRead(0);
         byte[] tipsByte = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, MemoryDataManager.getInstance().getPriKey(),

@@ -16,13 +16,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
+import connect.instant.model.CFriendChat;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.PaymentDetailContract;
 import connect.activity.chat.exts.presenter.PaymentDetailPresenter;
-import connect.activity.chat.model.content.FriendChat;
-import connect.activity.chat.model.content.NormalChat;
 import connect.activity.wallet.manager.TransferManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -33,8 +34,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -70,7 +69,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
     private int state;
     private Connect.Bill billDetail = null;
 
-    private MsgExtEntity msgExtEntity;
+    private ChatMsgEntity msgExtEntity;
     private PaymentDetailContract.Presenter presenter;
 
     @Override
@@ -81,7 +80,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
         initView();
     }
 
-    public static void startActivity(Activity activity, MsgExtEntity msgExtEntity) {
+    public static void startActivity(Activity activity, ChatMsgEntity msgExtEntity) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("MsgExtEntity",msgExtEntity);
         ActivityUtil.next(activity, PaymentDetailActivity.class, bundle);
@@ -100,7 +99,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
             }
         });
 
-        msgExtEntity = (MsgExtEntity) getIntent().getSerializableExtra("MsgExtEntity");
+        msgExtEntity = (ChatMsgEntity) getIntent().getSerializableExtra("MsgExtEntity");
         try {
             Connect.PaymentMessage paymentMessage = Connect.PaymentMessage.parseFrom(msgExtEntity.getContents());
             requestGatherDetail(paymentMessage.getHashId());
@@ -210,7 +209,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
         });
     }
 
-    protected void requestPayment(String hashid) {
+    protected void requestPayment(final String hashid) {
         TransferManager transferManager = new TransferManager(activity, CurrencyEnum.BTC);
         transferManager.typePayment(hashid, TransferType.TransactionTypePayCrowding.getType(), new WalletListener<String>() {
             @Override
@@ -221,8 +220,8 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
                     String noticeContent = getString(R.string.Chat_paid_the_bill_to, activity.getString(R.string.Chat_You), contactName);
                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NOTICE, noticeContent);
 
-                    NormalChat normalChat = new FriendChat(entity);
-                    MsgExtEntity msgExtEntity = normalChat.noticeMsg(noticeContent);
+                    CFriendChat normalChat = new CFriendChat(entity);
+                    ChatMsgEntity msgExtEntity = normalChat.noticeMsg(1, noticeContent, hashId);
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                 }
 

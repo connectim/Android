@@ -95,7 +95,7 @@ public class SearchFriendActivity extends BaseActivity {
                 delTv.setVisibility(View.VISIBLE);
                 ArrayList arrayList = new ArrayList<>();
                 ContactEntity friendEntity = new ContactEntity();
-                friendEntity.setAddress(s.toString());
+                friendEntity.setUid(s.toString());
                 arrayList.add(friendEntity);
 
                 List<ContactEntity> list = ContactHelper.getInstance().loadFriendEntityFromText(s.toString());
@@ -110,7 +110,7 @@ public class SearchFriendActivity extends BaseActivity {
         public void itemClick(int position, ContactEntity list, int type) {
             switch (type) {
                 case 1:
-                    SearchFriendResultActivity.startActivity(mActivity, list.getAddress());
+                    SearchFriendResultActivity.startActivity(mActivity, list.getConnectId());
                     break;
                 case 2:
                     FriendInfoActivity.startActivity(mActivity, list.getPub_key());

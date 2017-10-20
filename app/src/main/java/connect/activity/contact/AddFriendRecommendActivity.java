@@ -19,11 +19,11 @@ import connect.activity.contact.bean.SourceType;
 import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.RecommandFriendEntity;
-import connect.im.bean.UserOrderBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
 import connect.widget.pullTorefresh.EndlessScrollListener;
+import instant.bean.UserOrderBean;
 
 /**
  * Recommend friends

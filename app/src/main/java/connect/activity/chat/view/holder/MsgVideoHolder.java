@@ -1,27 +1,20 @@
 package connect.activity.chat.view.holder;
 
 import android.app.Activity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import java.util.Locale;
 
-import connect.activity.chat.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
-import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.VideoPlayerActivity;
 import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.chat.view.BubbleImg;
 import connect.activity.chat.view.DVideoProView;
 import connect.activity.common.bean.ConverType;
 import connect.activity.common.selefriend.ConversationActivity;
-import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
-import connect.utils.TimeUtil;
-import connect.utils.VideoPlayerUtil;
-import connect.widget.video.inter.VideoListener;
+import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
 /**
@@ -44,7 +37,7 @@ public class MsgVideoHolder extends MsgChatHolder {
     }
 
     @Override
-    public void buildRowData(final MsgBaseHolder msgBaseHolder, final MsgExtEntity msgExtEntity) throws Exception {
+    public void buildRowData(final MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
 
@@ -126,7 +119,7 @@ public class MsgVideoHolder extends MsgChatHolder {
     }
 
     public boolean hasDownLoad() {
-        MsgExtEntity msgExtEntity = getMsgExtEntity();
+        ChatMsgEntity msgExtEntity = getMsgExtEntity();
         boolean isDown = false;
         try {
             Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
@@ -151,7 +144,7 @@ public class MsgVideoHolder extends MsgChatHolder {
     @Override
     public void transPondTo() {
         super.transPondTo();
-        final MsgExtEntity msgExtEntity = getMsgExtEntity();
+        final ChatMsgEntity msgExtEntity = getMsgExtEntity();
         try {
             final Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
             String url = videoMessage.getUrl();
