@@ -191,7 +191,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return STATUS_FRIEND;
         } else if(status == 6){
             return STATUS_FRIEND_CONNECT;
-        }else{
+        } else {
             return STATUS_FRIEND_COUNT;
         }
     }
