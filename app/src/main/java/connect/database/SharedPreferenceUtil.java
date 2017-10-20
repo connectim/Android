@@ -96,7 +96,7 @@ public class SharedPreferenceUtil {
         SharedPreferences.Editor editor = sharePre.edit();
         editor.putString(USER_INFO,new Gson().toJson(user));
         editor.apply();
-        putUserList(user,USER_LIST_ADD);
+        //putUserList(user,USER_LIST_ADD);
         MemoryDataManager.getInstance().initMemoryData();
     }
 

@@ -131,7 +131,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 DaoManager.getInstance().switchDataBase();
                 FileUtil.getExternalStorePath();
 
-                CrashReport.putUserData(activity, "userAddress", MemoryDataManager.getInstance().getAddress());
+                CrashReport.putUserData(activity, "userAddress", SharedPreferenceUtil.getInstance().getUser().getUid());
                 CrashReport.setUserSceneTag(activity, Integer.valueOf(ConfigUtil.getInstance().getCrashTags()));
                 return null;
             }

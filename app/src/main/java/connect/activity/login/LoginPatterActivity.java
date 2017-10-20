@@ -24,7 +24,6 @@ import connect.widget.lockview.GestureLockViewGroup;
 
 /**
  * Login validation gestures or password
- * Created by Administrator on 2016/12/8.
  */
 public class LoginPatterActivity extends BaseActivity{
 

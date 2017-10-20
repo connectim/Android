@@ -11,8 +11,8 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.base.BaseApplication;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import protos.Connect;
 
@@ -70,7 +70,7 @@ public class OkHttpUtil {
      * @param exts
      * @param resultCall
      */
-    public void postEncrySelf(String url, GeneratedMessageV3 body,EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
+    public void postEncrySelf(String url, GeneratedMessageV3 body, EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
         LogManager.getLogger().http("param:" + body.toString());
         ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
         Connect.IMRequest imRequest = getIMRequest(exts,MemoryDataManager.getInstance().getPriKey(),
@@ -121,7 +121,7 @@ public class OkHttpUtil {
      * @param bytes
      * @return
      */
-    private Connect.IMRequest getIMRequest(String priKey, String pubKey, ByteString bytes) {
+    public Connect.IMRequest getIMRequest(String priKey, String pubKey, ByteString bytes) {
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
         if(TextUtils.isEmpty(index)){
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
@@ -131,7 +131,7 @@ public class OkHttpUtil {
         return getIMRequest(EncryptionUtil.ExtendedECDH.SALT, priKey, pubKey, bytes);
     }
 
-    private Connect.IMRequest getIMRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey, ByteString bytes) {
+    public Connect.IMRequest getIMRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey, ByteString bytes) {
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
         if(null == gcmData){
             LogManager.getLogger().i("-----ecdh-----","ecdh null");

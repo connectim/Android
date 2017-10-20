@@ -115,13 +115,13 @@ public class SearchFriendResultActivity extends BaseActivity {
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        StrangerInfoActivity.startActivity(mActivity,userInfo.getAddress(), SourceType.SEARCH);
+                        StrangerInfoActivity.startActivity(mActivity,userInfo.getUid(), SourceType.SEARCH);
                     }
                 });
                 statusBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        StrangerInfoActivity.startActivity(mActivity,userInfo.getAddress(), SourceType.SEARCH);
+                        StrangerInfoActivity.startActivity(mActivity,userInfo.getUid(), SourceType.SEARCH);
                     }
                 });
                 resultLin.addView(view);

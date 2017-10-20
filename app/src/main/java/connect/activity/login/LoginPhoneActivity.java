@@ -26,7 +26,6 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.StringUtil;
 import connect.utils.data.PhoneDataUtil;
-import connect.utils.permission.PermissionUtil;
 
 /**
  * Login interface verify phone number.
@@ -41,8 +40,6 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
     TextView countryTv;
     @Bind(R.id.country_rela)
     RelativeLayout countryRela;
-    /*@Bind(R.id.backup_local_tv)
-    TextView backupLocalTv;*/
 
     private LoginPhoneActivity mActivity;
     private LoginPhoneContract.Presenter presenter;
@@ -72,12 +69,6 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
     void countryCodeClick(View view) {
         ActivityUtil.next(mActivity, LoginPhoneCountryCodeActivity.class, COUNTRY_CODE);
     }
-
-
-    /*@OnClick(R.id.backup_local_tv)
-    void otherLoginClick(View view) {
-        presenter.showMore();
-    }*/
 
     @OnClick(R.id.next_btn)
     public void nextBtn(View view) {
@@ -109,22 +100,6 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
         }
     };
 
-    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack(){
-        @Override
-        public void granted(String[] permissions) {
-            ActivityUtil.next(mActivity, ScanLoginActivity.class);
-        }
-
-        @Override
-        public void deny(String[] permissions) {}
-    };
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissionCallBack);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -143,21 +118,6 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
     public void verifySuccess() {
         LoginPhoneVerifyActivity.startActivity(mActivity, countryBean.getCode(),phoneEt.getText().toString());
     }
-
-    /*@Override
-    public void scanPermission() {
-        PermissionUtil.getInstance().requestPermission(mActivity,new String[]{PermissionUtil.PERMISSION_CAMERA}, permissionCallBack);
-    }
-
-    @Override
-    public void goIntoRandomSend() {
-        RegisterGetRandomActivity.startActivity(mActivity);
-    }
-
-    @Override
-    public void goIntoLocalLogin() {
-        ActivityUtil.next(mActivity, LoginLocalActivity.class);
-    }*/
 
     @Override
     public Activity getActivity() {

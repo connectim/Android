@@ -21,11 +21,11 @@ import connect.activity.contact.adapter.NewRequestAdapter;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.bean.SourceType;
-import connect.activity.contact.contract.NewFriendContract;
-import connect.activity.contact.presenter.NewFriendPresenter;
+import connect.activity.contact.contract.AddFriendContract;
+import connect.activity.contact.presenter.AddFriendPresenter;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.home.view.LineDecoration;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
@@ -39,7 +39,7 @@ import instant.bean.UserOrderBean;
 /**
  * add new friend.
  */
-public class AddFriendActivity extends BaseActivity implements NewFriendContract.View {
+public class AddFriendActivity extends BaseActivity implements AddFriendContract.View {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -49,7 +49,7 @@ public class AddFriendActivity extends BaseActivity implements NewFriendContract
     RecyclerView recyclerview;
 
     private AddFriendActivity mActivity;
-    private NewFriendContract.Presenter presenter;
+    private AddFriendContract.Presenter presenter;
     private NewRequestAdapter requestAdapter;
 
     @Override
@@ -75,7 +75,7 @@ public class AddFriendActivity extends BaseActivity implements NewFriendContract
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_New_friend);
-        new NewFriendPresenter(this).start();
+        new AddFriendPresenter(this).start();
 
         presenter.initGrid(recycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
@@ -108,7 +108,7 @@ public class AddFriendActivity extends BaseActivity implements NewFriendContract
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, ConfigUtil.getInstance().shareCardAddress()
-                        + "?address=" + MemoryDataManager.getInstance().getAddress());
+                        + "?address=" + SharedPreferenceUtil.getInstance().getUser().getUid());
                 shareIntent.setType("text/plain");
                 startActivity(Intent.createChooser(shareIntent, "share to"));
                 break;
@@ -210,7 +210,7 @@ public class AddFriendActivity extends BaseActivity implements NewFriendContract
     }
 
     @Override
-    public void setPresenter(NewFriendContract.Presenter presenter) {
+    public void setPresenter(AddFriendContract.Presenter presenter) {
         this.presenter = presenter;
     }
 

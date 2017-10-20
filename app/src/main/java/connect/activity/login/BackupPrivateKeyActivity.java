@@ -98,7 +98,7 @@ public class BackupPrivateKeyActivity extends BaseActivity {
         viewBackUp = LayoutInflater.from(mActivity).inflate(R.layout.prikey_backup_photo,null);
         ((ImageView)viewBackUp.findViewById(R.id.scan_imag)).setImageBitmap(bitmap);
         ((TextView)viewBackUp.findViewById(R.id.name_tv)).setText(userBean.getName());
-        ((TextView)viewBackUp.findViewById(R.id.address_tv)).setText(userBean.getAddress());
+        ((TextView)viewBackUp.findViewById(R.id.address_tv)).setText("");
         Bitmap bitmap = BitmapUtil.createViewBitmap(viewBackUp);
 
         File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bitmap);

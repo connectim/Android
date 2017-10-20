@@ -119,14 +119,19 @@ message UserAddress {
 string address=1;
 }
 message UserInfo {
-string username=1;
-string avatar=2;
-string pub_key=3;
-string address=4;
-bool  recommend = 5;
-string connect_id = 6;
-int32 source = 7;
+    string username = 1;
+    string avatar = 2;
+    string pub_key = 3;
+    string uid = 4;
+    bool recommend = 5;
+    string connectId = 6;
+    int32 source = 7;
+    int64 created_at = 8;
+    bool update_connect_id = 9;
+    bool password_check = 10;
+    string ca_pub = 11;
 }
+
 message UsersInfo {
 repeated UserInfo users=1;
 }
@@ -1327,4 +1332,25 @@ message WebsiteMessage{
 	string subtitle=3;
 	string img=4;
 }
+
+message SmsValidateResp {
+	int32 status = 1;
+	string token = 2;
+	UserInfo userInfo =3;
+}
+
+message UpdateCa {
+    string mobile= 1;
+    string token = 2;
+    string ca_pub =3;
+}
+
+message RegisterUser {
+    string username=1;
+    string avatar=2;
+    string mobile=3;
+    string token=4;
+    string ca_pub=5;
+}
+
 

@@ -33,7 +33,7 @@ public class SafetyLoginPassPresenter implements SafetyLoginPassContract.Present
             protected Connect.ChangeLoginPassword doInBackground(Void... params) {
                 // The new password encryption private key
                 talkKey = SupportKeyUril.createTalkKey(MemoryDataManager.getInstance().getPriKey(),
-                        MemoryDataManager.getInstance().getAddress(), pass);
+                        SharedPreferenceUtil.getInstance().getUser().getUid(), pass);
                 Connect.ChangeLoginPassword changeLoginPassword = Connect.ChangeLoginPassword.newBuilder()
                         .setPasswordHint(hint)
                         .setEncryptionPri(talkKey)

@@ -20,6 +20,7 @@ import connect.activity.home.HomeActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RegisterContract;
 import connect.activity.login.presenter.RegisterPresenter;
+import connect.activity.set.SafetyPatternActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -43,24 +44,9 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     EditText nicknameEt;
     @Bind(R.id.next_btn)
     Button nextBtn;
-    /*@Bind(R.id.toolbar_top)
-    TopToolBar toolbarTop;
-    @Bind(R.id.userhead_img)
-    ImageView userheadImg;
-    @Bind(R.id.password_et)
-    EditText userpasswordEt;
-    @Bind(R.id.passwordhint_tv)
-    TextView passwordhintTv;
-    @Bind(R.id.passwordedit_tv)
-    TextView passwordeditTv;
-    @Bind(R.id.next_btn)
-    Button nextBtn;
-    @Bind(R.id.nickname_et)
-    EditText nicnameEt;*/
 
     private RegisterActivity mActivity;
     private RegisterContract.Presenter presenter;
-    public String talkKey;
 
     /**
      * Sweep the private key is registered.
@@ -101,12 +87,6 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         toolbarTop.setTitleImg(R.mipmap.logo_black_middle);
         nicknameEt.addTextChangedListener(textWatcher);
 
-        /*passwordhintTv.setText(getString(R.string.Login_Password_Hint, ""));
-        nicnameEt.addTextChangedListener(textWatcher);
-        userpasswordEt.addTextChangedListener(textWatcher);
-        InputFilter[] filters = {new NameLengthFilter(20)};
-        nicnameEt.setFilters(filters);*/
-
         new RegisterPresenter(this).start();
     }
 
@@ -114,22 +94,6 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
-
-    /*@OnClick(R.id.passwordedit_tv)
-    void editPasswordHint(View view) {
-        DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Login_Login_Password_Hint_Title), "", "", "", "", "",
-                false, 15, new DialogUtil.OnItemClickListener() {
-                    @Override
-                    public void confirm(String value) {
-                        presenter.setPasswordHintData(value);
-                        passwordhintTv.setText(getString(R.string.Login_Password_Hint, value));
-                    }
-
-                    @Override
-                    public void cancel() {
-                    }
-                });
-    }*/
 
     @OnClick(R.id.userhead_img)
     void seleAvatar(View view) {
@@ -143,26 +107,6 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         String smsToken = getIntent().getExtras().getString("token", "");
         UserBean userBean = (UserBean) getIntent().getExtras().getSerializable("user");
         presenter.registerUser(nicName, smsToken, userBean);
-
-        /*if (RegularUtil.matches(userpasswordEt.getText().toString(), RegularUtil.PASSWORD)) {
-            ProgressUtil.getInstance().showProgress(mActivity);
-            presenter.registerUser(nicnameEt.getText().toString(),
-                    userpasswordEt.getText().toString(),
-                    getIntent().getExtras().getString("token", ""),
-                    (UserBean) getIntent().getExtras().getSerializable("user"));
-        } else {
-            DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
-                    getString(R.string.Login_letter_number_and_character_must_be_included_in_your_login_password),
-                    "", "", true, new DialogUtil.OnItemClickListener() {
-                        @Override
-                        public void confirm(String value) {
-                        }
-
-                        @Override
-                        public void cancel() {
-                        }
-                    });
-        }*/
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
@@ -203,11 +147,6 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         return mActivity;
     }
 
-    /*@Override
-    public void setPasswordhint(String text) {
-        passwordhintTv.setText(text);
-    }*/
-
     @Override
     public void showAvatar(String path) {
         GlideUtil.loadAvatarRound(userheadImg, path);
@@ -218,7 +157,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
         if (isBack) {
             HomeActivity.startActivity(mActivity);
         } else {
-            ActivityUtil.next(mActivity, BackupPrivateKeyActivity.class);
+            SafetyPatternActivity.startActivity(mActivity,SafetyPatternActivity.LOGIN_TYPE);
         }
         mActivity.finish();
     }

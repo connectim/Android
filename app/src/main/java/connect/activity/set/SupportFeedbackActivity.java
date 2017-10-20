@@ -59,7 +59,7 @@ public class SupportFeedbackActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_FeedBack);
         String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
-        webView.loadUrl("https://www.connect.im/mobile/feedback/" + MemoryDataManager.getInstance().getAddress() + "?locale=" + languageCode);
+        webView.loadUrl("https://www.connect.im/mobile/feedback/" + SharedPreferenceUtil.getInstance().getUser().getUid() + "?locale=" + languageCode);
 
         webView.getSettings().getUserAgentString();
         webView.getSettings().setUserAgentString(webView.getSettings().getUserAgentString()+

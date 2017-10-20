@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 import connect.activity.base.BaseApplication;
@@ -18,17 +19,22 @@ import connect.utils.ActivityUtil;
 import connect.utils.ExCountDownTimer;
 import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
+import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
+import wallet_gateway.WalletOuterClass;
 
 public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Presenter {
 
     private LoginPhoneVerifyContract.View mView;
-    private final int CODE_PHONE_ABSENT = 2404;
     private String phone;
     private int countryCode;
     private ExCountDownTimer exCountDownTimer;
@@ -62,25 +68,31 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                 .setNumber(phone)
                 .setCode(mView.getCode())
                 .build();
-        HttpRequest.getInstance().post(UriUtil.CONNECT_V1_SIGN_IN, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
+        HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SMS_VALIDATE, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 // 用户存在 走登录流程
                 // 判断是否有二次密码认证
-                ProgressUtil.getInstance().dismissProgress();
+                // 1:新用户 2:老用户不需要验证密码 3:老用户需要验证密码
                 try {
-                    Connect.UserInfoDetail userInfoDetail = Connect.UserInfoDetail.parseFrom(response.getBody());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(userInfoDetail)){
-                        UserBean userBean = new UserBean();
-                        userBean.setPhone(countryCode + "-" + phone);
-                        userBean.setAvatar(userInfoDetail.getAvatar());
-                        userBean.setName(userInfoDetail.getUsername());
-                        userBean.setTalkKey(userInfoDetail.getEncryptionPri());
-                        userBean.setPassHint(userInfoDetail.getPasswordHint());
-                        userBean.setConnectId(userInfoDetail.getConnectId());
-                        mView.launchCodeLogin(userBean);
+                    ProgressUtil.getInstance().dismissProgress();
+                    Connect.SmsValidateResp smsValidateResp = Connect.SmsValidateResp.parseFrom(response.getBody());
+                    switch (smsValidateResp.getStatus()){
+                        case 1:
+                            Bundle bundle = new Bundle();
+                            bundle.putString("token", smsValidateResp.getToken());
+                            bundle.putString("phone", countryCode + "-" + phone);
+                            mView.launchRandomSend(countryCode + "-" + phone,smsValidateResp.getToken());
+                            break;
+                        case 2:
+                            reSignInCa(smsValidateResp, countryCode + "-" + phone);
+                            break;
+                        case 3:
+                            break;
+                        default:
+                            break;
                     }
-                } catch (InvalidProtocolBufferException e) {
+                } catch (Exception e){
                     e.printStackTrace();
                 }
             }
@@ -88,20 +100,7 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
                 ProgressUtil.getInstance().dismissProgress();
-                if (response.getCode() == CODE_PHONE_ABSENT) {
-                    // 用户不存在 走注册流程
-                    ByteString bytes = response.getBody();
-                    Connect.SecurityToken securityToken;
-                    try {
-                        securityToken = Connect.SecurityToken.parseFrom(bytes);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("token", securityToken.getToken());
-                        bundle.putString("phone", countryCode + "-" + phone);
-                        mView.launchRandomSend(countryCode + "-" + phone,securityToken.getToken());
-                    } catch (InvalidProtocolBufferException e) {
-                        e.printStackTrace();
-                    }
-                } else if(response.getCode() == 2416) {
+                if(response.getCode() == 2416) {
                     // 验证码错误
                     ToastEUtil.makeText(mView.getActivity(), R.string.Login_Verification_code_error,ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
@@ -110,6 +109,49 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
     }
 
     /**
+     * 更新CA认证
+     */
+    private void reSignInCa(Connect.SmsValidateResp smsValidateResp, final String mobile){
+        final String priKey = SupportKeyUril.getNewPriKey();
+        final String pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
+        Connect.UpdateCa updateCa = Connect.UpdateCa.newBuilder()
+                .setCaPub(pubKey)
+                .setMobile(mobile)
+                .setToken(smsValidateResp.getToken())
+                .build();
+        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, priKey, pubKey, updateCa.toByteString());
+        HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_IN_CA, imRequest, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
+                            priKey, imResponse.getCipherData());
+                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+                    UserBean userBean = new UserBean();
+                    userBean.setAvatar(userInfo.getAvatar());
+                    userBean.setConnectId(userInfo.getConnectId());
+                    userBean.setName(userInfo.getUsername());
+                    userBean.setPhone(mobile);
+                    userBean.setPriKey(priKey);
+                    userBean.setPubKey(pubKey);
+                    userBean.setUid(userInfo.getUid());
+                    SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
+                    mView.launchHome(userBean);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                ToastEUtil.makeText(mView.getActivity(), response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE);
+            }
+        });
+    }
+
+    /**
+     * send sms code
      * @param type 1：sms  2：voice
      */
     public void reSendCode(int type) {

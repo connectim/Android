@@ -5,6 +5,7 @@ import android.app.Activity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
+import protos.Connect;
 
 public interface LoginPhoneVerifyContract {
 
@@ -15,7 +16,9 @@ public interface LoginPhoneVerifyContract {
 
         void setVoiceVisi();
 
-        void launchCodeLogin(UserBean userBean);
+        void launchHome(UserBean userBean);
+
+        void launchPassVerify(Connect.UserInfo userInfo);
 
         void launchRandomSend(String phone,String token);
 

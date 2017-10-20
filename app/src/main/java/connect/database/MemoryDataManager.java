@@ -20,8 +20,6 @@ public class MemoryDataManager {
     public static final String KEY_PRIVATE = "KEY_PRIVATE";
     /** user PUB_KEY */
     public static final String KEY_PUBLIC = "KEY_PUBLIC";
-    /** user PUB_ADDRESS */
-    public static final String PUB_ADDRESS = "PUB_ADDRESS";
     /** user AVATAR */
     public static final String PUB_AVATAR = "PUB_AVATAR";
     /** user NAME */
@@ -119,20 +117,6 @@ public class MemoryDataManager {
             stringMap.put(PUB_AVATAR, avatar);
         }
         return avatar;
-    }
-
-    /**
-     * Gets the current user's address
-     * @return
-     */
-    public String getAddress() {
-        String address = stringMap.get(PUB_ADDRESS);
-        if (TextUtils.isEmpty(address)) {
-            UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-            address = (null == userBean) ? "" : userBean.getAddress();
-            stringMap.put(PUB_ADDRESS, address);
-        }
-        return address;
     }
 
     /**

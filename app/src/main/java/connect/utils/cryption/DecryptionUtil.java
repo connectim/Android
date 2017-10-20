@@ -24,21 +24,21 @@ public class DecryptionUtil {
      * Decryption GcmData returned to StructData
      */
     public static Connect.StructData decodeAESGCMStructData(Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(instant.utils.cryption.EncryptionUtil.ExtendedECDH.SALT, MemoryDataManager.getInstance().getPriKey(), gcmData);
+        return decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, MemoryDataManager.getInstance().getPriKey(), gcmData);
     }
 
-    public static Connect.StructData decodeAESGCMStructData(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, String priKey, Connect.GcmData gcmData) {
+    public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, Connect.GcmData gcmData) {
         return decodeAESGCMStructData(extendedECDH, priKey, ConfigUtil.getInstance().serverPubKey(), gcmData);
     }
 
-    public static Connect.StructData decodeAESGCMStructData(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
-        byte[] rss = instant.utils.cryption.SupportKeyUril.getRawECDHKey(priKey, pubKey);
+    public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
+        byte[] rss = SupportKeyUril.getRawECDHKey(priKey, pubKey);
         return decodeAESGCMStructData(extendedECDH, rss, gcmData);
     }
 
-    public static Connect.StructData decodeAESGCMStructData(instant.utils.cryption.EncryptionUtil.ExtendedECDH extendedECDH, byte[] byteECDH, Connect.GcmData gcmData) {
+    public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, byte[] byteECDH, Connect.GcmData gcmData) {
         try {
-            byte[] dataAESGCM = instant.utils.cryption.DecryptionUtil.decodeAESGCM(extendedECDH, byteECDH, gcmData);
+            byte[] dataAESGCM = DecryptionUtil.decodeAESGCM(extendedECDH, byteECDH, gcmData);
             Connect.StructData structData = Connect.StructData.parseFrom(dataAESGCM);
             return structData;
         } catch (InvalidProtocolBufferException e) {

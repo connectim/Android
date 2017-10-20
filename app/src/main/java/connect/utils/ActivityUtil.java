@@ -71,8 +71,7 @@ public class ActivityUtil {
     }
 
     public static void goBackWithResult(Activity curActivity, int retCode, Bundle retData, int inAnimId, int outAnimId) {
-        Intent intent = null;
-        intent = new Intent();
+        Intent intent = new Intent();
         if (null != retData) {
             intent.putExtras(retData);
         }

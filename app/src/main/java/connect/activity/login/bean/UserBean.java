@@ -10,23 +10,22 @@ public class UserBean implements Serializable{
     private String passHint;
     private String priKey;
     private String pubKey;
-    private String address;
     private String phone;
     private String connectId;
     private String salt;
     private boolean isBack;
+    private String uid;
 
     public UserBean() {
     }
 
-    public UserBean(String talkKey, String name, String avatar, String passHint, String priKey, String pubKey, String address, String phone,String connectId) {
+    public UserBean(String talkKey, String name, String avatar, String passHint, String priKey, String pubKey, String phone,String connectId) {
         this.talkKey = talkKey;
         this.name = name;
         this.avatar = avatar;
         this.passHint = passHint;
         this.priKey = priKey;
         this.pubKey = pubKey;
-        this.address = address;
         this.phone = phone;
         this.connectId = connectId;
     }
@@ -79,14 +78,6 @@ public class UserBean implements Serializable{
         this.pubKey = pubKey;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -117,5 +108,13 @@ public class UserBean implements Serializable{
 
     public void setBack(boolean back) {
         isBack = back;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

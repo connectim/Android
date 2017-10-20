@@ -36,8 +36,6 @@ public class SafetyActivity extends BaseActivity {
     TextView patternTv;
     @Bind(R.id.pattern_ll)
     LinearLayout patternLl;
-    @Bind(R.id.pritkey_backup_ll)
-    LinearLayout pritkeyBackupLl;
 
     private SafetyActivity mActivity;
     private UserBean userBean;
@@ -114,19 +112,6 @@ public class SafetyActivity extends BaseActivity {
     @OnClick(R.id.pattern_ll)
     void goPattern(View view) {
         SafetyPatternActivity.startActivity(mActivity,SafetyPatternActivity.SET_TYPE);
-    }
-
-    @OnClick(R.id.pritkey_backup_ll)
-    void goBackUp(View view) {
-        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
-            @Override
-            public void success(String priKey) {
-                ActivityUtil.next(mActivity,SafetyBackupActivity.class);
-            }
-
-            @Override
-            public void error() {}
-        });
     }
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import connect.database.MemoryDataManager;
 import connect.activity.wallet.contract.PacketDetailContract;
+import connect.database.SharedPreferenceUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
 import instant.utils.cryption.DecryptionUtil;
@@ -88,13 +89,13 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
     public void getRedStatus(Connect.RedPackageInfo redPackageInfo) {
         List<Connect.GradRedPackageHistroy> list = redPackageInfo.getGradHistoryList();
         Connect.RedPackage redPackage = redPackageInfo.getRedpackage();
-        String address = MemoryDataManager.getInstance().getAddress();
+        String uid = SharedPreferenceUtil.getInstance().getUser().getUid();
         int status;
         boolean isHava = false;
         long openMoney = 0;
         long bestAmount = 0;
         for (Connect.GradRedPackageHistroy histroy : list) {
-            if (histroy.getUserinfo().getAddress().equals(address)) {
+            if (histroy.getUserinfo().getUid().equals(uid)) {
                 isHava = true;
                 openMoney = histroy.getAmount();
             }
@@ -115,7 +116,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
                 status = 5;
             }else if(redPackage.getDeadline() > 0){ // Check whether the timeout
                 status = 2;
-            }else if(redPackage.getSendAddress().equals(address)){ // Check for a red envelope sender
+            }else if(redPackage.getSendAddress().equals(uid)){ // Check for a red envelope sender
                 status = 1;
             }else{
                 status = 3;

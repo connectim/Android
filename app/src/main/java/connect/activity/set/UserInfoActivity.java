@@ -14,10 +14,10 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.activity.login.bean.UserBean;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
@@ -36,16 +36,12 @@ public class UserInfoActivity extends BaseActivity {
     TextView nameTv;
     @Bind(R.id.name_ll)
     LinearLayout nameLl;
+    @Bind(R.id.avatar_iv)
+    ImageView avatarIv;
     @Bind(R.id.id_tv)
     TextView idTv;
     @Bind(R.id.id_ll)
     RelativeLayout idLl;
-    @Bind(R.id.avatar_iv)
-    ImageView avatarIv;
-    @Bind(R.id.number_tv)
-    TextView numberTv;
-    @Bind(R.id.number_ll)
-    RelativeLayout numberLl;
 
     private UserInfoActivity mActivity;
     private UserBean userBean;
@@ -79,13 +75,7 @@ public class UserInfoActivity extends BaseActivity {
         GlideUtil.loadAvatarRound(avatarIv, userBean.getAvatar());
 
         nameTv.setText(userBean.getName());
-        idTv.setText(userBean.getAddress());
-        if (TextUtils.isEmpty(userBean.getConnectId())) {
-            // numberTv.setText(R.string.Login_Not_set);
-            numberTv.setText(userBean.getAddress());
-        } else {
-            numberTv.setText(userBean.getConnectId());
-        }
+        idTv.setText(userBean.getConnectId());
     }
 
     @OnClick(R.id.left_img)
@@ -100,23 +90,16 @@ public class UserInfoActivity extends BaseActivity {
 
     @OnClick(R.id.name_ll)
     void goName(View view) {
-        UserInfoNameActivity.startActivity(mActivity,UserInfoNameActivity.TYPE_NAME);
-    }
-
-    @OnClick(R.id.number_ll)
-    void goNumber(View view) {
-        if (TextUtils.isEmpty(userBean.getConnectId())) {
-            UserInfoNameActivity.startActivity(mActivity,UserInfoNameActivity.TYPE_NUMBER);
-        } else {
-            ToastEUtil.makeText(mActivity,R.string.Set_CONNECT_ID_can_only_be_set_once,ToastEUtil.TOAST_STATUS_FAILE).show();
-        }
+        UserInfoNameActivity.startActivity(mActivity, UserInfoNameActivity.TYPE_NAME);
     }
 
     @OnClick(R.id.id_ll)
-    void goId(View view) {
-        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        cm.setText(userBean.getAddress());
-        ToastEUtil.makeText(mActivity,R.string.Set_Copied).show();
+    void goNumber(View view) {
+        if (TextUtils.isEmpty(userBean.getConnectId())) {
+            UserInfoNameActivity.startActivity(mActivity, UserInfoNameActivity.TYPE_NUMBER);
+        } else {
+            ToastEUtil.makeText(mActivity, R.string.Set_CONNECT_ID_can_only_be_set_once, ToastEUtil.TOAST_STATUS_FAILE).show();
+        }
     }
 
 }

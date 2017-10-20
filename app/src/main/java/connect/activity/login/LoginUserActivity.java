@@ -107,7 +107,7 @@ public class LoginUserActivity extends BaseActivity implements LoginUserContract
         ProgressUtil.getInstance().showProgress(mActivity);
         presenter.checkPassWord(userBean.getTalkKey(), passwordEt.getText().toString(),userBean);
         /*if (TextUtils.isEmpty(token)) {//Login password directly
-            ProgressUtil.getInstance().showProgress(mActivity);
+            Progre-ssUtil.getInstance().showProgress(mActivity);
             presenter.checkTalkKey(userBean.getTalkKey(), passwordEt.getText().toString(),userBean);
         } else {//Scan the private key to log in
             if(RegularUtil.matches(passwordEt.getText().toString(), RegularUtil.PASSWORD)){
@@ -115,6 +115,7 @@ public class LoginUserActivity extends BaseActivity implements LoginUserContract
                 presenter.requestSetPassword(passwordEt.getText().toString(),userBean,token);
             }else{
                 DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
+
                         getString(R.string.Login_letter_number_and_character_must_be_included_in_your_login_password),
                         "", "", true, new DialogUtil.OnItemClickListener() {
                             @Override

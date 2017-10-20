@@ -18,7 +18,8 @@ import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import instant.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -27,9 +28,7 @@ import protos.Connect;
 public class RegisterPresenter implements RegisterContract.Presenter {
 
     private RegisterContract.View mView;
-    private String passwordHint = "";
     private String headPath = "https://short.connect.im/avatar/v1/b040e0a970bc6d80b675586c5a55f9e9109168ba.png";
-    private String talkKey;
 
     public RegisterPresenter(RegisterContract.View mView) {
         this.mView = mView;
@@ -38,11 +37,6 @@ public class RegisterPresenter implements RegisterContract.Presenter {
 
     @Override
     public void start() {}
-
-    /*@Override
-    public void setPasswordHintData(String passwordHint) {
-        this.passwordHint = passwordHint;
-    }*/
 
     /**
      * Upload the picture.
@@ -96,99 +90,51 @@ public class RegisterPresenter implements RegisterContract.Presenter {
      */
     @Override
     public void registerUser(final String nicName, final String token, final UserBean userBean) {
-        Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder();
-        builder.setUsername(nicName);
-        builder.setToken(token);
-        builder.setMobile(userBean.getPhone());
-        builder.setAvatar(headPath);
-
-        OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_SIGN_UP, builder.build(),
-                EncryptionUtil.ExtendedECDH.EMPTY,
-                userBean.getPriKey(),
-                userBean.getPubKey(),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        ProgressUtil.getInstance().dismissProgress();
-                        userBean.setAvatar(headPath);
-                        userBean.setName(nicName);
-                        SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
-                        mView.complete(userBean.isBack());
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-                        if (response.getCode() == 2101) {
-                            Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
-                        } else if(response.getCode() == 2102){
-                            Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                        ProgressUtil.getInstance().dismissProgress();
-                    }
-                });
-
-        /*new AsyncTask<Void,Void,Connect.RegisterUser>() {
+        Connect.RegisterUser registerUser = Connect.RegisterUser.newBuilder()
+                .setToken(token)
+                .setMobile(userBean.getPhone())
+                .setAvatar(headPath)
+                .setUsername(nicName)
+                .setCaPub(userBean.getPubKey())
+                .build();
+        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBean.getPriKey(), userBean.getPubKey(), registerUser.toByteString());
+        HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_UP, imRequest, new ResultCall<Connect.HttpResponse>() {
             @Override
-            protected Connect.RegisterUser doInBackground(Void... params) {
-                Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder();
-                builder.setUsername(nicName);
-                // builder.setPasswordHint(passwordHint);
-                // Determine whether the binding number
-                *//*if (!TextUtils.isEmpty(token)) {
-                    builder.setToken(token);
-                    builder.setMobile(userBean.getPhone());
-                }*//*
-                builder.setToken(token);
-                builder.setMobile(userBean.getPhone());
-                builder.setAvatar(headPath);
-                // Password encryption private key
-                *//*talkKey = SupportKeyUril.createTalkKey(userBean.getPriKey(),userBean.getAddress(),password);
-                builder.setEncryptionPri(talkKey);*//*
-                Connect.RegisterUser registerUser = builder.build();
-                return registerUser;
+            public void onResponse(Connect.HttpResponse response) {
+                try {
+                    ProgressUtil.getInstance().dismissProgress();
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
+                            userBean.getPriKey(), imResponse.getCipherData());
+                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+
+                    UserBean userBean = new UserBean();
+                    userBean.setAvatar(userInfo.getAvatar());
+                    userBean.setConnectId(userInfo.getConnectId());
+                    userBean.setName(userInfo.getUsername());
+                    userBean.setPhone(userBean.getPhone());
+                    userBean.setPriKey(userBean.getPriKey());
+                    userBean.setPubKey(userBean.getPubKey());
+                    userBean.setUid(userInfo.getUid());
+                    SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
+                    mView.complete(userBean.isBack());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            protected void onPostExecute(Connect.RegisterUser registerUser) {
-                super.onPostExecute(registerUser);
-                userBean.setName(nicName);
-                requestRegister(registerUser,userBean);
+            public void onError(Connect.HttpResponse response) {
+                if (response.getCode() == 2101) {
+                    Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
+                } else if(response.getCode() == 2102){
+                    Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                ProgressUtil.getInstance().dismissProgress();
             }
-        }.execute();*/
+        });
     }
-
-    /*private void requestRegister(Connect.RegisterUser registerUser, final UserBean userBean) {
-        OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_SIGN_UP,
-                registerUser,
-                EncryptionUtil.ExtendedECDH.EMPTY,
-                userBean.getPriKey(),
-                userBean.getPubKey(),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        ProgressUtil.getInstance().dismissProgress();
-                        //userBean.setTalkKey(talkKey);
-                        userBean.setAvatar(headPath);
-                        userBean.setPassHint(passwordHint);
-                        SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
-                        mView.complete(userBean.isBack());
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {
-                        if (response.getCode() == 2101) {
-                            Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
-                        } else if(response.getCode() == 2102){
-                            Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                        ProgressUtil.getInstance().dismissProgress();
-                    }
-                });
-    }*/
-
 
 }

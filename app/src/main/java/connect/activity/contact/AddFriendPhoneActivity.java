@@ -15,8 +15,8 @@ import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.AddPhoneAdapter;
 import connect.activity.contact.bean.PhoneContactBean;
 import connect.activity.contact.bean.SourceType;
-import connect.activity.contact.contract.FriendAddContract;
-import connect.activity.contact.presenter.FriendAddPresenter;
+import connect.activity.contact.contract.AddFriendPhoneContract;
+import connect.activity.contact.presenter.AddFriendPhonePresenter;
 import connect.database.MemoryDataManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -28,7 +28,7 @@ import connect.widget.TopToolBar;
 /**
  * Add a phone book friends
  */
-public class AddFriendPhoneActivity extends BaseActivity implements FriendAddContract.View {
+public class AddFriendPhoneActivity extends BaseActivity implements AddFriendPhoneContract.View {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -39,7 +39,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements FriendAddCon
 
     private LinearLayoutManager linearLayoutManager;
     private AddFriendPhoneActivity mActivity;
-    private FriendAddContract.Presenter presenter;
+    private AddFriendPhoneContract.Presenter presenter;
     private AddPhoneAdapter adapter;
 
     @Override
@@ -64,7 +64,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements FriendAddCon
         toolbar.setRightText(R.string.Link_Invite);
         toolbar.setRightTextColor(R.color.color_00c400);
         toolbar.setRightTextEnable(false);
-        new FriendAddPresenter(this).start();
+        new AddFriendPhonePresenter(this).start();
 
         linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
@@ -142,7 +142,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements FriendAddCon
     }
 
     @Override
-    public void setPresenter(FriendAddContract.Presenter presenter) {
+    public void setPresenter(AddFriendPhoneContract.Presenter presenter) {
         this.presenter = presenter;
     }
 

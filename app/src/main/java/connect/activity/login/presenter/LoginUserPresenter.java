@@ -58,7 +58,6 @@ public class LoginUserPresenter implements LoginUserContract.Presenter {
                 if (s != null && SupportKeyUril.checkPriKey(s)) {
                     userBean.setPriKey(s);
                     userBean.setPubKey(AllNativeMethod.cdGetPubKeyFromPrivKey(userBean.getPriKey()));
-                    userBean.setAddress(AllNativeMethod.cdGetBTCAddrFromPubKey(userBean.getPubKey()));
                     SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
                     mView.launchHome(userBean.isBack());
                 } else {

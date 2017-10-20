@@ -103,11 +103,9 @@ public class RegisterGetRandomActivity extends BaseActivity implements RegisterG
         String random = SupportKeyUril.xor(strForBmp, StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
         String prikey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(random, 44, 0, 0, 0, 0);
         String pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
-        String address = AllNativeMethod.cdGetBTCAddrFromPubKey(pubKey);
 
         hashMap.put("priKey", prikey);
         hashMap.put("pubKey", pubKey);
-        hashMap.put("address", address);
         presenter.finishSuccess(hashMap);
     }
 

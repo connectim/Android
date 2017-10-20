@@ -94,7 +94,8 @@ public class ResolveUrlUtil {
      * @param isCloseScan
      */
     private void dealFriend(ScanResultBean resultBean, boolean isCloseScan){
-        if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
+        // qwert
+        /*if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(resultBean.getAddress());
             if (friendEntity != null) {
                 FriendInfoActivity.startActivity(activity, resultBean.getAddress());
@@ -104,7 +105,7 @@ public class ResolveUrlUtil {
             if(isCloseScan){
                 ActivityUtil.goBack(activity);
             }
-        }
+        }*/
     }
 
     /**
@@ -116,14 +117,19 @@ public class ResolveUrlUtil {
         Double amount = null;
         if (resultBean.getAmount() != null)
             amount = Double.valueOf(resultBean.getAmount());
-        if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
+
+        TransferToActivity.startActivity(activity, resultBean.getAddress(), amount);
+        if(isCloseScan){
+            ActivityUtil.goBack(activity);
+        }
+        /*if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
             TransferToActivity.startActivity(activity, resultBean.getAddress(), amount);
             if(isCloseScan){
                 ActivityUtil.goBack(activity);
             }
         } else {
             ToastEUtil.makeText(activity, R.string.Wallet_Could_not_get_himself_sent_money_transfer).show();
-        }
+        }*/
     }
 
     /**

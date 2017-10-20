@@ -588,7 +588,6 @@ public class HttpsService extends Service {
                                 Connect.Privacy privacy = Connect.Privacy.parseFrom(structData.getPlainData());
                                 privateSetBean = new PrivateSetBean();
                                 privateSetBean.setPhoneFind(privacy.getPhoneNum());
-                                privateSetBean.setAddressFind(privacy.getAddress());
                                 privateSetBean.setRecommend(privacy.getRecommend());
                             }
                             ParamManager.getInstance().putPrivateSet(privateSetBean);
@@ -598,9 +597,7 @@ public class HttpsService extends Service {
                     }
 
                     @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
+                    public void onError(Connect.HttpResponse response) {}
                 });
     }
 
