@@ -153,14 +153,13 @@ public class StrangerInfoActivity extends BaseActivity {
                     FriendRequestEntity requestEntity = new FriendRequestEntity();
                     requestEntity.setAvatar(sendUserInfo.getAvatar());
                     requestEntity.setUsername(sendUserInfo.getUsername());
-                    requestEntity.setPub_key(sendUserInfo.getPubKey());
+                    requestEntity.setUid(sendUserInfo.getPubKey());
                     requestEntity.setSource(sourceType.getType());
-                    requestEntity.setAddress(sendUserInfo.getUid());
                     requestEntity.setTips(msgSendBean.getTips());
                     requestEntity.setStatus(3);
                     requestEntity.setRead(1);
                     ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
-                    ContactHelper.getInstance().updataRecommendFriend(requestEntity.getPub_key());
+                    ContactHelper.getInstance().updataRecommendFriend(requestEntity.getUid());
 
                     ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
                     ActivityUtil.goBack(mActivity);

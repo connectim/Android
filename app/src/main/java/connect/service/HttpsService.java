@@ -368,8 +368,8 @@ public class HttpsService extends Service {
                             if (memEntity == null) {
                                 memEntity = new GroupMemberEntity();
                                 memEntity.setIdentifier(pubkey);
-                                memEntity.setPub_key(member.getPubKey());
-                                memEntity.setAddress(member.getAddress());
+                                memEntity.setUid(member.getPubKey());
+                                //memEntity.setConnect_id(member.getPubKey());
                                 memEntity.setAvatar(member.getAvatar());
                                 memEntity.setNick(member.getUsername());
                                 memEntity.setUsername(member.getUsername());

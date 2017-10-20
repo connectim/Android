@@ -31,10 +31,9 @@ public class ConvertUtil {
             return null;
         FriendRequestEntity requestEntity = new FriendRequestEntity();
         requestEntity.setSource(receiver.getSource());
-        requestEntity.setAddress(receiver.getSender().getUid());
+        requestEntity.setUid(receiver.getSender().getUid());
         requestEntity.setAvatar(receiver.getSender().getAvatar());
         requestEntity.setUsername(receiver.getSender().getUsername());
-        requestEntity.setPub_key(receiver.getSender().getPubKey());
         requestEntity.setStatus(1);
         requestEntity.setRead(0);
         byte[] tipsByte = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, MemoryDataManager.getInstance().getPriKey(),

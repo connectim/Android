@@ -51,7 +51,7 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
 
         List<String> addStrs = new ArrayList<>();
         for (ContactEntity contactEntity : contactEntities) {
-            addStrs.add(contactEntity.getAddress());
+            addStrs.add(contactEntity.getUid());
         }
         builder.addAllAddresses(addStrs);
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_INVITE_TOKEN, builder.build(), new ResultCall<Connect.HttpResponse>() {

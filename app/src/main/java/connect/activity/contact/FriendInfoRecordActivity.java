@@ -117,7 +117,7 @@ public class FriendInfoRecordActivity extends BaseActivity {
     private void requestRecord() {
         Connect.FriendRecords friendRecords = Connect.FriendRecords.newBuilder()
                 .setSelfAddress(SharedPreferenceUtil.getInstance().getUser().getUid())
-                .setFriendAddress(friendEntity.getAddress())
+                .setFriendAddress(friendEntity.getUid())
                 .setPageSize(MAX_RECOMMEND_COUNT)
                 .setPageIndex(page)
                 .build();

@@ -79,7 +79,7 @@ public class CommandReceiver implements CommandListener {
             contactEntity.setUsername(friendInfo.getUsername());
             contactEntity.setAvatar(friendInfo.getAvatar());
             contactEntity.setPub_key(friendInfo.getPubKey());
-            contactEntity.setAddress(friendInfo.getAddress());
+            //contactEntity.setUid(friendInfo.getPubKey());
             contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
             contactEntity.setSource(friendInfo.getSource());
             contactEntity.setRemark(friendInfo.getRemark());
@@ -94,7 +94,7 @@ public class CommandReceiver implements CommandListener {
             connectEntity = new ContactEntity();
             connectEntity.setPub_key(connect);
             connectEntity.setUsername(connect);
-            connectEntity.setAddress(connect);
+            connectEntity.setUid(connect);
             connectEntity.setSource(-1);
 
             friendInfoEntities.add(connectEntity);
@@ -142,8 +142,7 @@ public class CommandReceiver implements CommandListener {
                 if (memberEntity == null) {
                     memberEntity = new GroupMemberEntity();
                     memberEntity.setIdentifier(groupKey);
-                    memberEntity.setPub_key(member.getPubKey());
-                    memberEntity.setAddress(member.getAddress());
+                    memberEntity.setUid(member.getPubKey());
                     memberEntity.setAvatar(member.getAvatar());
                     memberEntity.setUsername(member.getUsername());
                     memberEntity.setNick(member.getNick());
@@ -338,12 +337,12 @@ public class CommandReceiver implements CommandListener {
                 }
                 for (GroupMemberEntity member : groupMemEntities) {
                     if (member.getRole() == 1) {//The old group manager
-                        memberAddress = member.getAddress();
+                        memberAddress = member.getUid();
                         ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 0);
                     }
 
-                    if (member.getAddress().equals(groupAttorn.getAddress())) {//The new group manager
-                        memberAddress = member.getAddress();
+                    if (member.getUid().equals(groupAttorn.getAddress())) {//The new group manager
+                        memberAddress = member.getUid();
                         ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 1);
 
                         String showName = "";

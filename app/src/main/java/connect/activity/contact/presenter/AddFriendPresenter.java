@@ -150,9 +150,8 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
                 List<RecommandFriendEntity> list = ContactHelper.getInstance().loadRecommendEntity(1,MAX_RECOMMEND_COUNT);
                 for(RecommandFriendEntity recommendEntity : list){
                     FriendRequestEntity requestEntity = new FriendRequestEntity();
-                    requestEntity.setPub_key(recommendEntity.getPub_key());
+                    requestEntity.setUid(recommendEntity.getPub_key());
                     requestEntity.setAvatar(recommendEntity.getAvatar());
-                    requestEntity.setAddress(recommendEntity.getAddress());
                     requestEntity.setUsername(recommendEntity.getUsername());
                     requestEntity.setStatus(4);
                     if(!TextUtils.isEmpty(recommendEntity.getUsername()) && !TextUtils.isEmpty(recommendEntity.getAddress())){

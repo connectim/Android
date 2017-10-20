@@ -87,7 +87,7 @@ public class AddFriendAcceptActivity extends BaseActivity {
             tipsTv.setText(requestEntity.getTips());
         }
 
-        addressTv.setText(requestEntity.getAddress());
+        addressTv.setText(requestEntity.getUid());
     }
 
     @OnClick(R.id.left_img)
@@ -101,7 +101,7 @@ public class AddFriendAcceptActivity extends BaseActivity {
         msgSendBean.setType(MsgSendBean.SendType.TypeAcceptFriendQuest);
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.acceptFriendRequest(requestEntity.getAddress(), requestEntity.getSource(), msgSendBean);
+        userOrderBean.acceptFriendRequest(requestEntity.getUid(), requestEntity.getSource(), msgSendBean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

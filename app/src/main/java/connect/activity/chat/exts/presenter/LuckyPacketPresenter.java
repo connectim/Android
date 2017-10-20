@@ -82,7 +82,7 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
             public void success(String hashId) {
                 if (roomtype == 0) {
                     ParamManager.getInstance().putLatelyTransfer(new TransferBean(5, friendEntity.getAvatar(),
-                            friendEntity.getUsername(), friendEntity.getAddress()));
+                            friendEntity.getUsername(), friendEntity.getUid()));
                 }
 
                 MsgSend.sendOuterMsg(LinkMessageRow.Lucky_Packet, 0, hashId, tips, amount);

@@ -10,18 +10,18 @@ public class TransferBean {
     private int type;
     private String avater;
     private String name;
-    private String address;
+    private String uid;
 
     public TransferBean(int type, String name) {
         this.type = type;
         this.name = name;
     }
 
-    public TransferBean(int type, String avater, String name, String address) {
+    public TransferBean(int type, String avater, String name, String uid) {
         this.type = type;
         this.avater = avater;
         this.name = name;
-        this.address = address;
+        this.uid = uid;
     }
 
     public int getType() {
@@ -48,11 +48,11 @@ public class TransferBean {
         this.name = name;
     }
 
-    public String getAddress() {
-        return address;
+    public String getUid() {
+        return uid;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

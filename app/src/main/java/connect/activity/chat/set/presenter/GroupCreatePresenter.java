@@ -87,7 +87,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
             String backup = String.format("%1$s/%2$s", pubkey, groupHex);
 
             Connect.AddGroupUserInfo groupUserInfo = Connect.AddGroupUserInfo.newBuilder()
-                    .setAddress(entity.getAddress())
+                    .setAddress(entity.getUid())
                     .setBackup(backup).build();
             groupUserInfos.add(groupUserInfo);
         }
@@ -154,8 +154,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
                 memEntity = new GroupMemberEntity();
             }
             memEntity.setIdentifier(groupKey);
-            memEntity.setPub_key(member.getPubKey());
-            memEntity.setAddress(member.getAddress());
+            memEntity.setUid(member.getPubKey());
             memEntity.setAvatar(member.getAvatar());
             memEntity.setNick(member.getUsername());
             memEntity.setRole(member.getRole());

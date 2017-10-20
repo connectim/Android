@@ -25,6 +25,7 @@ public class GroupEntity implements Serializable {
     private Integer verify;
     private String avatar;
     private String summary;
+
     @Generated(hash = 1216626780)
     public GroupEntity(Long _id, @NotNull String identifier, String name,
             String ecdh_key, Integer common, Integer verify, String avatar,

@@ -15,46 +15,43 @@ public class GroupMemberEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
+
     @NotNull
     private String identifier;
+    @NotNull
+    private String uid;
     @NotNull
     private String username;
     @NotNull
     private String avatar;
-    @NotNull
-    private String address;
 
     private Integer role;
     private String nick;
-    private String pub_key;
+    private String connect_id;
 
-    @Generated(hash = 190136721)
-    public GroupMemberEntity(Long _id, @NotNull String identifier,
-            @NotNull String username, @NotNull String avatar,
-            @NotNull String address, Integer role, String nick, String pub_key) {
-        this._id = _id;
-        this.identifier = identifier;
-        this.username = username;
-        this.avatar = avatar;
-        this.address = address;
-        this.role = role;
-        this.nick = nick;
-        this.pub_key = pub_key;
-    }
     @Generated(hash = 1538201027)
     public GroupMemberEntity() {
     }
+
+    @Generated(hash = 2073355075)
+    public GroupMemberEntity(Long _id, @NotNull String identifier,
+            @NotNull String uid, @NotNull String username, @NotNull String avatar,
+            Integer role, String nick, String connect_id) {
+        this._id = _id;
+        this.identifier = identifier;
+        this.uid = uid;
+        this.username = username;
+        this.avatar = avatar;
+        this.role = role;
+        this.nick = nick;
+        this.connect_id = connect_id;
+    }
+
     public Long get_id() {
         return this._id;
     }
     public void set_id(Long _id) {
         this._id = _id;
-    }
-    public String getIdentifier() {
-        return this.identifier;
-    }
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
     }
     public String getUsername() {
         return this.username;
@@ -68,12 +65,6 @@ public class GroupMemberEntity implements Serializable {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-    public String getAddress() {
-        return this.address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
-    }
     public Integer getRole() {
         return this.role;
     }
@@ -86,11 +77,28 @@ public class GroupMemberEntity implements Serializable {
     public void setNick(String nick) {
         this.nick = nick;
     }
-    public String getPub_key() {
-        return this.pub_key;
-    }
-    public void setPub_key(String pub_key) {
-        this.pub_key = pub_key;
+
+    public String getUid() {
+        return uid;
     }
 
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getConnect_id() {
+        return connect_id;
+    }
+
+    public void setConnect_id(String connect_id) {
+        this.connect_id = connect_id;
+    }
+
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 }

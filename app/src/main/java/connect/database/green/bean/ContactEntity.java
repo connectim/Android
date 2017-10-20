@@ -18,9 +18,8 @@ public class ContactEntity implements Serializable {
     @NotNull
     @Unique
     private String pub_key;
-    @Unique
-    private String address;
 
+    private String uid;
     private String connectId;
     private String username;
     private String avatar;
@@ -29,13 +28,17 @@ public class ContactEntity implements Serializable {
     private Integer source;
     private Boolean blocked;
 
-    @Generated(hash = 2102055938)
-    public ContactEntity(Long _id, @NotNull String pub_key, String address,
+    @Generated(hash = 393979869)
+    public ContactEntity() {
+    }
+
+    @Generated(hash = 1252922715)
+    public ContactEntity(Long _id, @NotNull String pub_key, String uid,
             String connectId, String username, String avatar, String remark,
             Integer common, Integer source, Boolean blocked) {
         this._id = _id;
         this.pub_key = pub_key;
-        this.address = address;
+        this.uid = uid;
         this.connectId = connectId;
         this.username = username;
         this.avatar = avatar;
@@ -44,9 +47,7 @@ public class ContactEntity implements Serializable {
         this.source = source;
         this.blocked = blocked;
     }
-    @Generated(hash = 393979869)
-    public ContactEntity() {
-    }
+    
     public Long get_id() {
         return this._id;
     }
@@ -58,12 +59,6 @@ public class ContactEntity implements Serializable {
     }
     public void setPub_key(String pub_key) {
         this.pub_key = pub_key;
-    }
-    public String getAddress() {
-        return this.address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
     }
     public String getConnectId() {
         return this.connectId;
@@ -106,6 +101,14 @@ public class ContactEntity implements Serializable {
     }
     public void setBlocked(Boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public String getUid() {
+        return this.uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
     
 

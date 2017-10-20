@@ -161,7 +161,7 @@ public class DaoManagerTest {
         ContactEntity contactEntity = new ContactEntity();
         contactEntity.set_id(100001L);
         contactEntity.setPub_key("Pub_key");
-        contactEntity.setAddress("Address");
+        contactEntity.setUid("Address");
         //daoSession.getContactEntityDao().insert(contactEntity);
         daoSession.getContactEntityDao().insert(contactEntity);
 
@@ -229,13 +229,13 @@ public class DaoManagerTest {
     public void friendRequestEntityTest() {
         FriendRequestEntity requestEntity = new FriendRequestEntity();
         requestEntity.set_id(100001L);
-        requestEntity.setPub_key("Pub_key");
-        requestEntity.setAddress("Address");
+        requestEntity.setUid("Pub_key");
+        //requestEntity.set("Address");
         // daoSession.getFriendRequestEntityDao().insert(requestEntity);
         daoSession.getFriendRequestEntityDao().insert(requestEntity);
 
         FriendRequestEntity tempEntity = daoSession.getFriendRequestEntityDao().load(100001L);
-        String pubkey = tempEntity.getPub_key();
+        String pubkey = tempEntity.getUid();
         Assert.assertSame(pubkey, "Pub_key");
     }
 
@@ -258,7 +258,7 @@ public class DaoManagerTest {
         memberEntity.set_id(100001L);
         memberEntity.setIdentifier("Identifier");
         memberEntity.setUsername("Username");
-        memberEntity.setAddress("Address");
+        memberEntity.setUid("Address");
         memberEntity.setAvatar("Avatar");
         // daoSession.getGroupMemberEntityDao().insert(memberEntity);
         daoSession.getGroupMemberEntityDao().insert(memberEntity);

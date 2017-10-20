@@ -70,7 +70,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         GroupMemberEntity addEntity = new GroupMemberEntity();
         addEntity.setIdentifier(TAG_ADD);
         addEntity.setAvatar(TAG_ADD);
-        addEntity.setAddress(TAG_ADD);
+        addEntity.setUid(TAG_ADD);
         showMemberEntities.add(addEntity);
         for (GroupMemberEntity entity : showMemberEntities) {
             View headerview = LayoutInflater.from(activity).inflate(R.layout.linear_contact, null);
@@ -101,7 +101,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
                 GlideUtil.loadAvatarRound(headimg, entity.getAvatar());
             }
 
-            headerview.setTag(entity.getAddress());
+            headerview.setTag(entity.getUid());
             view.memberList(headerview);
         }
 

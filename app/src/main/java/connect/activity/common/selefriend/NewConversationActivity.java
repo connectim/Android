@@ -125,7 +125,7 @@ public class NewConversationActivity extends BaseActivity {
                         "", "", false, new DialogUtil.OnItemClickListener() {
                             @Override
                             public void confirm(String value) {
-                                backActivity(TextUtils.isEmpty(roomAttrBean.getAddress()) ? 1 : 0, roomAttrBean.getPub_key());
+                                backActivity(TextUtils.isEmpty(roomAttrBean.getUid()) ? 1 : 0, roomAttrBean.getPub_key());
                             }
 
                             @Override

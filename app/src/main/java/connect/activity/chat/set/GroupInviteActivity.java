@@ -81,7 +81,7 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
         List<String> oldMembers = new ArrayList<>();
         List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         for (GroupMemberEntity memEntity : memberEntities) {
-            oldMembers.add(memEntity.getPub_key());
+            oldMembers.add(memEntity.getUid());
         }
 
         List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend();

@@ -18,7 +18,6 @@ public class Talker implements Serializable{
     private String talkKey;
     private String talkAvatar;
     private String talkName;
-    private String talkAddress;
 
     private ContactEntity friendEntity;
     private GroupEntity groupEntity;
@@ -30,7 +29,6 @@ public class Talker implements Serializable{
         this.talkAvatar = friendEntity.getAvatar();
         String username = TextUtils.isEmpty(friendEntity.getUsername()) ? friendEntity.getRemark() : friendEntity.getUsername();
         this.talkName = username;
-        this.talkAddress = friendEntity.getAddress();
     }
 
     public Talker(GroupEntity entity) {
@@ -39,7 +37,6 @@ public class Talker implements Serializable{
         this.talkKey = groupEntity.getIdentifier();
         this.talkAvatar = groupEntity.getAvatar();
         this.talkName = groupEntity.getName();
-        this.talkAddress = "";
     }
 
     public Talker(int talkType, String talkKey) {
@@ -61,10 +58,6 @@ public class Talker implements Serializable{
 
     public String getTalkName() {
         return talkName;
-    }
-
-    public String getTalkAddress() {
-        return talkAddress;
     }
 
     public ContactEntity getFriendEntity() {

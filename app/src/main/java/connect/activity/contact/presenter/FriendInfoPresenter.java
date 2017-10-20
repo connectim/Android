@@ -100,7 +100,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                 if (sendBean.getType() == MsgSendBean.SendType.TypeAddFavorites) {
                     mView.setCommon(sendBean.getCommon());
                 } else if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
-                    ContactHelper.getInstance().deleteEntity(sendBean.getAddress());
+                    ContactHelper.getInstance().deleteEntity(sendBean.getUid());
                     ContactHelper.getInstance().deleteRequestEntity(sendBean.getPubkey());
                     ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
 
@@ -113,7 +113,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                 Integer errorCode = (Integer) objs[1];
                 if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Link_Delete_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
-                    ContactHelper.getInstance().deleteEntity(sendBean.getAddress());
+                    ContactHelper.getInstance().deleteEntity(sendBean.getUid());
                     ContactHelper.getInstance().deleteRequestEntity(sendBean.getPubkey());
                     ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
                     ContactNotice.receiverContact();

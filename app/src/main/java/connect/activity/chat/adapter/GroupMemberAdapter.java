@@ -111,12 +111,12 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
                 } else {
                     closeMenu();
                     GroupMemberEntity indexEntity = groupMemEntities.get(position);
-                    if (indexEntity.getIdentifier().equals(MemoryDataManager.getInstance().getPubKey())) {
+                    if (indexEntity.getUid().equals(MemoryDataManager.getInstance().getPubKey())) {
                         UserInfoActivity.startActivity(activity);
                     } else {
-                        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(indexEntity.getPub_key());
+                        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(indexEntity.getUid());
                         if (friendEntity == null) {
-                            StrangerInfoActivity.startActivity(activity, indexEntity.getAddress(), SourceType.GROUP);
+                            StrangerInfoActivity.startActivity(activity, indexEntity.getUid(), SourceType.GROUP);
                         } else {
                             FriendInfoActivity.startActivity(activity, friendEntity.getPub_key());
                         }
@@ -172,7 +172,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
     public void removeData(int position) {
         closeMenu();
         GroupMemberEntity entity = groupMemEntities.get(position);
-        if (!MemoryDataManager.getInstance().getPubKey().equals(entity.getPub_key())) {
+        if (!MemoryDataManager.getInstance().getPubKey().equals(entity.getUid())) {
             removeGroupMember(position ,entity);
         }
     }
@@ -194,12 +194,12 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
 
     protected void removeGroupMember(final int position,final GroupMemberEntity entity) {
         Connect.DelOrQuitGroupMember delMember = Connect.DelOrQuitGroupMember.newBuilder()
-                .setIdentifier(entity.getIdentifier()).setAddress(entity.getAddress()).build();
+                .setIdentifier(entity.getUid()).build();
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REMOVE, delMember, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                ContactHelper.getInstance().removeMemberEntity(entity.getIdentifier(), entity.getPub_key());
+                ContactHelper.getInstance().removeMemberEntity(entity.getIdentifier(), entity.getUid());
 
                 groupMemEntities.remove(position);
                 notifyItemRemoved(position);

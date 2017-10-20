@@ -84,7 +84,7 @@ public class GroupAtActivity extends BaseActivity implements GroupAtContract.BVi
         Iterator<GroupMemberEntity> iterator = groupMemEntities.iterator();
         while (iterator.hasNext()) {
             GroupMemberEntity memberEntity = iterator.next();
-            if (memberEntity.getPub_key().equals(myPublicKey)) {
+            if (memberEntity.getUid().equals(myPublicKey)) {
                 iterator.remove();
             }
         }

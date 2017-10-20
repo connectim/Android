@@ -119,7 +119,7 @@ public class ContactHelper extends BaseDao {
             value = "";
         }
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.whereOr(ContactEntityDao.Properties.Pub_key.eq(value), ContactEntityDao.Properties.Address.eq(value)).limit(1).build();
+        queryBuilder.whereOr(ContactEntityDao.Properties.Pub_key.eq(value), ContactEntityDao.Properties.Uid.eq(value)).limit(1).build();
         List<ContactEntity> friendEntities = queryBuilder.listLazy();
         return (friendEntities == null || friendEntities.size() == 0) ? null : friendEntities.get(0);
     }
@@ -155,7 +155,7 @@ public class ContactHelper extends BaseDao {
      */
     public FriendRequestEntity loadFriendRequest(String address) {
         QueryBuilder<FriendRequestEntity> queryBuilder = friendRequestEntityDao.queryBuilder();
-        queryBuilder.where(FriendRequestEntityDao.Properties.Address.eq(address)).limit(1).build();
+        queryBuilder.where(FriendRequestEntityDao.Properties.Uid.eq(address)).limit(1).build();
         List<FriendRequestEntity> list = queryBuilder.list();
         if (list.size() == 0) {
             return null;
@@ -215,10 +215,9 @@ public class ContactHelper extends BaseDao {
             groupMemEntity = new GroupMemberEntity();
             groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
             groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
-            groupMemEntity.setPub_key(cursorGetString(cursor, "PUB_KEY"));
+            groupMemEntity.setUid(cursorGetString(cursor, "PUB_KEY"));
             groupMemEntity.setNick(cursorGetString(cursor, "NICK"));
             groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
-            groupMemEntity.setAddress(cursorGetString(cursor, "ADDRESS"));
             groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
             groupMemEntity.setAvatar(cursorGetString(cursor, "AVATAR"));
 
@@ -252,10 +251,9 @@ public class ContactHelper extends BaseDao {
             groupMemEntity = new GroupMemberEntity();
             groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
             groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
-            groupMemEntity.setPub_key(cursorGetString(cursor, "PUB_KEY"));
+            groupMemEntity.setUid(cursorGetString(cursor, "PUB_KEY"));
             groupMemEntity.setNick(cursorGetString(cursor, "NICK"));//friend mark
             groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
-            groupMemEntity.setAddress(cursorGetString(cursor, "ADDRESS"));
             groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
             groupMemEntity.setAvatar(cursorGetString(cursor, "AVATAR"));
 
@@ -371,10 +369,10 @@ public class ContactHelper extends BaseDao {
      */
     public void inserFriendQuestEntity(FriendRequestEntity entity) {
         QueryBuilder<FriendRequestEntity> qb = friendRequestEntityDao.queryBuilder();
-        qb.where(FriendRequestEntityDao.Properties.Pub_key.eq(entity.getPub_key()));
+        qb.where(FriendRequestEntityDao.Properties.Uid.eq(entity.getUid()));
         List<FriendRequestEntity> list = qb.list();
         if (list.size() > 0) {
-            deleteRequestEntity(entity.getPub_key());
+            deleteRequestEntity(entity.getUid());
         }
         friendRequestEntityDao.insertOrReplace(entity);
     }
@@ -439,9 +437,9 @@ public class ContactHelper extends BaseDao {
         ConversationAction.conversationAction.sendEvent();
     }
 
-    public void deleteEntity(String address) {
+    public void deleteEntity(String uid) {
         QueryBuilder<ContactEntity> qb = contactEntityDao.queryBuilder();
-        DeleteQuery<ContactEntity> bd = qb.where(ContactEntityDao.Properties.Address.eq(address))
+        DeleteQuery<ContactEntity> bd = qb.where(ContactEntityDao.Properties.Uid.eq(uid))
                 .buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }
@@ -449,11 +447,11 @@ public class ContactHelper extends BaseDao {
     /**
      * remove friend
      *
-     * @param pubKey
+     * @param uid
      */
-    public void deleteRequestEntity(String pubKey) {
+    public void deleteRequestEntity(String uid) {
         QueryBuilder<FriendRequestEntity> qb = friendRequestEntityDao.queryBuilder();
-        DeleteQuery<FriendRequestEntity> bd = qb.where(FriendRequestEntityDao.Properties.Pub_key.eq(pubKey))
+        DeleteQuery<FriendRequestEntity> bd = qb.where(FriendRequestEntityDao.Properties.Uid.eq(uid))
                 .buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }
@@ -506,12 +504,12 @@ public class ContactHelper extends BaseDao {
      * remove member
      *
      * @param groupkey
-     * @param pubkey
+     * @param uid
      */
-    public void removeMemberEntity(String groupkey, String pubkey) {
+    public void removeMemberEntity(String groupkey, String uid) {
         QueryBuilder<GroupMemberEntity> qb = groupMemberEntityDao.queryBuilder();
         DeleteQuery<GroupMemberEntity> bd = qb.where(GroupMemberEntityDao.Properties.Identifier.eq(groupkey),
-                qb.or(GroupMemberEntityDao.Properties.Identifier.eq(pubkey), GroupMemberEntityDao.Properties.Address.eq(pubkey))).buildDelete();
+                qb.or(GroupMemberEntityDao.Properties.Identifier.eq(groupkey), GroupMemberEntityDao.Properties.Uid.eq(uid))).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }
 

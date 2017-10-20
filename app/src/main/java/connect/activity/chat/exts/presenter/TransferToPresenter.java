@@ -83,7 +83,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
                         contactEntity = new ContactEntity();
                         contactEntity.setPub_key(sendUserInfo.getPubKey());
                         contactEntity.setUsername(sendUserInfo.getUsername());
-                        contactEntity.setAddress(sendUserInfo.getUid());
+                        contactEntity.setUid(sendUserInfo.getUid());
                         contactEntity.setAvatar(sendUserInfo.getAvatar());
 
                         String avatar = contactEntity.getAvatar();
@@ -112,7 +112,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
             public void success(String value) {
                 long amount = view.getCurrentAmount();
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(4, contactEntity.getAvatar(),
-                        contactEntity.getUsername(), contactEntity.getAddress()));
+                        contactEntity.getUsername(), contactEntity.getUid()));
                 if (view.getTransType() == TransferToActivity.TransferType.CHAT) {
                     MsgSend.sendOuterMsg(LinkMessageRow.Transfer,0,value, amount, view.getTransferNote());
                 } else if (view.getTransType() == TransferToActivity.TransferType.ADDRESS) {

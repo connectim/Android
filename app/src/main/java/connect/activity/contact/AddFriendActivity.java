@@ -129,35 +129,35 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
         @Override
         public void accept(int position, FriendRequestEntity entity) {
             if (entity.getStatus() == 4) {
-                StrangerInfoActivity.startActivity(mActivity, entity.getAddress(), SourceType.RECOMMEND);
+                StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
             } else {
                 MsgSendBean msgSendBean = new MsgSendBean();
                 msgSendBean.setType(MsgSendBean.SendType.TypeAcceptFriendQuest);
-                msgSendBean.setAddress(entity.getAddress());
+                msgSendBean.setUid(entity.getUid());
                 UserOrderBean userOrderBean = new UserOrderBean();
-                userOrderBean.acceptFriendRequest(entity.getAddress(), entity.getSource(), msgSendBean);
+                userOrderBean.acceptFriendRequest(entity.getUid(), entity.getSource(), msgSendBean);
             }
         }
 
         @Override
         public void itemClick(int position, FriendRequestEntity entity) {
-            if (TextUtils.isEmpty(entity.getPub_key())) {
+            if (TextUtils.isEmpty(entity.getUid())) {
                 //load more
                 ActivityUtil.next(mActivity, AddFriendRecommendActivity.class);
             } else if (entity.getStatus() == 4) {
                 //introduce
-                StrangerInfoActivity.startActivity(mActivity, entity.getAddress(), SourceType.RECOMMEND);
+                StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
             } else {
                 if (entity.getStatus() == 1) {
                     AddFriendAcceptActivity.startActivity(mActivity, entity);
                     return;
                 }
-                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(entity.getPub_key());
+                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(entity.getUid());
                 if (friendEntity == null) {
-                    StrangerInfoActivity.startActivity(mActivity, entity.getAddress(),
+                    StrangerInfoActivity.startActivity(mActivity, entity.getUid(),
                             SourceType.getSourceType(entity.getSource()));
                 } else {
-                    FriendInfoActivity.startActivity(mActivity, entity.getPub_key());
+                    FriendInfoActivity.startActivity(mActivity, entity.getUid());
                 }
             }
         }
@@ -169,11 +169,11 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
                 //introduce
                 MsgSendBean msgSendBean = new MsgSendBean();
                 msgSendBean.setType(MsgSendBean.SendType.TypeRecommendNoInterested);
-                msgSendBean.setPubkey(entity.getPub_key());
+                msgSendBean.setPubkey(entity.getUid());
                 UserOrderBean userOrderBean = new UserOrderBean();
-                userOrderBean.noInterested(entity.getAddress(), msgSendBean);
+                userOrderBean.noInterested(entity.getUid(), msgSendBean);
             } else {
-                ContactHelper.getInstance().deleteRequestEntity(entity.getPub_key());
+                ContactHelper.getInstance().deleteRequestEntity(entity.getUid());
                 presenter.queryFriend();
                 ContactNotice.receiverAddFriend();
             }
@@ -195,7 +195,7 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
             case MSG_SEND_SUCCESS:
                 MsgSendBean sendBean = (MsgSendBean) objs[0];
                 if (sendBean.getType() == MsgSendBean.SendType.TypeAcceptFriendQuest) {
-                    presenter.updateRequestAddSuccess(ContactHelper.getInstance().loadFriendRequest(sendBean.getAddress()));
+                    presenter.updateRequestAddSuccess(ContactHelper.getInstance().loadFriendRequest(sendBean.getUid()));
                 } else if (sendBean.getType() == MsgSendBean.SendType.TypeRecommendNoInterested) {
                     ContactHelper.getInstance().removeRecommendEntity(sendBean.getPubkey());
                     presenter.queryFriend();

@@ -113,7 +113,7 @@ public class ChatMsgUtil {
         }
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         for (GroupMemberEntity memEntity : groupMemEntities) {
-            memEntityMap.put(memEntity.getPub_key(), memEntity);
+            memEntityMap.put(memEntity.getUid(), memEntity);
         }
     }
 
