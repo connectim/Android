@@ -69,10 +69,11 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
                     Connect.GroupInviteResponseList responseList = Connect.GroupInviteResponseList.parseFrom(structData.getPlainData());
                     for (Connect.GroupInviteResponse res : responseList.getListList()) {
                         if (ProtoBufUtil.getInstance().checkProtoBuf(res)) {
-                            String adddress = res.getAddress();
+                            // qwer
+                            String uid = res.getUid();
                             String token = res.getToken();
 
-                            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(adddress);
+                            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(uid);
                             if (friendEntity != null) {
                                 CFriendChat friendChat = new CFriendChat(friendEntity);
                                 ChatMsgEntity msgExtEntity = friendChat.inviteJoinGroupMsg(groupEntity.getAvatar(), groupEntity.getName(),

@@ -313,15 +313,17 @@ public class CommandReceiver implements CommandListener {
                 groupKey = groupChange.getIdentifier();
 
                 Connect.QuitGroupUserAddress quitGroup = Connect.QuitGroupUserAddress.parseFrom(groupChange.getDetail());
-                for (String address : quitGroup.getAddressesList()) {
-                    ContactHelper.getInstance().removeMemberEntity(groupKey, address);
+                // qwert
+                for (String uid : quitGroup.getUidsList()) {
+                    ContactHelper.getInstance().removeMemberEntity(groupKey, uid);
                 }
                 break;
             case 3://Group of personal information changes
                 Connect.ChangeGroupNick groupNick = Connect.ChangeGroupNick.parseFrom(groupChange.getDetail());
 
                 groupKey = groupChange.getIdentifier();
-                memberAddress = groupNick.getAddress();
+                // qwert
+                memberAddress = groupNick.getUid();
                 String memberNick = groupNick.getNick();
                 ContactHelper.getInstance().updateGroupMemberNickName(groupKey, memberAddress, memberNick);
                 break;

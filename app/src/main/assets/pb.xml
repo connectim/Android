@@ -247,7 +247,7 @@
     </GroupInviteResponseList>
 
     <GroupInviteResponse>
-        <attr name='address' type='address'></attr>
+        <attr name='uid' type='string'></attr>
         <attr name='token' type='string'></attr>
     </GroupInviteResponse>
 

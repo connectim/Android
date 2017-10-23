@@ -289,16 +289,6 @@ message GenerateToken {
 bytes salt=1;
 }
 
-
-message RegisterUser {
-string username=1;
-string avatar=2;
-string mobile=3;
-string token=4;
-string encryption_pri=5;
-string password_hint=6;
-}
-
 message GenerateTokenResponse {
 bytes salt=1;
 int64 expired =2;
@@ -321,7 +311,7 @@ repeated string addresses = 1;
 string identifier=2;
 }
 message GroupInviteResponse {
-string address = 1;
+string uid  = 1;
 string token = 2;
 }
 message GroupInviteResponseList {
@@ -453,7 +443,7 @@ string backup=2;
 
 message DelOrQuitGroupMember {
 string identifier = 1;
-string address=2;
+string uid=2;
 }
 
 message UpdateGroupInfo{
@@ -496,11 +486,11 @@ UserInfo invite_by=5;
 }
 
 message QuitGroupUserAddress {
-repeated string addresses=1;
+repeated string uids=1;
 }
 
 message ChangeGroupNick {
-string address=1;
+string uid=1;
 string nick=2;
 }
 message DownloadBackUpResp {
@@ -1351,6 +1341,18 @@ message RegisterUser {
     string mobile=3;
     string token=4;
     string ca_pub=5;
+}
+
+message RelationshipChange {
+    string uid=1;
+    string friend=2;
+    string category=3;
+}
+
+message HttpRequest {
+    string uid = 1;
+    string sign = 2;
+    GcmData cipher_data = 3;
 }
 
 

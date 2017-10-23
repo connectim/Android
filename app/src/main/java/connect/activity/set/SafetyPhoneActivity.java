@@ -15,6 +15,7 @@ import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
 /**
  * binding mobile phone number
