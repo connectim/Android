@@ -47,10 +47,14 @@ public class ConversionHelper extends BaseDao {
         return loadRoomEntities("");
     }
 
-    public List<RoomAttrBean> loadRoomEntities(String publicKey) {
+    public List<RoomAttrBean> loadRoomEntities(String identifier) {
+        if (TextUtils.isEmpty(identifier)) {
+            identifier = "";
+        }
+
         String sql = "SELECT R.*, S.DISTURB FROM CONVERSION_ENTITY R " +
                 " LEFT OUTER JOIN CONVERSION_SETTING_ENTITY S ON R.IDENTIFIER = S.IDENTIFIER " +
-                (TextUtils.isEmpty(publicKey) ? "" : " WHERE R.IDENTIFIER = " + publicKey) +
+                (TextUtils.isEmpty(identifier) ? "" : " WHERE R.IDENTIFIER = " + identifier) +
                 " GROUP BY R.IDENTIFIER ORDER BY IFNULL(R.TOP, 0) DESC,IFNULL(R.LAST_TIME, 0) DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
 

@@ -1,57 +1,41 @@
 package connect.database.green;
 
-import android.content.Context;
-import android.text.TextUtils;
-
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import connect.database.SharePreferenceUser;
+import connect.activity.base.BaseApplication;
+import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.MigrateOpenHelper;
 import connect.database.green.DaoHelper.ParamHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
-import connect.activity.base.BaseApplication;
 import connect.database.green.dao.DaoMaster;
 import connect.database.green.dao.DaoSession;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
-import instant.utils.cryption.SupportKeyUril;
-import connect.utils.log.LogManager;
-import connect.wallet.jni.AllNativeMethod;
+import connect.utils.cryption.TransformUtil;
 
 /**
  * The management of the database
  * Created by gtq on 2016/11/22.
  */
 public class DaoManager {
-    private static final String TAG = "DaoManager";
-    /**
-     * The database version number
-     * The database upgrade need to change the version number, data migration
-     * 1--->0.0.3
-     * 2--->0.0.4
-     * 3--->0.0.8
-     * 4--->0.0.9
-     * 5--->0.1.2
-     */
+
+    private static final String TAG = "_DaoManager";
+
     private volatile static DaoManager mDaoManager;
     private static DaoMaster.DevOpenHelper mHelper;
     private static DaoMaster mDaoMaster;
     private static DaoSession mDaoSession;
 
-    public static DaoManager getInstance() {
+    public synchronized static DaoManager getInstance() {
         if (mDaoManager == null) {
-            synchronized (DaoManager.class) {
-                if (mDaoManager == null) {
-                    mDaoManager = new DaoManager();
-                }
-            }
+            mDaoManager = new DaoManager();
         }
         return mDaoManager;
     }
@@ -63,65 +47,37 @@ public class DaoManager {
      */
     public synchronized DaoMaster getDaoMaster() {
         if (null == mDaoMaster) {
-            String oldSecret = SharePreferenceUser.getInstance().getStringValue("db_secret");
-            String password = !TextUtils.isEmpty(oldSecret) ? OldDbPwd(oldSecret) : newDbPwd();
+            String DB_NAME = null;
+            String DB_PWD = null;
 
-            String pubKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
-            String DB_NAME = "bitmain.db";
-            if (!TextUtils.isEmpty(pubKey)) {
-                DB_NAME = "connect_" + pubKey + ".db";
+            UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+            if (userBean == null) {
+                DB_NAME = "connect_exception.db";
+                DB_PWD = "connect_exception_pwd";
+            } else {
+                String uid = userBean.getUid();
+                DB_NAME = "connect_" + StringUtil.bytesToHexString(TransformUtil.digest(TransformUtil.MD5,
+                        StringUtil.hexStringToBytes(uid)));
+                DB_PWD = "connect_" + StringUtil.bytesToHexString(TransformUtil.digest(TransformUtil.SHA_256,
+                        StringUtil.hexStringToBytes(uid)));
             }
 
-            Context context = BaseApplication.getInstance().getBaseContext();
-            MigrateOpenHelper helper = new MigrateOpenHelper(context, DB_NAME, null);
-            Database db = null;
+            MigrateOpenHelper helper = new MigrateOpenHelper(
+                    BaseApplication.getInstance().getBaseContext(),
+                    DB_NAME,
+                    null);
 
+            Database db = null;
             if (ConfigUtil.getInstance().appMode()) {//release version
-                LogManager.getLogger().d(TAG, "password =" + password);
                 setDebug(false);//log
-                db = helper.getEncryptedWritableDb(password);
+                db = helper.getEncryptedWritableDb(DB_PWD);
             } else {//debug version
-                LogManager.getLogger().d(TAG, "DEBUG VERSION");
                 setDebug(true);
                 db = helper.getWritableDb();
-            }
-
-            if (!TextUtils.isEmpty(oldSecret)) {//update password
-                db.execSQL("PRAGMA key = '" + password + "';");
-                db.execSQL("PRAGMA rekey = '" + newDbPwd() + "';");
-                SharePreferenceUser.getInstance().putString("db_secret", "");
             }
             mDaoMaster = new DaoMaster(db);
         }
         return mDaoMaster;
-    }
-
-    public String OldDbPwd(String oldSecret) {
-        String salt = SharePreferenceUser.getInstance().getStringValue(SharePreferenceUser.DB_SALT);
-        String priKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
-        return SupportKeyUril.decryptionPri(oldSecret, salt, priKey);
-    }
-
-    public String newDbPwd() {
-        String pubKeyTemp = SharePreferenceUser.getInstance().getStringValue(SharePreferenceUser.DB_PUBKEY);
-        String priKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
-        if (TextUtils.isEmpty(priKey)) {
-            BaseApplication.getInstance().finishActivity();
-        }
-
-        String salt = "";
-        if (TextUtils.isEmpty(pubKeyTemp)) {
-            salt = SupportKeyUril.getSaltPri();
-            pubKeyTemp = AllNativeMethod.cdGetPubKeyFromPrivKey(AllNativeMethod.cdCreateNewPrivKey());
-            SharePreferenceUser.getInstance().putString(SharePreferenceUser.DB_PUBKEY, pubKeyTemp);
-            SharePreferenceUser.getInstance().putString(SharePreferenceUser.DB_SALT, salt);
-        } else {
-            salt = SharePreferenceUser.getInstance().getStringValue(SharePreferenceUser.DB_SALT);
-        }
-        byte[] saltByte = salt.getBytes();
-        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(priKey, pubKeyTemp);
-        byte[] pbkdf = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdHkey, ecdHkey.length, saltByte, saltByte.length, 12, 32);
-        return AllNativeMethod.cdGetHash256(StringUtil.bytesToHexString(pbkdf));
     }
 
     public DaoSession getDaoSession() {
@@ -137,10 +93,6 @@ public class DaoManager {
     public void setDebug(boolean flag) {
         QueryBuilder.LOG_SQL = flag;
         QueryBuilder.LOG_VALUES = flag;
-    }
-
-    public void switchDataBase() {
-        getDaoMaster();
     }
 
     public void closeDataBase() {

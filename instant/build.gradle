@@ -26,9 +26,9 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':encrypt')
+
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.google.code.gson:gson:2.7'
-    compile 'org.greenrobot:greendao:3.2.2'
     compile 'io.netty:netty-all:5.0.0.Alpha2'
-    compile project(':encrypt')
 }

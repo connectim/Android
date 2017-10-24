@@ -14,6 +14,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.StringUtil;
 import connect.wallet.jni.AllNativeMethod;
@@ -142,7 +143,17 @@ public class SupportKeyUril {
     }
 
     public static String localHashKey() {
-        String key = AllNativeMethod.cdGetHash256(SharedPreferenceUtil.getInstance().getUser().getPriKey());
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        if (userBean == null) {
+            throw new RuntimeException("UserBean is Null");
+        }
+
+        String privateKey = userBean.getPriKey();
+        if (TextUtils.isEmpty(privateKey)) {
+            throw new RuntimeException("privateKey is Null");
+        }
+
+        String key = AllNativeMethod.cdGetHash256(privateKey);
         key = AllNativeMethod.cdGetHash256(key);
         return key;
     }

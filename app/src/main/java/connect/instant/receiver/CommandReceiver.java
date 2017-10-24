@@ -227,7 +227,7 @@ public class CommandReceiver implements CommandListener {
     public void updateGroupChange(Connect.GroupChange groupChange) throws Exception {
         Context context = BaseApplication.getInstance().getBaseContext();
         String groupKey = "";
-        String memberAddress="";
+        String memberUid ="";
         String noticeStr = "";
 
         GroupEntity groupEntity = null;
@@ -311,21 +311,17 @@ public class CommandReceiver implements CommandListener {
                 break;
             case 2://Remove the group members
                 groupKey = groupChange.getIdentifier();
-
                 Connect.QuitGroupUserAddress quitGroup = Connect.QuitGroupUserAddress.parseFrom(groupChange.getDetail());
-                // qwert
                 for (String uid : quitGroup.getUidsList()) {
                     ContactHelper.getInstance().removeMemberEntity(groupKey, uid);
                 }
                 break;
             case 3://Group of personal information changes
                 Connect.ChangeGroupNick groupNick = Connect.ChangeGroupNick.parseFrom(groupChange.getDetail());
-
                 groupKey = groupChange.getIdentifier();
-                // qwert
-                memberAddress = groupNick.getUid();
+                memberUid = groupNick.getUid();
                 String memberNick = groupNick.getNick();
-                ContactHelper.getInstance().updateGroupMemberNickName(groupKey, memberAddress, memberNick);
+                ContactHelper.getInstance().updateGroupMemberNickName(groupKey, memberUid, memberNick);
                 break;
             case 4://Group change
                 groupKey = groupChange.getIdentifier();
@@ -336,13 +332,13 @@ public class CommandReceiver implements CommandListener {
                 }
                 for (GroupMemberEntity member : groupMemEntities) {
                     if (member.getRole() == 1) {//The old group manager
-                        memberAddress = member.getUid();
-                        ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 0);
+                        memberUid = member.getUid();
+                        ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberUid, 0);
                     }
 
                     if (member.getUid().equals(groupAttorn.getAddress())) {//The new group manager
-                        memberAddress = member.getUid();
-                        ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 1);
+                        memberUid = member.getUid();
+                        ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberUid, 1);
 
                         String showName = "";
                         if (groupAttorn.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {

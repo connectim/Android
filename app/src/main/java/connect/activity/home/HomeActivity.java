@@ -132,8 +132,6 @@ public class HomeActivity extends BaseFragmentActivity {
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                 SharePreferenceUser.initSharePreference(userBean.getPubKey());
                 Session.getInstance().clearUserCookie();
-                DaoManager.getInstance().closeDataBase();
-                DaoManager.getInstance().switchDataBase();
                 FileUtil.getExternalStorePath();
 
                 CrashReport.putUserData(activity, "userAddress", SharedPreferenceUtil.getInstance().getUser().getUid());
