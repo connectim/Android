@@ -51,12 +51,16 @@ public class MessageHelper extends BaseDao {
     }
 
     /********************************* select ***********************************/
-    public List<ChatMsgEntity> loadMoreMsgEntities(String pubkey, long firsttime) {
+    public List<ChatMsgEntity> loadMoreMsgEntities(String message_ower, long firsttime) {
+        if (TextUtils.isEmpty(message_ower)) {
+            message_ower = "";
+        }
+
         String sql = "SELECT * FROM (SELECT C.* ,S.STATUS AS TRANS_STATUS,HASHID,PAY_COUNT,CROWD_COUNT FROM MESSAGE_ENTITY C LEFT OUTER JOIN TRANSACTION_ENTITY S ON C.MESSAGE_ID = S.MESSAGE_ID WHERE C.MESSAGE_OWER = ? " +
                 " AND C.CREATETIME < " + firsttime +
                 " ORDER BY C.CREATETIME DESC LIMIT 20) ORDER BY CREATETIME ASC;";
 
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{pubkey});
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{message_ower});
         ChatMsgEntity msgEntity = null;
         List<ChatMsgEntity> msgEntities = new ArrayList();
 

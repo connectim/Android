@@ -75,7 +75,7 @@ public class BaseApplication extends Application{
         return activityList == null || activityList.size() == 0;
     }
 
-    public void finishActivity(){
+    public void finishActivity() {
         for (Activity activity : activityList) {
             if (null != activity) {
                 activity.finish();

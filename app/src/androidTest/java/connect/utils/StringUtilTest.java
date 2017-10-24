@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import org.junit.Test;
 
+import connect.utils.cryption.TransformUtil;
 import connect.utils.log.LogManager;
 
 import static org.junit.Assert.assertEquals;
@@ -35,13 +36,6 @@ public class StringUtilTest {
         LogManager.getLogger().d(Tag, "hexToByte: " + hexToByte[0] + hexToByte[2]);
 
         byte[] bytes = StringUtil.hexStringToBytes("313233");
-        assertTrue(bytes.length == 3);
-    }
-
-    @Test
-    public void byteTomd5Test() throws Exception {
-        byte[] bytes = {'1', '2', '3'};
-        byte[] md5 = StringUtil.byteTomd5(bytes);
         assertTrue(bytes.length == 3);
     }
 

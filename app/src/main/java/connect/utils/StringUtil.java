@@ -153,10 +153,4 @@ public class StringUtil {
 
         return value_index;
     }
-
-    public static byte[] byteTomd5(byte[] bytes) throws NoSuchAlgorithmException {
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
-        md5.update(bytes);
-        return md5.digest();
-    }
 }

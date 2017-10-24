@@ -23,7 +23,8 @@ import connect.database.green.dao.RecommandFriendEntityDao;
 import connect.database.green.dao.TransactionEntityDao;
 
 public class MigrateOpenHelper extends DaoMaster.OpenHelper {
-    private String Tag = "MigrateOpenHelper";
+
+    private String Tag = "_MigrateOpenHelper";
     private boolean mainTmpDirSet = false;
 
     public MigrateOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory) {

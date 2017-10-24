@@ -1,6 +1,7 @@
 package connect.instant.receiver;
 
-import connect.database.green.DaoHelper.ConversionHelper;
+import connect.database.green.DaoHelper.MessageHelper;
+import connect.instant.model.CRobotChat;
 import connect.utils.NotificationBar;
 import instant.bean.ChatMsgEntity;
 import instant.bean.ConnectState;
@@ -10,7 +11,7 @@ import instant.parser.inter.ConnectListener;
  * Created by Administrator on 2017/10/18.
  */
 
-public class ConnectReceiver implements ConnectListener{
+public class ConnectReceiver implements ConnectListener {
 
     private String Tag = "_ConnectReceiver";
 
@@ -50,10 +51,8 @@ public class ConnectReceiver implements ConnectListener{
 
     @Override
     public void welcome(ChatMsgEntity chatMsgEntity) {
-
-//        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-//        RobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
-
+        MessageHelper.getInstance().insertMsgExtEntity(chatMsgEntity);
+        CRobotChat.getInstance().updateRoomMsg(null, chatMsgEntity.showContent(), chatMsgEntity.getCreatetime(), -1, 1);
     }
 
     @Override

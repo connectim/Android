@@ -38,26 +38,53 @@ public class DaoManagerTest {
     private DaoSession daoSession;
     private Database database;
 
-    @Test
-    public void getDaoMaster() throws Exception {
-//        createConnectDb();
-//        updateConnectDb();
-//        deleteConnectDb();
-//        createTableTest();
-//        deleteTest();
-//        contactEntityTest();
-//        conversionEntityTest();
-//        conversionSettingEntityTest();
-//        currencyAddressEntityTest();
-//        currencyEntityTest();
-//        friendRequestEntityTest();
-//        groupEntityTest();
-//        groupMemberEntityTest();
-//        messageEntityTest();
-//        paramEntityTest();
-//        recommandEntityTest();
-//        transactionEntityTest();
+    public DaoManagerTest(){
+        createConnectDb();
     }
+
+    @Test
+    public void greenDaoCentreTest() throws Exception {
+        // support
+        //dataBaseTest();
+
+        //Contact
+        //ContactHelperTest contactHelperTest = new ContactHelperTest();
+        //contactHelperTest.loadGroupMemEntities(null);
+        //contactHelperTest.loadGroupMemEntities(null, null);
+        //contactHelperTest.updateGroupMember(null,null,null,null,0,null);
+
+
+        //ConversionHelperTest
+        //ConversionHelperTest conversionHelperTest = new ConversionHelperTest();
+        //conversionHelperTest.loadRoomEntities(null);
+        //conversionHelperTest.loadRecentRoomEntities();
+
+        //MessageHelperTest
+        //MessageHelperTest messageHelperTest = new MessageHelperTest();
+        //messageHelperTest.loadMoreMsgEntities(null, 0);
+    }
+
+
+    @Test
+    public void dataBaseTest(){
+        updateConnectDb();
+        deleteConnectDb();
+        createTableTest();
+        deleteTest();
+        contactEntityTest();
+        conversionEntityTest();
+        conversionSettingEntityTest();
+        currencyAddressEntityTest();
+        currencyEntityTest();
+        friendRequestEntityTest();
+        groupEntityTest();
+        groupMemberEntityTest();
+        messageEntityTest();
+        paramEntityTest();
+        recommandEntityTest();
+        transactionEntityTest();
+    }
+
 
     @Test
     public void createConnectDb() {

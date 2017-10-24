@@ -29,7 +29,7 @@ import connect.utils.FileUtil;
 import protos.Connect;
 
 /**
- * The address book (friends/group)
+ * The contacts book (friends/group)
  * Created by gtq on 2016/11/22.
  */
 public class ContactHelper extends BaseDao {
@@ -41,7 +41,7 @@ public class ContactHelper extends BaseDao {
     private GroupEntityDao groupEntityDao;
     private GroupMemberEntityDao groupMemberEntityDao;
 
-    private static String Tag = "ContactHelper";
+    private static String Tag = "_ContactHelper";
 
     public ContactHelper() {
         super();
@@ -119,7 +119,10 @@ public class ContactHelper extends BaseDao {
             value = "";
         }
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.whereOr(ContactEntityDao.Properties.Pub_key.eq(value), ContactEntityDao.Properties.Uid.eq(value)).limit(1).build();
+        queryBuilder.whereOr(ContactEntityDao.Properties.Pub_key.eq(value),
+                ContactEntityDao.Properties.ConnectId.eq(value),
+                ContactEntityDao.Properties.Uid.eq(value))
+                .limit(1).build();
         List<ContactEntity> friendEntities = queryBuilder.listLazy();
         return (friendEntities == null || friendEntities.size() == 0) ? null : friendEntities.get(0);
     }
@@ -205,8 +208,11 @@ public class ContactHelper extends BaseDao {
      * @return
      */
     public List<GroupMemberEntity> loadGroupMemEntities(String pukkey) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY " +
-                "WHERE M.IDENTIFIER = ? GROUP BY M.IDENTIFIER ,M.ADDRESS ORDER BY M.ROLE DESC;";
+        if (TextUtils.isEmpty(pukkey)) {
+            pukkey = "";
+        }
+        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
+                "WHERE M.IDENTIFIER = ? GROUP BY M.IDENTIFIER ,M.UID ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{pukkey});
 
         GroupMemberEntity groupMemEntity = null;
@@ -215,7 +221,7 @@ public class ContactHelper extends BaseDao {
             groupMemEntity = new GroupMemberEntity();
             groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
             groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
-            groupMemEntity.setUid(cursorGetString(cursor, "PUB_KEY"));
+            groupMemEntity.setUid(cursorGetString(cursor, "UID"));
             groupMemEntity.setNick(cursorGetString(cursor, "NICK"));
             groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
             groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
@@ -241,8 +247,8 @@ public class ContactHelper extends BaseDao {
      * @return
      */
     public List<GroupMemberEntity> loadGroupMemEntities(String identify,String memberkey) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.PUB_KEY = F.PUB_KEY " +
-                "WHERE M.IDENTIFIER = ? AND ( M.ADDRESS == ? OR M.PUB_KEY ==? ) GROUP BY M.PUB_KEY ORDER BY M.ROLE DESC;";
+        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
+                "WHERE M.IDENTIFIER = ? AND (M.CONNECT_ID == ? OR M.UID ==? ) GROUP BY M.UID ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{identify, memberkey, memberkey});
 
         GroupMemberEntity groupMemEntity = null;
@@ -251,7 +257,7 @@ public class ContactHelper extends BaseDao {
             groupMemEntity = new GroupMemberEntity();
             groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
             groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
-            groupMemEntity.setUid(cursorGetString(cursor, "PUB_KEY"));
+            groupMemEntity.setUid(cursorGetString(cursor, "UID"));
             groupMemEntity.setNick(cursorGetString(cursor, "NICK"));//friend mark
             groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
             groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
@@ -351,14 +357,14 @@ public class ContactHelper extends BaseDao {
         updateGroupMember(identify, publickey, null, null, null, nickname);
     }
 
-    public void updateGroupMember(String identify, String publickey, String username, String avatar, Integer role, String nickname) {
+    public void updateGroupMember(String identify, String uid, String username, String avatar, Integer role, String nickname) {
         String sql = "UPDATE GROUP_MEMBER_ENTITY SET " +
                 (TextUtils.isEmpty(username) ? " " : "USERNAME = " + username + " , ") +
                 (TextUtils.isEmpty(avatar) ? " " : "AVATAR = " + avatar + " , ") +
                 (role == null ? " " : "ROLE =  " + role + " ") +
                 (TextUtils.isEmpty(nickname) ? " " : "NICK = '" + nickname + "' ") +
-                "WHERE IDENTIFIER = ? AND (PUB_KEY = ? OR ADDRESS = ?);";
-        daoSession.getDatabase().execSQL(sql, new Object[]{identify, publickey, publickey});
+                "WHERE IDENTIFIER = ? AND (UID = ? OR CONNECT_ID = ?);";
+        daoSession.getDatabase().execSQL(sql, new Object[]{identify, uid, uid});
     }
 
     /*********************************  add ***********************************/
