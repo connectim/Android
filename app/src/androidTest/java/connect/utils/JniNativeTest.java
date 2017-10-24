@@ -27,4 +27,16 @@ public class JniNativeTest {
     public void cdGetSeedFromBIP39WordsTest() {
 
     }
+
+    @Test
+    public void ecdhTest() {
+
+    }
+
+    @Test
+    public void cdGetPubKeyFromPrivKeyTest() {
+        String privateKey = "KzLR7jeCtWBkU8GvwwRALjo83kM7xMNwbwg9UjzEDdJPZt1H5rfN";
+        String publicKey = AllNativeMethod.cdGetPubKeyFromPrivKey(privateKey);
+        LogManager.getLogger().d(Tag, "publicKey: " + publicKey + "   - length: " + publicKey.length());
+    }
 }

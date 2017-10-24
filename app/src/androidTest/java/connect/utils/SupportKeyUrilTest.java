@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import java.security.SecureRandom;
 
+import connect.utils.log.LogManager;
+import connect.wallet.jni.AllNativeMethod;
 import instant.utils.cryption.DecryptionUtil;
 import instant.utils.cryption.EncryptionUtil;
 import instant.utils.cryption.SupportKeyUril;
@@ -20,6 +22,8 @@ import static org.junit.Assert.assertTrue;
  */
 
 public class SupportKeyUrilTest {
+
+    private String Tag = "_SupportKeyUrilTest";
 
     @Test
     public void hmacSHA512() throws Exception {
@@ -68,5 +72,22 @@ public class SupportKeyUrilTest {
             assertTrue(false);
         }
     }
-    
+
+    @Test
+    public void getRawECDHKeyTest() throws Exception {
+        String priKey = "KzLR7jeCtWBkU8GvwwRALjo83kM7xMNwbwg9UjzEDdJPZt1H5rfN";
+        String pubKey = "030f6cacf80bc14afaaf91381a059a3f2d06ec0143ae3135746354a7e9a546aee3";
+        byte[] ecdhBytes = AllNativeMethod.cdxtalkgetRawECDHkey(priKey, pubKey);
+
+        StringBuffer buffer=new StringBuffer();
+        for (int i = 0; i < StringUtil.hexStringToBytes(pubKey).length; i++) {
+            buffer.append(StringUtil.hexStringToBytes(pubKey)[i]);
+        }
+        LogManager.getLogger().d(Tag, buffer.toString());
+
+        // 8f0c0b8d81815a8da8e1f66bbe20878621f5769377acbb785cbbf19ada96451e
+        // 48e0ba26484069cf748ec8ae6a4c77edc0c10dd5754041c7746380cdfd991ddb
+
+        LogManager.getLogger().d(Tag, "ECDH:" + StringUtil.bytesToHexString(ecdhBytes));
+    }
 }
