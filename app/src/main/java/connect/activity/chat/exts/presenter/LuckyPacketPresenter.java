@@ -6,8 +6,9 @@ import android.text.TextUtils;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.contract.LuckyPacketContract;
+import connect.activity.login.bean.UserBean;
 import connect.activity.wallet.bean.TransferBean;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
@@ -48,12 +49,12 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
         if (roomtype == 0) {
             friendEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);
             if (friendEntity == null) {
-                String mypubkey = MemoryDataManager.getInstance().getPubKey();
-                if (mypubkey.equals(roomKey)) {
+                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                if (userBean.getPubKey().equals(roomKey)) {
                     friendEntity = new ContactEntity();
-                    friendEntity.setAvatar(MemoryDataManager.getInstance().getAvatar());
-                    friendEntity.setUsername(MemoryDataManager.getInstance().getName());
-                    friendEntity.setUid(MemoryDataManager.getInstance().getUid());
+                    friendEntity.setAvatar(userBean.getAvatar());
+                    friendEntity.setUsername(userBean.getName());
+                    friendEntity.setUid(userBean.getUid());
                 } else {
                     ActivityUtil.goBack(activity);
                     return;

@@ -17,7 +17,7 @@ import connect.activity.contact.bean.PhoneContactBean;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.AddFriendPhoneContract;
 import connect.activity.contact.presenter.AddFriendPhonePresenter;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.permission.PermissionUtil;
@@ -108,7 +108,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements AddFriendPho
                         numbers = numbers + contactBean.getPhone() + ";";
                     }
                     SystemUtil.sendPhoneSMS(mActivity, numbers, getString(R.string.Link_invite_encrypted_chat_with_APP_Download,
-                            MemoryDataManager.getInstance().getName()));
+                            SharedPreferenceUtil.getInstance().getUser().getName()));
                 }
             }
         }

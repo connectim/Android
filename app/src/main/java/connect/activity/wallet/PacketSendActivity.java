@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.wallet.bean.SendOutBean;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -105,8 +105,8 @@ public class PacketSendActivity extends BaseActivity {
             }
         }
 
-        GlideUtil.loadAvatarRound(avaterRimg, MemoryDataManager.getInstance().getAvatar(), 12);
-        nameTv.setText(MemoryDataManager.getInstance().getName());
+        GlideUtil.loadAvatarRound(avaterRimg, SharedPreferenceUtil.getInstance().getUser().getAvatar(), 12);
+        nameTv.setText(SharedPreferenceUtil.getInstance().getUser().getName());
         CreateScan createScan = new CreateScan();
         if(sendOutBean.getStatus() == 1){
             bottomLin.setVisibility(View.GONE);

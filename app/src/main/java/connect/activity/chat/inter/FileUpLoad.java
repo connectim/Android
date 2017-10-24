@@ -5,7 +5,7 @@ import android.content.Context;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.instant.inter.ConversationListener;
 import connect.ui.activity.R;
@@ -53,7 +53,7 @@ public abstract class FileUpLoad {
      */
     public synchronized Connect.GcmData encodeAESGCMStructData(String filePath) {
         Connect.GcmData gcmData = null;
-        String priKey = MemoryDataManager.getInstance().getPriKey();
+        String priKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
 
         byte[] fileSie = FileUtil.filePathToByteArray(filePath);
         ByteString fileBytes = ByteString.copyFrom(fileSie);

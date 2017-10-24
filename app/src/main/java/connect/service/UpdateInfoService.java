@@ -11,29 +11,22 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.contact.bean.ContactNotice;
-import connect.activity.home.bean.EstimateFeeBean;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.bean.PrivateSetBean;
 import connect.activity.wallet.bean.RateBean;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -42,51 +35,30 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.instant.receiver.CommandReceiver;
-import connect.instant.receiver.ConnectReceiver;
-import connect.instant.receiver.MessageReceiver;
-import connect.instant.receiver.RobotReceiver;
-import connect.instant.receiver.TransactionReceiver;
-import connect.instant.receiver.UnreachableReceiver;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.StringUtil;
-import connect.utils.TimeUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateDataUtil;
 import connect.utils.log.LogManager;
-import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
-import instant.parser.localreceiver.CommandLocalReceiver;
-import instant.parser.localreceiver.ConnectLocalReceiver;
-import instant.parser.localreceiver.MessageLocalReceiver;
-import instant.parser.localreceiver.RobotLocalReceiver;
-import instant.parser.localreceiver.TransactionLocalReceiver;
-import instant.parser.localreceiver.UnreachableLocalReceiver;
-import instant.ui.InstantSdk;
 import instant.utils.manager.FailMsgsManager;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 import protos.Connect;
-import wallet_gateway.WalletOuterClass;
 
 /**
  * Background processing HTTP requests
- * Created by gtq on 2016/12/23.
  */
-public class HttpsService extends Service {
+public class UpdateInfoService extends Service {
 
     private String Tag = "HttpService";
-    private HttpsService service;
-
+    private UpdateInfoService service;
     private SoundPool soundPool = null;
 
     @Nullable
@@ -103,73 +75,38 @@ public class HttpsService extends Service {
     }
 
     public static void startService(Activity activity) {
-        Intent intent = new Intent(activity, HttpsService.class);
+        Intent intent = new Intent(activity, UpdateInfoService.class);
         activity.startService(intent);
     }
 
     public static void stopServer(Context context) {
-        Intent intent = new Intent(context, HttpsService.class);
+        Intent intent = new Intent(context, UpdateInfoService.class);
         context.stopService(intent);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogManager.getLogger().d(Tag, "***  onStartCommand start  ***");
-
         initSoundPool();
-        initInstantSDK();
-
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
         if (TextUtils.isEmpty(index)) {
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
         } else {
-            verifySalt();
-            loginSuccessHttp();
+            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALT_VERIFY);
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void initInstantSDK() {
-        String publicKey = MemoryDataManager.getInstance().getPubKey();
-        String privateKey = MemoryDataManager.getInstance().getPriKey();
-        InstantSdk.instantSdk.registerUserInfo(service, publicKey, privateKey);
-
-        ConnectLocalReceiver.receiver.registerConnect(ConnectReceiver.receiver);
-        CommandLocalReceiver.receiver.registerCommand(CommandReceiver.receiver);
-        TransactionLocalReceiver.localReceiver.registerTransactionListener(TransactionReceiver.receiver);
-        RobotLocalReceiver.localReceiver.registerRobotListener(RobotReceiver.receiver);
-        UnreachableLocalReceiver.localReceiver.registerUnreachableListener(UnreachableReceiver.receiver);
-        MessageLocalReceiver.localReceiver.registerMessageListener(MessageReceiver.receiver);
-    }
-
-    /** salt timeout */
-    private static final int SALT_TIMEOUT = 100;
-
-    private Handler serviceHandler = new Handler() {
-        @Override
-        public void handleMessage(android.os.Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 102:
-                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
-                    break;
-            }
-        }
-    };
-
-    public void loginSuccessHttp() {
+    public void updatePreferencesInfo() {
         //get payment set
         if (ParamManager.getInstance().getPaySet() == null) {
-            HttpsService.sendPaySet();
+            ParamManager.getInstance().putPaySet(PaySetBean.initPaySet());
+            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PaySet, "");
         }
-
         //get private set
         if (ParamManager.getInstance().getPrivateSet() == null) {
-            HttpsService.sendPrivateSet();
+            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PrivateSet, "");
         }
-
-        HttpsService.sendEstimatefee();
-
         if (ParamHelper.getInstance().loadParamEntity(ParamManager.COUNTRY_RATE) == null) {
             String countryCode = SystemDataUtil.getCountryCode();
             if(!TextUtils.isEmpty(countryCode)){
@@ -177,9 +114,7 @@ public class HttpsService extends Service {
                 ParamManager.getInstance().putCountryRate(rateBean);
             }
         }
-
-        HttpsService.sendBlackList();
-        requestEstimatefee();
+        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.BlackList, "");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -188,16 +123,12 @@ public class HttpsService extends Service {
         if (httpRec.obj != null) {
             objects = (Object[]) httpRec.obj;
         }
-
         switch (httpRec.httpRecType) {
-            case SALTEXPIRE://salt time
+            case SALTEXPIRE://get salt
                 connectSalt();
                 break;
-            case GroupInfo://get group information
-                groupInfo((String) objects[0]);
-                break;
-            case UpLoadBackUp://upload group backup
-                groupBackUp((String) objects[0], (String) objects[1]);
+            case SALT_VERIFY://salt verify
+                verifySalt();
                 break;
             case PaySet://pay set
                 requestSetPayInfo();
@@ -208,8 +139,13 @@ public class HttpsService extends Service {
             case BlackList://black list
                 requestBlackList();
                 break;
-            case Estimate://fee
-                requestEstimatefee();
+            // 群备份整理 GroupInfo UpLoadBackUp DownBackUp DownGroupBackUp GroupNotificaton
+            // SOUNDPOOL SYSTEM_VIBRATION ? 考虑是否需要整理出HttpService
+            case GroupInfo://get group information
+                groupInfo((String) objects[0]);
+                break;
+            case UpLoadBackUp://upload group backup
+                groupBackUp((String) objects[0], (String) objects[1]);
                 break;
             case DownBackUp://download backup by myselt
                 downloadBackUp((String) objects[0]);
@@ -225,12 +161,6 @@ public class HttpsService extends Service {
                 break;
             case GroupNotificaton:
                 updateGroupMute((String) objects[0], (Integer) objects[1]);
-                break;
-            case WALLET_DEFAULT_ADDRESS:
-                getCurrencyDefaultAddress();
-                break;
-            case WALLET_CURRENCY_SET:
-                updateCurrency();
                 break;
         }
     }
@@ -250,39 +180,14 @@ public class HttpsService extends Service {
         }
     }
 
-    public static void sendPaySet() {
-        ParamManager.getInstance().putPaySet(PaySetBean.initPaySet());
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PaySet, "");
-    }
-
-    public static void sendPrivateSet() {
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PrivateSet, "");
-    }
-
-    public static void sendBlackList() {
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.BlackList, "");
-    }
-
-    public static void sendEstimatefee() {
-        EstimateFeeBean estimatefeeBean = SharedPreferenceUtil.getInstance().getEstimatefee();
-        if (estimatefeeBean != null) {
-            long day = estimatefeeBean.getTime() / (1000 * 60 * 60 * 24);
-            long currentDay = TimeUtil.getCurrentTimeInLong() / (1000 * 60 * 60 * 24);
-            if ((currentDay - day) > 1) {
-                return;
-            }
-        }
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.Estimate, "");
-    }
-
     public void verifySalt() {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_USERS_EXPIRE_SALT, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = MemoryDataManager.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT,
+                            SharedPreferenceUtil.getInstance().getUser().getPriKey(), imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
                         if (tokenResponse.getExpired() <= 400) {
@@ -290,6 +195,7 @@ public class HttpsService extends Service {
                         } else {
                             serviceHandler.removeMessages(SALT_TIMEOUT);
                             serviceHandler.sendEmptyMessageDelayed(SALT_TIMEOUT, tokenResponse.getExpired());
+                            updatePreferencesInfo();
                         }
                     }
                 } catch (Exception e) {
@@ -304,6 +210,20 @@ public class HttpsService extends Service {
         });
     }
 
+    /** salt timeout */
+    private static final int SALT_TIMEOUT = 100;
+    private Handler serviceHandler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 100:
+                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
+                    break;
+            }
+        }
+    };
+
     public void connectSalt() {
         final byte[] bytes = SecureRandom.getSeed(64);
 
@@ -312,16 +232,16 @@ public class HttpsService extends Service {
                 new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String prikey = MemoryDataManager.getInstance().getPriKey();
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, prikey, imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
+                            SharedPreferenceUtil.getInstance().getUser().getPriKey(), imResponse.getCipherData());
                     Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
                         byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray());
                         ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_SALT, StringUtil.bytesToHexString(salts));
                         ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_EXPIRED, String.valueOf(tokenResponse.getExpired()));
-                        loginSuccessHttp();
+                        updatePreferencesInfo();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -399,8 +319,7 @@ public class HttpsService extends Service {
             String ranprikey = SupportKeyUril.getNewPriKey();
             String randpubkey = SupportKeyUril.getPubKeyFromPriKey(ranprikey);
 
-            String priKey = MemoryDataManager.getInstance().getPriKey();
-            byte[] ecdhkey = SupportKeyUril.getRawECDHKey(priKey, randpubkey);
+            byte[] ecdhkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), randpubkey);
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, ecdhkey, groupecdhkey.getBytes("UTF-8"));
 
             String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
@@ -441,7 +360,7 @@ public class HttpsService extends Service {
                     if (infos.length < 2) {
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownGroupBackUp, pubkey);
                     } else {
-                        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
+                        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), infos[0]);
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
                         ecdHkey = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, ecdHkey, gcmData);
 
@@ -480,7 +399,7 @@ public class HttpsService extends Service {
 
                     String[] infos = backUpResp.getBackup().split("/");
                     if (infos.length >= 2) {
-                        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(), infos[0]);
+                        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), infos[0]);
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
                         structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, ecdHkey, gcmData);
                         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData().toByteArray());
@@ -540,9 +459,7 @@ public class HttpsService extends Service {
                     }
 
                     @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
+                    public void onError(Connect.HttpResponse response) {}
                 });
     }
 
@@ -601,33 +518,6 @@ public class HttpsService extends Service {
                 });
     }
 
-    public void requestEstimatefee() {
-        HttpRequest.getInstance().get(UriUtil.CONNECT_V1_ESTIMATEFEE, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String tempResponse =  response.body().string();
-                int code = 0;
-                try {
-                    JSONObject jsonObject = new JSONObject(tempResponse);
-                    code = jsonObject.getInt("code");
-                    if (code == 2000) {
-                        Type type = new TypeToken<EstimateFeeBean>() {}.getType();
-                        EstimateFeeBean estimatefeeBean = new Gson().fromJson(jsonObject.toString(), type);
-                        estimatefeeBean.setTime(TimeUtil.getCurrentTimeInLong());
-                        SharedPreferenceUtil.getInstance().putEstimatefee(estimatefeeBean);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
     private void requestBlackList() {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_LIST, ByteString.copyFrom(new byte[]{}),
                 new ResultCall<Connect.HttpResponse>() {
@@ -650,9 +540,7 @@ public class HttpsService extends Service {
                     }
 
                     @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
+                    public void onError(Connect.HttpResponse response) {}
                 });
     }
 
@@ -670,56 +558,6 @@ public class HttpsService extends Service {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-            }
-        });
-    }
-
-    private void getCurrencyDefaultAddress() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_ADDRESS_GET_DEFAULT, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-//                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
-//                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
-//
-//                    }
-                } catch (InvalidProtocolBufferException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
-        });
-    }
-
-    private void updateCurrency() {
-        WalletOuterClass.Coin coin = WalletOuterClass.Coin.newBuilder()
-                .setCurrency(0)
-                .setStatus(0).build();
-
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_V2_COINS_UPDATA, coin, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-//                    WalletOuterClass.ListDefaultAddress createCoinInfo = WalletOuterClass.ListDefaultAddress.parseFrom(structData.getPlainData());
-//                    if (ProtoBufUtil.getInstance().checkProtoBuf(createCoinInfo)) {
-//
-//                    }
-                } catch (InvalidProtocolBufferException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-
             }
         });
     }

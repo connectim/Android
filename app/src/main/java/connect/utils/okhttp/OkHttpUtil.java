@@ -6,7 +6,8 @@ import android.widget.Toast;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 
-import connect.database.MemoryDataManager;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.activity.home.bean.HttpRecBean;
@@ -55,8 +56,8 @@ public class OkHttpUtil {
      * @param resultCall
      */
     public void postEncrySelf(String url, ByteString bytes, final ResultCall resultCall){
-        Connect.IMRequest imRequest = getIMRequest(MemoryDataManager.getInstance().getPriKey(),
-                MemoryDataManager.getInstance().getPubKey(),bytes);
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        Connect.IMRequest imRequest = getIMRequest(userBean.getPriKey(), userBean.getPubKey(),bytes);
         if(null == imRequest)
             return;
         HttpRequest.getInstance().post(url,imRequest,resultCall);
@@ -71,10 +72,9 @@ public class OkHttpUtil {
      * @param resultCall
      */
     public void postEncrySelf(String url, GeneratedMessageV3 body, EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
-        LogManager.getLogger().http("param:" + body.toString());
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
-        Connect.IMRequest imRequest = getIMRequest(exts,MemoryDataManager.getInstance().getPriKey(),
-                MemoryDataManager.getInstance().getPubKey(),bytes);
+        Connect.IMRequest imRequest = getIMRequest(exts, userBean.getPriKey(), userBean.getPubKey(), bytes);
         if(null == imRequest)
             return;
         HttpRequest.getInstance().post(url,imRequest,resultCall);

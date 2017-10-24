@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
@@ -44,7 +44,7 @@ public class TransferOutAdapter extends RecyclerView.Adapter<TransferOutAdapter.
     public void onBindViewHolder(TransferOutAdapter.ViewHolder viewHolder, final int position) {
         viewHolder.avaterRimg.setVisibility(View.VISIBLE);
         if(TextUtils.isEmpty(mListData.get(position).getReceiverInfo().getAvatar())){
-            GlideUtil.loadAvatarRound(viewHolder.avaterRimg, MemoryDataManager.getInstance().getAvatar());
+            GlideUtil.loadAvatarRound(viewHolder.avaterRimg, SharedPreferenceUtil.getInstance().getUser().getAvatar());
             viewHolder.nameTv.setText(mListData.get(position).getSender());
         }else{
             GlideUtil.loadAvatarRound(viewHolder.avaterRimg,mListData.get(position).getReceiverInfo().getAvatar());

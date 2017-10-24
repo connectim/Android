@@ -10,7 +10,8 @@ import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.contract.GroupCreateContract;
 import connect.activity.home.bean.HttpRecBean;
-import connect.database.MemoryDataManager;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -66,7 +67,8 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
     @Override
     public void requestGroupCreate(List<ContactEntity> contactEntities) {
         this.contactEntities=contactEntities;
-        this.groupName = String.format(activity.getString(R.string.Link_user_friends), MemoryDataManager.getInstance().getName());
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        this.groupName = String.format(activity.getString(R.string.Link_user_friends), userBean.getName());
 
         String ranprikey = SupportKeyUril.getNewPriKey();
         String randpubkey = SupportKeyUril.getPubKeyFromPriKey(ranprikey);
@@ -78,11 +80,11 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
 
         List<Connect.AddGroupUserInfo> groupUserInfos = new ArrayList<>();
         for (ContactEntity entity : contactEntities) {
-            String prikey = MemoryDataManager.getInstance().getPriKey();
+            String prikey = userBean.getPriKey();
             byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(prikey, entity.getPub_key());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
-            String pubkey = MemoryDataManager.getInstance().getPubKey();
+            String pubkey = userBean.getPubKey();
             String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
             String backup = String.format("%1$s/%2$s", pubkey, groupHex);
 
@@ -183,7 +185,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.newBuilder().setSecretKey(groupEcdh)
                 .setIdentifier(groupKey).build();
 
-        String prikey = MemoryDataManager.getInstance().getPriKey();
+        String prikey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
         for (ContactEntity member : contactEntities) {
             String msgid = TimeUtil.timestampToMsgid();
             byte[] groupecdhkey = SupportKeyUril.getRawECDHKey(prikey, member.getPub_key());

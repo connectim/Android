@@ -13,9 +13,7 @@ public interface LoginUserContract {
 
         void setNextBtnEnable(boolean isEnable);
 
-        void setPasswordHint(String text);
-
-        void launchHome(boolean isBack);
+        void launchHome();
     }
 
     interface Presenter extends BasePresenter {

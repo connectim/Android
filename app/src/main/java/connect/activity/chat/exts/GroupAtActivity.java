@@ -18,7 +18,7 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.GroupAtContract;
 import connect.activity.chat.exts.presenter.GroupAtPresenter;
 import connect.activity.chat.model.GroupMemberCompara;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
@@ -79,7 +79,7 @@ public class GroupAtActivity extends BaseActivity implements GroupAtContract.BVi
         groupKey = getIntent().getStringExtra("GROUP_KEY");
         linearLayoutManager = new LinearLayoutManager(activity);
 
-        String myPublicKey = MemoryDataManager.getInstance().getPubKey();
+        String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         Iterator<GroupMemberEntity> iterator = groupMemEntities.iterator();
         while (iterator.hasNext()) {

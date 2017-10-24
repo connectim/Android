@@ -19,8 +19,9 @@ import butterknife.OnTextChanged;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
+import connect.activity.login.bean.UserBean;
 import connect.activity.wallet.manager.TransferManager;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -143,11 +144,12 @@ public class GatherActivity extends BaseActivity {
 
             friendEntity = ContactHelper.getInstance().loadFriendEntity(gatherKey);
             if (friendEntity == null) {
-                if (MemoryDataManager.getInstance().getPubKey().equals(gatherKey)) {
+                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                if (userBean.getPubKey().equals(gatherKey)) {
                     friendEntity = new ContactEntity();
-                    friendEntity.setAvatar(MemoryDataManager.getInstance().getAvatar());
-                    friendEntity.setUsername(MemoryDataManager.getInstance().getName());
-                    friendEntity.setUid(MemoryDataManager.getInstance().getUid());
+                    friendEntity.setAvatar(userBean.getAvatar());
+                    friendEntity.setUsername(userBean.getName());
+                    friendEntity.setUid(userBean.getUid());
                 } else {
                     ActivityUtil.goBack(activity);
                     return;

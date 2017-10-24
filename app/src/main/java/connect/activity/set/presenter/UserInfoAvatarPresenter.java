@@ -15,7 +15,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.File;
 
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.activity.login.bean.UserBean;
@@ -61,7 +60,7 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
 
     @Override
     public void saveImageToGallery() {
-        String path = MemoryDataManager.getInstance().getAvatar();
+        String path = SharedPreferenceUtil.getInstance().getUser().getAvatar();
         if (!TextUtils.isEmpty(path)) {
             Glide.with(BaseApplication.getInstance())
                     .load(path + "?size=500")
@@ -80,6 +79,12 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
     }
 
     private void saveNotify(Bitmap bmp) {
+        /*View viewBackUp = LayoutInflater.from(mView.getActivity()).inflate(R.layout.prikey_backup_photo,null);
+        ((ImageView)viewBackUp.findViewById(R.id.scan_imag)).setImageBitmap(scanBitmap);
+        ((TextView)viewBackUp.findViewById(R.id.name_tv)).setText(userBean.getName());
+        ((TextView)viewBackUp.findViewById(R.id.address_tv)).setText("");
+        Bitmap bitmap = BitmapUtil.createViewBitmap(viewBackUp);*/
+
         File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bmp);
         pathDcim = file.getAbsolutePath();
         try {

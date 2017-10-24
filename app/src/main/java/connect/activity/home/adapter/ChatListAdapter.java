@@ -21,7 +21,7 @@ import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -124,7 +124,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             holder.bottomNotify.setVisibility(View.VISIBLE);
         }
 
-        if (0 == roomAttr.getStranger() || MemoryDataManager.getInstance().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
+        if (0 == roomAttr.getStranger() || SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
             holder.stangerTxt.setVisibility(View.GONE);
         } else {
             holder.stangerTxt.setVisibility(View.VISIBLE);

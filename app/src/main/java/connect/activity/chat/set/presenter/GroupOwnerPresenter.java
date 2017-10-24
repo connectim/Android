@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.contract.GroupOwnerContract;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -43,7 +43,7 @@ public class GroupOwnerPresenter implements GroupOwnerContract.Presenter{
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_ATTORN, attorn, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String myPublicKey = MemoryDataManager.getInstance().getPubKey();
+                String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
                 ContactHelper.getInstance().updateGroupMemberRole(roomKey, myPublicKey, 0);
                 ContactHelper.getInstance().updateGroupMemberRole(roomKey, address, 1);
 

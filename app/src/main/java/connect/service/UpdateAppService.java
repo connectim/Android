@@ -20,12 +20,12 @@ import connect.utils.FileUtil;
 /**
  * upload update
  */
-public class UpdataService extends Service {
+public class UpdateAppService extends Service {
 
     DownloadManager manager;
     DownloadCompleteReceiver receiver;
     File file;
-    private String pathC = "/Connect/download/connect_im.apk";
+    private String pathDown = "/Connect/download/connect_im.apk";
 
     private void initDownManager(String downLoadUrl) {
         manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -38,14 +38,12 @@ public class UpdataService extends Service {
         down.setTitle(getString(R.string.app_name));
         down.setDescription(getString(R.string.Common_Download_App,"Connect"));
 
-        FileUtil.deleteFile(Environment.getExternalStorageDirectory() + pathC);
-        file = new File(Environment.getExternalStorageDirectory() + pathC);
+        FileUtil.deleteFile(Environment.getExternalStorageDirectory() + pathDown);
+        file = new File(Environment.getExternalStorageDirectory() + pathDown);
         down.setDestinationUri(Uri.fromFile(file));
         manager.enqueue(down);
         registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
-
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -74,7 +72,7 @@ public class UpdataService extends Service {
             if (intent.getAction().equals(
                     DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
                 installAPK(Uri.fromFile(file),context);
-                UpdataService.this.stopSelf();
+                UpdateAppService.this.stopSelf();
             }
         }
 
@@ -108,7 +106,6 @@ public class UpdataService extends Service {
             } catch (Exception var5) {
                 var5.printStackTrace();
             }
-
         }
 
         public String getMIMEType(File var0) {

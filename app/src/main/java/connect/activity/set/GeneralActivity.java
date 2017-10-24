@@ -10,6 +10,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.home.bean.ConversationAction;
+import connect.activity.wallet.manager.WalletManager;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -57,6 +58,10 @@ public class GeneralActivity extends BaseActivity {
         soundTb.setSelected(soundValue != 0);
         int vibrateValue = ParamManager.getInstance().getInt(ParamManager.SET_VIBRATION, 1);
         vibrateTb.setSelected(vibrateValue != 0);
+
+        if (WalletManager.getInstance().isCreateWallet()) {
+            currencyLl.setVisibility(View.VISIBLE);
+        }
     }
 
     @OnClick({R.id.sound_tb})

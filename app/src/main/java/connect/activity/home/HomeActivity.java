@@ -29,7 +29,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.MemoryDataManager;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -50,7 +49,7 @@ import connect.activity.home.view.CheckUpdata;
 import connect.activity.login.LoginPhoneActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.base.BaseFragmentActivity;
-import connect.service.HttpsService;
+import connect.service.UpdateInfoService;
 import connect.service.bean.PushMessage;
 import connect.service.bean.ServiceAck;
 import connect.utils.ActivityUtil;
@@ -125,7 +124,7 @@ public class HomeActivity extends BaseFragmentActivity {
             @Override
             protected Void doInBackground(Void... params) {
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                SharePreferenceUser.initSharePreferrnce(userBean.getPubKey());
+                SharePreferenceUser.initSharePreference(userBean.getPubKey());
                 Session.getInstance().clearUserCookie();
                 DaoManager.getInstance().closeDataBase();
                 DaoManager.getInstance().switchDataBase();
@@ -140,7 +139,7 @@ public class HomeActivity extends BaseFragmentActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 LogManager.getLogger().d(Tag, "onPostExecute");
-                HttpsService.startService(activity);
+                UpdateInfoService.startService(activity);
                 ConnectState.getInstance().sendEvent(ConnectState.ConnectType.CONNECT);
                 requestAppUpdata();
                 checkWebOpen();
@@ -181,11 +180,10 @@ public class HomeActivity extends BaseFragmentActivity {
                 //Remove the local login information
                 SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
                 //close socket
-                MemoryDataManager.getInstance().clearMap();
                 PushMessage.pushMessage(ServiceAck.EXIT_ACCOUNT, new byte[0],ByteBuffer.allocate(0));
-                SharePreferenceUser.unLinkSharePreferrnce();
+                SharePreferenceUser.unLinkSharePreference();
                 DaoManager.getInstance().closeDataBase();
-                HttpsService.stopServer(activity);
+                UpdateInfoService.stopServer(activity);
 
                 ProgressUtil.getInstance().dismissProgress();
                 ActivityUtil.next(activity, LoginPhoneActivity.class);

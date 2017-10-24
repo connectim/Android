@@ -4,7 +4,6 @@ import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.ApplyGroupBean;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.login.bean.UserBean;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -90,7 +89,7 @@ public class RobotReceiver implements RobotListener {
 
     @Override
     public void systemRedpackgeNoticeMessage(Connect.SystemRedpackgeNotice packgeNotice) {
-        String mypubkey = MemoryDataManager.getInstance().getPubKey();
+        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         Connect.UserInfo userInfo = packgeNotice.getReceiver();
         String receiverName = userInfo.getPubKey().equals(mypubkey) ?
                 BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_You) : userInfo.getUsername();
@@ -145,7 +144,7 @@ public class RobotReceiver implements RobotListener {
 
     public void dealRobotMessage(ChatMsgEntity chatMsgEntity) {
         chatMsgEntity.setSend_status(1);
-        String mypublickey = MemoryDataManager.getInstance().getPubKey();
+        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         chatMsgEntity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));
         chatMsgEntity.setMessage_to(mypublickey);
 

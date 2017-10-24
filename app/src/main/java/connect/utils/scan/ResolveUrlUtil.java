@@ -3,7 +3,7 @@ package connect.utils.scan;
 import android.app.Activity;
 import android.net.Uri;
 
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -15,7 +15,6 @@ import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.utils.ActivityUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import instant.bean.UserOrderBean;
 
@@ -94,7 +93,7 @@ public class ResolveUrlUtil {
      * @param isCloseScan
      */
     private void dealFriend(ScanResultBean resultBean, boolean isCloseScan){
-        if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getUid())) {
+        if (!resultBean.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(resultBean.getAddress());
             if (friendEntity != null) {
                 FriendInfoActivity.startActivity(activity, resultBean.getAddress());

@@ -11,6 +11,8 @@ import com.wallet.bean.EncryptionPinBean;
 import com.wallet.currency.BaseCurrency;
 import com.wallet.inter.WalletListener;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -75,7 +77,8 @@ public class SafetyPayActivity extends BaseActivity {
             minerTv.setText(paySetBean.isAutoFee() ? getString(R.string.Set_Auto) :
                     getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(paySetBean.getFee()));
         }
-        if (CurrencyHelper.getInstance().loadCurrencyList() == null) {
+
+        if(!WalletManager.getInstance().isCreateWallet()){
             pasLl.setVisibility(View.INVISIBLE);
         }
     }

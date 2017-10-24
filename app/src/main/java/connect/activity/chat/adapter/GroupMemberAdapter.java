@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -111,7 +111,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
                 } else {
                     closeMenu();
                     GroupMemberEntity indexEntity = groupMemEntities.get(position);
-                    if (indexEntity.getUid().equals(MemoryDataManager.getInstance().getPubKey())) {
+                    if (indexEntity.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getPubKey())) {
                         UserInfoActivity.startActivity(activity);
                     } else {
                         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(indexEntity.getUid());
@@ -172,7 +172,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
     public void removeData(int position) {
         closeMenu();
         GroupMemberEntity entity = groupMemEntities.get(position);
-        if (!MemoryDataManager.getInstance().getPubKey().equals(entity.getUid())) {
+        if (!SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(entity.getUid())) {
             removeGroupMember(position ,entity);
         }
     }

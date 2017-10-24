@@ -2,7 +2,6 @@ package connect.activity.set.presenter;
 
 import android.os.AsyncTask;
 
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.contract.SafetyLoginPassContract;
@@ -32,7 +31,7 @@ public class SafetyLoginPassPresenter implements SafetyLoginPassContract.Present
             @Override
             protected Connect.ChangeLoginPassword doInBackground(Void... params) {
                 // The new password encryption private key
-                talkKey = SupportKeyUril.createTalkKey(MemoryDataManager.getInstance().getPriKey(),
+                talkKey = SupportKeyUril.createTalkKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(),
                         SharedPreferenceUtil.getInstance().getUser().getUid(), pass);
                 Connect.ChangeLoginPassword changeLoginPassword = Connect.ChangeLoginPassword.newBuilder()
                         .setPasswordHint(hint)

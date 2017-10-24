@@ -12,10 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.base.BaseApplication;
 import connect.activity.home.HomeActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RegisterContract;
@@ -153,12 +156,14 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     }
 
     @Override
-    public void complete(boolean isBack) {
-        if (isBack) {
-            HomeActivity.startActivity(mActivity);
-        } else {
-            SafetyPatternActivity.startActivity(mActivity,SafetyPatternActivity.LOGIN_TYPE);
+    public void launchHome() {
+        List<Activity> list = BaseApplication.getInstance().getActivityList();
+        for (Activity activity : list) {
+            if (!activity.getClass().getName().equals(mActivity.getClass().getName())) {
+                activity.finish();
+            }
         }
+        HomeActivity.startActivity(mActivity);
         mActivity.finish();
     }
 

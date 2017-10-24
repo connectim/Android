@@ -97,8 +97,6 @@ public class GestureLockViewGroup extends RelativeLayout {
      * Callback interface
      */
     private OnGestureLockViewListener mOnGestureLockViewListener;
-    private String salt = "";
-    private String priKey;
 
     public GestureLockViewGroup(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -310,17 +308,7 @@ public class GestureLockViewGroup extends RelativeLayout {
         if (TextUtils.isEmpty(mAnswer)) {
             return false;
         }
-
-        priKey = SupportKeyUril.decryptionPri(mAnswer, salt, value);
-        return priKey != null && SupportKeyUril.checkPriKey(priKey);
-    }
-
-    public String getPriKey() {
-        return priKey;
-    }
-
-    public void setPriKey(String priKey) {
-        this.priKey = priKey;
+        return value.equals(mAnswer);
     }
 
     /**
@@ -370,17 +358,12 @@ public class GestureLockViewGroup extends RelativeLayout {
      * Set the answer
      * @param answer
      */
-    public void setAnswer(String answer, String salt) {
+    public void setAnswer(String answer) {
         this.mAnswer = answer;
-        this.salt = salt;
     }
 
     public String getAnswer() {
         return mAnswer;
-    }
-
-    public String getSalt() {
-        return salt;
     }
 
     /**

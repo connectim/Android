@@ -12,19 +12,17 @@ public class HttpRecBean implements Serializable {
 
     public enum HttpRecType {
         SALTEXPIRE,//salt timeout
+        SALT_VERIFY,//salt verify
         GroupInfo,//group information
         PaySet,//pay setting
         PrivateSet,//private setting
         BlackList,//black list
-        Estimate,//fee
         UpLoadBackUp,//upload backup
         DownBackUp,//get backup by myself
         DownGroupBackUp,//get backup by group
         SOUNDPOOL,//system voice
         SYSTEM_VIBRATION,//system vibrate
         GroupNotificaton,//Mute Notification
-        WALLET_DEFAULT_ADDRESS,//default wallet address
-        WALLET_CURRENCY_SET,//update currency
     }
 
     public HttpRecType httpRecType;

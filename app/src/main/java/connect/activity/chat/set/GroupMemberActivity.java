@@ -13,7 +13,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.chat.set.contract.GroupMemberContract;
 import connect.activity.chat.set.presenter.GroupMemberPresenter;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
@@ -80,7 +80,8 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         });
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, MemoryDataManager.getInstance().getUid());
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey,
+                SharedPreferenceUtil.getInstance().getUser().getUid());
 
         layoutManager = new LinearLayoutManager(activity);
         recordview.setLayoutManager(layoutManager);

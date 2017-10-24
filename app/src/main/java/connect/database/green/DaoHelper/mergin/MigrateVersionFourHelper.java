@@ -13,7 +13,7 @@ import java.io.Serializable;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.GeoAddressBean;
 import connect.activity.chat.bean.LinkMessageRow;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.dao.MessageEntityDao;
 import connect.ui.activity.R;
 import connect.utils.StringUtil;
@@ -99,7 +99,7 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
                         (definBean.getUser_id().length() == 64 ? Connect.ChatType.GROUPCHAT :
                                 Connect.ChatType.PRIVATE);
 
-                String myPublickKey = MemoryDataManager.getInstance().getPubKey();
+                String myPublickKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
                 MsgSender msgSender = definBean.getSenderInfoExt();
                 if (definBean.getSenderInfoExt() == null) {
                     from = myPublickKey;

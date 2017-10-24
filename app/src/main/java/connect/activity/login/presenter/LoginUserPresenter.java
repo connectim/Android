@@ -58,55 +58,12 @@ public class LoginUserPresenter implements LoginUserContract.Presenter {
                 if (s != null && SupportKeyUril.checkPriKey(s)) {
                     userBean.setPriKey(s);
                     userBean.setPubKey(AllNativeMethod.cdGetPubKeyFromPrivKey(userBean.getPriKey()));
-                    SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
-                    mView.launchHome(userBean.isBack());
+                    SharedPreferenceUtil.getInstance().putUser(userBean);
+                    mView.launchHome();
                 } else {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Login_Password_incorrect,ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
             }
         }.execute();
     }
-
-    /**
-     * To reset the login password
-     *
-     * @param password pass
-     * @param userBean The user information
-     * @param token Change the password token
-     */
-    /*@Override
-    public void requestSetPassword(final String password, final UserBean userBean, final String token) {
-        new AsyncTask<Void,Void, Connect.UserPrivateSign>() {
-            @Override
-            protected Connect.UserPrivateSign doInBackground(Void... params) {
-                talkKey = SupportKeyUril.createTalkKey(userBean.getPriKey(),userBean.getAddress(),password);
-                Connect.UserPrivateSign.Builder builder = Connect.UserPrivateSign.newBuilder();
-                builder.setToken(token);
-                builder.setEncryptionPri(talkKey);
-                if (!TextUtils.isEmpty(passwordHint)) {
-                    builder.setPasswordHint(passwordHint);
-                }
-                return builder.build();
-            }
-
-            @Override
-            protected void onPostExecute(Connect.UserPrivateSign userPrivateSign) {
-                super.onPostExecute(userPrivateSign);
-                ProgressUtil.getInstance().dismissProgress();
-                OkHttpUtil.getInstance().postEncry(UriUtil.CONNECT_V1_PRIVATE_SIGN, userPrivateSign, EncryptionUtil.ExtendedECDH.EMPTY,
-                        userBean.getPriKey(), userBean.getPubKey(), new ResultCall<Connect.HttpResponse>() {
-                            @Override
-                            public void onResponse(Connect.HttpResponse response) {
-                                userBean.setTalkKey(talkKey);
-                                userBean.setPassHint(passwordHint);
-                                SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
-                                mView.goinHome(userBean.isBack());
-                            }
-
-                            @Override
-                            public void onError(Connect.HttpResponse response) {}
-                        });
-            }
-        }.execute();
-    }*/
 }

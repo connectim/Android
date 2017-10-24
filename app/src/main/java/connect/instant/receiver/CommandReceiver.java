@@ -13,7 +13,7 @@ import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.model.ConvertUtil;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -115,7 +115,7 @@ public class CommandReceiver implements CommandListener {
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
                 if (groupEntity == null) {
                     String randPubkey = collaboratives[0];
-                    byte[] ecdhkey = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(), randPubkey);
+                    byte[] ecdhkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), randPubkey);
                     Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
                     byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, ecdhkey, gcmData);
                     String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
@@ -158,7 +158,7 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void contactChanges(Connect.ChangeRecords changeRecords) {
-        String mypublickey = MemoryDataManager.getInstance().getPubKey();
+        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         List<Connect.ChangeRecord> recordsList = changeRecords.getChangeRecordsList();
         for (Connect.ChangeRecord record : recordsList) {
             switch (record.getCategory()) {
@@ -284,7 +284,7 @@ public class CommandReceiver implements CommandListener {
                     for (GroupMemberEntity memEntity : memEntities) {
                         String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
                         if (groupChange.hasInviteBy()) {
-                            String myUid = MemoryDataManager.getInstance().getUid();
+                            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
 
                             Connect.UserInfo inviteBy = groupChange.getInviteBy();
                             String inviteByName = inviteBy.getUid().equals(myUid) ?
@@ -345,7 +345,7 @@ public class CommandReceiver implements CommandListener {
                         ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberAddress, 1);
 
                         String showName = "";
-                        if (groupAttorn.getAddress().equals(MemoryDataManager.getInstance().getUid())) {
+                        if (groupAttorn.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
                             showName = context.getString(R.string.Chat_You);
                         } else {
                             showName = TextUtils.isEmpty(member.getNick()) ? member.getUsername() : member.getNick();
@@ -385,7 +385,7 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo) {
-        String mypublickey=MemoryDataManager.getInstance().getPubKey();
+        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         if (packageInfo.getSystem()) {
             ChatMsgEntity msgExtEntity = CRobotChat.getInstance().luckPacketMsg(1,packageInfo.getHashId(), 0L,packageInfo.getTips());
             msgExtEntity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));

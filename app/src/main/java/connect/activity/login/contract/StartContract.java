@@ -14,8 +14,6 @@ public interface StartContract {
 
         void goIntoLoginForPhone();
 
-        void goIntoLoginPatter();
-
         void goIntoHome();
 
         Activity getActivity();

@@ -12,7 +12,7 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
 import connect.activity.wallet.manager.TransferManager;
 import connect.activity.wallet.manager.TransferType;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -77,7 +77,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
                     Connect.UserInfo senderInfo = crowdfunding.getSender();
                     String avatar = senderInfo.getAvatar();
                     String senderName = "";
-                    if (MemoryDataManager.getInstance().getUid().equals(senderInfo.getUid())) {
+                    if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(senderInfo.getUid())) {
                         senderName = activity.getString(R.string.Chat_You);
                     } else {
                         senderName = senderInfo.getUsername();
@@ -103,7 +103,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
 
                     boolean state = false;
                     for (Connect.CrowdfundingRecord record : records) {
-                        if (MemoryDataManager.getInstance().getUid().equals(record.getUser().getUid())) {
+                        if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(record.getUser().getUid())) {
                             state = true;
                         }
                     }

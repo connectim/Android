@@ -44,7 +44,8 @@
         android:orientation="horizontal"
         android:layout_marginTop="20dp"
         android:paddingLeft="@dimen/dp_15"
-        android:paddingRight="@dimen/dp_15">
+        android:paddingRight="@dimen/dp_15"
+        android:visibility="gone">
 
         <TextView
             style="@style/BaseTextStyle.16"

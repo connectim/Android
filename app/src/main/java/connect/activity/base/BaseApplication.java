@@ -11,8 +11,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.model.EmoManager;
-import connect.service.HttpsService;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
+import connect.instant.receiver.CommandReceiver;
+import connect.instant.receiver.ConnectReceiver;
+import connect.instant.receiver.MessageReceiver;
+import connect.instant.receiver.RobotReceiver;
+import connect.instant.receiver.TransactionReceiver;
+import connect.instant.receiver.UnreachableReceiver;
+import connect.service.UpdateInfoService;
 import connect.utils.ConfigUtil;
+import instant.parser.localreceiver.CommandLocalReceiver;
+import instant.parser.localreceiver.ConnectLocalReceiver;
+import instant.parser.localreceiver.MessageLocalReceiver;
+import instant.parser.localreceiver.RobotLocalReceiver;
+import instant.parser.localreceiver.TransactionLocalReceiver;
+import instant.parser.localreceiver.UnreachableLocalReceiver;
 import instant.ui.InstantSdk;
 
 /**
@@ -69,9 +83,21 @@ public class BaseApplication extends Application{
         }
 
         InstantSdk.instantSdk.stopInstant();
-        HttpsService.stopServer(this.getAppContext());
+        UpdateInfoService.stopServer(this.getAppContext());
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
+    }
+
+    private void initInstantSDK() {
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        InstantSdk.instantSdk.registerUserInfo(mApplication, userBean.getPubKey(), userBean.getPriKey());
+
+        ConnectLocalReceiver.receiver.registerConnect(ConnectReceiver.receiver);
+        CommandLocalReceiver.receiver.registerCommand(CommandReceiver.receiver);
+        TransactionLocalReceiver.localReceiver.registerTransactionListener(TransactionReceiver.receiver);
+        RobotLocalReceiver.localReceiver.registerRobotListener(RobotReceiver.receiver);
+        UnreachableLocalReceiver.localReceiver.registerUnreachableListener(UnreachableReceiver.receiver);
+        MessageLocalReceiver.localReceiver.registerMessageListener(MessageReceiver.receiver);
     }
 
 }

@@ -4,7 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import connect.activity.chat.inter.FileUpLoad;
-import connect.database.MemoryDataManager;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.BaseChat;
 import instant.utils.cryption.EncryptionUtil;
@@ -33,16 +34,14 @@ public class VoiceUpload extends FileUpLoad {
                 try {
                     Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
 
-                    String pubkey = SupportKeyUril.getPubKeyFromPriKey(MemoryDataManager.getInstance().getPriKey());
-                    String priKey = MemoryDataManager.getInstance().getPriKey();
-
+                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                     if (baseChat.chatType() != 2) {
                         Connect.GcmData gcmData = encodeAESGCMStructData(voiceMessage.getUrl());
                         Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
                                 setEntity(gcmData.toByteString()).build();
 
-                        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, priKey, richMedia.toByteString());
-                        mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
+                        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
+                        mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(gcmData).build();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

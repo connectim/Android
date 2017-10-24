@@ -1,4 +1,4 @@
-package connect.activity.login;
+package connect.activity.wallet;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.MemoryDataManager;
+import connect.activity.login.LoginPhoneActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.activity.home.HomeActivity;
@@ -23,9 +23,10 @@ import connect.widget.TopToolBar;
 import connect.widget.lockview.GestureLockViewGroup;
 
 /**
- * Login validation gestures or password
+ * Verify the gesture password
  */
-public class LoginPatterActivity extends BaseActivity{
+
+public class PatterVerifyActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -36,16 +37,16 @@ public class LoginPatterActivity extends BaseActivity{
     @Bind(R.id.hint_tv)
     TextView hintTv;
 
-    private LoginPatterActivity mActivity;
+    private PatterVerifyActivity mActivity;
 
     public static void startActivity(Activity activity) {
-        ActivityUtil.next(activity, LoginPatterActivity.class);
+        ActivityUtil.next(activity, PatterVerifyActivity.class);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_patter);
+        setContentView(R.layout.activity_patter_verify);
         ButterKnife.bind(this);
         initView();
     }
@@ -56,18 +57,18 @@ public class LoginPatterActivity extends BaseActivity{
         toolbarTop.setTitleImg(R.mipmap.logo_black_middle);
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        idGestureLockViewGroup.setAnswer(userBean.getPriKey(),userBean.getSalt());
+        idGestureLockViewGroup.setAnswer(userBean.getPatterStr());
         idGestureLockViewGroup.setOnGestureLockViewListener(new GestureLockViewGroup.OnGestureLockViewListener() {
             @Override
             public void onBlockSelected(int cId) {}
-
             @Override
             public void onGestureEvent(boolean matched) {
                 if (matched) {
-                    launchHome(idGestureLockViewGroup.getPriKey());
+                    //launchHome(idGestureLockViewGroup.getPriKey());
+                    // 验证正确 需要跳转
+
                 } else {
                     hintTv.setText(getString(R.string.Set_Password_incorrect_you_have_chance,idGestureLockViewGroup.getUnMatchExceedBoundary()));
-
                     Animation animationInto = AnimationUtils.loadAnimation(mActivity,R.anim.text_shake);
                     animationInto.setInterpolator(new CycleInterpolator(5));
                     hintTv.setAnimation(animationInto);
@@ -84,11 +85,11 @@ public class LoginPatterActivity extends BaseActivity{
     }
 
     @OnClick(R.id.password_tv)
-    void goBack(View view) {
+    void checkPass(View view) {
         LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
             @Override
             public void success(String priKey) {
-                launchHome(priKey);
+                launchHome();
             }
 
             @Override
@@ -96,8 +97,7 @@ public class LoginPatterActivity extends BaseActivity{
         });
     }
 
-    private void launchHome(String priKey){
-        MemoryDataManager.getInstance().putPriKey(priKey);
+    private void launchHome(){
         HomeActivity.startActivity(mActivity);
         mActivity.finish();
     }

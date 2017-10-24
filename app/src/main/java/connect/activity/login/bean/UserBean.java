@@ -12,9 +12,8 @@ public class UserBean implements Serializable{
     private String pubKey;
     private String phone;
     private String connectId;
-    private String salt;
-    private boolean isBack;
     private String uid;
+    private String patterStr;
 
     public UserBean() {
     }
@@ -94,27 +93,19 @@ public class UserBean implements Serializable{
         this.connectId = connectId;
     }
 
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
-    public boolean isBack() {
-        return isBack;
-    }
-
-    public void setBack(boolean back) {
-        isBack = back;
-    }
-
     public String getUid() {
         return uid;
     }
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getPatterStr() {
+        return patterStr;
+    }
+
+    public void setPatterStr(String patterStr) {
+        this.patterStr = patterStr;
     }
 }

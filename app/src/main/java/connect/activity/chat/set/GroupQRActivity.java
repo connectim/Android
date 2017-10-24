@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.set.contract.GroupQRContract;
 import connect.activity.chat.set.presenter.GroupQRPresenter;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -80,7 +80,8 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
         toolbar.setRightListence(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, MemoryDataManager.getInstance().getUid());
+                GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey,
+                        SharedPreferenceUtil.getInstance().getUser().getUid());
                 final ArrayList<String> list = new ArrayList<>();
                 if (myMember.getRole() == 1) {
                     list.add(activity.getResources().getString(R.string.Link_Refresh_QR_Code));

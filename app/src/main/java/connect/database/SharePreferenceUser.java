@@ -17,28 +17,24 @@ import connect.utils.log.LogManager;
 
 /**
  * save different user information
- * Created by Administrator on 2016/12/8.
  */
 public class SharePreferenceUser {
 
-    private static String Tag="SharePreferenceUser";
-
+    private static String Tag="_SharePreferenceUser";
+    private static SharePreferenceUser sharePreUtil;
+    private static SharedPreferences sharePre;
     public static final String USER_ADDRESS_BOOK = "user_address_book";
-    public static final String CONTACT_VERSION = "CONTACT_VERSION";
     public static final String DB_PUBKEY = "db_pubkey";
     public static final String DB_SALT = "db_salt";
     public static final String WALLET_INFO = "wallet_info";
 
-    private static SharePreferenceUser sharePreUtil;
-    private static SharedPreferences sharePre;
-
-    public static void initSharePreferrnce(String pubkey) {
+    public static void initSharePreference(String pubKey) {
         sharePreUtil = null;
-        SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.SHAREPRE_NAME, "sp_" + pubkey);
+        SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.SHAREPRE_NAME, "sp_" + pubKey);
         getInstance(BaseApplication.getInstance().getAppContext());
     }
 
-    public static void unLinkSharePreferrnce() {
+    public static void unLinkSharePreference() {
         sharePreUtil = null;
         sharePre = null;
     }
@@ -50,7 +46,6 @@ public class SharePreferenceUser {
     private static SharePreferenceUser getInstance(Context context) {
         if (null == sharePreUtil) {
             sharePreUtil = new SharePreferenceUser();
-
             String shareName = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.SHAREPRE_NAME);
             LogManager.getLogger().d(Tag, "*** SP_NAME :" + shareName);
             sharePre = context.getSharedPreferences(shareName, Context.MODE_PRIVATE);
@@ -80,10 +75,10 @@ public class SharePreferenceUser {
         return sharePre.getString(key, "");
     }
 
-    public int getIntValue(String key) {
-        return sharePre.getInt(key, 0);
-    }
-
+    /**
+     * save user wallet address
+     * @param list
+     */
     public void putAddressBook(ArrayList list) {
         SharedPreferences.Editor editor = sharePre.edit();
         editor.putString(USER_ADDRESS_BOOK, new Gson().toJson(list));
@@ -96,6 +91,10 @@ public class SharePreferenceUser {
         return new Gson().fromJson(getStringValue(USER_ADDRESS_BOOK), type);
     }
 
+    /**
+     * save wallet setting information
+     * @param walletBean
+     */
     public void putWalletInfo(WalletBean walletBean){
         String value = new Gson().toJson(walletBean);
         SharedPreferences.Editor editor = sharePre.edit();

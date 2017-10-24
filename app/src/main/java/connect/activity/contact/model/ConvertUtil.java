@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
@@ -36,7 +36,7 @@ public class ConvertUtil {
         requestEntity.setUsername(receiver.getSender().getUsername());
         requestEntity.setStatus(1);
         requestEntity.setRead(0);
-        byte[] tipsByte = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, MemoryDataManager.getInstance().getPriKey(),
+        byte[] tipsByte = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SharedPreferenceUtil.getInstance().getUser().getPriKey(),
                 receiver.getSender().getPubKey(),receiver.getTips());
         String rusult = "";
         try {

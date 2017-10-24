@@ -22,7 +22,6 @@ import java.util.Random;
 import connect.activity.login.bean.StartImagesBean;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.StartContract;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
@@ -95,12 +94,8 @@ public class StartPagePresenter implements StartContract.Presenter {
                     mView.goIntoGuide();
                 } else if (userBean == null) {
                     mView.goIntoLoginForPhone();
-                } else if (!TextUtils.isEmpty(userBean.getSalt())) {
-                    openFromWeb(mActivity);
-                    mView.goIntoLoginPatter();
                 } else {
                     openFromWeb(mActivity);
-                    MemoryDataManager.getInstance().putPriKey(userBean.getPriKey());
                     mView.goIntoHome();
                 }
                 mActivity.finish();
