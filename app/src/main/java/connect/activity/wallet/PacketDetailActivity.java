@@ -29,14 +29,13 @@ import protos.Connect;
 
 /**
  * lucky packet detail
- * Created by Administrator on 2016/12/19.
  */
 public class PacketDetailActivity extends BaseActivity implements PacketDetailContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.avater_rimg)
-    ImageView avaterRimg;
+    @Bind(R.id.avatar_rimg)
+    ImageView avatarRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
     @Bind(R.id.btc)
@@ -95,7 +94,7 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
         type = bundle.getInt("type", 0);
         //system packet
         if (0 != type) {
-            GlideUtil.loadAvatarRound(avaterRimg, R.mipmap.connect_logo, 58);
+            GlideUtil.loadAvatarRound(avatarRimg, R.mipmap.connect_logo, 58);
         }
         presenter.requestRedDetail(hashId, type);
     }
@@ -106,13 +105,13 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
     }
 
     @Override
-    public void updataSendView(Connect.UserInfo sendUserInfo) {
-        GlideUtil.loadAvatarRound(avaterRimg, sendUserInfo.getAvatar(), 58);
+    public void updateSendView(Connect.UserInfo sendUserInfo) {
+        GlideUtil.loadAvatarRound(avatarRimg, sendUserInfo.getAvatar(), 58);
         nameTv.setText(sendUserInfo.getUsername());
     }
 
     @Override
-    public void updataView(int status, long openMoney, long bestAmount, final Connect.RedPackageInfo redPackageInfo) {
+    public void updateView(int status, long openMoney, long bestAmount, final Connect.RedPackageInfo redPackageInfo) {
         this.redPackageInfo = redPackageInfo;
         contentLin.setVisibility(View.VISIBLE);
         if(openMoney > 0){
@@ -176,12 +175,12 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
     @OnClick(R.id.right_lin)
-    void goshare(View view) {
+    void goShare(View view) {
         String url = redPackageInfo.getRedpackage().getUrl();
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);

@@ -58,30 +58,7 @@ public class PatterVerifyActivity extends BaseActivity {
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         idGestureLockViewGroup.setAnswer(userBean.getPatterStr());
-        idGestureLockViewGroup.setOnGestureLockViewListener(new GestureLockViewGroup.OnGestureLockViewListener() {
-            @Override
-            public void onBlockSelected(int cId) {}
-            @Override
-            public void onGestureEvent(boolean matched) {
-                if (matched) {
-                    //launchHome(idGestureLockViewGroup.getPriKey());
-                    // 验证正确 需要跳转
-
-                } else {
-                    hintTv.setText(getString(R.string.Set_Password_incorrect_you_have_chance,idGestureLockViewGroup.getUnMatchExceedBoundary()));
-                    Animation animationInto = AnimationUtils.loadAnimation(mActivity,R.anim.text_shake);
-                    animationInto.setInterpolator(new CycleInterpolator(5));
-                    hintTv.setAnimation(animationInto);
-                }
-            }
-
-            @Override
-            public void onUnmatchedExceedBoundary() {
-                SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
-                ActivityUtil.next(mActivity, LoginPhoneActivity.class);
-                finish();
-            }
-        });
+        idGestureLockViewGroup.setOnGestureLockViewListener(onGestureLockViewListener);
     }
 
     @OnClick(R.id.password_tv)
@@ -89,13 +66,40 @@ public class PatterVerifyActivity extends BaseActivity {
         LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
             @Override
             public void success(String priKey) {
-                launchHome();
+                // 验证正确 需要跳转
+                // launchHome();
             }
 
             @Override
             public void error() {}
         });
     }
+
+    GestureLockViewGroup.OnGestureLockViewListener onGestureLockViewListener = new GestureLockViewGroup.OnGestureLockViewListener(){
+        @Override
+        public void onBlockSelected(int cId) {}
+        @Override
+        public void onGestureEvent(boolean matched) {
+            if (matched) {
+                //launchHome(idGestureLockViewGroup.getPriKey());
+                // 验证正确 需要跳转
+
+            } else {
+                // 密码错误
+                hintTv.setText(getString(R.string.Set_Password_incorrect_you_have_chance,idGestureLockViewGroup.getUnMatchExceedBoundary()));
+                Animation animationInto = AnimationUtils.loadAnimation(mActivity,R.anim.text_shake);
+                animationInto.setInterpolator(new CycleInterpolator(5));
+                hintTv.setAnimation(animationInto);
+            }
+        }
+        @Override
+        public void onUnmatchedExceedBoundary() {
+            // 4次密码输入都不正确
+            SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
+            ActivityUtil.next(mActivity, LoginPhoneActivity.class);
+            finish();
+        }
+    };
 
     private void launchHome(){
         HomeActivity.startActivity(mActivity);

@@ -31,6 +31,7 @@ import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.FriendInfoContract;
 import connect.activity.contact.presenter.FriendInfoPresenter;
 import connect.activity.home.bean.MsgNoticeBean;
+import connect.activity.wallet.manager.WalletManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -120,6 +121,10 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
         new FriendInfoPresenter(this).start();
         presenter.requestUserInfo(friendEntity.getUid(), friendEntity);
+
+        if(WalletManager.isShowWallet()){
+            transferImgs.setVisibility(View.GONE);
+        }
     }
 
     @Override

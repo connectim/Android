@@ -96,7 +96,7 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -121,20 +121,6 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
                 ToastEUtil.makeText(mActivity,R.string.Login_Send_failed).show();
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            switch (requestCode){
-                case RandomVoiceActivity.REQUEST_CODE:
-                    transferEditView.createWallet(data);
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
     @Override

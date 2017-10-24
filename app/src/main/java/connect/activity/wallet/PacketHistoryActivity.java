@@ -29,9 +29,6 @@ import connect.widget.TopToolBar;
 import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2016/12/19.
- */
 public class PacketHistoryActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
@@ -72,43 +69,49 @@ public class PacketHistoryActivity extends BaseActivity {
                 R.color.color_c8ccd5,
                 R.color.color_lightgray
         );
-        refreshview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshview.setRefreshing(false);
-                page = 1;
-                requestHostory();
-            }
-        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.addItemDecoration(new LineDecoration(mActivity));
         redHistoryAdapter = new RedHistoryAdapter(mActivity);
         recyclerview.setAdapter(redHistoryAdapter);
-        redHistoryAdapter.setItemClickListener(new RedHistoryAdapter.OnItemClickListener() {
-            @Override
-            public void itemClick(Connect.RedPackageInfo packageInfo) {
-                PacketDetailActivity.startActivity(mActivity, packageInfo.getRedpackage().getHashId());
-            }
-        });
-        recyclerview.addOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore() {
-                page++;
-                requestHostory();
-            }
-        });
+        refreshview.setOnRefreshListener(onRefreshListener);
+        recyclerview.addOnScrollListener(endlessScrollListener);
+        redHistoryAdapter.setItemClickListener(onItemClickListener);
 
-        requestHostory();
+        requestHistory();
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
-    private void requestHostory() {
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+        @Override
+        public void onRefresh() {
+            refreshview.setRefreshing(false);
+            page = 1;
+            requestHistory();
+        }
+    };
+
+    EndlessScrollListener endlessScrollListener = new EndlessScrollListener(){
+        @Override
+        public void onLoadMore() {
+            page++;
+            requestHistory();
+        }
+    };
+
+    RedHistoryAdapter.OnItemClickListener onItemClickListener = new RedHistoryAdapter.OnItemClickListener(){
+        @Override
+        public void itemClick(Connect.RedPackageInfo packageInfo) {
+            PacketDetailActivity.startActivity(mActivity, packageInfo.getRedpackage().getHashId());
+        }
+    };
+
+    private void requestHistory() {
         Connect.History history = Connect.History.newBuilder()
                 .setPageIndex(page)
                 .setPageSize(PAGESIZE_MAX)

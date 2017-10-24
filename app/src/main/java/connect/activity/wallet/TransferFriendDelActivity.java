@@ -23,9 +23,7 @@ import connect.widget.TopToolBar;
 
 /**
  * Delete selected friends
- * Created by Administrator on 2017/1/18.
  */
-
 public class TransferFriendDelActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
@@ -59,40 +57,40 @@ public class TransferFriendDelActivity extends BaseActivity {
 
         friendDelAdapter = new FriendDelAdapter();
         recyclerview.setAdapter(friendDelAdapter);
-        recyclerview.setAdapter(friendDelAdapter);
         recyclerview.setLayoutManager(new LinearLayoutManager(mActivity));
         recyclerview.addItemDecoration(new LineDecoration(mActivity));
-        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                friendDelAdapter.closeMenu();
-            }
-        });
+        recyclerview.addOnScrollListener(onScrollListener);
+
         Bundle bundle = getIntent().getExtras();
         FriendSeleBean friendSeleBean = (FriendSeleBean)bundle.getSerializable("list");
         friendDelAdapter.setData(friendSeleBean.getList());
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
-        backResult();
+    void goBack(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("list",new FriendSeleBean(friendDelAdapter.getDataList()));
+        ActivityUtil.goBackWithResult(mActivity,RESULT_OK,bundle);
     }
+
+    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener(){
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            friendDelAdapter.closeMenu();
+        }
+    };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            backResult();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("list",new FriendSeleBean(friendDelAdapter.getDataList()));
+            ActivityUtil.goBackWithResult(mActivity,RESULT_OK,bundle);
             return false;
         }else {
             return super.onKeyDown(keyCode, event);
         }
-    }
-
-    private void backResult(){
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("list",new FriendSeleBean(friendDelAdapter.getDataList()));
-        ActivityUtil.goBackWithResult(mActivity,RESULT_OK,bundle);
     }
 
 }

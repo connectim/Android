@@ -20,7 +20,7 @@ public interface TransferFriendContract {
     interface View extends BaseView<TransferFriendContract.Presenter> {
         Activity getActivity();
 
-        void addTranferFriend();
+        void addTransferFriend();
 
         void setPayFee();
 

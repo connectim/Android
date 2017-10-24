@@ -11,9 +11,9 @@ import protos.Connect;
 public interface PacketDetailContract {
 
     interface View extends BaseView<PacketDetailContract.Presenter> {
-        void updataView(int status,long openMoney,long bestAmount,Connect.RedPackageInfo redPackageInfo);
+        void updateView(int status,long openMoney,long bestAmount,Connect.RedPackageInfo redPackageInfo);
 
-        void updataSendView(Connect.UserInfo sendUserInfo);
+        void updateSendView(Connect.UserInfo sendUserInfo);
     }
 
     interface Presenter extends BasePresenter {

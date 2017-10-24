@@ -60,8 +60,6 @@ public class RequestActivity extends BaseActivity {
 
     private RequestActivity mActivity;
     private EditInputFilterPrice bitEditFilter = new EditInputFilterPrice(Double.valueOf(999), 8);
-    //bitcoin:1CDheG1rvKoaPMnkswzcr3xphPVTyxxzYY?amount=1.0
-    //https://transfer.connect.im/share/v1/pay?address=18gzAo5jxbsF1G2F741EHrwxdD2v11RvXf&amount=0.08
     public String scanHead;
     public String shareUrl = ConfigUtil.getInstance().sharePayAddress() + "?address=";
 
@@ -120,25 +118,6 @@ public class RequestActivity extends BaseActivity {
                 @Override
                 public void fail(WalletError error) {}
             });
-
-            /*NativeWallet.getInstance().initAccount(currencyBean).requestAddressList(new WalletListener<List<WalletOuterClass.CoinInfo>>() {
-                @Override
-                public void success(List<WalletOuterClass.CoinInfo> list) {
-                    CurrencyAddressEntity entity = CurrencyHelper.getInstance().loadCurrencyMasterAddress(currencyBean.getCode());
-                    if (entity == null) {
-                        ActivityUtil.goBack(mActivity);
-                    } else {
-                        addressEntity = entity;
-                        currencyAddress = addressEntity.getAddress();
-                        scanHead = transferHeader(currencyBean) +currencyAddress + "?" + "amount=";
-                        addressTv.setText(currencyAddress);
-                        showScanView(transferHeader(currencyBean) + currencyAddress);
-                    }
-                }
-
-                @Override
-                public void fail(WalletError error) {}
-            });*/
         }
     }
 
@@ -187,14 +166,10 @@ public class RequestActivity extends BaseActivity {
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {

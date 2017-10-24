@@ -42,6 +42,7 @@ import wallet_gateway.WalletOuterClass;
 
 public class WalletManager {
 
+    private static boolean isShowWallet = true;
     private static WalletManager walletManager;
     public final double BTC_TO_LONG = Math.pow(10,8);
     public final String PATTERN_BTC = "##0.00000000";
@@ -62,7 +63,7 @@ public class WalletManager {
      * @param activity
      * @param status
      */
-    public void showCreateWalletDialog(final Activity activity, final int status) {
+    /*public void showCreateWalletDialog(final Activity activity, final int status) {
         String massage = "";
         String okMassage = "";
         if (status == 1) {
@@ -87,7 +88,7 @@ public class WalletManager {
                         ActivityUtil.goBack(activity);
                     }
                 });
-    }
+    }*/
 
     /**
      * Synchronous wallet information
@@ -452,12 +453,18 @@ public class WalletManager {
      * @return
      */
     public boolean isCreateWallet(){
+        boolean isCreate;
         List<CurrencyEntity> currencyList = CurrencyHelper.getInstance().loadCurrencyList();
         if (currencyList == null || currencyList.size() == 0) {
-            return false;
+            isCreate = false;
         } else {
-            return true;
+            isCreate = true;
         }
+        return isShowWallet && isCreate;
+    }
+
+    public static boolean isShowWallet(){
+        return isShowWallet;
     }
 
 }

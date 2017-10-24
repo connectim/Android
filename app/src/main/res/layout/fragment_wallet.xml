@@ -51,14 +51,14 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@id/relativelayout_1"
+        android:id="@+id/create_rela"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         android:background="@color/color_trans_80_black">
 
         <TextView
-            android:id="@id/txt1"
+            android:id="@+id/create_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -68,7 +68,7 @@
             android:textSize="@dimen/sp_24"/>
 
         <TextView
-            android:id="@id/txt2"
+            android:id="@+id/create_btn"
             style="@style/ButtonLongStyle"
             android:layout_width="@dimen/dp_180"
             android:layout_height="@dimen/dp_45"

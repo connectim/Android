@@ -26,7 +26,6 @@ import connect.widget.album.model.AlbumFile;
 
 /**
  * Scan the qr code address added
- * Created by Administrator on 2016/12/27.
  */
 public class ScanAddressActivity extends BaseScanActivity {
 
@@ -99,7 +98,7 @@ public class ScanAddressActivity extends BaseScanActivity {
     };
 
     private void checkString(String value) {
-        String address = "";
+        String address;
         if(value.contains(":")){
             String[] list = value.split(":");
             address = list[1];

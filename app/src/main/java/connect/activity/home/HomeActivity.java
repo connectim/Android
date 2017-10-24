@@ -29,6 +29,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.wallet.manager.WalletManager;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -119,6 +120,11 @@ public class HomeActivity extends BaseFragmentActivity {
     public void initView() {
         activity = this;
         setDefaultFragment();
+        if(WalletManager.isShowWallet()){
+            walletRela.setVisibility(View.VISIBLE);
+        }else{
+            walletRela.setVisibility(View.GONE);
+        }
 
         new AsyncTask<Void, Void, Void>() {
             @Override

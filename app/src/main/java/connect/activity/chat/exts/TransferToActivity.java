@@ -152,20 +152,6 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            switch (requestCode){
-                case RandomVoiceActivity.REQUEST_CODE:
-                    transferEditView.createWallet(data);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    @Override
     public String getPubkey() {
         return null;
     }

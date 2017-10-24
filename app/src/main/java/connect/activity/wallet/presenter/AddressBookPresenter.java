@@ -18,10 +18,6 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/4/18 0018.
- */
-
 public class AddressBookPresenter implements AddressBookContract.Presenter{
 
     private AddressBookContract.View mView;
@@ -37,7 +33,7 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
         if(listAddress == null || listAddress.size() == 0){
             requestAddressBook();
         }else{
-            mView.updataView(listAddress);
+            mView.updateView(listAddress);
         }
     }
 
@@ -59,17 +55,20 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
                                     listCheck.add(addressInfo);
                                 }
                             }
-                            listAddress = switchList(listCheck);
-                            mView.updataView(listAddress);
+
+                            listAddress = new ArrayList<>();
+                            for(Connect.AddressBook.AddressInfo addressInfo : listCheck){
+                                AddressBean addressBean = new AddressBean(addressInfo.getTag(),addressInfo.getAddress());
+                                listAddress.add(addressBean);
+                            }
+                            mView.updateView(listAddress);
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }
                     }
 
                     @Override
-                    public void onError(Connect.HttpResponse response) {
-
-                    }
+                    public void onError(Connect.HttpResponse response) {}
                 });
     }
 
@@ -94,7 +93,7 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 listAddress.add(0,new AddressBean("",address));
                 ToastEUtil.makeText(mView.getActivity(), R.string.Link_Add_Successful);
-                mView.updataView(listAddress);
+                mView.updateView(listAddress);
             }
 
             @Override
@@ -115,7 +114,7 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 listAddress.remove(position);
                 listAddress.add(position,new AddressBean(tag,address));
-                mView.updataView(listAddress);
+                mView.updateView(listAddress);
             }
 
             @Override
@@ -134,26 +133,17 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 listAddress.remove(position);
-                mView.updataView(listAddress);
+                mView.updateView(listAddress);
             }
 
             @Override
             public void onError(Connect.HttpResponse response) {
                 if(response.getCode() == 2400){
                     listAddress.remove(position);
-                    mView.updataView(listAddress);
+                    mView.updateView(listAddress);
                 }
             }
         });
-    }
-
-    private ArrayList<AddressBean> switchList(List<Connect.AddressBook.AddressInfo> listAddress){
-        ArrayList list = new ArrayList<AddressBean>();
-        for(Connect.AddressBook.AddressInfo addressInfo : listAddress){
-            AddressBean addressBean = new AddressBean(addressInfo.getTag(),addressInfo.getAddress());
-            list.add(addressBean);
-        }
-        return list;
     }
 
 }

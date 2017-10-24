@@ -34,9 +34,7 @@ import connect.activity.wallet.TransactionActivity;
 import connect.activity.wallet.TransferActivity;
 import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.activity.wallet.bean.RateBean;
-import connect.activity.wallet.bean.WalletBean;
 import connect.activity.wallet.manager.WalletManager;
-import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
@@ -62,12 +60,12 @@ public class WalletFragment extends BaseFragment {
     TopToolBar toolbarTop;
     @Bind(R.id.amount_tv)
     TextView amountTv;
-    @Bind(R.id.txt1)
-    TextView txt1;
-    @Bind(R.id.txt2)
-    TextView txt2;
-    @Bind(R.id.relativelayout_1)
-    RelativeLayout relativelayout1;
+    @Bind(R.id.create_hint)
+    TextView createHint;
+    @Bind(R.id.create_btn)
+    TextView createBtn;
+    @Bind(R.id.create_rela)
+    RelativeLayout createRela;
 
     private FragmentActivity mActivity;
     private RateBean rateBean;
@@ -113,27 +111,10 @@ public class WalletFragment extends BaseFragment {
         WalletMenuAdapter walletMenuAdapter = new WalletMenuAdapter(menuList, mActivity);
         walletMenuRecycler.setLayoutManager(new GridLayoutManager(mActivity, 3));
         walletMenuRecycler.setAdapter(walletMenuAdapter);
-        walletMenuAdapter.setOnItemClickListener(new WalletMenuAdapter.OnItemClickListener() {
-            @Override
-            public void itemClick(int position) {
-                if (currencyEntity != null) {
-                    switch (position) {
-                        case 0:
-                            ActivityUtil.next(mActivity, RequestActivity.class);
-                            break;
-                        case 1:
-                            TransferActivity.startActivity(mActivity);
-                            break;
-                        case 2:
-                            PacketActivity.startActivity(mActivity);
-                            break;
-                    }
-                }
-            }
-        });
+        walletMenuAdapter.setOnItemClickListener(onItemClickListener);
+
         amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(0));
         List<CurrencyEntity> listCurrency = CurrencyHelper.getInstance().loadCurrencyList();
-        WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
         if (listCurrency == null || listCurrency.size() == 0) {
             syncWallet();
         }
@@ -169,24 +150,42 @@ public class WalletFragment extends BaseFragment {
         }
     }
 
-    @OnClick(R.id.txt2)
-    void creatWalletClick() {
-        userType = (int) txt2.getTag();
+    @OnClick(R.id.create_btn)
+    void createWalletClick() {
+        userType = (int) createBtn.getTag();
         Bundle bundle = new Bundle();
         bundle.putSerializable("type", CurrencyEnum.BTC);
         bundle.putInt("status", userType);
         RandomVoiceActivity.startActivity(mActivity,bundle);
     }
 
+    WalletMenuAdapter.OnItemClickListener onItemClickListener = new WalletMenuAdapter.OnItemClickListener(){
+        @Override
+        public void itemClick(int position) {
+            if (currencyEntity != null) {
+                switch (position) {
+                    case 0:
+                        ActivityUtil.next(mActivity, RequestActivity.class);
+                        break;
+                    case 1:
+                        TransferActivity.startActivity(mActivity);
+                        break;
+                    case 2:
+                        PacketActivity.startActivity(mActivity);
+                        break;
+                }
+            }
+        }
+    };
+
     /**
      * Synchronous wallet information
      */
     private void syncWallet() {
-        relativelayout1.setVisibility(View.GONE);
         WalletManager.getInstance().syncWallet(new WalletListener<Integer>() {
             @Override
             public void success(Integer status) {
-                txt2.setTag(status);
+                createBtn.setTag(status);
                 switch (status){
                     case 0:// Have wallet data
                         currencyEntity = CurrencyHelper.getInstance().loadCurrency(CurrencyEnum.BTC.getCode());
@@ -194,17 +193,17 @@ public class WalletFragment extends BaseFragment {
                         amountTv.setText(mActivity.getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(balance));
                         break;
                     case 1:// The user needs to create a currency for the old user
-                        if (relativelayout1 != null) {
-                            txt1.setText(getString(R.string.Wallet_not_update_wallet));
-                            txt2.setText(getString(R.string.Wallet_Immediately_update));
-                            relativelayout1.setVisibility(View.VISIBLE);
+                        if (createRela != null) {
+                            createHint.setText(getString(R.string.Wallet_not_update_wallet));
+                            createBtn.setText(getString(R.string.Wallet_Immediately_update));
+                            createRela.setVisibility(View.VISIBLE);
                         }
                         break;
                     case 2:// The user does not have a wallet and needs to create a wallet
-                        if (relativelayout1 != null) {
-                            txt1.setText(getString(R.string.Wallet_not_create_wallet));
-                            txt2.setText(getString(R.string.Wallet_Immediately_create));
-                            relativelayout1.setVisibility(View.VISIBLE);
+                        if (createRela != null) {
+                            createHint.setText(getString(R.string.Wallet_not_create_wallet));
+                            createBtn.setText(getString(R.string.Wallet_Immediately_create));
+                            createRela.setVisibility(View.VISIBLE);
                         }
                         break;
                     default:
@@ -228,7 +227,7 @@ public class WalletFragment extends BaseFragment {
         WalletManager.getInstance().createWallet(baseSend, pin, status ,new WalletListener<CurrencyEntity>(){
             @Override
             public void success(CurrencyEntity entity) {
-                relativelayout1.setVisibility(View.GONE);
+                createRela.setVisibility(View.GONE);
                 currencyEntity = entity;
             }
 
@@ -259,7 +258,6 @@ public class WalletFragment extends BaseFragment {
     }
 
     /**
-     * Asking rate
      * Request exchange rate
      */
     private void requestRate() {

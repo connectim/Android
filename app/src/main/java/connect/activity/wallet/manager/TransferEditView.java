@@ -119,40 +119,32 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 return false;
             }
-
             @Override
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
                 return false;
             }
-
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 return false;
             }
-
             @Override
             public void onDestroyActionMode(ActionMode mode) {}
         });
         amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
                 RateFormatUtil.longToDoubleBtc(0L)));
-        // requestWallet();
         WalletManager.getInstance().syncWallet(new WalletListener<Integer>() {
             @Override
             public void success(Integer status) {
                 switch (status){
                     case 0:
                         CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
-                        if(currencyEntity != null){
+                        if (currencyEntity != null) {
                             amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
                                     RateFormatUtil.longToDoubleBtc(currencyEntity.getAmount())));
-                        }else{
+                        } else {
                             amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
                                     RateFormatUtil.longToDoubleBtc(0L)));
                         }
-                        break;
-                    case 1:
-                    case 2:
-                        WalletManager.getInstance().showCreateWalletDialog(mActivity, status);
                         break;
                     default:
                         break;
@@ -162,7 +154,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
             @Override
             public void fail(WalletError error) {}
         });
-
     }
 
     /**
@@ -174,9 +165,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
     public void initView(Double amount,Activity mActivity){
         this.mActivity = mActivity;
-        /*if (initWalletManager != null) {
-            initWalletManager.setmActivity(mActivity);
-        }*/
 
         if (amount != null) {
             editDefault = RateFormatUtil.doubleToLongBtc(amount);
@@ -236,9 +224,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                         note = value;
                     }
                     @Override
-                    public void cancel() {
-
-                    }
+                    public void cancel() {}
                 });
                 break;
             case R.id.fee_tv:
@@ -330,27 +316,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                 otherRate.setRate(rateBean.getRate());
                 ParamManager.getInstance().putCountryRate(otherRate);
             }
-        });
-    }
-
-    public void createWallet(Intent data){
-        String baseSend = data.getExtras().getString("random");
-        String pin = data.getExtras().getString("pin");
-        int status = data.getExtras().getInt("status");
-        WalletManager.getInstance().createWallet(baseSend, pin, status ,new WalletListener<CurrencyEntity>(){
-            @Override
-            public void success(CurrencyEntity entity) {
-                if(entity != null){
-                    amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                            RateFormatUtil.longToDoubleBtc(entity.getAmount())));
-                }else{
-                    amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                            RateFormatUtil.longToDoubleBtc(0L)));
-                }
-            }
-
-            @Override
-            public void fail(WalletError error) {}
         });
     }
 

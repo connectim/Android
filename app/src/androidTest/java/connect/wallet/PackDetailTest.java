@@ -41,12 +41,12 @@ public class PackDetailTest {
 
     PacketDetailContract.View view = new PacketDetailContract.View(){
         @Override
-        public void updataView(int status, long openMoney, long bestAmount, Connect.RedPackageInfo redPackageInfo) {
+        public void updateView(int status, long openMoney, long bestAmount, Connect.RedPackageInfo redPackageInfo) {
             assertTrue(status == 3);
         }
 
         @Override
-        public void updataSendView(Connect.UserInfo sendUserInfo) {
+        public void updateSendView(Connect.UserInfo sendUserInfo) {
 
         }
 

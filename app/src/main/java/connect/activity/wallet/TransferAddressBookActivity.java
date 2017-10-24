@@ -25,7 +25,6 @@ import connect.widget.TopToolBar;
 
 /**
  * Transfer address book
- * Created by Administrator on 2016/12/21.
  */
 public class TransferAddressBookActivity extends BaseActivity implements AddressBookContract.View {
 
@@ -55,16 +54,10 @@ public class TransferAddressBookActivity extends BaseActivity implements Address
         toolbarTop.setRightImg(R.mipmap.camera2x);
         setPresenter(new AddressBookPresenter(this));
 
-        addAddressAdapter = new AddAddressAdapter(onSideMenuListence);
+        addAddressAdapter = new AddAddressAdapter(onSideMenuListener);
         retyclerView.setAdapter(addAddressAdapter);
         retyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
-        retyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                addAddressAdapter.closeMenu();
-            }
-        });
+        retyclerView.addOnScrollListener(onScrollListener);
         presenter.start();
     }
 
@@ -79,7 +72,7 @@ public class TransferAddressBookActivity extends BaseActivity implements Address
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -88,7 +81,15 @@ public class TransferAddressBookActivity extends BaseActivity implements Address
         ActivityUtil.nextBottomToTop(mActivity,ScanAddressActivity.class,null,ScanAddressActivity.BACK_CODE);
     }
 
-    private AddAddressAdapter.OnSideMenuListence onSideMenuListence = new AddAddressAdapter.OnSideMenuListence(){
+    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener(){
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            addAddressAdapter.closeMenu();
+        }
+    };
+
+    private AddAddressAdapter.onSideMenuListener onSideMenuListener = new AddAddressAdapter.onSideMenuListener(){
         @Override
         public void seleAddress(int position, AddressBean addressBean) {
             Bundle bundle = new Bundle();
@@ -134,7 +135,7 @@ public class TransferAddressBookActivity extends BaseActivity implements Address
     }
 
     @Override
-    public void updataView(ArrayList<AddressBean> listAddress) {
+    public void updateView(ArrayList<AddressBean> listAddress) {
         addAddressAdapter.closeMenu();
         SharePreferenceUser.getInstance().putAddressBook(listAddress);
         addAddressAdapter.setData(listAddress);

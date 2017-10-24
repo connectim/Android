@@ -31,12 +31,12 @@ public class AddAddressAdapter extends RecyclerView.Adapter<AddAddressAdapter.Ad
 
     private List<AddressBean> list = new ArrayList<>();
     private SideScrollView sideScrollView;
-    private OnSideMenuListence onSideMenuListence;
+    private onSideMenuListener onSideMenuListener;
     private Context context;
     private Context mContext;
 
-    public AddAddressAdapter(OnSideMenuListence onSideMenuListence) {
-        this.onSideMenuListence = onSideMenuListence;
+    public AddAddressAdapter(onSideMenuListener onSideMenuListener) {
+        this.onSideMenuListener = onSideMenuListener;
     }
 
     public void setData(List<AddressBean> entities) {
@@ -83,7 +83,7 @@ public class AddAddressAdapter extends RecyclerView.Adapter<AddAddressAdapter.Ad
                         SystemUtil.hideKeyBoard(context,holder.addEt);
                         String address = holder.addEt.getText().toString().trim();
                         if(SupportKeyUril.checkAddress(address)){
-                            onSideMenuListence.addAddress(address);
+                            onSideMenuListener.addAddress(address);
                         }else{
                             ToastEUtil.makeText(mContext,R.string.Wallet_Result_is_not_a_bitcoin_address,ToastEUtil.TOAST_STATUS_FAILE).show();
                         }
@@ -99,14 +99,14 @@ public class AddAddressAdapter extends RecyclerView.Adapter<AddAddressAdapter.Ad
             holder.contentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onSideMenuListence.seleAddress(position,list.get(position));
+                    onSideMenuListener.seleAddress(position,list.get(position));
                 }
             });
             holder.labTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int index = position - 1;
-                    onSideMenuListence.setTag(index,list.get(position));
+                    onSideMenuListener.setTag(index,list.get(position));
                 }
             });
 
@@ -114,7 +114,7 @@ public class AddAddressAdapter extends RecyclerView.Adapter<AddAddressAdapter.Ad
                 @Override
                 public void onClick(View v) {
                     int index = position - 1;
-                    onSideMenuListence.delete(index,list.get(position));
+                    onSideMenuListener.delete(index,list.get(position));
                 }
             });
         }
@@ -192,7 +192,7 @@ public class AddAddressAdapter extends RecyclerView.Adapter<AddAddressAdapter.Ad
     };
 
 
-    public interface OnSideMenuListence {
+    public interface onSideMenuListener {
         void seleAddress(int position, AddressBean addressBean);
 
         void setTag(int position, AddressBean addressBean);

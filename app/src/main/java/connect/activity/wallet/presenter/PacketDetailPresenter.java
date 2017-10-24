@@ -15,9 +15,6 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/4/18 0018.
- */
 public class PacketDetailPresenter implements PacketDetailContract.Presenter{
 
     private PacketDetailContract.View mView;
@@ -28,9 +25,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
     }
 
     @Override
-    public void start() {
-
-    }
+    public void start() {}
 
     @Override
     public void requestRedDetail(String hashId,int type) {
@@ -71,7 +66,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)){
-                        mView.updataSendView(sendUserInfo);
+                        mView.updateSendView(sendUserInfo);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -90,12 +85,12 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
         Connect.RedPackage redPackage = redPackageInfo.getRedpackage();
         String uid = SharedPreferenceUtil.getInstance().getUser().getUid();
         int status;
-        boolean isHava = false;
+        boolean isHave = false;
         long openMoney = 0;
         long bestAmount = 0;
         for (Connect.GradRedPackageHistroy histroy : list) {
             if (histroy.getUserinfo().getUid().equals(uid)) {
-                isHava = true;
+                isHave = true;
                 openMoney = histroy.getAmount();
             }
             if(bestAmount == 0 || bestAmount <= histroy.getAmount()){
@@ -104,7 +99,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
         }
 
         // Check whether to receive a red envelope
-        if(isHava){
+        if(isHave){
             if(TextUtils.isEmpty(redPackage.getTxid())){ // check Txid
                 status = 6;
             }else{
@@ -121,7 +116,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
                 status = 3;
             }
         }
-        mView.updataView(status, openMoney, bestAmount, redPackageInfo);
+        mView.updateView(status, openMoney, bestAmount, redPackageInfo);
     }
 
 }

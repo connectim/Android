@@ -41,8 +41,8 @@ public class PacketSendActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.avater_rimg)
-    ImageView avaterRimg;
+    @Bind(R.id.avatar_rimg)
+    ImageView avatarRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
     @Bind(R.id.left_send_img)
@@ -104,8 +104,11 @@ public class PacketSendActivity extends BaseActivity {
                 toolbarTop.setRightClickable(true);
             }
         }
+        updateView();
+    }
 
-        GlideUtil.loadAvatarRound(avaterRimg, SharedPreferenceUtil.getInstance().getUser().getAvatar(), 12);
+    private void updateView(){
+        GlideUtil.loadAvatarRound(avatarRimg, SharedPreferenceUtil.getInstance().getUser().getAvatar(), 12);
         nameTv.setText(SharedPreferenceUtil.getInstance().getUser().getName());
         CreateScan createScan = new CreateScan();
         if(sendOutBean.getStatus() == 1){
@@ -176,9 +179,7 @@ public class PacketSendActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
+            public void onError(Connect.HttpResponse response) {}
         });
     }
 
@@ -190,9 +191,7 @@ public class PacketSendActivity extends BaseActivity {
             }
 
             @Override
-            public void onPause() {
-
-            }
+            public void onPause() {}
 
             @Override
             public void onFinish() {
