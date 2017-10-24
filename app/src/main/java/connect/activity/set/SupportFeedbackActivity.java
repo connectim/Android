@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.system.SystemDataUtil;

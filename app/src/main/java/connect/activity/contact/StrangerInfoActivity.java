@@ -16,7 +16,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.ui.activity.R;
@@ -115,7 +115,8 @@ public class StrangerInfoActivity extends BaseActivity {
             return;
         }
         DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Link_Send_friend_request),
-                "", mActivity.getResources().getString(R.string.Link_Send), "", "", getString(R.string.Link_Hello_I_am, MemoryDataManager.getInstance().getName()), false,-1,new DialogUtil.OnItemClickListener() {
+                "", mActivity.getResources().getString(R.string.Link_Send), "", "", getString(R.string.Link_Hello_I_am, SharedPreferenceUtil.getInstance().getUser().getName()),
+                false,-1,new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         MsgSendBean msgSendBean = new MsgSendBean();

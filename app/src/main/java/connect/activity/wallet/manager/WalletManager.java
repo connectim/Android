@@ -17,7 +17,6 @@ import java.util.List;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.wallet.bean.WalletBean;
-import connect.database.MemoryDataManager;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
@@ -175,7 +174,7 @@ public class WalletManager {
                 String value = "";
                 if (status == 1) {
                     category = BaseCurrency.CATEGORY_PRIKEY;
-                    value = MemoryDataManager.getInstance().getPriKey();
+                    value = SharedPreferenceUtil.getInstance().getUser().getPriKey();
                 } else if (status == 2) {
                     category = BaseCurrency.CATEGORY_BASESEED;
                     value = baseSend;
@@ -446,6 +445,19 @@ public class WalletManager {
         DecimalFormat myFormat = new DecimalFormat(PATTERN_BTC);
         String format = myFormat.format(value / BTC_TO_LONG);
         return format.replace(",", ".");
+    }
+
+    /**
+     * Determine whether to create the wallet
+     * @return
+     */
+    public boolean isCreateWallet(){
+        List<CurrencyEntity> currencyList = CurrencyHelper.getInstance().loadCurrencyList();
+        if (currencyList == null || currencyList.size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

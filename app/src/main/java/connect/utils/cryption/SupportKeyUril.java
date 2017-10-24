@@ -13,8 +13,8 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import connect.database.MemoryDataManager;
 import connect.activity.base.BaseApplication;
+import connect.database.SharedPreferenceUtil;
 import connect.utils.StringUtil;
 import connect.wallet.jni.AllNativeMethod;
 import instant.bean.Session;
@@ -142,7 +142,7 @@ public class SupportKeyUril {
     }
 
     public static String localHashKey() {
-        String key = AllNativeMethod.cdGetHash256(MemoryDataManager.getInstance().getPriKey());
+        String key = AllNativeMethod.cdGetHash256(SharedPreferenceUtil.getInstance().getUser().getPriKey());
         key = AllNativeMethod.cdGetHash256(key);
         return key;
     }

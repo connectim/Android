@@ -8,7 +8,7 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
@@ -93,7 +93,7 @@ public class TransactionReceiver implements TransactionListener {
         if (normalChat != null) {
             String receiverAddress = notice.getReceiver();
             String receiverName = "";
-            if (MemoryDataManager.getInstance().getUid().equals(receiverAddress)) {
+            if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(receiverAddress)) {
                 receiverName = context.getString(R.string.Chat_You);
             } else {
                 if (normalChat instanceof CFriendChat) {
@@ -157,7 +157,7 @@ public class TransactionReceiver implements TransactionListener {
         }
 
         String senderName = "";
-        if (MemoryDataManager.getInstance().getUid().equals(crowdfundingNotice.getSender())) {
+        if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(crowdfundingNotice.getSender())) {
             senderName = context.getString(R.string.Chat_You);
         } else {
             GroupMemberEntity senderEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupid, crowdfundingNotice.getReceiver());
@@ -196,7 +196,7 @@ public class TransactionReceiver implements TransactionListener {
 
     @Override
     public void outerTransfer(Connect.TransferNotice notice) {
-        String mypublickey = MemoryDataManager.getInstance().getPubKey();
+        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         Connect.UserInfo sender = notice.getSender();
         Connect.UserInfo receiver = notice.getReceiver();
 

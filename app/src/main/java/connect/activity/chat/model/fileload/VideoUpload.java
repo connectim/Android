@@ -10,7 +10,8 @@ import com.netcompss.loader.LoadJNI;
 import java.io.File;
 
 import connect.activity.chat.inter.FileUpLoad;
-import connect.database.MemoryDataManager;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.utils.FileUtil;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.BaseChat;
@@ -43,9 +44,7 @@ public class VideoUpload extends FileUpLoad {
                     String filePath = videoMessage.getUrl();
 
                     //filePath = videoCompress(filePath);
-
-                    String priKey = MemoryDataManager.getInstance().getPriKey();
-                    String pubkey = MemoryDataManager.getInstance().getPubKey();
+                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                     if (baseChat.chatType() != Connect.ChatType.CONNECT_SYSTEM_VALUE) {
                         Connect.GcmData firstGcmData = encodeAESGCMStructData(comFist);
                         Connect.GcmData secondGcmData = encodeAESGCMStructData(filePath);
@@ -53,8 +52,8 @@ public class VideoUpload extends FileUpLoad {
                         Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
                                 setThumbnail(firstGcmData.toByteString()).
                                 setEntity(secondGcmData.toByteString()).build();
-                        firstGcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, priKey, richMedia.toByteString());
-                        mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(firstGcmData).build();
+                        firstGcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
+                        mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(firstGcmData).build();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

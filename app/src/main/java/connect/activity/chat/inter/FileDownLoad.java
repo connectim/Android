@@ -1,7 +1,7 @@
 package connect.activity.chat.inter;
 
 import connect.activity.chat.bean.RoomSession;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.utils.StringUtil;
 import instant.utils.cryption.DecryptionUtil;
 import instant.utils.cryption.EncryptionUtil;
@@ -42,7 +42,7 @@ public class FileDownLoad {
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(data);
                         Connect.StructData structData = null;
                         if (roomType == Connect.ChatType.PRIVATE) {//private chat
-                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, MemoryDataManager.getInstance().getPriKey(), pukkey, gcmData);
+                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, SharedPreferenceUtil.getInstance().getUser().getPriKey(), pukkey, gcmData);
                         } else if (roomType == Connect.ChatType.GROUPCHAT) {//group chat
                             structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(RoomSession.getInstance().getGroupEcdh()), gcmData);
                         }

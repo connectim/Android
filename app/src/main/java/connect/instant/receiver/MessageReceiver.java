@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.home.bean.HttpRecBean;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -127,7 +127,7 @@ public class MessageReceiver implements MessageListener {
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
 
                 String content = msgExtEntity.showContent();
-                String myUid = MemoryDataManager.getInstance().getUid();
+                String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
                 if (chatMessage.getMsgType() == MessageType.Text.type) {
                     try {
                         Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);

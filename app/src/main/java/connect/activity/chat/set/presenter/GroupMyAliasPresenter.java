@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.contract.GroupMyAliasContract;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
@@ -35,7 +35,7 @@ public class GroupMyAliasPresenter implements GroupMyAliasContract.Presenter {
     public void start() {
         groupKey = view.getRoomKey();
         activity = view.getActivity();
-        String myUid = MemoryDataManager.getInstance().getUid();
+        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
         GroupMemberEntity myMemberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, myUid);
         if (null != myMemberEntity) {
             String myGroupName= TextUtils.isEmpty(myMemberEntity.getNick()) ? myMemberEntity.getUsername() : myMemberEntity.getNick();
@@ -50,7 +50,7 @@ public class GroupMyAliasPresenter implements GroupMyAliasContract.Presenter {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_MEMUPDATE, memberInfo, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String myPublicKey = MemoryDataManager.getInstance().getPubKey();
+                String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
                 ContactHelper.getInstance().updateGroupMemberNickName(groupKey, myPublicKey, myalias);
 
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATEMYNAME);

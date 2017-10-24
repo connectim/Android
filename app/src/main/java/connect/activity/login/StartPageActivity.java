@@ -65,11 +65,6 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
     }
 
     @Override
-    public void goIntoLoginPatter() {
-        LoginPatterActivity.startActivity(mActivity);
-    }
-
-    @Override
     public void goIntoHome() {
         HomeActivity.startActivity(mActivity);
     }

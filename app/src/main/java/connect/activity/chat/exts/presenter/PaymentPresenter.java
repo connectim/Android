@@ -10,8 +10,9 @@ import java.util.List;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.contract.PaymentContract;
+import connect.activity.login.bean.UserBean;
 import connect.activity.wallet.manager.TransferManager;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -43,12 +44,13 @@ public class PaymentPresenter implements PaymentContract.Presenter{
     public void loadPayment(String pubkey) {
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
         if (friendEntity == null) {
-            String mypubkey = MemoryDataManager.getInstance().getPubKey();
+            UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+            String mypubkey = userBean.getPubKey();
             if (mypubkey.equals(pubkey)) {
                 friendEntity = new ContactEntity();
-                friendEntity.setAvatar(MemoryDataManager.getInstance().getAvatar());
-                friendEntity.setUsername(MemoryDataManager.getInstance().getName());
-                friendEntity.setUid(MemoryDataManager.getInstance().getUid());
+                friendEntity.setAvatar(userBean.getAvatar());
+                friendEntity.setUsername(userBean.getName());
+                friendEntity.setUid(userBean.getUid());
             } else {
                 ActivityUtil.goBack(activity);
                 return;

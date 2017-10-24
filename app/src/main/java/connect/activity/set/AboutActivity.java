@@ -1,7 +1,6 @@
 package connect.activity.set;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,7 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
-import connect.service.UpdataService;
+import connect.service.UpdateAppService;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
@@ -87,8 +86,8 @@ public class AboutActivity extends BaseActivity {
     @OnClick(R.id.llUpdate)
     void goUpdate(View view){
         if(compareInt == 1){
-            Dialog dialogUpdata = DialogUtil.showAlertTextView(mActivity,
-                    getString(R.string.Set_Found_new_version), versionResponse.getRemark(), "", getString(R.string.Set_Now_update_app),
+            DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_Found_new_version),
+                    versionResponse.getRemark(), "", getString(R.string.Set_Now_update_app),
                     false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {
@@ -107,7 +106,7 @@ public class AboutActivity extends BaseActivity {
     private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack(){
                 @Override
                 public void granted(String[] permissions) {
-                    Intent intent = new Intent(mActivity, UpdataService.class);
+                    Intent intent = new Intent(mActivity, UpdateAppService.class);
                     intent.putExtra("downLoadUrl", downLoadPath);
                     startService(intent);
                 }

@@ -5,7 +5,7 @@ import android.app.Activity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.exts.contract.HandleGroupRequestContract;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
@@ -86,10 +86,10 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     public void agreeRequest(String pubkey,String code,String address) {
         Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
                 .setSecretKey(groupEntity.getEcdh_key()).build();
-        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(MemoryDataManager.getInstance().getPriKey(), pubkey);
+        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), pubkey);
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
-        String mypubkey = MemoryDataManager.getInstance().getPubKey();
+        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
         String backup = String.format("%1$s/%2$s", mypubkey, groupHex);
 

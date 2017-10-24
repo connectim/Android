@@ -25,7 +25,7 @@ import connect.activity.base.BaseApplication;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
 import connect.activity.chat.exts.presenter.CrowdingDetailPresenter;
 import connect.activity.wallet.BlockchainActivity;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.TimeUtil;
@@ -267,7 +267,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
         if (state == 0) {
             layoutFirst.setVisibility(View.GONE);
             txt6.setVisibility(View.VISIBLE);
-            if (MemoryDataManager.getInstance().getPubKey().equals(uid)) {//You initiate the raise
+            if (SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(uid)) {//You initiate the raise
                 btn.setVisibility(View.GONE);
             } else {
                 btn.setVisibility(View.VISIBLE);

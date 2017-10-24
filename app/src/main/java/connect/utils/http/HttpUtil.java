@@ -15,7 +15,8 @@ import javax.net.ssl.SSLSession;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.HttpRecBean;
-import connect.database.MemoryDataManager;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ConfigUtil;
@@ -105,7 +106,8 @@ public class HttpUtil {
      * 加解密Proto
      */
     public static Connect.IMRequest getIMRequest(ByteString bytes) {
-        return getIMRequest(MemoryDataManager.getInstance().getPriKey(), MemoryDataManager.getInstance().getPubKey(), bytes);
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        return getIMRequest(userBean.getPriKey(), userBean.getPubKey(), bytes);
     }
 
     public static Connect.IMRequest getIMRequest(String priKey, String pubKey, ByteString bytes) {

@@ -11,15 +11,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.base.BaseApplication;
 import connect.activity.home.HomeActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginUserContract;
 import connect.activity.login.presenter.LoginUserPresenter;
-import connect.activity.set.SafetyPatternActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
@@ -84,17 +86,6 @@ public class LoginUserActivity extends BaseActivity implements LoginUserContract
             passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
         }
         passwordEt.setHint(R.string.Login_Password);
-
-        /*if (TextUtils.isEmpty(token)) {
-            if (!TextUtils.isEmpty(userBean.getPassHint())) {
-                passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
-            }
-            passwordeditTv.setVisibility(View.GONE);
-            passwordEt.setHint(R.string.Login_Password);
-        } else {
-            passwordhintTv.setText(getString(R.string.Login_Password_Hint, getString(R.string.Login_Not_set)));
-            nextBtn.setText(R.string.Login_Reset_Password_And_Login);
-        }*/
     }
 
     @OnClick(R.id.left_img)
@@ -106,40 +97,7 @@ public class LoginUserActivity extends BaseActivity implements LoginUserContract
     void nextBtn(View view) {
         ProgressUtil.getInstance().showProgress(mActivity);
         presenter.checkPassWord(userBean.getTalkKey(), passwordEt.getText().toString(),userBean);
-        /*if (TextUtils.isEmpty(token)) {//Login password directly
-            Progre-ssUtil.getInstance().showProgress(mActivity);
-            presenter.checkTalkKey(userBean.getTalkKey(), passwordEt.getText().toString(),userBean);
-        } else {//Scan the private key to log in
-            if(RegularUtil.matches(passwordEt.getText().toString(), RegularUtil.PASSWORD)){
-                ProgressUtil.getInstance().showProgress(mActivity);
-                presenter.requestSetPassword(passwordEt.getText().toString(),userBean,token);
-            }else{
-                DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
-
-                        getString(R.string.Login_letter_number_and_character_must_be_included_in_your_login_password),
-                        "", "", true, new DialogUtil.OnItemClickListener() {
-                            @Override
-                            public void confirm(String value) {}
-                            @Override
-                            public void cancel() {}
-                        });
-            }
-        }*/
     }
-
-    /*@OnClick(R.id.passwordedit_tv)
-    void editPasswordHint(View view){
-        DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Login_Login_Password_Hint_Title),"", "", "", "", "", false,15,
-                new DialogUtil.OnItemClickListener() {
-            @Override
-            public void confirm(String value) {
-                presenter.setPasswordHintData(value);
-                passwordhintTv.setText(getString(R.string.Login_Password_Hint,value));
-            }
-            @Override
-            public void cancel() {}
-        });
-    }*/
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -168,17 +126,15 @@ public class LoginUserActivity extends BaseActivity implements LoginUserContract
     }
 
     @Override
-    public void setPasswordHint(String text) {
-        passwordhintTv.setText(text);
-    }
-
-    @Override
-    public void launchHome(boolean isBack) {
-        if(isBack){
-            HomeActivity.startActivity(mActivity);
-        }else{
-            SafetyPatternActivity.startActivity(mActivity,SafetyPatternActivity.LOGIN_TYPE);
+    public void launchHome() {
+        List<Activity> list = BaseApplication.getInstance().getActivityList();
+        for (Activity activity : list) {
+            if (!activity.getClass().getName().equals(mActivity.getClass().getName())) {
+                activity.finish();
+            }
         }
+        HomeActivity.startActivity(mActivity);
         mActivity.finish();
     }
+
 }

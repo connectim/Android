@@ -1,6 +1,6 @@
 package connect.utils.cryption;
 
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.utils.ConfigUtil;
 import connect.wallet.jni.AllNativeMethod;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -24,7 +24,7 @@ public class DecryptionUtil {
      * Decryption GcmData returned to StructData
      */
     public static Connect.StructData decodeAESGCMStructData(Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, MemoryDataManager.getInstance().getPriKey(), gcmData);
+        return decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, SharedPreferenceUtil.getInstance().getUser().getPriKey(), gcmData);
     }
 
     public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, Connect.GcmData gcmData) {

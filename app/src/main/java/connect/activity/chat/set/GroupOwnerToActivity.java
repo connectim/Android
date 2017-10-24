@@ -17,7 +17,7 @@ import connect.activity.chat.adapter.GroupMemberSelectAdapter;
 import connect.activity.chat.model.GroupMemberCompara;
 import connect.activity.chat.set.contract.GroupOwnerContract;
 import connect.activity.chat.set.presenter.GroupOwnerPresenter;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
@@ -81,7 +81,7 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
 
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
 
-        String myPublicKey=MemoryDataManager.getInstance().getPubKey();
+        String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         Iterator<GroupMemberEntity> iterator = groupMemEntities.iterator();
         while (iterator.hasNext()) {
             GroupMemberEntity memberEntity = iterator.next();

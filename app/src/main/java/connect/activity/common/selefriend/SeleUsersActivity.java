@@ -15,7 +15,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -188,7 +188,7 @@ public class SeleUsersActivity extends BaseActivity {
         ArrayList<ContactEntity> list = new ArrayList<>();
         List<GroupMemberEntity> allMembers = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         for (GroupMemberEntity groupMemEntity : allMembers) {
-            if (MemoryDataManager.getInstance().getPubKey().equals(groupMemEntity.getUid()))
+            if (SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(groupMemEntity.getUid()))
                 continue;
             ContactEntity friendEntity = new ContactEntity();
             friendEntity.setAvatar(groupMemEntity.getAvatar());

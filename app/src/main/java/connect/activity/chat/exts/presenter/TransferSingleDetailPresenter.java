@@ -5,7 +5,8 @@ import android.text.TextUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.chat.exts.contract.TransferSingleDetailContract;
-import connect.database.MemoryDataManager;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.utils.ProtoBufUtil;
@@ -121,11 +122,10 @@ public class TransferSingleDetailPresenter implements TransferSingleDetailContra
     public void requestUserInfo(final int direct, String pubkey) {
         String avatar = "";
         String name = "";
-
-        String myPubkey = MemoryDataManager.getInstance().getPubKey();
-        if (myPubkey.equals(pubkey)) {
-            avatar = MemoryDataManager.getInstance().getAvatar();
-            name = MemoryDataManager.getInstance().getName();
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        if (userBean.getPubKey().equals(pubkey)) {
+            avatar = userBean.getAvatar();
+            name = userBean.getName();
         } else {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
             if (friendEntity != null) {

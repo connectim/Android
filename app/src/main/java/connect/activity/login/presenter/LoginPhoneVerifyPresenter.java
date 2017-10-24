@@ -129,7 +129,7 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                     userBean.setPriKey(priKey);
                     userBean.setPubKey(pubKey);
                     userBean.setUid(userInfo.getUid());
-                    SharedPreferenceUtil.getInstance().loginSaveUserBean(userBean, mView.getActivity());
+                    SharedPreferenceUtil.getInstance().putUser(userBean);
                     mView.launchHome(userBean);
                 } catch (Exception e) {
                     e.printStackTrace();

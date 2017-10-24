@@ -9,10 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.base.BaseApplication;
 import connect.activity.home.HomeActivity;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneVerifyContract;
@@ -166,7 +169,12 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements LoginPhone
 
     @Override
     public void launchHome(UserBean userBean) {
-        // 登录成功 进入主界面
+        List<Activity> list = BaseApplication.getInstance().getActivityList();
+        for (Activity activity : list) {
+            if (!activity.getClass().getName().equals(mActivity.getClass().getName())) {
+                activity.finish();
+            }
+        }
         HomeActivity.startActivity(mActivity);
         mActivity.finish();
     }

@@ -28,7 +28,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseScanActivity;
 import connect.activity.home.bean.MsgNoticeBean;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;

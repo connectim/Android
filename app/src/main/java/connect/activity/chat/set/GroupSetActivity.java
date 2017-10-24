@@ -26,7 +26,7 @@ import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.set.UserInfoActivity;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ContactEntity;
@@ -135,7 +135,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
                 if (TAG_ADD.equals(address)) {
                     GroupInviteActivity.startActivity(activity, groupKey);
                 } else {
-                    if (MemoryDataManager.getInstance().getUid().equals(address)) {
+                    if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(address)) {
                         UserInfoActivity.startActivity(activity);
                     } else {
                         ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);

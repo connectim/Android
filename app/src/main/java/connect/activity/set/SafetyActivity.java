@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.login.bean.UserBean;
+import connect.activity.wallet.manager.WalletManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -36,6 +37,8 @@ public class SafetyActivity extends BaseActivity {
     TextView patternTv;
     @Bind(R.id.pattern_ll)
     LinearLayout patternLl;
+    @Bind(R.id.payment_line_ll)
+    LinearLayout paymentLineLl;
 
     private SafetyActivity mActivity;
     private UserBean userBean;
@@ -74,10 +77,15 @@ public class SafetyActivity extends BaseActivity {
             }
         }
 
-        if (userBean != null && TextUtils.isEmpty(userBean.getSalt())) {
-            patternTv.setText(R.string.Set_Off);
-        } else {
-            patternTv.setText(R.string.Set_On);
+        if (WalletManager.getInstance().isCreateWallet()) {
+            paymentLineLl.setVisibility(View.VISIBLE);
+            patternLl.setVisibility(View.VISIBLE);
+
+            if (userBean != null && TextUtils.isEmpty(userBean.getPatterStr())) {
+                patternTv.setText(R.string.Set_Off);
+            } else {
+                patternTv.setText(R.string.Set_On);
+            }
         }
     }
 
@@ -88,7 +96,7 @@ public class SafetyActivity extends BaseActivity {
 
     @OnClick(R.id.phone_ll)
     void goLink(View view) {
-        ActivityUtil.next(mActivity,SafetyPhoneActivity.class);
+        ActivityUtil.next(mActivity, SafetyPhoneActivity.class);
     }
 
     @OnClick(R.id.password_ll)
@@ -96,9 +104,8 @@ public class SafetyActivity extends BaseActivity {
         LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
             @Override
             public void success(String priKey) {
-                ActivityUtil.next(mActivity,SafetyLoginPassActivity.class);
+                ActivityUtil.next(mActivity, SafetyLoginPassActivity.class);
             }
-
             @Override
             public void error() {}
         });
@@ -106,12 +113,12 @@ public class SafetyActivity extends BaseActivity {
 
     @OnClick(R.id.payment_ll)
     void goPayMent(View view) {
-        ActivityUtil.next(mActivity,SafetyPayActivity.class);
+        ActivityUtil.next(mActivity, SafetyPayActivity.class);
     }
 
     @OnClick(R.id.pattern_ll)
     void goPattern(View view) {
-        SafetyPatternActivity.startActivity(mActivity,SafetyPatternActivity.SET_TYPE);
+        SafetyPatternActivity.startActivity(mActivity);
     }
 
 }

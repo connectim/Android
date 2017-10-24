@@ -13,7 +13,7 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.GroupSetContract;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -107,7 +107,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
 
         view.groupName(groupEntity.getName());
 
-        String myPublicKey = MemoryDataManager.getInstance().getPubKey();
+        String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myPublicKey);
         String myAlias = "";
         if (myMember != null) {
@@ -161,7 +161,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
                         view.noticeSwitch(settingInfo.getMute());
 
                         if (settingInfo.getPublic()) {
-                            String myPublicKey = MemoryDataManager.getInstance().getPubKey();
+                            String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
                             GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myPublicKey);
                             if (myMember == null || myMember.getRole() == 0) {
                                 view.groupNameClickable(false);

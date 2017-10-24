@@ -20,7 +20,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -98,7 +98,7 @@ public class SearchFriendResultActivity extends BaseActivity {
             nickname.setText(userInfo.getUsername());
 
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
-            if(userInfo.getPubKey().equals(MemoryDataManager.getInstance().getPubKey())){
+            if(userInfo.getPubKey().equals(SharedPreferenceUtil.getInstance().getUser().getPubKey())){
                 resultLin.removeAllViews();
                 noResultTv.setVisibility(View.VISIBLE);
             }else if(friendEntity != null){

@@ -71,7 +71,6 @@ public class UserInfoActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_My_Profile);
 
         userBean = SharedPreferenceUtil.getInstance().getUser();
-        // GlideUtil.loadAvater(avatarIv, userBean.getAvatar());
         GlideUtil.loadAvatarRound(avatarIv, userBean.getAvatar());
 
         nameTv.setText(userBean.getName());

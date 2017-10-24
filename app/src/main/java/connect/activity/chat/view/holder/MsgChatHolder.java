@@ -14,6 +14,7 @@ import connect.activity.base.BaseListener;
 import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.model.ChatMsgUtil;
+import connect.database.SharedPreferenceUtil;
 import instant.bean.MsgDirect;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
@@ -23,7 +24,6 @@ import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.set.UserInfoActivity;
-import connect.database.MemoryDataManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
@@ -105,7 +105,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
             case PRIVATE:
                 final Connect.MessageUserInfo userInfo = RoomSession.getInstance().getUserInfo();
                 GlideUtil.loadAvatarRound(headImg, direct == MsgDirect.From ? userInfo.getAvatar() :
-                        MemoryDataManager.getInstance().getAvatar());
+                        SharedPreferenceUtil.getInstance().getUser().getAvatar());
                 headImg.setVisibility(RoomSession.getInstance().getBurntime() <= 0 ? View.VISIBLE :
                         View.GONE);
                 headImg.setOnClickListener(new View.OnClickListener() {
@@ -164,7 +164,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 });
 
                 if (direct == MsgDirect.To) {
-                    GlideUtil.loadAvatarRound(headImg, MemoryDataManager.getInstance().getAvatar());
+                    GlideUtil.loadAvatarRound(headImg, SharedPreferenceUtil.getInstance().getUser().getAvatar());
                     if (memberTxt != null) {
                         memberTxt.setVisibility(View.GONE);
                     }
@@ -207,7 +207,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 if (direct == MsgDirect.From) {
                     GlideUtil.loadAvatarRound(headImg, R.mipmap.connect_logo);
                 } else {
-                    String imgpath = MemoryDataManager.getInstance().getAvatar();
+                    String imgpath = SharedPreferenceUtil.getInstance().getUser().getAvatar();
                     GlideUtil.loadAvatarRound(headImg, imgpath);
                 }
                 break;

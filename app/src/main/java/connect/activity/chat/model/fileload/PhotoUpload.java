@@ -6,7 +6,8 @@ import com.google.protobuf.ByteString;
 import java.io.File;
 
 import connect.activity.chat.inter.FileUpLoad;
-import connect.database.MemoryDataManager;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import instant.bean.ChatMsgEntity;
@@ -44,8 +45,7 @@ public class PhotoUpload extends FileUpLoad {
                     firstPath = firstFile.getAbsolutePath();
                     String secondPath = secondFile.getAbsolutePath();
 
-                    String priKey = MemoryDataManager.getInstance().getPriKey();
-                    String pubkey = MemoryDataManager.getInstance().getPubKey();
+                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
 
                     Connect.GcmData gcmData = null;
                     Connect.RichMedia richMedia = null;
@@ -61,8 +61,8 @@ public class PhotoUpload extends FileUpLoad {
                                 setEntity(secondGcmData.toByteString()).build();
                     }
 
-                    gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, priKey, richMedia.toByteString());
-                    mediaFile = Connect.MediaFile.newBuilder().setPubKey(pubkey).setCipherData(gcmData).build();
+                    gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
+                    mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(gcmData).build();
 
 //                    firstFile.delete();
 //                    secondFile.delete();

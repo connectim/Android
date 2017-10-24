@@ -12,20 +12,18 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.ui.activity.R;
-import connect.activity.login.bean.UserBean;
-import connect.activity.login.contract.LoginPhoneVerifyContract;
-import connect.activity.login.presenter.LoginPhoneVerifyPresenter;
 import connect.activity.base.BaseActivity;
+import connect.activity.set.contract.SafetyPhoneVerifyContract;
+import connect.activity.set.presenter.SafetyPhoneVerifyPresenter;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.widget.TopToolBar;
-import protos.Connect;
 
 /**
  * Verify the authentication code, binding or binding mobile phone number.
  */
-public class SafetyPhoneVerifyActivity extends BaseActivity implements LoginPhoneVerifyContract.View {
+public class SafetyPhoneVerifyActivity extends BaseActivity implements SafetyPhoneVerifyContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -39,7 +37,7 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements LoginPhon
     Button nextBtn;
 
     private SafetyPhoneVerifyActivity mActivity;
-    private LoginPhoneVerifyContract.Presenter presenter;
+    private SafetyPhoneVerifyContract.Presenter presenter;
     private String type;
 
     public static void startActivity(Activity activity, String countrycode, String phone, String type) {
@@ -72,11 +70,11 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements LoginPhon
         phoneTv.setText("+" + countryCode + " " + phone);
         codeEt.addTextChangedListener(textWatcher);
         ToastEUtil.makeText(mActivity,R.string.Login_SMS_code_has_been_send).show();
-        new LoginPhoneVerifyPresenter(this,countryCode,phone).start();
+        new SafetyPhoneVerifyPresenter(this,countryCode,phone).start();
     }
 
     @Override
-    public void setPresenter(LoginPhoneVerifyContract.Presenter presenter) {
+    public void setPresenter(SafetyPhoneVerifyContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -103,10 +101,8 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements LoginPhon
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
         @Override
         public void afterTextChanged(Editable s) {
             if (codeEt.getText().toString().length() == 6) {
@@ -125,14 +121,6 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements LoginPhon
     public String getCode() {
         return codeEt.getText().toString();
     }
-
-    @Override
-    public void setVoiceVisi() {
-        voiceTv.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void launchRandomSend(String phone, String token) {}
 
     @Override
     public void changeBtnTiming(long time) {
@@ -156,12 +144,4 @@ public class SafetyPhoneVerifyActivity extends BaseActivity implements LoginPhon
         super.onPause();
         presenter.pauseDownTimer();
     }
-
-    @Override
-    public void launchHome(UserBean userBean) {
-
-    }
-
-    @Override
-    public void launchPassVerify(Connect.UserInfo userInfo) {}
 }

@@ -12,7 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.activity.set.contract.UserInfoAvatarContract;
 import connect.activity.set.presenter.UserInfoAvatarPresenter;
@@ -61,7 +61,7 @@ public class UserInfoAvatarActivity extends BaseActivity implements UserInfoAvat
         toolbarTop.setTitle(null, R.string.Chat_Photo);
         toolbarTop.setRightImg(R.mipmap.menu_white);
         setPresenter(new UserInfoAvatarPresenter(this));
-        GlideUtil.loadAvatar(avatarImg,  MemoryDataManager.getInstance().getAvatar() + "?size=400");
+        GlideUtil.loadAvatar(avatarImg,  SharedPreferenceUtil.getInstance().getUser().getAvatar() + "?size=400");
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface RegisterContract {
 
         void showAvatar(String path);
 
-        void complete(boolean isBack);
+        void launchHome();
     }
 
     interface Presenter extends BasePresenter {

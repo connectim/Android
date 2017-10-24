@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.ui.activity.R;
-import connect.service.UpdataService;
+import connect.service.UpdateAppService;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
@@ -90,7 +90,7 @@ public class CheckUpdata {
     public PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
-            Intent intent = new Intent(activity, UpdataService.class);
+            Intent intent = new Intent(activity, UpdateAppService.class);
             intent.putExtra("downLoadUrl", downLoadpath);
             activity.startService(intent);
         }

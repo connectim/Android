@@ -2,7 +2,7 @@ package connect.activity.chat.bean;
 
 import android.text.TextUtils;
 
-import connect.database.MemoryDataManager;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.MessageEntity;
 import connect.utils.StringUtil;
 import instant.bean.MsgDirect;
@@ -64,7 +64,7 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
 
 
     public MsgDirect parseDirect() {
-        String mypubkey = MemoryDataManager.getInstance().getPubKey();
+        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         return mypubkey.equals(getMessage_from()) ? MsgDirect.To : MsgDirect.From;
     }
 

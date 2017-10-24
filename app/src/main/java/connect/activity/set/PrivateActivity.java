@@ -15,22 +15,22 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.contact.bean.PhoneContactBean;
+import connect.activity.set.bean.PrivateSetBean;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.activity.set.bean.PrivateSetBean;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.permission.PermissionUtil;
 import connect.utils.StringUtil;
-import connect.utils.system.SystemDataUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.activity.contact.bean.PhoneContactBean;
-import instant.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
+import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**

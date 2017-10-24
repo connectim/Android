@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import connect.activity.login.bean.UserBean;
-import connect.database.MemoryDataManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
