@@ -390,8 +390,7 @@ public class CommandReceiver implements CommandListener {
             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
             CRobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
             HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT,
-                    new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE,
-                            BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
+                    new Talker(Connect.ChatType.CONNECT_SYSTEM, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
         } else {
             Connect.UserInfo userInfo = packageInfo.getSender();
 
@@ -412,7 +411,7 @@ public class CommandReceiver implements CommandListener {
 
             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
             normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
-            HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
+            HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(Connect.ChatType.PRIVATE,friendEntity.getUid()));
         }
     }
 }

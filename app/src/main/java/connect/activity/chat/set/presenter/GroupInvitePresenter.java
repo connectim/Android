@@ -69,7 +69,6 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
                     Connect.GroupInviteResponseList responseList = Connect.GroupInviteResponseList.parseFrom(structData.getPlainData());
                     for (Connect.GroupInviteResponse res : responseList.getListList()) {
                         if (ProtoBufUtil.getInstance().checkProtoBuf(res)) {
-                            // qwer
                             String uid = res.getUid();
                             String token = res.getToken();
 

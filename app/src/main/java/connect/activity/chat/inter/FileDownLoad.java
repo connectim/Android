@@ -2,6 +2,8 @@ package connect.activity.chat.inter;
 
 import connect.activity.chat.bean.RoomSession;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.GroupEntity;
 import connect.utils.StringUtil;
 import instant.utils.cryption.DecryptionUtil;
 import instant.utils.cryption.EncryptionUtil;
@@ -44,7 +46,8 @@ public class FileDownLoad {
                         if (roomType == Connect.ChatType.PRIVATE) {//private chat
                             structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, SharedPreferenceUtil.getInstance().getUser().getPriKey(), pukkey, gcmData);
                         } else if (roomType == Connect.ChatType.GROUPCHAT) {//group chat
-                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(RoomSession.getInstance().getGroupEcdh()), gcmData);
+                            GroupEntity groupEntity= ContactHelper.getInstance().loadGroupEntity(pukkey);
+                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
                         }
                         byte[] dataFile = structData.getPlainData().toByteArray();
                         fileDownLoad.successDown(dataFile);

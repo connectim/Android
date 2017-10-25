@@ -22,13 +22,9 @@ import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.ConversionEntity;
-import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
@@ -41,16 +37,16 @@ import protos.Connect;
 import static connect.widget.SideScrollView.SideScrollListener;
 
 /**
- * Created by MJJ on 2015/7/25.
+ * Created by pujin on 2016/11/25.
  */
-public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListChatHolder> {
+public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ConversationHolder> {
 
     private RecyclerView recyclerView;
     private SideScrollView lastOpenScrollView = null;
     private LayoutInflater inflater;
     private List<RoomAttrBean> roomAttrBeanList = new ArrayList<>();
 
-    public ChatListAdapter(Activity activity, RecyclerView recyclerView) {
+    public ConversationAdapter(Activity activity, RecyclerView recyclerView) {
         inflater = LayoutInflater.from(activity);
         this.recyclerView = recyclerView;
     }
@@ -60,24 +56,20 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
         notifyDataSetChanged();
     }
 
-    public List<RoomAttrBean> getRoomAttrBeanList() {
-        return roomAttrBeanList;
-    }
-
     @Override
     public int getItemCount() {
         return roomAttrBeanList.size();
     }
 
     @Override
-    public ListChatHolder onCreateViewHolder(ViewGroup parent, int arg1) {
+    public ConversationHolder onCreateViewHolder(ViewGroup parent, int arg1) {
         View view = inflater.inflate(R.layout.item_fm_chatlist, parent, false);
-        ListChatHolder holder = new ListChatHolder(view);
+        ConversationHolder holder = new ConversationHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(ListChatHolder holder, final int position) {
+    public void onBindViewHolder(ConversationHolder holder, final int position) {
         final RoomAttrBean roomAttr = roomAttrBeanList.get(position);
         holder.directTxt.showText(roomAttr.getAt(),roomAttr.getDraft(), TextUtils.isEmpty(roomAttr.getContent()) ? "" : roomAttr.getContent());
         try {
@@ -95,7 +87,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
             String showName = TextUtils.isEmpty(roomAttr.getName()) ? "" : roomAttr.getName();
             String showAvatar = TextUtils.isEmpty(roomAttr.getAvatar()) ? "" : roomAttr.getAvatar();
 
-            if (TextUtils.isEmpty(showName) || TextUtils.isEmpty(showAvatar)) {//search detail info in local db
+            /*if (TextUtils.isEmpty(showName) || TextUtils.isEmpty(showAvatar)) {//search detail info in local db
                 String roomKey = roomAttr.getRoomid();
                 if (roomAttr.getRoomtype() == 0) {
                     ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);
@@ -117,7 +109,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     converEntity.setAvatar(showAvatar);
                     ConversionHelper.getInstance().updateRoomEntity(converEntity);
                 }
-            }
+            }*/
 
             holder.nameTxt.setText(showName);
             GlideUtil.loadAvatarRound(holder.headImg, showAvatar);
@@ -160,30 +152,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                     closeMenu();
                 } else {
                     closeMenu();
-                    Talker talker = null;
-                    switch (roomAttr.getRoomtype()) {
-                        case 0:
-                            ContactEntity friend = new ContactEntity();
-                            friend.setPub_key(roomAttr.getRoomid());
-                            friend.setAvatar(roomAttr.getAvatar());
-                            friend.setUsername(roomAttr.getName());
-                            talker = new Talker(friend);
-                            break;
-                        case 1:
-                            GroupEntity group = new GroupEntity();
-                            group.setIdentifier(roomAttr.getRoomid());
-                            group.setName(roomAttr.getName());
-                            group.setAvatar(roomAttr.getAvatar());
-                            talker = new Talker(group);
-                            break;
-                        case 2:
-                            talker = new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE, inflater.getContext().getString(R.string.app_name));
-                            break;
-                    }
 
-                    if (talker != null) {
-                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, talker);
-                    }
+                    Talker talker = new Talker(Connect.ChatType.forNumber(roomAttr.getRoomtype()), roomAttr.getRoomid());
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, talker);
                 }
             }
         });
@@ -210,7 +181,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
                 SideScrollView scrollView = (SideScrollView) v.getTag();
                 closeMenu(scrollView);
 
-                ListChatHolder index = getItemHolder(position);
+                ConversationHolder index = getItemHolder(position);
                 if (index != null) {
                     boolean select = !(index.bottomNotify.isSelected());
                     index.bottomNotify.setSelected(select);
@@ -231,19 +202,19 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
         });
     }
 
-    public ListChatHolder getItemHolder(int position) {
+    public ConversationHolder getItemHolder(int position) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         int firstItemPosition = layoutManager.findFirstVisibleItemPosition();
         if (position - firstItemPosition >= 0) {
             View view = recyclerView.getChildAt(position - firstItemPosition);
             if (null != recyclerView.getChildViewHolder(view)) {
-                return (ListChatHolder) recyclerView.getChildViewHolder(view);
+                return (ConversationHolder) recyclerView.getChildViewHolder(view);
             }
         }
         return null;
     }
 
-    class ListChatHolder extends RecyclerView.ViewHolder {
+    class ConversationHolder extends RecyclerView.ViewHolder {
 
         private ImageView headImg;
         private TextView nameTxt;
@@ -262,7 +233,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ListCh
         private RelativeLayout bottomTrash;
         private RelativeLayout bottomNotify;
 
-        public ListChatHolder(View itemView) {
+        public ConversationHolder(View itemView) {
             super(itemView);
             contentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
             bottomLayout= (LinearLayout) itemView.findViewById(R.id.bottom_layout);

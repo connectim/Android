@@ -31,7 +31,7 @@ public class SharePreferenceUser {
     public static void initSharePreference(String pubKey) {
         sharePreUtil = null;
         SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.SHAREPRE_NAME, "sp_" + pubKey);
-        getInstance(BaseApplication.getInstance().getAppContext());
+        getInstance(BaseApplication.getInstance().getBaseContext());
     }
 
     public static void unLinkSharePreference() {
@@ -40,7 +40,7 @@ public class SharePreferenceUser {
     }
 
     public static SharePreferenceUser getInstance() {
-        return getInstance(BaseApplication.getInstance().getAppContext());
+        return getInstance(BaseApplication.getInstance().getBaseContext());
     }
 
     private static SharePreferenceUser getInstance(Context context) {

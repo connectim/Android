@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.Talker;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.ConversationAction;
 import connect.database.green.BaseDao;
@@ -108,6 +109,60 @@ public class ContactHelper extends BaseDao {
     }
 
     /*********************************  select ***********************************/
+    public Talker loadTalkerFriend(String uid) {
+        if (TextUtils.isEmpty(uid)) {
+            uid = "";
+        }
+
+        String sql = "SELECT F.USERNAME AS FNAME, F.REMARK AS FREMARK, F.AVATAR AS FAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM CONTACT_ENTITY F LEFT OUTER JOIN CONVERSION_ENTITY C WHERE F.UID = ? AND F.UID = C.IDENTIFIER LIMIT 1;";
+
+        Talker talker = new Talker(Connect.ChatType.PRIVATE, uid);
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            String userName = cursorGetString(cursor, "FNAME");
+            String userRemark = cursorGetString(cursor, "FREMARK");
+            String userAvatar = cursorGetString(cursor, "FAVATAR");
+
+            boolean stranger = TextUtils.isEmpty(userName);
+            talker.setStranger(stranger);
+            if (stranger) {
+                userName = cursorGetString(cursor, "CNAME");
+                userAvatar = cursorGetString(cursor, "CAVATAR");
+            }
+
+            userName = TextUtils.isEmpty(userRemark) ? userName : userRemark;
+            talker.setNickName(userName);
+            talker.setAvatar(userAvatar);
+        }
+        return talker;
+    }
+
+    public Talker loadTalkerGroup(String identify) {
+        if (TextUtils.isEmpty(identify)) {
+            identify = "";
+        }
+
+        String sql = "SELECT G.NAME AS GNAME, G.AVATAR AS GAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM GROUP_ENTITY G LEFT OUTER JOIN CONVERSION_ENTITY C WHERE G.IDENTIFIER = ? AND G.IDENTIFIER = C.IDENTIFIER LIMIT 1;";
+
+        Talker talker = new Talker(Connect.ChatType.GROUPCHAT, identify);
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            String groupName = cursorGetString(cursor, "GNAME");
+            String groupAvatar = cursorGetString(cursor, "GAVATAR");
+
+            boolean stranger = TextUtils.isEmpty(groupName);
+            talker.setStranger(stranger);
+            if (stranger) {
+                groupName = cursorGetString(cursor, "CNAME");
+                groupAvatar = cursorGetString(cursor, "CAVATAR");
+            }
+
+            talker.setNickName(groupName);
+            talker.setAvatar(groupAvatar);
+        }
+        return talker;
+    }
+
     /**
      * friend entity
      *

@@ -103,9 +103,10 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
         switch (chatType) {
             case PRIVATE:
-                final Connect.MessageUserInfo userInfo = RoomSession.getInstance().getUserInfo();
-                GlideUtil.loadAvatarRound(headImg, direct == MsgDirect.From ? userInfo.getAvatar() :
+                GlideUtil.loadAvatarRound(headImg, direct == MsgDirect.From ?
+                        RoomSession.getInstance().getChatAvatar() :
                         SharedPreferenceUtil.getInstance().getUser().getAvatar());
+
                 headImg.setVisibility(RoomSession.getInstance().getBurntime() <= 0 ? View.VISIBLE :
                         View.GONE);
                 headImg.setOnClickListener(new View.OnClickListener() {
@@ -114,12 +115,13 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                         if (direct == MsgDirect.To) {
                             UserInfoActivity.startActivity((Activity) context);
                         } else if (direct == MsgDirect.From) {
-                            ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
+                            String uid = RoomSession.getInstance().getRoomKey();
+                            ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(uid);
                             if (friend == null) {
-                                String address = SupportKeyUril.getAddressFromPubKey(userInfo.getUid());
+                                String address = SupportKeyUril.getAddressFromPubKey(uid);
                                 StrangerInfoActivity.startActivity((Activity) context, address, SourceType.GROUP);
                             } else {
-                                FriendInfoActivity.startActivity((Activity) context, userInfo.getUid());
+                                FriendInfoActivity.startActivity((Activity) context, uid);
                             }
                         }
                     }

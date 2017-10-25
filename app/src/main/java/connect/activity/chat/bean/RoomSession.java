@@ -2,7 +2,12 @@ package connect.activity.chat.bean;
 
 import android.text.TextUtils;
 
-import connect.database.SharedPreferenceUtil;
+import java.util.HashMap;
+import java.util.Map;
+
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionHelper;
+import connect.database.green.bean.ContactEntity;
 import protos.Connect;
 
 /**
@@ -10,58 +15,38 @@ import protos.Connect;
  * Created by gtq on 2016/12/12.
  */
 public class RoomSession {
-    private static RoomSession roomSession;
 
-    public static RoomSession getInstance() {
+    public static RoomSession roomSession = getInstance();
+
+    public synchronized static RoomSession getInstance() {
         if (roomSession == null) {
-            synchronized (RoomSession.class) {
-                if (roomSession == null) {
-                    roomSession = new RoomSession();
-                }
-            }
+            roomSession = new RoomSession();
         }
         return roomSession;
     }
 
-    private int roomType = -1;
-    private String roomKey;
-    private String groupEcdh;
+    private static String CHAT_AVATAR="CHAT_AVATAR:";
+    private Map<String, String> keyMap = new HashMap<>();
+    private Connect.ChatType chatType = Connect.ChatType.PRIVATE;
+    private String chatKey;
+    private String chatAvatar;
 
     private long burntime;
-    Connect.MessageUserInfo userInfo;
 
-
-    public int getRoomType() {
-        return roomType;
+    public Connect.ChatType getRoomType() {
+        return chatType;
     }
 
-    public void setRoomType(int roomtype) {
-        this.roomType = roomtype;
-        SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.ROOM_TYPE, roomtype);
+    public void setRoomType(Connect.ChatType roomtype) {
+        this.chatType = roomtype;
     }
 
     public String getRoomKey() {
-        if (TextUtils.isEmpty(roomKey)) {
-            roomKey = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.ROOM_KEY);
-        }
-        return roomKey;
+        return chatKey;
     }
 
     public void setRoomKey(String roomKey) {
-        this.roomKey = roomKey;
-        SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.ROOM_KEY, roomKey);
-    }
-
-    public String getGroupEcdh() {
-        if (TextUtils.isEmpty(groupEcdh)) {
-            groupEcdh = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.ROOM_ECDH);
-        }
-        return groupEcdh;
-    }
-
-    public void setGroupEcdh(String roomKey) {
-        this.groupEcdh = roomKey;
-        SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.ROOM_ECDH, roomKey);
+        this.chatKey = roomKey;
     }
 
     public long getBurntime() {
@@ -72,11 +57,26 @@ public class RoomSession {
         this.burntime = burntime;
     }
 
-    public Connect.MessageUserInfo getUserInfo() {
-        return userInfo;
+    public String getChatAvatar() {
+        String key = CHAT_AVATAR + chatKey;
+        String avatar = keyMap.get(key);
+        if (TextUtils.isEmpty(avatar)) {
+            switch (chatType) {
+                case PRIVATE:
+                    Talker talker = ContactHelper.getInstance().loadTalkerFriend(chatKey);
+                    avatar = talker.getAvatar();
+                    keyMap.put(key, avatar);
+                    break;
+                case GROUPCHAT:
+                    break;
+                case CONNECT_SYSTEM:
+                    break;
+            }
+        }
+        return chatAvatar;
     }
 
-    public void setUserInfo(Connect.MessageUserInfo userInfo) {
-        this.userInfo = userInfo;
+    public void setChatAvatar(String chatAvatar) {
+        this.chatAvatar = chatAvatar;
     }
 }

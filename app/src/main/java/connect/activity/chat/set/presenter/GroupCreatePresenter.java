@@ -176,7 +176,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
             @Override
             public void animFinish() {
                 GroupEntity tempEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                ChatActivity.startActivity(activity, new Talker(tempEntity));
+                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUPCHAT,tempEntity.getIdentifier()));
             }
         }).show();
     }

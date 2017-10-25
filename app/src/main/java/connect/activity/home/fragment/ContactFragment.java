@@ -126,14 +126,10 @@ public class ContactFragment extends BaseFragment {
                     ActivityUtil.next(mActivity, AddFriendActivity.class);
                     break;
                 case 6:
-                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE, "Connect"));
+                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.CONNECT_SYSTEM, "Connect"));
                     break;
                 case 2:
-                    GroupEntity groupEntity = new GroupEntity();
-                    groupEntity.setIdentifier(entity.getPub_key());
-                    groupEntity.setAvatar(entity.getAvatar());
-                    groupEntity.setName(entity.getName());
-                    ChatActivity.startActivity(mActivity, new Talker(groupEntity));
+                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.GROUPCHAT,entity.getPub_key()));
                     break;
                 case 3:
                 case 4:

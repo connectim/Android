@@ -15,6 +15,12 @@ public class ConversionHelperTest {
     private String Tag = "_ConversionHelperTest";
 
     @Test
+    public int countUnReads() {
+        int unreadCount = ConversionHelper.getInstance().countUnReads();
+        return unreadCount;
+    }
+
+    @Test
     public List<RoomAttrBean> loadRoomEntities(String identifier) {
         List<RoomAttrBean> attrBeanList=ConversionHelper.getInstance().loadRoomEntities(identifier);
         return attrBeanList;

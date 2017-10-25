@@ -9,6 +9,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.chat.bean.Talker;
 import connect.database.green.BaseDao;
 import connect.database.green.bean.ConversionEntity;
 import connect.activity.home.bean.RoomAttrBean;
@@ -38,6 +39,20 @@ public class ConversionHelper extends BaseDao {
     }
 
     /************************  select *****************************************/
+    public int countUnReads() {
+        String sql = "SELECT sum(UNREAD_COUNT) FROM CONVERSION_ENTITY;";
+
+        int unRead = 0;
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            unRead += cursorGetInt(cursor, "UNREAD_COUNT");
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return unRead;
+    }
+
     /**
      * chat message list
      *

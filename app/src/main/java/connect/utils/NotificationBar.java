@@ -133,19 +133,19 @@ public class NotificationBar {
             case PRIVATE:
                 ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(roomid);
                 if (friend != null) {
-                    talker = new Talker(friend);
+                    talker = new Talker(Connect.ChatType.PRIVATE,roomid);
                     tickerTitle = TextUtils.isEmpty(friend.getRemark()) ? friend.getUsername() : friend.getRemark();
                 }
                 break;
             case GROUPCHAT:
                 GroupEntity group = ContactHelper.getInstance().loadGroupEntity(roomid);
                 if (group != null) {
-                    talker = new Talker(group);
+                    talker = new Talker(Connect.ChatType.GROUPCHAT,roomid);
                     tickerTitle = group.getName();
                 }
                 break;
             case CONNECT_SYSTEM:
-                talker = new Talker(Connect.ChatType.CONNECT_SYSTEM_VALUE, BaseApplication.getInstance().getString(R.string.app_name));
+                talker = new Talker(Connect.ChatType.CONNECT_SYSTEM, BaseApplication.getInstance().getString(R.string.app_name));
                 break;
         }
 

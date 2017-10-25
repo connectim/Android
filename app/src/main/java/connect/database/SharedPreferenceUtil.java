@@ -2,11 +2,14 @@ package connect.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
+import connect.utils.exception.BaseException;
+import connect.utils.exception.bean.ErrorCode;
 import connect.utils.log.LogManager;
 
 /**
@@ -26,14 +29,11 @@ public class SharedPreferenceUtil {
     public static final String WEB_OPEN_APP = "web_open_app";
     public static final String APP_LANGUAGE_CODE = "app_language_code";
     public static final String USER_INFO = "user_info";
-    public static final String ROOM_TYPE = "ROOM_TYPE";
-    public static final String ROOM_KEY = "ROOM_KEY";
-    public static final String ROOM_ECDH = "ROOM_ECDH";
 
     public SharedPreferenceUtil() {}
 
     public static SharedPreferenceUtil getInstance() {
-        return getInstance(BaseApplication.getInstance().getAppContext());
+        return getInstance(BaseApplication.getInstance().getBaseContext());
     }
 
     private static SharedPreferenceUtil getInstance(Context context) {
@@ -85,9 +85,21 @@ public class SharedPreferenceUtil {
      * get current user
      * @return
      */
-    public UserBean getUser(){
-        UserBean userBean = new Gson().fromJson(getStringValue(USER_INFO), UserBean.class);
+    public UserBean getUser() {
+        UserBean userBean = null;
+        try {
+            String userStr = getStringValue(USER_INFO);
+            if (TextUtils.isEmpty(userStr)) {
+                throw new BaseException(ErrorCode.USER_NOT_EXIST);
+            }
+
+            userBean = new Gson().fromJson(userStr, UserBean.class);
+            if (userBean == null || TextUtils.isEmpty(userBean.getUid())) {
+                throw new BaseException(ErrorCode.USER_NOT_EXIST);
+            }
+        } catch (BaseException e) {
+            e.dispath().upload();
+        }
         return userBean;
     }
-
 }

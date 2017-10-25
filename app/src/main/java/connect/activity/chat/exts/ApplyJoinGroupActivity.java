@@ -198,7 +198,7 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
                     if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
                         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, gKey);
                     } else {
-                        Talker talker = new Talker(groupEntity);
+                        Talker talker = new Talker(Connect.ChatType.GROUPCHAT,gKey);
                         ChatActivity.startActivity(activity, talker);
                     }
                     break;

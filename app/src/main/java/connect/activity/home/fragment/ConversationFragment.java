@@ -20,7 +20,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseFragment;
 import connect.activity.home.HomeActivity;
-import connect.activity.home.adapter.ChatListAdapter;
+import connect.activity.home.adapter.ConversationAdapter;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ConnectStateView;
@@ -38,11 +38,11 @@ public class ConversationFragment extends BaseFragment {
     @Bind(R.id.connectstate)
     ConnectStateView connectStateView;
 
-    private String Tag = "ConversationFragment";
+    private String Tag = "_ConversationFragment";
     private Activity activity;
     private View view;
 
-    private ChatListAdapter chatFragmentAdapter;
+    private ConversationAdapter chatFragmentAdapter;
 
     @Nullable
     @Override
@@ -81,22 +81,11 @@ public class ConversationFragment extends BaseFragment {
             protected void onPostExecute(List<RoomAttrBean> entities) {
                 super.onPostExecute(entities);
                 chatFragmentAdapter.setData(entities);
-                reCountUnread();
+
+                int unreadCount = ConversionHelper.getInstance().countUnReads();
+                ((HomeActivity) activity).setFragmentDot(0, unreadCount);
             }
         }.execute();
-    }
-
-    /**
-     * The calculation of article unread messages Open when the message don't disturb,
-     * main interface did not read the article number is 0
-     */
-    protected void reCountUnread() {
-        List<RoomAttrBean> entities = chatFragmentAdapter.getRoomAttrBeanList();
-        int unread = 0;
-        for (RoomAttrBean attr : entities) {
-            unread += attr.getDisturb() == 1 ? 0 : attr.getUnread();
-        }
-        ((HomeActivity) activity).setFragmentDot(0, unread);
     }
 
     /**
@@ -112,7 +101,7 @@ public class ConversationFragment extends BaseFragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerFragmentChat.setLayoutManager(linearLayoutManager);
-        chatFragmentAdapter = new ChatListAdapter(activity, recyclerFragmentChat);
+        chatFragmentAdapter = new ConversationAdapter(activity, recyclerFragmentChat);
         recyclerFragmentChat.setAdapter(chatFragmentAdapter);
         recyclerFragmentChat.addItemDecoration(new LineDecoration(activity));
         recyclerFragmentChat.addOnScrollListener(new RecyclerView.OnScrollListener() {
