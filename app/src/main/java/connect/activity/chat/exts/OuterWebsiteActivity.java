@@ -109,13 +109,13 @@ public class OuterWebsiteActivity extends BaseActivity {
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setRightImg(R.mipmap.wallet_share_payment2x);
-        toolbarTop.setLeftListence(new View.OnClickListener() {
+        toolbarTop.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        toolbarTop.setRightListence(new View.OnClickListener() {
+        toolbarTop.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final ArrayList<String> listArr = new ArrayList();

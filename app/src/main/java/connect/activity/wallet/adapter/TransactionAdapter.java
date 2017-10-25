@@ -18,9 +18,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2016/12/14.
- */
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
 
     private Activity activity;

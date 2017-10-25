@@ -1,4 +1,4 @@
-package connect.widget.payment;
+package connect.activity.wallet.view;
 
 import android.widget.BaseAdapter;
 import android.content.Context;

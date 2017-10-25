@@ -51,14 +51,23 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Link_Group));
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
             }
         });
         toolbar.setRightText(R.string.Chat_Complete);
-        toolbar.setRightTextColor(R.color.color_68656f);
+        toolbar.setRightTextEnable(false);
+        toolbar.setRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String groupName = edittxt1.getText().toString();
+                if (groupName.length() >= 4) {
+                    presenter.updateGroupName(groupName);
+                }
+            }
+        });
 
         groupKey = getIntent().getStringExtra(GROUP_KEY);
         edittxt1.addTextChangedListener(new TextWatcher() {
@@ -75,19 +84,9 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
-                    toolbar.setRightTextColor(R.color.color_68656f);
-                    toolbar.setRightListence(null);
+                    toolbar.setRightTextEnable(false);
                 } else {
-                    toolbar.setRightTextColor(R.color.color_green);
-                    toolbar.setRightListence(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String groupName = edittxt1.getText().toString();
-                            if (groupName.length() >= 4) {
-                                presenter.updateGroupName(groupName);
-                            }
-                        }
-                    });
+                    toolbar.setRightTextEnable(true);
                 }
             }
         });

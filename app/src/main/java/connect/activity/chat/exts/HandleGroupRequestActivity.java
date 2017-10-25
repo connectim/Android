@@ -93,7 +93,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getString(R.string.Wallet_Detail));
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);

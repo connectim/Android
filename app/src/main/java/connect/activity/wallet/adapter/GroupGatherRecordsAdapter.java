@@ -18,9 +18,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import protos.Connect;
 
-/**
- * Created by pujin on 2017/2/14.
- */
 public class GroupGatherRecordsAdapter extends RecyclerView.Adapter<GroupGatherRecordsAdapter.ViewHolder> {
 
     private Activity activity;

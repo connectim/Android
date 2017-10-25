@@ -29,7 +29,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
 import protos.Connect;
@@ -90,7 +90,7 @@ public class GatherActivity extends BaseActivity {
         activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
@@ -104,9 +104,9 @@ public class GatherActivity extends BaseActivity {
             toolbar.setTitle(getResources().getString(R.string.Wallet_Receipt));
         } else {
             toolbar.setTitle(getResources().getString(R.string.Chat_Crowd_funding));
-            toolbar.setRightTextColor(R.color.color_green);
+            toolbar.setRightTextEnable(true);
             toolbar.setRightText(getString(R.string.Chat_Crowdfoundind_History));
-            toolbar.setRightListence(new View.OnClickListener() {
+            toolbar.setRightListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     GroupCrowdingRecordsActivity.startActivity(activity);
@@ -118,8 +118,7 @@ public class GatherActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView(activity);
-        transferEditView.setVisibilityAmount(View.GONE);
+        transferEditView.setVisibilityBalance(View.GONE);
         transferEditView.setFeeVisibility(View.GONE);
         transferEditView.setEditListener(new TransferEditView.OnEditListener() {
             @Override
@@ -162,7 +161,7 @@ public class GatherActivity extends BaseActivity {
         } else if (gatherType == 1) {
             layoutFirst.setVisibility(View.GONE);
             layoutSecond.setVisibility(View.VISIBLE);
-            transferEditView.setAmountTvGone();
+            transferEditView.setVisibilityBalance(View.GONE);
 
             int countMem = ContactHelper.getInstance().loadGroupMemEntities(gatherKey).size();
             edit.setText(String.valueOf(countMem-1));
@@ -204,7 +203,7 @@ public class GatherActivity extends BaseActivity {
      * A single payment
      */
     protected void requestSingleGather() {
-        CurrencyEnum currencyEnum = transferEditView.getCurrencyEnum();
+        CurrencyEnum currencyEnum = transferEditView.getCurrencyType();
         final long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
         String senderAddress = friendEntity.getPub_key();
         String tips = transferEditView.getNote();
@@ -235,7 +234,7 @@ public class GatherActivity extends BaseActivity {
         long totalAmount = amount * member;
         String tips = transferEditView.getNote();
 
-        TransferManager transferManager = new TransferManager(activity, transferEditView.getCurrencyEnum());
+        TransferManager transferManager = new TransferManager(activity, transferEditView.getCurrencyType());
         transferManager.crowdFuning(gatherKey, totalAmount, member, tips, new WalletListener<Connect.Crowdfunding>() {
 
             @Override

@@ -66,12 +66,29 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Chat_Choose_contact));
         toolbar.setRightText(R.string.Chat_Complete);
-        toolbar.setRightTextColor(R.color.color_6d6e75);
+        toolbar.setRightTextEnable(false);
 
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
+            }
+        });
+        toolbar.setRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<ContactEntity> selectEntities = adapter.getSelectEntities();
+                if (selectEntities == null || selectEntities.size() < 1) {
+                    toolbar.setRightTextEnable(false);
+                    return;
+                }
+
+                presenter.requestGroupMemberInvite(selectEntities);
+
+                toolbar.setRightTextEnable(false);
+                Message message = new Message();
+                message.what = 100;
+                handler.sendMessageDelayed(message, 3000);
             }
         });
 
@@ -113,27 +130,9 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
             @Override
             public void seleFriend(List<ContactEntity> list) {
                 if (list == null || list.size() < 1) {
-                    toolbar.setRightTextColor(R.color.color_6d6e75);
-                    toolbar.setRightListence(null);
+                    toolbar.setRightTextEnable(false);
                 } else {
-                    toolbar.setRightTextColor(R.color.color_green);
-                    toolbar.setRightListence(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ArrayList<ContactEntity> selectEntities = adapter.getSelectEntities();
-                            if (selectEntities == null || selectEntities.size() < 1) {
-                                toolbar.setRightTextColor(R.color.color_6d6e75);
-                                return;
-                            }
-
-                            presenter.requestGroupMemberInvite(selectEntities);
-
-                            toolbar.setRightClickable(false);
-                            Message message = new Message();
-                            message.what = 100;
-                            handler.sendMessageDelayed(message, 3000);
-                        }
-                    });
+                    toolbar.setRightTextEnable(true);
                 }
             }
         });
@@ -155,7 +154,7 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
             super.handleMessage(msg);
             switch (msg.what) {
                 case 100:
-                    toolbar.setRightClickable(true);
+                    toolbar.setRightTextEnable(true);
                     break;
             }
         }

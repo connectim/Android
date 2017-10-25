@@ -46,7 +46,7 @@ public class GroupManageActivity extends BaseActivity implements GroupManagerCon
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Link_ManageGroup));
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);

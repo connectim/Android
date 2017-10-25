@@ -1,7 +1,6 @@
 package connect.activity.chat.exts;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,9 +25,8 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.RegularUtil;
 import connect.utils.glide.GlideUtil;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 import connect.widget.TopToolBar;
-import connect.widget.random.RandomVoiceActivity;
 
 /**
  * send lucky packet
@@ -85,14 +83,14 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
         toolbar.setRedStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Wallet_Packet));
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
             }
         });
         toolbar.setRightText(getString(R.string.Chat_History));
-        toolbar.setRightListence(new View.OnClickListener() {
+        toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PacketHistoryActivity.startActivity(activity);
@@ -118,7 +116,6 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView(activity);
         transferEditView.setNote(getString(R.string.Wallet_Best_wishes));
         transferEditView.setEditListener(new TransferEditView.OnEditListener() {
             @Override

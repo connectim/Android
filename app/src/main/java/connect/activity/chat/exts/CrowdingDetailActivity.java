@@ -100,7 +100,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Chat_Crowdfunding));
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);

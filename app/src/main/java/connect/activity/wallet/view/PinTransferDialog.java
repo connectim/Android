@@ -1,4 +1,4 @@
-package connect.widget.payment;
+package connect.activity.wallet.view;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -157,7 +157,7 @@ public class PinTransferDialog implements View.OnClickListener{
         payEdit = (PayEditView) view.findViewById(R.id.pay_edit);
         statusTv = (TextView)view.findViewById(R.id.status_tv);
         keyboardView = (VirtualKeyboardView) view.findViewById(R.id.virtualKeyboardView);
-        keyboardView.setAddNumberListence(new VirtualKeyboardView.AddNumberListence() {
+        keyboardView.setAddNumberListener(new VirtualKeyboardView.AddNumberListener() {
             @Override
             public void changeText(String value) {
                 payEdit.setEditText(value);

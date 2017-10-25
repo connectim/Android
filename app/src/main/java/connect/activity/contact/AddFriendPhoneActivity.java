@@ -62,7 +62,6 @@ public class AddFriendPhoneActivity extends BaseActivity implements AddFriendPho
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Contacts);
         toolbar.setRightText(R.string.Link_Invite);
-        toolbar.setRightTextColor(R.color.color_00c400);
         toolbar.setRightTextEnable(false);
         new AddFriendPhonePresenter(this).start();
 

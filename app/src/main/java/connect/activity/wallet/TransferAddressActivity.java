@@ -30,10 +30,9 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import instant.utils.cryption.SupportKeyUril;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.random.RandomVoiceActivity;
 
 /**
  * Transfer to BTC address
@@ -74,17 +73,6 @@ public class TransferAddressActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Bundle bundle = getIntent().getExtras();
-        if(bundle.containsKey("amount")){
-            transferEditView.initView(bundle.getDouble("amount"), mActivity);
-        }else{
-            transferEditView.initView(mActivity);
-        }
-    }
-
-    @Override
     public void initView() {
         mActivity = this;
         toolbarTop.setBlackStyle();
@@ -97,6 +85,9 @@ public class TransferAddressActivity extends BaseActivity {
         addressTv.addTextChangedListener(textWatcher);
         transferEditView.setEditListener(onEditListener);
         transferManager = new TransferManager(mActivity, CurrencyEnum.BTC);
+        if(bundle.containsKey("amount")){
+            transferEditView.setInputAmount(bundle.getDouble("amount"));
+        }
     }
 
     @OnClick(R.id.left_img)

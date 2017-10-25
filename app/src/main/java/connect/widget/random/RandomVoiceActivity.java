@@ -61,7 +61,6 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
 
         myProgressBar.setLineWidth(4);
         startImg.setEnabled(false);
-
         new RandomVoicePresenter(this).start();
     }
 
@@ -88,12 +87,18 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,presenter.getPermissionCallBack());
+    }
+
+    @Override
     public Activity getActivity() {
         return mActivity;
     }
 
     @Override
-    public void denyPression() {
+    public void denyPermission() {
         jumpTv.setVisibility(View.VISIBLE);
     }
 
@@ -123,17 +128,17 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
     }
 
     @Override
-    public void denyPressionDialog() {
+    public void denyPermissionDialog() {
         jumpTv.setVisibility(View.VISIBLE);
         DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
                 getString(R.string.Link_Unable_to_get_the_voice_data),
-                "", "", true, new DialogUtil.OnItemClickListener() {
+                "", "", true, false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {}
 
                     @Override
                     public void cancel() {}
-                }, false);
+                });
     }
 
     @Override
@@ -155,12 +160,6 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
     @Override
     public void setProgressBar(float value) {
         myProgressBar.setEndAngle(value);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,presenter.getPermissomCallBack());
     }
 
     @Override

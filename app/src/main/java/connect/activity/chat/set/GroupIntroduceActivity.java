@@ -52,11 +52,18 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Link_Group_Introduction));
         toolbar.setRightText(R.string.Set_Save);
-        toolbar.setRightTextColor(R.color.color_68656f);
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setRightTextEnable(false);
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
+            }
+        });
+        toolbar.setRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String introduce = edit.getText().toString();
+                presenter.requestUpdateGroupSummary(introduce);
             }
         });
 
@@ -75,17 +82,9 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
-                    toolbar.setRightTextColor(R.color.color_68656f);
-                    toolbar.setRightListence(null);
+                    toolbar.setRightTextEnable(false);
                 } else {
-                    toolbar.setRightTextColor(R.color.color_green);
-                    toolbar.setRightListence(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String introduce = edit.getText().toString();
-                            presenter.requestUpdateGroupSummary(introduce);
-                        }
-                    });
+                    toolbar.setRightTextEnable(true);
                 }
             }
         });

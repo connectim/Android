@@ -54,7 +54,7 @@ public class PatterVerifyActivity extends BaseActivity {
     @Override
     public void initView() {
         mActivity = this;
-        toolbarTop.setTitleImg(R.mipmap.logo_black_middle);
+        toolbarTop.setTitle(R.mipmap.logo_black_middle, null);
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         idGestureLockViewGroup.setAnswer(userBean.getPatterStr());

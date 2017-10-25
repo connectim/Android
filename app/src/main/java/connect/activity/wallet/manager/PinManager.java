@@ -1,8 +1,13 @@
 package connect.activity.wallet.manager;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import com.wallet.NativeWallet;
 import com.wallet.currency.BaseCurrency;
@@ -11,6 +16,8 @@ import com.wallet.inter.WalletListener;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
 import connect.utils.ToastUtil;
+import connect.utils.system.SystemUtil;
+import connect.activity.wallet.view.PayEditView;
 
 /**
  * Pay the password management class
@@ -47,7 +54,7 @@ public class PinManager {
         } else {
             title = R.string.Wallet_Confirm_PIN;
         }
-        DialogUtil.showPayEditView(mActivity, title, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
+        showPayEditView(mActivity, title, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(String value) {
                 if (TextUtils.isEmpty(payPass)) {
@@ -75,7 +82,7 @@ public class PinManager {
      * @param listener
      */
     public void checkPwd(Activity activity, final String payload, final WalletListener listener) {
-        DialogUtil.showPayEditView(activity, R.string.Wallet_Enter_your_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
+        showPayEditView(activity, R.string.Wallet_Enter_your_PIN, R.string.Wallet_Enter_4_Digits, new DialogUtil.OnItemClickListener() {
             @Override
             public void confirm(final String value) {
                 new AsyncTask<Void,Void,PinBean>() {
@@ -107,6 +114,38 @@ public class PinManager {
             @Override
             public void cancel() {}
         });
+    }
+
+    public Dialog showPayEditView(Context mContext, Integer title, Integer message, final DialogUtil.OnItemClickListener onItemClickListener) {
+        final Dialog dialog = new Dialog(mContext, R.style.Dialog);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.dialog_paypass, null);
+        TextView titleTv = (TextView) view.findViewById(R.id.title_tv);
+        TextView messageTv = (TextView) view.findViewById(R.id.message_tv);
+        final PayEditView payEditView = (PayEditView) view.findViewById(R.id.payEditView);
+
+        titleTv.setText(title);
+        if (message != null) {
+            messageTv.setText(message);
+            messageTv.setVisibility(View.VISIBLE);
+        }
+        payEditView.editText.setFocusableInTouchMode(true);
+        payEditView.editText.requestFocus();
+        SystemUtil.showKeyBoard(mContext,payEditView.editText);
+        payEditView.setInputCompleteListener(new PayEditView.InputCompleteListener() {
+            @Override
+            public void inputComplete(String pass) {
+                onItemClickListener.confirm(pass);
+                dialog.dismiss();
+            }
+        });
+
+        view.setMinimumWidth(SystemUtil.dipToPx(250));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(view);
+        dialog.show();
+
+        return dialog;
     }
 
 }

@@ -17,9 +17,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-/**
- * Created by Administrator on 2016/12/10.
- */
 public class WalletMenuAdapter extends RecyclerView.Adapter<WalletMenuAdapter.WalletMenuItem> {
 
     private ArrayList<WalletMenuBean> mDates;

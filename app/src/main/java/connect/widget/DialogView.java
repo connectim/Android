@@ -27,19 +27,9 @@ import connect.utils.system.SystemDataUtil;
 
 /**
  * Recent pictures
- * Created by john on 2016/11/21.
  */
 
 public class DialogView {
-
-    /**
-     * List entry click callback
-     */
-    public interface OnItemClick{
-
-        void onClick(int position,Object countryCode);
-
-    }
 
     public Dialog showPhotoPick(final Context context){
         final Dialog dialog = new Dialog(context, R.style.Dialog);
@@ -51,9 +41,9 @@ public class DialogView {
         TextView cancel = (TextView)view.findViewById(R.id.cancel);
         final PickHorScrollView horScrollView= (PickHorScrollView) view.findViewById(R.id.scrollview);
 
-        List<String> imgs = recentImgs();
+        List<String> images = recentImages();
 
-        horScrollView.setPickAdapter(new PickHoriScrollAdapter(context,imgs));
+        horScrollView.setPickAdapter(new PickHoriScrollAdapter(context,images));
         horScrollView.setItemClickListener(new PickHorScrollView.OnItemClickListener() {
             @Override
             public void itemOnClick(List<String> paths) {
@@ -95,7 +85,7 @@ public class DialogView {
         return dialog;
     }
 
-    public List<String> recentImgs() {
+    public List<String> recentImages() {
         List<String> recentImgs = new ArrayList<>();
         Context context = BaseApplication.getInstance().getBaseContext();
         String sdcardPath = Environment.getExternalStorageDirectory().toString();

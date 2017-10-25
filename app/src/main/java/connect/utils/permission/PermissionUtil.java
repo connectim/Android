@@ -243,7 +243,7 @@ public class PermissionUtil {
                 break;
         }
         DialogUtil.showAlertTextView(activity, activity.getString(R.string.Set_tip_title), message,
-                "", activity.getString(R.string.Set_Setting), false, new DialogUtil.OnItemClickListener() {
+                "", activity.getString(R.string.Set_Setting), false, false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         startSystemSettings(activity);
@@ -253,7 +253,7 @@ public class PermissionUtil {
                     public void cancel() {
 
                     }
-                }, false);
+                });
     }
 
     /**

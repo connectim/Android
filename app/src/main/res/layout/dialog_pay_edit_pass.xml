@@ -57,7 +57,7 @@
             android:padding="5dp"
             android:visibility="gone"/>
 
-        <connect.widget.payment.PayEditView
+        <connect.activity.wallet.view.PayEditView
             android:id="@+id/pay_edit"
             android:layout_width="@dimen/dp_250"
             android:layout_height="@dimen/dp_30"
@@ -82,7 +82,7 @@
             android:text=""/>
     </RelativeLayout>
 
-    <connect.widget.payment.VirtualKeyboardView
+    <connect.activity.wallet.view.VirtualKeyboardView
         android:id="@+id/virtualKeyboardView"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"

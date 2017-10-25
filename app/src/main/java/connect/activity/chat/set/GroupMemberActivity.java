@@ -65,14 +65,13 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setRightText(R.string.Link_Invite);
-        toolbarTop.setRightTextColor(R.color.color_white);
-        toolbarTop.setLeftListence(new View.OnClickListener() {
+        toolbarTop.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
             }
         });
-        toolbarTop.setRightListence(new View.OnClickListener() {
+        toolbarTop.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GroupInviteActivity.startActivity(activity, groupKey);

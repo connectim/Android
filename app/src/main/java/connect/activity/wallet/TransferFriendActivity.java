@@ -34,10 +34,9 @@ import connect.activity.wallet.contract.TransferFriendContract;
 import connect.activity.wallet.presenter.TransferFriendPresenter;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.random.RandomVoiceActivity;
 
 /**
  * Transfer to friend
@@ -78,12 +77,6 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         setContentView(R.layout.activity_wallet_transfer_friend);
         ButterKnife.bind(this);
         initView();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        transferEditView.initView(mActivity);
     }
 
     @Override

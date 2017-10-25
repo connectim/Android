@@ -1,4 +1,4 @@
-package connect.activity.wallet.manager;
+package connect.activity.wallet.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,6 +27,7 @@ import java.lang.reflect.Type;
 import connect.activity.base.BaseApplication;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.RateBean;
+import connect.activity.wallet.manager.WalletManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
@@ -51,7 +52,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     /** Input box currency symbol */
     TextView editSymbolTv;
     /** Currency input box */
-    EditText amoutInputEt;
+    EditText amountInputEt;
     /** Handling fee (external) */
     TextView feeTv;
     /** note */
@@ -59,32 +60,24 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     /** Converted currency */
     TextView transferTv;
     /** Account balance */
-    TextView amountTv;
+    TextView balanceTv;
+    LinearLayout feeLin;
 
     private Context context;
     /** Edit default BTC */
     private RateBean btcBean;
     /** Currency external introduction of bitcoin corresponding transformation */
     private RateBean otherRate;
-    /** Default input box 10000 */
-    private long editDefault = 10000;
+    private PaySetBean paySetBean;
     private InputFilter[] btcInputFilters = {new EditInputFilterPrice(Double.valueOf(999),8)};
     private InputFilter[] otherInputFilters = {new EditInputFilterPrice(Double.valueOf(999999999),2)};
-    /** EditView is currently BTC*/
-    private boolean isEditBTC = true;
+    /** Default input box 10000 */
+    private long editDefault = 10000;
     /** The current number of COINS */
-    private String currentBtc = "";
     private OnEditListener onEditListener;
-    /**
-     * Click on the swap button
-     * increase the judge to change the shield TextWatcher
-     * to solve the problem of different exchange rate calculation precision caused by the click exchange
-     */
-    private boolean isClickTransfer;
-    private String note = "";
-    private PaySetBean paySetBean;
     private CurrencyEnum currencyEnum = CurrencyEnum.BTC;
-    private Activity mActivity;
+    private String currentBtc = "";
+    private String note = "";
 
     public TransferEditView(Context context) {
         this(context, null);
@@ -96,97 +89,65 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
     public TransferEditView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initFind(context);
-    }
-
-    private void initFind(Context context) {
         this.context = context;
         View view = View.inflate(context, R.layout.item_transfer_edit, this);
         editTitleTv = (TextView)view.findViewById(R.id.edit_title_tv);
         editSymbolTv = (TextView)view.findViewById(R.id.edit_symbol_tv);
-        amoutInputEt = (EditText)view.findViewById(R.id.amoutinput_et);
-        amountTv = (TextView)view.findViewById(R.id.amount_tv);
+        amountInputEt = (EditText)view.findViewById(R.id.amoutinput_et);
+        balanceTv = (TextView)view.findViewById(R.id.balance_tv);
+        feeLin = (LinearLayout)view.findViewById(R.id.fee_lin);
         feeTv = (TextView)view.findViewById(R.id.fee_tv);
         feeTv.setOnClickListener(this);
         addNote = (TextView)view.findViewById(R.id.add_note);
         addNote.setOnClickListener(this);
         transferTv = (TextView)view.findViewById(R.id.transfer_tv);
         transferTv.setOnClickListener(this);
+        initView();
+    }
 
+    public void initView(){
+        btcBean = RateDataUtil.getInstance().getRateBTC();
+        otherRate = ParamManager.getInstance().getCountryRate();
+        paySetBean = ParamManager.getInstance().getPaySet();
+
+        editTitleTv.setText(context.getString(R.string.Wallet_Amount_BTC));
+        editSymbolTv.setText(btcBean.getSymbol());
+        amountInputEt.addTextChangedListener(textWatcher);
+        amountInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
+        amountInputEt.setFilters(btcInputFilters);
         // Shielding EditText paste function
-        amoutInputEt.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {}
-        });
-        amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                RateFormatUtil.longToDoubleBtc(0L)));
+        amountInputEt.setCustomSelectionActionModeCallback(amountInputCallback);
+        amountInputEt.setTag(1);
+        if (paySetBean != null && paySetBean.isAutoFee()) {
+            feeTv.setText(R.string.Wallet_Auto_Calculate_Miner_Fee);
+        } else if(paySetBean != null) {
+            feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
+        }
+
+        showBalance();
         WalletManager.getInstance().syncWallet(new WalletListener<Integer>() {
             @Override
             public void success(Integer status) {
-                switch (status){
-                    case 0:
-                        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
-                        if (currencyEntity != null) {
-                            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                    RateFormatUtil.longToDoubleBtc(currencyEntity.getAmount())));
-                        } else {
-                            amountTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
-                                    RateFormatUtil.longToDoubleBtc(0L)));
-                        }
-                        break;
-                    default:
-                        break;
+                if(status == 0){
+                    showBalance();
                 }
             }
 
             @Override
             public void fail(WalletError error) {}
         });
-    }
-
-    /**
-     * Initialize the View must be called again
-     */
-    public void initView(Activity mActivity){
-        initView(null,mActivity);
-    }
-
-    public void initView(Double amount,Activity mActivity){
-        this.mActivity = mActivity;
-
-        if (amount != null) {
-            editDefault = RateFormatUtil.doubleToLongBtc(amount);
-        }
-        btcBean = RateDataUtil.getInstance().getRateBTC();
-        otherRate = ParamManager.getInstance().getCountryRate();
-        paySetBean = ParamManager.getInstance().getPaySet();
-
-        if (paySetBean == null) {
-            return;
-        }
-        editTitleTv.setText(context.getString(R.string.Wallet_Amount_BTC));
-        editSymbolTv.setText(btcBean.getSymbol());
-        amoutInputEt.addTextChangedListener(textWatcher);
-        amoutInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
-        amoutInputEt.setFilters(btcInputFilters);
-        if (paySetBean.isAutoFee()) {
-            feeTv.setText(R.string.Wallet_Auto_Calculate_Miner_Fee);
-        } else {
-            feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
-        }
         requestRate();
+    }
+
+    private void showBalance(){
+        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
+        if (currencyEntity != null) {
+            balanceTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                    RateFormatUtil.longToDoubleBtc(currencyEntity.getAmount())));
+        } else {
+            balanceTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
+                    RateFormatUtil.longToDoubleBtc(0L)));
+        }
     }
 
     @Override
@@ -196,7 +157,20 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                 if(otherRate == null || paySetBean == null){
                     return;
                 }
-                isClickTransfer = true;
+                if ((Integer)amountInputEt.getTag() == 1) {
+                    amountInputEt.setTag(2);
+                    amountInputEt.setFilters(otherInputFilters);
+                    amountInputEt.setText(transferTv.getText().toString().replaceAll("[^\\d.]*", ""));
+                    editSymbolTv.setText(otherRate.getSymbol());
+                    editTitleTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Amount_Symbol,otherRate.getCode()));
+                } else {
+                    amountInputEt.setTag(1);
+                    amountInputEt.setFilters(btcInputFilters);
+                    amountInputEt.setText(transferTv.getText().toString());
+                    editSymbolTv.setText(R.string.Set_BTC_symbol);
+                    editTitleTv.setText(R.string.Wallet_Amount_BTC);
+                }
+                /*isClickTransfer = true;
                 if(isEditBTC){
                     isEditBTC = false;
                     editSymbolTv.setText(otherRate.getSymbol());
@@ -213,7 +187,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                     transferTv.setText(otherRate.getSymbol() + " " + amoutInputEt.getText().toString());
                     amoutInputEt.setText(currentBtc);
                     editTitleTv.setText(R.string.Wallet_Amount_BTC);
-                }
+                }*/
                 break;
             case R.id.add_note:
                 DialogUtil.showEditView(context, context.getResources().getString(R.string.Wallet_Add_note),
@@ -228,12 +202,31 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                 });
                 break;
             case R.id.fee_tv:
-                onEditListener.setFee();
+                if(onEditListener != null){
+                    onEditListener.setFee();
+                }
                 break;
             default:
                 break;
         }
     }
+
+    ActionMode.Callback amountInputCallback = new ActionMode.Callback(){
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            return false;
+        }
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {}
+    };
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -244,6 +237,35 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
         @Override
         public void afterTextChanged(Editable s) {
+            if(!(RegularUtil.matches(s.toString(), RegularUtil.VERIFICATION_AMOUT)) ||
+                    RegularUtil.matches(s.toString(), RegularUtil.ALL_NUMBER) ||
+                    otherRate == null ||
+                    otherRate.getRate() == null){
+                return;
+            }
+
+            currentBtc = TextUtils.isEmpty(s.toString()) ? "0" : s.toString();
+            if((Integer)amountInputEt.getTag() == 1){
+                transferTv.setText(otherRate.getSymbol() + " " +
+                        RateFormatUtil.foematNumber(RateFormatUtil.PATTERN_OTHER, Double.valueOf(currentBtc) * otherRate.getRate()));
+            }else{
+                currentBtc = RateFormatUtil.foematNumber(RateFormatUtil.PATTERN_BTC, Double.valueOf(currentBtc) / otherRate.getRate());
+                transferTv.setText(context.getResources().getString(R.string.Set_BTC_symbol) + " " + currentBtc);
+            }
+            if(onEditListener != null){
+                onEditListener.onEdit(s.toString());
+            }
+
+            /*if (isEditBTC) {
+                currentBtc = s.toString();
+            } else {
+                if (TextUtils.isEmpty(s) || otherRate == null || otherRate.getRate() == null) {
+                    currentBtc = "";
+                } else {
+                    currentBtc = RateFormatUtil.foematNumber(RateFormatUtil.PATTERN_BTC, Double.valueOf(s.toString()) / otherRate.getRate());
+                }
+            }
+
             //If it is caused by the change of Transfer direct return
             if(isClickTransfer){
                 isClickTransfer = false;
@@ -290,7 +312,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
             if(onEditListener != null){
                 onEditListener.onEdit(s.toString());
-            }
+            }*/
         }
     };
 
@@ -304,7 +326,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         HttpRequest.getInstance().get(otherRate.getUrl(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                amoutInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
+                amountInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
             }
 
             @Override
@@ -312,17 +334,17 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
                 String tempResponse =  response.body().string();
                 Type type = new TypeToken<RateBean>() {}.getType();
                 RateBean rateBean = new Gson().fromJson(tempResponse, type);
-                amoutInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
+                amountInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
                 otherRate.setRate(rateBean.getRate());
                 ParamManager.getInstance().putCountryRate(otherRate);
             }
         });
     }
 
-    /**
-     * Gets the current input bitcoin
-     * @return
-     */
+    public void setInputAmount(Double amount){
+        amountInputEt.setText(amount + "");
+    }
+
     public String getCurrentBtc(){
         return currentBtc;
     }
@@ -333,18 +355,11 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     }
 
     /**
-     * available balance
-     * @return
+     * Whether the available balance is visible
+     * @param visibility
      */
-    /*public Long getAvaAmount(){
-        return null == accountBean.getAvaAmount() ? 0 : accountBean.getAvaAmount();
-    }*/
-
-    /**
-     * Hide it when you don't need to display the available amount
-     */
-    public void setAmountTvGone(){
-        amountTv.setVisibility(View.GONE);
+    public void setVisibilityBalance(int visibility){
+        balanceTv.setVisibility(visibility);
     }
 
     /**
@@ -372,29 +387,19 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     }
 
     /**
-     * Whether the available balance is visible
-     * @param visibility
-     */
-    public void setVisibilityAmount(int visibility){
-        amountTv.setVisibility(visibility);
-    }
-
-    /**
      * Set fee display
      * @param visibility
      */
     public void setFeeVisibility(int visibility){
-        findViewById(R.id.linearlayout).setVisibility(visibility);
+        feeLin.setVisibility(visibility);
     }
 
-    public CurrencyEnum getCurrencyEnum() {
-        if (currencyEnum == null) {
-            currencyEnum = CurrencyEnum.BTC;
-        }
+    public CurrencyEnum getCurrencyType() {
         return currencyEnum;
     }
 
     public interface OnEditListener {
+
         void onEdit(String value);
 
         void setFee();

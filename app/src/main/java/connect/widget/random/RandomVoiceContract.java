@@ -11,9 +11,9 @@ public interface RandomVoiceContract {
     interface View extends BaseView<RandomVoiceContract.Presenter> {
         Activity getActivity();
 
-        void denyPression();
+        void denyPermission();
 
-        void denyPressionDialog();
+        void denyPermissionDialog();
 
         void changeViewStatus(int status);
 
@@ -25,7 +25,7 @@ public interface RandomVoiceContract {
     interface Presenter extends BasePresenter {
         void finishSuccess(String random);
 
-        PermissionUtil.ResultCallBack getPermissomCallBack();
+        PermissionUtil.ResultCallBack getPermissionCallBack();
 
         void releaseResource();
     }

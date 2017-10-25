@@ -66,7 +66,7 @@ public class CheckUpdata {
         Dialog dialogUpdata = DialogUtil.showAlertTextView(activity,
                 activity.getResources().getString(R.string.Set_Found_new_version), versionResponse.getRemark(),
                 "", activity.getResources().getString(R.string.Set_Now_update_app),
-                isCancle, new DialogUtil.OnItemClickListener() {
+                isCancle, false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         if (!TextUtils.isEmpty(versionResponse.getUpgradeUrl())) {
@@ -79,7 +79,7 @@ public class CheckUpdata {
                     public void cancel() {
 
                     }
-                }, false);
+                });
 
         if (isCancle) {
             dialogUpdata.setCancelable(false);

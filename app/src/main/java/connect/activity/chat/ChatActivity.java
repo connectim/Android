@@ -100,13 +100,13 @@ public class ChatActivity extends BaseChatActvity {
         activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
             }
         });
-        toolbar.setRightListence(new View.OnClickListener() {
+        toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (talker.getTalkType()) {
@@ -235,7 +235,8 @@ public class ChatActivity extends BaseChatActvity {
             }
             indexName.append(name.charAt(name.length() - 1));
             if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
-                toolbar.setTitle(R.mipmap.message_privacy_grey2x, indexName.toString());
+                toolbar.setTitle(R.mipmap.message_privacy_grey2x, null);
+                toolbar.setTitle(indexName.toString());
             } else {
                 List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
                 toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));

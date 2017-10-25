@@ -71,13 +71,13 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Link_Group_is_QR_Code));
         toolbar.setRightImg(R.mipmap.menu_white);
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
             }
         });
-        toolbar.setRightListence(new View.OnClickListener() {
+        toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey,

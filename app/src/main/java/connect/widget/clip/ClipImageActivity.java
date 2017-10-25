@@ -82,13 +82,13 @@ public class ClipImageActivity extends BaseActivity {
         }else{
             DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title),
                     getString(R.string.Chat_Album_Permission_Get),
-                    "", "", true, new DialogUtil.OnItemClickListener() {
+                    "", "", true, false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {}
 
                         @Override
                         public void cancel() {}
-                    }, false);
+                    });
         }
     }
 

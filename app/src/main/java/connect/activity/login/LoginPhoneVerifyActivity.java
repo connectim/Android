@@ -73,7 +73,7 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements LoginPhone
     public void initView() {
         mActivity = this;
         toolbarTop.setLeftImg(R.mipmap.back_black);
-        toolbarTop.setTitleImg(R.mipmap.logo_black_middle);
+        toolbarTop.setTitle(R.mipmap.logo_black_middle, null);
 
         Bundle bundle = getIntent().getExtras();
         String phone = bundle.getString("phone");

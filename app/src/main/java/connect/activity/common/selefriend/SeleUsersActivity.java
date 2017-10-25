@@ -81,7 +81,6 @@ public class SeleUsersActivity extends BaseActivity {
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setRightText(R.string.Wallet_Transfer);
-        toolbarTop.setRightTextColor(R.color.color_00c400);
         toolbarTop.setRightTextEnable(false);
 
         Bundle bundle = getIntent().getExtras();
@@ -96,7 +95,7 @@ public class SeleUsersActivity extends BaseActivity {
             txt1.setVisibility(View.GONE);
             if(seledFriend != null && seledFriend.size() > 0){
                 toolbarTop.setRightText(getString(R.string.Wallet_transfer_man, seledFriend.size()));
-                toolbarTop.setRightTextColor(R.color.color_00c400);
+                toolbarTop.setRightTextEnable(true);
             }
         }else if (source.equals(SOURCE_GROUP)){
             toolbarTop.setTitle(null, R.string.Chat_Choose_Members);
@@ -104,7 +103,7 @@ public class SeleUsersActivity extends BaseActivity {
             txt1.setText(getString(R.string.Chat_Group_Members, friendEntities.size()));
             if(seledFriend != null && seledFriend.size() > 0){
                 toolbarTop.setRightText(getString(R.string.Wallet_transfer_man, seledFriend.size()));
-                toolbarTop.setRightTextColor(R.color.color_00c400);
+                toolbarTop.setRightTextEnable(true);
             }
         }
 
@@ -116,11 +115,9 @@ public class SeleUsersActivity extends BaseActivity {
             public void seleFriend(List<ContactEntity> list) {
                 if (list.size() == 0) {
                     toolbarTop.setRightText(R.string.Wallet_Transfer);
-                    toolbarTop.setRightTextColor(R.color.color_68656f);
                     toolbarTop.setRightTextEnable(false);
                 } else {
                     toolbarTop.setRightText(getString(R.string.Wallet_transfer_man, list.size()));
-                    toolbarTop.setRightTextColor(R.color.color_00c400);
                     toolbarTop.setRightTextEnable(true);
                 }
             }

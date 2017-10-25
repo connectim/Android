@@ -1,4 +1,4 @@
-package connect.widget.payment;
+package connect.activity.wallet.view;
 
 import android.content.Context;
 import android.os.Handler;
@@ -141,17 +141,6 @@ public class PayEditView extends RelativeLayout {
 
     public interface InputCompleteListener {
         void inputComplete(String pass);
-    }
-
-    public EditText getEditText() {
-        return editText;
-    }
-
-    /**
-     * EditView Get focus
-     */
-    public void requestOpenPan() {
-        editText.requestFocus();
     }
 
     public void setEditClosePan() {

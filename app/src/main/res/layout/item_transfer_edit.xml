@@ -54,7 +54,7 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@id/linearlayout"
+            android:id="@+id/fee_lin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -122,7 +122,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/amount_tv"
+        android:id="@+id/balance_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
