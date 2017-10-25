@@ -29,9 +29,6 @@ public class SharedPreferenceUtil {
     public static final String WEB_OPEN_APP = "web_open_app";
     public static final String APP_LANGUAGE_CODE = "app_language_code";
     public static final String USER_INFO = "user_info";
-    public static final String ROOM_TYPE = "ROOM_TYPE";
-    public static final String ROOM_KEY = "ROOM_KEY";
-    public static final String ROOM_ECDH = "ROOM_ECDH";
 
     public SharedPreferenceUtil() {}
 

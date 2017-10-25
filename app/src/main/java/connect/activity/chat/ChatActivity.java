@@ -110,17 +110,17 @@ public class ChatActivity extends BaseChatActvity {
             @Override
             public void onClick(View v) {
                 switch (talker.getTalkType()) {
-                    case 0:
+                    case PRIVATE:
                         SingleSetActivity.startActivity(activity, talker.getTalkKey());
                         break;
-                    case 1:
+                    case GROUPCHAT:
                         GroupSetActivity.startActivity(activity, talker.getTalkKey());
                         break;
                 }
             }
         });
         // robot/stranger donot show setting
-        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.isStranger())) {
+        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
             toolbar.setRightImg(R.mipmap.menu_white);
         }
 

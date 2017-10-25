@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import connect.activity.chat.bean.Talker;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.utils.log.LogManager;
 
@@ -14,6 +15,16 @@ import connect.utils.log.LogManager;
 public class ContactHelperTest {
 
     private String Tag = "_ContactHelperTest";
+
+    @Test
+    public Talker loadTalkerFriend(String uid) {
+        return ContactHelper.getInstance().loadTalkerFriend(uid);
+    }
+
+    @Test
+    public Talker loadTalkerGroup(String identify) {
+        return ContactHelper.getInstance().loadTalkerGroup(identify);
+    }
 
     @Test
     public List<GroupMemberEntity> loadGroupMemEntities(String pukkey) {

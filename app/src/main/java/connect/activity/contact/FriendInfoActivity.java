@@ -41,6 +41,7 @@ import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 import instant.bean.UserOrderBean;
+import protos.Connect;
 
 /**
  * Friends details.
@@ -158,7 +159,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.message_img)
     void goSendMessage(View view) {
-        ChatActivity.startActivity(mActivity, new Talker(friendEntity));
+        ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.PRIVATE,friendEntity.getUid()));
     }
 
     @OnClick(R.id.transfer_imgs)

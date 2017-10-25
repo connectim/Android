@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import connect.activity.chat.bean.RoomSession;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.BaseAction;
+import protos.Connect;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,17 +25,17 @@ public class MorePanel {
 
         List<BaseAction> actionList = new ArrayList<>();
 
-        int roomType = RoomSession.getInstance().getRoomType();
+        Connect.ChatType roomType = RoomSession.getInstance().getRoomType();
         actionList.add(new BaseAction(R.mipmap.chat_bar_picture, R.string.Chat_Photo));
         actionList.add(new BaseAction(R.mipmap.chat_bar_camera, R.string.Chat_Sight));
 
-        if (roomType == 2) {
+        if (roomType == Connect.ChatType.CONNECT_SYSTEM) {
 
         } else {
             actionList.add(new BaseAction(R.mipmap.chat_bar_trasfer, R.string.Wallet_Transfer));
             actionList.add(new BaseAction(R.mipmap.chat_bar_redbag, R.string.Wallet_Packet));
             actionList.add(new BaseAction(R.mipmap.message_send_payment2x, R.string.Wallet_Receipt));
-            if (roomType == 0) {
+            if (roomType == Connect.ChatType.PRIVATE) {
                 actionList.add(new BaseAction(R.mipmap.message_send_privacy_chat3x, R.string.Chat_Read_Burn));
             }
             actionList.add(new BaseAction(R.mipmap.chat_bar_contract, R.string.Chat_Name_Card));

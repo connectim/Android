@@ -146,7 +146,7 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     @Override
     public void groupChat() {
         if (groupEntity != null) {
-            ChatActivity.startActivity(activity, new Talker(groupEntity));
+            ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUPCHAT,groupEntity.getIdentifier()));
         }
     }
 }

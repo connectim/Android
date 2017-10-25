@@ -73,11 +73,11 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
         if (type == 0) {
             ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubKey);
             baseChat = new CFriendChat(acceptFriend);
-            talker = new Talker(acceptFriend);
+            talker = new Talker(Connect.ChatType.PRIVATE,pubKey);
         } else if (type == 1) {
             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubKey);
             baseChat = new CGroupChat(groupEntity);
-            talker = new Talker(groupEntity);
+            talker = new Talker(Connect.ChatType.GROUPCHAT,pubKey);
         }
         ChatMsgEntity msgExtEntity = baseChat.cardMsg(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAvatar());
         baseChat.sendPushMsg(msgExtEntity);

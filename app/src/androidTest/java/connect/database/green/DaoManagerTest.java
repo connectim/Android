@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import connect.activity.base.BaseApplication;
+import connect.database.green.DaoHelper.ContactHelperTest;
+import connect.database.green.DaoHelper.ConversionHelperTest;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
@@ -49,6 +51,8 @@ public class DaoManagerTest {
 
         //Contact
         //ContactHelperTest contactHelperTest = new ContactHelperTest();
+        //contactHelperTest.loadTalkerFriend(null);
+        //contactHelperTest.loadTalkerGroup(null);
         //contactHelperTest.loadGroupMemEntities(null);
         //contactHelperTest.loadGroupMemEntities(null, null);
         //contactHelperTest.updateGroupMember(null,null,null,null,0,null);
@@ -56,6 +60,7 @@ public class DaoManagerTest {
 
         //ConversionHelperTest
         //ConversionHelperTest conversionHelperTest = new ConversionHelperTest();
+        //conversionHelperTest.countUnReads();
         //conversionHelperTest.loadRoomEntities(null);
         //conversionHelperTest.loadRecentRoomEntities();
 

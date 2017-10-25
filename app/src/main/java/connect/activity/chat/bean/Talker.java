@@ -1,50 +1,28 @@
 package connect.activity.chat.bean;
 
-import android.text.TextUtils;
-
 import java.io.Serializable;
 
-import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.GroupEntity;
 import protos.Connect;
 
 /**
  * chat talker
  * Created by pujin on 2017/2/10.
  */
-public class Talker implements Serializable{
+public class Talker implements Serializable {
 
-    private int talkType;
+    private Connect.ChatType talkType;
     private String talkKey;
-    private String talkAvatar;
-    private String talkName;
 
-    private ContactEntity friendEntity;
-    private GroupEntity groupEntity;
+    private String nickName;
+    private String avatar;
+    private boolean isStranger;
 
-    public Talker(ContactEntity entity) {
-        this.friendEntity = entity;
-        this.talkType = Connect.ChatType.PRIVATE_VALUE;
-        this.talkKey = friendEntity.getPub_key();
-        this.talkAvatar = friendEntity.getAvatar();
-        String username = TextUtils.isEmpty(friendEntity.getUsername()) ? friendEntity.getRemark() : friendEntity.getUsername();
-        this.talkName = username;
-    }
-
-    public Talker(GroupEntity entity) {
-        this.groupEntity = entity;
-        this.talkType = Connect.ChatType.GROUPCHAT_VALUE;
-        this.talkKey = groupEntity.getIdentifier();
-        this.talkAvatar = groupEntity.getAvatar();
-        this.talkName = groupEntity.getName();
-    }
-
-    public Talker(int talkType, String talkKey) {
+    public Talker(Connect.ChatType talkType, String talkKey) {
         this.talkType = talkType;
         this.talkKey = talkKey;
     }
 
-    public int getTalkType() {
+    public Connect.ChatType getTalkType() {
         return talkType;
     }
 
@@ -52,27 +30,28 @@ public class Talker implements Serializable{
         return talkKey;
     }
 
-    public String getTalkAvatar() {
-        return talkAvatar;
+
+    public String getNickName() {
+        return nickName;
     }
 
-    public String getTalkName() {
-        return talkName;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
-    public ContactEntity getFriendEntity() {
-        return friendEntity;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setFriendEntity(ContactEntity friendEntity) {
-        this.friendEntity = friendEntity;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
-    public GroupEntity getGroupEntity() {
-        return groupEntity;
+    public boolean isStranger() {
+        return isStranger;
     }
 
-    public void setGroupEntity(GroupEntity groupEntity) {
-        this.groupEntity = groupEntity;
+    public void setStranger(boolean stranger) {
+        isStranger = stranger;
     }
 }

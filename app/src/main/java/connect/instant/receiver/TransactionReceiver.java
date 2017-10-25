@@ -223,6 +223,6 @@ public class TransactionReceiver implements TransactionListener {
 
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         ((ConversationListener) normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
-        HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(friendEntity));
+        HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(Connect.ChatType.PRIVATE,friendEntity.getUid()));
     }
 }

@@ -105,19 +105,12 @@ public abstract class BaseChatActvity extends BaseActivity {
         roomSession.setRoomType(talker.getTalkType());
         roomSession.setRoomKey(talker.getTalkKey());
 
-        Connect.ChatType chatType = Connect.ChatType.forNumber(talker.getTalkType());
+        Connect.ChatType chatType = talker.getTalkType();
         switch (chatType) {
             case PRIVATE:
-                Connect.MessageUserInfo userInfo = Connect.MessageUserInfo.newBuilder()
-                        .setUid(talker.getFriendEntity().getPub_key())
-                        .setUsername(talker.getFriendEntity().getUsername())
-                        .setAvatar(talker.getFriendEntity().getAvatar()).build();
-
-                roomSession.setUserInfo(userInfo);
                 normalChat = new FriendChat(talker.getTalkKey());
                 break;
             case GROUPCHAT:
-                roomSession.setGroupEcdh(talker.getGroupEntity().getEcdh_key());
                 normalChat = new GroupChat(talker.getTalkKey());
                 break;
             case CONNECT_SYSTEM:
@@ -129,7 +122,7 @@ public abstract class BaseChatActvity extends BaseActivity {
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         linearLayoutManager.setStackFromEnd(true);
         inputPanel = new InputPanel(getWindow().getDecorView().findViewById(android.R.id.content));
-        inputPanel.isGroupAt(talker.getTalkType() == Connect.ChatType.GROUPCHAT_VALUE);
+        inputPanel.isGroupAt(talker.getTalkType() == Connect.ChatType.GROUPCHAT);
         scrollHelper = new RecycleViewScrollHelper(new RecycleViewScrollHelper.OnScrollPositionChangedListener() {
 
             @Override
@@ -364,12 +357,12 @@ public abstract class BaseChatActvity extends BaseActivity {
                 }
                 break;
             case REDPACKET:
-                int talkType = talker.getTalkType();
+                int talkType = talker.getTalkType().getNumber();
                 String talkKey = talker.getTalkKey();
                 LuckyPacketActivity.startActivity(activity, talkType, talkKey);
                 break;
             case PAYMENT:
-                PaymentActivity.startActivity(activity, talker.getTalkType(), talker.getTalkKey());
+                PaymentActivity.startActivity(activity, talker.getTalkType().getNumber(), talker.getTalkKey());
                 break;
             case NAMECARD:
                 ContactCardActivity.startActivity(activity);
