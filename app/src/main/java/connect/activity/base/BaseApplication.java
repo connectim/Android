@@ -45,9 +45,9 @@ public class BaseApplication extends Application{
 
         InstantSdk.instantSdk.initSdk(this);
         EmoManager.getInstance();
-        UnCeHandler catchExcep = new UnCeHandler(this);
-        Thread.setDefaultUncaughtExceptionHandler(catchExcep);
-        CrashReport.initCrashReport(this, ConfigUtil.getInstance().getCrashAPPID(), true);
+
+        String appId = ConfigUtil.getInstance().getCrashAPPID();
+        CrashReport.initCrashReport(this, appId, true);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class BaseApplication extends Application{
         System.exit(0);
     }
 
-    private void initInstantSDK() {
+    public void initInstantSDK() {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         InstantSdk.instantSdk.registerUserInfo(mApplication, userBean.getPubKey(), userBean.getPriKey());
 

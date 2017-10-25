@@ -29,6 +29,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseApplication;
 import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -128,7 +129,11 @@ public class HomeActivity extends BaseFragmentActivity {
                 Session.getInstance().clearUserCookie();
                 FileUtil.getExternalStorePath();
 
-                CrashReport.putUserData(activity, "userAddress", SharedPreferenceUtil.getInstance().getUser().getUid());
+                // IM SDK
+                BaseApplication.getInstance().initInstantSDK();
+
+                // Bugly
+                CrashReport.setUserId(userBean.getUid());
                 CrashReport.setUserSceneTag(activity, Integer.valueOf(ConfigUtil.getInstance().getCrashTags()));
                 return null;
             }

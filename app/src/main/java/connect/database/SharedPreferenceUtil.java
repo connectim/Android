@@ -2,11 +2,14 @@ package connect.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
+import connect.utils.exception.BaseException;
+import connect.utils.exception.bean.ErrorCode;
 import connect.utils.log.LogManager;
 
 /**
@@ -85,9 +88,21 @@ public class SharedPreferenceUtil {
      * get current user
      * @return
      */
-    public UserBean getUser(){
-        UserBean userBean = new Gson().fromJson(getStringValue(USER_INFO), UserBean.class);
+    public UserBean getUser() {
+        UserBean userBean = null;
+        try {
+            String userStr = getStringValue(USER_INFO);
+            if (TextUtils.isEmpty(userStr)) {
+                throw new BaseException(ErrorCode.USER_NOT_EXIST);
+            }
+
+            userBean = new Gson().fromJson(userStr, UserBean.class);
+            if (userBean == null || TextUtils.isEmpty(userBean.getUid())) {
+                throw new BaseException(ErrorCode.USER_NOT_EXIST);
+            }
+        } catch (BaseException e) {
+            e.dispath().upload();
+        }
         return userBean;
     }
-
 }
