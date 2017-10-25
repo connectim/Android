@@ -3,6 +3,7 @@ package connect.activity.base;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.support.multidex.MultiDex;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -10,30 +11,26 @@ import com.tencent.bugly.crashreport.CrashReport;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.base.inter.InterAccount;
 import connect.activity.chat.model.EmoManager;
+import connect.activity.login.LoginPhoneActivity;
 import connect.activity.login.bean.UserBean;
+import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
-import connect.instant.receiver.CommandReceiver;
-import connect.instant.receiver.ConnectReceiver;
-import connect.instant.receiver.MessageReceiver;
-import connect.instant.receiver.RobotReceiver;
-import connect.instant.receiver.TransactionReceiver;
-import connect.instant.receiver.UnreachableReceiver;
+import connect.database.green.DaoManager;
+import connect.instant.receiver.ReceiverHelper;
+import connect.service.GroupService;
 import connect.service.UpdateInfoService;
 import connect.utils.ConfigUtil;
-import instant.parser.localreceiver.CommandLocalReceiver;
-import instant.parser.localreceiver.ConnectLocalReceiver;
-import instant.parser.localreceiver.MessageLocalReceiver;
-import instant.parser.localreceiver.RobotLocalReceiver;
-import instant.parser.localreceiver.TransactionLocalReceiver;
-import instant.parser.localreceiver.UnreachableLocalReceiver;
+import connect.utils.FileUtil;
+import connect.utils.ProgressUtil;
+import instant.bean.Session;
 import instant.ui.InstantSdk;
 
 /**
  * Created by john on 2016/11/19.
  */
-
-public class BaseApplication extends Application{
+public class BaseApplication extends Application implements InterAccount {
 
     private static BaseApplication mApplication = null;
     private static List<Activity> activityList = new ArrayList<>();
@@ -63,10 +60,6 @@ public class BaseApplication extends Application{
         return mApplication;
     }
 
-    public Context getAppContext() {
-        return getApplicationContext();
-    }
-
     public List<Activity> getActivityList() {
         return activityList;
     }
@@ -75,29 +68,38 @@ public class BaseApplication extends Application{
         return activityList == null || activityList.size() == 0;
     }
 
-    public void finishActivity() {
-        for (Activity activity : activityList) {
-            if (null != activity) {
-                activity.finish();
-            }
-        }
-
-        InstantSdk.instantSdk.stopInstant();
-        UpdateInfoService.stopServer(this.getAppContext());
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(0);
-    }
-
-    public void initInstantSDK() {
+    @Override
+    public void initRegisterAccount() {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        InstantSdk.instantSdk.registerUserInfo(mApplication, userBean.getPubKey(), userBean.getPriKey());
+        SharePreferenceUser.initSharePreference(userBean.getPubKey());
+        Session.getInstance().clearUserCookie();
+        FileUtil.getExternalStorePath();
 
-        ConnectLocalReceiver.receiver.registerConnect(ConnectReceiver.receiver);
-        CommandLocalReceiver.receiver.registerCommand(CommandReceiver.receiver);
-        TransactionLocalReceiver.localReceiver.registerTransactionListener(TransactionReceiver.receiver);
-        RobotLocalReceiver.localReceiver.registerRobotListener(RobotReceiver.receiver);
-        UnreachableLocalReceiver.localReceiver.registerUnreachableListener(UnreachableReceiver.receiver);
-        MessageLocalReceiver.localReceiver.registerMessageListener(MessageReceiver.receiver);
+        // IM SDK
+        new ReceiverHelper().initInstantSDK();
+
+        // Bugly
+        CrashReport.setUserId(userBean.getUid());
+        CrashReport.setUserSceneTag(this.getBaseContext(), Integer.valueOf(ConfigUtil.getInstance().getCrashTags()));
     }
 
+    @Override
+    public void exitRegisterAccount() {
+        //SDK
+        InstantSdk.instantSdk.stopInstant();
+
+        //Remove the local login information
+        SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
+        SharePreferenceUser.unLinkSharePreference();
+        DaoManager.getInstance().closeDataBase();
+
+        //service
+        UpdateInfoService.stopServer(this.getApplicationContext());
+        GroupService.stopServer(this.getApplicationContext());
+
+        ProgressUtil.getInstance().dismissProgress();
+
+        Intent intent = new Intent(this.getBaseContext(), LoginPhoneActivity.class);
+        this.getBaseContext().startActivity(intent);
+    }
 }

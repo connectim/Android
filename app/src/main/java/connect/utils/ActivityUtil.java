@@ -95,7 +95,7 @@ public class ActivityUtil {
     }
 
     public static String getRunningActivityName() {
-        Context context = BaseApplication.getInstance().getAppContext();
+        Context context = BaseApplication.getInstance().getBaseContext();
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         return activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
     }

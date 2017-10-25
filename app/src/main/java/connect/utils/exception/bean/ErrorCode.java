@@ -9,7 +9,8 @@ public enum ErrorCode {
     CONNECT_ERROR(400, "网络连接失败"),
     HTTP_SESSION_OVERDUE(401, "Session 过期"),
     USER_OFFSITE_LOGIN(402, "用户异地登录"),
-    USER_NOT_EXIST(402, "用户不存在");
+    USER_PRIVATEKEY_NULL(403, "用户私钥为空"),
+    USER_NOT_EXIST(404, "用户不存在");
 
     int code;
     String message;

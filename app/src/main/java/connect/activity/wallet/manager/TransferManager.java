@@ -168,7 +168,7 @@ public class TransferManager {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                Toast.makeText(BaseApplication.getInstance().getAppContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(BaseApplication.getInstance().getBaseContext(),response.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -238,7 +238,7 @@ public class TransferManager {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                Toast.makeText(BaseApplication.getInstance().getAppContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(BaseApplication.getInstance().getBaseContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

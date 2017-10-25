@@ -23,7 +23,7 @@ public class SystemUtilTest {
 
     @Test
     public void getVersionName() throws Exception {
-        String version = SystemDataUtil.getVersionName(BaseApplication.getInstance().getAppContext());
+        String version = SystemDataUtil.getVersionName(BaseApplication.getInstance().getBaseContext());
         assertTrue(!TextUtils.isEmpty(version));
     }
 
@@ -41,13 +41,13 @@ public class SystemUtilTest {
 
     @Test
     public void setAppLanguage() throws Exception {
-        SystemDataUtil.setAppLanguage(BaseApplication.getInstance().getAppContext(),"zh");
+        SystemDataUtil.setAppLanguage(BaseApplication.getInstance().getBaseContext(),"zh");
     }
 
     @Test
     public void getLoadAddresSbook() throws Exception {
         // permission allow
-        List<PhoneContactBean> listPhone = SystemDataUtil.getLoadAddresSbook(BaseApplication.getInstance().getAppContext());
+        List<PhoneContactBean> listPhone = SystemDataUtil.getLoadAddresSbook(BaseApplication.getInstance().getBaseContext());
         if(listPhone == null || listPhone.size() == 0){
             assertTrue(false);
         }else{

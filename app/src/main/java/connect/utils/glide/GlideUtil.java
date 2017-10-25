@@ -29,7 +29,7 @@ public class GlideUtil {
     }
 
     public static void loadAvatarRound(ImageView imageView, Object path, int dpRound){
-        loadImage(imageView, path, R.mipmap.default_user_avatar, new GlideRoundTransform(BaseApplication.getInstance().getAppContext(), dpRound));
+        loadImage(imageView, path, R.mipmap.default_user_avatar, new GlideRoundTransform(BaseApplication.getInstance().getBaseContext(), dpRound));
     }
 
     public static void loadImageAssets(ImageView imageView, Object path){

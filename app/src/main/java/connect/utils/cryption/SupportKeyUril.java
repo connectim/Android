@@ -17,6 +17,8 @@ import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.StringUtil;
+import connect.utils.exception.BaseException;
+import connect.utils.exception.bean.ErrorCode;
 import connect.wallet.jni.AllNativeMethod;
 import instant.bean.Session;
 import instant.utils.cryption.EncryptionUtil;
@@ -162,10 +164,16 @@ public class SupportKeyUril {
      * Generate ECDH cooperative key
      */
     public static byte[] getRawECDHKey(String priKey, String pubKey) {
-        if (TextUtils.isEmpty(priKey)) {
-            BaseApplication.getInstance().finishActivity();
+        byte[] ecdhKeys = null;
+        try {
+            if (TextUtils.isEmpty(priKey)) {
+                throw new BaseException(ErrorCode.USER_PRIVATEKEY_NULL);
+            }
+            ecdhKeys = AllNativeMethod.cdxtalkgetRawECDHkey(priKey, pubKey);
+        } catch (BaseException e) {
+            e.dispath().upload();
         }
-        return AllNativeMethod.cdxtalkgetRawECDHkey(priKey, pubKey);
+        return ecdhKeys;
     }
 
     public static byte[] byteSHA256(byte[] bytes) throws NoSuchAlgorithmException {

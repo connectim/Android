@@ -123,7 +123,7 @@ public class WalletManager {
             @Override
             public void onError(Connect.HttpResponse response) {
                 listener.fail(WalletListener.WalletError.NETError);
-                Toast.makeText(BaseApplication.getInstance().getAppContext(), R.string.Wallet_synchronization_data_failed, Toast.LENGTH_SHORT).show();
+                Toast.makeText(BaseApplication.getInstance().getBaseContext(), R.string.Wallet_synchronization_data_failed, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -154,7 +154,7 @@ public class WalletManager {
             @Override
             public void onError(Connect.HttpResponse response) {
                 listener.fail(WalletListener.WalletError.NETError);
-                Toast.makeText(BaseApplication.getInstance().getAppContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(BaseApplication.getInstance().getBaseContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

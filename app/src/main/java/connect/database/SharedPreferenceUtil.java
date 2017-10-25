@@ -36,7 +36,7 @@ public class SharedPreferenceUtil {
     public SharedPreferenceUtil() {}
 
     public static SharedPreferenceUtil getInstance() {
-        return getInstance(BaseApplication.getInstance().getAppContext());
+        return getInstance(BaseApplication.getInstance().getBaseContext());
     }
 
     private static SharedPreferenceUtil getInstance(Context context) {

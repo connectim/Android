@@ -71,6 +71,7 @@
         <meta-data
             android:name="connect.utils.glide.GlideModelConfig"
             android:value="GlideModule"/>
+
         <activity
             android:name="connect.activity.login.GuidePageActivity"
             android:screenOrientation="portrait"/>
@@ -334,49 +335,78 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
 
-        <activity android:name="connect.activity.chat.exts.TransferSingleDetailActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.set.GroupNameActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.set.GroupMyNameActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.set.GroupManageActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.set.GroupQRActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.set.GroupIntroduceActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.set.GroupOwnerToActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.exts.HandleGroupRequestActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.exts.GroupCrowdingRecordsActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.exts.ApplyJoinGroupActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.exts.OuterWebsiteActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.common.selefriend.ConversationActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.common.selefriend.NewConversationActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.exts.GroupAtActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.exts.GoogleMapActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.widget.album.AlbumActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.home.DBUpdateActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.wallet.CAddressListActivty"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.wallet.BackUpCurrencyActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.set.GroupCreateActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.set.GroupInviteActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name="connect.activity.chat.exts.TransferMutiDetailActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.exts.TransferSingleDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.set.GroupNameActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.set.GroupMyNameActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.set.GroupManageActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.set.GroupQRActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.set.GroupIntroduceActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.set.GroupOwnerToActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.exts.HandleGroupRequestActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.exts.GroupCrowdingRecordsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.exts.ApplyJoinGroupActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.exts.OuterWebsiteActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.common.selefriend.ConversationActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.common.selefriend.NewConversationActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.exts.GroupAtActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.exts.GoogleMapActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.widget.album.AlbumActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.home.DBUpdateActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.wallet.CAddressListActivty"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.wallet.BackUpCurrencyActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.set.GroupCreateActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.set.GroupInviteActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.chat.exts.TransferMutiDetailActivity"
+            android:screenOrientation="portrait"/>
+
+        <service
+            android:name="connect.service.GroupService"
+            android:enabled="false"
+            android:exported="false">
+        </service>
     </application>
+
 </manifest>

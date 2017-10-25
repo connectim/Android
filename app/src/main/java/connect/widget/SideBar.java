@@ -63,7 +63,7 @@ public class SideBar extends View {
 
         int singleHeight = height / b.size();
         for (int i = 0; i < b.size(); i++) {
-            paint.setColor(BaseApplication.getInstance().getAppContext().getResources().getColor(R.color.color_cdd0d4));
+            paint.setColor(BaseApplication.getInstance().getBaseContext().getResources().getColor(R.color.color_cdd0d4));
             //paint.setColor(Color.rgb(33, 65, 98));
             paint.setAntiAlias(true);
             paint.setTextSize(SystemUtil.pxToSp(12));

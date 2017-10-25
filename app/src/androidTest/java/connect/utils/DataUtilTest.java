@@ -68,7 +68,7 @@ public class DataUtilTest {
 
     @Test
     public void getDrawable() {
-        Drawable drawable =  ResourceUtil.getDrawable(BaseApplication.getInstance().getAppContext(), R.mipmap.album_arrow_back2x);
+        Drawable drawable =  ResourceUtil.getDrawable(BaseApplication.getInstance().getBaseContext(), R.mipmap.album_arrow_back2x);
         if(drawable == null){
             assertTrue(false);
         }else{
@@ -78,7 +78,7 @@ public class DataUtilTest {
 
     @Test
     public void getColor() {
-        int color =  ResourceUtil.getColor(BaseApplication.getInstance().getAppContext(), R.color.color_007aff);
+        int color =  ResourceUtil.getColor(BaseApplication.getInstance().getBaseContext(), R.color.color_007aff);
         if(color == Color.BLACK){
             assertTrue(false);
         }else{
