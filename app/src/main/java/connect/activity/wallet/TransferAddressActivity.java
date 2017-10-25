@@ -37,7 +37,6 @@ import connect.widget.random.RandomVoiceActivity;
 
 /**
  * Transfer to BTC address
- * Created by Administrator on 2016/12/21.
  */
 public class TransferAddressActivity extends BaseActivity {
 
@@ -97,12 +96,11 @@ public class TransferAddressActivity extends BaseActivity {
         addressTv.setText(bundle.getString("address",""));
         addressTv.addTextChangedListener(textWatcher);
         transferEditView.setEditListener(onEditListener);
-
         transferManager = new TransferManager(mActivity, CurrencyEnum.BTC);
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -145,16 +143,6 @@ public class TransferAddressActivity extends BaseActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == BOOK_CODE) {
-            addressTv.setText(data.getExtras().getString("address",""));
-        }else if(resultCode == RESULT_OK && requestCode == RandomVoiceActivity.REQUEST_CODE){
-            transferEditView.createWallet(data);
-        }
-    }
-
     private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
         @Override
         public void onEdit(String value) {
@@ -169,20 +157,22 @@ public class TransferAddressActivity extends BaseActivity {
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
         public void afterTextChanged(Editable s) {
             checkBtn();
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == BOOK_CODE) {
+            addressTv.setText(data.getExtras().getString("address",""));
+        }
+    }
 
     private void checkBtn(){
         if (!TextUtils.isEmpty(transferEditView.getCurrentBtc())

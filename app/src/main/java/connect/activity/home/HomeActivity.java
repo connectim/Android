@@ -17,26 +17,17 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.nio.ByteBuffer;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseApplication;
-import connect.database.SharePreferenceUser;
-import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoManager;
-import connect.database.green.bean.FriendRequestEntity;
-import connect.service.GroupService;
-import connect.ui.activity.R;
+import connect.activity.base.BaseFragmentActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.contact.bean.ContactNotice;
@@ -48,23 +39,20 @@ import connect.activity.home.fragment.ConversationFragment;
 import connect.activity.home.fragment.SetFragment;
 import connect.activity.home.fragment.WalletFragment;
 import connect.activity.home.view.CheckUpdata;
-import connect.activity.login.LoginPhoneActivity;
-import connect.activity.login.bean.UserBean;
-import connect.activity.base.BaseFragmentActivity;
+import connect.activity.wallet.manager.WalletManager;
+import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.FriendRequestEntity;
+import connect.service.GroupService;
 import connect.service.UpdateInfoService;
-import connect.service.bean.PushMessage;
-import connect.service.bean.ServiceAck;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ConfigUtil;
-import connect.utils.FileUtil;
-import connect.utils.ProgressUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.MaterialBadgeTextView;
 import connect.widget.random.RandomVoiceActivity;
 import instant.bean.ConnectState;
-import instant.bean.Session;
 
 /**
  * Created by gtq on 2016/11/19.
@@ -121,6 +109,11 @@ public class HomeActivity extends BaseFragmentActivity {
     public void initView() {
         activity = this;
         setDefaultFragment();
+        if(WalletManager.isShowWallet()){
+            walletRela.setVisibility(View.VISIBLE);
+        }else{
+            walletRela.setVisibility(View.GONE);
+        }
 
         new AsyncTask<Void, Void, Void>() {
             @Override

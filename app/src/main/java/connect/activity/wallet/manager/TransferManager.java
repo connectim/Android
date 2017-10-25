@@ -361,7 +361,7 @@ public class TransferManager {
         } else if(response.getCode() == 2600){
             ToastEUtil.makeText(mActivity,R.string.Wallet_not_initialized_the_wallet_and_can_not_trade,ToastEUtil.TOAST_STATUS_FAILE).show();
         } else if(response.getCode() == 2650){
-            CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
+            /*CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
             if(currencyEntity == null){
                 WalletManager.getInstance().syncWallet(new com.wallet.inter.WalletListener<Integer>() {
                     @Override
@@ -380,7 +380,7 @@ public class TransferManager {
                     @Override
                     public void fail(WalletError error) {}
                 });
-            }
+            }*/
         } else{
             ToastEUtil.makeText(mActivity,response.getMessage(),ToastEUtil.TOAST_STATUS_FAILE).show();
         }

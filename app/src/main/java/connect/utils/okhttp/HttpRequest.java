@@ -71,17 +71,15 @@ public class HttpRequest {
 
     /**
      * get Request (with the prefix names)
-     *
      * @param url
      * @param callBack
      */
     public void get(String url, final okhttp3.Callback callBack) {
-        getAbsolute(getAbsoluteUrl(url), callBack);
+        getAbsolute(ConfigUtil.getInstance().serverAddress() + url, callBack);
     }
 
     /**
      * get Request (return to the original data)
-     *
      * @param url
      * @param callBack
      */
@@ -120,43 +118,7 @@ public class HttpRequest {
     }
 
     /**
-     * get Request(return ProtoBuff）
-     *
-     * @param url
-     * @param resultCall
-     */
-    public void get(String url, final ResultCall resultCall) {
-        if (!HttpRequest.isConnectNet()) {
-            ToastUtil.getInstance().showToast(R.string.Chat_Network_connection_failed_please_check_network);
-            return;
-        }
-
-        Request request = new Request.Builder()
-                .url(getAbsoluteUrl(url))
-                .get()
-                .build();
-        mOkHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                ProgressUtil.getInstance().dismissProgress();
-                dealOnFailure(call);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    Integer code = resultCall.parseNetworkResponse(response);
-                    sendResultCallback(code, resultCall);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    /**
      * Post Request(ProtoBuff param)
-     *
      * @param url
      * @param body
      * @param resultCall
@@ -167,7 +129,6 @@ public class HttpRequest {
 
     /**
      * Post Request(byte[] param)
-     *
      * @param url
      * @param content
      * @param resultCall
@@ -175,7 +136,7 @@ public class HttpRequest {
     public void post(String url, byte[] content, final ResultCall resultCall) {
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE_DEFAULT, content);
         Request request = new Request.Builder()
-                .url(getAbsoluteUrl(url))
+                .url(ConfigUtil.getInstance().serverAddress() + url)
                 .post(requestBody)
                 .build();
 
@@ -236,18 +197,7 @@ public class HttpRequest {
     }
 
     /**
-     * default Host
-     *
-     * @param url
-     * @return
-     */
-    private String getAbsoluteUrl(String url) {
-        return ConfigUtil.getInstance().serverAddress() + url;
-    }
-
-    /**
      * network environment
-     *
      * @return
      */
     public static boolean isConnectNet() {

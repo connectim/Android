@@ -35,7 +35,6 @@ public class LoggerInterceptor implements Interceptor {
 
     private Response logForResponse(Response response) {
         try {
-            //===>response log
             LogManager.getLogger().i(TAG, "========response'log=======");
             Response.Builder builder = response.newBuilder();
             Response clone = builder.build();
@@ -66,7 +65,7 @@ public class LoggerInterceptor implements Interceptor {
 
             LogManager.getLogger().i(TAG, "========response'log=======end");
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
 
         return response;
@@ -97,7 +96,7 @@ public class LoggerInterceptor implements Interceptor {
             }
             LogManager.getLogger().i(TAG, "========request'log=======end");
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

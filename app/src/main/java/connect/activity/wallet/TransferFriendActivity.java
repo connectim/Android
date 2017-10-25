@@ -41,7 +41,6 @@ import connect.widget.random.RandomVoiceActivity;
 
 /**
  * Transfer to friend
- * Created by Administrator on 2016/12/20.
  */
 public class TransferFriendActivity extends BaseActivity implements TransferFriendContract.View {
 
@@ -124,8 +123,8 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
     }
 
     @Override
-    public void addTranferFriend() {
-        ArrayList<ContactEntity> list = new ArrayList<ContactEntity>();
+    public void addTransferFriend() {
+        ArrayList<ContactEntity> list = new ArrayList<>();
         list.addAll(presenter.getListFriend());
         if(TextUtils.isEmpty(pubGroup)){
             SeleUsersActivity.startActivity(mActivity, SeleUsersActivity.SOURCE_FRIEND, "",list);
@@ -150,7 +149,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -211,8 +210,6 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                 friendGridAdapter.setNotifyData(friendList);
                 numberTv.setText(getString(R.string.Wallet_transfer_man, friendList.size()));
                 presenter.checkBtnEnable();
-            } else if(requestCode == RandomVoiceActivity.REQUEST_CODE){
-                transferEditView.createWallet(data);
             }
         }
     }

@@ -77,10 +77,6 @@ public class SafetyPayActivity extends BaseActivity {
             minerTv.setText(paySetBean.isAutoFee() ? getString(R.string.Set_Auto) :
                     getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(paySetBean.getFee()));
         }
-
-        if(!WalletManager.getInstance().isCreateWallet()){
-            pasLl.setVisibility(View.INVISIBLE);
-        }
     }
 
     @OnClick(R.id.left_img)

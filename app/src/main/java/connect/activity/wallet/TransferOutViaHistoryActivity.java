@@ -42,7 +42,7 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
     LinearLayout noDataLin;
 
     private TransferOutViaHistoryActivity mActivity;
-    private final int PAGESIZE_MAX = 10;
+    private final int PAGE_SIZE_MAX = 10;
     private int page = 1;
     private TransferOutAdapter transferOutAdapter;
 
@@ -66,58 +66,63 @@ public class TransferOutViaHistoryActivity extends BaseActivity {
                 R.color.color_c8ccd5,
                 R.color.color_lightgray
         );
-        refreshview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshview.setRefreshing(false);
-                page = 1;
-                requestHostory();
-            }
-        });
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         transferOutAdapter = new TransferOutAdapter(mActivity);
         recyclerview.setAdapter(transferOutAdapter);
-        recyclerview.addOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore() {
-                page++;
-                requestHostory();
-            }
-        });
-        transferOutAdapter.setItemClickListener(new TransferOutAdapter.OnItemClickListener() {
-            @Override
-            public void itemClick(Connect.ExternalBillingInfo billingInfo) {
-                SendOutBean sendOutBean = new SendOutBean();
-                sendOutBean.setType(PacketSendActivity.OUT_VIA);
-                sendOutBean.setUrl(billingInfo.getUrl());
-                sendOutBean.setDeadline(billingInfo.getDeadline());
-                if (billingInfo.getCancelled()) {
-                    sendOutBean.setStatus(1);
-                } else if (billingInfo.getExpired()) {
-                    sendOutBean.setStatus(2);
-                } else if (billingInfo.getReceived()) {
-                    sendOutBean.setStatus(3);
-                }
-                sendOutBean.setHashId(billingInfo.getHash());
-                sendOutBean.setAmount(billingInfo.getAmount());
-                PacketSendActivity.startActivity(mActivity, sendOutBean);
-            }
-        });
+        refreshview.setOnRefreshListener(onRefreshListener);
+        recyclerview.addOnScrollListener(endlessScrollListener);
+        transferOutAdapter.setItemClickListener(onItemClickListener);
 
-        requestHostory();
+        requestHistory();
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
-    private void requestHostory() {
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+        @Override
+        public void onRefresh() {
+            refreshview.setRefreshing(false);
+            page = 1;
+            requestHistory();
+        }
+    };
+
+    EndlessScrollListener endlessScrollListener = new EndlessScrollListener(){
+        @Override
+        public void onLoadMore() {
+            page++;
+            requestHistory();
+        }
+    };
+
+    TransferOutAdapter.OnItemClickListener onItemClickListener = new TransferOutAdapter.OnItemClickListener(){
+        @Override
+        public void itemClick(Connect.ExternalBillingInfo billingInfo) {
+            SendOutBean sendOutBean = new SendOutBean();
+            sendOutBean.setType(PacketSendActivity.OUT_VIA);
+            sendOutBean.setUrl(billingInfo.getUrl());
+            sendOutBean.setDeadline(billingInfo.getDeadline());
+            if (billingInfo.getCancelled()) {
+                sendOutBean.setStatus(1);
+            } else if (billingInfo.getExpired()) {
+                sendOutBean.setStatus(2);
+            } else if (billingInfo.getReceived()) {
+                sendOutBean.setStatus(3);
+            }
+            sendOutBean.setHashId(billingInfo.getHash());
+            sendOutBean.setAmount(billingInfo.getAmount());
+            PacketSendActivity.startActivity(mActivity, sendOutBean);
+        }
+    };
+
+    private void requestHistory() {
         Connect.History history = Connect.History.newBuilder()
                 .setPageIndex(page)
-                .setPageSize(PAGESIZE_MAX)
+                .setPageSize(PAGE_SIZE_MAX)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.WALLET_BILLING_EXTERNAL_HISTORY, history, new ResultCall<Connect.HttpResponse>() {
             @Override

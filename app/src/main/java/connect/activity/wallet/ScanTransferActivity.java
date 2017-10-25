@@ -33,7 +33,6 @@ import connect.widget.album.model.AlbumFile;
 
 /**
  * Scan the qr code transfer
- * Created by Administrator on 2016/12/27.
  */
 public class ScanTransferActivity extends BaseScanActivity {
 
@@ -66,11 +65,6 @@ public class ScanTransferActivity extends BaseScanActivity {
         resolveScanUtil = new ResolveScanUtil(mActivity);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(MsgNoticeBean notice) {
-        new ResolveUrlUtil(mActivity).showMsgTip(notice, ResolveUrlUtil.TYPE_OPEN_SCAN, true);
-    }
-
     @Override
     public void scanCall(String value) {
         resolveScanUtil.analysisUrl(value);
@@ -81,18 +75,14 @@ public class ScanTransferActivity extends BaseScanActivity {
         ActivityUtil.goBackBottom(mActivity);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK){
-            ActivityUtil.goBackBottom(this);
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
     @OnClick(R.id.photos_tv)
     void goSeleAlbm(View view){
         AlbumActivity.startActivity(mActivity, AlbumActivity.OPEN_ALBUM_CODE,1);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(MsgNoticeBean notice) {
+        new ResolveUrlUtil(mActivity).showMsgTip(notice, ResolveUrlUtil.TYPE_OPEN_SCAN, true);
     }
 
     @Override
@@ -104,6 +94,15 @@ public class ScanTransferActivity extends BaseScanActivity {
                 getAblamString(strings.get(0).getPath(),mLocalHandler);
             }
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            ActivityUtil.goBackBottom(this);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private Handler mLocalHandler = new Handler(){

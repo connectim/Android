@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"/>
 
         <ImageView
-            android:id="@+id/avater_rimg"
+            android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
             android:layout_alignParentBottom="true"

@@ -169,14 +169,14 @@ string name = 1;
 }
 
 message UserIdentifier {
-string address = 1;
+string uid = 1;
 }
 
 message TagList {
 repeated string list = 1;
 }
 message SetingUserToTag {
-string address = 1;
+string uid = 1;
 string name = 2;
 }
 message UserInfoDetail {
@@ -307,7 +307,7 @@ string tips=3;
 string token=4;
 }
 message GroupInviteUser {
-repeated string addresses = 1;
+repeated string uids = 1;
 string identifier=2;
 }
 message GroupInviteResponse {

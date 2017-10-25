@@ -29,7 +29,7 @@
         android:background="@color/color_f0f0f6">
 
         <ImageView
-            android:id="@+id/avater_rimg"
+            android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_80"
             android:scaleType="centerCrop"/>
@@ -38,14 +38,14 @@
             android:id="@+id/name_tv"
             style="@style/BaseTextStyle.16"
             android:textStyle="bold"
-            android:layout_toRightOf="@+id/avater_rimg"
+            android:layout_toRightOf="@+id/avatar_rimg"
             android:layout_marginLeft="@dimen/dp_15"/>
         
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/avater_rimg"
-            android:layout_alignBottom="@+id/avater_rimg"
+            android:layout_toRightOf="@+id/avatar_rimg"
+            android:layout_alignBottom="@+id/avatar_rimg"
             android:layout_marginLeft="@dimen/dp_15"
             android:orientation="horizontal">
             <ImageView

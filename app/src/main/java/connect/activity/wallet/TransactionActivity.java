@@ -33,7 +33,6 @@ import wallet_gateway.WalletOuterClass;
 
 /**
  * transaction
- * Created by Administrator on 2016/12/10.
  */
 public class TransactionActivity extends BaseActivity {
 
@@ -71,34 +70,14 @@ public class TransactionActivity extends BaseActivity {
                 R.color.color_c8ccd5,
                 R.color.color_lightgray
         );
-        refreshview.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshview.setRefreshing(false);
-                page = 1;
-                requestTransaction();
-            }
-        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         transactionAdapter = new TransactionAdapter(mActivity);
         recyclerview.setAdapter(transactionAdapter);
-        recyclerview.addOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore() {
-                page++;
-                requestTransaction();
-            }
-        });
-        transactionAdapter.setItemClickListener(new TransactionAdapter.OnItemClickListener() {
-            @Override
-            public void itemClick(Connect.Transaction transaction) {
-                if (transaction != null && !TextUtils.isEmpty(transaction.getHash())) {
-                    BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, transaction.getHash());
-                }
-            }
-        });
+        recyclerview.addOnScrollListener(endlessScrollListener);
+        refreshview.setOnRefreshListener(onRefreshListener);
+        transactionAdapter.setItemClickListener(onItemClickListener);
         requestTransaction();
     }
 
@@ -106,6 +85,32 @@ public class TransactionActivity extends BaseActivity {
     void goback(View view) {
         ActivityUtil.goBack(mActivity);
     }
+
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener =  new SwipeRefreshLayout.OnRefreshListener(){
+        @Override
+        public void onRefresh() {
+            refreshview.setRefreshing(false);
+            page = 1;
+            requestTransaction();
+        }
+    };
+
+    EndlessScrollListener endlessScrollListener = new EndlessScrollListener(){
+        @Override
+        public void onLoadMore() {
+            page++;
+            requestTransaction();
+        }
+    };
+
+    TransactionAdapter.OnItemClickListener onItemClickListener = new TransactionAdapter.OnItemClickListener(){
+        @Override
+        public void itemClick(Connect.Transaction transaction) {
+            if (transaction != null && !TextUtils.isEmpty(transaction.getHash())) {
+                BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, transaction.getHash());
+            }
+        }
+    };
 
     public void requestTransaction() {
         WalletOuterClass.Pagination pagination = WalletOuterClass.Pagination.newBuilder()

@@ -7,8 +7,9 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import java.util.List;
-import connect.activity.chat.bean.MsgExtEntity;
+
 import connect.activity.wallet.contract.TransferFriendContract;
+import connect.activity.wallet.manager.TransferEditView;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -20,14 +21,8 @@ import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.system.SystemUtil;
-import connect.activity.wallet.manager.TransferEditView;
 import instant.bean.ChatMsgEntity;
-import instant.sender.model.FriendChat;
-import instant.sender.model.NormalChat;
 
-/**
- * Created by Administrator on 2017/4/18 0018.
- */
 public class TransferFriendPresenter implements TransferFriendContract.Presenter{
 
     private TransferFriendContract.View mView;
@@ -38,9 +33,7 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
     }
 
     @Override
-    public void start() {
-
-    }
+    public void start() {}
 
     @Override
     public void setListData(List<ContactEntity> list) {
@@ -67,7 +60,7 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             ContactEntity friendEntity = (ContactEntity) parent.getAdapter().getItem(position);
             if (TextUtils.isEmpty(friendEntity.getAvatar())) {
-                mView.addTranferFriend();
+                mView.addTransferFriend();
             }
         }
     };
@@ -116,12 +109,12 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
     }
 
     @Override
-    public void sendTransferMessage(String hashid, String address,String note) {
+    public void sendTransferMessage(String hashId, String address,String note) {
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(address);
         if (friendEntity != null) {
             CFriendChat friendChat = new CFriendChat(friendEntity);
             long amount = RateFormatUtil.stringToLongBtc(mView.getCurrentBtc());
-            ChatMsgEntity msgExtEntity = friendChat.transferMsg(0,hashid, amount, note);
+            ChatMsgEntity msgExtEntity = friendChat.transferMsg(0, hashId, amount, note);
             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
             friendChat.sendPushMsg(msgExtEntity);
@@ -139,7 +132,7 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
             roomEntity.setLast_time(TimeUtil.getCurrentTimeInLong());
             ConversionHelper.getInstance().insertRoomEntity(roomEntity);
 
-            TransactionHelper.getInstance().updateTransEntity(hashid, msgExtEntity.getMessage_id(), 1);
+            TransactionHelper.getInstance().updateTransEntity(hashId, msgExtEntity.getMessage_id(), 1);
         }
     }
 

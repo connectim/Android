@@ -78,25 +78,8 @@ public class TransferOutViaActivity extends BaseActivity {
         transferManager = new TransferManager(mActivity, CurrencyEnum.BTC);
     }
 
-    private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
-        @Override
-        public void onEdit(String value) {
-            if (TextUtils.isEmpty(value) ||
-                    Double.valueOf(transferEditView.getCurrentBtc()) < 0.0001) {
-                okBtn.setEnabled(false);
-            } else {
-                okBtn.setEnabled(true);
-            }
-        }
-
-        @Override
-        public void setFee() {
-            SafetyPayFeeActivity.startActivity(mActivity);
-        }
-    };
-
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -120,6 +103,23 @@ public class TransferOutViaActivity extends BaseActivity {
             }
         });
     }
+
+    private TransferEditView.OnEditListener onEditListener = new TransferEditView.OnEditListener() {
+        @Override
+        public void onEdit(String value) {
+            if (TextUtils.isEmpty(value) ||
+                    Double.valueOf(transferEditView.getCurrentBtc()) < 0.0001) {
+                okBtn.setEnabled(false);
+            } else {
+                okBtn.setEnabled(true);
+            }
+        }
+
+        @Override
+        public void setFee() {
+            SafetyPayFeeActivity.startActivity(mActivity);
+        }
+    };
 
     private void requestTransferDetail(String hashId){
         Connect.BillHashId billHashId = Connect.BillHashId.newBuilder().setHash(hashId).build();
@@ -149,24 +149,8 @@ public class TransferOutViaActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
+            public void onError(Connect.HttpResponse response) {}
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            switch (requestCode){
-                case RandomVoiceActivity.REQUEST_CODE:
-                    transferEditView.createWallet(data);
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
 }

@@ -29,9 +29,6 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
 
-/**
- * Created by Administrator on 2016/12/10.
- */
 public class TransferActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
@@ -74,31 +71,8 @@ public class TransferActivity extends BaseActivity {
         adapter = new LatelyTransferAdapter(mActivity);
         recyclerview.setAdapter(adapter);
         recyclerview.addItemDecoration(new LineDecoration(mActivity));
-        adapter.setItemClickListener(new LatelyTransferAdapter.OnItemClickListener() {
-            @Override
-            public void itemClick(TransferBean transferBean) {
-                switch (transferBean.getType()) {
-                    case 1:
-                        PacketActivity.startActivity(mActivity);
-                        break;
-                    case 2:
-                        TransferOutViaActivity.startActivity(mActivity);
-                        break;
-                    case 3:
-                        TransferAddressActivity.startActivity(mActivity, transferBean.getUid());
-                        break;
-                    case 4:
-                        TransferToActivity.startActivity(mActivity, transferBean.getUid());
-                        break;
-                    case 5:
-                        LuckyPacketActivity.startActivity(mActivity, 0, transferBean.getUid());
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-        queryTranfer();
+        adapter.setItemClickListener(onItemClickListener);
+        queryTransfer();
     }
 
     @OnClick(R.id.left_img)
@@ -121,6 +95,31 @@ public class TransferActivity extends BaseActivity {
         TransferOutViaActivity.startActivity(mActivity);
     }
 
+    LatelyTransferAdapter.OnItemClickListener onItemClickListener = new LatelyTransferAdapter.OnItemClickListener(){
+        @Override
+        public void itemClick(TransferBean transferBean) {
+            switch (transferBean.getType()) {
+                case 1:
+                    PacketActivity.startActivity(mActivity);
+                    break;
+                case 2:
+                    TransferOutViaActivity.startActivity(mActivity);
+                    break;
+                case 3:
+                    TransferAddressActivity.startActivity(mActivity, transferBean.getUid());
+                    break;
+                case 4:
+                    TransferToActivity.startActivity(mActivity, transferBean.getUid());
+                    break;
+                case 5:
+                    LuckyPacketActivity.startActivity(mActivity, 0, transferBean.getUid());
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -130,7 +129,7 @@ public class TransferActivity extends BaseActivity {
         }
     }
 
-    private void queryTranfer() {
+    private void queryTransfer() {
         new AsyncTask<Void, Void, List<TransferBean>>() {
             @Override
             protected List<TransferBean> doInBackground(Void... params) {
@@ -140,8 +139,9 @@ public class TransferActivity extends BaseActivity {
             @Override
             protected void onPostExecute(List<TransferBean> transEntities) {
                 super.onPostExecute(transEntities);
-                if (transEntities.size() > 0)
+                if (transEntities.size() > 0){
                     latelyTitleTv.setVisibility(View.VISIBLE);
+                }
                 adapter.setDataNotigy(transEntities);
             }
         }.execute();

@@ -59,38 +59,44 @@ public class BlockchainActivity extends BaseActivity {
         String url = currencyUrl(currencyBean, id);
 
         webView.loadUrl(url);
-        webView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return true;
-            }
-        });
-        webView.setWebViewClient(new WebViewClient() {
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                super.onProgressChanged(view, newProgress);
-                if (newProgress >= 70) {
-                    myProgressBar.setVisibility(View.GONE);
-                } else {
-                    if (View.GONE == myProgressBar.getVisibility()) {
-                        myProgressBar.setVisibility(View.VISIBLE);
-                    }
-                    myProgressBar.setProgress(newProgress);
-                }
-            }
-        });
+        webView.setOnLongClickListener(onLongClickListener);
+        webView.setWebViewClient(webViewClient);
+        webView.setWebChromeClient(webChromeClient);
     }
 
     @OnClick(R.id.left_img)
     void goback(View view) {
         ActivityUtil.goBack(mActivity);
     }
+
+    View.OnLongClickListener onLongClickListener = new View.OnLongClickListener(){
+        @Override
+        public boolean onLongClick(View v) {
+            return true;
+        }
+    };
+
+    WebViewClient webViewClient = new WebViewClient(){
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
+    };
+
+    WebChromeClient webChromeClient = new WebChromeClient(){
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            super.onProgressChanged(view, newProgress);
+            if (newProgress >= 70) {
+                myProgressBar.setVisibility(View.GONE);
+            } else {
+                if (View.GONE == myProgressBar.getVisibility()) {
+                    myProgressBar.setVisibility(View.VISIBLE);
+                }
+                myProgressBar.setProgress(newProgress);
+            }
+        }
+    };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

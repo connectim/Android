@@ -17,7 +17,7 @@ public interface AddressBookContract {
     interface View extends BaseView<AddressBookContract.Presenter> {
         Activity getActivity();
 
-        void updataView(ArrayList<AddressBean> listAddress);
+        void updateView(ArrayList<AddressBean> listAddress);
     }
 
     interface Presenter extends BasePresenter {

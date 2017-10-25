@@ -16,10 +16,6 @@ import connect.utils.okhttp.ResultCall;
 import connect.activity.wallet.manager.TransferEditView;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/4/18 0018.
- */
-
 public class PacketPresenter implements PacketContract.Presenter{
 
     PacketContract.View mView;
@@ -97,9 +93,7 @@ public class PacketPresenter implements PacketContract.Presenter{
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
+            public void onError(Connect.HttpResponse response) {}
         });
 
     }
