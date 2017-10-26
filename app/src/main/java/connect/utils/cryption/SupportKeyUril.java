@@ -13,7 +13,6 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.StringUtil;
@@ -21,7 +20,6 @@ import connect.utils.exception.BaseException;
 import connect.utils.exception.bean.ErrorCode;
 import connect.wallet.jni.AllNativeMethod;
 import instant.bean.Session;
-import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -107,7 +105,7 @@ public class SupportKeyUril {
         }
         byte[] byte1 = StringUtil.hexStringToBytes(strHex1);
         byte[] byte2 = StringUtil.hexStringToBytes(strHex2);
-        byte[] valueByte = instant.utils.cryption.SupportKeyUril.xor(byte1, byte2);
+        byte[] valueByte = SupportKeyUril.xor(byte1, byte2);
         return StringUtil.bytesToHexString(valueByte);
     }
 
@@ -264,7 +262,7 @@ public class SupportKeyUril {
         byte[] talkPBKDF = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, n, 32);
         Connect.GcmData gcmData = null;
         try {
-            gcmData = instant.utils.cryption.EncryptionUtil.encodeAESGCM(instant.utils.cryption.EncryptionUtil.ExtendedECDH.NONE, talkPBKDF, value.getBytes("UTF-8"));
+            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, talkPBKDF, value.getBytes("UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -285,7 +283,7 @@ public class SupportKeyUril {
             byte[] saltByte = salt.getBytes();
             byte[] talkPBKDF = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(passByte, passByte.length, saltByte, saltByte.length, n, 32);
             Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(encryptionStr));
-            byte[] content = instant.utils.cryption.DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, talkPBKDF, gcmData);
+            byte[] content = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, talkPBKDF, gcmData);
             String priKey = "";
             try {
                 priKey = new String(content,"UTF-8");

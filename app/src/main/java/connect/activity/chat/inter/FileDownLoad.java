@@ -1,12 +1,11 @@
 package connect.activity.chat.inter;
 
-import connect.activity.chat.bean.RoomSession;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupEntity;
 import connect.utils.StringUtil;
-import instant.utils.cryption.DecryptionUtil;
-import instant.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.DownLoadFile;
 import protos.Connect;
 

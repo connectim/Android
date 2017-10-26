@@ -29,7 +29,7 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import instant.utils.cryption.SupportKeyUril;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 import protos.Connect;

@@ -13,9 +13,9 @@ import connect.activity.chat.inter.FileUpLoad;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.FileUtil;
+import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.BaseChat;
-import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**

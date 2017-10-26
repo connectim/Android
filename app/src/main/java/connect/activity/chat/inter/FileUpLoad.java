@@ -14,14 +14,14 @@ import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.BaseChat;
 import instant.sender.model.GroupChat;
-import instant.utils.cryption.DecryptionUtil;
-import instant.utils.cryption.EncryptionUtil;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 

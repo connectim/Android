@@ -2,7 +2,7 @@ package instant.sender;
 
 import com.google.protobuf.ByteString;
 
-import instant.bean.ConnectState;
+import connect.wallet.jni.AllNativeMethod;
 import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.bean.UserCookie;
@@ -11,7 +11,6 @@ import instant.utils.ConfigUtil;
 import instant.utils.StringUtil;
 import instant.utils.cryption.EncryptionUtil;
 import instant.utils.cryption.SupportKeyUril;
-import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
 /**

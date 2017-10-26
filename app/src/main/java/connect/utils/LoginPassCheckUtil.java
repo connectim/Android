@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import instant.utils.cryption.SupportKeyUril;
+import connect.utils.cryption.SupportKeyUril;
 
 /**
  * Verify login password

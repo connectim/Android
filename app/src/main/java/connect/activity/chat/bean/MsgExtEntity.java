@@ -5,9 +5,9 @@ import android.text.TextUtils;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.MessageEntity;
 import connect.utils.StringUtil;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import instant.bean.MsgDirect;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**

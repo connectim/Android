@@ -17,9 +17,9 @@ import connect.database.SharedPreferenceUtil;
 import connect.database.green.dao.MessageEntityDao;
 import connect.ui.activity.R;
 import connect.utils.StringUtil;
-import instant.utils.cryption.DecryptionUtil;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import protos.Connect;
 
