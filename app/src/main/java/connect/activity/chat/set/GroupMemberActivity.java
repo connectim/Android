@@ -35,15 +35,17 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
     TopToolBar toolbarTop;
     @Bind(R.id.recordview)
     RecyclerView recordview;
-
-    private static String GROUP_KEY = "GROUP_KEY";
     @Bind(R.id.siderbar)
     SideBar siderbar;
     private String groupKey;
 
     private GroupMemberActivity activity;
+
+    private GroupMemberOnscrollListener onscrollListener = new GroupMemberOnscrollListener();
+    private GroupMemberLetterChanged letterChanged = new GroupMemberLetterChanged();
     private LinearLayoutManager layoutManager;
     private GroupMemberContract.Presenter presenter;
+    private GroupMemberAdapter memberAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString(GROUP_KEY, groupkey);
+        bundle.putString("GROUP_KEY", groupkey);
         ActivityUtil.next(activity, GroupMemberActivity.class, bundle);
     }
 
@@ -78,30 +80,24 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
             }
         });
 
-        groupKey = getIntent().getStringExtra(GROUP_KEY);
+        groupKey = getIntent().getStringExtra("GROUP_KEY");
         GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey,
                 SharedPreferenceUtil.getInstance().getUser().getUid());
 
         layoutManager = new LinearLayoutManager(activity);
         recordview.setLayoutManager(layoutManager);
-        final GroupMemberAdapter adapter = new GroupMemberAdapter(activity, recordview);
-        adapter.setCanScroll(myMember.getRole() == 1);
-        recordview.setAdapter(adapter);
+        memberAdapter = new GroupMemberAdapter(activity, recordview);
+        memberAdapter.setCanScroll(myMember.getRole() == 1);
+        recordview.setAdapter(memberAdapter);
         recordview.addItemDecoration(new LineDecoration(activity));
-        recordview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                adapter.closeMenu();
-            }
-        });
+        recordview.addOnScrollListener(onscrollListener);
 
         final List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         Collections.sort(memEntities, new GroupComPara());
         toolbarTop.setTitle(getString(R.string.Chat_Group_Members, memEntities.size()));
 
-        adapter.setData(memEntities);
-        adapter.setItemRemoveListener(new GroupMemberAdapter.OnItemRemoveListener() {
+        memberAdapter.setData(memEntities);
+        memberAdapter.setItemRemoveListener(new GroupMemberAdapter.OnItemRemoveListener() {
             @Override
             public void itemRemove(GroupMemberEntity entity) {
                 memEntities.remove(entity);
@@ -109,27 +105,35 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
             }
         });
 
-        siderbar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
-            @Override
-            public void onTouchingLetterChanged(String s) {
-                int position = adapter.getPositionForSection(s.charAt(0));
-                moveToPosition(position);
-            }
-        });
-
+        siderbar.setOnTouchingLetterChangedListener(letterChanged);
         new GroupMemberPresenter(this).start();
     }
 
-    private void moveToPosition(int posi) {
-        int firstItem = layoutManager.findFirstVisibleItemPosition();
-        int lastItem = layoutManager.findLastVisibleItemPosition();
-        if (posi <= firstItem) {
-            recordview.scrollToPosition(posi);
-        } else if (posi <= lastItem) {
-            int top = recordview.getChildAt(posi - firstItem).getTop();
-            recordview.scrollBy(0, top);
-        } else {
-            recordview.scrollToPosition(posi);
+    private class GroupMemberOnscrollListener extends RecyclerView.OnScrollListener{
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            memberAdapter.closeMenu();
+        }
+    }
+
+    private class GroupMemberLetterChanged implements SideBar.OnTouchingLetterChangedListener {
+
+        @Override
+        public void onTouchingLetterChanged(String s) {
+            int position = memberAdapter.getPositionForSection(s.charAt(0));
+
+            int firstItem = layoutManager.findFirstVisibleItemPosition();
+            int lastItem = layoutManager.findLastVisibleItemPosition();
+            if (position <= firstItem) {
+                recordview.scrollToPosition(position);
+            } else if (position <= lastItem) {
+                int top = recordview.getChildAt(position - firstItem).getTop();
+                recordview.scrollBy(0, top);
+            } else {
+                recordview.scrollToPosition(position);
+            }
         }
     }
 

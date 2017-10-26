@@ -27,8 +27,9 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
     EditText edit;
 
     private GroupIntroduceActivity activity;
-    private static String GROUP_KEY = "GROUP_KEY";
     private String groupKey = null;
+
+    private GroupIntroduceTextWatcher textWatcher = new GroupIntroduceTextWatcher();
     private GroupIntroduceContract.Presenter presenter;
 
     @Override
@@ -41,7 +42,7 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString(GROUP_KEY, groupkey);
+        bundle.putString("GROUP_KEY", groupkey);
         ActivityUtil.next(activity, GroupIntroduceActivity.class, bundle);
     }
 
@@ -67,29 +68,39 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
             }
         });
 
-        groupKey = getIntent().getStringExtra(GROUP_KEY);
-        edit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    toolbar.setRightTextEnable(false);
-                } else {
-                    toolbar.setRightTextEnable(true);
-                }
-            }
-        });
-
+        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        edit.addTextChangedListener(textWatcher);
         new GroupIntroducePresenter(this).start();
+    }
+
+    private class GroupIntroduceTextWatcher implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 0) {
+                toolbar.setRightTextColor(R.color.color_68656f);
+                toolbar.setRightListener(null);
+            } else {
+                toolbar.setRightTextColor(R.color.color_green);
+                toolbar.setRightListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String introduce = edit.getText().toString();
+                        presenter.requestUpdateGroupSummary(introduce);
+                    }
+                });
+            }
+        }
     }
 
     @Override

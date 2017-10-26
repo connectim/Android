@@ -17,7 +17,7 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
 
-public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasContract.BView{
+public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -27,8 +27,9 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
     TextView txt1;
 
     private Activity activity;
-    private static String GROUP_KEY = "GROUP_KEY";
     private String groupKey = null;
+
+    private GroupMyNameTextWatcher textWatcher = new GroupMyNameTextWatcher();
     private GroupMyAliasContract.Presenter presenter;
 
     @Override
@@ -41,7 +42,7 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString(GROUP_KEY, groupkey);
+        bundle.putString("GROUP_KEY", groupkey);
         ActivityUtil.next(activity, GroupMyNameActivity.class, bundle);
     }
 
@@ -67,29 +68,39 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
             }
         });
 
-        groupKey = getIntent().getStringExtra(GROUP_KEY);
-        edittxt2.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    toolbar.setRightTextEnable(false);
-                } else {
-                    toolbar.setRightTextEnable(true);
-                }
-            }
-        });
-
+        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        edittxt2.addTextChangedListener(textWatcher);
         new GroupMyAliasPresenter(this).start();
+    }
+
+    private class GroupMyNameTextWatcher implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 0) {
+                toolbar.setRightTextColor(R.color.color_68656f);
+                toolbar.setRightListener(null);
+            } else {
+                toolbar.setRightTextColor(R.color.color_green);
+                toolbar.setRightListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String myalias = edittxt2.getText().toString();
+                        presenter.updateMyAliasInGroup(myalias);
+                    }
+                });
+            }
+        }
     }
 
     @Override

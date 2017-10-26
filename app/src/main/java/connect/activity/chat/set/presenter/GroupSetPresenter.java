@@ -26,7 +26,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
-import instant.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -43,7 +43,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
     private String roomKey;
     private Activity activity;
 
-    private final String TAG_ADD = "TAG_ADD";
+    private final String TAG_ADD = "GROUP_ADD";
 
     public GroupSetPresenter(GroupSetContract.BView view) {
         this.view = view;

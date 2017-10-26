@@ -14,8 +14,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.set.contract.SingleSetContract;
-import connect.activity.chat.set.presenter.SingleSetPresenter;
+import connect.activity.chat.set.contract.PrivateSetContract;
+import connect.activity.chat.set.presenter.PrivateSetPresenter;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
@@ -37,18 +37,17 @@ import connect.widget.TopToolBar;
  * private chat setting
  * Created by gtq on 2016/11/22.
  */
-public class SingleSetActivity extends BaseActivity implements SingleSetContract.BView{
+public class PrivateSetActivity extends BaseActivity implements PrivateSetContract.BView{
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.linearlayout)
     LinearLayout linearlayout;
 
-    private SingleSetActivity activity;
-    private static String ROOM_KEY = "ROOM_KEY";
+    private PrivateSetActivity activity;
     private String roomKey = "";
 
-    private SingleSetContract.Presenter presenter;
+    private PrivateSetContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +59,8 @@ public class SingleSetActivity extends BaseActivity implements SingleSetContract
 
     public static void startActivity(Activity activity, String roomkey) {
         Bundle bundle = new Bundle();
-        bundle.putString(ROOM_KEY, roomkey);
-        ActivityUtil.next(activity, SingleSetActivity.class, bundle);
+        bundle.putString("ROOM_KEY", roomkey);
+        ActivityUtil.next(activity, PrivateSetActivity.class, bundle);
     }
 
     @Override
@@ -77,16 +76,12 @@ public class SingleSetActivity extends BaseActivity implements SingleSetContract
             }
         });
 
-        roomKey = getIntent().getStringExtra(ROOM_KEY);
-        if (TextUtils.isEmpty(roomKey)) {
-            ActivityUtil.goBack(activity);
-            return;
-        }
-        new SingleSetPresenter(this).start();
+        roomKey = getIntent().getStringExtra("ROOM_KEY");
+        new PrivateSetPresenter(this).start();
     }
 
     @Override
-    public void setPresenter(SingleSetContract.Presenter presenter) {
+    public void setPresenter(PrivateSetContract.Presenter presenter) {
         this.presenter = presenter;
     }
 

@@ -9,9 +9,9 @@ import connect.activity.base.contract.BaseView;
  * Created by Administrator on 2017/8/7.
  */
 
-public interface SingleSetContract {
+public interface PrivateSetContract {
 
-    interface BView extends BaseView<SingleSetContract.Presenter> {
+    interface BView extends BaseView<PrivateSetContract.Presenter> {
 
         String getRoomKey();
 

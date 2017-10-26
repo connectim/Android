@@ -40,6 +40,9 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
     private int topPosi;
     private boolean move;
 
+    private GroupCreateOnscrollListener onscrollListener = new GroupCreateOnscrollListener();
+    private GroupCreateFriendSelectListener friendSelectListener = new GroupCreateFriendSelectListener();
+    private GroupCreateLetterChanged letterChanged = new GroupCreateLetterChanged();
     private LinearLayoutManager linearLayoutManager;
     private MulContactAdapter adapter;
     private GroupCreateContract.Presenter presenter;
@@ -66,7 +69,6 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         toolbar.setTitle(getResources().getString(R.string.Chat_Choose_contact));
         toolbar.setRightText(R.string.Chat_Complete);
         toolbar.setRightTextEnable(false);
-
         toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,66 +83,14 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend();
         Collections.sort(friendEntities, new FriendCompara());
 
-        adapter = new MulContactAdapter(activity, oldMembers, friendEntities,null);
+        adapter = new MulContactAdapter(activity, oldMembers, friendEntities, null);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (move) {
-                    move = false;
-                    int n = topPosi - linearLayoutManager.findFirstVisibleItemPosition();
-                    if (0 <= n && n < recyclerview.getChildCount()) {
-                        int top = recyclerview.getChildAt(n).getTop();
-                        recyclerview.scrollBy(0, top);
-                    }
-                }
-            }
-        });
-        adapter.setOnSeleFriendListence(new MulContactAdapter.OnSeleFriendListence() {
-            @Override
-            public void seleFriend(List<ContactEntity> list) {
-                if (list == null || list.size() < 2) {
-                    toolbar.setRightTextEnable(false);
-                } else {
-                    toolbar.setRightTextEnable(true);
-                    toolbar.setRightListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            List<ContactEntity> selectEntities = adapter.getSelectEntities();
-                            if (selectEntities == null || selectEntities.size() < 1) {
-                                toolbar.setRightTextEnable(false);
-                                return;
-                            }
-                            presenter.requestGroupCreate(selectEntities);
-
-                            toolbar.setRightTextEnable(false);
-                            Message message = new Message();
-                            message.what = 100;
-                            handler.sendMessageDelayed(message, 3000);
-                        }
-                    });
-                }
-            }
-        });
-
-        siderbar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
-            @Override
-            public void onTouchingLetterChanged(String s) {
-                int position = adapter.getPositionForSection(s.charAt(0));
-                moveToPosition(position);
-            }
-        });
-
+        recyclerview.addOnScrollListener(onscrollListener);
+        adapter.setOnSeleFriendListence(friendSelectListener);
+        siderbar.setOnTouchingLetterChangedListener(letterChanged);
         new GroupCreatePresenter(this).start();
     }
-
 
     private Handler handler = new Handler() {
         @Override
@@ -154,18 +104,74 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         }
     };
 
-    private void moveToPosition(int posi) {
-        this.topPosi = posi;
-        int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
-        int lastItem = linearLayoutManager.findLastVisibleItemPosition();
-        if (posi <= firstItem) {
-            recyclerview.scrollToPosition(posi);
-        } else if (posi <= lastItem) {
-            int top = recyclerview.getChildAt(posi - firstItem).getTop();
-            recyclerview.scrollBy(0, top);
-        } else {
-            recyclerview.scrollToPosition(posi);
-            move = true;
+    private class GroupCreateOnscrollListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (move) {
+                move = false;
+                int n = topPosi - linearLayoutManager.findFirstVisibleItemPosition();
+                if (0 <= n && n < recyclerview.getChildCount()) {
+                    int top = recyclerview.getChildAt(n).getTop();
+                    recyclerview.scrollBy(0, top);
+                }
+            }
+        }
+    }
+
+    private class GroupCreateFriendSelectListener implements MulContactAdapter.OnSeleFriendListence {
+
+        @Override
+        public void seleFriend(List<ContactEntity> list) {
+            if (list == null || list.size() < 2) {
+                toolbar.setRightTextColor(R.color.color_6d6e75);
+                toolbar.setRightListener(null);
+            } else {
+                toolbar.setRightTextColor(R.color.color_green);
+                toolbar.setRightListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        List<ContactEntity> selectEntities = adapter.getSelectEntities();
+                        if (selectEntities == null || selectEntities.size() < 1) {
+                            toolbar.setRightTextColor(R.color.color_6d6e75);
+                            return;
+                        }
+                        presenter.requestGroupCreate(selectEntities);
+
+                        toolbar.setRightListener(null);
+                        Message message = new Message();
+                        message.what = 100;
+                        handler.sendMessageDelayed(message, 3000);
+                    }
+                });
+            }
+        }
+    }
+
+    private class GroupCreateLetterChanged implements SideBar.OnTouchingLetterChangedListener{
+
+        @Override
+        public void onTouchingLetterChanged(String s) {
+            int position = adapter.getPositionForSection(s.charAt(0));
+
+            topPosi = position;
+            int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastItem = linearLayoutManager.findLastVisibleItemPosition();
+            if (position <= firstItem) {
+                recyclerview.scrollToPosition(position);
+            } else if (position <= lastItem) {
+                int top = recyclerview.getChildAt(position - firstItem).getTop();
+                recyclerview.scrollBy(0, top);
+            } else {
+                recyclerview.scrollToPosition(position);
+                move = true;
+            }
         }
     }
 

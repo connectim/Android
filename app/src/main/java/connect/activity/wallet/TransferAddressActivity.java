@@ -29,9 +29,10 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import instant.utils.cryption.SupportKeyUril;
 import connect.activity.wallet.view.TransferEditView;
 import com.wallet.inter.WalletListener;
+
+import connect.utils.cryption.SupportKeyUril;
 import connect.widget.TopToolBar;
 
 /**

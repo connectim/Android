@@ -16,9 +16,9 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.activity.contact.presenter.AddFriendPhonePresenter;
 import connect.activity.contact.bean.PhoneContactBean;
-import instant.utils.cryption.DecryptionUtil;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -89,7 +89,7 @@ public class ConvertUtil {
                 }
 
                 for (PhoneContactBean contactBean : localList) {
-                    String phoneHmac = SupportKeyUril.hmacSHA512(contactBean.getPhone(),SupportKeyUril.SaltHMAC);
+                    String phoneHmac = SupportKeyUril.hmacSHA512(contactBean.getPhone(), SupportKeyUril.SaltHMAC);
                     boolean isAdd = true;
                     for(PhoneContactBean serverContactBean : arrayList){
                         if (serverContactBean.getPhone().equals(phoneHmac)) {

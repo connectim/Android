@@ -38,11 +38,14 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
     @Bind(R.id.siderbar)
     SideBar siderbar;
 
-    private String Tag = "GroupTransferToActivity";
+    private String Tag = "_GroupTransferToActivity";
 
-    private static String GROUP_KEY = "GROUP_KEY";
     private GroupOwnerToActivity activity;
     private String groupKey = null;
+
+    private GroupOwnerToOnscrollListener onscrollListener = new GroupOwnerToOnscrollListener();
+    private GroupOwnerTransferToListener transferToListener = new GroupOwnerTransferToListener();
+    private GroupOwnerLetterChanged letterChanged = new GroupOwnerLetterChanged();
     private GroupOwnerContract.Presenter presenter;
 
     private boolean move;
@@ -60,7 +63,7 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString(GROUP_KEY, groupkey);
+        bundle.putString("GROUP_KEY", groupkey);
         ActivityUtil.next(activity, GroupOwnerToActivity.class, bundle);
     }
 
@@ -77,8 +80,7 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
             }
         });
 
-        groupKey = getIntent().getStringExtra(GROUP_KEY);
-
+        groupKey = getIntent().getStringExtra("GROUP_KEY");
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
 
         String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
@@ -95,70 +97,74 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
         linearLayoutManager = new LinearLayoutManager(activity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (move) {
-                    move = false;
-                    int n = topPosi - linearLayoutManager.findFirstVisibleItemPosition();
-                    if (0 <= n && n < recyclerview.getChildCount()) {
-                        int top = recyclerview.getChildAt(n).getTop();
-                        recyclerview.scrollBy(0, top);
-                    }
-                }
-            }
-        });
-        adapter.setTransferToListener(new GroupMemberSelectAdapter.GroupTransferToListener() {
-            @Override
-            public void transferTo(final GroupMemberEntity memEntity) {
-                DialogUtil.showAlertTextView(activity,
-                        activity.getString(R.string.Set_tip_title),
-                        activity.getString(R.string.Link_Selecting__new_owner__release_your_ownership,memEntity.getUsername()),
-                        "", "", false, new DialogUtil.OnItemClickListener() {
-                            @Override
-                            public void confirm(String value) {
-                                String memberKey = memEntity.getIdentifier();
-                                String uid = memEntity.getUid();
-                                presenter.groupOwnerTo(memberKey, uid);
-                            }
-
-                            @Override
-                            public void cancel() {
-
-                            }
-                        });
-            }
-        });
-
-        siderbar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
-            @Override
-            public void onTouchingLetterChanged(String s) {
-                int position = adapter.getPositionForSection(s.charAt(0));
-                moveToPosition(position);
-            }
-        });
-
+        recyclerview.addOnScrollListener(onscrollListener);
+        adapter.setTransferToListener(transferToListener);
+        siderbar.setOnTouchingLetterChangedListener(letterChanged);
         new GroupOwnerPresenter(this).start();
     }
 
-    private void moveToPosition(int posi) {
-        this.topPosi = posi;
-        int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
-        int lastItem = linearLayoutManager.findLastVisibleItemPosition();
-        if (posi <= firstItem) {
-            recyclerview.scrollToPosition(posi);
-        } else if (posi <= lastItem) {
-            int top = recyclerview.getChildAt(posi - firstItem).getTop();
-            recyclerview.scrollBy(0, top);
-        } else {
-            recyclerview.scrollToPosition(posi);
-            move = true;
+    private class GroupOwnerToOnscrollListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (move) {
+                move = false;
+                int n = topPosi - linearLayoutManager.findFirstVisibleItemPosition();
+                if (0 <= n && n < recyclerview.getChildCount()) {
+                    int top = recyclerview.getChildAt(n).getTop();
+                    recyclerview.scrollBy(0, top);
+                }
+            }
+        }
+    }
+
+    private class GroupOwnerTransferToListener implements GroupMemberSelectAdapter.GroupTransferToListener{
+
+        @Override
+        public void transferTo(final GroupMemberEntity memEntity) {
+            DialogUtil.showAlertTextView(activity,
+                    activity.getString(R.string.Set_tip_title),
+                    activity.getString(R.string.Link_Selecting__new_owner__release_your_ownership,memEntity.getUsername()),
+                    "", "", false, new DialogUtil.OnItemClickListener() {
+                        @Override
+                        public void confirm(String value) {
+                            String memberKey = memEntity.getIdentifier();
+                            String uid = memEntity.getUid();
+                            presenter.groupOwnerTo(memberKey, uid);
+                        }
+
+                        @Override
+                        public void cancel() {
+
+                        }
+                    });
+        }
+    }
+
+    private class GroupOwnerLetterChanged implements SideBar.OnTouchingLetterChangedListener{
+
+        @Override
+        public void onTouchingLetterChanged(String s) {
+            int position = adapter.getPositionForSection(s.charAt(0));
+
+            topPosi = position;
+            int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastItem = linearLayoutManager.findLastVisibleItemPosition();
+            if (position <= firstItem) {
+                recyclerview.scrollToPosition(position);
+            } else if (position <= lastItem) {
+                int top = recyclerview.getChildAt(position - firstItem).getTop();
+                recyclerview.scrollBy(0, top);
+            } else {
+                recyclerview.scrollToPosition(position);
+                move = true;
+            }
         }
     }
 

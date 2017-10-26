@@ -114,6 +114,10 @@ public class TopToolBar extends LinearLayout{
         rightLayout.setOnClickListener(onClickListener);
     }
 
+    public void setRightTextColor(Integer resId){
+        rightText.setTextColor(BaseApplication.getInstance().getResources().getColor(resId));
+    }
+
     public void setRightTextEnable(boolean enable){
         rightText.setEnabled(enable);
         if(enable){

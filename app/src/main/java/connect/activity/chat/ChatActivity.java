@@ -31,7 +31,7 @@ import connect.activity.chat.inter.FileUpLoad;
 import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.model.fileload.VideoUpload;
 import connect.activity.chat.set.GroupSetActivity;
-import connect.activity.chat.set.SingleSetActivity;
+import connect.activity.chat.set.PrivateSetActivity;
 import connect.activity.chat.view.ExBottomLayout;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.wallet.TransferFriendActivity;
@@ -109,16 +109,20 @@ public class ChatActivity extends BaseChatActvity {
         toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (talker.getTalkType()) {
-                    case PRIVATE:
-                        SingleSetActivity.startActivity(activity, talker.getTalkKey());
-                        break;
-                    case GROUPCHAT:
-                        GroupSetActivity.startActivity(activity, talker.getTalkKey());
-                        break;
+                String talkey = talker.getTalkKey();
+                if (!TextUtils.isEmpty(talkey)) {
+                    switch (talker.getTalkType()) {
+                        case PRIVATE:
+                            PrivateSetActivity.startActivity(activity, talkey);
+                            break;
+                        case GROUPCHAT:
+                            GroupSetActivity.startActivity(activity, talkey);
+                            break;
+                    }
                 }
             }
         });
+
         // robot/stranger donot show setting
         if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
             toolbar.setRightImg(R.mipmap.menu_white);
