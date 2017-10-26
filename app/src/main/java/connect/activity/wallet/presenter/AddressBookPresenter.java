@@ -13,7 +13,7 @@ import connect.activity.wallet.contract.AddressBookContract;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import instant.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
