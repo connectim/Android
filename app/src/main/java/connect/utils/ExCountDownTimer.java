@@ -3,10 +3,6 @@ package connect.utils;
 import android.os.Handler;
 import android.os.Message;
 
-/**
- * Timer
- * Created by gtq on 2016/12/27.
- */
 public abstract class ExCountDownTimer {
 
     /** tag running */

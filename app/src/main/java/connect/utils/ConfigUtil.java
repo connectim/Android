@@ -21,6 +21,17 @@ public class ConfigUtil {
 
     private Map<String, String> keyMaps = null;
 
+    public static ConfigUtil getInstance() {
+        if (configUtil == null) {
+            synchronized (ConfigUtil.class) {
+                if (configUtil == null) {
+                    configUtil = new ConfigUtil();
+                }
+            }
+        }
+        return configUtil;
+    }
+
     public ConfigUtil() {
         initConfig(ModeEnum.TEST);
     }
@@ -85,17 +96,6 @@ public class ConfigUtil {
             }
             eventType = pullParser.next();
         }
-    }
-
-    public static ConfigUtil getInstance() {
-        if (configUtil == null) {
-            synchronized (ConfigUtil.class) {
-                if (configUtil == null) {
-                    configUtil = new ConfigUtil();
-                }
-            }
-        }
-        return configUtil;
     }
 
     /**********************************************************************************************

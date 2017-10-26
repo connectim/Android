@@ -10,11 +10,6 @@ import connect.activity.base.BaseApplication;
 
 public class ActivityUtil {
 
-    /**
-     * Go to the next Activity
-     * @param curActivity
-     * @param nextActivity
-     */
     public static void next(Activity curActivity, Class nextActivity) {
         next(curActivity, nextActivity, null);
     }
@@ -100,8 +95,4 @@ public class ActivityUtil {
         return activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
     }
 
-    public static boolean isRunChatActivity(String acyname) {
-        String runAcy = getRunningActivityName();
-        return acyname.equals(runAcy);
-    }
 }

@@ -20,7 +20,9 @@ import connect.activity.base.BaseApplication;
  * Language International Chemical
  */
 public class GlobalLanguageUtil {
+
     private static GlobalLanguageUtil globalLanguageUtil;
+    private Map<String, String> languageMap = new HashMap<>();
 
     public static GlobalLanguageUtil getInstance() {
         if (globalLanguageUtil == null) {
@@ -32,8 +34,6 @@ public class GlobalLanguageUtil {
         }
         return globalLanguageUtil;
     }
-
-    private Map<String, String> languageMap = new HashMap<>();
 
     public GlobalLanguageUtil() {
         String code = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);

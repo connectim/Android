@@ -120,14 +120,6 @@ public class ResolveUrlUtil {
         if(isCloseScan){
             ActivityUtil.goBack(activity);
         }
-        /*if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
-            TransferToActivity.startActivity(activity, resultBean.getAddress(), amount);
-            if(isCloseScan){
-                ActivityUtil.goBack(activity);
-            }
-        } else {
-            ToastEUtil.makeText(activity, R.string.Wallet_Could_not_get_himself_sent_money_transfer).show();
-        }*/
     }
 
     /**

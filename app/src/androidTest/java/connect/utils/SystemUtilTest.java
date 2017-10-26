@@ -47,7 +47,7 @@ public class SystemUtilTest {
     @Test
     public void getLoadAddresSbook() throws Exception {
         // permission allow
-        List<PhoneContactBean> listPhone = SystemDataUtil.getLoadAddresSbook(BaseApplication.getInstance().getBaseContext());
+        List<PhoneContactBean> listPhone = SystemDataUtil.getLocalAddressBook(BaseApplication.getInstance().getBaseContext());
         if(listPhone == null || listPhone.size() == 0){
             assertTrue(false);
         }else{

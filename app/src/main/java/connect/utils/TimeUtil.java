@@ -66,22 +66,18 @@ public class TimeUtil {
         return getCurrentTimeInLong() + String.valueOf(pross).substring(1, 3 + 1);
     }
 
-    public static int msgidToInt(String msgid) {
-        return Integer.parseInt(msgid.substring(8));
-    }
-
     /**
      * Timestamp to descriptive time
-     * @param lasttime
-     * @param msgtime
+     * @param lastTime
+     * @param msgTime
      * @return
      * @throws Exception
      */
-    public static String getMsgTime(long lasttime,long msgtime) throws Exception {
+    public static String getMsgTime(long lastTime,long msgTime) throws Exception {
         Calendar msgcalendar = Calendar.getInstance();
-        msgcalendar.setTimeInMillis(lasttime);
+        msgcalendar.setTimeInMillis(lastTime);
         Calendar curcalendar = Calendar.getInstance();
-        curcalendar.setTimeInMillis(msgtime);
+        curcalendar.setTimeInMillis(msgTime);
 
         SimpleDateFormat format = null;
         String showTime = "";
@@ -90,13 +86,13 @@ public class TimeUtil {
         int curYear = curcalendar.get(Calendar.YEAR);
         if (curYear != msgYear) {
             format = DATE_FORMAT_DATE;
-            showTime = format.format(msgtime);
+            showTime = format.format(msgTime);
         } else {
             int msgMonth = msgcalendar.get(Calendar.MONTH);
             int curMonth = curcalendar.get(Calendar.MONTH);
             if (msgMonth != curMonth) {
                 format = DATE_FORMAT_MONTH;
-                showTime = format.format(msgtime);
+                showTime = format.format(msgTime);
             } else {
                 Context context = BaseApplication.getInstance().getBaseContext();
 
@@ -105,21 +101,21 @@ public class TimeUtil {
                 switch (curDay - msgDay) {
                     case 0:
                         format = DATE_FORMAT_HOUR_MIN;
-                        showTime = format.format(msgtime);
+                        showTime = format.format(msgTime);
                         break;
                     case -1:
                         format = DATE_FORMAT_HOUR_MIN;
-                        showTime = format.format(msgtime);
+                        showTime = format.format(msgTime);
                         showTime = context.getString(R.string.Chat_Yesterday) + " " + showTime;
                         break;
                     case -2:
                         format = DATE_FORMAT_HOUR_MIN;
-                        showTime = format.format(msgtime);
+                        showTime = format.format(msgTime);
                         showTime = context.getString(R.string.Chat_the_day_before_yesterday_time, " " + showTime);
                         break;
                     default:
                         format = DATE_FORMAT_HOUR_MIN;
-                        showTime = format.format(msgtime);
+                        showTime = format.format(msgTime);
                         break;
                 }
             }

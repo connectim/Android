@@ -166,8 +166,8 @@ public class SystemDataUtil {
      * @return Object
      * @Exception
      */
-    public static List<PhoneContactBean> getLoadAddresSbook(Context context) {
-        Map<Integer, String> map = new HashMap<Integer, String>();
+    public static List<PhoneContactBean> getLocalAddressBook(Context context) {
+        Map<Integer, String> map = new HashMap<>();
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         String contactIds = "";
@@ -189,8 +189,8 @@ public class SystemDataUtil {
         Cursor phonesCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " in ( " + contactIds + ")", null, null);
         i = 0;
-        List<PhoneContactBean> loacList = new ArrayList<PhoneContactBean>();
-        List<String> tempList = new ArrayList<String>();
+        List<PhoneContactBean> loacList = new ArrayList<>();
+        List<String> tempList = new ArrayList<>();
         PhoneContactBean contacts = null;
         int nowContact = 0;
         if (phonesCursor != null) {

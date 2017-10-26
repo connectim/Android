@@ -162,7 +162,7 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
      */
     private Connect.PhoneBook getPhoneHmacBook(){
         // For local contacts
-       localList = SystemDataUtil.getLoadAddresSbook(mView.getActivity());
+       localList = SystemDataUtil.getLocalAddressBook(mView.getActivity());
         if (null == localList || localList.size() == 0) {
             return null;
         }
