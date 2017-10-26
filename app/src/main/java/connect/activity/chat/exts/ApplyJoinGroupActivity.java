@@ -52,7 +52,7 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
     @Bind(R.id.btn)
     Button btn;
 
-    private String Tag = "ApplyJoinGroupActivity";
+    private static String TAG = "_ApplyJoinGroupActivity";
     private ApplyJoinGroupActivity activity;
 
     public enum EApplyGroup {

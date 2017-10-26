@@ -53,8 +53,10 @@ public class PaymentActivity extends BaseActivity implements PaymentContract.BVi
     Button btn;
 
     private PaymentActivity activity;
-    /** tag */
-    private String Tag = "PaymentActivity";
+    private static String TAG = "_PaymentActivity";
+    private static String GATHER_TYPE = "GATHER_TYPE";
+    private static String GATHER_IDENTIFY = "GATHER_IDENTIFY";
+
     private int gatherType;
     private String gatherKey;
 
@@ -70,8 +72,8 @@ public class PaymentActivity extends BaseActivity implements PaymentContract.BVi
 
     public static void startActivity(Activity activity, int type, String roomkey) {
         Bundle bundle = new Bundle();
-        bundle.putInt("TYPE_GATHER", type);
-        bundle.putString("KEY_GATHER", roomkey);
+        bundle.putInt(GATHER_TYPE, type);
+        bundle.putString(GATHER_IDENTIFY, roomkey);
         ActivityUtil.next(activity, PaymentActivity.class, bundle);
     }
 
@@ -87,8 +89,8 @@ public class PaymentActivity extends BaseActivity implements PaymentContract.BVi
             }
         });
 
-        gatherType = getIntent().getIntExtra("TYPE_GATHER", 0);
-        gatherKey = getIntent().getStringExtra("KEY_GATHER");
+        gatherType = getIntent().getIntExtra(GATHER_TYPE, 0);
+        gatherKey = getIntent().getStringExtra(GATHER_IDENTIFY);
     }
 
     @Override

@@ -47,6 +47,8 @@ public class GoogleMapActivity extends BaseActivity {
     @Bind(R.id.myProgressBar)
     ProgressBar myProgressBar;
 
+    private static String LATITUDE = "LATITUDE";
+    private static String LONGITUDE = "LONGITUDE";
     private GoogleMapActivity activity;
 
     @Override
@@ -63,8 +65,8 @@ public class GoogleMapActivity extends BaseActivity {
 
     public static void startActivity(Activity activity, double lat, double lon) {
         Bundle bundle = new Bundle();
-        bundle.putDouble("LAT", lat);
-        bundle.putDouble("LON", lon);
+        bundle.putDouble(LATITUDE, lat);
+        bundle.putDouble(LONGITUDE, lon);
         ActivityUtil.next(activity, GoogleMapActivity.class, bundle);
     }
 
@@ -138,8 +140,8 @@ public class GoogleMapActivity extends BaseActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 105://java call js
-                    double lat = getIntent().getDoubleExtra("LAT", 0);
-                    double lon = getIntent().getDoubleExtra("LON", 0);
+                    double lat = getIntent().getDoubleExtra(LATITUDE, 0);
+                    double lon = getIntent().getDoubleExtra(LONGITUDE, 0);
                     if (lat != 0 || lon != 0) {
                         webView.loadUrl("javascript:initMarker(" + lat + "," + lon + ")");
                     }

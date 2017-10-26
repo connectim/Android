@@ -109,6 +109,31 @@ public class ContactHelper extends BaseDao {
     }
 
     /*********************************  select ***********************************/
+    public Connect.ChatType loadChatType(String uid) {
+        if (TextUtils.isEmpty(uid)) {
+            uid = "";
+        }
+
+        String sql = "SELECT C.UID AS CUID, G.IDENTIFIER AS GIDENTIFY FROM CONTACT_ENTITY C LEFT OUTER JOIN GROUP_ENTITY G WHERE C.UID = G.IDENTIFIER AND C.UID = ? GROUP BY C.UID LIMIT 1;";
+
+        Connect.ChatType chatType = null;
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{uid});
+        while (cursor.moveToNext()) {
+            String friendUid = cursorGetString(cursor, "CUID");
+            String groupIdentify = cursorGetString(cursor, "GIDENTIFY");
+            if (!TextUtils.isEmpty(friendUid)) {
+                chatType = Connect.ChatType.PRIVATE;
+            } else if (!TextUtils.isEmpty(groupIdentify)) {
+                chatType = Connect.ChatType.GROUPCHAT;
+            } else if (BaseApplication.getInstance().getBaseContext().getResources().getString(R.string.app_name).equals(uid)) {
+                chatType = Connect.ChatType.CONNECT_SYSTEM;
+            } else {
+                chatType = Connect.ChatType.UNKNOW;
+            }
+        }
+        return chatType;
+    }
+
     public Talker loadTalkerFriend(String uid) {
         if (TextUtils.isEmpty(uid)) {
             uid = "";

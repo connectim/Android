@@ -56,7 +56,6 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
     private static String RED_KEY = "RED_KEY";
     /** packet type 1:private 2:group */
     private int redType;
-    /** packet address */
     private String redKey;
     private TransferManager transferManager;
 

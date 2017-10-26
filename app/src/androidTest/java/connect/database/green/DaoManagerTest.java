@@ -51,6 +51,7 @@ public class DaoManagerTest {
 
         //Contact
         //ContactHelperTest contactHelperTest = new ContactHelperTest();
+        //contactHelperTest.loadChatType(null);
         //contactHelperTest.loadTalkerFriend(null);
         //contactHelperTest.loadTalkerGroup(null);
         //contactHelperTest.loadGroupMemEntities(null);

@@ -45,7 +45,12 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
     Button btn;
 
     private TransferToActivity activity;
+    private static String TAG = "_TransferToActivity";
+    private static String TRANSFER_TYPE = "TRANSFER_TYPE";
+    private static String TRANSFER_IDENTIFY = "TRANSFER_IDENTIFY";
+    private static String TRANSFER_AMOUNT = "TRANSFER_AMOUNT";
     private String transAddress;
+
     private TransferToContract.Presenter presenter;
 
     @Override
@@ -73,10 +78,11 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
 
     public static void startActivity(Activity activity, TransferType type, String address, Double amount) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("TRANSFER_TYPE", type);
-        bundle.putString("TRANSFER_PUBKEY", address);
-        if (amount != null)
-            bundle.putDouble("TRANSFER_AMOUNT", amount);
+        bundle.putSerializable(TRANSFER_TYPE, type);
+        bundle.putString(TRANSFER_IDENTIFY, address);
+        if (amount != null) {
+            bundle.putDouble(TRANSFER_AMOUNT, amount);
+        }
         ActivityUtil.next(activity, TransferToActivity.class, bundle);
     }
 
@@ -94,15 +100,14 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
             }
         });
 
-        transferType = (TransferType) getIntent().getSerializableExtra("TRANSFER_TYPE");
-        transAddress = getIntent().getStringExtra("TRANSFER_PUBKEY");
+        transferType = (TransferType) getIntent().getSerializableExtra(TRANSFER_TYPE);
+        transAddress = getIntent().getStringExtra(TRANSFER_IDENTIFY);
 
         layoutFirst.setVisibility(View.VISIBLE);
         layoutSecond.setVisibility(View.GONE);
-        if(getIntent().getExtras().containsKey("TRANSFER_AMOUNT")){
-            transferEditView.setInputAmount(getIntent().getExtras().getDouble("TRANSFER_AMOUNT"));
+        if(getIntent().getExtras().containsKey(TRANSFER_AMOUNT)){
+            transferEditView.setInputAmount(getIntent().getExtras().getDouble(TRANSFER_AMOUNT));
         }
-
         new TransferToPresenter(this).start();
     }
 
