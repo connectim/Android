@@ -26,7 +26,6 @@ import connect.database.SharedPreferenceUtil;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.glide.OnDownloadTarget;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.utils.system.SystemDataUtil;
@@ -154,7 +153,7 @@ public class StartPagePresenter implements StartContract.Presenter {
         sharedStr = "";
         imageLoadInt = 0;
         for (String path : imageList) {
-            GlideUtil.downloadImage(path, new OnDownloadTarget() {
+            GlideUtil.downloadImage(path, new GlideUtil.OnDownloadTarget() {
                 @Override
                 public void finish(String path) {
                     if (!TextUtils.isEmpty(path)) {
@@ -170,6 +169,9 @@ public class StartPagePresenter implements StartContract.Presenter {
                         SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.START_IMAGES_ADDRESS, sharedStr);
                     }
                 }
+
+                @Override
+                public void error() {}
             });
         }
     }

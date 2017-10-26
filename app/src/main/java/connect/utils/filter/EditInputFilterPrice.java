@@ -14,17 +14,17 @@ import connect.utils.RegularUtil;
 public class EditInputFilterPrice implements InputFilter {
 
     private double maxValue = 1000;
-    private int pontintLength = 2;
+    private int pointIntLength = 2;
     Pattern pattern;
 
     public EditInputFilterPrice(){
         pattern = Pattern.compile("[0-9]*");
     }
 
-    public EditInputFilterPrice(Double maxValue, int pontintLength) {
+    public EditInputFilterPrice(Double maxValue, int pointIntLength) {
         pattern = Pattern.compile("[0-9]*");
         this.maxValue = maxValue;
-        this.pontintLength = pontintLength;
+        this.pointIntLength = pointIntLength;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class EditInputFilterPrice implements InputFilter {
                 len ++;
             }
 
-            if (len > pontintLength) {
+            if (len > pointIntLength) {
                 CharSequence newText = dest.subSequence(dstart, dend);
                 return newText;
             }
@@ -74,11 +74,4 @@ public class EditInputFilterPrice implements InputFilter {
         return dest.subSequence(dstart, dend) + src.toString();
     }
 
-    public void setMaxValue(int maxValue) {
-        this.maxValue = maxValue;
-    }
-
-    public void setPontintLength(int pontintLength) {
-        this.pontintLength = pontintLength;
-    }
 }

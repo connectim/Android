@@ -41,7 +41,7 @@ public class ClipImageLayout extends RelativeLayout {
     }
 
     public void setImage(String path) {
-        GlideUtil.loadAvatar(mZoomImageView,path);
+        GlideUtil.loadAvatarRound(mZoomImageView, path, 0);
     }
 
     /**

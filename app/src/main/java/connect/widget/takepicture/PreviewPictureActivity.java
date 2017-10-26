@@ -56,7 +56,7 @@ public class PreviewPictureActivity extends BaseActivity{
 
         bundle = getIntent().getExtras();
         pathImage = bundle.getString("path");
-        GlideUtil.loadAvatar(previewImg,pathImage);
+        GlideUtil.loadAvatarRound(previewImg, pathImage, 0);
     }
 
     @OnClick(R.id.retake_rela)

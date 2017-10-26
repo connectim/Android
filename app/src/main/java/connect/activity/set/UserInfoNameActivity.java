@@ -20,7 +20,7 @@ import connect.activity.set.presenter.UserInfoNamePresenter;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.filter.NameLengthFilter;
+import connect.utils.filter.StringLengthFilter;
 import connect.widget.TopToolBar;
 
 /**
@@ -123,7 +123,7 @@ public class UserInfoNameActivity extends BaseActivity implements UserInfoNameCo
         if (type.equals(TYPE_NUMBER)) {
             idTipTv.setVisibility(View.VISIBLE);
         }
-        InputFilter[] filters = { new NameLengthFilter(20) };
+        InputFilter[] filters = { new StringLengthFilter(20) };
         nameEt.setFilters(filters);
     }
 
