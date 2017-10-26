@@ -43,7 +43,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
     private String roomKey;
     private Activity activity;
 
-    private final String TAG_ADD = "TAG_ADD";
+    private final String TAG_ADD = "GROUP_ADD";
 
     public GroupSetPresenter(GroupSetContract.BView view) {
         this.view = view;

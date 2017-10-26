@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.chat.set.contract.SingleSetContract;
+import connect.activity.chat.set.contract.PrivateSetContract;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -23,14 +23,14 @@ import connect.utils.glide.GlideUtil;
 /**
  * Created by Administrator on 2017/8/7.
  */
-public class SingleSetPresenter implements SingleSetContract.Presenter {
+public class PrivateSetPresenter implements PrivateSetContract.Presenter {
 
-    private SingleSetContract.BView view;
+    private PrivateSetContract.BView view;
 
     private String roomKey;
     private Activity activity;
 
-    public SingleSetPresenter(SingleSetContract.BView view) {
+    public PrivateSetPresenter(PrivateSetContract.BView view) {
         this.view = view;
         view.setPresenter(this);
     }

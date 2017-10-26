@@ -11,17 +11,16 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.base.BaseActivity;
+import connect.activity.chat.adapter.ContactCardAdapter;
 import connect.activity.chat.bean.LinkMessageRow;
+import connect.activity.chat.bean.MsgSend;
+import connect.activity.chat.model.FriendCompara;
 import connect.activity.chat.set.contract.ContactCardContract;
 import connect.activity.chat.set.presenter.ContactCardPresenter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.MsgSend;
-import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.model.FriendCompara;
-import connect.activity.chat.adapter.ContactCardAdapter;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
@@ -42,8 +41,12 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
     private String pubKey;
     private boolean move;
     private int topPosi;
+
+    private ContactCardScrollListener scrollListener=new ContactCardScrollListener();
+    private ContactCardTouchingLetterChanged letterChanged=new ContactCardTouchingLetterChanged();
     private LinearLayoutManager linearLayoutManager;
     private ContactCardContract.Presenter presenter;
+    private ContactCardAdapter contactCardAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +56,9 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
         initView();
     }
 
-    public static void startActivity(Activity activity) {
-        startActivity(activity,null);
-    }
-
-    public static void startActivity(Activity activity,String pubkey) {
+    public static void startActivity(Activity activity,String uid) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("PUBKEY", pubkey);
+        bundle.putSerializable("UID", uid);
         ActivityUtil.next(activity, ContactCardActivity.class, bundle);
     }
 
@@ -75,15 +74,13 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
                 ActivityUtil.goBack(activity);
             }
         });
-        String type = getIntent().getExtras().getString("type");
 
-        pubKey = getIntent().getStringExtra("PUBKEY");
-
+        pubKey = getIntent().getStringExtra("UID");
         linearLayoutManager = new LinearLayoutManager(activity);
-        List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend(RoomSession.getInstance().getRoomKey());
+        List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend(pubKey);
         Collections.sort(friendEntities, new FriendCompara());
 
-        final ContactCardAdapter contactCardAdapter = new ContactCardAdapter(activity, friendEntities);
+        contactCardAdapter = new ContactCardAdapter(activity, friendEntities);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(contactCardAdapter);
         contactCardAdapter.setItemClickListener(new ContactCardAdapter.OnItemClickListener() {
@@ -94,49 +91,51 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
                 ActivityUtil.goBack(activity);
             }
         });
-        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (move) {
-                    move = false;
-                    int n = topPosi - linearLayoutManager.findFirstVisibleItemPosition();
-                    if (0 <= n && n < recyclerview.getChildCount()) {
-                        int top = recyclerview.getChildAt(n).getTop();
-                        recyclerview.scrollBy(0, top);
-                    }
-                }
-            }
-        });
-
-        siderbar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
-            @Override
-            public void onTouchingLetterChanged(String s) {
-                int position = contactCardAdapter.getPositionForSection(s.charAt(0));
-                moveToPosition(position);
-            }
-        });
-
+        recyclerview.addOnScrollListener(scrollListener);
+        siderbar.setOnTouchingLetterChangedListener(letterChanged);
         new ContactCardPresenter(this).start();
     }
 
-    private void moveToPosition(int posi) {
-        this.topPosi = posi;
-        int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
-        int lastItem = linearLayoutManager.findLastVisibleItemPosition();
-        if (posi <= firstItem) {
-            recyclerview.scrollToPosition(posi);
-        } else if (posi <= lastItem) {
-            int top = recyclerview.getChildAt(posi - firstItem).getTop();
-            recyclerview.scrollBy(0, top);
-        } else {
-            recyclerview.scrollToPosition(posi);
-            move = true;
+    private class ContactCardScrollListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (move) {
+                move = false;
+                int n = topPosi - linearLayoutManager.findFirstVisibleItemPosition();
+                if (0 <= n && n < recyclerview.getChildCount()) {
+                    int top = recyclerview.getChildAt(n).getTop();
+                    recyclerview.scrollBy(0, top);
+                }
+            }
+        }
+    }
+
+    private class ContactCardTouchingLetterChanged implements SideBar.OnTouchingLetterChangedListener {
+
+        @Override
+        public void onTouchingLetterChanged(String s) {
+            int position = contactCardAdapter.getPositionForSection(s.charAt(0));
+
+            topPosi = position;
+            int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastItem = linearLayoutManager.findLastVisibleItemPosition();
+            if (position <= firstItem) {
+                recyclerview.scrollToPosition(position);
+            } else if (position <= lastItem) {
+                int top = recyclerview.getChildAt(position - firstItem).getTop();
+                recyclerview.scrollBy(0, top);
+            } else {
+                recyclerview.scrollToPosition(position);
+                move = true;
+            }
         }
     }
 

@@ -51,9 +51,6 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
     @Bind(R.id.relativelayout_1)
     RelativeLayout relativelayout1;
 
-    private static String GROUP_KEY = "GROUP_KEY";
-    private final String TAG_ADD = "TAG_ADD";
-
     private String groupKey;
     private GroupSetActivity activity;
     private GroupSetContract.Presenter presenter;
@@ -68,7 +65,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString(GROUP_KEY, groupkey);
+        bundle.putString("GROUP_KEY", groupkey);
         ActivityUtil.next(activity, GroupSetActivity.class, bundle);
     }
 
@@ -85,7 +82,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
             }
         });
 
-        groupKey = getIntent().getStringExtra(GROUP_KEY);
+        groupKey = getIntent().getStringExtra("GROUP_KEY");
         new GroupSetPresenter(this).start();
         presenter.syncGroupInfo();
     }
@@ -132,7 +129,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
             @Override
             public void onClick(View v) {
                 String address = (String) v.getTag();
-                if (TAG_ADD.equals(address)) {
+                if ("GROUP_ADD".equals(address)) {
                     GroupInviteActivity.startActivity(activity, groupKey);
                 } else {
                     if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(address)) {

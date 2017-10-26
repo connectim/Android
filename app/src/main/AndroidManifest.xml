@@ -267,7 +267,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="connect.activity.chat.set.SingleSetActivity"
+            android:name="connect.activity.chat.set.PrivateSetActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity

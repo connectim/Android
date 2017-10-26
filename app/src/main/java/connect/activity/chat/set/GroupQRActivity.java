@@ -33,7 +33,6 @@ import connect.widget.zxing.utils.CreateScan;
  */
 public class GroupQRActivity extends BaseActivity implements GroupQRContract.BView{
 
-    private static String GROUP_KEY = "GROUP_KEY";
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
     @Bind(R.id.roundimg1)
@@ -60,7 +59,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString(GROUP_KEY, groupkey);
+        bundle.putString("GROUP_KEY", groupkey);
         ActivityUtil.next(activity, GroupQRActivity.class, bundle);
     }
 
@@ -114,7 +113,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
             }
         });
 
-        groupKey = getIntent().getStringExtra(GROUP_KEY);
+        groupKey = getIntent().getStringExtra("GROUP_KEY");
         new GroupQRPresenter(this).start();
         presenter.requestGroupQR(UriUtil.GROUP_HASH);
     }
