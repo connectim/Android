@@ -16,9 +16,6 @@ import connect.ui.activity.R;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.base.BaseApplication;
 
-/**
- * Created by Administrator on 2016/8/26.
- */
 public class FileUtil {
 
     /** app */
@@ -30,7 +27,6 @@ public class FileUtil {
 
     /**
      * Get the private file path
-     *
      * @return
      */
     public static String getExternalStorePath() {
@@ -42,23 +38,6 @@ public class FileUtil {
                     + BaseApplication.getInstance().getString(R.string.app_name);
         }
         return dir;
-    }
-
-    /**
-     * file type
-     */
-    public enum FileType {
-        IMG(".png"), VOICE(".aac"), VIDEO(".mp4");
-
-        String fileType;
-
-        FileType(String type) {
-            this.fileType = type;
-        }
-
-        public String getFileType() {
-            return fileType;
-        }
     }
 
     /**
@@ -127,13 +106,13 @@ public class FileUtil {
 
     /**
      * contact file
-     * @param pubkey
+     * @param pubKey
      * @param filename
      * @param fileType
      * @return
      */
-    public static String newContactFileName(String pubkey, String filename, FileType fileType) {
-        return DIR_ROOT + File.separator + pubkey + File.separator + filename + fileType.getFileType();
+    public static String newContactFileName(String pubKey, String filename, FileType fileType) {
+        return DIR_ROOT + File.separator + pubKey + File.separator + filename + fileType.getFileType();
     }
 
     /**
@@ -141,7 +120,6 @@ public class FileUtil {
      *                              file operation
      * ==========================================================================
      */
-
     public static boolean isLocalFile(String path) {
         return !RegularUtil.matches(path, RegularUtil.VERIFICATION_HTTP);
     }
@@ -163,7 +141,6 @@ public class FileUtil {
 
     /**
      * To determine whether the folder (with a suffix)
-     *
      * @param filename
      * @return
      */
@@ -179,7 +156,6 @@ public class FileUtil {
 
     /**
      * Get file
-     *
      * @param data
      * @param fileType
      * @return
@@ -199,8 +175,7 @@ public class FileUtil {
     }
 
     /**
-     *Get file byte array
-     *
+     * Get file byte array
      * @param filePath
      * @return
      */
@@ -383,4 +358,22 @@ public class FileUtil {
             }
         }
     }
+
+    /**
+     * file type
+     */
+    public enum FileType {
+        IMG(".png"), VOICE(".aac"), VIDEO(".mp4");
+
+        String fileType;
+
+        FileType(String type) {
+            this.fileType = type;
+        }
+
+        public String getFileType() {
+            return fileType;
+        }
+    }
+
 }

@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
 /**
  * Filter the length of the input text
  */
-public class NameLengthFilter implements InputFilter{
+public class StringLengthFilter implements InputFilter{
     int MAX_EN;
     String regEx = "[\\u4e00-\\u9fa5]";
 
-    public NameLengthFilter(int mAX_EN) {
+    public StringLengthFilter(int mAX_EN) {
         super();
         MAX_EN = mAX_EN;
     }

@@ -2,28 +2,21 @@ package connect.utils;
 
 /**
  * Canonical matching tool
- * Created by Administrator on 2016/8/26.
  */
 public class RegularUtil {
 
     /** Telephone number rule */
     public static final String PHONE_NUMBER = "\\d{6,20}";
-
     /** Login password rules */
     public static final String LOGIN_PASSWORD = "[a-zA-Z0-9]{6,20}";
-
     /** All digital rule */
     public static final String ALL_NUMBER = "[0-9]*";
-
     /** Verification code rule */
     public static final String VERIFICATION_CODE = "[0-9]{4}";
-
     /** Network picture */
     public static final String VERIFICATION_HTTP = "^http.*";
-
     /** Input amount */
     public static final String VERIFICATION_AMOUT = "^[0-9]+(\\.?[0-9]+)$";
-
     /**  http/https address */
     public static final String VERIFICATION_URL_HEADER = "^(http|https)://.*";
     /** website address */
@@ -53,11 +46,11 @@ public class RegularUtil {
         return value.split(rule);
     }
 
-    public static String replace(String value, String oldstr, String newstr) {
-        return value.replaceAll(oldstr, newstr);
+    public static String replace(String value, String oldStr, String newStr) {
+        return value.replaceAll(oldStr, newStr);
     }
 
-    public static String groupAvatar(String groupkey) {
-        return String.format(RegularUtil.GROUP_AVATAR, ConfigUtil.getInstance().serverAddress(), groupkey);
+    public static String groupAvatar(String groupKey) {
+        return String.format(RegularUtil.GROUP_AVATAR, ConfigUtil.getInstance().serverAddress(), groupKey);
     }
 }

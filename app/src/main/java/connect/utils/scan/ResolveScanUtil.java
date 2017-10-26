@@ -2,6 +2,7 @@ package connect.utils.scan;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.os.AsyncTask;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -13,6 +14,8 @@ import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.wallet.TransferAddressActivity;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
@@ -28,7 +31,6 @@ import protos.Connect;
 /**
  * Scan Url parsing
  */
-
 public class ResolveScanUtil {
 
     public static final String TYPE_WEB_GROUP_ = "group:";
@@ -38,7 +40,6 @@ public class ResolveScanUtil {
     private final String ID_FRIEND = "friend";
     private final String ID_STRANGER = "stranger";
     private final String ID_INEXISTENCE = "inexistence";
-
     public static String TRANSFER_SCAN_HEAD = "bitcoin:";
 
     public ResolveScanUtil(Activity activity) {
@@ -50,30 +51,18 @@ public class ResolveScanUtil {
      * @param value
      */
     public void analysisUrl(final String value){
-        //Determine whether to link types
         if(RegularUtil.matches(value, Url_Matches)){
+            //Determine whether to link types
             dealScanUrl(value);
-            return;
-        }
-
-        // Determine whether to join the group of links
-        if(value.contains(TYPE_WEB_GROUP_)){
+        }else if(value.contains(TYPE_WEB_GROUP_)){
+            // Determine whether to join the group of links
             dealScanGroup(value);
-            return;
-        }
-
-        // Determine whether to address
-        if(SupportKeyUril.checkAddress(value)){
-            dealScanAddress(value);
-            return;
-        }
-
-        // Determine whether to transfer links
-        if(value.contains(TRANSFER_SCAN_HEAD)) {
+        }else if(value.contains(TRANSFER_SCAN_HEAD)){
+            // Determine whether to transfer links
             dealScanTransfer(value);
-            return;
+        }else {
+            dealScanValue(value);
         }
-        ToastEUtil.makeText(activity, R.string.Login_scan_string_error).show();
     }
 
     /**
@@ -110,31 +99,6 @@ public class ResolveScanUtil {
     }
 
     /**
-     * The two-dimensional code is the address
-     */
-    private void dealScanAddress(final String value){
-        requestUserInfo(value, new OnResultBack() {
-            @Override
-            public void call(String status) {
-                switch (status){
-                    case ID_FRIEND:
-                        FriendInfoActivity.startActivity(activity, value);
-                        break;
-                    case ID_STRANGER:
-                        StrangerInfoActivity.startActivity(activity, value, SourceType.QECODE);
-                        break;
-                    case ID_INEXISTENCE:
-                        TransferAddressActivity.startActivity(activity,value,null);
-                        break;
-                    default:
-                        break;
-                }
-                ActivityUtil.goBack(activity);
-            }
-        });
-    }
-
-    /**
      * The two-dimensional code is the transfer link
      */
     private void dealScanTransfer(String value){
@@ -147,20 +111,30 @@ public class ResolveScanUtil {
             valueBitCoin = data[0].replace(TRANSFER_SCAN_HEAD,"");
         }
         if(SupportKeyUril.checkAddress(valueBitCoin)){
-            final String finalValueBitCoin = valueBitCoin;
-            final Double finalAmount = amount;
-            requestUserInfo(valueBitCoin, new OnResultBack() {
+            TransferAddressActivity.startActivity(activity,valueBitCoin,amount);
+            return;
+        }
+    }
+
+    /**
+     * The two-dimensional code is string
+     */
+    private void dealScanValue(final String value){
+        if(SupportKeyUril.checkAddress(value)){
+            TransferAddressActivity.startActivity(activity,value,null);
+        }else{
+            requestUserInfo(value, new OnResultBack() {
                 @Override
                 public void call(String status) {
                     switch (status){
-                        /*case ID_FRIEND:
-                            TransferToActivity.startActivity(activity, finalValueBitCoin, finalAmount);
-                            break;*/
+                        case ID_FRIEND:
+                            FriendInfoActivity.startActivity(activity, value);
+                            break;
                         case ID_STRANGER:
-                            TransferToActivity.startActivity(activity,finalValueBitCoin,finalAmount);
+                            StrangerInfoActivity.startActivity(activity, value, SourceType.QECODE);
                             break;
                         case ID_INEXISTENCE:
-                            TransferAddressActivity.startActivity(activity,finalValueBitCoin,finalAmount);
+                            ToastEUtil.makeText(activity, R.string.Login_scan_string_error).show();
                             break;
                         default:
                             break;
@@ -168,33 +142,8 @@ public class ResolveScanUtil {
                     ActivityUtil.goBack(activity);
                 }
             });
-            return;
         }
     }
-
-    /**
-     * Check whether friends
-     * @param address
-     * @param onResultBack
-     */
-    /*private void checkIsFriend(final String address, final OnResultBack onResultBack) {
-        new AsyncTask<Void, Void, ContactEntity>() {
-            @Override
-            protected ContactEntity doInBackground(Void... params) {
-                return ContactHelper.getInstance().loadFriendEntity(address);
-            }
-
-            @Override
-            protected void onPostExecute(ContactEntity friendEntity) {
-                super.onPostExecute(friendEntity);
-                if (friendEntity == null) {
-                    requestUserInfo(address,onResultBack);
-                } else {
-                    onResultBack.call(ID_FRIEND);
-                }
-            }
-        }.execute();
-    }*/
 
     /**
      * Request user information
@@ -202,6 +151,12 @@ public class ResolveScanUtil {
      * @param onResultBack
      */
     private void requestUserInfo(final String value, final OnResultBack onResultBack) {
+        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(value);
+        if(contactEntity != null){
+            onResultBack.call(ID_FRIEND);
+            return;
+        }
+
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(value)
                 .build();

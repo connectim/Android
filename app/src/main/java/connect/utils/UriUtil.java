@@ -2,7 +2,6 @@ package connect.utils;
 
 /**
  * http request URI
- * Created by gtq on 2016/11/21.
  */
 public class UriUtil {
 

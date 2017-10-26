@@ -19,7 +19,6 @@ import connect.utils.DialogUtil;
 /**
  * Rights management tools
  */
-
 public class PermissionUtil {
 
     private static PermissionUtil instance;
@@ -56,6 +55,7 @@ public class PermissionUtil {
      * @param resultCallBack
      */
     public void requestPermission(Activity activity,String[] permissions,ResultCallBack resultCallBack){
+        // check android version
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             checkPermissionLow(activity,permissions,resultCallBack);
             return;
@@ -246,7 +246,9 @@ public class PermissionUtil {
                 "", activity.getString(R.string.Set_Setting), false, false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
-                        startSystemSettings(activity);
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + activity.getPackageName()));
+                        activity.startActivity(intent);
                     }
 
                     @Override
@@ -254,17 +256,6 @@ public class PermissionUtil {
 
                     }
                 });
-    }
-
-    /**
-     * Jump to permission settings page
-     *
-     * @param activity
-     */
-    private void startSystemSettings(Activity activity) {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.parse(PACKAGE_URL_SCHEME + activity.getPackageName()));
-        activity.startActivity(intent);
     }
 
     /**

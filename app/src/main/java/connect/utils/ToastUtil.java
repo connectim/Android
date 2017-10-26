@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import connect.activity.base.BaseApplication;
 
-
 /**
  * Toast tool
  */
@@ -14,8 +13,7 @@ public class ToastUtil {
 
     private static volatile ToastUtil sToastUtil = null;
     private Toast mToast = null;
-    public static final int TOAST_STATUS_SUCCESS = 1;
-    public static final int TOAST_STATUS_FAILE = 2;
+    protected Handler handler = new Handler(Looper.getMainLooper());
 
     public static ToastUtil getInstance() {
         if (sToastUtil == null) {
@@ -27,8 +25,6 @@ public class ToastUtil {
         }
         return sToastUtil;
     }
-
-    protected Handler handler = new Handler(Looper.getMainLooper());
 
     public void showToast(final String tips){
         showToast(tips, Toast.LENGTH_SHORT);
@@ -49,8 +45,6 @@ public class ToastUtil {
                     mToast = Toast.makeText(BaseApplication.getInstance(), tips, duration);
                     mToast.show();
                 } else {
-                    //mToast.cancel();
-                    //mToast.setView(mToast.getView());
                     mToast.setText(tips);
                     mToast.setDuration(duration);
                     mToast.show();
@@ -67,8 +61,6 @@ public class ToastUtil {
                     mToast = Toast.makeText(BaseApplication.getInstance(), tips, duration);
                     mToast.show();
                 } else {
-                    //mToast.cancel();
-                    //mToast.setView(mToast.getView());
                     mToast.setText(tips);
                     mToast.setDuration(duration);
                     mToast.show();

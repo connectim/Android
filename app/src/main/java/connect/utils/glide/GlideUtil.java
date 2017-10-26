@@ -20,16 +20,16 @@ import connect.utils.BitmapUtil;
  */
 public class GlideUtil {
 
-    public static void loadAvatar(ImageView imageView, Object path){
-        loadImage(imageView,path,R.mipmap.default_user_avatar);
-    }
-
     public static void loadAvatarRound(ImageView imageView, Object path){
         loadAvatarRound(imageView, path, 6);
     }
 
     public static void loadAvatarRound(ImageView imageView, Object path, int dpRound){
-        loadImage(imageView, path, R.mipmap.default_user_avatar, new GlideRoundTransform(BaseApplication.getInstance().getBaseContext(), dpRound));
+        if (dpRound <= 0) {
+            loadImage(imageView,path,R.mipmap.default_user_avatar);
+        } else {
+            loadImage(imageView, path, R.mipmap.default_user_avatar, new GlideRoundTransform(BaseApplication.getInstance().getBaseContext(), dpRound));
+        }
     }
 
     public static void loadImageAssets(ImageView imageView, Object path){
@@ -76,6 +76,12 @@ public class GlideUtil {
                         listeners.error();
                     }
                 });
+    }
+
+    public interface OnDownloadTarget{
+        void finish(String path);
+
+        void error();
     }
 
 }

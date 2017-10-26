@@ -91,7 +91,6 @@ public class BitmapUtil {
 
     /**
      * obtain the image rotation angle
-     *
      * @param path path of target image
      */
     private int getImageSpinAngle(String path) {
@@ -121,7 +120,7 @@ public class BitmapUtil {
      *
      * @param imagePath the path of image
      */
-    public int[] getImageSize(String imagePath) {
+    private int[] getImageSize(String imagePath) {
         int[] res = new int[2];
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -158,7 +157,7 @@ public class BitmapUtil {
      * @param height    the height of thumbnail
      * @return {@link Bitmap}
      */
-    public Bitmap compress(String imagePath, int width, int height) {
+    private Bitmap compress(String imagePath, int width, int height) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(imagePath, options);

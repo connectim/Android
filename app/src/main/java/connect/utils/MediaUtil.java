@@ -9,11 +9,12 @@ import connect.activity.base.BaseApplication;
 
 /**
  * media play
- * Created by gtq on 2016/11/28.
  */
 public class MediaUtil {
 
     private static MediaUtil mediaUtil;
+    private MediaPlayer mediaPlayer;
+    private String filePath = null;
 
     public static MediaUtil getInstance() {
         if (mediaUtil == null) {
@@ -21,10 +22,6 @@ public class MediaUtil {
         }
         return mediaUtil;
     }
-
-    private MediaPlayer mediaPlayer;
-
-    private String filePath = null;
 
     public synchronized void playVoice(String path) {
         if (mediaPlayer == null) {

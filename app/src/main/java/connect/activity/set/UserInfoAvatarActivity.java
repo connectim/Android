@@ -61,7 +61,7 @@ public class UserInfoAvatarActivity extends BaseActivity implements UserInfoAvat
         toolbarTop.setTitle(null, R.string.Chat_Photo);
         toolbarTop.setRightImg(R.mipmap.menu_white);
         setPresenter(new UserInfoAvatarPresenter(this));
-        GlideUtil.loadAvatar(avatarImg,  SharedPreferenceUtil.getInstance().getUser().getAvatar() + "?size=400");
+        GlideUtil.loadAvatarRound(avatarImg,  SharedPreferenceUtil.getInstance().getUser().getAvatar() + "?size=400", 0);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class UserInfoAvatarActivity extends BaseActivity implements UserInfoAvat
     @Override
     public void requestAvaFninish(String path) {
         ToastEUtil.makeText(mActivity,R.string.Set_Set_Avatar_success).show();
-        GlideUtil.loadAvatar(avatarImg,path + "?size=400");
+        GlideUtil.loadAvatarRound(avatarImg, path + "?size=400", 0);
     }
 
 }

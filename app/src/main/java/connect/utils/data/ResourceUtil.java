@@ -21,7 +21,6 @@ import connect.activity.base.BaseApplication;
 
 /**
  * system Resource drawable color text
- * Created by gtq on 2016/11/23.
  */
 public class ResourceUtil {
 

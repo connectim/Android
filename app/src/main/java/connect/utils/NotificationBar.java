@@ -30,23 +30,21 @@ import protos.Connect;
 
 /**
  * notify bar
- * Created by pujin on 2017/4/19.
  */
-
 public class NotificationBar {
 
     public static NotificationBar notificationBar = getInstance();
+    private static final int MSG_NOTICE = 120;
+    private static final long MSG_DELAYMILLIS = 2000;
+    private long TIME_SENDNOTIFY = 0;
 
     private synchronized static NotificationBar getInstance() {
         if (notificationBar == null) {
             notificationBar = new NotificationBar();
         }
-        return notificationBar = new NotificationBar();
+        return notificationBar;
+        //return notificationBar = new NotificationBar();
     }
-
-    private static final int MSG_NOTICE = 120;
-    private static final long MSG_DELAYMILLIS = 2000;
-    private long TIME_SENDNOTIFY = 0;
 
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override

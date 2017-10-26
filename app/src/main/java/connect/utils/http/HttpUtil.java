@@ -35,10 +35,6 @@ import protos.Connect;
 import retrofit2.Retrofit;
 import retrofit2.converter.protobuf.ProtoConverterFactory;
 
-/**
- * Created by Administrator on 2017/9/27 0027.
- */
-
 public class HttpUtil {
 
     private static HttpUtil mInstance;

@@ -204,7 +204,7 @@ public class PrivateActivity extends BaseActivity {
      */
     private Connect.PhoneBook getPhoneHmacBook(){
         // For local contacts
-        List<PhoneContactBean> list = SystemDataUtil.getLoadAddresSbook(mActivity);
+        List<PhoneContactBean> list = SystemDataUtil.getLocalAddressBook(mActivity);
         if (null == list || list.size() == 0) {
             return null;
         }
