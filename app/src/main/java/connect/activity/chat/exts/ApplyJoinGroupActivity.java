@@ -52,17 +52,16 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
     @Bind(R.id.btn)
     Button btn;
 
-    private static String TAG = "_ApplyJoinGroupActivity";
     private ApplyJoinGroupActivity activity;
+    private static String TAG = "_ApplyJoinGroupActivity";
+    private static String APPLYTYPE = "APPLYTYPE";
+    private static String GROUPKEY = "GROUPKEY";
 
     public enum EApplyGroup {
         QRSCAN,
         GROUPKEY,//group PubKey
         TOKEN
 ,    }
-
-    private static String APPLYTYPE = "APPLYTYPE";
-    private static String GROUPKEY = "GROUPKEY";
 
     private EApplyGroup applyType;
     private String[] groupKey;

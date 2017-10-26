@@ -59,6 +59,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
     Button btn;
 
     private PaymentDetailActivity activity;
+    private static String TAG = "_PaymentDetailActivity";
     private static String MESSAGE_ENTITY = "MESSAGE_ENTITY";
     private int state;
     private Connect.Bill billDetail = null;

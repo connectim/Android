@@ -47,9 +47,10 @@ public class GoogleMapActivity extends BaseActivity {
     @Bind(R.id.myProgressBar)
     ProgressBar myProgressBar;
 
+    private GoogleMapActivity activity;
+    private static String TAG = "_GoogleMapActivity";
     private static String LATITUDE = "LATITUDE";
     private static String LONGITUDE = "LONGITUDE";
-    private GoogleMapActivity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

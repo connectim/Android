@@ -51,8 +51,10 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
     @Bind(R.id.relativelayout_1)
     RelativeLayout relativelayout1;
 
-    private String groupKey;
     private GroupSetActivity activity;
+    private static String TAG = "_GroupSetActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
+    private String groupKey;
     private GroupSetContract.Presenter presenter;
 
     @Override
@@ -65,7 +67,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupSetActivity.class, bundle);
     }
 
@@ -82,7 +84,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         new GroupSetPresenter(this).start();
         presenter.syncGroupInfo();
     }

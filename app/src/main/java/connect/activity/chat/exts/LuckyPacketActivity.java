@@ -52,6 +52,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
     Button btn;
 
     private LuckyPacketActivity activity;
+    private static String TAG = "_LuckyPacketActivity";
     private static String RED_TYPE = "RED_TYPE";
     private static String RED_KEY = "RED_KEY";
     /** packet type 1:private 2:group */

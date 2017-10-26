@@ -95,7 +95,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         }
     }
 
-    public interface OnItemChildClickListener{
-        void remove(int position,Connect.UserInfo userInfo);
+    public interface OnItemChildClickListener {
+        void remove(int position, Connect.UserInfo userInfo);
     }
 }

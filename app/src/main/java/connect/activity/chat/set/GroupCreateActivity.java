@@ -36,6 +36,8 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
     SideBar siderbar;
 
     private GroupCreateActivity activity;
+    private static String TAG = "_GroupCreateActivity";
+    private static String UID = "UID";
     private String pubKey;
     private int topPosi;
     private boolean move;
@@ -57,7 +59,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
 
     public static void startActivity(Activity activity, String pubkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("PUBKEY", pubkey);
+        bundle.putString(UID, pubkey);
         ActivityUtil.next(activity, GroupCreateActivity.class, bundle);
     }
 
@@ -76,7 +78,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
             }
         });
 
-        pubKey = getIntent().getStringExtra("PUBKEY");
+        pubKey = getIntent().getStringExtra(UID);
         linearLayoutManager = new LinearLayoutManager(activity);
         List<String> oldMembers = new ArrayList<>();
         oldMembers.add(pubKey);

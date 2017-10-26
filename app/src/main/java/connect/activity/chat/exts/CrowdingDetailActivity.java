@@ -61,6 +61,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
     RecyclerView recyclerview;
 
     private CrowdingDetailActivity activity;
+    private static String TAG = "_CrowdingDetailActivity";
     private static String GATHER_HASHID = "GATHER_HASHID";
     private static String GATHER_MSGID = "GATHER_MSGID";
 

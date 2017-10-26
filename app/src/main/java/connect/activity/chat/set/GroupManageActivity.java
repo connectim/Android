@@ -21,6 +21,8 @@ public class GroupManageActivity extends BaseActivity implements GroupManagerCon
     TopToolBar toolbar;
 
     private GroupManageActivity activity;
+    private static String TAG = "_GroupManageActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
     private String groupKey = null;
     private GroupManagerContract.Presenter presenter;
 
@@ -34,7 +36,7 @@ public class GroupManageActivity extends BaseActivity implements GroupManagerCon
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupManageActivity.class, bundle);
     }
 
@@ -51,7 +53,7 @@ public class GroupManageActivity extends BaseActivity implements GroupManagerCon
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         new GroupManagerPresenter(this).start();
     }
 

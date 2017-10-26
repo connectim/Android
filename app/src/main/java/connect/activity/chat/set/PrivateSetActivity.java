@@ -45,6 +45,8 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
     LinearLayout linearlayout;
 
     private PrivateSetActivity activity;
+    private static String TAG = "_PrivateSetActivity";
+    private static String UID = "UID";
     private String roomKey = "";
 
     private PrivateSetContract.Presenter presenter;
@@ -59,7 +61,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
 
     public static void startActivity(Activity activity, String roomkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("ROOM_KEY", roomkey);
+        bundle.putString(UID, roomkey);
         ActivityUtil.next(activity, PrivateSetActivity.class, bundle);
     }
 
@@ -76,7 +78,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
             }
         });
 
-        roomKey = getIntent().getStringExtra("ROOM_KEY");
+        roomKey = getIntent().getStringExtra(UID);
         new PrivateSetPresenter(this).start();
     }
 

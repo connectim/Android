@@ -26,7 +26,9 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
     @Bind(R.id.txt1)
     TextView txt1;
 
-    private Activity activity;
+    private GroupMyNameActivity activity;
+    private static String TAG = "_GroupMyNameActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
     private String groupKey = null;
 
     private GroupMyNameTextWatcher textWatcher = new GroupMyNameTextWatcher();
@@ -42,7 +44,7 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupMyNameActivity.class, bundle);
     }
 
@@ -68,7 +70,7 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         edittxt2.addTextChangedListener(textWatcher);
         new GroupMyAliasPresenter(this).start();
     }

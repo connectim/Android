@@ -38,6 +38,8 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
     TopToolBar toolbar;
 
     private ContactCardActivity activity;
+    private static String TAG = "_ContactCardActivity";
+    private static String UID = "UID";
     private String pubKey;
     private boolean move;
     private int topPosi;
@@ -58,7 +60,7 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
 
     public static void startActivity(Activity activity,String uid) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("UID", uid);
+        bundle.putSerializable(UID, uid);
         ActivityUtil.next(activity, ContactCardActivity.class, bundle);
     }
 
@@ -75,7 +77,7 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
             }
         });
 
-        pubKey = getIntent().getStringExtra("UID");
+        pubKey = getIntent().getStringExtra(UID);
         linearLayoutManager = new LinearLayoutManager(activity);
         List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend(pubKey);
         Collections.sort(friendEntities, new FriendCompara());

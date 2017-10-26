@@ -67,6 +67,9 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
     Button btn3;
 
     private HandleGroupRequestActivity activity;
+    private static String TAG = "_HandleGroupRequestActivity";
+    private static String REVIEW = "REVIEW";
+    private static String MESSAGE_ID = "MESSAGEID";
 
     private String messageId;
     private Connect.Reviewed reviewed;
@@ -82,8 +85,8 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
 
     public static void startActivity(Activity activity, byte[] reveiews,String messageid) {
         Bundle bundle = new Bundle();
-        bundle.putByteArray("REVIEW", reveiews);
-        bundle.putString("MESSAGEID",messageid);
+        bundle.putByteArray(REVIEW, reveiews);
+        bundle.putString(MESSAGE_ID,messageid);
         ActivityUtil.next(activity, HandleGroupRequestActivity.class, bundle);
     }
 
@@ -100,14 +103,14 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
             }
         });
 
-        byte[] receivebytes = getIntent().getByteArrayExtra("REVIEW");
+        byte[] receivebytes = getIntent().getByteArrayExtra(REVIEW);
         try {
             reviewed = Connect.Reviewed.parseFrom(receivebytes);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        messageId = getIntent().getStringExtra("MESSAGEID");
+        messageId = getIntent().getStringExtra(MESSAGE_ID);
 
         Connect.UserInfo userInfo = reviewed.getUserInfo();
         GlideUtil.loadAvatarRound(roundimg1, userInfo.getAvatar());
