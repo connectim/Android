@@ -82,7 +82,7 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getString(R.string.Chat_Transfer_Detail));
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);

@@ -1,7 +1,5 @@
 package connect.activity.wallet.manager;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -10,6 +8,7 @@ import com.wallet.NativeWallet;
 import com.wallet.bean.CurrencyBean;
 import com.wallet.bean.CurrencyEnum;
 import com.wallet.bean.EncryptionPinBean;
+import com.wallet.currency.BaseCurrency;
 import com.wallet.inter.WalletListener;
 
 import java.text.DecimalFormat;
@@ -23,16 +22,12 @@ import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.UriUtil;
-import instant.utils.cryption.DecryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import com.wallet.currency.BaseCurrency;
-import connect.widget.random.RandomVoiceActivity;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 

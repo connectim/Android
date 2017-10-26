@@ -34,58 +34,49 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
 
     @Override
     public void start() {
-        chechPeission();
-    }
-
-    private void chechPeission(){
         PermissionUtil.getInstance().requestPermission(mView.getActivity(),new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO,
-                PermissionUtil.PERMISSION_STORAGE},permissomCallBack);
+                PermissionUtil.PERMISSION_STORAGE},permissionCallBack);
     }
 
     @Override
-    public PermissionUtil.ResultCallBack getPermissomCallBack() {
-        return permissomCallBack;
+    public PermissionUtil.ResultCallBack getPermissionCallBack() {
+        return permissionCallBack;
     }
 
-    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack(){
         @Override
         public void granted(String[] permissions) {
-            startRecorder();
+            try {
+                file = FileUtil.newTempFile(FileUtil.FileType.VOICE);
+                iMediaRecorder = new MediaRecorder();
+                iMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                iMediaRecorder.setOutputFile(file.getPath());
+                iMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                iMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+
+                try {
+                    iMediaRecorder.prepare();
+                    iMediaRecorder.start();
+                    timing();
+                    mView.changeViewStatus(0);
+                } catch (Exception e) {
+                    iMediaRecorder = null;
+                    mView.denyPermissionDialog();
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public void deny(String[] permissions) {
-            mView.denyPression();
+            mView.denyPermission();
         }
     };
 
-    private void startRecorder() {
-        try {
-            file = FileUtil.newTempFile(FileUtil.FileType.VOICE);
-            iMediaRecorder = new MediaRecorder();
-
-            iMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            iMediaRecorder.setOutputFile(file.getPath());
-            iMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            iMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
-            try {
-                iMediaRecorder.prepare();
-                iMediaRecorder.start();
-                timing();
-                mView.changeViewStatus(0);
-            } catch (Exception e) {
-                iMediaRecorder = null;
-                mView.denyPressionDialog();
-                return;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void timing() {
-        dbArray = new ArrayList<Double>();
+        dbArray = new ArrayList<>();
         videoLength = 0;
         runnable = new Runnable() {
             @Override
@@ -142,7 +133,7 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
     }
 
     private boolean checkVoice() {
-        ArrayList<Double> list = new ArrayList<Double>();
+        ArrayList<Double> list = new ArrayList<>();
         for (Double db : dbArray) {
             if (db != 0.0) {
                 list.add(db);
@@ -170,7 +161,6 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
                 handler.removeCallbacks(runnable);
                 runnable = null;
             }
-
             if (iMediaRecorder != null) {
                 iMediaRecorder.setOnErrorListener(null);
                 iMediaRecorder.setOnInfoListener(null);
@@ -183,6 +173,5 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
             e.printStackTrace();
         }
     }
-
 
 }

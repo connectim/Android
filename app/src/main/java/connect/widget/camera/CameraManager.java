@@ -9,34 +9,16 @@ import java.util.List;
 
 public class CameraManager {
 
-    /**
-     * If the flash open
-     */
-    private boolean isLighting = false;
-    /**
-     * Whether to support flash
-     */
-    private boolean isSupportedLight = false;
-    /**
-     * The camera position
-     */
+    /** The camera position */
     private int cameraPosition = 0;
     private SurfaceHolder viewHolder;
 
-    /**
-     * Initialize the camera
-     */
+    /** Initialize the camera */
     public Camera initCamera(Activity activity, SurfaceHolder viewHolder) {
         this.viewHolder = viewHolder;
         Camera mCamera = getCameraInstance(0);
         try {
             setParametersCamera(activity, mCamera);
-            // Determine whether to support flash
-            List<String> features = mCamera.getParameters().getSupportedFlashModes();
-            if (null == features || features.contains(Camera.Parameters.FLASH_MODE_ON)) {
-                isLighting = false;
-                isSupportedLight = true;
-            }
             mCamera.setPreviewDisplay(viewHolder);
             mCamera.startPreview();
         } catch (Exception e) {
@@ -68,8 +50,6 @@ public class CameraManager {
 
     /**
      * By comparison, the nearest size (if the same size is preferred) is obtained
-     * Resolve the preview image
-     * Source: API demo
      */
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.1;
@@ -106,7 +86,6 @@ public class CameraManager {
 
     /**
      * Set the camera to camera (turn off the old camera, turn on the new camera)
-     *
      * @param mCamera
      */
     public Camera setChangeParameters(Activity activity, Camera mCamera, SurfaceHolder viewHolder) {

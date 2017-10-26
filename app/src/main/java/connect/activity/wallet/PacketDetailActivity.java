@@ -84,7 +84,7 @@ public class PacketDetailActivity extends BaseActivity implements PacketDetailCo
     public void initView() {
         mActivity = this;
         toolbarTop.setRedStyle();
-        toolbarTop.setBackground(R.color.color_clear);
+        toolbarTop.setBackgroundResource(R.color.color_clear);
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Wallet_Packet);
         setPresenter(new PacketDetailPresenter(this));

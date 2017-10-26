@@ -16,9 +16,6 @@ import java.util.List;
 
 import protos.Connect;
 
-/**
- * Created by Administrator on 2016/12/19.
- */
 public class RedHistoryAdapter extends RecyclerView.Adapter<RedHistoryAdapter.ViewHolder> {
 
     private Activity activity;

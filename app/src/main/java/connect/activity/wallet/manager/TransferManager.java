@@ -33,7 +33,7 @@ import connect.utils.okhttp.ResultCall;
 import com.wallet.currency.BaseCurrency;
 import com.wallet.inter.WalletListener;
 import connect.widget.MdStyleProgress;
-import connect.widget.payment.PinTransferDialog;
+import connect.activity.wallet.view.PinTransferDialog;
 import protos.Connect;
 import wallet_gateway.WalletOuterClass;
 

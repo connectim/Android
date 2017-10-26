@@ -1,7 +1,6 @@
 package connect.activity.wallet;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,10 +23,9 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.random.RandomVoiceActivity;
 
 /**
  * lucky packet
@@ -60,12 +58,6 @@ public class PacketActivity extends BaseActivity implements PacketContract.View{
         setContentView(R.layout.activity_wallet_packet);
         ButterKnife.bind(this);
         initView();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        transferEditView.initView(mActivity);
     }
 
     @Override

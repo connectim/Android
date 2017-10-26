@@ -74,7 +74,7 @@ public class LoginUserActivity extends BaseActivity implements LoginUserContract
     public void initView() {
         mActivity = this;
         toolbarTop.setLeftImg(R.mipmap.back_black);
-        toolbarTop.setTitleImg(R.mipmap.logo_black_middle);
+        toolbarTop.setTitle(R.mipmap.logo_black_middle, null);
         Bundle bundle = getIntent().getExtras();
         userBean = (UserBean) bundle.getSerializable("user");
         new LoginUserPresenter(this).start();

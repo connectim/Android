@@ -53,11 +53,18 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Link_Group));
         toolbar.setRightText(R.string.Chat_Complete);
-        toolbar.setRightTextColor(R.color.color_68656f);
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setRightTextEnable(false);
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
+            }
+        });
+        toolbar.setRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String myalias = edittxt2.getText().toString();
+                presenter.updateMyAliasInGroup(myalias);
             }
         });
 
@@ -82,10 +89,10 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
         public void afterTextChanged(Editable s) {
             if (s.length() == 0) {
                 toolbar.setRightTextColor(R.color.color_68656f);
-                toolbar.setRightListence(null);
+                toolbar.setRightListener(null);
             } else {
                 toolbar.setRightTextColor(R.color.color_green);
-                toolbar.setRightListence(new View.OnClickListener() {
+                toolbar.setRightListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String myalias = edittxt2.getText().toString();

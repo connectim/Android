@@ -46,7 +46,6 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
     SurfaceView surfaceView;
     private SurfaceHolder viewHolder;
     public static final int REQUEST_CODE = 100;
-
     private TakePictureContract.Presenter presenter = null;
 
     public static void startActivity(Activity activity) {
@@ -77,8 +76,12 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(SystemDataUtil.getScreenWidth(), SystemDataUtil.getScreenWidth());
         layoutParams.addRule(RelativeLayout.BELOW, R.id.toolbar_top);
         surfaceRela.setLayoutParams(layoutParams);
-
         presenter.start();
+    }
+
+    @Override
+    public void setPresenter(TakePictureContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @OnClick(R.id.left_img)
@@ -143,11 +146,6 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
             }
         }
     };
-
-    @Override
-    public void setPresenter(TakePictureContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
 
     @Override
     public Activity getActivity() {

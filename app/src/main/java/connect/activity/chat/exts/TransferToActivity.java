@@ -1,7 +1,6 @@
 package connect.activity.chat.exts;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,8 +21,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.widget.random.RandomVoiceActivity;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 
 /**
  * transaction
@@ -83,23 +81,13 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if(getIntent().getExtras().containsKey("TRANSFER_AMOUNT")){
-            transferEditView.initView(getIntent().getExtras().getDouble("TRANSFER_AMOUNT"), activity);
-        }else{
-            transferEditView.initView(activity);
-        }
-    }
-
-    @Override
     public void initView() {
         activity = this;
         toolbar.setBlackStyle();
 
         toolbar.setTitle(getString(R.string.Wallet_Transfer));
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
@@ -111,6 +99,9 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
 
         layoutFirst.setVisibility(View.VISIBLE);
         layoutSecond.setVisibility(View.GONE);
+        if(getIntent().getExtras().containsKey("TRANSFER_AMOUNT")){
+            transferEditView.setInputAmount(getIntent().getExtras().getDouble("TRANSFER_AMOUNT"));
+        }
 
         new TransferToPresenter(this).start();
     }
@@ -118,11 +109,6 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
     @Override
     protected void onStart() {
         super.onStart();
-        if (getIntent().getExtras().containsKey("TRANSFER_AMOUNT")) {
-            transferEditView.initView(getIntent().getExtras().getDouble("TRANSFER_AMOUNT"), activity);
-        } else {
-            transferEditView.initView(activity);
-        }
 
         transferEditView.setEditListener(new TransferEditView.OnEditListener() {
             @Override

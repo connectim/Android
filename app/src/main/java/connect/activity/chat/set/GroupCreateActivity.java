@@ -68,9 +68,8 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Chat_Choose_contact));
         toolbar.setRightText(R.string.Chat_Complete);
-        toolbar.setRightTextColor(R.color.color_6d6e75);
-
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setRightTextEnable(false);
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
@@ -90,10 +89,8 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         recyclerview.addOnScrollListener(onscrollListener);
         adapter.setOnSeleFriendListence(friendSelectListener);
         siderbar.setOnTouchingLetterChangedListener(letterChanged);
-
         new GroupCreatePresenter(this).start();
     }
-
 
     private Handler handler = new Handler() {
         @Override
@@ -101,7 +98,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
             super.handleMessage(msg);
             switch (msg.what) {
                 case 100:
-                    toolbar.setRightClickable(true);
+                    toolbar.setRightTextEnable(true);
                     break;
             }
         }
@@ -134,10 +131,10 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         public void seleFriend(List<ContactEntity> list) {
             if (list == null || list.size() < 2) {
                 toolbar.setRightTextColor(R.color.color_6d6e75);
-                toolbar.setRightListence(null);
+                toolbar.setRightListener(null);
             } else {
                 toolbar.setRightTextColor(R.color.color_green);
-                toolbar.setRightListence(new View.OnClickListener() {
+                toolbar.setRightListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         List<ContactEntity> selectEntities = adapter.getSelectEntities();
@@ -147,7 +144,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
                         }
                         presenter.requestGroupCreate(selectEntities);
 
-                        toolbar.setRightClickable(false);
+                        toolbar.setRightListener(null);
                         Message message = new Message();
                         message.what = 100;
                         handler.sendMessageDelayed(message, 3000);

@@ -128,7 +128,7 @@ public class WalletFragment extends BaseFragment {
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         if (currencyEntity != null) {
             ActivityUtil.next(mActivity, TransactionActivity.class);
         }

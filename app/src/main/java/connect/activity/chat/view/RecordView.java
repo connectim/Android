@@ -121,7 +121,7 @@ public class RecordView extends LinearLayout {
     protected void permissionDialog() {
         DialogUtil.showAlertTextView(getContext(), getContext().getString(R.string.Set_tip_title),
                 getContext().getString(R.string.Link_Unable_to_get_the_voice_data),
-                "", getContext().getString(R.string.Set_Setting), false, new DialogUtil.OnItemClickListener() {
+                "", getContext().getString(R.string.Set_Setting), false, false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -133,7 +133,7 @@ public class RecordView extends LinearLayout {
                     public void cancel() {
 
                     }
-                }, false);
+                });
     }
 
     protected void startRecord() {

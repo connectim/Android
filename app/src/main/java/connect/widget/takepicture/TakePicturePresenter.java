@@ -38,9 +38,7 @@ public class TakePicturePresenter implements TakePictureContract.Presenter{
         }
 
         @Override
-        public void deny(String[] permissions) {
-
-        }
+        public void deny(String[] permissions) {}
     };
 
     public class SurfaceCallback implements SurfaceHolder.Callback {

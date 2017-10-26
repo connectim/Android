@@ -173,12 +173,12 @@ public class RegisterGetRandomActivity extends BaseActivity implements RegisterG
     public void denyPressionDialog() {
         jumpTv.setVisibility(View.VISIBLE);
         DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_tip_title), getString(R.string.Link_Unable_to_get_the_voice_data),
-                "", "", true, new DialogUtil.OnItemClickListener() {
+                "", "", true, false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {}
                     @Override
                     public void cancel() {}
-                }, false);
+                });
     }
 
     @Override

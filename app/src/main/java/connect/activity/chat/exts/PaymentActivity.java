@@ -24,7 +24,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.RegularUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 import connect.widget.TopToolBar;
 
 /**
@@ -80,7 +80,7 @@ public class PaymentActivity extends BaseActivity implements PaymentContract.BVi
         activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);
@@ -94,8 +94,7 @@ public class PaymentActivity extends BaseActivity implements PaymentContract.BVi
     @Override
     protected void onStart() {
         super.onStart();
-        transferEditView.initView(activity);
-        transferEditView.setVisibilityAmount(View.GONE);
+        transferEditView.setVisibilityBalance(View.GONE);
         transferEditView.setFeeVisibility(View.GONE);
         transferEditView.setEditListener(new TransferEditView.OnEditListener() {
             @Override
@@ -124,9 +123,9 @@ public class PaymentActivity extends BaseActivity implements PaymentContract.BVi
             presenter.loadPayment(gatherKey);
         } else if (gatherType == 1) {
             toolbar.setTitle(getResources().getString(R.string.Chat_Crowd_funding));
-            toolbar.setRightTextColor(R.color.color_green);
+            toolbar.setRightTextEnable(true);
             toolbar.setRightText(getString(R.string.Chat_Crowdfoundind_History));
-            toolbar.setRightListence(new View.OnClickListener() {
+            toolbar.setRightListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     GroupCrowdingRecordsActivity.startActivity(activity);
@@ -134,7 +133,7 @@ public class PaymentActivity extends BaseActivity implements PaymentContract.BVi
             });
             layoutFirst.setVisibility(View.GONE);
             layoutSecond.setVisibility(View.VISIBLE);
-            transferEditView.setAmountTvGone();
+            transferEditView.setVisibilityBalance(View.GONE);
 
             presenter.loadCrowding(gatherKey);
         }
@@ -144,7 +143,7 @@ public class PaymentActivity extends BaseActivity implements PaymentContract.BVi
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.btn:
-                CurrencyEnum currencyEnum = transferEditView.getCurrencyEnum();
+                CurrencyEnum currencyEnum = transferEditView.getCurrencyType();
                 long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
                 String tips = transferEditView.getNote();
 

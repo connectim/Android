@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import java.util.List;
 
 import connect.activity.wallet.contract.TransferFriendContract;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;

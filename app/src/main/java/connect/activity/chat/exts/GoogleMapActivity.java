@@ -76,13 +76,13 @@ public class GoogleMapActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(getResources().getString(R.string.Chat_Loc));
         toolbarTop.setRightText(R.string.Link_Send);
-        toolbarTop.setLeftListence(new View.OnClickListener() {
+        toolbarTop.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        toolbarTop.setRightListence(new View.OnClickListener() {
+        toolbarTop.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 webView.loadUrl("javascript:geoLocation()");

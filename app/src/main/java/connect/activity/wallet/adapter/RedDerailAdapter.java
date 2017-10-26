@@ -18,9 +18,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2016/12/19.
- */
 public class RedDerailAdapter extends RecyclerView.Adapter<RedDerailAdapter.ViewHolder> {
 
     private Activity activity;

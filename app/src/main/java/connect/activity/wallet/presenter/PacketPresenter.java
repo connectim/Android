@@ -13,7 +13,7 @@ import connect.utils.UriUtil;
 import instant.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 import protos.Connect;
 
 public class PacketPresenter implements PacketContract.Presenter{

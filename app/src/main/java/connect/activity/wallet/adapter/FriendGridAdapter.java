@@ -18,10 +18,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-/**
- *
- * Created by Administrator on 2016/12/22.
- */
 public class FriendGridAdapter extends BaseAdapter {
 
     private ArrayList<ContactEntity> mListData = new ArrayList();

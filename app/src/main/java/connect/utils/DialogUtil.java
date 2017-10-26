@@ -30,7 +30,6 @@ import connect.ui.activity.R;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.FrameAnimationDrawable;
-import connect.widget.payment.PayEditView;
 
 /**
  * Dialog Tooltip tool
@@ -51,11 +50,11 @@ public class DialogUtil {
      */
     public static Dialog showAlertTextView(Context mContext, String title, String message, String cancelButton, String okButton,
                                            boolean isCancel, final OnItemClickListener onItemClickListener) {
-        return showAlertTextView(mContext,title,message,cancelButton,okButton,isCancel,onItemClickListener,true);
+        return showAlertTextView(mContext, title, message, cancelButton, okButton, isCancel, true, onItemClickListener);
     }
 
     public static Dialog showAlertTextView(Context mContext, String title, String message, String cancelButton, String okButton,
-                                           boolean isCancel, final OnItemClickListener onItemClickListener,boolean Outside) {
+                                           boolean isCancel, boolean Outside, final OnItemClickListener onItemClickListener) {
         final Dialog dialog = new Dialog(mContext, R.style.Dialog);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.dialog_hint, null);
@@ -118,7 +117,7 @@ public class DialogUtil {
      * @return
      */
     public static Dialog showEditView(Context mContext, String title, String leftStr, String rightStr, String message, String hinit,
-                                      String text,boolean isGone ,int maxLength,final OnItemClickListener onItemClickListener) {
+                                      String text,boolean isGone ,int maxLength, final OnItemClickListener onItemClickListener) {
         final Dialog dialog = new Dialog(mContext, R.style.Dialog);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.dialog_edit, null);
@@ -172,51 +171,7 @@ public class DialogUtil {
         dialog.setCanceledOnTouchOutside(true);
         dialog.setContentView(view);
         dialog.show();
-
         SystemUtil.showKeyBoard(edit.getContext(),edit);
-        return dialog;
-    }
-
-    /**
-     * input passwrod Dialog
-     *
-     * @param mContext
-     * @param title
-     * @param message
-     * @param onItemClickListener
-     * @return
-     */
-    public static Dialog showPayEditView(Context mContext, Integer title, Integer message, final OnItemClickListener onItemClickListener) {
-        final Dialog dialog = new Dialog(mContext, R.style.Dialog);
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.dialog_paypass, null);
-        TextView titleTv = (TextView) view.findViewById(R.id.title_tv);
-        TextView messageTv = (TextView) view.findViewById(R.id.message_tv);
-        final PayEditView payEditView = (PayEditView) view.findViewById(R.id.payEditView);
-
-        titleTv.setText(title);
-        if (message != null) {
-            messageTv.setText(message);
-            messageTv.setVisibility(View.VISIBLE);
-        }
-
-        payEditView.setInputCompleteListener(new PayEditView.InputCompleteListener() {
-            @Override
-            public void inputComplete(String pass) {
-                onItemClickListener.confirm(pass);
-                dialog.dismiss();
-            }
-        });
-
-        view.setMinimumWidth(SystemUtil.dipToPx(250));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(view);
-        dialog.show();
-
-        payEditView.editText.setFocusableInTouchMode(true);
-        payEditView.editText.requestFocus();
-        SystemUtil.showKeyBoard(mContext,payEditView.editText);
-
         return dialog;
     }
 
@@ -230,26 +185,26 @@ public class DialogUtil {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_processpay, null);
 
-        final View dotleft = view.findViewById(R.id.dot_left);
-        final View dotcentre = view.findViewById(R.id.dot_centre);
-        final View dotrigth = view.findViewById(R.id.dot_right);
+        final View dotLeft = view.findViewById(R.id.dot_left);
+        final View dotCentre = view.findViewById(R.id.dot_centre);
+        final View dotRight = view.findViewById(R.id.dot_right);
 
         final Handler timetHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                dotleft.setSelected(false);
-                dotcentre.setSelected(false);
-                dotrigth.setSelected(false);
+                dotLeft.setSelected(false);
+                dotCentre.setSelected(false);
+                dotRight.setSelected(false);
                 switch (msg.what) {
                     case 0:
-                        dotleft.setSelected(true);
+                        dotLeft.setSelected(true);
                         break;
                     case 1:
-                        dotcentre.setSelected(true);
+                        dotCentre.setSelected(true);
                         break;
                     case 2:
-                        dotrigth.setSelected(true);
+                        dotRight.setSelected(true);
                         break;
                 }
             }
@@ -361,10 +316,8 @@ public class DialogUtil {
         });
 
         FrameAnimationDrawable.animateDrawableLoad(state == 0 ? R.drawable.anim_redpacket_fail : R.drawable.anim_redpacket_success, img, new FrameAnimationDrawable.OnDrawablesListener() {
-
             @Override
-            public void onDrawsStart() {
-            }
+            public void onDrawsStart() {}
 
             @Override
             public void onDrawsStop() {
@@ -378,17 +331,7 @@ public class DialogUtil {
     }
 
     public interface DialogListItemClickListener {
-
         void confirm(int position);
-
-    }
-
-    public interface DialogListItemLongClickListener {
-
-        void onClick(AdapterView<?> parent, View view, int position);
-
-        void onLongClick(AdapterView<?> parent, View view, int position);
-
     }
 
     public interface OnItemClickListener {

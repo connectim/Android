@@ -15,11 +15,6 @@ import connect.activity.wallet.bean.TransferBean;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 
-/**
- *
- * Created by Administrator on 2017/1/22.
- */
-
 public class LatelyTransferAdapter extends RecyclerView.Adapter<LatelyTransferAdapter.ViewHolder> {
 
     private Activity activity;

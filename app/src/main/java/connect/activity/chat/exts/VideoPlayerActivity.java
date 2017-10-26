@@ -81,7 +81,7 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
     public void initView() {
         activity = this;
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setLeftListence(new View.OnClickListener() {
+        toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 videoPlayerUtil.stopVideo();

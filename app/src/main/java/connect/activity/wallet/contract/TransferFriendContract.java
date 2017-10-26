@@ -9,11 +9,7 @@ import java.util.List;
 import connect.database.green.bean.ContactEntity;
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
-import connect.activity.wallet.manager.TransferEditView;
-
-/**
- * Created by Administrator on 2017/4/18 0018.
- */
+import connect.activity.wallet.view.TransferEditView;
 
 public interface TransferFriendContract {
 

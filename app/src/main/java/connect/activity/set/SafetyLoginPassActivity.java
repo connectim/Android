@@ -59,7 +59,6 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_Change_password);
         toolbarTop.setRightText(R.string.Set_Save);
-        toolbarTop.setRightTextColor(R.color.color_00c400);
         toolbarTop.setRightTextEnable(false);
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();

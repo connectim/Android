@@ -24,10 +24,6 @@ import connect.widget.album.model.AlbumFolder;
 import connect.widget.album.model.AlbumFolderType;
 import connect.widget.album.presenter.AlbumPresenter;
 
-/**
- * Created by Administrator on 2017/8/21.
- */
-
 public class AlbumActivity extends BaseFragmentActivity implements AlbumContract.BView{
 
     @Bind(R.id.framelayout)
@@ -40,11 +36,8 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
     private int requestCode;
     /** Maximum number of choices */
     private int maxSelect;
-
-
     /** request code */
     public final static int OPEN_ALBUM_CODE = 502;
-
     /** The selected image list */
     private Map<String,AlbumFile> imageInfoMap = new HashMap<>();
     private List<AlbumFolder> folderInfos;

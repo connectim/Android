@@ -1,7 +1,6 @@
 package connect.activity.wallet;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -27,10 +26,9 @@ import connect.utils.cryption.SupportKeyUril;
 import instant.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.activity.wallet.manager.TransferEditView;
+import connect.activity.wallet.view.TransferEditView;
 import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
-import connect.widget.random.RandomVoiceActivity;
 import protos.Connect;
 
 /**
@@ -58,12 +56,6 @@ public class TransferOutViaActivity extends BaseActivity {
         setContentView(R.layout.activity_wallet_transfer_outvia);
         ButterKnife.bind(this);
         initView();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        transferEditView.initView(mActivity);
     }
 
     @Override

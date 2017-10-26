@@ -84,7 +84,7 @@ public class PacketSendActivity extends BaseActivity {
         mActivity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
-        toolbarTop.setRightClickable(false);
+        toolbarTop.setRightTextEnable(false);
 
         Bundle bundle = getIntent().getExtras();
         sendOutBean = (SendOutBean) bundle.getSerializable("send");
@@ -101,7 +101,7 @@ public class PacketSendActivity extends BaseActivity {
             hintTv.setText(R.string.Wallet_Wallet_Out_Send_Share);
             if(sendOutBean.getStatus() == 0){
                 toolbarTop.setRightImg(R.mipmap.menu_white);
-                toolbarTop.setRightClickable(true);
+                toolbarTop.setRightTextEnable(true);
             }
         }
         updateView();

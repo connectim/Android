@@ -59,48 +59,31 @@ public class TopToolBar extends LinearLayout{
         this.setBackgroundResource(R.color.color_ff6c5a);
         titleTv.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff));
         rightText.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff));
-        setWindowStatusBarColor((Activity)context,R.color.color_ff6c5a);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = ((Activity)context).getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(context.getResources().getColor(R.color.color_ff6c5a));
+                //window.setNavigationBarColor(activity.getResources().getColor(colorResId));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void setBackground(int resid){
-        this.setBackgroundResource(resid);
+    public void setLeftImg(Integer resourceId){
+        leftImg.setImageResource(resourceId);
     }
 
-    public void setLeftImg(Integer resId){
-        leftImg.setImageResource(resId);
-    }
-
-    public void setLeftListence(OnClickListener onClickListener){
+    public void setLeftListener(OnClickListener onClickListener){
         leftRela.setOnClickListener(onClickListener);
     }
 
-    public void setLeftEnable(boolean enable){
-        leftRela.setEnabled(enable);
-    }
-
     public void setTitle(String title) {
-        titleImg.setVisibility(GONE);
         titleTv.setText(title);
     }
 
-    public void setTitleImg(Integer imgId) {
-        if (imgId != null) {
-            titleImg.setVisibility(VISIBLE);
-            titleImg.setImageResource(imgId);
-        }
-    }
-
     public void setTitle(Integer imgId,Integer textId){
-        if(imgId != null){
-            titleImg.setVisibility(VISIBLE);
-            titleImg.setImageResource(imgId);
-        }
-        if(textId != null){
-            titleTv.setText(textId);
-        }
-    }
-
-    public void setTitle(Integer imgId,String textId){
         if(imgId != null){
             titleImg.setVisibility(VISIBLE);
             titleImg.setImageResource(imgId);
@@ -127,6 +110,14 @@ public class TopToolBar extends LinearLayout{
         rightText.setText(resId);
     }
 
+    public void setRightListener(OnClickListener onClickListener){
+        rightLayout.setOnClickListener(onClickListener);
+    }
+
+    public void setRightTextColor(Integer resId){
+        rightText.setTextColor(BaseApplication.getInstance().getResources().getColor(resId));
+    }
+
     public void setRightTextEnable(boolean enable){
         rightText.setEnabled(enable);
         if(enable){
@@ -135,31 +126,6 @@ public class TopToolBar extends LinearLayout{
             rightText.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_767a82));
         }
         rightLayout.setEnabled(enable);
-    }
-
-    public void setRightTextColor(Integer resId){
-        rightText.setTextColor(BaseApplication.getInstance().getResources().getColor(resId));
-    }
-
-    public void setRightListence(OnClickListener onClickListener){
-        rightLayout.setOnClickListener(onClickListener);
-    }
-
-    public void setRightClickable(boolean clickable) {
-        rightLayout.setClickable(clickable);
-    }
-
-    public void setWindowStatusBarColor(Activity activity, int colorResId) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = activity.getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(activity.getResources().getColor(colorResId));
-                //window.setNavigationBarColor(activity.getResources().getColor(colorResId));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

@@ -55,7 +55,7 @@ public class GroupCrowdingRecordsActivity extends BaseActivity implements GroupC
         activity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
-        toolbarTop.setLeftListence(new View.OnClickListener() {
+        toolbarTop.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtil.goBack(activity);

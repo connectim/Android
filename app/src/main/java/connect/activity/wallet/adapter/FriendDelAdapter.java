@@ -17,10 +17,6 @@ import connect.utils.system.SystemDataUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.SideScrollView;
 
-/**
- * Created by Administrator on 2017/1/18.
- */
-
 public class FriendDelAdapter extends RecyclerView.Adapter<FriendDelAdapter.FriendHolder> {
 
     private List<ContactEntity> list = new ArrayList<>();

@@ -52,7 +52,7 @@ public class GeneralLanguageActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_Language);
         toolbarTop.setRightText(R.string.Set_Save);
-        toolbarTop.setRightTextColor(R.color.color_00c400);
+        toolbarTop.setRightTextEnable(true);
 
         bindingAdapter();
     }

@@ -20,9 +20,6 @@ import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2016/12/20.
- */
 public class TransferOutAdapter extends RecyclerView.Adapter<TransferOutAdapter.ViewHolder> {
 
     private Activity activity;

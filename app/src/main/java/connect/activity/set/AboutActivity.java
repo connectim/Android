@@ -88,7 +88,7 @@ public class AboutActivity extends BaseActivity {
         if(compareInt == 1){
             DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_Found_new_version),
                     versionResponse.getRemark(), "", getString(R.string.Set_Now_update_app),
-                    false, new DialogUtil.OnItemClickListener() {
+                    false, false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {
                             if(!TextUtils.isEmpty(versionResponse.getUpgradeUrl())){
@@ -99,7 +99,7 @@ public class AboutActivity extends BaseActivity {
 
                         @Override
                         public void cancel() {}
-                    },false);
+                    });
         }
     }
 

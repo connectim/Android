@@ -1,4 +1,4 @@
-package connect.widget.payment;
+package connect.activity.wallet.view;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import connect.ui.activity.R;
 
@@ -17,9 +16,8 @@ public class VirtualKeyboardView extends LinearLayout {
 
     Context context;
     private GridView gridView;
-    private RelativeLayout layoutBack;
     private ArrayList<String> valueList;
-    private AddNumberListence addNumberListence = null;
+    private AddNumberListener addNumberListener = null;
 
     public VirtualKeyboardView(Context context) {
         this(context, null);
@@ -29,39 +27,30 @@ public class VirtualKeyboardView extends LinearLayout {
         super(context, attrs);
         this.context = context;
         View view = View.inflate(context, R.layout.layout_virtual_keyboard, null);
-        valueList = new ArrayList<>();
         gridView = (GridView) view.findViewById(R.id.gv_keybord);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 11){//close
-                    addNumberListence.changeText("-");
-                }else{
-                    String value = (String)parent.getAdapter().getItem(position);
-                    if(!TextUtils.isEmpty(value)){
-                        addNumberListence.changeText(value);
-                    }
-                }
-            }
-        });
+        gridView.setOnItemClickListener(onItemClickListener);
         setView();
         addView(view);
     }
 
-    public RelativeLayout getLayoutBack() {
-        return layoutBack;
-    }
-
-    public ArrayList<String> getValueList() {
-        return valueList;
-    }
-
-    public GridView getGridView() {
-        return gridView;
-    }
+    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener(){
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if(position == 11){
+                //close
+                addNumberListener.changeText("-");
+            }else{
+                String value = (String)parent.getAdapter().getItem(position);
+                if(!TextUtils.isEmpty(value)){
+                    addNumberListener.changeText(value);
+                }
+            }
+        }
+    };
 
     private void setView() {
         /* Initializes the button should be displayed on the Numbers */
+        valueList = new ArrayList<>();
         for (int i = 1; i < 13; i++) {
             String value = "";
             if (i < 10) {
@@ -79,11 +68,11 @@ public class VirtualKeyboardView extends LinearLayout {
         gridView.setAdapter(keyBoardAdapter);
     }
 
-    public void setAddNumberListence(AddNumberListence addNumberListence){
-        this.addNumberListence = addNumberListence;
+    public void setAddNumberListener(AddNumberListener addNumberListener){
+        this.addNumberListener = addNumberListener;
     }
 
-    public interface AddNumberListence{
+    public interface AddNumberListener {
 
         void changeText(String value);
 

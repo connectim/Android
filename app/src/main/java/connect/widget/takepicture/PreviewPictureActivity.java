@@ -31,7 +31,7 @@ public class PreviewPictureActivity extends BaseActivity{
 
     private Bundle bundle;
     private PreviewPictureActivity mActivity;
-    private String pathImag;
+    private String pathImage;
     public static final int REQUEST_CODE = 101;
 
     public static void startActivity(Activity activity,String path) {
@@ -55,21 +55,20 @@ public class PreviewPictureActivity extends BaseActivity{
         toolbarTop.setTitle(null, R.string.Set_Profile_Photo);
 
         bundle = getIntent().getExtras();
-        pathImag = bundle.getString("path");
-
-        GlideUtil.loadAvatar(previewImg,pathImag);
+        pathImage = bundle.getString("path");
+        GlideUtil.loadAvatar(previewImg,pathImage);
     }
 
     @OnClick(R.id.retake_rela)
     void retake(View view){
-        FileUtil.deleteDirectory(pathImag);
+        FileUtil.deleteDirectory(pathImage);
         ActivityUtil.goBack(mActivity);
     }
 
     @OnClick(R.id.send_rela)
     void send(View view){
         Bundle bundle = new Bundle();
-        bundle.putString("path", pathImag);
+        bundle.putString("path", pathImage);
         ActivityUtil.goBackWithResult(mActivity,RESULT_OK,bundle);
     }
 
