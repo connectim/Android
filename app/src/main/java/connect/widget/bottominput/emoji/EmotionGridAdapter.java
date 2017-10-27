@@ -1,4 +1,4 @@
-package connect.activity.chat.model.emoji;
+package connect.widget.bottominput.emoji;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import connect.ui.activity.R;
-import connect.activity.chat.bean.StickPagerBean;
+import connect.widget.bottominput.EmoManager;
+import connect.widget.bottominput.bean.StickPagerBean;
 import connect.activity.chat.inter.IEmojiClickListener;
-import connect.activity.chat.model.EmoManager;
 import connect.activity.chat.view.PopWindowImg;
 import connect.utils.FileUtil;
 

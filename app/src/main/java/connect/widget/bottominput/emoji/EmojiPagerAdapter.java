@@ -1,4 +1,4 @@
-package connect.activity.chat.model;
+package connect.widget.bottominput.emoji;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import connect.activity.chat.bean.StickPagerBean;
+import connect.widget.bottominput.bean.StickPagerBean;
 import connect.activity.chat.inter.IEmojiClickListener;
-import connect.activity.chat.model.emoji.EmojiGridAdapter;
-import connect.activity.chat.model.emoji.EmotionGridAdapter;
 import connect.utils.system.SystemUtil;
 
 import java.util.List;

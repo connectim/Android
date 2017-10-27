@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.base.inter.InterAccount;
-import connect.activity.chat.model.EmoManager;
+import connect.widget.bottominput.EmoManager;
 import connect.activity.login.LoginPhoneActivity;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharePreferenceUser;
@@ -24,6 +24,7 @@ import connect.service.UpdateInfoService;
 import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
+import connect.widget.bottominput.view.ExBottomLayout;
 import instant.bean.Session;
 import instant.ui.InstantSdk;
 
@@ -40,8 +41,11 @@ public class BaseApplication extends Application implements InterAccount {
         super.onCreate();
         mApplication = this;
 
+        // IM SDK
         InstantSdk.instantSdk.initSdk(this);
+        // EMOJI
         EmoManager.getInstance();
+        ExBottomLayout.exBottomLayout.initView();
 
         String appId = ConfigUtil.getInstance().getCrashAPPID();
         CrashReport.initCrashReport(this, appId, true);

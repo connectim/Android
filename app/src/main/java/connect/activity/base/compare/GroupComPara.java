@@ -1,4 +1,4 @@
-package connect.activity.chat.model;
+package connect.activity.base.compare;
 
 import android.text.TextUtils;
 

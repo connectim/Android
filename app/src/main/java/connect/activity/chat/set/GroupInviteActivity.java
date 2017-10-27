@@ -15,7 +15,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.model.FriendCompara;
+import connect.activity.base.compare.FriendCompara;
 import connect.activity.chat.set.contract.GroupInviteContract;
 import connect.activity.chat.set.presenter.GroupInvitePresenter;
 import connect.activity.common.adapter.MulContactAdapter;

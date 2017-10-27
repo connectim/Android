@@ -1,5 +1,6 @@
 package connect.activity.chat;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -29,11 +30,12 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.exts.GoogleMapActivity;
+import connect.activity.chat.exts.GroupAtActivity;
 import connect.activity.chat.exts.LuckyPacketActivity;
 import connect.activity.chat.exts.PaymentActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.inter.FileUpLoad;
-import connect.activity.chat.model.InputPanel;
+import connect.widget.bottominput.InputPanel;
 import connect.activity.chat.model.fileload.LocationUpload;
 import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.model.fileload.VideoUpload;
@@ -54,6 +56,7 @@ import connect.utils.permission.PermissionUtil;
 import connect.widget.DialogView;
 import connect.widget.RecycleViewScrollHelper;
 import connect.widget.album.AlbumActivity;
+import connect.widget.bottominput.view.InputBottomLayout;
 import connect.widget.camera.CameraTakeActivity;
 import connect.widget.imagewatcher.ImageViewerActivity;
 import connect.widget.imagewatcher.ImageWatcher;
@@ -121,8 +124,8 @@ public abstract class BaseChatActvity extends BaseActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         linearLayoutManager.setStackFromEnd(true);
-        inputPanel = new InputPanel(getWindow().getDecorView().findViewById(android.R.id.content));
-        inputPanel.isGroupAt(talker.getTalkType() == Connect.ChatType.GROUPCHAT);
+        inputPanel = new InputPanel();
+        inputPanel.setActivity(this);
         scrollHelper = new RecycleViewScrollHelper(new RecycleViewScrollHelper.OnScrollPositionChangedListener() {
 
             @Override
@@ -145,7 +148,7 @@ public abstract class BaseChatActvity extends BaseActivity {
         roomEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
         if (roomEntity != null) {
             if (!TextUtils.isEmpty(roomEntity.getDraft())) {
-                inputPanel.insertDraft(" " + roomEntity.getDraft());
+                InputBottomLayout.bottomLayout.insertDraft(" " + roomEntity.getDraft());
             }
             ConversionHelper.getInstance().updateRoomEntity(roomEntity);
         }
@@ -444,6 +447,9 @@ public abstract class BaseChatActvity extends BaseActivity {
                 if (normalChat.chatKey().equals(objects[0])) {
                     ((FriendChat) normalChat).setEncryType(FriendChat.EncryType.HALF);
                 }
+                break;
+            case GROUPAT_TO:
+                GroupAtActivity.startActivity(activity, normalChat.chatKey());
                 break;
             case MESSAGE_RECEIVE:
                 if (objects[0].equals(talker.getTalkKey())) {

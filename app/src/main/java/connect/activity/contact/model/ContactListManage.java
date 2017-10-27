@@ -11,7 +11,7 @@ import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
-import connect.activity.chat.model.FriendCompara;
+import connect.activity.base.compare.FriendCompara;
 import connect.activity.home.bean.ContactBean;
 import connect.utils.PinyinUtil;
 

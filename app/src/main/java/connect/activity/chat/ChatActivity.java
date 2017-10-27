@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -32,7 +33,7 @@ import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.model.fileload.VideoUpload;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
-import connect.activity.chat.view.ExBottomLayout;
+import connect.activity.chat.view.RecordView;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.wallet.TransferFriendActivity;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -57,6 +58,9 @@ import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
 import connect.widget.album.AlbumActivity;
 import connect.widget.album.model.AlbumFile;
+import connect.widget.bottominput.InputPanel;
+import connect.widget.bottominput.view.ExBottomLayout;
+import connect.widget.bottominput.view.InputBottomLayout;
 import connect.widget.camera.CameraTakeActivity;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.NormalChat;
@@ -74,6 +78,12 @@ public class ChatActivity extends BaseChatActvity {
     RecyclerView recyclerChat;
     @Bind(R.id.layout_exbottom)
     ExBottomLayout layoutExbottom;
+    @Bind(R.id.layout_inputbottom)
+    InputBottomLayout layoutInputbottom;
+    @Bind(R.id.layout_bottom)
+    LinearLayout layoutBottom;
+    @Bind(R.id.recordview)
+    RecordView recordview;
 
     private String Tag = "ChatActivity";
 
@@ -122,6 +132,8 @@ public class ChatActivity extends BaseChatActvity {
                 }
             }
         });
+        recordview.setVisibility(View.GONE);
+        InputPanel.inputPanel.setRecordView(recordview);
 
         // robot/stranger donot show setting
         if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
@@ -165,7 +177,7 @@ public class ChatActivity extends BaseChatActvity {
 
             @Override
             protected List<ChatMsgEntity> doInBackground(Void... params) {
-                return MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(),TimeUtil.getCurrentTimeInLong());
+                return MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(), TimeUtil.getCurrentTimeInLong());
             }
 
             @Override
@@ -196,7 +208,7 @@ public class ChatActivity extends BaseChatActvity {
                     ChatMsgEntity baseEntity = msgExtEntities.get(0);
                     lastCreateTime = baseEntity.getCreatetime();
                 }
-                return MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(),lastCreateTime);
+                return MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(), lastCreateTime);
             }
 
             @Override
@@ -340,7 +352,7 @@ public class ChatActivity extends BaseChatActvity {
             case Text:
                 msgExtEntity = normalChat.txtMsg(content);
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                ((ConversationListener)normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
+                ((ConversationListener) normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
                 normalChat.sendPushMsg(msgExtEntity);
                 break;
             case Photo:
@@ -375,7 +387,7 @@ public class ChatActivity extends BaseChatActvity {
 
     @Override
     public void saveRoomInfo() {
-        String draft = inputPanel.getDraft();
+        String draft = InputBottomLayout.bottomLayout.getDraft();
         if (chatAdapter.getMsgEntities().size() != 0) {
             ChatMsgEntity lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
             if (lastExtEntity != null) {
@@ -386,7 +398,7 @@ public class ChatActivity extends BaseChatActvity {
                     showtxt = lastExtEntity.showContent();
                     sendtime = lastExtEntity.getCreatetime();
                 }
-                ((ConversationListener)normalChat).updateRoomMsg(draft, showtxt, sendtime, 0);
+                ((ConversationListener) normalChat).updateRoomMsg(draft, showtxt, sendtime, 0);
             }
         }
     }

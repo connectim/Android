@@ -1,9 +1,9 @@
-package connect.activity.chat.bean;
+package connect.widget.bottominput.bean;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 
-import connect.activity.chat.model.EmoManager;
+import connect.widget.bottominput.EmoManager;
 import connect.activity.base.BaseApplication;
 
 import java.io.File;

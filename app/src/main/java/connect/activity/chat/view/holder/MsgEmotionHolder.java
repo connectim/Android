@@ -4,7 +4,7 @@ import android.view.View;
 
 import java.io.File;
 
-import connect.activity.chat.model.EmoManager;
+import connect.widget.bottominput.EmoManager;
 import connect.ui.activity.R;
 import connect.widget.GifView;
 import instant.bean.ChatMsgEntity;

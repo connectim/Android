@@ -1,4 +1,4 @@
-package connect.activity.chat.model.more;
+package connect.widget.bottominput.more;
 
 import android.app.Dialog;
 import android.content.Context;

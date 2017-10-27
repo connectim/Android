@@ -17,7 +17,7 @@ import connect.activity.chat.adapter.GroupAtAdapter;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.GroupAtContract;
 import connect.activity.chat.exts.presenter.GroupAtPresenter;
-import connect.activity.chat.model.GroupMemberCompara;
+import connect.activity.base.compare.GroupMemberCompara;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
