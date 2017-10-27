@@ -42,8 +42,8 @@ public class ContactFragment extends BaseFragment {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.siderbar)
-    SideBar siderbar;
+    @Bind(R.id.side_bar)
+    SideBar sideBar;
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
 
@@ -83,7 +83,7 @@ public class ContactFragment extends BaseFragment {
         adapter = new ContactAdapter(mActivity);
         recyclerview.setAdapter(adapter);
         recyclerview.addOnScrollListener(onScrollListener);
-        siderbar.setOnTouchingLetterChangedListener(changedListener);
+        sideBar.setOnTouchingLetterChangedListener(changedListener);
 
         adapter.setOnSideMenuListener(onSideMenuListener);
         adapter.updateContact(adapter.updateTypeContact);

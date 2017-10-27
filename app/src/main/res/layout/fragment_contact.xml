@@ -20,7 +20,7 @@
         android:listSelector="@android:color/transparent"/>
 
     <connect.widget.SideBar
-        android:id="@id/siderbar"
+        android:id="@+id/side_bar"
         android:layout_width="25dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
