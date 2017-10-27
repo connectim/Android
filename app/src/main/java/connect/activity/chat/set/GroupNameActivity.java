@@ -26,7 +26,9 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
     @Bind(R.id.edittxt1)
     EditText edittxt1;
 
-    private Activity activity;
+    private GroupNameActivity activity;
+    private static String TAG = "_GroupNameActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
     private String groupKey = null;
 
     private GroupNameTextWatcher textWatcher=new GroupNameTextWatcher();
@@ -42,7 +44,7 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupNameActivity.class, bundle);
     }
 
@@ -70,7 +72,7 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         edittxt1.addTextChangedListener(textWatcher);
         new GroupNamePresenter(this).start();
     }

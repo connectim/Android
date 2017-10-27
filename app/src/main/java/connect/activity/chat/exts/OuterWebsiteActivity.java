@@ -60,6 +60,8 @@ public class OuterWebsiteActivity extends BaseActivity {
     ProgressBar myProgressBar;
 
     private OuterWebsiteActivity activity;
+    private static String TAG = "_OuterWebsiteActivity";
+    private static String URL = "URL";
     private String inUrl;
     private String title = "";
     private String subtitle = "";
@@ -71,7 +73,7 @@ public class OuterWebsiteActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outer_website);
         ButterKnife.bind(this);
-        inUrl = getIntent().getStringExtra("url");
+        inUrl = getIntent().getStringExtra(URL);
         if (!RegularUtil.matches(inUrl, RegularUtil.VERIFICATION_URL_HEADER)) {
             inUrl = "http://" + inUrl;
         }
@@ -80,7 +82,7 @@ public class OuterWebsiteActivity extends BaseActivity {
 
     public static void startActivity(Activity activity, String url) {
         Bundle bundle = new Bundle();
-        bundle.putString("url", url);
+        bundle.putString(URL, url);
         ActivityUtil.next(activity, OuterWebsiteActivity.class, bundle);
     }
 

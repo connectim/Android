@@ -27,6 +27,8 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
     EditText edit;
 
     private GroupIntroduceActivity activity;
+    private static String TAG = "_GroupIntroduceActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
     private String groupKey = null;
 
     private GroupIntroduceTextWatcher textWatcher = new GroupIntroduceTextWatcher();
@@ -42,7 +44,7 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupIntroduceActivity.class, bundle);
     }
 
@@ -68,7 +70,7 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         edit.addTextChangedListener(textWatcher);
         new GroupIntroducePresenter(this).start();
     }

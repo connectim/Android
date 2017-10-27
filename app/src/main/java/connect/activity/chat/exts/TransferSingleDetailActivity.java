@@ -54,6 +54,11 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
     LinearLayout linearlayout;
 
     private TransferSingleDetailActivity activity;
+    private static String TAG = "_TransferSingleDetailActivity";
+    private static String TRANSFER_TYPE = "TRANSFER_TYPE";
+    private static String HASH_ID = "HASH_ID";
+    private static String MESSAGE_ID = "MESSAGE_ID";
+
     private int transferType;// 0:outer 1:inner 2:mul
     private String hashId;
     private String msgId;
@@ -70,9 +75,9 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
 
     public static void startActivity(Activity activity, int transferType, String hashid, String msgid) {
         Bundle bundle = new Bundle();
-        bundle.putInt("TransferType", transferType);
-        bundle.putString("Hash", hashid);
-        bundle.putString("Msgid", msgid);
+        bundle.putInt(TRANSFER_TYPE, transferType);
+        bundle.putString(HASH_ID, hashid);
+        bundle.putString(MESSAGE_ID, msgid);
         ActivityUtil.next(activity, TransferSingleDetailActivity.class, bundle);
     }
 
@@ -89,12 +94,11 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
             }
         });
 
-        transferType = getIntent().getIntExtra("TransferType", 0);
-        hashId = getIntent().getStringExtra("Hash");
-        msgId = getIntent().getStringExtra("Msgid");
+        transferType = getIntent().getIntExtra(TRANSFER_TYPE, 0);
+        hashId = getIntent().getStringExtra(HASH_ID);
+        msgId = getIntent().getStringExtra(MESSAGE_ID);
 
         new TransferSingleDetailPresenter(this).start();
-
         if (transferType == 0 || transferType == 1) {
             presenter.requestTransferInnerDetail(hashId);
         } else if (transferType == 2) {

@@ -113,7 +113,7 @@ public class PrivateBlackActivity extends BaseActivity {
      */
     private void requestBlock(final int position, final Connect.UserInfo userInfo) {
         Connect.UserIdentifier userIdentifier = Connect.UserIdentifier.newBuilder()
-                .setAddress(userInfo.getUid())
+                .setUid(userInfo.getUid())
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_REMOVE, userIdentifier, new ResultCall<Connect.HttpResponse>() {
             @Override

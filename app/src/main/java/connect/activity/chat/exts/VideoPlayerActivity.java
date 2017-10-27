@@ -49,12 +49,17 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
     ProgressBar probar2;
 
     private VideoPlayerActivity activity;
-    private VideoPlayerUtil videoPlayerUtil;
+    private static String TAG = "_VideoPlayerActivity";
+    private static String FILE_PATH = "FILE_PATH";
+    private static String VIDEO_LENGTH = "VIDEO_LENGTH";
+    private static String MESSAGE_ID = "MESSAGE_ID";
 
-    private VideoPlayContract.Presenter presenter;
     private String filePath;
     private String length;
     private String messageId;
+
+    private VideoPlayerUtil videoPlayerUtil;
+    private VideoPlayContract.Presenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,9 +76,9 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
 
     public static void startActivity(Activity activity, String filepath, String length, String messageid) {
         Bundle bundle = new Bundle();
-        bundle.putString("PATH", filepath);
-        bundle.putString("LENGTH", length);
-        bundle.putSerializable("MESSAGEID", messageid);
+        bundle.putString(FILE_PATH, filepath);
+        bundle.putString(VIDEO_LENGTH, length);
+        bundle.putSerializable(MESSAGE_ID, messageid);
         ActivityUtil.next(activity, VideoPlayerActivity.class, bundle);
     }
 
@@ -89,9 +94,9 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
             }
         });
 
-        filePath = getIntent().getStringExtra("PATH");
-        length = getIntent().getStringExtra("LENGTH");
-        messageId = getIntent().getStringExtra("MESSAGEID");
+        filePath = getIntent().getStringExtra(FILE_PATH);
+        length = getIntent().getStringExtra(VIDEO_LENGTH);
+        messageId = getIntent().getStringExtra(MESSAGE_ID);
 
         videoPlayerUtil = VideoPlayerUtil.getInstance();
         videoPlayerUtil.init(surfaceview, new VideoPlayerUtil.VideoPlayListener() {
@@ -105,7 +110,6 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
                 callBackListener.onVidePlayFinish();
             }
         });
-
         new VideoPlayPresenter(this).start();
     }
 

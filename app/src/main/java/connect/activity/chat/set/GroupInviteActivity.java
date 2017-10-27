@@ -37,6 +37,8 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
     SideBar siderbar;
 
     private GroupInviteActivity activity;
+    private static String TAG = "_GroupInviteActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
     private boolean move;
     private int topPosi;
     private String groupKey;
@@ -58,7 +60,7 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupInviteActivity.class, bundle);
     }
 
@@ -95,7 +97,7 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         linearLayoutManager = new LinearLayoutManager(activity);
 
         List<String> oldMembers = new ArrayList<>();

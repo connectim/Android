@@ -45,6 +45,8 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
     TextView txt3;
 
     private GroupQRActivity activity;
+    private static String TAG = "_GroupQRActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
     private String groupKey = null;
     private GroupEntity groupEntity = null;
     private GroupQRContract.Presenter presenter;
@@ -59,7 +61,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupQRActivity.class, bundle);
     }
 
@@ -113,7 +115,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         new GroupQRPresenter(this).start();
         presenter.requestGroupQR(UriUtil.GROUP_HASH);
     }

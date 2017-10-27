@@ -23,13 +23,9 @@ public class FailMsgsManager {
 
     public static FailMsgsManager manager;
 
-    public static FailMsgsManager getInstance() {
+    public synchronized static FailMsgsManager getInstance() {
         if (manager == null) {
-            synchronized (FailMsgsManager.class) {
-                if (manager == null) {
-                    manager = new FailMsgsManager();
-                }
-            }
+            manager = new FailMsgsManager();
         }
         return manager;
     }

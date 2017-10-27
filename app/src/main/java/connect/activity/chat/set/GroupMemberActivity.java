@@ -40,6 +40,8 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
     private String groupKey;
 
     private GroupMemberActivity activity;
+    private static String TAG = "_GroupMemberActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
 
     private GroupMemberOnscrollListener onscrollListener = new GroupMemberOnscrollListener();
     private GroupMemberLetterChanged letterChanged = new GroupMemberLetterChanged();
@@ -57,7 +59,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupMemberActivity.class, bundle);
     }
 
@@ -80,7 +82,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey,
                 SharedPreferenceUtil.getInstance().getUser().getUid());
 

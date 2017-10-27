@@ -42,11 +42,15 @@ public class TransferMutiDetailActivity extends BaseActivity implements Transfer
     RecyclerView recyclerview;
 
     private TransferMutiDetailActivity activity;
-    private TransferMutiDetailContract.Presenter presenter;
+    private static String TAG = "_TransferMutiDetailActivity";
+    private static String HASH_ID = "HASH_ID";
+    private static String MESSAGE_ID = "MESSAGE_ID";
+
     private String hashId;
     private String messageId;
-    private TransferMutiDetailAdapter mutiDetailAdapter;
 
+    private TransferMutiDetailContract.Presenter presenter;
+    private TransferMutiDetailAdapter mutiDetailAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +62,8 @@ public class TransferMutiDetailActivity extends BaseActivity implements Transfer
 
     public static void startActivity(Activity activity, String hashid, String msgid) {
         Bundle bundle = new Bundle();
-        bundle.putString("HASHID", hashid);
-        bundle.putString("MESSAGEID", msgid);
+        bundle.putString(HASH_ID, hashid);
+        bundle.putString(MESSAGE_ID, msgid);
         ActivityUtil.next(activity, TransferMutiDetailActivity.class, bundle);
     }
 
@@ -76,8 +80,8 @@ public class TransferMutiDetailActivity extends BaseActivity implements Transfer
             }
         });
 
-        hashId = getIntent().getStringExtra("HASHID");
-        messageId = getIntent().getStringExtra("MESSAGEID");
+        hashId = getIntent().getStringExtra(HASH_ID);
+        messageId = getIntent().getStringExtra(MESSAGE_ID);
         new TransferMutiDetailPresenter(this).start();
         presenter.requestTransferDetail(hashId);
 

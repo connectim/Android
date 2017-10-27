@@ -1195,6 +1195,7 @@ enum ChatType {
 	PRIVATE= 0; // 个人聊天
 	GROUPCHAT  = 1;  //群组聊天
 	CONNECT_SYSTEM = 2; // Connect
+	UNKNOW = 3; //未知，陌生人/群
 }
 //临时协同密钥
 message ChatSession {

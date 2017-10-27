@@ -179,7 +179,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
     @Override
     public void requestBlock(final boolean block,String address) {
         Connect.UserIdentifier userIdentifier = Connect.UserIdentifier.newBuilder()
-                .setAddress(address)
+                .setUid(address)
                 .build();
         String url;
         if (block) {

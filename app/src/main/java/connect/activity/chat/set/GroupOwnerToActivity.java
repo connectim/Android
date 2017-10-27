@@ -38,9 +38,9 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
     @Bind(R.id.siderbar)
     SideBar siderbar;
 
-    private String Tag = "_GroupTransferToActivity";
-
     private GroupOwnerToActivity activity;
+    private static String TAG = "_GroupOwnerToActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
     private String groupKey = null;
 
     private GroupOwnerToOnscrollListener onscrollListener = new GroupOwnerToOnscrollListener();
@@ -63,7 +63,7 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupOwnerToActivity.class, bundle);
     }
 
@@ -80,7 +80,7 @@ public class GroupOwnerToActivity extends BaseActivity implements GroupOwnerCont
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
 
         String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();

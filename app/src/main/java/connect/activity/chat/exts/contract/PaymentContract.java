@@ -4,6 +4,7 @@ import com.wallet.bean.CurrencyEnum;
 
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
+import protos.Connect;
 
 /**
  * Created by puin on 17-8-11.

@@ -32,6 +32,7 @@ public class GroupCrowdingRecordsActivity extends BaseActivity implements GroupC
     SwipeRefreshLayout refreshview;
 
     private GroupCrowdingRecordsActivity activity;
+    private static String TAG = "_GroupCrowdingRecordsActivity";
     private int page = 1;
     private GroupGatherRecordsAdapter recordsAdapter;
 

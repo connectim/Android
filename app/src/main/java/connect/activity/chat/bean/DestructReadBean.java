@@ -16,13 +16,9 @@ public class DestructReadBean extends BaseEvent implements Serializable {
 
     public static DestructReadBean readBean;
 
-    public static DestructReadBean getInstance() {
+    public synchronized static DestructReadBean getInstance() {
         if (readBean == null) {
-            synchronized (DestructReadBean.class) {
-                if (readBean == null) {
-                    readBean = new DestructReadBean();
-                }
-            }
+            readBean = new DestructReadBean();
         }
         return readBean;
     }

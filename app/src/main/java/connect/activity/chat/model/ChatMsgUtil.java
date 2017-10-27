@@ -40,7 +40,7 @@ import protos.Connect;
  */
 public class ChatMsgUtil {
 
-    private static String Tag = "ChatMsgUtil";
+    private static String TAG = "_ChatMsgUtil";
 
     public static ChatMsgUtil chatMsgUtil = getIntance();
 

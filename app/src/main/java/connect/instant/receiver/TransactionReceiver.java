@@ -24,7 +24,6 @@ import connect.utils.TimeUtil;
 import instant.bean.ChatMsgEntity;
 import instant.parser.inter.TransactionListener;
 import instant.sender.model.NormalChat;
-import instant.utils.ChatUtil;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -81,7 +80,7 @@ public class TransactionReceiver implements TransactionListener {
         Context context = BaseApplication.getInstance().getBaseContext();
 
         NormalChat normalChat = null;
-        Connect.ChatType chatType = ChatUtil.parseChatType(notice.getIdentifer());
+        Connect.ChatType chatType = ContactHelper.getInstance().loadChatType(notice.getIdentifer());
         if (chatType == Connect.ChatType.PRIVATE) {
             ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(notice.getIdentifer());
             normalChat = new CFriendChat(contactEntity);

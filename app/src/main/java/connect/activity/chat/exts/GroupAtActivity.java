@@ -13,7 +13,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.adapter.GroupMemberSelectAdapter;
+import connect.activity.chat.adapter.GroupAtAdapter;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.GroupAtContract;
 import connect.activity.chat.exts.presenter.GroupAtPresenter;
@@ -38,15 +38,17 @@ public class GroupAtActivity extends BaseActivity implements GroupAtContract.BVi
     @Bind(R.id.siderbar)
     SideBar siderbar;
 
-    private String Tag = "GroupTransferToActivity";
-
     private GroupAtActivity activity;
-
+    private static String TAG = "_GroupAtActivity";
+    private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
     private String groupKey = null;
     private boolean move;
     private int topPosi;
+
+    private GroupAtOnscrollListener onscrollListener = new GroupAtOnscrollListener();
+    private GroupAtLetterChanged letterChanged = new GroupAtLetterChanged();
     private LinearLayoutManager linearLayoutManager;
-    private GroupMemberSelectAdapter adapter;
+    private GroupAtAdapter adapter;
     private GroupAtContract.Presenter presenter;
 
     @Override
@@ -59,7 +61,7 @@ public class GroupAtActivity extends BaseActivity implements GroupAtContract.BVi
 
     public static void startActivity(Activity activity, String groupkey) {
         Bundle bundle = new Bundle();
-        bundle.putString("GROUP_KEY", groupkey);
+        bundle.putString(GROUP_IDENTIFY, groupkey);
         ActivityUtil.next(activity, GroupAtActivity.class, bundle);
     }
 
@@ -76,8 +78,7 @@ public class GroupAtActivity extends BaseActivity implements GroupAtContract.BVi
             }
         });
 
-        groupKey = getIntent().getStringExtra("GROUP_KEY");
-        linearLayoutManager = new LinearLayoutManager(activity);
+        groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
 
         String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
@@ -90,59 +91,64 @@ public class GroupAtActivity extends BaseActivity implements GroupAtContract.BVi
         }
         Collections.sort(groupMemEntities, new GroupMemberCompara());
 
-        adapter = new GroupMemberSelectAdapter(activity, groupMemEntities);
+        linearLayoutManager = new LinearLayoutManager(activity);
+        adapter = new GroupAtAdapter(activity, groupMemEntities);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (move) {
-                    move = false;
-                    int n = topPosi - linearLayoutManager.findFirstVisibleItemPosition();
-                    if (0 <= n && n < recyclerview.getChildCount()) {
-                        int top = recyclerview.getChildAt(n).getTop();
-                        recyclerview.scrollBy(0, top);
-                    }
-                }
-            }
-        });
-        adapter.setTransferToListener(new GroupMemberSelectAdapter.GroupTransferToListener() {
-            @Override
-            public void transferTo(GroupMemberEntity memEntity) {
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_AT, memEntity);
-                ActivityUtil.goBack(activity);
-            }
-        });
-
-        siderbar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
-            @Override
-            public void onTouchingLetterChanged(String s) {
-                int position = adapter.getPositionForSection(s.charAt(0));
-                moveToPosition(position);
-            }
-        });
-
+        recyclerview.addOnScrollListener(onscrollListener);
+        adapter.setGroupAtListener(groupAtListener);
+        siderbar.setOnTouchingLetterChangedListener(letterChanged);
         new GroupAtPresenter(this).start();
     }
 
-    private void moveToPosition(int posi) {
-        this.topPosi = posi;
-        int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
-        int lastItem = linearLayoutManager.findLastVisibleItemPosition();
-        if (posi <= firstItem) {
-            recyclerview.scrollToPosition(posi);
-        } else if (posi <= lastItem) {
-            int top = recyclerview.getChildAt(posi - firstItem).getTop();
-            recyclerview.scrollBy(0, top);
-        } else {
-            recyclerview.scrollToPosition(posi);
-            move = true;
+    private class GroupAtOnscrollListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (move) {
+                move = false;
+                int n = topPosi - linearLayoutManager.findFirstVisibleItemPosition();
+                if (0 <= n && n < recyclerview.getChildCount()) {
+                    int top = recyclerview.getChildAt(n).getTop();
+                    recyclerview.scrollBy(0, top);
+                }
+            }
+        }
+    }
+
+    private GroupAtAdapter.GroupAtListener groupAtListener = new GroupAtAdapter.GroupAtListener() {
+
+        @Override
+        public void groupAt(GroupMemberEntity memEntity) {
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_AT, memEntity);
+            ActivityUtil.goBack(activity);
+        }
+    };
+
+    private class GroupAtLetterChanged implements SideBar.OnTouchingLetterChangedListener {
+
+        @Override
+        public void onTouchingLetterChanged(String s) {
+            int position = adapter.getPositionForSection(s.charAt(0));
+
+            topPosi = position;
+            int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastItem = linearLayoutManager.findLastVisibleItemPosition();
+            if (position <= firstItem) {
+                recyclerview.scrollToPosition(position);
+            } else if (position <= lastItem) {
+                int top = recyclerview.getChildAt(position - firstItem).getTop();
+                recyclerview.scrollBy(0, top);
+            } else {
+                recyclerview.scrollToPosition(position);
+                move = true;
+            }
         }
     }
 

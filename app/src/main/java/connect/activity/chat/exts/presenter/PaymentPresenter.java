@@ -2,11 +2,13 @@ package connect.activity.chat.exts.presenter;
 
 import android.app.Activity;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.wallet.bean.CurrencyEnum;
 
 import java.util.List;
 
+import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.contract.PaymentContract;
@@ -14,11 +16,22 @@ import connect.activity.login.bean.UserBean;
 import connect.activity.wallet.manager.TransferManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import com.wallet.inter.WalletListener;
+
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.SupportKeyUril;
+import connect.utils.data.RateFormatUtil;
+import connect.utils.glide.GlideUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
+import instant.bean.MsgDirect;
 import protos.Connect;
 
 /**

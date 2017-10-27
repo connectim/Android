@@ -7,6 +7,7 @@ import java.util.List;
 import connect.activity.chat.bean.Talker;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.utils.log.LogManager;
+import protos.Connect;
 
 /**
  * Created by Administrator on 2017/10/24.
@@ -15,6 +16,11 @@ import connect.utils.log.LogManager;
 public class ContactHelperTest {
 
     private String Tag = "_ContactHelperTest";
+
+    @Test
+    public Connect.ChatType loadChatType(String uid) {
+        return ContactHelper.getInstance().loadChatType(uid);
+    }
 
     @Test
     public Talker loadTalkerFriend(String uid) {
