@@ -1,6 +1,5 @@
 package connect.activity.chat;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,16 +11,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+
 import com.google.protobuf.InvalidProtocolBufferException;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.base.BaseListener;
+import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.DestructOpenBean;
 import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.GeoAddressBean;
@@ -35,7 +38,6 @@ import connect.activity.chat.exts.LuckyPacketActivity;
 import connect.activity.chat.exts.PaymentActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.inter.FileUpLoad;
-import connect.widget.bottominput.InputPanel;
 import connect.activity.chat.model.fileload.LocationUpload;
 import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.model.fileload.VideoUpload;
@@ -56,6 +58,7 @@ import connect.utils.permission.PermissionUtil;
 import connect.widget.DialogView;
 import connect.widget.RecycleViewScrollHelper;
 import connect.widget.album.AlbumActivity;
+import connect.widget.bottominput.InputPanel;
 import connect.widget.bottominput.view.InputBottomLayout;
 import connect.widget.camera.CameraTakeActivity;
 import connect.widget.imagewatcher.ImageViewerActivity;
@@ -88,7 +91,6 @@ public abstract class BaseChatActvity extends BaseActivity {
     protected NormalChat normalChat;
     protected ChatAdapter chatAdapter;
     protected RecycleViewScrollHelper scrollHelper;
-    protected InputPanel inputPanel = null;
     protected LinearLayoutManager linearLayoutManager;
     protected ImageWatcher vImageWatcher;
 
@@ -104,6 +106,9 @@ public abstract class BaseChatActvity extends BaseActivity {
         mNotificationManager.cancel(1001);
 
         talker = (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
+        if (talker == null) {
+            talker = new Talker(Connect.ChatType.PRIVATE, "");
+        }
         roomSession = RoomSession.getInstance();
         roomSession.setRoomType(talker.getTalkType());
         roomSession.setRoomKey(talker.getTalkKey());
@@ -124,8 +129,6 @@ public abstract class BaseChatActvity extends BaseActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         linearLayoutManager.setStackFromEnd(true);
-        inputPanel = new InputPanel();
-        inputPanel.setActivity(this);
         scrollHelper = new RecycleViewScrollHelper(new RecycleViewScrollHelper.OnScrollPositionChangedListener() {
 
             @Override
@@ -334,7 +337,7 @@ public abstract class BaseChatActvity extends BaseActivity {
 
         switch (bean.getExtType()) {
             case HIDEPANEL:
-                inputPanel.hideBottomPanel();
+                InputPanel.inputPanel.hideBottomPanel();
                 break;
             case DELMSG:
                 chatAdapter.removeItem((ChatMsgEntity) objects[0]);

@@ -151,6 +151,7 @@
     <item name="videomsg" type="id"/>
     <item name="emotionmsg" type="id"/>
     <item name="layout_bottom" type="id"/>
+    <item name="inputPanel" type="id"/>
     <item name="layout_inputbottom" type="id"/>
     <item name="recordview" type="id"/>
     <item name="inputmore" type="id"/>

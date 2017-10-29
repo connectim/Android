@@ -16,18 +16,13 @@ import java.util.List;
 import java.util.Map;
 
 public class EmoManager {
-    public static EmoManager emojiManager=getInstance();
+    public static EmoManager emojiManager = getInstance();
 
     public synchronized static EmoManager getInstance() {
         if (emojiManager == null) {
             emojiManager = new EmoManager();
         }
         return emojiManager;
-    }
-
-    EmoManager() {
-        initEMJOrder();
-        initEMJCategories();
     }
 
     public static final String EMOJI_PATH = "emoji";
@@ -50,6 +45,11 @@ public class EmoManager {
     private List<String> bigStickers = new ArrayList<>();
     private List<StickerCategory> stickerCategories = new ArrayList<>(10);
     private StickerCategoryCompara categoryCompara = new StickerCategoryCompara();
+
+    public void initEmojiResource(){
+        initEMJOrder();
+        initEMJCategories();
+    }
 
     private void initEMJOrder(){
         stickerOrder.put(EMJ_PNG, 0);

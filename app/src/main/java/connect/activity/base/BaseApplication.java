@@ -44,8 +44,7 @@ public class BaseApplication extends Application implements InterAccount {
         // IM SDK
         InstantSdk.instantSdk.initSdk(this);
         // EMOJI
-        EmoManager.getInstance();
-        ExBottomLayout.exBottomLayout.initView();
+        EmoManager.emojiManager.initEmojiResource();
 
         String appId = ConfigUtil.getInstance().getCrashAPPID();
         CrashReport.initCrashReport(this, appId, true);

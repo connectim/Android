@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -59,7 +58,6 @@ import connect.widget.TopToolBar;
 import connect.widget.album.AlbumActivity;
 import connect.widget.album.model.AlbumFile;
 import connect.widget.bottominput.InputPanel;
-import connect.widget.bottominput.view.ExBottomLayout;
 import connect.widget.bottominput.view.InputBottomLayout;
 import connect.widget.camera.CameraTakeActivity;
 import instant.bean.ChatMsgEntity;
@@ -76,16 +74,12 @@ public class ChatActivity extends BaseChatActvity {
     TopToolBar toolbar;
     @Bind(R.id.recycler_chat)
     RecyclerView recyclerChat;
-    @Bind(R.id.layout_exbottom)
-    ExBottomLayout layoutExbottom;
-    @Bind(R.id.layout_inputbottom)
-    InputBottomLayout layoutInputbottom;
-    @Bind(R.id.layout_bottom)
-    LinearLayout layoutBottom;
     @Bind(R.id.recordview)
     RecordView recordview;
+    @Bind(R.id.inputPanel)
+    InputPanel inputPanel;
 
-    private String Tag = "ChatActivity";
+    private String Tag = "_ChatActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +127,8 @@ public class ChatActivity extends BaseChatActvity {
             }
         });
         recordview.setVisibility(View.GONE);
-        InputPanel.inputPanel.setRecordView(recordview);
+        inputPanel.setActivity(this);
+        inputPanel.setRecordView(recordview);
 
         // robot/stranger donot show setting
         if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {

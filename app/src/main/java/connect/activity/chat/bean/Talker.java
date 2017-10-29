@@ -10,8 +10,8 @@ import protos.Connect;
  */
 public class Talker implements Serializable {
 
-    private Connect.ChatType talkType;
-    private String talkKey;
+    private Connect.ChatType talkType = Connect.ChatType.PRIVATE;
+    private String talkKey = "";
 
     private String nickName;
     private String avatar;
