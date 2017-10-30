@@ -105,61 +105,61 @@ public abstract class BaseChatActvity extends BaseActivity {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(1001);
 
-        talker = (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
-        if (talker == null) {
-            talker = new Talker(Connect.ChatType.PRIVATE, "");
-        }
-        roomSession = RoomSession.getInstance();
-        roomSession.setRoomType(talker.getTalkType());
-        roomSession.setRoomKey(talker.getTalkKey());
-
-        Connect.ChatType chatType = talker.getTalkType();
-        switch (chatType) {
-            case PRIVATE:
-                normalChat = new FriendChat(talker.getTalkKey());
-                break;
-            case GROUPCHAT:
-                normalChat = new GroupChat(talker.getTalkKey());
-                break;
-            case CONNECT_SYSTEM:
-                normalChat = RobotChat.getInstance();
-                break;
-        }
-
-        linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
-        linearLayoutManager.setStackFromEnd(true);
-        scrollHelper = new RecycleViewScrollHelper(new RecycleViewScrollHelper.OnScrollPositionChangedListener() {
-
-            @Override
-            public void onScrollToTop() {
-                loadMoreMsgs();
-            }
-
-            @Override
-            public void onScrollToBottom() {
-
-            }
-
-            @Override
-            public void onScrollToUnknown(boolean isTopViewVisible, boolean isBottomViewVisible) {
-
-            }
-        });
-        scrollHelper.setCheckIfItemViewFullRecycleViewForTop(true);
-
-        roomEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
-        if (roomEntity != null) {
-            if (!TextUtils.isEmpty(roomEntity.getDraft())) {
-                InputBottomLayout.bottomLayout.insertDraft(" " + roomEntity.getDraft());
-            }
-            ConversionHelper.getInstance().updateRoomEntity(roomEntity);
-        }
-
-        vImageWatcher = ImageWatcher.Helper.with(this)
-                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(this))
-                .setErrorImageRes(R.mipmap.img_default)
-                .create();
+//        talker = (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
+//        if (talker == null) {
+//            talker = new Talker(Connect.ChatType.PRIVATE, "");
+//        }
+//        roomSession = RoomSession.getInstance();
+//        roomSession.setRoomType(talker.getTalkType());
+//        roomSession.setRoomKey(talker.getTalkKey());
+//
+//        Connect.ChatType chatType = talker.getTalkType();
+//        switch (chatType) {
+//            case PRIVATE:
+//                normalChat = new FriendChat(talker.getTalkKey());
+//                break;
+//            case GROUPCHAT:
+//                normalChat = new GroupChat(talker.getTalkKey());
+//                break;
+//            case CONNECT_SYSTEM:
+//                normalChat = RobotChat.getInstance();
+//                break;
+//        }
+//
+//        linearLayoutManager = new LinearLayoutManager(this);
+//        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
+//        linearLayoutManager.setStackFromEnd(true);
+//        scrollHelper = new RecycleViewScrollHelper(new RecycleViewScrollHelper.OnScrollPositionChangedListener() {
+//
+//            @Override
+//            public void onScrollToTop() {
+//                loadMoreMsgs();
+//            }
+//
+//            @Override
+//            public void onScrollToBottom() {
+//
+//            }
+//
+//            @Override
+//            public void onScrollToUnknown(boolean isTopViewVisible, boolean isBottomViewVisible) {
+//
+//            }
+//        });
+//        scrollHelper.setCheckIfItemViewFullRecycleViewForTop(true);
+//
+//        roomEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
+//        if (roomEntity != null) {
+//            if (!TextUtils.isEmpty(roomEntity.getDraft())) {
+//                InputBottomLayout.bottomLayout.insertDraft(" " + roomEntity.getDraft());
+//            }
+//            ConversionHelper.getInstance().updateRoomEntity(roomEntity);
+//        }
+//
+//        vImageWatcher = ImageWatcher.Helper.with(this)
+//                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(this))
+//                .setErrorImageRes(R.mipmap.img_default)
+//                .create();
     }
 
     /**

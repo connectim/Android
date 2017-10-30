@@ -32,7 +32,7 @@ import connect.activity.chat.model.fileload.PhotoUpload;
 import connect.activity.chat.model.fileload.VideoUpload;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
-import connect.activity.chat.view.RecordView;
+import connect.widget.recordvoice.RecordView;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.wallet.TransferFriendActivity;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -131,35 +131,35 @@ public class ChatActivity extends BaseChatActvity {
         inputPanel.setRecordView(recordview);
 
         // robot/stranger donot show setting
-        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
-            toolbar.setRightImg(R.mipmap.menu_white);
-        }
-
-        if (normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-            roomSession.setBurntime(-1);
-            updateBurnState(0);
-        } else {
-            ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
-            long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? -1 : chatSetEntity.getSnap_time();
-            roomSession.setBurntime(burntime);
-            updateBurnState(burntime);
-        }
-
-        chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
-        recyclerChat.setLayoutManager(linearLayoutManager);
-        recyclerChat.setAdapter(chatAdapter);
-        recyclerChat.setItemAnimator(new DefaultItemAnimator());
-        recyclerChat.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                inputPanel.hideBottomPanel();
-                return false;
-            }
-        });
-
-        scrollHelper.attachToRecycleView(recyclerChat);
-        loadChatInfor();
-
+//        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
+//            toolbar.setRightImg(R.mipmap.menu_white);
+//        }
+//
+//        if (normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
+//            roomSession.setBurntime(-1);
+//            updateBurnState(0);
+//        } else {
+//            ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
+//            long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? -1 : chatSetEntity.getSnap_time();
+//            roomSession.setBurntime(burntime);
+//            updateBurnState(burntime);
+//        }
+//
+//        chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
+//        recyclerChat.setLayoutManager(linearLayoutManager);
+//        recyclerChat.setAdapter(chatAdapter);
+//        recyclerChat.setItemAnimator(new DefaultItemAnimator());
+//        recyclerChat.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                inputPanel.hideBottomPanel();
+//                return false;
+//            }
+//        });
+//
+//        scrollHelper.attachToRecycleView(recyclerChat);
+//        loadChatInfor();
+//
         PermissionUtil.getInstance().requestPermission(activity,
                 new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO, PermissionUtil.PERMISSION_STORAGE},
                 permissomCallBack);

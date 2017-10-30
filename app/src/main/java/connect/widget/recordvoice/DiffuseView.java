@@ -1,4 +1,4 @@
-package connect.activity.chat.view;
+package connect.widget.recordvoice;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -20,17 +20,16 @@ import connect.utils.system.SystemUtil;
  */
 public class DiffuseView extends ImageView {
 
-    private String Tag = "DiffuseView";
-
-    private Paint paint;
-    private int mDiffuseColor = getResources().getColor(R.color.color_green);
-    private int imageId = R.mipmap.chatbar_recording;
-
+    private String Tag = "_DiffuseView";
+    private final long DIFFUSE_FREQUENCY = 100;
     private float widthFloat = 1f;
-    private ValueAnimator animator = null;
-
     private int locationX;
     private int locationY;
+
+    private int mDiffuseColor = getResources().getColor(R.color.color_green);
+    private int imageId = R.mipmap.chatbar_recording;
+    private ValueAnimator animator = null;
+    private Paint paint;
 
     public DiffuseView(Context context) {
         this(context, null);
@@ -67,12 +66,12 @@ public class DiffuseView extends ImageView {
         super.onDraw(canvas);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageId);
         if (bitmap != null) {
-            canvas.drawCircle(locationX, locationY - bitmap.getHeight() / 2, SystemUtil.dipToPx(40) * widthFloat, paint);
+            canvas.drawCircle(locationX, locationY - bitmap.getHeight() / 2, SystemUtil.dipToPx(20) + SystemUtil.dipToPx(20) * widthFloat, paint);
             canvas.drawBitmap(bitmap, locationX - bitmap.getWidth() / 2, locationY - bitmap.getHeight(), paint);
         }
     }
 
-    public void startDiffuse(int width) {
+    public void startDiffuse(float width) {
         LogManager.getLogger().d(Tag,"startDiffuse ===="+width);
         if (animator != null) {
             animator.cancel();
@@ -80,13 +79,14 @@ public class DiffuseView extends ImageView {
         }
 
         animator = ValueAnimator.ofFloat(widthFloat, width);
-        animator.setDuration(320);
+        animator.setDuration(DIFFUSE_FREQUENCY);
         animator.setInterpolator(new LinearInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 Float value = (Float) animation.getAnimatedValue();
                 LogManager.getLogger().d(Tag, "onAnimationUpdate ====" + value);
+
                 widthFloat = value;
                 invalidate();
             }

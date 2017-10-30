@@ -37,7 +37,7 @@
 
     </LinearLayout>
 
-    <connect.activity.chat.view.RecordView
+    <connect.widget.recordvoice.RecordView
         android:id="@id/recordview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

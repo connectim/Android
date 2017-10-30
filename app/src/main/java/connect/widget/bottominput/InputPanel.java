@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import connect.activity.chat.view.RecordView;
+import connect.widget.recordvoice.RecordView;
 import connect.ui.activity.R;
 import connect.widget.bottominput.view.ExBottomLayout;
 import connect.widget.bottominput.view.InputBottomLayout;
