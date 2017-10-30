@@ -24,7 +24,7 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.bean.StickerCategory;
+import connect.widget.bottominput.bean.StickerCategory;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.green.DaoHelper.MessageHelper;

@@ -17,7 +17,7 @@ import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.model.GroupComPara;
+import connect.activity.base.compare.GroupComPara;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.chat.adapter.GroupMemberAdapter;
 import connect.activity.base.BaseActivity;

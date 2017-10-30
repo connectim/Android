@@ -15,7 +15,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.ContactCardAdapter;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
-import connect.activity.chat.model.FriendCompara;
+import connect.activity.base.compare.FriendCompara;
 import connect.activity.chat.set.contract.ContactCardContract;
 import connect.activity.chat.set.presenter.ContactCardPresenter;
 import connect.database.green.DaoHelper.ContactHelper;

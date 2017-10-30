@@ -1,4 +1,4 @@
-package connect.activity.chat.model.emoji;
+package connect.widget.bottominput.emoji;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,8 +14,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.ui.activity.R;
-import connect.activity.chat.bean.StickPagerBean;
-import connect.activity.chat.model.EmoManager;
+import connect.widget.bottominput.EmoManager;
+import connect.widget.bottominput.bean.StickPagerBean;
 import connect.utils.glide.GlideUtil;
 
 public class EmojiGridAdapter extends BaseAdapter {

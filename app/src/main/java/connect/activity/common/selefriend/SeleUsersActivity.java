@@ -20,7 +20,7 @@ import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.activity.chat.model.FriendCompara;
+import connect.activity.base.compare.FriendCompara;
 import connect.activity.common.adapter.MulContactAdapter;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.base.BaseActivity;

@@ -1,4 +1,4 @@
-package connect.activity.chat.view;
+package connect.widget.bottominput.bean;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -6,7 +6,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import connect.ui.activity.R;
-import connect.activity.chat.model.EmoManager;
+import connect.widget.bottominput.EmoManager;
 import connect.utils.system.SystemUtil;
 import connect.utils.glide.GlideUtil;
 
@@ -30,14 +30,6 @@ public class BottomCateView extends FrameLayout {
         addView(img);
 
         setNormal();
-    }
-
-    public void selectState(boolean state) {
-        if (state) {
-            setPress();
-        } else {
-            setNormal();
-        }
     }
 
     public void setNormal() {

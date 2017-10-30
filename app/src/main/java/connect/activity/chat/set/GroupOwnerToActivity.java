@@ -14,7 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.GroupMemberSelectAdapter;
-import connect.activity.chat.model.GroupMemberCompara;
+import connect.activity.base.compare.GroupMemberCompara;
 import connect.activity.chat.set.contract.GroupOwnerContract;
 import connect.activity.chat.set.presenter.GroupOwnerPresenter;
 import connect.database.SharedPreferenceUtil;

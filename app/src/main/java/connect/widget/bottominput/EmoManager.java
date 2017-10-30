@@ -1,8 +1,9 @@
-package connect.activity.chat.model;
+package connect.widget.bottominput;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 
-import connect.activity.chat.bean.StickerCategory;
+import connect.widget.bottominput.bean.StickerCategory;
 import connect.activity.base.BaseApplication;
 import connect.utils.FileUtil;
 
@@ -15,15 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 public class EmoManager {
-    private static EmoManager emojiManager;
+    public static EmoManager emojiManager=getInstance();
 
-    public static EmoManager getInstance() {
+    public synchronized static EmoManager getInstance() {
         if (emojiManager == null) {
-            synchronized (EmoManager.class) {
-                if (emojiManager == null) {
-                    emojiManager = new EmoManager();
-                }
-            }
+            emojiManager = new EmoManager();
         }
         return emojiManager;
     }
@@ -52,6 +49,7 @@ public class EmoManager {
     /** big expression packets */
     private List<String> bigStickers = new ArrayList<>();
     private List<StickerCategory> stickerCategories = new ArrayList<>(10);
+    private StickerCategoryCompara categoryCompara = new StickerCategoryCompara();
 
     private void initEMJOrder(){
         stickerOrder.put(EMJ_PNG, 0);
@@ -69,26 +67,22 @@ public class EmoManager {
     }
 
     private void initEMJCategories() {
-        AssetManager assetManager = BaseApplication.getInstance().getBaseContext().getResources().getAssets();
+        Context context = BaseApplication.getInstance().getBaseContext();
+        AssetManager assetManager = context.getResources().getAssets();
         try {
             String[] files = assetManager.list(EMOJI_PATH);
-            StickerCategory category;
             for (String name : files) {
                 if (!FileUtil.hasExtentsion(name)) {
-                    if (null == stickerOrder.get(name)) continue;
-                    int posi = stickerOrder.get(name);
-                    boolean bigStick = bigStickers.contains(name);
-                    category = new StickerCategory(name, posi, bigStick);
-                    stickerCategories.add(category);
+                    if (null != stickerOrder.get(name)) {
+                        int posi = stickerOrder.get(name);
+                        boolean bigStick = bigStickers.contains(name);
+                        StickerCategory category = new StickerCategory(name, posi, bigStick);
+                        stickerCategories.add(category);
+                    }
                 }
             }
 
-            Collections.sort(stickerCategories, new Comparator<StickerCategory>() {
-                @Override
-                public int compare(StickerCategory lhs, StickerCategory rhs) {
-                    return lhs.getOrder() - rhs.getOrder();
-                }
-            });
+            Collections.sort(stickerCategories, categoryCompara);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,5 +90,13 @@ public class EmoManager {
 
     public List<StickerCategory> getStickerCategories() {
         return stickerCategories;
+    }
+
+    private class StickerCategoryCompara implements Comparator<StickerCategory> {
+
+        @Override
+        public int compare(StickerCategory lhs, StickerCategory rhs) {
+            return lhs.getOrder() - rhs.getOrder();
+        }
     }
 }

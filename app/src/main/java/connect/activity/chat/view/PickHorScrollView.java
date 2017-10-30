@@ -15,8 +15,8 @@ import java.util.List;
  * Created by gtq on 2016/11/28.
  */
 public class PickHorScrollView extends HorizontalScrollView {
-    private PickHoriScrollAdapter pickAdapter;
 
+    private PickHoriScrollAdapter pickAdapter;
     private LinearLayout linearLayout;
 
     public PickHorScrollView(Context context) {

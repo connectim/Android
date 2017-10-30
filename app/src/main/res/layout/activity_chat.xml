@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <connect.activity.chat.view.ChatRecyclerView
+            <RecyclerView
                 android:id="@id/recycler_chat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,13 +37,12 @@
             android:minHeight="@dimen/dp_40"
             android:orientation="vertical">
 
-            <include
+            <connect.widget.bottominput.view.InputBottomLayout
                 android:id="@id/layout_inputbottom"
-                layout="@layout/include_chat_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <connect.activity.chat.view.ExBottomLayout
+            <connect.widget.bottominput.view.ExBottomLayout
                 android:id="@id/layout_exbottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

@@ -167,6 +167,8 @@
     <item name="search" type="id"/>
     <item name="photo_library" type="id"/>
     <item name="take_photo_video" type="id"/>
+    <item name="include_more" type="id"/>
+    <item name="include_emoji" type="id"/>
 
     <item name="toggle" type="id"/>
     <item name="top" type="id"/>

@@ -11,6 +11,7 @@ import connect.activity.chat.model.ChatMsgUtil;
  * Created by gtq on 2016/12/10.
  */
 public class EmoTextView extends TextView {
+
     public EmoTextView(Context context) {
         super(context);
     }

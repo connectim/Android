@@ -1,4 +1,4 @@
-package connect.activity.chat.bean;
+package connect.widget.bottominput.bean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import java.util.List;
  * Created by gtq on 2016/12/9.
  */
 public class StickPagerBean {
+
     private boolean bigStick;
     private int bottomPosi;
     private int position;
@@ -15,12 +16,12 @@ public class StickPagerBean {
     private String name;
     private List<String> strings = new ArrayList();
 
-    public StickPagerBean(boolean bigStick,int bottom, int position, int countCate,String name, List<String> strings) {
+    public StickPagerBean(boolean bigStick, int bottom, int position, int countCate, String name, List<String> strings) {
         this.bigStick = bigStick;
-        this.bottomPosi=bottom;
+        this.bottomPosi = bottom;
         this.position = position;
         this.countCate = countCate;
-        this.name=name;
+        this.name = name;
         this.strings = strings;
     }
 
