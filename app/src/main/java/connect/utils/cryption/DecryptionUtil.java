@@ -2,6 +2,7 @@ package connect.utils.cryption;
 
 import connect.database.SharedPreferenceUtil;
 import connect.utils.ConfigUtil;
+import connect.utils.TimeUtil;
 import connect.wallet.jni.AllNativeMethod;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -16,8 +17,8 @@ public class DecryptionUtil {
      * Decryption gcmData returns a byteArray containing
      */
     public static byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
-        byte[] rawECDHkey = SupportKeyUril.getRawECDHKey(priKey, pubKey);
-        return DecryptionUtil.decodeAESGCM(extendedECDH, rawECDHkey, gcmData);
+        byte[] rawECDHKey = SupportKeyUril.getRawECDHKey(priKey, pubKey);
+        return DecryptionUtil.decodeAESGCM(extendedECDH, rawECDHKey, gcmData);
     }
 
     /**
@@ -50,8 +51,11 @@ public class DecryptionUtil {
     public static synchronized byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
         rawECDHkey = EncryptionUtil.getKeyExtendedECDH(extendedECDH, rawECDHkey);
 
+        //byte[] add = "ConnectEncrypted".getBytes();
+        String abStr = TimeUtil.getCurrentTimeSecond() + "" + (int)((Math.random()*9+1)*100000);
+        byte[] add = abStr.getBytes();
+
         byte[] iv = gcmData.getIv().toByteArray();
-        byte[] add = "ConnectEncrypted".getBytes();
         byte[] cipher = gcmData.getCiphertext().toByteArray();
         byte[] tag = gcmData.getTag().toByteArray();
 

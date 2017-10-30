@@ -1,8 +1,6 @@
 package connect.activity.wallet.view;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
