@@ -37,11 +37,11 @@ import connect.activity.chat.exts.GroupAtActivity;
 import connect.activity.chat.exts.LuckyPacketActivity;
 import connect.activity.chat.exts.PaymentActivity;
 import connect.activity.chat.exts.TransferToActivity;
-import connect.activity.chat.inter.FileUpLoad;
-import connect.activity.chat.model.fileload.LocationUpload;
-import connect.activity.chat.model.fileload.PhotoUpload;
-import connect.activity.chat.model.fileload.VideoUpload;
-import connect.activity.chat.model.fileload.VoiceUpload;
+import connect.utils.chatfile.inter.FileUpLoad;
+import connect.utils.chatfile.upload.LocationUpload;
+import connect.utils.chatfile.upload.PhotoUpload;
+import connect.utils.chatfile.upload.VideoUpload;
+import connect.utils.chatfile.upload.VoiceUpload;
 import connect.activity.chat.set.ContactCardActivity;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.home.HomeActivity;
@@ -105,61 +105,61 @@ public abstract class BaseChatActvity extends BaseActivity {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(1001);
 
-//        talker = (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
-//        if (talker == null) {
-//            talker = new Talker(Connect.ChatType.PRIVATE, "");
-//        }
-//        roomSession = RoomSession.getInstance();
-//        roomSession.setRoomType(talker.getTalkType());
-//        roomSession.setRoomKey(talker.getTalkKey());
-//
-//        Connect.ChatType chatType = talker.getTalkType();
-//        switch (chatType) {
-//            case PRIVATE:
-//                normalChat = new FriendChat(talker.getTalkKey());
-//                break;
-//            case GROUPCHAT:
-//                normalChat = new GroupChat(talker.getTalkKey());
-//                break;
-//            case CONNECT_SYSTEM:
-//                normalChat = RobotChat.getInstance();
-//                break;
-//        }
-//
-//        linearLayoutManager = new LinearLayoutManager(this);
-//        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
-//        linearLayoutManager.setStackFromEnd(true);
-//        scrollHelper = new RecycleViewScrollHelper(new RecycleViewScrollHelper.OnScrollPositionChangedListener() {
-//
-//            @Override
-//            public void onScrollToTop() {
-//                loadMoreMsgs();
-//            }
-//
-//            @Override
-//            public void onScrollToBottom() {
-//
-//            }
-//
-//            @Override
-//            public void onScrollToUnknown(boolean isTopViewVisible, boolean isBottomViewVisible) {
-//
-//            }
-//        });
-//        scrollHelper.setCheckIfItemViewFullRecycleViewForTop(true);
-//
-//        roomEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
-//        if (roomEntity != null) {
-//            if (!TextUtils.isEmpty(roomEntity.getDraft())) {
-//                InputBottomLayout.bottomLayout.insertDraft(" " + roomEntity.getDraft());
-//            }
-//            ConversionHelper.getInstance().updateRoomEntity(roomEntity);
-//        }
-//
-//        vImageWatcher = ImageWatcher.Helper.with(this)
-//                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(this))
-//                .setErrorImageRes(R.mipmap.img_default)
-//                .create();
+        talker = (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
+        if (talker == null) {
+            talker = new Talker(Connect.ChatType.PRIVATE, "");
+        }
+        roomSession = RoomSession.getInstance();
+        roomSession.setRoomType(talker.getTalkType());
+        roomSession.setRoomKey(talker.getTalkKey());
+
+        Connect.ChatType chatType = talker.getTalkType();
+        switch (chatType) {
+            case PRIVATE:
+                normalChat = new FriendChat(talker.getTalkKey());
+                break;
+            case GROUPCHAT:
+                normalChat = new GroupChat(talker.getTalkKey());
+                break;
+            case CONNECT_SYSTEM:
+                normalChat = RobotChat.getInstance();
+                break;
+        }
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
+        linearLayoutManager.setStackFromEnd(true);
+        scrollHelper = new RecycleViewScrollHelper(new RecycleViewScrollHelper.OnScrollPositionChangedListener() {
+
+            @Override
+            public void onScrollToTop() {
+                loadMoreMsgs();
+            }
+
+            @Override
+            public void onScrollToBottom() {
+
+            }
+
+            @Override
+            public void onScrollToUnknown(boolean isTopViewVisible, boolean isBottomViewVisible) {
+
+            }
+        });
+        scrollHelper.setCheckIfItemViewFullRecycleViewForTop(true);
+
+        roomEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
+        if (roomEntity != null) {
+            if (!TextUtils.isEmpty(roomEntity.getDraft())) {
+                InputBottomLayout.bottomLayout.insertDraft(" " + roomEntity.getDraft());
+            }
+            ConversionHelper.getInstance().updateRoomEntity(roomEntity);
+        }
+
+        vImageWatcher = ImageWatcher.Helper.with(this)
+                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(this))
+                .setErrorImageRes(R.mipmap.img_default)
+                .create();
     }
 
     /**
@@ -200,9 +200,14 @@ public abstract class BaseChatActvity extends BaseActivity {
                     chatMsgEntity = normalChat.photoMsg(str, str, FileUtil.fileSize(str), options.outWidth, options.outHeight);
 
                     adapterInsetItem(chatMsgEntity);
-                    upLoad = new PhotoUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUpListener() {
+                    upLoad = new PhotoUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUploadListener() {
                         @Override
                         public void upSuccess(String msgid) {
+                        }
+
+                        @Override
+                        public void uploadFail(int code, String message) {
+
                         }
                     });
                     upLoad.fileHandle();
@@ -212,9 +217,14 @@ public abstract class BaseChatActvity extends BaseActivity {
                 chatMsgEntity = normalChat.voiceMsg((String) objects[0], (Integer) objects[1]);
 
                 adapterInsetItem(chatMsgEntity);
-                upLoad = new VoiceUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUpListener() {
+                upLoad = new VoiceUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
+                    }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
                     }
                 });
                 upLoad.fileHandle();
@@ -231,9 +241,14 @@ public abstract class BaseChatActvity extends BaseActivity {
                         FileUtil.fileSizeOf(filePath), thumbBitmap.getWidth(), thumbBitmap.getHeight());
 
                 adapterInsetItem(chatMsgEntity);
-                upLoad = new VideoUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUpListener() {
+                upLoad = new VideoUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
+                    }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
                     }
                 });
                 upLoad.fileHandle();
@@ -285,9 +300,14 @@ public abstract class BaseChatActvity extends BaseActivity {
                         geoAddress.getAddress(), geoAddress.getPath(), geoAddress.getImageOriginWidth(), geoAddress.getImageOriginHeight());
 
                 adapterInsetItem(chatMsgEntity);
-                upLoad = new LocationUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUpListener() {
+                upLoad = new LocationUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
+                    }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
                     }
                 });
                 upLoad.fileHandle();
@@ -356,9 +376,9 @@ public abstract class BaseChatActvity extends BaseActivity {
                 MessageHelper.getInstance().deleteRoomMsg(talker.getTalkKey());
                 break;
             case TRANSFER:
-                if (normalChat.chatType() == 0) {
+                if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
                     TransferToActivity.startActivity(activity, normalChat.chatKey());
-                } else if (normalChat.chatType() == 1) {
+                } else if (normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
                     SeleUsersActivity.startActivity(activity, SeleUsersActivity.SOURCE_GROUP, talker.getTalkKey(), null);
                 }
                 break;
@@ -511,33 +531,53 @@ public abstract class BaseChatActvity extends BaseActivity {
         MessageType msgType = MessageType.toMessageType(msgExtEntity.getMessageType());
         switch (msgType) {
             case Photo://picture message
-                upLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                upLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
+                    }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
                     }
                 });
                 upLoad.fileHandle();
                 break;
             case Voice://voice message
-                upLoad = new VoiceUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                upLoad = new VoiceUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
+                    }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
                     }
                 });
                 upLoad.fileHandle();
                 break;
             case Video://video message
-                upLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                upLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
+                    }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
                     }
                 });
                 upLoad.fileHandle();
                 break;
             case Location://location message
-                upLoad = new LocationUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                upLoad = new LocationUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
+                    }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
                     }
                 });
                 upLoad.fileHandle();

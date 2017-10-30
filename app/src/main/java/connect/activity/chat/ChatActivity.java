@@ -27,9 +27,9 @@ import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.inter.FileUpLoad;
-import connect.activity.chat.model.fileload.PhotoUpload;
-import connect.activity.chat.model.fileload.VideoUpload;
+import connect.utils.chatfile.inter.FileUpLoad;
+import connect.utils.chatfile.upload.PhotoUpload;
+import connect.utils.chatfile.upload.VideoUpload;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.widget.recordvoice.RecordView;
@@ -131,35 +131,35 @@ public class ChatActivity extends BaseChatActvity {
         inputPanel.setRecordView(recordview);
 
         // robot/stranger donot show setting
-//        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
-//            toolbar.setRightImg(R.mipmap.menu_white);
-//        }
-//
-//        if (normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-//            roomSession.setBurntime(-1);
-//            updateBurnState(0);
-//        } else {
-//            ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
-//            long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? -1 : chatSetEntity.getSnap_time();
-//            roomSession.setBurntime(burntime);
-//            updateBurnState(burntime);
-//        }
-//
-//        chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
-//        recyclerChat.setLayoutManager(linearLayoutManager);
-//        recyclerChat.setAdapter(chatAdapter);
-//        recyclerChat.setItemAnimator(new DefaultItemAnimator());
-//        recyclerChat.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                inputPanel.hideBottomPanel();
-//                return false;
-//            }
-//        });
-//
-//        scrollHelper.attachToRecycleView(recyclerChat);
-//        loadChatInfor();
-//
+        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
+            toolbar.setRightImg(R.mipmap.menu_white);
+        }
+
+        if (normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
+            roomSession.setBurntime(-1);
+            updateBurnState(0);
+        } else {
+            ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
+            long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? -1 : chatSetEntity.getSnap_time();
+            roomSession.setBurntime(burntime);
+            updateBurnState(burntime);
+        }
+
+        chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
+        recyclerChat.setLayoutManager(linearLayoutManager);
+        recyclerChat.setAdapter(chatAdapter);
+        recyclerChat.setItemAnimator(new DefaultItemAnimator());
+        recyclerChat.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                inputPanel.hideBottomPanel();
+                return false;
+            }
+        });
+
+        scrollHelper.attachToRecycleView(recyclerChat);
+        loadChatInfor();
+
         PermissionUtil.getInstance().requestPermission(activity,
                 new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO, PermissionUtil.PERMISSION_STORAGE},
                 permissomCallBack);
@@ -229,7 +229,7 @@ public class ChatActivity extends BaseChatActvity {
                 titleName = titleName.substring(0, 12);
                 titleName += "...";
             }
-            if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
+            if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE || normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
                 toolbar.setTitle(titleName);
             } else {
                 List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
@@ -245,7 +245,7 @@ public class ChatActivity extends BaseChatActvity {
                 }
             }
             indexName.append(name.charAt(name.length() - 1));
-            if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
+            if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE || normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
                 toolbar.setTitle(R.mipmap.message_privacy_grey2x, null);
                 toolbar.setTitle(indexName.toString());
             } else {
@@ -352,9 +352,14 @@ public class ChatActivity extends BaseChatActvity {
                 break;
             case Photo:
                 msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), 200, 200);
-                fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
+                    }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
                     }
                 });
                 fileUpLoad.fileHandle();
@@ -370,9 +375,14 @@ public class ChatActivity extends BaseChatActvity {
 
                 msgExtEntity = normalChat.videoMsg(thumbPath, videoPath, videoTimeLength,
                         videoSize, thumbBitmap.getWidth(), thumbBitmap.getHeight());
-                fileUpLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                fileUpLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
+                    }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
                     }
                 });
                 fileUpLoad.fileHandle();

@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import connect.activity.base.BaseApplication;
 import instant.bean.MsgDirect;
-import connect.activity.chat.inter.FileDownLoad;
+import connect.utils.chatfile.inter.FileDownLoad;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.glide.BlurMaskTransformation;

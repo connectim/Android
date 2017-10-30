@@ -1,11 +1,11 @@
-package connect.activity.chat.model.fileload;
+package connect.utils.chatfile.upload;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import com.google.protobuf.ByteString;
 import java.io.File;
 
-import connect.activity.chat.inter.FileUpLoad;
+import connect.utils.chatfile.inter.FileUpLoad;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.BitmapUtil;
@@ -23,7 +23,7 @@ public class PhotoUpload extends FileUpLoad {
     private String Tag = "PhotoUpload";
     private String firstPath;
 
-    public PhotoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUpListener listener) {
+    public PhotoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
         this.context = context;
         this.baseChat = baseChat;
         this.msgExtEntity = entity;

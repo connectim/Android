@@ -1,4 +1,4 @@
-package connect.activity.chat.model.fileload;
+package connect.utils.chatfile.upload;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -9,7 +9,7 @@ import com.netcompss.loader.LoadJNI;
 
 import java.io.File;
 
-import connect.activity.chat.inter.FileUpLoad;
+import connect.utils.chatfile.inter.FileUpLoad;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.FileUtil;
@@ -23,7 +23,7 @@ import protos.Connect;
  */
 public class VideoUpload extends FileUpLoad {
 
-    public VideoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUpListener listener) {
+    public VideoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
         this.context = context;
         this.context = context;
         this.baseChat = baseChat;

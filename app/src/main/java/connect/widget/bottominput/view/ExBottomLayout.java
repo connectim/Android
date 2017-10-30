@@ -20,7 +20,7 @@ import connect.activity.chat.bean.BaseAction;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.inter.IEmojiClickListener;
+import connect.widget.bottominput.inter.IEmojiClickListener;
 import connect.activity.chat.view.ChatEditText;
 import connect.ui.activity.R;
 import connect.utils.log.LogManager;

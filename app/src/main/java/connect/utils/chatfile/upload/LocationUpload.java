@@ -1,4 +1,4 @@
-package connect.activity.chat.model.fileload;
+package connect.utils.chatfile.upload;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -7,7 +7,7 @@ import com.google.protobuf.ByteString;
 
 import java.io.File;
 
-import connect.activity.chat.inter.FileUpLoad;
+import connect.utils.chatfile.inter.FileUpLoad;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.BitmapUtil;
@@ -23,9 +23,9 @@ import protos.Connect;
 
 public class LocationUpload extends FileUpLoad {
 
-    private String Tag = "PhotoUpload";
+    private String Tag = "_LocationUpload";
 
-    public LocationUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUpListener listener) {
+    public LocationUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
         this.context = context;
         this.baseChat = baseChat;
         this.msgExtEntity = entity;
@@ -50,7 +50,7 @@ public class LocationUpload extends FileUpLoad {
                     UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                     Connect.GcmData gcmData = null;
                     Connect.RichMedia richMedia = null;
-                    if (baseChat.chatType() == 2) {
+                    if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
                         richMedia = Connect.RichMedia.newBuilder().
                                 setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(firstPath))).
                                 setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(secondPath))).build();

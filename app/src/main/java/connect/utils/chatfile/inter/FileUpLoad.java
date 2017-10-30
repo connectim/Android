@@ -1,4 +1,4 @@
-package connect.activity.chat.inter;
+package connect.utils.chatfile.inter;
 
 import android.content.Context;
 
@@ -37,7 +37,7 @@ public abstract class FileUpLoad {
     protected Connect.MediaFile mediaFile;
 
     public void fileHandle() {
-        if (baseChat.chatType() != 2) {
+        if (baseChat.chatType() != Connect.ChatType.CONNECT_SYSTEM_VALUE) {
             FailMsgsManager.getInstance().sendDelayFailMsg(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), null, null);
         }
     }
@@ -51,7 +51,7 @@ public abstract class FileUpLoad {
      * @param filePath
      * @return
      */
-    public synchronized Connect.GcmData encodeAESGCMStructData(String filePath) {
+    public Connect.GcmData encodeAESGCMStructData(String filePath) {
         Connect.GcmData gcmData = null;
         String priKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
 
@@ -122,9 +122,12 @@ public abstract class FileUpLoad {
         return url + "?pub_key=" + msgExtEntity.getMessage_ower() + "&token=" + token;
     }
 
-    protected FileUpListener fileUpListener;
+    protected FileUploadListener fileUpListener;
 
-    public interface FileUpListener {
+    public interface FileUploadListener {
+
         void upSuccess(String msgid);
+
+        void uploadFail(int code, String message);
     }
 }

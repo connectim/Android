@@ -1,4 +1,4 @@
-package connect.activity.chat.inter;
+package connect.utils.chatfile.inter;
 
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;

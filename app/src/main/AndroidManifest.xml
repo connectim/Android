@@ -36,7 +36,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="connect.activity.chat.ChatActivity"
+            android:name="connect.activity.login.StartPageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/welcomebg">
             <intent-filter>
@@ -262,10 +262,10 @@
             android:name="connect.activity.home.HomeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-        <!--<activity
+        <activity
             android:name="connect.activity.chat.ChatActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>-->
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name="connect.activity.chat.set.PrivateSetActivity"
             android:screenOrientation="portrait"

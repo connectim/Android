@@ -1,9 +1,9 @@
-package connect.activity.chat.model.fileload;
+package connect.utils.chatfile.upload;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
-import connect.activity.chat.inter.FileUpLoad;
+import connect.utils.chatfile.inter.FileUpLoad;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.cryption.EncryptionUtil;
@@ -16,7 +16,7 @@ import protos.Connect;
  */
 public class VoiceUpload extends FileUpLoad {
 
-    public VoiceUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUpListener listener) {
+    public VoiceUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
         this.context = context;
         this.context = context;
         this.baseChat = baseChat;
@@ -34,7 +34,7 @@ public class VoiceUpload extends FileUpLoad {
                     Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
 
                     UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                    if (baseChat.chatType() != 2) {
+                    if (baseChat.chatType() != Connect.ChatType.CONNECT_SYSTEM_VALUE) {
                         Connect.GcmData gcmData = encodeAESGCMStructData(voiceMessage.getUrl());
                         Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
                                 setEntity(gcmData.toByteString()).build();
