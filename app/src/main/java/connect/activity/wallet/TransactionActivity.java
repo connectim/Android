@@ -46,7 +46,7 @@ public class TransactionActivity extends BaseActivity {
     LinearLayout noDataLin;
 
     private TransactionActivity mActivity;
-    private final int PAGESIZE_MAX = 10;
+    private final int PAGE_SIZE_MAX = 10;
     private int page = 1;
     private TransactionAdapter transactionAdapter;
 
@@ -115,7 +115,7 @@ public class TransactionActivity extends BaseActivity {
     public void requestTransaction() {
         WalletOuterClass.Pagination pagination = WalletOuterClass.Pagination.newBuilder()
                 .setPage(page)
-                .setSize(PAGESIZE_MAX).build();
+                .setSize(PAGE_SIZE_MAX).build();
 
         WalletOuterClass.GetTx getTx = WalletOuterClass.GetTx.newBuilder()
                 .setCurrency(0)

@@ -35,7 +35,7 @@
     </RelativeLayout>
 
     <connect.widget.SideScrollView
-        android:id="@id/side_scroll_view"
+        android:id="@+id/side_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/top_rela">
