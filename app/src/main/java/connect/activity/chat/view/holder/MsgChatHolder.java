@@ -13,7 +13,7 @@ import android.widget.TextView;
 import connect.activity.base.BaseListener;
 import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.LinkMessageRow;
-import connect.activity.chat.model.ChatMsgUtil;
+import connect.activity.chat.model.GroupMemberUtil;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.cryption.SupportKeyUril;
 import instant.bean.MsgDirect;
@@ -175,7 +175,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     String groupKey=msgExtEntity.getMessage_ower();
                     String memberKey = msgExtEntity.getMessage_from();
 
-                    ChatMsgUtil.chatMsgUtil.loadGroupMember(groupKey,memberKey, new BaseListener<GroupMemberEntity>() {
+                    GroupMemberUtil.groupMemberUtil.loadGroupMember(groupKey,memberKey, new BaseListener<GroupMemberEntity>() {
                         @Override
                         public void Success(GroupMemberEntity ts) {
                             GlideUtil.loadAvatarRound(headImg, ts.getAvatar());

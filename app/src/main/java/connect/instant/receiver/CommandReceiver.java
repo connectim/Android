@@ -5,14 +5,17 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.Talker;
 import connect.activity.contact.bean.ContactNotice;
+import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.model.ConvertUtil;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
+import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -21,6 +24,7 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
+import connect.database.green.bean.MessageEntity;
 import connect.instant.inter.ConversationListener;
 import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
@@ -61,7 +65,23 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void updateMsgSendState(String publickey, String msgid, int state) {
+        MessageEntity msgEntity = MessageEntity.chatMsgToMessageEntity(MessageHelper.getInstance().loadMsgByMsgid(msgid));
+        if (msgEntity != null) {
+            msgEntity.setSend_status(state);
+            MessageHelper.getInstance().updateMsg(msgEntity);
+        }
 
+        if (TextUtils.isEmpty(publickey)) {
+            Map<String, Object> failMap = FailMsgsManager.getInstance().getFailMap(msgid);
+            if (failMap != null) {
+                Object object = failMap.get("EXT");
+                if (object instanceof MsgSendBean) {
+                    MsgNoticeBean.sendMsgNotice(MsgNoticeBean.NtEnum.MSG_SEND_SUCCESS, failMap.get("EXT"));
+                }
+            }
+        } else {
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MSGSTATE, publickey, msgid, state);
+        }
     }
 
     @Override

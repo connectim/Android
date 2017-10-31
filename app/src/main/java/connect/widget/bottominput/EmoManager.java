@@ -2,7 +2,14 @@ package connect.widget.bottominput;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.ImageSpan;
 
+import connect.utils.RegularUtil;
+import connect.utils.data.ResourceUtil;
 import connect.widget.bottominput.bean.StickerCategory;
 import connect.activity.base.BaseApplication;
 import connect.utils.FileUtil;
@@ -14,6 +21,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmoManager {
     public static EmoManager emojiManager = getInstance();
@@ -90,6 +99,33 @@ public class EmoManager {
 
     public List<StickerCategory> getStickerCategories() {
         return stickerCategories;
+    }
+
+    /**
+     * expression to text
+     *
+     * @param content
+     * @return
+     */
+    public SpannableStringBuilder txtTransEmotion(String content) {
+        SpannableStringBuilder mSpannableString = new SpannableStringBuilder(content);
+        Matcher emjMatcher = Pattern.compile(RegularUtil.VERIFYCATION_EMJ).matcher(content);
+        while (emjMatcher.find()) {
+            int start = emjMatcher.start();
+            int end = emjMatcher.end();
+            String emot = content.substring(start, end);
+            emot = emot.substring(1, emot.length() - 1) + ".png";
+            String key = StickerCategory.emojiMaps.get(emot);
+            if (!TextUtils.isEmpty(key)) {
+                emot = key;
+                Drawable d = ResourceUtil.getEmotDrawable(emot);
+                if (d != null) {
+                    ImageSpan span = new ImageSpan(d);
+                    mSpannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            }
+        }
+        return mSpannableString;
     }
 
     private class StickerCategoryCompara implements Comparator<StickerCategory> {
