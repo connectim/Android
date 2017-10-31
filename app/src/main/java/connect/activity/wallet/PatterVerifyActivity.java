@@ -23,7 +23,7 @@ import connect.widget.TopToolBar;
 import connect.widget.lockview.GestureLockViewGroup;
 
 /**
- * Verify the gesture password
+ * Verify the gesture password.
  */
 
 public class PatterVerifyActivity extends BaseActivity {

@@ -44,7 +44,6 @@
     <dimen name="dp_31">31dp</dimen>
     <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_33">33dp</dimen>
-    <dimen name="dp_34">34dp</dimen>
     <dimen name="dp_35">35dp</dimen>
     <dimen name="dp_36">36dp</dimen>
     <dimen name="dp_38">38dp</dimen>
@@ -104,7 +103,4 @@
     <dimen name="sp_24">24sp</dimen>
     <dimen name="sp_32">32sp</dimen>
     <dimen name="sp_36">32sp</dimen>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
 </resources>

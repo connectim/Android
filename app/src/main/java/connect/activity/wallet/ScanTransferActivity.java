@@ -46,6 +46,7 @@ public class ScanTransferActivity extends BaseScanActivity {
     ImageView leftImg;
     @Bind(R.id.photos_tv)
     TextView photosTv;
+
     private ScanTransferActivity mActivity;
     private ResolveScanUtil resolveScanUtil;
 
