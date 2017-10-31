@@ -35,7 +35,6 @@ public class MsgImgHolder extends MsgChatHolder {
     private BubbleImg imgmsg;
     private String filePath;
     private MediaScannerConnection scanner = null;
-
     private Connect.PhotoMessage photoMessage;
 
     public MsgImgHolder(View itemView) {

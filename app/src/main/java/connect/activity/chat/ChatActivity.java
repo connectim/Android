@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -21,6 +23,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.chat.activity.BaseChatActvity;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
@@ -146,6 +149,9 @@ public class ChatActivity extends BaseChatActvity {
             updateBurnState(burntime);
         }
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
+        linearLayoutManager.setStackFromEnd(true);
         chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
         recyclerChat.setLayoutManager(linearLayoutManager);
         recyclerChat.setAdapter(chatAdapter);
@@ -158,6 +164,7 @@ public class ChatActivity extends BaseChatActvity {
             }
         });
 
+        scrollHelper.setCheckIfItemViewFullRecycleViewForTop(true);
         scrollHelper.attachToRecycleView(recyclerChat);
         loadChatInfor();
 

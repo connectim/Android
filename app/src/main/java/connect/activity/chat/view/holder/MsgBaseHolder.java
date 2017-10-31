@@ -6,9 +6,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.view.BaseContainer;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
@@ -19,6 +16,7 @@ import instant.bean.ChatMsgEntity;
  * Created by gtq on 2016/11/23.
  */
 public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
+
     protected Context context;
     protected BaseContainer baseContainer;
 

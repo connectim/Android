@@ -2,7 +2,6 @@ package connect.activity.chat.view.holder;
 
 import android.view.View;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import instant.bean.ChatMsgEntity;
 
 /**

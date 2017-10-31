@@ -14,7 +14,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.ui.activity.R;
 import connect.utils.system.SystemUtil;
 import instant.bean.ChatMsgEntity;
@@ -25,13 +24,13 @@ import instant.bean.ChatMsgEntity;
  */
 public class BaseContainer extends RelativeLayout {
 
-    public BaseContainer(LayoutInflater layoutInflater, int resource) {
-        super(layoutInflater.getContext());
+    public BaseContainer(Context context, int resource) {
+        super(context);
         context = getContext();
 
         TextView textView = new TextView(getContext(), null);
         textView.setId(R.id.showtime);
-        textView.setTextAppearance(layoutInflater.getContext(), R.style.text_chat_msgtime_style);//Bug:can not set Background
+        textView.setTextAppearance(context, R.style.text_chat_msgtime_style);//Bug:can not set Background
         if (Build.VERSION.SDK_INT >= 16) {
             textView.setBackground(getResources().getDrawable(R.drawable.com_notice_r8));
         } else {
@@ -46,7 +45,7 @@ public class BaseContainer extends RelativeLayout {
         textViewLayoutParams.setMargins(0, SystemUtil.dipToPx(16), 0, SystemUtil.dipToPx(16));
         addView(textView, textViewLayoutParams);
 
-        View chattingView = layoutInflater.inflate(resource, null);
+        View chattingView = LayoutInflater.from(context).inflate(resource, null);
         int id = chattingView.getId();
         if (id == -1) {
             chattingView.setId(id);

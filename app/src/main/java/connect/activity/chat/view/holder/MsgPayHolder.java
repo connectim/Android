@@ -22,7 +22,7 @@ import protos.Connect;
  */
 public class MsgPayHolder extends MsgChatHolder {
 
-    private String Tag = "MsgPayHolder";
+    private static String TAG = "_MsgPayHolder";
 
     private TextView btc;
     private TextView name;
@@ -41,7 +41,7 @@ public class MsgPayHolder extends MsgChatHolder {
         final Connect.PaymentMessage paymentMessage = Connect.PaymentMessage.parseFrom(msgExtEntity.getContents());
 
         String amout = RateFormatUtil.longToDoubleBtc(paymentMessage.getAmount());
-        if (paymentMessage.getPaymentType()==0) {
+        if (paymentMessage.getPaymentType() == 0) {
             name.setVisibility(View.VISIBLE);
             String paymentstr = msgExtEntity.parseDirect() == MsgDirect.From
                     ? context.getString(R.string.Wallet_Receipt)

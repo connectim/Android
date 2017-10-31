@@ -1,5 +1,6 @@
 package connect.activity.chat.view.row;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 
 import connect.ui.activity.R;
@@ -14,12 +15,12 @@ import connect.activity.chat.view.holder.MsgVideoHolder;
 public class MsgVideoRow extends MsgChatRow{
 
     @Override
-    public MsgBaseHolder buildRowView(LayoutInflater inflater, MsgDirect direct) {
-        super.buildRowView(inflater, direct);
+    public MsgBaseHolder buildRowView(Context context, MsgDirect direct) {
+        super.buildRowView(context, direct);
         if (direct == MsgDirect.From) {
-            container = new BaseContainer(inflater, R.layout.item_chat_video_from);
+            container = new BaseContainer(context, R.layout.item_chat_video_from);
         } else {
-            container = new BaseContainer(inflater, R.layout.item_chat_video_to);
+            container = new BaseContainer(context, R.layout.item_chat_video_to);
         }
         MsgVideoHolder msgVideoHolder = new MsgVideoHolder(container);
         return msgVideoHolder;
