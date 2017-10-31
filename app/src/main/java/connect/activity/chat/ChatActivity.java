@@ -27,12 +27,8 @@ import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
-import connect.utils.chatfile.inter.FileUpLoad;
-import connect.utils.chatfile.upload.PhotoUpload;
-import connect.utils.chatfile.upload.VideoUpload;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
-import connect.widget.recordvoice.RecordView;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.wallet.TransferFriendActivity;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -52,6 +48,10 @@ import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.MediaUtil;
 import connect.utils.TimeUtil;
+import connect.utils.chatfile.inter.BaseFileUp;
+import connect.utils.chatfile.inter.FileUploadListener;
+import connect.utils.chatfile.upload.PhotoUpload;
+import connect.utils.chatfile.upload.VideoUpload;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
@@ -60,6 +60,7 @@ import connect.widget.album.model.AlbumFile;
 import connect.widget.bottominput.InputPanel;
 import connect.widget.bottominput.view.InputBottomLayout;
 import connect.widget.camera.CameraTakeActivity;
+import connect.widget.recordvoice.RecordView;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.NormalChat;
 import protos.Connect;
@@ -340,7 +341,7 @@ public class ChatActivity extends BaseChatActvity {
                 break;
         }
 
-        FileUpLoad fileUpLoad = null;
+        BaseFileUp baseFileUp = null;
         String content = (String) objects[1];
         LinkMessageRow msgType = LinkMessageRow.toMsgType(Integer.parseInt((String) objects[0]));
         switch (msgType) {
@@ -352,7 +353,7 @@ public class ChatActivity extends BaseChatActvity {
                 break;
             case Photo:
                 msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), 200, 200);
-                fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
+                baseFileUp = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -362,7 +363,7 @@ public class ChatActivity extends BaseChatActvity {
 
                     }
                 });
-                fileUpLoad.fileHandle();
+                baseFileUp.startUpload();
                 break;
             case Video:
                 String videoPath = content;
@@ -375,7 +376,7 @@ public class ChatActivity extends BaseChatActvity {
 
                 msgExtEntity = normalChat.videoMsg(thumbPath, videoPath, videoTimeLength,
                         videoSize, thumbBitmap.getWidth(), thumbBitmap.getHeight());
-                fileUpLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
+                baseFileUp = new VideoUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -385,7 +386,7 @@ public class ChatActivity extends BaseChatActvity {
 
                     }
                 });
-                fileUpLoad.fileHandle();
+                baseFileUp.startUpload();
                 break;
         }
     }

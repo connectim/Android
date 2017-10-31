@@ -7,11 +7,12 @@ import com.google.protobuf.ByteString;
 
 import java.io.File;
 
-import connect.utils.chatfile.inter.FileUpLoad;
+import connect.utils.chatfile.inter.BaseFileUp;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
+import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.BaseChat;
@@ -21,7 +22,7 @@ import protos.Connect;
  * Created by Administrator on 2017/8/16.
  */
 
-public class LocationUpload extends FileUpLoad {
+public class LocationUpload extends BaseFileUp {
 
     private String Tag = "_LocationUpload";
 
@@ -33,8 +34,17 @@ public class LocationUpload extends FileUpLoad {
     }
 
     @Override
-    public void fileHandle() {
-        super.fileHandle();
+    public void startUpload() {
+        super.startUpload();
+        fileCompress();
+    }
+
+    private String thumbCompressFile;
+    private String sourceCompressFile;
+
+    @Override
+    public void fileCompress() {
+        super.fileCompress();
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -44,26 +54,9 @@ public class LocationUpload extends FileUpLoad {
 
                     File firstFile = BitmapUtil.getInstance().compress(filePath);
                     File secondFile = BitmapUtil.getInstance().compress(firstFile.getAbsolutePath());
-                    String firstPath = firstFile.getAbsolutePath();
-                    String secondPath = secondFile.getAbsolutePath();
 
-                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                    Connect.GcmData gcmData = null;
-                    Connect.RichMedia richMedia = null;
-                    if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-                        richMedia = Connect.RichMedia.newBuilder().
-                                setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(firstPath))).
-                                setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(secondPath))).build();
-                    } else {
-                        Connect.GcmData firstGcmData = encodeAESGCMStructData(firstPath);
-                        Connect.GcmData secondGcmData = encodeAESGCMStructData(secondPath);
-                        richMedia = Connect.RichMedia.newBuilder().
-                                setThumbnail(firstGcmData.toByteString()).
-                                setEntity(secondGcmData.toByteString()).build();
-                    }
-
-                    gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
-                    mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(gcmData).build();
+                    sourceCompressFile = firstFile.getAbsolutePath();
+                    thumbCompressFile = secondFile.getAbsolutePath();
 
 //                    firstFile.delete();
 //                    secondFile.delete();
@@ -76,14 +69,52 @@ public class LocationUpload extends FileUpLoad {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                localEncryptionSuccess(msgExtEntity);
-                fileUp();
+                fileEncrypt();
             }
         }.execute();
     }
 
     @Override
-    public void fileUp() {
+    public void fileEncrypt() {
+        super.fileEncrypt();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                    Connect.GcmData gcmData = null;
+                    Connect.RichMedia richMedia = null;
+                    if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
+                        richMedia = Connect.RichMedia.newBuilder().
+                                setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(thumbCompressFile))).
+                                setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(sourceCompressFile))).build();
+                    } else {
+                        Connect.GcmData firstGcmData = encodeAESGCMStructData(thumbCompressFile);
+                        Connect.GcmData secondGcmData = encodeAESGCMStructData(sourceCompressFile);
+                        richMedia = Connect.RichMedia.newBuilder().
+                                setThumbnail(firstGcmData.toByteString()).
+                                setEntity(secondGcmData.toByteString()).build();
+                    }
+
+                    gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
+                    mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(gcmData).build();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                fileUpload();
+            }
+        }.execute();
+    }
+
+    @Override
+    public void fileUpload() {
+        super.fileUpload();
         resultUpFile(mediaFile, new FileResult() {
             @Override
             public void resultUpUrl(Connect.FileData mediaFile) {

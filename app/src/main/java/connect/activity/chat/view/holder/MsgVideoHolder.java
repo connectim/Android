@@ -7,13 +7,14 @@ import android.widget.TextView;
 import java.util.Locale;
 
 import connect.activity.chat.exts.VideoPlayerActivity;
-import connect.utils.chatfile.inter.FileDownLoad;
+import connect.utils.chatfile.download.DownLoadFile;
 import connect.activity.chat.view.BubbleImg;
 import connect.activity.chat.view.DVideoProView;
 import connect.activity.common.bean.ConverType;
 import connect.activity.common.selefriend.ConversationActivity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
+import connect.utils.chatfile.inter.InterFileDown;
 import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
@@ -72,7 +73,7 @@ public class MsgVideoHolder extends MsgChatHolder {
                             startPlayVideo(localPath, videoMessage.getTimeLength(), msgExtEntity.getMessage_id());
                         }
                     } else {
-                        FileDownLoad.getInstance().downChatFile(chatType, url, msgExtEntity.getMessage_ower(), new FileDownLoad.IFileDownLoad() {
+                        DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), url, new InterFileDown() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 videoProView.loadState(true, 0);
@@ -99,6 +100,7 @@ public class MsgVideoHolder extends MsgChatHolder {
                                 videoProView.loadState(false, progress);
                             }
                         });
+                        loadFile.downFile();
                     }
                 }
             }
@@ -156,7 +158,7 @@ public class MsgVideoHolder extends MsgChatHolder {
                 ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
             } else {
                 Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
-                FileDownLoad.getInstance().downChatFile(chatType, url, msgExtEntity.getMessage_ower(), new FileDownLoad.IFileDownLoad() {
+                DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), url, new InterFileDown() {
                     @Override
                     public void successDown(byte[] bytes) {
                         videoProView.loadState(true, 0);
@@ -175,6 +177,7 @@ public class MsgVideoHolder extends MsgChatHolder {
                         videoProView.loadState(false, progress);
                     }
                 });
+                loadFile.downFile();
             }
         } catch (Exception e) {
             e.printStackTrace();

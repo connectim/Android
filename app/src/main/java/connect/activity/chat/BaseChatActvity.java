@@ -37,7 +37,8 @@ import connect.activity.chat.exts.GroupAtActivity;
 import connect.activity.chat.exts.LuckyPacketActivity;
 import connect.activity.chat.exts.PaymentActivity;
 import connect.activity.chat.exts.TransferToActivity;
-import connect.utils.chatfile.inter.FileUpLoad;
+import connect.utils.chatfile.inter.BaseFileUp;
+import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.chatfile.upload.LocationUpload;
 import connect.utils.chatfile.upload.PhotoUpload;
 import connect.utils.chatfile.upload.VideoUpload;
@@ -171,7 +172,7 @@ public abstract class BaseChatActvity extends BaseActivity {
     public synchronized void onEventMainThread(MsgSend msgSend) {
         String filePath = null;
         ChatMsgEntity chatMsgEntity = null;
-        FileUpLoad upLoad = null;
+        BaseFileUp upLoad = null;
 
         Object[] objects = null;
         if (msgSend.getObj() != null) {
@@ -200,7 +201,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                     chatMsgEntity = normalChat.photoMsg(str, str, FileUtil.fileSize(str), options.outWidth, options.outHeight);
 
                     adapterInsetItem(chatMsgEntity);
-                    upLoad = new PhotoUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUploadListener() {
+                    upLoad = new PhotoUpload(activity, normalChat, chatMsgEntity, new FileUploadListener() {
                         @Override
                         public void upSuccess(String msgid) {
                         }
@@ -210,14 +211,14 @@ public abstract class BaseChatActvity extends BaseActivity {
 
                         }
                     });
-                    upLoad.fileHandle();
+                    upLoad.startUpload();
                 }
                 break;
             case Voice:
                 chatMsgEntity = normalChat.voiceMsg((String) objects[0], (Integer) objects[1]);
 
                 adapterInsetItem(chatMsgEntity);
-                upLoad = new VoiceUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUploadListener() {
+                upLoad = new VoiceUpload(activity, normalChat, chatMsgEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -227,7 +228,7 @@ public abstract class BaseChatActvity extends BaseActivity {
 
                     }
                 });
-                upLoad.fileHandle();
+                upLoad.startUpload();
                 break;
             case Emotion:
                 chatMsgEntity = normalChat.emotionMsg((String) objects[0]);
@@ -241,7 +242,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                         FileUtil.fileSizeOf(filePath), thumbBitmap.getWidth(), thumbBitmap.getHeight());
 
                 adapterInsetItem(chatMsgEntity);
-                upLoad = new VideoUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUploadListener() {
+                upLoad = new VideoUpload(activity, normalChat, chatMsgEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -251,7 +252,7 @@ public abstract class BaseChatActvity extends BaseActivity {
 
                     }
                 });
-                upLoad.fileHandle();
+                upLoad.startUpload();
                 break;
             case Name_Card:
                 chatMsgEntity = normalChat.cardMsg((String) objects[0], (String) objects[1], (String) objects[2]);
@@ -300,7 +301,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                         geoAddress.getAddress(), geoAddress.getPath(), geoAddress.getImageOriginWidth(), geoAddress.getImageOriginHeight());
 
                 adapterInsetItem(chatMsgEntity);
-                upLoad = new LocationUpload(activity, normalChat, chatMsgEntity, new FileUpLoad.FileUploadListener() {
+                upLoad = new LocationUpload(activity, normalChat, chatMsgEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -310,7 +311,7 @@ public abstract class BaseChatActvity extends BaseActivity {
 
                     }
                 });
-                upLoad.fileHandle();
+                upLoad.startUpload();
                 break;
             case Lucky_Packet:
                 int luckyType = (int) objects[0];
@@ -527,11 +528,11 @@ public abstract class BaseChatActvity extends BaseActivity {
     }
 
     protected void reSendFailMsg(ChatMsgEntity msgExtEntity) {
-        FileUpLoad upLoad = null;
+        BaseFileUp upLoad = null;
         MessageType msgType = MessageType.toMessageType(msgExtEntity.getMessageType());
         switch (msgType) {
             case Photo://picture message
-                upLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
+                upLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -541,10 +542,10 @@ public abstract class BaseChatActvity extends BaseActivity {
 
                     }
                 });
-                upLoad.fileHandle();
+                upLoad.startUpload();
                 break;
             case Voice://voice message
-                upLoad = new VoiceUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
+                upLoad = new VoiceUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -554,10 +555,10 @@ public abstract class BaseChatActvity extends BaseActivity {
 
                     }
                 });
-                upLoad.fileHandle();
+                upLoad.startUpload();
                 break;
             case Video://video message
-                upLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
+                upLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -567,10 +568,10 @@ public abstract class BaseChatActvity extends BaseActivity {
 
                     }
                 });
-                upLoad.fileHandle();
+                upLoad.startUpload();
                 break;
             case Location://location message
-                upLoad = new LocationUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUploadListener() {
+                upLoad = new LocationUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
@@ -580,7 +581,7 @@ public abstract class BaseChatActvity extends BaseActivity {
 
                     }
                 });
-                upLoad.fileHandle();
+                upLoad.startUpload();
                 break;
             default:
                 normalChat.sendPushMsg(msgExtEntity);

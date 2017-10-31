@@ -8,8 +8,9 @@ import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import connect.activity.base.BaseApplication;
+import connect.utils.chatfile.download.DownLoadFile;
+import connect.utils.chatfile.inter.InterFileDown;
 import instant.bean.MsgDirect;
-import connect.utils.chatfile.inter.FileDownLoad;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.glide.BlurMaskTransformation;
@@ -100,13 +101,13 @@ public class BubbleImg extends RelativeLayout {
                     .bitmapTransform(new CenterCrop(context), new BlurMaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x, (openBurn && msgDirect == MsgDirect.From) ? 16 : 0))
                     .into(imageView);
         } else {
-            FileDownLoad.getInstance().downChatFile(chatType,url,pukkey, new FileDownLoad.IFileDownLoad() {
+            DownLoadFile loadFile = new DownLoadFile(chatType, pukkey, url, new InterFileDown() {
                 @Override
                 public void successDown(byte[] bytes) {
                     progressBar.setVisibility(GONE);
                     String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
                     FileUtil.byteArrToFilePath(bytes, localPath);
-                    loadUri(direct,chatType, pukkey, msgid, localPath,imgwidth,imgheight);
+                    loadUri(direct, chatType, pukkey, msgid, localPath, imgwidth, imgheight);
                 }
 
                 @Override
@@ -114,7 +115,7 @@ public class BubbleImg extends RelativeLayout {
                     Glide.with(BaseApplication.getInstance())
                             .load(R.mipmap.img_error)
                             .crossFade(1000)
-                            .bitmapTransform(new CenterCrop(context),new BlurMaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x,(openBurn && msgDirect == MsgDirect.From) ? 16 : 0))
+                            .bitmapTransform(new CenterCrop(context), new BlurMaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x, (openBurn && msgDirect == MsgDirect.From) ? 16 : 0))
                             .into(imageView);
                 }
 
@@ -125,6 +126,7 @@ public class BubbleImg extends RelativeLayout {
                     progressBar.setProgress(progress);
                 }
             });
+            loadFile.downFile();
         }
     }
 

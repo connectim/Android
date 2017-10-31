@@ -9,10 +9,11 @@ import com.netcompss.loader.LoadJNI;
 
 import java.io.File;
 
-import connect.utils.chatfile.inter.FileUpLoad;
+import connect.utils.chatfile.inter.BaseFileUp;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.FileUtil;
+import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.BaseChat;
@@ -21,7 +22,9 @@ import protos.Connect;
 /**
  * Created by gtq on 2016/12/5.
  */
-public class VideoUpload extends FileUpLoad {
+public class VideoUpload extends BaseFileUp {
+
+    private String Tag = "_VideoUpload";
 
     public VideoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
         this.context = context;
@@ -32,68 +35,11 @@ public class VideoUpload extends FileUpLoad {
     }
 
     @Override
-    public void fileHandle() {
-        super.fileHandle();
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    Connect.VideoMessage videoMessage= Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
-
-                    String comFist = videoMessage.getCover();
-                    String filePath = videoMessage.getUrl();
-
-                    //filePath = videoCompress(filePath);
-                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                    if (baseChat.chatType() != Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-                        Connect.GcmData firstGcmData = encodeAESGCMStructData(comFist);
-                        Connect.GcmData secondGcmData = encodeAESGCMStructData(filePath);
-
-                        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
-                                setThumbnail(firstGcmData.toByteString()).
-                                setEntity(secondGcmData.toByteString()).build();
-                        firstGcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
-                        mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(firstGcmData).build();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                localEncryptionSuccess(msgExtEntity);
-                if (mediaFile != null) {
-                    fileUp();
-                }
-            }
-        }.execute();
+    public void startUpload() {
+        super.startUpload();
+        fileCompress();
     }
 
-    @Override
-    public void fileUp() {
-        resultUpFile(mediaFile, new FileResult() {
-            @Override
-            public void resultUpUrl(Connect.FileData mediaFile) {
-                String thumb = getThumbUrl(mediaFile.getUrl(), mediaFile.getToken());
-                String url = getUrl(mediaFile.getUrl(), mediaFile.getToken());
-
-                try {
-                    Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
-                    videoMessage = videoMessage.toBuilder().setCover(thumb)
-                            .setUrl(url).build();
-
-                    msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
-                    msgExtEntity.setContents(videoMessage.toByteArray());
-                    uploadSuccess(msgExtEntity);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
     public String videoCompress(String filepath) {
         LoadJNI vk = new LoadJNI();
@@ -116,5 +62,92 @@ public class VideoUpload extends FileUpLoad {
             e.printStackTrace();
         }
         return filepath;
+    }
+
+    private String thumbCompressFile;
+    private String sourceCompressFile;
+
+    @Override
+    public void fileCompress() {
+        super.fileCompress();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
+                    thumbCompressFile = videoMessage.getCover();
+                    sourceCompressFile = videoMessage.getUrl();
+
+//            sourceCompressFile = videoCompress(filePath);
+//            thumbCompressFile.delete();
+//            sourceCompressFile.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                fileEncrypt();
+            }
+        }.execute();
+    }
+
+    @Override
+    public void fileEncrypt() {
+        super.fileEncrypt();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                    if (baseChat.chatType() != Connect.ChatType.CONNECT_SYSTEM_VALUE) {
+                        Connect.GcmData firstGcmData = encodeAESGCMStructData(thumbCompressFile);
+                        Connect.GcmData secondGcmData = encodeAESGCMStructData(sourceCompressFile);
+
+                        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
+                                setThumbnail(firstGcmData.toByteString()).
+                                setEntity(secondGcmData.toByteString()).build();
+                        firstGcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
+                        mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(firstGcmData).build();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                fileUpload();
+            }
+        }.execute();
+    }
+
+    @Override
+    public void fileUpload() {
+        super.fileUpload();
+        resultUpFile(mediaFile, new FileResult() {
+            @Override
+            public void resultUpUrl(Connect.FileData mediaFile) {
+                String thumb = getThumbUrl(mediaFile.getUrl(), mediaFile.getToken());
+                String url = getUrl(mediaFile.getUrl(), mediaFile.getToken());
+
+                try {
+                    Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
+                    videoMessage = videoMessage.toBuilder().setCover(thumb)
+                            .setUrl(url).build();
+
+                    msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
+                    msgExtEntity.setContents(videoMessage.toByteArray());
+                    uploadSuccess(msgExtEntity);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
