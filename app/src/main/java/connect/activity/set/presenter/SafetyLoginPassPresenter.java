@@ -1,13 +1,11 @@
 package connect.activity.set.presenter;
 
-import android.os.AsyncTask;
-
-import connect.database.SharedPreferenceUtil;
-import connect.activity.login.bean.UserBean;
 import connect.activity.set.contract.SafetyLoginPassContract;
-import connect.utils.ProgressUtil;
+import connect.ui.activity.R;
+import connect.utils.ExCountDownTimer;
+import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.SupportKeyUril;
+import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
@@ -15,7 +13,7 @@ import protos.Connect;
 public class SafetyLoginPassPresenter implements SafetyLoginPassContract.Presenter {
 
     private SafetyLoginPassContract.View mView;
-    private String talkKey;
+    private String token;
 
     public SafetyLoginPassPresenter(SafetyLoginPassContract.View mView) {
         this.mView = mView;
@@ -26,39 +24,74 @@ public class SafetyLoginPassPresenter implements SafetyLoginPassContract.Present
     public void start() {}
 
     @Override
-    public void requestPass(final String pass, final String hint) {
-        new AsyncTask<Void, Void, Connect.ChangeLoginPassword>() {
+    public void requestPassword(String password, String code, final int type) {
+        Connect.Mfa mfa = Connect.Mfa.newBuilder()
+                .setTyp(type)
+                .setToken(token)
+                .setCode(code)
+                .setVal(password)
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.V2_SRTTING_PASSWORD_UPDATE, mfa, new ResultCall<Connect.HttpResponse>() {
             @Override
-            protected Connect.ChangeLoginPassword doInBackground(Void... params) {
-                // The new password encryption private key
-                talkKey = SupportKeyUril.createTalkKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(),
-                        SharedPreferenceUtil.getInstance().getUser().getUid(), pass);
-                Connect.ChangeLoginPassword changeLoginPassword = Connect.ChangeLoginPassword.newBuilder()
-                        .setPasswordHint(hint)
-                        .setEncryptionPri(talkKey)
-                        .build();
-                return changeLoginPassword;
+            public void onResponse(Connect.HttpResponse response) {
+                mView.modifySuccess(type);
             }
 
             @Override
-            protected void onPostExecute(Connect.ChangeLoginPassword changeLoginPassword) {
-                super.onPostExecute(changeLoginPassword);
-                ProgressUtil.getInstance().dismissProgress();
-                OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_BACK_KEY, changeLoginPassword, new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                        userBean.setPassHint(hint);
-                        userBean.setTalkKey(talkKey);
-                        SharedPreferenceUtil.getInstance().putUser(userBean);
-                        mView.modifySuccess();
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {}
-                });
+            public void onError(Connect.HttpResponse response) {
+                ToastEUtil.makeText(mView.getActivity(), response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
             }
-        }.execute();
+        });
+    }
+
+    @Override
+    public void requestSendCode(String phone) {
+        Connect.SendMobileCode sendMobileCode = Connect.SendMobileCode.newBuilder()
+                .setMobile(phone)
+                .setCategory(10)
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.V2_SMS_SEND, sendMobileCode, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                try{
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.SecurityToken securityToken = Connect.SecurityToken .parseFrom(structData.getPlainData());
+                    token = securityToken.getToken();
+                    countdownTime();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                if(response.getCode() == 2400){
+                    ToastEUtil.makeText(mView.getActivity(), R.string.Link_Operation_frequent,ToastEUtil.TOAST_STATUS_FAILE).show();
+                }else{
+                    ToastEUtil.makeText(mView.getActivity(),R.string.Login_SMS_code_sent_failure,ToastEUtil.TOAST_STATUS_FAILE).show();
+                }
+            }
+        });
+    }
+
+    private void countdownTime(){
+        ExCountDownTimer exCountDownTimer = new ExCountDownTimer(120 * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished, int percent) {
+                mView.changeBtnTiming(millisUntilFinished / 1000);
+            }
+
+            @Override
+            public void onPause() {
+            }
+
+            @Override
+            public void onFinish() {
+                mView.changeBtnFinish();
+            }
+        };
+        exCountDownTimer.start();
     }
 
 }

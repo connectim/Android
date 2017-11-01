@@ -8,7 +8,6 @@ import java.util.List;
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneVerifyContract;
-import connect.activity.set.SafetyPhoneNumberActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -191,52 +190,4 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
     public void pauseDownTimer(){
         exCountDownTimer.pause();
     }
-
-    @Override
-    public void requestBindMobile(final String type){
-        ProgressUtil.getInstance().showProgress(mView.getActivity());
-        Connect.MobileVerify mobileVerify = Connect.MobileVerify.newBuilder()
-                .setCountryCode(Integer.valueOf(countryCode))
-                .setNumber(phone)
-                .setCode(mView.getCode())
-                .build();
-        String url = "";
-        if (type.equals(SafetyPhoneNumberActivity.LINK_TYPE)) {
-            url = UriUtil.SETTING_BIND_MOBILE;
-        } else if(type.equals(SafetyPhoneNumberActivity.UNLINK_TYPE)) {
-            url = UriUtil.SETTING_UNBIND_MOBILE;
-        }
-        OkHttpUtil.getInstance().postEncrySelf(url, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
-            @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                ProgressUtil.getInstance().dismissProgress();
-                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                if (type.equals(SafetyPhoneNumberActivity.LINK_TYPE)) {
-                    userBean.setPhone(countryCode + "-" + phone);
-                }else if (type.equals(SafetyPhoneNumberActivity.UNLINK_TYPE)) {
-                    userBean.setPhone("");
-                }
-                ToastEUtil.makeText(mView.getActivity(),R.string.Set_Set_success).show();
-                SharedPreferenceUtil.getInstance().putUser(userBean);
-                List<Activity> list = BaseApplication.getInstance().getActivityList();
-                for (Activity activity : list) {
-                    if (activity.getClass().getName().equals(SafetyPhoneNumberActivity.class.getName())) {
-                        activity.finish();
-                    }
-                }
-                ActivityUtil.goBack(mView.getActivity());
-            }
-
-            @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-                ProgressUtil.getInstance().dismissProgress();
-                if (response.getCode() == 2414) {
-                    ToastEUtil.makeText(mView.getActivity(),R.string.Login_Phone_binded).show();
-                } else {
-                    ToastEUtil.makeText(mView.getActivity(),R.string.Link_update_Failed).show();
-                }
-            }
-        });
-    }
-
 }

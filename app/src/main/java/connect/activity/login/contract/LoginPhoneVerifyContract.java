@@ -32,8 +32,6 @@ public interface LoginPhoneVerifyContract {
 
         void reSendCode(int type);
 
-        void requestBindMobile(String type);
-
         void pauseDownTimer();
     }
 

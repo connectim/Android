@@ -79,12 +79,6 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
     }
 
     private void saveNotify(Bitmap bmp) {
-        /*View viewBackUp = LayoutInflater.from(mView.getActivity()).inflate(R.layout.prikey_backup_photo,null);
-        ((ImageView)viewBackUp.findViewById(R.id.scan_imag)).setImageBitmap(scanBitmap);
-        ((TextView)viewBackUp.findViewById(R.id.name_tv)).setText(userBean.getName());
-        ((TextView)viewBackUp.findViewById(R.id.address_tv)).setText("");
-        Bitmap bitmap = BitmapUtil.createViewBitmap(viewBackUp);*/
-
         File file = BitmapUtil.getInstance().bitmapSavePathDCIM(bmp);
         pathDcim = file.getAbsolutePath();
         try {

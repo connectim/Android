@@ -328,6 +328,7 @@
     <string name="Login_Login">Вход в систему</string>
     <string name="Login_Next">Следующий шаг</string>
     <string name="Login_Password">Пароль</string>
+    <string name="Login_Confirm_password">Подтверждение пароля</string>
     <string name="Login_Password_Hint">Подсказка для пароля :%s</string>
     <string name="Login_Password_Standard_Tip">Установите пароль (минимум 8 символов)</string>
     <string name="Login_Password_incorrect">Неправильный пароль</string>
@@ -465,6 +466,10 @@
     <string name="Set_Payment">Оплатить</string>
     <string name="Set_Payment_Password">Платежный пароль</string>
     <string name="Set_Phone">Телефон</string>
+    <string name="Login_Secondary_authentication_password">Второй пароль сертификации</string>
+    <string name="Login_Secondary_authentication_password_describe">
+        Второй пароль для входа в систему сертификации для пользователей, многократно защиты счета, повысить безопасность счета
+    </string>
     <string name="Set_Phone_unbinded">Телефон не привязан</string>
     <string name="Set_Please_connect_at_least_4_points">Просьба минимум ввести 4 точки</string>
     <string name="Set_Privacy">Конфиденциальный</string>

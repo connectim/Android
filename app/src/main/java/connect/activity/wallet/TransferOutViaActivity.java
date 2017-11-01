@@ -12,7 +12,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.set.SafetyPayFeeActivity;
 import connect.activity.wallet.bean.SendOutBean;
 import connect.activity.wallet.bean.TransferBean;
 import connect.activity.wallet.manager.TransferManager;

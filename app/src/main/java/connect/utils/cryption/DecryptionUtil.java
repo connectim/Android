@@ -51,10 +51,7 @@ public class DecryptionUtil {
     public static synchronized byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
         rawECDHkey = EncryptionUtil.getKeyExtendedECDH(extendedECDH, rawECDHkey);
 
-        //byte[] add = "ConnectEncrypted".getBytes();
-        String abStr = TimeUtil.getCurrentTimeSecond() + "" + (int)((Math.random()*9+1)*100000);
-        byte[] add = abStr.getBytes();
-
+        byte[] add = "ConnectEncrypted".getBytes();
         byte[] iv = gcmData.getIv().toByteArray();
         byte[] cipher = gcmData.getCiphertext().toByteArray();
         byte[] tag = gcmData.getTag().toByteArray();

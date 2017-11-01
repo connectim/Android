@@ -10,13 +10,17 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
-import connect.activity.wallet.manager.WalletManager;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.DialogUtil;
 import connect.utils.LoginPassCheckUtil;
+import connect.utils.ProgressUtil;
 import connect.widget.TopToolBar;
+import instant.bean.UserOrderBean;
+import instant.utils.manager.FailMsgsManager;
 
 /**
  * Account and security.
@@ -31,14 +35,10 @@ public class SafetyActivity extends BaseActivity {
     LinearLayout phoneLl;
     @Bind(R.id.password_ll)
     LinearLayout passwordLl;
-    @Bind(R.id.payment_ll)
-    LinearLayout paymentLl;
-    @Bind(R.id.pattern_tv)
-    TextView patternTv;
-    @Bind(R.id.pattern_ll)
-    LinearLayout patternLl;
-    @Bind(R.id.payment_line_ll)
-    LinearLayout paymentLineLl;
+    @Bind(R.id.password_tv)
+    TextView passwordTv;
+    @Bind(R.id.log_out_tv)
+    TextView logOutTv;
 
     private SafetyActivity mActivity;
     private UserBean userBean;
@@ -69,23 +69,18 @@ public class SafetyActivity extends BaseActivity {
         } else {
             try {
                 String phoneNum = userBean.getPhone();
-                String[] spliteArr = phoneNum.split("-");
-                String showpPhone = spliteArr == null || spliteArr.length <= 1 ? phoneNum : spliteArr[1];
-                phoneTv.setText(showpPhone);
+                String[] splitArr = phoneNum.split("-");
+                String phone = splitArr == null || splitArr.length <= 1 ? phoneNum : splitArr[1];
+                phoneTv.setText(phone);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        if (WalletManager.getInstance().isCreateWallet()) {
-            paymentLineLl.setVisibility(View.VISIBLE);
-            patternLl.setVisibility(View.VISIBLE);
-
-            if (userBean != null && TextUtils.isEmpty(userBean.getPatterStr())) {
-                patternTv.setText(R.string.Set_Off);
-            } else {
-                patternTv.setText(R.string.Set_On);
-            }
+        if (userBean.isOpenPassword()) {
+            passwordTv.setText(R.string.Set_On);
+        } else {
+            passwordTv.setText(R.string.Set_Off);
         }
     }
 
@@ -101,24 +96,28 @@ public class SafetyActivity extends BaseActivity {
 
     @OnClick(R.id.password_ll)
     void goPassword(View view) {
-        LoginPassCheckUtil.getInstance().checkLoginPass(mActivity, new LoginPassCheckUtil.OnResultListener() {
-            @Override
-            public void success(String priKey) {
-                ActivityUtil.next(mActivity, SafetyLoginPassActivity.class);
-            }
-            @Override
-            public void error() {}
-        });
+        ActivityUtil.next(mActivity, SafetyLoginPassActivity.class);
     }
 
-    @OnClick(R.id.payment_ll)
-    void goPayMent(View view) {
-        ActivityUtil.next(mActivity, SafetyPayActivity.class);
-    }
+    @OnClick(R.id.log_out_tv)
+    void logOut(View view) {
+        DialogUtil.showAlertTextView(mActivity,
+                mActivity.getResources().getString(R.string.Set_tip_title),
+                mActivity.getResources().getString(R.string.Set_Logout_delete_login_data_still_log),
+                "", "", false, new DialogUtil.OnItemClickListener() {
+                    @Override
+                    public void confirm(String value) {
+                        ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
+                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
 
-    @OnClick(R.id.pattern_ll)
-    void goPattern(View view) {
-        SafetyPatternActivity.startActivity(mActivity);
+                        FailMsgsManager.getInstance().removeAllFailMsg();
+                        UserOrderBean userOrderBean = new UserOrderBean();
+                        userOrderBean.connectLogout();
+                    }
+
+                    @Override
+                    public void cancel() {}
+                });
     }
 
 }

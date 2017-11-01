@@ -75,6 +75,12 @@ public class UriUtil {
     public static String SETTING_PAY_VERSION = "/connect/v1/setting/pay/pin/version";
     /** pay password setting */
     public static String SETTING_PAY_PIN_SETTING = "/connect/v1/setting/pay/pin/setting";
+    /** pay password setting */
+    public static String V2_SMS_SEND = "/connect/v2/sms/send";
+    /** pay password setting */
+    public static String V2_SRTTING_PASSWORD_UPDATE = "/connect/v2/setting/password/update";
+    /** pay password setting */
+    public static String V2_SETTING_MOBILE_VERIFY = "/connect/v2/setting/mobile/verify";
 
 
     /**======================================================================================

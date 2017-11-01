@@ -91,7 +91,7 @@
             android:name="connect.activity.login.LoginUserActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.wallet.PatterVerifyActivity"
+            android:name="connect.activity.wallet.SafetyPatterVerifyActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.widget.camera.CameraTakeActivity"
@@ -133,10 +133,7 @@
             android:name="connect.activity.set.SafetyPhoneActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.set.SafetyPhoneNumberActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.set.SafetyPhoneVerifyActivity"
+            android:name="connect.activity.set.SafetyNewPhoneActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.set.UserInfoNameActivity"
@@ -145,19 +142,19 @@
             android:name="connect.activity.set.SafetyLoginPassActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.set.SafetyPayFeeActivity"
+            android:name="connect.activity.wallet.SafetyPayFeeActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.set.SafetyPatternActivity"
+            android:name="connect.activity.wallet.SafetyPatternActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.set.SafetyPatterDrawActivity"
+            android:name="connect.activity.wallet.SafetyPatterDrawActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.set.UserInfoAvatarActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.set.SafetyPayActivity"
+            android:name="connect.activity.wallet.SafetyPayActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.set.PrivateBlackActivity"
@@ -385,12 +382,6 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.home.DBUpdateActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.CAddressListActivty"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.BackUpCurrencyActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.chat.set.GroupCreateActivity"
