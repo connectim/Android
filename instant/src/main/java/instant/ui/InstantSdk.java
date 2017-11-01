@@ -28,8 +28,9 @@ public class InstantSdk {
         this.context = context;
     }
 
-    public void registerUserInfo(Context context, String publicKey, String privateKey) {
+    public void registerUserInfo(Context context, String uid,String publicKey, String privateKey) {
         UserCookie userCookie = new UserCookie();
+        userCookie.setUid(uid);
         userCookie.setPubKey(publicKey);
         userCookie.setPriKey(privateKey);
         Session.getInstance().setUserCookie(Session.CONNECT_USER, userCookie);

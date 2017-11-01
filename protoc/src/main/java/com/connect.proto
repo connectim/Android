@@ -25,7 +25,6 @@ string tips = 3;
 string sender = 4;
 }
 
-
 message Voice {
 string url = 1;
 int64 duration = 2;
@@ -1356,4 +1355,23 @@ message HttpRequest {
     GcmData cipher_data = 3;
 }
 
+message Mfa {
+    int32 typ = 1;
+    string val = 2;
+    string token =3;
+    string code=4;
+}
 
+message ChangeMobileVerify {
+    string mobile = 1;
+    string token = 2;
+    string code = 3;
+    int32 category =4;
+    string ex_token =5;
+}
+
+message TcpRequest {
+    string uid = 1;
+    string sign = 2;
+    GcmData cipher_data = 3;
+}
