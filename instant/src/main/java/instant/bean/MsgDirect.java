@@ -4,6 +4,7 @@ package instant.bean;
  * Created by gtq on 2016/11/24.
  */
 public enum MsgDirect {
+
     From(-1),
     To(1);
 

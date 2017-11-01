@@ -6,11 +6,12 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -22,18 +23,15 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.chat.activity.BaseChatActvity;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.inter.FileUpLoad;
-import connect.activity.chat.model.fileload.PhotoUpload;
-import connect.activity.chat.model.fileload.VideoUpload;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
-import connect.activity.chat.view.RecordView;
 import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.wallet.TransferFriendActivity;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -53,15 +51,19 @@ import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.MediaUtil;
 import connect.utils.TimeUtil;
+import connect.utils.chatfile.inter.BaseFileUp;
+import connect.utils.chatfile.inter.FileUploadListener;
+import connect.utils.chatfile.upload.PhotoUpload;
+import connect.utils.chatfile.upload.VideoUpload;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
 import connect.widget.album.AlbumActivity;
 import connect.widget.album.model.AlbumFile;
 import connect.widget.bottominput.InputPanel;
-import connect.widget.bottominput.view.ExBottomLayout;
 import connect.widget.bottominput.view.InputBottomLayout;
 import connect.widget.camera.CameraTakeActivity;
+import connect.widget.recordvoice.RecordView;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.NormalChat;
 import protos.Connect;
@@ -76,16 +78,12 @@ public class ChatActivity extends BaseChatActvity {
     TopToolBar toolbar;
     @Bind(R.id.recycler_chat)
     RecyclerView recyclerChat;
-    @Bind(R.id.layout_exbottom)
-    ExBottomLayout layoutExbottom;
-    @Bind(R.id.layout_inputbottom)
-    InputBottomLayout layoutInputbottom;
-    @Bind(R.id.layout_bottom)
-    LinearLayout layoutBottom;
     @Bind(R.id.recordview)
     RecordView recordview;
+    @Bind(R.id.inputPanel)
+    InputPanel inputPanel;
 
-    private String Tag = "ChatActivity";
+    private String Tag = "_ChatActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +131,8 @@ public class ChatActivity extends BaseChatActvity {
             }
         });
         recordview.setVisibility(View.GONE);
-        InputPanel.inputPanel.setRecordView(recordview);
+        inputPanel.setActivity(this);
+        inputPanel.setRecordView(recordview);
 
         // robot/stranger donot show setting
         if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
@@ -150,6 +149,9 @@ public class ChatActivity extends BaseChatActvity {
             updateBurnState(burntime);
         }
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
+        linearLayoutManager.setStackFromEnd(true);
         chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
         recyclerChat.setLayoutManager(linearLayoutManager);
         recyclerChat.setAdapter(chatAdapter);
@@ -162,6 +164,7 @@ public class ChatActivity extends BaseChatActvity {
             }
         });
 
+        scrollHelper.setCheckIfItemViewFullRecycleViewForTop(true);
         scrollHelper.attachToRecycleView(recyclerChat);
         loadChatInfor();
 
@@ -234,7 +237,7 @@ public class ChatActivity extends BaseChatActvity {
                 titleName = titleName.substring(0, 12);
                 titleName += "...";
             }
-            if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
+            if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE || normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
                 toolbar.setTitle(titleName);
             } else {
                 List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
@@ -250,7 +253,7 @@ public class ChatActivity extends BaseChatActvity {
                 }
             }
             indexName.append(name.charAt(name.length() - 1));
-            if (normalChat.chatType() == 0 || normalChat.chatType() == 2) {
+            if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE || normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
                 toolbar.setTitle(R.mipmap.message_privacy_grey2x, null);
                 toolbar.setTitle(indexName.toString());
             } else {
@@ -345,7 +348,7 @@ public class ChatActivity extends BaseChatActvity {
                 break;
         }
 
-        FileUpLoad fileUpLoad = null;
+        BaseFileUp baseFileUp = null;
         String content = (String) objects[1];
         LinkMessageRow msgType = LinkMessageRow.toMsgType(Integer.parseInt((String) objects[0]));
         switch (msgType) {
@@ -357,12 +360,17 @@ public class ChatActivity extends BaseChatActvity {
                 break;
             case Photo:
                 msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), 200, 200);
-                fileUpLoad = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                baseFileUp = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
+                    }
                 });
-                fileUpLoad.fileHandle();
+                baseFileUp.startUpload();
                 break;
             case Video:
                 String videoPath = content;
@@ -375,12 +383,17 @@ public class ChatActivity extends BaseChatActvity {
 
                 msgExtEntity = normalChat.videoMsg(thumbPath, videoPath, videoTimeLength,
                         videoSize, thumbBitmap.getWidth(), thumbBitmap.getHeight());
-                fileUpLoad = new VideoUpload(activity, normalChat, msgExtEntity, new FileUpLoad.FileUpListener() {
+                baseFileUp = new VideoUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
                     }
+
+                    @Override
+                    public void uploadFail(int code, String message) {
+
+                    }
                 });
-                fileUpLoad.fileHandle();
+                baseFileUp.startUpload();
                 break;
         }
     }

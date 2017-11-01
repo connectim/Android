@@ -1,7 +1,6 @@
 package connect.widget.bottominput.view;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputType;
@@ -10,7 +9,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,7 +21,6 @@ import android.widget.TextView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.LinkMessageRow;
@@ -44,19 +41,14 @@ import protos.Connect;
  */
 public class InputBottomLayout extends LinearLayout {
 
-    @Bind(R.id.inputmore)
     ImageView inputmore;
-    @Bind(R.id.inputedit)
     ChatEditText inputedit;
-    @Bind(R.id.inputface)
     ImageView inputface;
-    @Bind(R.id.inputvoice)
     ImageView inputvoice;
-    @Bind(R.id.inputtxt)
     TextView inputtxt;
 
     private static String TAG = "_InputBottomLayout";
-    public static InputBottomLayout bottomLayout = getInstance();
+    public static InputBottomLayout bottomLayout;
 
     private InputKeyListener keyListener = new InputKeyListener();
     private InputBottomEditTouch editTouch = new InputBottomEditTouch();
@@ -64,24 +56,24 @@ public class InputBottomLayout extends LinearLayout {
     private InputBottomFocusChange focusChange = new InputBottomFocusChange();
     private InputBottomVoiceTouch voiceTouch = new InputBottomVoiceTouch();
 
-    private static InputBottomLayout getInstance() {
-        if (bottomLayout == null) {
-            Context context = BaseApplication.getInstance().getBaseContext();
-            bottomLayout = new InputBottomLayout(context);
-        }
-        return bottomLayout;
-    }
-
     public InputBottomLayout(Context context) {
         super(context);
+        initView();
     }
 
     public InputBottomLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initView();
     }
 
     public void initView() {
+        bottomLayout = this;
         View view = LayoutInflater.from(getContext()).inflate(R.layout.view_bottom_chatinput, this);
+        inputmore = (ImageView) view.findViewById(R.id.inputmore);
+        inputedit = (ChatEditText) view.findViewById(R.id.inputedit);
+        inputface = (ImageView) view.findViewById(R.id.inputface);
+        inputvoice = (ImageView) view.findViewById(R.id.inputvoice);
+        inputtxt = (TextView) view.findViewById(R.id.inputtxt);
 
         inputedit.requestFocus();
         inputedit.setFocusableInTouchMode(true);
@@ -95,16 +87,6 @@ public class InputBottomLayout extends LinearLayout {
         inputmore.setOnClickListener(clickListener);
         inputface.setOnClickListener(clickListener);
         inputtxt.setOnClickListener(clickListener);
-    }
-
-    private boolean isSoftShowing() {
-        final int softKeyboardHeight = 100;
-        View rootView = InputPanel.inputPanel.getActivity().getWindow().getDecorView();
-        Rect r = new Rect();
-        rootView.getWindowVisibleDisplayFrame(r);
-        DisplayMetrics dm = rootView.getResources().getDisplayMetrics();
-        int heightDiff = rootView.getBottom() - r.bottom;
-        return heightDiff > softKeyboardHeight * dm.density;
     }
 
     private class InputKeyListener implements View.OnKeyListener {
@@ -139,7 +121,7 @@ public class InputBottomLayout extends LinearLayout {
                 return true;
             }
 
-            if (isSoftShowing()) {
+            if (SystemUtil.isSoftShowing(InputPanel.inputPanel.getActivity())) {
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm.isActive()) {
                     imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);

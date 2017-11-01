@@ -10,8 +10,8 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import connect.ui.activity.R;
-import connect.activity.chat.model.ChatMsgUtil;
 import connect.utils.log.LogManager;
+import connect.widget.bottominput.EmoManager;
 
 /**
  * message direction
@@ -76,7 +76,7 @@ public class ShowTextView extends TextView {
         if (largeLen) {
             content = content.substring(0, limitLength);
         }
-        SpannableStringBuilder string = ChatMsgUtil.txtTransEmotion(getContext(),content);
+        SpannableStringBuilder string = EmoManager.emojiManager.txtTransEmotion(content);
         if (largeLen) {
             string = string.append("...");
         }

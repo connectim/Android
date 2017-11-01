@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import connect.ui.activity.R;
 import connect.widget.bottominput.EmoManager;
 import connect.widget.bottominput.bean.StickPagerBean;
-import connect.activity.chat.inter.IEmojiClickListener;
+import connect.widget.bottominput.inter.IEmojiClickListener;
 import connect.activity.chat.view.PopWindowImg;
 import connect.utils.FileUtil;
 

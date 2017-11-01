@@ -1,12 +1,12 @@
 package connect.activity.chat.view.row;
 
-import android.view.LayoutInflater;
+import android.content.Context;
 
-import connect.ui.activity.R;
-import instant.bean.MsgDirect;
 import connect.activity.chat.view.BaseContainer;
 import connect.activity.chat.view.holder.MsgBaseHolder;
 import connect.activity.chat.view.holder.MsgWebsiteHolder;
+import connect.ui.activity.R;
+import instant.bean.MsgDirect;
 
 /**
  * Created by pujin on 2017/2/20.
@@ -14,12 +14,12 @@ import connect.activity.chat.view.holder.MsgWebsiteHolder;
 public class MsgWebsiteRow extends MsgChatRow {
 
     @Override
-    public MsgBaseHolder buildRowView(LayoutInflater inflater, MsgDirect direct) {
-        super.buildRowView(inflater, direct);
+    public MsgBaseHolder buildRowView(Context context, MsgDirect direct) {
+        super.buildRowView(context, direct);
         if (direct == MsgDirect.From) {
-            container = new BaseContainer(inflater, R.layout.item_chat_website_from);
+            container = new BaseContainer(context, R.layout.item_chat_website_from);
         } else {
-            container = new BaseContainer(inflater, R.layout.item_chat_website_to);
+            container = new BaseContainer(context, R.layout.item_chat_website_to);
         }
         MsgWebsiteHolder msgWebsiteHolder = new MsgWebsiteHolder(container);
         return msgWebsiteHolder;

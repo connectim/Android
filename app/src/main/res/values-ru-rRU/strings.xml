@@ -130,7 +130,7 @@
     <string name="Chat_Your_account_is_not_bound_to_the_phone">Ваш аккаунт не привязан к номеру
         телефона,пожалуйста, попробуйте снова
     </string>
-    <string name="Chat_disable_the_self_descruct">Самоуничтожение после закрытия прочтения</string>
+    <string name="Chat_disable_the_self_descruct">%s Самоуничтожение после закрытия прочтения</string>
     <string name="Chat_et_self_destruct_timer">Установить время самоуничтожения после прочтения
     </string>
     <string name="Chat_founded">%1$d/%2$d По..инга</string>

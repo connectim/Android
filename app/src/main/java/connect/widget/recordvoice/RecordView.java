@@ -1,4 +1,4 @@
-package connect.activity.chat.view;
+package connect.widget.recordvoice;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,6 @@ import android.widget.TextView;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgSend;
-import connect.utils.AudioUtil;
 import connect.utils.DialogUtil;
 import connect.utils.FileUtil;
 import connect.utils.system.SystemDataUtil;
@@ -30,8 +29,9 @@ import connect.utils.log.LogManager;
  */
 public class RecordView extends LinearLayout {
 
-    private String Tag = "RecordView";
+    private static String TAG = "_RecordView";
 
+    private float recordX;
     /** Constantly timing little red dot */
     private ImageView redDotView;
     /** Timing text */
@@ -42,8 +42,8 @@ public class RecordView extends LinearLayout {
     private LinearLayout releaseLayout;
     /** The tape movement view */
     private DiffuseView recordImg;
-    /** The recording utility class */
-    private AudioUtil audioUtil;
+
+    private RecordAudioListener audioListener = new RecordAudioListener();
 
     public RecordView(Context context) {
         super(context);
@@ -61,85 +61,73 @@ public class RecordView extends LinearLayout {
     }
 
     protected void initView() {
-        audioUtil = AudioUtil.getInstance();
-        audioUtil.setOnAudioRecordListener(new AudioUtil.AudioRecordListener() {
-
-            private long duration;
-
-            @Override
-            public void startError() {
-                permissionDialog();
-            }
-
-            @Override
-            public void wellPrepared() {
-                duration = TimeUtil.getCurrentTimeInLong();
-            }
-
-            @Override
-            public void recording(long recordtime, int decibel) {
-                if (decibel > 5) {
-                    decibel = 5;
-                } else if (decibel <= 0) {
-                    decibel = 1;
-                }
-                recordImg.startDiffuse(decibel);
-
-                timerTxt.setText(TimeUtil.getTime(recordtime,TimeUtil.DATE_FORMAT_SECOND));
-                if (redDotView.getVisibility() == VISIBLE) {
-                    redDotView.setVisibility(INVISIBLE);
-                } else {
-                    redDotView.setVisibility(VISIBLE);
-                }
-            }
-
-            @Override
-            public void recordFinish(String path) {
-                stopRecord();
-
-                int dur = (int) (TimeUtil.getCurrentTimeInLong() - duration) / 1000;
-                if ((Math.abs(recordX) < SystemDataUtil.getScreenWidth() / 2) || dur < 2) {
-                    FileUtil.deleteFile(path);
-                } else {
-                    MsgSend.sendOuterMsg(LinkMessageRow.Voice, path, dur);
-                }
-            }
-        });
-
         View view = View.inflate(getContext(), R.layout.view_record, this);
         redDotView = (ImageView) view.findViewById(R.id.img1);
         timerTxt = (TextView) view.findViewById(R.id.txt1);
         recordLayout = (LinearLayout) view.findViewById(R.id.relativelayout_1);
         releaseLayout = (LinearLayout) view.findViewById(R.id.relativelayout_2);
         recordImg = (DiffuseView) view.findViewById(R.id.record);
-
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         recordImg.setLayoutParams(params);
+
+        AudioUtil.audioUtil.setOnAudioRecordListener(audioListener);
     }
 
-    protected void permissionDialog() {
-        DialogUtil.showAlertTextView(getContext(), getContext().getString(R.string.Set_tip_title),
-                getContext().getString(R.string.Link_Unable_to_get_the_voice_data),
-                "", getContext().getString(R.string.Set_Setting), false, false, new DialogUtil.OnItemClickListener() {
-                    @Override
-                    public void confirm(String value) {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.setData(Uri.parse("package:" + getContext().getPackageName()));
-                        getContext().startActivity(intent);
-                    }
+    private class RecordAudioListener implements AudioUtil.AudioRecordListener {
 
-                    @Override
-                    public void cancel() {
+        private long duration;
 
-                    }
-                });
+        @Override
+        public void startError() {
+            DialogUtil.showAlertTextView(getContext(), getContext().getString(R.string.Set_tip_title),
+                    getContext().getString(R.string.Link_Unable_to_get_the_voice_data),
+                    "", getContext().getString(R.string.Set_Setting), false, false, new DialogUtil.OnItemClickListener() {
+                        @Override
+                        public void confirm(String value) {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+                            getContext().startActivity(intent);
+                        }
+
+                        @Override
+                        public void cancel() {
+
+                        }
+                    });
+        }
+
+        @Override
+        public void wellPrepared() {
+            duration = TimeUtil.getCurrentTimeInLong();
+        }
+
+        @Override
+        public void recording(long recordtime, float decibel) {
+            decibel= decibel/15;
+
+            recordImg.startDiffuse(decibel);
+            timerTxt.setText(TimeUtil.getTime(recordtime, TimeUtil.DATE_FORMAT_SECOND));
+            redDotView.setVisibility(redDotView.getVisibility() == VISIBLE ? INVISIBLE : VISIBLE);
+        }
+
+        @Override
+        public void recordFinish(String path) {
+            stopRecord();
+
+            int dur = (int) (TimeUtil.getCurrentTimeInLong() - duration) / 1000;
+            if ((Math.abs(recordX) < SystemDataUtil.getScreenWidth() / 2) || dur < 2) {
+                FileUtil.deleteFile(path);
+            } else {
+                MsgSend.sendOuterMsg(LinkMessageRow.Voice, path, dur);
+            }
+        }
     }
 
     protected void startRecord() {
         recordLayout.setVisibility(VISIBLE);
         releaseLayout.setVisibility(GONE);
-        audioUtil.prepareAudio();
+        AudioUtil.audioUtil.prepareAudio();
 
         recordImg.setTranslationX(0);//This must be added, or in the recording for the first time Huawei mobile phones will not show the recording button.
     }
@@ -154,8 +142,6 @@ public class RecordView extends LinearLayout {
         releaseLayout.setVisibility(GONE);
     }
 
-    private float recordX;
-
     /**
      * Moving components
      */
@@ -165,7 +151,7 @@ public class RecordView extends LinearLayout {
         recordX = transX;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                LogManager.getLogger().d(Tag, "ACTION_DOWN");
+                LogManager.getLogger().d(TAG, "ACTION_DOWN");
 
                 startRecord();
                 recordImg.setLocationY(location[1] + SystemUtil.dipToPx(40) / 2);
@@ -174,13 +160,15 @@ public class RecordView extends LinearLayout {
                 leftLocationY(transY);
                 break;
             case MotionEvent.ACTION_MOVE:
-                LogManager.getLogger().d(Tag, "ACTION_MOVE" + event.getX() + "location:" + transX);
+                LogManager.getLogger().d(TAG, "ACTION_MOVE" + event.getX() + "location:" + transX);
+
                 moveLcoation((int) transX);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                LogManager.getLogger().d(Tag, "ACTION_UP");
-                audioUtil.finishRecorder();
+                LogManager.getLogger().d(TAG, "ACTION_UP");
+
+                AudioUtil.audioUtil.finishRecorder();
                 leftLocationY(SystemDataUtil.getScreenHeight() - releaseLayout.getHeight());
                 break;
         }

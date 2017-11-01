@@ -1,4 +1,4 @@
-package connect.activity.chat.inter;
+package connect.utils.chatfile.inter;
 
 import android.content.Context;
 
@@ -28,22 +28,14 @@ import protos.Connect;
 /**
  * Created by gtq on 2016/12/5.
  */
-public abstract class FileUpLoad {
+public abstract class BaseFileUp implements InterFileUp {
 
     private String Tag = "_FileUpLoad";
     protected Context context;
     protected ChatMsgEntity msgExtEntity;
     protected BaseChat baseChat;
     protected Connect.MediaFile mediaFile;
-
-    public void fileHandle() {
-        if (baseChat.chatType() != 2) {
-            FailMsgsManager.getInstance().sendDelayFailMsg(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), null, null);
-        }
-    }
-
-    public void fileUp() {
-    }
+    public FileUploadListener fileUpListener;
 
     /**
      * File encryption
@@ -51,14 +43,14 @@ public abstract class FileUpLoad {
      * @param filePath
      * @return
      */
-    public synchronized Connect.GcmData encodeAESGCMStructData(String filePath) {
-        Connect.GcmData gcmData = null;
+    public Connect.GcmData encodeAESGCMStructData(String filePath) {
         String priKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
 
         byte[] fileSie = FileUtil.filePathToByteArray(filePath);
         ByteString fileBytes = ByteString.copyFrom(fileSie);
         LogManager.getLogger().d(Tag, "ByteString size:" + fileBytes.size());
 
+        Connect.GcmData gcmData = null;
         if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
             gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, priKey, baseChat.chatKey(), fileBytes);
         } else if (baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
@@ -95,16 +87,6 @@ public abstract class FileUpLoad {
     }
 
     /**
-     * saves Local encryption information
-     *
-     * @param msgExtEntity
-     */
-    public void localEncryptionSuccess(ChatMsgEntity msgExtEntity) {
-        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-        ((ConversationListener) baseChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
-    }
-
-    /**
      * Send upload successful file information
      *
      * @param msgExtEntity
@@ -122,9 +104,27 @@ public abstract class FileUpLoad {
         return url + "?pub_key=" + msgExtEntity.getMessage_ower() + "&token=" + token;
     }
 
-    protected FileUpListener fileUpListener;
 
-    public interface FileUpListener {
-        void upSuccess(String msgid);
+    @Override
+    public void startUpload() {
+        if (baseChat.chatType() != Connect.ChatType.CONNECT_SYSTEM_VALUE) {
+            FailMsgsManager.getInstance().sendDelayFailMsg(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), null, null);
+        }
+    }
+
+    @Override
+    public void fileCompress() {
+
+    }
+
+    @Override
+    public void fileEncrypt() {
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+        ((ConversationListener) baseChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
+    }
+
+    @Override
+    public void fileUpload() {
+
     }
 }

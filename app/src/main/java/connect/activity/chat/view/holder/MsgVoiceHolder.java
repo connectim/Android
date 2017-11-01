@@ -6,9 +6,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import connect.activity.chat.bean.DestructReadBean;
+import connect.utils.chatfile.download.DownLoadFile;
+import connect.utils.chatfile.inter.InterFileDown;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MsgDirect;
-import connect.activity.chat.inter.FileDownLoad;
 import connect.activity.chat.view.VoiceImg;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
@@ -76,7 +77,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                         voiceImg.downLoading();
 
                         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
-                        FileDownLoad.getInstance().downChatFile(chatType, url, msgExtEntity.getMessage_ower(), new FileDownLoad.IFileDownLoad() {
+                        DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), url, new InterFileDown() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 if (null != loadImg) {
@@ -110,6 +111,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                 }
                             }
                         });
+                        loadFile.downFile();
                     }
                 }
             }

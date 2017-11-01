@@ -24,6 +24,7 @@ import protos.Connect;
  * Created by gtq on 2016/12/19.
  */
 public class MsgNoticeHolder extends MsgBaseHolder {
+
     private LinearLayout noticeLayout;
     private TextView notice;
 

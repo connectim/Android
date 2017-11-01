@@ -1,4 +1,4 @@
-package connect.activity.chat.inter;
+package connect.widget.bottominput.inter;
 
 /**
  * Created by gtq on 2016/11/27.

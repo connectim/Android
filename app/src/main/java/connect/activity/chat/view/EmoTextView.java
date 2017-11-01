@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import connect.activity.chat.model.ChatMsgUtil;
+import connect.widget.bottominput.EmoManager;
 
 /**
  * Created by gtq on 2016/12/10.
@@ -27,7 +27,7 @@ public class EmoTextView extends TextView {
     @Override
     public void setText(CharSequence text, BufferType type) {
         if (!TextUtils.isEmpty(text)) {
-            text = ChatMsgUtil.txtTransEmotion(getContext(), text.toString());
+            text = EmoManager.emojiManager.txtTransEmotion(text.toString());
         }
         super.setText(text, type);
     }

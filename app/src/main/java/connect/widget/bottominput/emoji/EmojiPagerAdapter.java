@@ -9,7 +9,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import connect.widget.bottominput.bean.StickPagerBean;
-import connect.activity.chat.inter.IEmojiClickListener;
+import connect.widget.bottominput.inter.IEmojiClickListener;
 import connect.utils.system.SystemUtil;
 
 import java.util.List;

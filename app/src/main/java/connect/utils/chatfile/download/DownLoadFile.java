@@ -1,4 +1,4 @@
-package connect.utils.okhttp;
+package connect.utils.chatfile.download;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -7,24 +7,37 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.GroupEntity;
+import connect.utils.StringUtil;
+import connect.utils.chatfile.inter.InterFileDown;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.cryption.EncryptionUtil;
+import connect.utils.okhttp.HttpRequest;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
+import protos.Connect;
 
 /**
  * File download tool
  */
 public class DownLoadFile {
 
-    private final ResultListener resultListener;
     private Handler mDelivery = new Handler(Looper.getMainLooper());
 
+    private Connect.ChatType chatType;
+    private String uid;
     private String url;
+    private InterFileDown fileDownLoad;
 
-    public DownLoadFile(String url, ResultListener resultListener) {
+    public DownLoadFile(Connect.ChatType chatType, String uid, String url, final InterFileDown fileDownLoad) {
+        this.chatType = chatType;
+        this.uid = uid;
         this.url = url;
-        this.resultListener = resultListener;
+        this.fileDownLoad = fileDownLoad;
     }
 
     public void downFile() {
@@ -80,7 +93,7 @@ public class DownLoadFile {
         mDelivery.post(new Runnable() {
             @Override
             public void run() {
-                resultListener.fail();
+                fileDownLoad.failDown();
             }
         });
     }
@@ -89,7 +102,24 @@ public class DownLoadFile {
         mDelivery.post(new Runnable() {
             @Override
             public void run() {
-                resultListener.success(bytes);
+                try {
+                    if (chatType == Connect.ChatType.CONNECT_SYSTEM) {
+                        fileDownLoad.successDown(bytes);
+                    } else {
+                        Connect.GcmData gcmData = Connect.GcmData.parseFrom(bytes);
+                        Connect.StructData structData = null;
+                        if (chatType == Connect.ChatType.PRIVATE) {//private chat
+                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, SharedPreferenceUtil.getInstance().getUser().getPriKey(), uid, gcmData);
+                        } else if (chatType == Connect.ChatType.GROUPCHAT) {//group chat
+                            GroupEntity groupEntity= ContactHelper.getInstance().loadGroupEntity(uid);
+                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
+                        }
+                        byte[] dataFile = structData.getPlainData().toByteArray();
+                        fileDownLoad.successDown(dataFile);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -98,7 +128,7 @@ public class DownLoadFile {
         mDelivery.post(new Runnable() {
             @Override
             public void run() {
-                resultListener.update(current,total);
+                fileDownLoad.onProgress(current,total);
             }
         });
     }

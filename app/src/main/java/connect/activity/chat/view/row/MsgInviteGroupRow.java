@@ -1,12 +1,12 @@
 package connect.activity.chat.view.row;
 
-import android.view.LayoutInflater;
+import android.content.Context;
 
-import connect.ui.activity.R;
-import instant.bean.MsgDirect;
 import connect.activity.chat.view.BaseContainer;
 import connect.activity.chat.view.holder.MsgBaseHolder;
 import connect.activity.chat.view.holder.MsgInviteGroupHolder;
+import connect.ui.activity.R;
+import instant.bean.MsgDirect;
 
 /**
  * Created by pujin on 2017/1/21.
@@ -15,12 +15,12 @@ import connect.activity.chat.view.holder.MsgInviteGroupHolder;
 public class MsgInviteGroupRow extends MsgChatRow {
 
     @Override
-    public MsgBaseHolder buildRowView(LayoutInflater inflater, MsgDirect direct) {
-        super.buildRowView(inflater, direct);
+    public MsgBaseHolder buildRowView(Context context, MsgDirect direct) {
+        super.buildRowView(context, direct);
         if (direct == MsgDirect.From) {
-            container = new BaseContainer(inflater, R.layout.item_chat_invitegroup_from);
+            container = new BaseContainer(context, R.layout.item_chat_invitegroup_from);
         } else {
-            container = new BaseContainer(inflater, R.layout.item_chat_invitegroup_to);
+            container = new BaseContainer(context, R.layout.item_chat_invitegroup_to);
         }
         MsgInviteGroupHolder msgInviteGroupHolder = new MsgInviteGroupHolder(container);
         return msgInviteGroupHolder;
