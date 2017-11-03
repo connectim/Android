@@ -88,7 +88,7 @@
             android:name="connect.activity.login.RegisterActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.login.LoginUserActivity"
+            android:name="connect.activity.login.LoginPassVerifyActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.wallet.SafetyPatterVerifyActivity"

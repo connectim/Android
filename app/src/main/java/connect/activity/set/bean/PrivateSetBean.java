@@ -5,24 +5,14 @@ package connect.activity.set.bean;
  */
 public class PrivateSetBean {
 
-    private String updateTime;
     private Boolean phoneFind;
     private Boolean recommend;
 
     public PrivateSetBean() {}
 
-    public PrivateSetBean(String updateTime, Boolean phoneFind,Boolean recommend) {
-        this.updateTime = updateTime;
+    public PrivateSetBean(Boolean phoneFind,Boolean recommend) {
         this.phoneFind = phoneFind;
         this.recommend = recommend;
-    }
-
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Boolean getPhoneFind() {
@@ -42,6 +32,6 @@ public class PrivateSetBean {
     }
 
     public static PrivateSetBean initSetBean(){
-        return new PrivateSetBean("",true,false);
+        return new PrivateSetBean(true,false);
     }
 }

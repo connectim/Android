@@ -110,7 +110,7 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
             public void onResponse(Connect.HttpResponse response) {
                 PrivateSetBean privateSetBean = ParamManager.getInstance().getPrivateSet();
                 if(null != privateSetBean){
-                    privateSetBean.setUpdateTime(TimeUtil.getCurrentTimeInString(TimeUtil.DEFAULT_DATE_FORMAT));
+                    //privateSetBean.setUpdateTime(TimeUtil.getCurrentTimeInString(TimeUtil.DEFAULT_DATE_FORMAT));
                     ParamManager.getInstance().putPrivateSet(privateSetBean);
                 }
                 getServeFriend();

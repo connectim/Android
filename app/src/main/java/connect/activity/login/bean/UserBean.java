@@ -15,13 +15,14 @@ public class UserBean implements Serializable{
 
     public UserBean() {}
 
-    public UserBean(String name, String avatar, String priKey, String pubKey, String phone,String connectId) {
+    public UserBean(String name, String avatar, String priKey, String pubKey, String phone,String connectId, String uid) {
         this.name = name;
         this.avatar = avatar;
         this.priKey = priKey;
         this.pubKey = pubKey;
         this.phone = phone;
         this.connectId = connectId;
+        this.uid = uid;
     }
 
     public String getName() {

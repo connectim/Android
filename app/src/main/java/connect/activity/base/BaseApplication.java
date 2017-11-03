@@ -15,7 +15,6 @@ import connect.activity.base.inter.InterAccount;
 import connect.widget.bottominput.EmoManager;
 import connect.activity.login.LoginPhoneActivity;
 import connect.activity.login.bean.UserBean;
-import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoManager;
 import connect.instant.receiver.ReceiverHelper;
@@ -24,7 +23,6 @@ import connect.service.UpdateInfoService;
 import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
-import connect.widget.bottominput.view.ExBottomLayout;
 import instant.bean.Session;
 import instant.ui.InstantSdk;
 
@@ -74,7 +72,6 @@ public class BaseApplication extends Application implements InterAccount {
     @Override
     public void initRegisterAccount() {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        SharePreferenceUser.initSharePreference(userBean.getPubKey());
         Session.getInstance().clearUserCookie();
         FileUtil.getExternalStorePath();
 
@@ -93,7 +90,6 @@ public class BaseApplication extends Application implements InterAccount {
 
         //Remove the local login information
         SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
-        SharePreferenceUser.unLinkSharePreference();
         DaoManager.getInstance().closeDataBase();
 
         //service

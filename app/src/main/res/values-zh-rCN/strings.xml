@@ -1,5 +1,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="Chat">聊天</string>
     <string name="Chat_Add_as_a_friend_to_chat">添加为好友才能开始聊天</string>
     <string name="Chat_Agree">同意</string>
     <string name="Chat_Album_Permission_Get">缺少读取系统相册的权限，请点击 "设置" - "权限" 授予应用权限</string>
@@ -117,16 +116,13 @@
     <string name="Chat_paid_the_bill_to">%1$s支付了%2$s的账单</string>
     <string name="Chat_paid_the_crowd_founding_to">%1$s支付了%2$s的众筹账单</string>
     <string name="Chat_set_the_self_destruct_timer_to">%1$s开启阅后即焚%2$s后删除消息</string>
-    <string name="Common">常规类型</string>
     <string name="Common_Cancel">取消</string>
     <string name="Common_Completed">已完成</string>
     <string name="Common_Download_App">正在下载%s</string>
     <string name="Common_In">在%s中</string>
     <string name="Common_Loading">加载中...</string>
     <string name="Common_OK">确定</string>
-    <string name="ErrorCode">错误类型</string>
     <string name="ErrorCode_Request_Error">请求错误</string>
-    <string name="Link">联系人模块</string>
     <string name="Link_Friend">好友</string>
     <string name="Link_From">来自</string>
     <string name="Link_Open_in_Browser">在浏览器中打开</string>
@@ -174,9 +170,6 @@
     <string name="Link_Group_brief">群简介</string>
     <string name="Link_Group_invitation_is_invalid">邀请已经过期</string>
     <string name="Link_Group_is_QR_Code">群二维码</string>
-    <string name="Link_HASH_match_contact_firends_The_server_does_not_keep">
-        通过哈希算法匹配通讯录好友\n服务器不会保存联系人信息
-    </string>
     <string name="Link_Hello_I_am">Hi, 我是 %s</string>
     <string name="Link_Invite">邀请</string>
     <string name="Link_Invite_Count">邀请(%d)</string>
@@ -247,30 +240,23 @@
     <string name="Link_the_group_member_can_see_the_QR">启用后，群成员可以看见群二维码</string>
     <string name="Link_update_Failed">修改失败</string>
     <string name="Link_user_friends">%s的朋友</string>
-    <string name="Login">登录模块</string>
     <string name="Login_created_by_random_number_generator">由随机数生成器生成</string>
     <string name="Login_Avatar_upload_failed">头像上传失败</string>
     <string name="Login_Camera_guide_tip">点击拍照,按住摄像</string>
     <string name="Login_Code">验证码</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">正在收集声音作为随机数...</string>
-    <string name="Login_Decrypted_private_key">私钥</string>
-    <string name="Login_Encrypted_private_key">加密私钥</string>
     <string name="Login_Generated_Failure">创建失败，周围环境嘈杂系数不够</string>
     <string name="Login_Generated_Successful">创建成功</string>
     <string name="Login_Generating_Bitcoin_address">正在生成比特币地址</string>
     <string name="Login_Generating_Private_and_Public_Key">正在生成公私钥...</string>
-    <string name="Login_Login">登录</string>
     <string name="Login_Next">下一步</string>
     <string name="Login_Password">密码</string>
     <string name="Login_Confirm_password">确认密码</string>
-    <string name="Login_Password_Hint">密码提示: %s</string>
     <string name="Login_Secondary_authentication_password">二次认证密码</string>
     <string name="Login_Secondary_authentication_password_describe">
         二次认证密码用于用户在登录时，多重保护账户，提高账户的安全性
     </string>
-    <string name="Login_Password_Standard_Tip">设置登录密码(至少8位)</string>
     <string name="Login_Password_incorrect">密码错误</string>
-    <string name="Login_Phone_binded">号码已绑定</string>
     <string name="Login_Resend">重发</string>
     <string name="Login_Resend_Time">重发(%d)</string>
     <string name="Login_SMS_code_has_been_send">短信验证码已发送</string>
@@ -286,10 +272,6 @@
     <string name="Login_Verification_code_error">验证码错误</string>
     <string name="Login_Welcome">欢迎回来</string>
     <string name="Login_creat_account">创建账号</string>
-    <string name="Login_export_encrypted_prikey_explain">
-        这是你的加密私钥串\n你可以导出到图库或者邮箱\n你可以在登录中扫描该二维码登录帐号
-    </string>
-    <string name="Login_export_prikey_explain">这是你的私钥串\n你可以导出到图库或者邮箱\n你可以在登录中扫描该二维码登录帐号</string>
     <string name="Login_guide_bitcoinWallet">比特币钱包</string>
     <string name="Login_guide_bitcoinWalletDescribe">比特币转账\n就像发送一条消息一样简单</string>
     <string name="Login_guide_encryptedChat">加密聊天</string>
@@ -303,11 +285,9 @@
     <string name="Login_scan_string_error">二维码错误</string>
     <string name="Login_username_already_exists">用户名已经存在了</string>
     <string name="Message_send_fail_not_in_group">消息发送失败，你已经不在群组中</string>
-    <string name="Network">网络类型</string>
     <string name="Network_No_data">无数据</string>
     <string name="Network_Timeout">超时</string>
     <string name="Network_equest_failed_please_try_again_later">请求失败，请稍候再试</string>
-    <string name="Set">设置模块</string>
     <string name="Set_CONNECT_ID_regular">CONNECT ID 必须是以字母开头的6-20位字母、数字、下划线的组合</string>
     <string name="Set_A_phone_number_can_only_grab_once">一个手机号只能抢一次</string>
     <string name="Set_About">关于</string>
@@ -315,15 +295,12 @@
     <string name="Set_Add_mobile">绑定手机号</string>
     <string name="Set_Auto">自动付费</string>
     <string name="Set_BTC_symbol">฿</string>
-    <string name="Set_Backup_Private_Key">备份私钥</string>
-    <string name="Set_Backup_encrypted_private_key">备份加密私钥</string>
     <string name="Set_CONNECT_ID_can_only_be_set_once">CONNECT ID 只能被设置一次</string>
     <string name="Set_CONNECT_ID_set_success_no_set">CONNECT ID 设置成功后不可修改
     </string>
-    <string name="Set_Change_Mobile">修改手机号</string>
     <string name="Set_Change_Pattern">修改手势</string>
-    <string name="Set_Change_password">修改密码</string>
     <string name="Set_Open_password">开启密码验证</string>
+    <string name="Set_Close_password">关闭密码验证</string>
     <string name="Set_Check_Update">检查更新</string>
     <string name="Set_Copied">已复制</string>
     <string name="Set_Currency">货币</string>
@@ -335,32 +312,29 @@
     <string name="Set_Enter_Login_Password">验证登录密码</string>
     <string name="Set_Enter_New_Mobile_Number">输入手机号</string>
     <string name="Set_Enter_correct_please_enter_a_new_gesture">输入正确，请输入新的手势</string>
-    <string name="Set_Enter_new_password">输入新密码</string>
-    <string name="Set_Export_Private_Key">导出私钥</string>
     <string name="Set_FeedBack">反馈</string>
     <string name="Set_Found_new_version">新版本</string>
     <string name="Set_General">通用</string>
     <string name="Set_Help_and_feedback">帮助与反馈</string>
     <string name="Set_ID">ID</string>
-    <string name="Set_Id_address">ID &amp; 比特币地址</string>
     <string name="Set_Installed">已安装</string>
     <string name="Set_Language">多语言</string>
     <string name="Set_Link_Mobile">绑定手机</string>
     <string name="Set_Load_failed_please_try_again_later">加载失败，请稍候再试</string>
     <string name="Set_Log_Out">退出</string>
+    <string name="Set_Delete_account">删除账户</string>
     <string name="Set_Logging_out">正在退出...</string>
     <string name="Set_Logout_delete_login_data_still_log">退出登录将删除你的登录信息和手势密码，你仍要退出当前账户么?</string>
+    <string name="Set_delete_account_hinit">删除账户前请确保钱包已经备份，确定删除当前账户吗?</string>
     <string name="Set_Miner_fee">手续费</string>
     <string name="Set_My_Profile">个人资料</string>
     <string name="Set_My_QR_code">我的二维码</string>
     <string name="Set_Name">昵称</string>
-    <string name="Set_Not_connected_to_mobile_network">你还没有绑定手机号</string>
     <string name="Set_Not_synchronized">未同步</string>
     <string name="Set_Now_update_app">立即更新</string>
     <string name="Set_Off">已关闭</string>
     <string name="Set_On">已开启</string>
     <string name="Set_Open_Source">开源项目</string>
-    <string name="Set_Password_Hint">密码提示:</string>
     <string name="Set_Password_incorrect_you_have_chance">密码错误,您还有%d次机会</string>
     <string name="Set_Patten_can_prevent_access_data_required_when_entering">
         手势密码可以阻止未经授权的访问沙盒数据\n开启后,进入应用前需要验证手势
@@ -370,6 +344,7 @@
     <string name="Set_Payment">支付</string>
     <string name="Set_Payment_Password">支付密码</string>
     <string name="Set_Phone">手机</string>
+    <string name="Set_Area_code">区号</string>
     <string name="Set_Phone_unbinded">未绑定手机</string>
     <string name="Set_Please_connect_at_least_4_points">请至少连通4个点</string>
     <string name="Set_Privacy">隐私</string>
@@ -388,21 +363,15 @@
     <string name="Set_Start_encrypted_messaging">开始加密聊天</string>
     <string name="Set_This_is_the_newest_version">已是最新版本</string>
     <string name="Set_Two_Patterns_do_not_match">两次手势输入不一致</string>
-    <string name="Set_Updated_time">更新时间:%s</string>
     <string name="Set_Use_Login_Password">通过登录密码</string>
     <string name="Set_Verify_Phone">验证手机</string>
     <string name="Set_Versions_number">版本号: %s</string>
     <string name="Set_Vibrate">震动</string>
     <string name="Set_Your_Phone">您的手机</string>
-    <string name="Set_Your_cell_phone_number">你的电话号码</string>
-    <string name="Set_Your_private_key_will_be_encrypted_with_new_password">您的私钥将会被新密码加密</string>
     <string name="Set_miner_fee_explain">网络手续费用于支付比特币矿工费用,更高的手续费意味着交易有可能更快被区块链确认.</string>
     <string name="Set_new_version">新版本:%s</string>
     <string name="Set_tip_title">提示</string>
     <string name="Set_verification_code_has_been_send_to_phone">验证码已经发送到你的手机</string>
-    <string name="Set_you_can_login_mobile_number_link_one_account">修改后,你可以通过新手机号登录\n一个手机号只能绑定一个账户
-    </string>
-    <string name="Wallet">钱包模块</string>
     <string name="Wallet_Auto_fees_greater_than_the_maximum_continue">自动计算的手续费(%sBTC)大于最大设定，是否继续？
     </string>
     <string name="Wallet_Confirm_transfer">确认转账</string>
@@ -423,7 +392,6 @@
     <string name="Wallet_synchronization_data_failed">同步数据失败</string>
     <string name="Wallet_Add_note">添加留言</string>
     <string name="Wallet_Address_Book">常用地址簿</string>
-    <string name="Wallet_Amount">金额</string>
     <string name="Wallet_Amount_BTC">金额(BTC)</string>
     <string name="Wallet_Amount_is_too_small">打包交易时发生错误，转出金额太小</string>
     <string name="Wallet_Amount_of_member">众筹人数</string>

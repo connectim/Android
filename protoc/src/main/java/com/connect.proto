@@ -1369,3 +1369,16 @@ message ChangeMobileVerify {
     int32 category =4;
     string ex_token =5;
 }
+
+message PasswordCheck {
+    string mobile= 1;
+    string token = 2;
+    string password=3;
+    string ca_pub =4;
+}
+
+message Preferences {
+    bool phone_num=1;
+    bool recommend = 2;
+}
+

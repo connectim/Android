@@ -42,6 +42,7 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.data.RateDataUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.widget.TopToolBar;
@@ -92,7 +93,6 @@ public class WalletFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        rateBean = ParamManager.getInstance().getCountryRate();
         if (mActivity != null && isAdded()) {
             requestRate();
             requestCurrencyCoin();
@@ -267,18 +267,16 @@ public class WalletFragment extends BaseFragment {
      * Request exchange rate
      */
     private void requestRate() {
-        if (rateBean == null || TextUtils.isEmpty(rateBean.getUrl()))
+        String code = ParamManager.getInstance().getWalletSet().getCurrency();
+        RateBean rateBeanData = RateDataUtil.getInstance().getRate(code);
+        if (rateBeanData == null || TextUtils.isEmpty(rateBeanData.getUrl()))
             return;
-        HttpRequest.getInstance().get(rateBean.getUrl(), new Callback() {
+        HttpRequest.getInstance().get(rateBeanData.getUrl(), new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String data = response.body().string();
-                Type type = new TypeToken<RateBean>() {
-                }.getType();
-                RateBean rate = new Gson().fromJson(data, type);
-                rateBean.setRate(rate.getRate());
-                rateBean.setDatetime(rate.getDatetime());
-                ParamManager.getInstance().putCountryRate(rateBean);
+                Type type = new TypeToken<RateBean>() {}.getType();
+                rateBean = new Gson().fromJson(data, type);
             }
             @Override
             public void onFailure(Call call, IOException e) {}

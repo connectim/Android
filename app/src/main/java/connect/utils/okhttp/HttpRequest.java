@@ -97,8 +97,8 @@ public class HttpRequest {
             @Override
             public void onFailure(Call call, IOException e) {
                 ProgressUtil.getInstance().dismissProgress();
-                String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
-                ToastUtil.getInstance().showToast(errorNet);
+                callBack.onFailure(call, e);
+                dealOnFailure(call);
             }
 
             @Override

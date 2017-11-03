@@ -7,6 +7,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.set.bean.SystemSetBean;
+import connect.activity.wallet.bean.AddressBean;
+import connect.activity.wallet.bean.WalletBean;
+import connect.activity.wallet.bean.WalletSetBean;
 import connect.database.green.bean.ParamEntity;
 import connect.activity.chat.bean.ApplyGroupBean;
 import connect.activity.set.bean.PaySetBean;
@@ -19,36 +23,35 @@ import connect.activity.wallet.bean.TransferBean;
  */
 public class ParamManager {
 
-    private static ParamManager patamManager;
+    private static ParamManager paramManager;
 
-    /** The current state information */
-    public static final String COUNTRY_RATE = "country_rate";
-    /** Users pay set */
-    public static final String USER_PAY_SET = "user_pay_set";
     /** User privacy Settings */
     public static final String USER_PRIVATE_SET = "user_private_set";
+    /** wallet set */
+    public static final String WALLET_SET = "wallet_set";
+    /** system set */
+    public static final String SYSTEM_SET = "system_set";
+    /** wallet info */
+    public static final String WALLET_INFO = "wallet_info";
+    /** user transfer address book */
+    public static final String USER_ADDRESS_BOOK = "user_address_book";
     /** The address book version number */
     public static final String COUNT_FRIENDLIST = "COUNT_FRIENDLIST";
-    /** Chat set up the voice*/
-    public static final String SET_VOICE = "SET_VOICE";
-    /** Chat set vibration */
-    public static final String SET_VIBRATION = "SET_VIBRATION";
     /** Recent transfer record */
     public static final String LATELY_TRANSFER = "lately_transfer";
-
     /** The key to expand */
     public static final String GENERATE_TOKEN_SALT = "GENERATE_TOKEN_SALT";
     public static final String GENERATE_TOKEN_EXPIRED = "GENERATE_TOKEN_EXPIRED ";
 
     public static ParamManager getInstance() {
-        if (patamManager == null) {
+        if (paramManager == null) {
             synchronized (ParamManager.class) {
-                if (patamManager == null) {
-                    patamManager = new ParamManager();
+                if (paramManager == null) {
+                    paramManager = new ParamManager();
                 }
             }
         }
-        return patamManager;
+        return paramManager;
     }
 
     /********************************************************************************************************
@@ -100,21 +103,90 @@ public class ParamManager {
     /********************************************************************************************************
      *                               KEY-VALUE
      *******************************************************************************************************/
-    public void putPaySet(PaySetBean user) {
+
+    /**
+     * Save the wallet set
+     * @param walletSetBean
+     */
+    public void putWalletSet(WalletSetBean walletSetBean) {
         ParamEntity paramEntity = new ParamEntity();
-        paramEntity.setKey(USER_PAY_SET);
-        paramEntity.setValue(new Gson().toJson(user));
+        paramEntity.setKey(WALLET_SET);
+        paramEntity.setValue(new Gson().toJson(walletSetBean));
         ParamHelper.getInstance().insertParamEntity(paramEntity);
     }
 
-    public PaySetBean getPaySet() {
-        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(USER_PAY_SET);
+    public WalletSetBean getWalletSet() {
+        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(WALLET_SET);
+        if(paramEntity == null){
+            WalletSetBean walletSetBean = WalletSetBean.initWalletSet();
+            return walletSetBean;
+        }
+        return new Gson().fromJson(paramEntity.getValue(), WalletSetBean.class);
+    }
+
+    /**
+     * Save the system Settings
+     * @param systemSetBean
+     */
+    public void putSystemSet(SystemSetBean systemSetBean) {
+        ParamEntity paramEntity = new ParamEntity();
+        paramEntity.setKey(SYSTEM_SET);
+        paramEntity.setValue(new Gson().toJson(systemSetBean));
+        ParamHelper.getInstance().insertParamEntity(paramEntity);
+    }
+
+    public SystemSetBean getSystemSet() {
+        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(SYSTEM_SET);
+        if(paramEntity == null){
+            SystemSetBean systemSetBean = SystemSetBean.initSystemSet();
+            return systemSetBean;
+        }
+        return new Gson().fromJson(paramEntity.getValue(), SystemSetBean.class);
+    }
+
+    /**
+     * Save the transfer address book
+     * @param list
+     */
+    public void putTransferAddressBook(ArrayList<AddressBean> list) {
+        ParamEntity paramEntity = new ParamEntity();
+        paramEntity.setKey(USER_ADDRESS_BOOK);
+        paramEntity.setValue(new Gson().toJson(list));
+        ParamHelper.getInstance().insertParamEntity(paramEntity);
+    }
+
+    public ArrayList<AddressBean> getTransferAddressBook() {
+        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(USER_ADDRESS_BOOK);
         if(paramEntity == null){
             return null;
         }
-        return new Gson().fromJson(paramEntity.getValue(), PaySetBean.class);
+        Type type = new TypeToken<ArrayList<AddressBean>>() {}.getType();
+        return new Gson().fromJson(paramEntity.getValue(), type);
     }
 
+    /**
+     * Save the wallet BaseSeed information
+     * @param walletBean
+     */
+    public void putWalletInfo(WalletBean walletBean) {
+        ParamEntity paramEntity = new ParamEntity();
+        paramEntity.setKey(WALLET_INFO);
+        paramEntity.setValue(new Gson().toJson(walletBean));
+        ParamHelper.getInstance().insertParamEntity(paramEntity);
+    }
+
+    public WalletBean getWalletInfo() {
+        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(WALLET_INFO);
+        if(paramEntity == null){
+            return new WalletBean();
+        }
+        return new Gson().fromJson(paramEntity.getValue(), WalletBean.class);
+    }
+
+    /**
+     * User preferences set
+     * @param privateSetBean
+     */
     public void putPrivateSet(PrivateSetBean privateSetBean) {
         ParamEntity paramEntity = new ParamEntity();
         paramEntity.setKey(USER_PRIVATE_SET);
@@ -130,26 +202,31 @@ public class ParamManager {
         return new Gson().fromJson(paramEntity.getValue(), PrivateSetBean.class);
     }
 
-    public void putCountryRate(RateBean rateBean) {
-        if(null != rateBean){
-            ParamEntity paramEntity = new ParamEntity();
-            paramEntity.setKey(COUNTRY_RATE);
-            paramEntity.setValue(new Gson().toJson(rateBean));
-            ParamHelper.getInstance().insertParamEntity(paramEntity);
+    /**
+     * Recent transfer record
+     * @param privateSetBean
+     */
+    public void putLatelyTransfer(TransferBean privateSetBean) {
+        ArrayList<TransferBean> list = getLatelyTransfer();
+        if(list.size() >= 10){
+            list.remove(9);
         }
+        list.add(0,privateSetBean);
+        ParamEntity paramEntity = new ParamEntity();
+        paramEntity.setKey(LATELY_TRANSFER);
+        paramEntity.setValue(new Gson().toJson(list));
+        ParamHelper.getInstance().insertParamEntity(paramEntity);
     }
 
-    public RateBean getCountryRate() {
-        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(COUNTRY_RATE);
-        if(null == paramEntity){
-            RateBean rateBean = new RateBean();
-            rateBean.setCode("USD");
-            rateBean.setSymbol("$");
-            rateBean.setUrl("/apis/usd");
-            return rateBean;
+    public ArrayList<TransferBean> getLatelyTransfer() {
+        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(LATELY_TRANSFER);
+        if(paramEntity == null){
+            return new ArrayList();
         }
-        return new Gson().fromJson(paramEntity.getValue(), RateBean.class);
+        Type type = new TypeToken<ArrayList<TransferBean>>() {}.getType();
+        return new Gson().fromJson(paramEntity.getValue(), type);
     }
+
 
     public ApplyGroupBean loadGroupApply(String verifycode) {
         ParamEntity entity = ParamHelper.getInstance().loadParamEntity(verifycode);
@@ -196,27 +273,6 @@ public class ParamManager {
             }
             ParamHelper.getInstance().updateParamEntities(paramEntities);
         }
-    }
-
-    public void putLatelyTransfer(TransferBean privateSetBean) {
-        ArrayList<TransferBean> list = getLatelyTransfer();
-        if(list.size() >= 10){
-            list.remove(9);
-        }
-        list.add(0,privateSetBean);
-        ParamEntity paramEntity = new ParamEntity();
-        paramEntity.setKey(LATELY_TRANSFER);
-        paramEntity.setValue(new Gson().toJson(list));
-        ParamHelper.getInstance().insertParamEntity(paramEntity);
-    }
-
-    public ArrayList<TransferBean> getLatelyTransfer() {
-        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(LATELY_TRANSFER);
-        if(paramEntity == null){
-            return new ArrayList();
-        }
-        Type type = new TypeToken<ArrayList<TransferBean>>() {}.getType();
-        return new Gson().fromJson(paramEntity.getValue(), type);
     }
 
 }

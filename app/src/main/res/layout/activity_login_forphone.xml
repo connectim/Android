@@ -67,27 +67,11 @@
         android:enabled="false"
         android:text="@string/Set_Verify_Phone"/>
 
-    <!--<TextView
+    <TextView
         style="@style/BaseTextStyle"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
-        android:text="@string/Set_After_verified_your_phone_login_on_another_phone"/>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
-        android:orientation="horizontal">
-        <TextView
-            style="@style/BaseTextStyle"
-            android:text="@string/Set_or" />
-        <TextView
-            android:id="@+id/backup_local_tv"
-            style="@style/BaseTextStyle"
-            android:padding="@dimen/dp_5"
-            android:textColor="@color/color_007aff"
-            android:text="@string/Set_Import_your_local_private_key_backup"/>
-    </LinearLayout>-->
+        android:text="通过手机号码注册和登录账户"/>
 
 </LinearLayout>

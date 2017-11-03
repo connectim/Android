@@ -37,6 +37,8 @@ public class RegularUtil {
     public static final String PASSWORD = "^(?!^(\\d+|[a-zA-Z]+|[`~!@#\\$%\\^&*\\(\\)\\-_=\\+\\\\\\|\\[\\]\\{\\}:;\\\"\\',.<>\\/\\?]+)$)^[\\w`~!@#\\$%\\^&*\\(\\)\\-_=\\+\\\\\\|\\[\\]\\{\\}:;\\\"\\',.<>\\/\\?]{8,32}$";
     /** expression */
     public static final String VERIFYCATION_EMOTION = "\\[([\\u4e00-\\u9fa5]|[a-zA-Z]|[0-9])+\\]";
+    /** connect id */
+    public static final String CONNECT_ID = "^[_a-zA-Z0-9]{5,19}$";
 
     public static boolean matches(String value, String rule) {
         return value.matches(rule);

@@ -69,6 +69,7 @@ public class SafetyNewPhoneActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_link_new);
         ButterKnife.bind(this);
+        initView();
     }
 
     @Override
@@ -76,9 +77,10 @@ public class SafetyNewPhoneActivity extends BaseActivity {
         mActivity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
-        toolbarTop.setTitle(null, R.string.Set_Verify_Phone);
+        toolbarTop.setTitle(null, R.string.Set_Add_mobile);
 
         phoneEdit.addTextChangedListener(textWatcher);
+        codeVerifyEdit.addTextChangedListener(textWatcher);
         countryBean = PhoneDataUtil.getInstance().getCurrentCountryCode();
         if(countryBean != null){
             countryTv.setText("+ " + countryBean.getCode());

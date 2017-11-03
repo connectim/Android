@@ -110,7 +110,7 @@ public class SearchFriendActivity extends BaseActivity {
         public void itemClick(int position, ContactEntity list, int type) {
             switch (type) {
                 case 1:
-                    SearchFriendResultActivity.startActivity(mActivity, list.getConnectId());
+                    SearchFriendResultActivity.startActivity(mActivity, list.getUid());
                     break;
                 case 2:
                     FriendInfoActivity.startActivity(mActivity, list.getPub_key());

@@ -46,7 +46,6 @@ public class PinTransferDialog implements View.OnClickListener{
 
     private MdStyleProgress progressBar;
     private OnTrueListener onTrueListener;
-    private PaySetBean paySetBean;
     private VirtualKeyboardView keyboardView;
     private Activity activity;
     /** Text state */
@@ -72,7 +71,6 @@ public class PinTransferDialog implements View.OnClickListener{
         this.fee = fee;
         this.fixedFee = fixedFee;
         this.currencyEnum = CurrencyEnum.getCurrency(currency);
-        paySetBean = ParamManager.getInstance().getPaySet();
 
         this.onTrueListener = onTrueListener;
         dialog = new Dialog(activity, R.style.Dialog);

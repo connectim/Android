@@ -1,5 +1,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="Chat">Chat</string>
     <string name="Chat_Add_as_a_friend_to_chat">Add as a friend to chat</string>
     <string name="Chat_Agree">agree</string>
     <string name="Chat_Album_Permission_Get">Lack of reading system album permissions, click
@@ -135,16 +134,13 @@
     <string name="Chat_paid_the_crowd_founding_to">%1$s paid the crowd-founding to %2$s</string>
     <string name="Chat_set_the_self_destruct_timer_to">%1$s set the self-destruct timer to %2$s
     </string>
-    <string name="Common">Common type</string>
     <string name="Common_Cancel">Cancel</string>
     <string name="Common_Completed">Completed</string>
     <string name="Common_Download_App">Downloading%s</string>
     <string name="Common_In">In \'%s</string>
     <string name="Common_Loading">Loading ...</string>
     <string name="Common_OK">OK</string>
-    <string name="ErrorCode">Error code</string>
     <string name="ErrorCode_Request_Error">Request Error</string>
-    <string name="Link">Link</string>
     <string name="Link_Friend">Friend</string>
     <string name="Link_From">from</string>
     <string name="Link_Open_in_Browser">Open in a browser</string>
@@ -199,9 +195,6 @@
     <string name="Link_Group_brief">Group brief</string>
     <string name="Link_Group_invitation_is_invalid">Group invitation is invalid</string>
     <string name="Link_Group_is_QR_Code">Group\'s QR Code</string>
-    <string name="Link_HASH_match_contact_firends_The_server_does_not_keep">Using HASH algorithm to
-        match contact friends.\nThe server does not keep your contract information.
-    </string>
     <string name="Link_Hello_I_am">Hello! I am %s</string>
     <string name="Link_Invite">Invite</string>
     <string name="Link_Invite_Count">Invite(%d)</string>
@@ -288,7 +281,6 @@
     </string>
     <string name="Link_update_Failed">update Failed</string>
     <string name="Link_user_friends">%s\'s friends</string>
-    <string name="Login">Login</string>
     <string name="Login_created_by_random_number_generator">created by random number generator
     </string>
     <string name="Login_Avatar_upload_failed">Avatar upload failed</string>
@@ -296,8 +288,6 @@
     <string name="Login_Code">Code</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">Collecting Sounds as Random Seed...
     </string>
-    <string name="Login_Decrypted_private_key">Private key</string>
-    <string name="Login_Encrypted_private_key">Encrypted private key</string>
     <string name="Login_Generated_Failure">Create failed, please make sure you\'ve made sound/voice
         around the mic
     </string>
@@ -305,14 +295,10 @@
     <string name="Login_Generating_Bitcoin_address">btc address is being generated</string>
     <string name="Login_Generating_Private_and_Public_Key">Generating Private &amp; Public Key
     </string>
-    <string name="Login_Login">Login</string>
     <string name="Login_Next">Next</string>
     <string name="Login_Password">Password</string>
     <string name="Login_Confirm_password">Confirm password</string>
-    <string name="Login_Password_Hint">Password Hint: %s</string>
-    <string name="Login_Password_Standard_Tip">Password (at least 8 characters)</string>
     <string name="Login_Password_incorrect">Password incorrect</string>
-    <string name="Login_Phone_binded">Phone is bound</string>
     <string name="Login_Resend">Resend</string>
     <string name="Login_Resend_Time">Resend(%d)</string>
     <string name="Login_SMS_code_has_been_send">SMS code has been sent</string>
@@ -328,13 +314,6 @@
     <string name="Login_Verification_code_error">Verification code error</string>
     <string name="Login_Welcome">Welcome</string>
     <string name="Login_creat_account">Create account</string>
-    <string name="Login_export_encrypted_prikey_explain">This is the your private key encrypted by
-        password\nYou can export to your Photos or Email.\nYou can scan this for login from other
-        devices
-    </string>
-    <string name="Login_export_prikey_explain">This is the your private key\nYou can export to your
-        Photos or Email.\nYou can scan this for login from other devices.
-    </string>
     <string name="Login_guide_bitcoinWallet">Bitcoin address</string>
     <string name="Login_guide_bitcoinWalletDescribe">Bitcoin transfer\n is as simple as sending a
         message
@@ -354,13 +333,11 @@
     <string name="Message_send_fail_not_in_group">Message sending failed, you already not in the
         group
     </string>
-    <string name="Network">Network</string>
     <string name="Network_No_data">No data</string>
     <string name="Network_Timeout">Timeout</string>
     <string name="Network_equest_failed_please_try_again_later">Request failed, please try again
         later
     </string>
-    <string name="Set">Settings</string>
     <string name="Set_CONNECT_ID_regular">The CONNECT ID must be a combination of 6-20 letters,
         numbers, and underscores beginning with a letter
     </string>
@@ -370,15 +347,13 @@
     <string name="Set_Add_mobile">Add mobile</string>
     <string name="Set_Auto">Auto</string>
     <string name="Set_BTC_symbol">฿</string>
-    <string name="Set_Backup_Private_Key">Backup Private Key</string>
-    <string name="Set_Backup_encrypted_private_key">Backup encrypted private key</string>
     <string name="Set_CONNECT_ID_can_only_be_set_once">CONNECT ID can only be set once</string>
     <string name="Set_CONNECT_ID_set_success_no_set">CONNECT ID can\'t be modified after setting
         successfully
     </string>
-    <string name="Set_Change_Mobile">Change Mobile</string>
     <string name="Set_Change_Pattern">Change Pattern</string>
-    <string name="Set_Change_password">Change password</string>
+    <string name="Set_Open_password">Open the password authentication</string>
+    <string name="Set_Close_password">Close the password authentication</string>
     <string name="Set_Check_Update">Check Update</string>
     <string name="Set_Copied">Copied</string>
     <string name="Set_Currency">Currency</string>
@@ -395,35 +370,32 @@
     <string name="Set_Enter_correct_please_enter_a_new_gesture">Enter correct, please enter a new
         pattern
     </string>
-    <string name="Set_Enter_new_password">Enter new password</string>
-    <string name="Set_Export_Private_Key">Export Private Key</string>
     <string name="Set_FeedBack">FeedBack</string>
     <string name="Set_Found_new_version">New version</string>
     <string name="Set_General">General</string>
     <string name="Set_Help_and_feedback">Help and feedback</string>
     <string name="Set_ID">ID</string>
-    <string name="Set_Id_address">ID &amp; bitcoin address</string>
     <string name="Set_Installed">Installed</string>
     <string name="Set_Language">Language</string>
     <string name="Set_Link_Mobile">Bind Mobile</string>
     <string name="Set_Load_failed_please_try_again_later">Load failed, please try again later
     </string>
     <string name="Set_Log_Out">Log Out</string>
+    <string name="Set_Delete_account">Delete the account</string>
     <string name="Set_Logging_out">Logging out...</string>
     <string name="Set_Logout_delete_login_data_still_log">Logout will delete your login data and
         pattern. You can still log in with this account
     </string>
+    <string name="Set_delete_account_hinit">Please make sure the wallet is a backup before delete account, sure to delete the current account?</string>
     <string name="Set_Miner_fee">Transaction fee</string>
     <string name="Set_My_Profile">My Profile</string>
     <string name="Set_My_QR_code">My QR code</string>
     <string name="Set_Name">Name</string>
-    <string name="Set_Not_connected_to_mobile_network">Mobile phone has not been bound</string>
     <string name="Set_Not_synchronized">Not synchronized</string>
     <string name="Set_Now_update_app">Update now</string>
     <string name="Set_Off">Disabled</string>
     <string name="Set_On">On</string>
     <string name="Set_Open_Source">Open Source</string>
-    <string name="Set_Password_Hint">Password Hint:</string>
     <string name="Set_Password_incorrect_you_have_chance">Password incorrect, you have %d chance
     </string>
     <string name="Set_Patten_can_prevent_access_data_required_when_entering">Patten Password can
@@ -435,6 +407,7 @@
     <string name="Set_Payment">Pay</string>
     <string name="Set_Payment_Password">Payment password</string>
     <string name="Set_Phone">Phone</string>
+    <string name="Set_Area_code">The area code</string>
     <string name="Set_Phone_unbinded">Phone unbound</string>
     <string name="Login_Secondary_authentication_password">Secondary authentication password</string>
     <string name="Login_Secondary_authentication_password_describe">
@@ -457,16 +430,11 @@
     <string name="Set_Start_encrypted_messaging">You are starting an encrypt chat</string>
     <string name="Set_This_is_the_newest_version">This is the newest version</string>
     <string name="Set_Two_Patterns_do_not_match">Two Patterns do not match</string>
-    <string name="Set_Updated_time">Updated time:%s</string>
     <string name="Set_Use_Login_Password">Use Login Password</string>
     <string name="Set_Verify_Phone">Verify Phone</string>
     <string name="Set_Versions_number">Version: %s</string>
     <string name="Set_Vibrate">Vibrate</string>
     <string name="Set_Your_Phone">Your Phone</string>
-    <string name="Set_Your_cell_phone_number">Your cell phone number</string>
-    <string name="Set_Your_private_key_will_be_encrypted_with_new_password">Your private key will be
-        encrypted with new password
-    </string>
     <string name="Set_miner_fee_explain">A transaction fee is included to transactions so that
         miners will include your transaction in the next block.The higher the fee, the faster
         confirmed. They are recommended but not mandatory.
@@ -476,10 +444,6 @@
     <string name="Set_verification_code_has_been_send_to_phone">A verification code has been send to
         phone.
     </string>
-    <string name="Set_you_can_login_mobile_number_link_one_account">After changing, you can login
-        with new number\n one mobile number can only be linked to one account
-    </string>
-    <string name="Wallet">Wallet</string>
     <string name="Wallet_Auto_fees_greater_than_the_maximum_continue">Automatic calculation of fee
         (% sBTC) is greater than the maximum set, whether or not to continue?
     </string>
@@ -503,7 +467,6 @@
     <string name="Wallet_synchronization_data_failed">synchronization data failed</string>
     <string name="Wallet_Add_note">Add note</string>
     <string name="Wallet_Address_Book">Address Book</string>
-    <string name="Wallet_Amount">Amount</string>
     <string name="Wallet_Amount_BTC">Amount(BTC)</string>
     <string name="Wallet_Amount_is_too_small">When packing a transaction, an error occurs and the
         amount is too small

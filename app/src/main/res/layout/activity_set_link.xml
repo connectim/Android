@@ -62,7 +62,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:inputType="textPassword"
+                android:inputType="number"
+                android:maxLength="6"
                 android:background="@null"/>
             <TextView
                 android:id="@+id/send_tv"

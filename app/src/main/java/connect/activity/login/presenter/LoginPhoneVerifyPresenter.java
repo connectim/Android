@@ -80,6 +80,7 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                             reSignInCa(smsValidateResp, countryCode + "-" + phone);
                             break;
                         case 3:
+                            mView.launchPassVerify(countryCode + "-" + phone, smsValidateResp.getToken());
                             break;
                         default:
                             break;
@@ -93,7 +94,6 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
             public void onError(Connect.HttpNotSignResponse response) {
                 ProgressUtil.getInstance().dismissProgress();
                 if(response.getCode() == 2416) {
-                    // 验证码错误
                     ToastEUtil.makeText(mView.getActivity(), R.string.Login_Verification_code_error,ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
             }
@@ -120,14 +120,7 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                             priKey, imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    UserBean userBean = new UserBean();
-                    userBean.setAvatar(userInfo.getAvatar());
-                    userBean.setConnectId(userInfo.getConnectId());
-                    userBean.setName(userInfo.getUsername());
-                    userBean.setPhone(mobile);
-                    userBean.setPriKey(priKey);
-                    userBean.setPubKey(pubKey);
-                    userBean.setUid(userInfo.getUid());
+                    UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), priKey, pubKey, mobile, userInfo.getConnectId(), userInfo.getUid());
                     SharedPreferenceUtil.getInstance().putUser(userBean);
                     mView.launchHome(userBean);
                 } catch (Exception e) {

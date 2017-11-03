@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.database.SharePreferenceUser;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.activity.wallet.adapter.AddAddressAdapter;
 import connect.activity.wallet.bean.AddressBean;
@@ -137,7 +137,7 @@ public class TransferAddressBookActivity extends BaseActivity implements Address
     @Override
     public void updateView(ArrayList<AddressBean> listAddress) {
         addAddressAdapter.closeMenu();
-        SharePreferenceUser.getInstance().putAddressBook(listAddress);
+        ParamManager.getInstance().putTransferAddressBook(listAddress);
         addAddressAdapter.setData(listAddress);
     }
 }

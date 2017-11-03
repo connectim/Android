@@ -107,16 +107,9 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                             userBean.getPriKey(), imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-
-                    UserBean userBean = new UserBean();
-                    userBean.setAvatar(userInfo.getAvatar());
-                    userBean.setConnectId(userInfo.getConnectId());
-                    userBean.setName(userInfo.getUsername());
-                    userBean.setPhone(userBean.getPhone());
-                    userBean.setPriKey(userBean.getPriKey());
-                    userBean.setPubKey(userBean.getPubKey());
-                    userBean.setUid(userInfo.getUid());
-                    SharedPreferenceUtil.getInstance().putUser(userBean);
+                    UserBean userBeanNew = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), userBean.getPriKey(), userBean.getPubKey(),
+                            userBean.getPhone(), userInfo.getConnectId(), userInfo.getUid());
+                    SharedPreferenceUtil.getInstance().putUser(userBeanNew);
                     mView.launchHome();
                 } catch (Exception e) {
                     e.printStackTrace();

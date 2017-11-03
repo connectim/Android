@@ -17,6 +17,7 @@ import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.HttpRecBean;
+import connect.activity.set.bean.SystemSetBean;
 import connect.broadcast.NotificationBroadcastReceiver;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -93,12 +94,11 @@ public class NotificationBar {
         int notice = (null == setEntity || null == setEntity.getDisturb()) ? 0 : setEntity.getDisturb();
         if (notice == 1) return;
 
-        int voice = ParamManager.getInstance().getInt(ParamManager.SET_VOICE, 1);
-        if (voice == 1) {
+        SystemSetBean systemSetBean = ParamManager.getInstance().getSystemSet();
+        if (systemSetBean.isRing()) {
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SOUNDPOOL, chatname.equals(runAcy) ? 1 : 0);
         }
-        int vibrate = ParamManager.getInstance().getInt(ParamManager.SET_VIBRATION, 1);
-        if (vibrate == 1) {
+        if (systemSetBean.isVibrate()) {
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SYSTEM_VIBRATION);
         }
 
