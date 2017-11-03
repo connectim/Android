@@ -13,14 +13,14 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import connect.ui.activity.R;
 import connect.utils.log.LogManager;
-import instant.bean.ConnectState;
+import connect.instant.bean.ConnectState;
 
 /**
  * Created by pujin on 2017/2/6.
  */
 public class ConnectStateView extends RelativeLayout {
 
-    private String Tag = "ConnectStateView";
+    private static String TAG = "ConnectStateView";
     private TextView txt1;
     private ProgressBar probar1;
 
@@ -71,7 +71,7 @@ public class ConnectStateView extends RelativeLayout {
                 break;
         }
 
-        LogManager.getLogger().d(Tag, showTxt);
+        LogManager.getLogger().d(TAG, showTxt);
     }
 
     @Override

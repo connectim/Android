@@ -82,7 +82,7 @@ public class ContactListManage {
         ArrayList<ContactBean> favoritesList = new ArrayList<>();
         ArrayList<ContactBean> friendList = new ArrayList<>();
         for(ContactEntity friendEntity : loacalFriend){
-            if(friendEntity.getPub_key().equals(pubKeyExc)){
+            if(friendEntity.getUid().equals(pubKeyExc)){
                 continue;
             }
             ContactBean contactBean = new ContactBean();
@@ -90,7 +90,7 @@ public class ContactListManage {
             contactBean.setName(name);
             contactBean.setAvatar(friendEntity.getAvatar());
             contactBean.setUid(friendEntity.getUid());
-            contactBean.setPub_key(friendEntity.getPub_key());
+            contactBean.setPub_key(friendEntity.getUid());
             if(friendEntity.getSource() != null && friendEntity.getSource() == -1){
                 contactBean.setStatus(6);
                 friendList.add(contactBean);

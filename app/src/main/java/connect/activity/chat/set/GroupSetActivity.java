@@ -141,7 +141,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
                         if (entity == null) {
                             StrangerInfoActivity.startActivity(activity, address, SourceType.CARD);
                         } else {
-                            FriendInfoActivity.startActivity(activity, entity.getPub_key());
+                            FriendInfoActivity.startActivity(activity, entity.getUid());
                         }
                     }
                 }

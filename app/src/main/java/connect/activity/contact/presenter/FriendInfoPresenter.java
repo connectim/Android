@@ -79,7 +79,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             baseChat = new CGroupChat(groupEntity);
             talker = new Talker(Connect.ChatType.GROUPCHAT,pubKey);
         }
-        ChatMsgEntity msgExtEntity = baseChat.cardMsg(friendEntity.getPub_key(), friendEntity.getUsername(), friendEntity.getAvatar());
+        ChatMsgEntity msgExtEntity = baseChat.cardMsg(friendEntity.getUid(), friendEntity.getUsername(), friendEntity.getAvatar());
         baseChat.sendPushMsg(msgExtEntity);
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         ((ConversationListener)baseChat).updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgExtEntity.getCreatetime());
@@ -128,13 +128,14 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
     /**
      * Get the latest information from friends
      *
-     * @param address friend address
+     * @param value  1: uid   2:connectid
      * @param friendEntity
      */
     @Override
-    public void requestUserInfo(String address, final ContactEntity friendEntity) {
+    public void requestUserInfo(String value, final ContactEntity friendEntity) {
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
-                .setCriteria(address)
+                .setTyp(1)
+                .setCriteria(value)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
             @Override
@@ -155,7 +156,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     mView.updateView(friendEntity);
                     ContactHelper.getInstance().insertContact(friendEntity);
                     // Update the message list user information
-                    ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
+                    ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getUid());
                     if (conversionEntity != null) {
                         CFriendChat friendChat = new CFriendChat(friendEntity);
                         friendChat.updateRoomMsg(null, "", -1, -1, -1);

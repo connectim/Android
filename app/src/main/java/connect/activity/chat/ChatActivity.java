@@ -23,7 +23,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.activity.chat.activity.BaseChatActvity;
+import connect.activity.chat.activity.BaseChatSendActivity;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
@@ -33,11 +33,14 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.activity.common.selefriend.SeleUsersActivity;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.wallet.TransferFriendActivity;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -72,7 +75,7 @@ import protos.Connect;
  * chat message
  * Created by gtq on 2016/11/22.
  */
-public class ChatActivity extends BaseChatActvity {
+public class ChatActivity extends BaseChatSendActivity {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -83,7 +86,7 @@ public class ChatActivity extends BaseChatActvity {
     @Bind(R.id.inputPanel)
     InputPanel inputPanel;
 
-    private String Tag = "_ChatActivity";
+    private static String TAG = "_ChatActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +178,7 @@ public class ChatActivity extends BaseChatActvity {
 
     @Override
     public void loadChatInfor() {
-        LogManager.getLogger().d(Tag, "loadChatInfor()");
+        LogManager.getLogger().d(TAG, "loadChatInfor()");
         new AsyncTask<Void, Void, List<ChatMsgEntity>>() {
 
             @Override
@@ -201,7 +204,7 @@ public class ChatActivity extends BaseChatActvity {
 
     @Override
     public void loadMoreMsgs() {
-        LogManager.getLogger().d(Tag, "loadMoreMsgs()");
+        LogManager.getLogger().d(TAG, "loadMoreMsgs()");
         new AsyncTask<Void, Void, List<ChatMsgEntity>>() {
             @Override
             protected List<ChatMsgEntity> doInBackground(Void... params) {
@@ -411,7 +414,36 @@ public class ChatActivity extends BaseChatActvity {
                     showtxt = lastExtEntity.showContent();
                     sendtime = lastExtEntity.getCreatetime();
                 }
-                ((ConversationListener) normalChat).updateRoomMsg(draft, showtxt, sendtime, 0);
+
+                ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
+                if (conversionEntity == null) {
+                    switch (talker.getTalkType()) {
+                        case CONNECT_SYSTEM:
+                            CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
+                            break;
+                        case PRIVATE:
+                            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(normalChat.chatKey());
+                            if (contactEntity == null) {
+                                contactEntity = new ContactEntity();
+                                contactEntity.setUid(normalChat.chatKey());
+                                contactEntity.setAvatar(talker.getAvatar());
+                                contactEntity.setUsername(talker.getNickName());
+                            }
+                            CFriendChat cFriendChat = new CFriendChat(contactEntity);
+                            cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
+                            break;
+                        case GROUPCHAT:
+                            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(normalChat.chatKey());
+                            if (groupEntity != null) {
+                                CGroupChat cGroupChat = new CGroupChat(groupEntity);
+                                cGroupChat.updateRoomMsg(draft, showtxt, sendtime);
+                            }
+                            break;
+                    }
+                } else {
+                    ConversionHelper.getInstance().updateRoomEntity(normalChat.chatKey(), draft, showtxt, sendtime);
+                    ConversationAction.conversationAction.sendEvent();
+                }
             }
         }
     }

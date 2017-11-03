@@ -126,8 +126,9 @@ public class LoginPassVerifyActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                             priKey, imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+
                     UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), priKey, pubKey,
-                            mobile, userInfo.getConnectId(), userInfo.getUid());
+                            userInfo.getCaPub(),mobile, userInfo.getConnectId(), userInfo.getUid());
                     userBean.setOpenPassword(true);
                     SharedPreferenceUtil.getInstance().putUser(userBean);
 

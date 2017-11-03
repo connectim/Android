@@ -107,7 +107,7 @@ public class GroupChat extends NormalChat {
                 .setContent(string);
 
         for (String memberaddress : address) {
-            builder.addAtAddresses(memberaddress);
+            builder.addAtUids(memberaddress);
         }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;

@@ -43,12 +43,12 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
             selectEntities.clear();
             selectEntities.addAll(seledFriend);
             for(ContactEntity contactEntity : seledFriend){
-                memberList.add(contactEntity.getPub_key());
+                memberList.add(contactEntity.getUid());
             }
         }
 
         for (ContactEntity contactEntity : entities) {
-            String pubkey = contactEntity.getPub_key();
+            String pubkey = contactEntity.getUid();
             if (members.contains(pubkey)) {
                 selectEntities.add(contactEntity);
                 continue;
@@ -92,7 +92,7 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
             }
         }
 
-        String curPub = entity.getPub_key();
+        String curPub = entity.getUid();
         if (memberList.contains(curPub)) {//contact already in group
             holder.secView.setSelected(true);
         } else {
@@ -103,7 +103,7 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
             @Override
             public void onClick(View v) {
                 View secview = v.findViewById(R.id.select);
-                String pubkey = entity.getPub_key();
+                String pubkey = entity.getUid();
                 if (oldMemberList.contains(pubkey)) {
                     secview.setSelected(true);
                     return;
@@ -112,7 +112,7 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
                 if (memberList.contains(pubkey)) {
                     memberList.remove(pubkey);
                     for (ContactEntity contactEntity : selectEntities) {
-                        if (contactEntity.getPub_key().equals(entity.getPub_key())) {
+                        if (contactEntity.getUid().equals(entity.getUid())) {
                             selectEntities.remove(contactEntity);
                             break;
                         }

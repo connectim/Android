@@ -7,6 +7,7 @@ import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.instant.inter.ConversationListener;
+import connect.utils.RegularUtil;
 import instant.sender.model.GroupChat;
 
 /**
@@ -15,11 +16,24 @@ import instant.sender.model.GroupChat;
 
 public class CGroupChat extends GroupChat implements ConversationListener{
 
+    private GroupEntity groupEntity;
+
     public CGroupChat(GroupEntity groupEntity) {
         super(groupEntity.getIdentifier());
+        this.groupEntity = groupEntity;
         this.groupKey = groupEntity.getIdentifier();
         this.groupEcdh = groupEntity.getEcdh_key();
         this.groupName = groupEntity.getName();
+    }
+
+    @Override
+    public String headImg() {
+        return RegularUtil.groupAvatar(groupKey);
+    }
+
+    @Override
+    public String nickName() {
+        return groupEntity.getName();
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime) {

@@ -39,7 +39,7 @@ public class GroupOwnerPresenter implements GroupOwnerContract.Presenter{
     public void groupOwnerTo(String memberKey, final String address) {
         Connect.GroupAttorn attorn = Connect.GroupAttorn.newBuilder()
                 .setIdentifier(memberKey)
-                .setAddress(address).build();
+                .setUid(address).build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_ATTORN, attorn, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {

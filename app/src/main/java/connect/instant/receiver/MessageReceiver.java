@@ -32,7 +32,7 @@ import protos.Connect;
  */
 public class MessageReceiver implements MessageListener {
 
-    private String Tag = "_InstantChatReceiver";
+    private static String TAG = "_MessageReceiver";
 
     public static MessageReceiver receiver = getInstance();
 
@@ -58,7 +58,7 @@ public class MessageReceiver implements MessageListener {
 
         CFriendChat friendChat = new CFriendChat(contactEntity);
         if (contents.length < 3) {
-            LogManager.getLogger().d(Tag, "decode fail");
+            LogManager.getLogger().d(TAG, "decode fail");
 
            if (contactEntity != null) {
                 String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
@@ -131,7 +131,7 @@ public class MessageReceiver implements MessageListener {
                 if (chatMessage.getMsgType() == MessageType.Text.type) {
                     try {
                         Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);
-                        if (textMessage.getAtAddressesList().lastIndexOf(myUid) != -1) {
+                        if (textMessage.getAtUidsList().lastIndexOf(myUid) != -1) {
                             content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
                         }
                     } catch (Exception e) {

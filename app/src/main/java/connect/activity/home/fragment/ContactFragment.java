@@ -28,7 +28,6 @@ import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ContactAdapter;
 import connect.activity.home.bean.ContactBean;
-import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
@@ -129,7 +128,7 @@ public class ContactFragment extends BaseFragment {
                     ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.CONNECT_SYSTEM, "Connect"));
                     break;
                 case 2:
-                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.GROUPCHAT,entity.getPub_key()));
+                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.GROUPCHAT,entity.getUid()));
                     break;
                 case 3:
                 case 4:

@@ -193,13 +193,13 @@ public class DaoManagerTest {
     public void contactEntityTest() {
         ContactEntity contactEntity = new ContactEntity();
         contactEntity.set_id(100001L);
-        contactEntity.setPub_key("Pub_key");
+        contactEntity.setUid("Pub_key");
         contactEntity.setUid("Address");
         //daoSession.getContactEntityDao().insert(contactEntity);
         daoSession.getContactEntityDao().insert(contactEntity);
 
         ContactEntity tempEntity = daoSession.getContactEntityDao().load(100001L);
-        String pubkey = tempEntity.getPub_key();
+        String pubkey = tempEntity.getUid();
         Assert.assertSame(pubkey, "Contact");
     }
 

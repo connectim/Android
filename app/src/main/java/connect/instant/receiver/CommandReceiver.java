@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import connect.activity.contact.model.ConvertUtil;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.MsgNoticeBean;
+import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -47,7 +50,7 @@ import protos.Connect;
  */
 public class CommandReceiver implements CommandListener {
 
-    private String Tag = "_CommandReceiver";
+    private static String TAG = "_CommandReceiver";
 
     public static CommandReceiver receiver = getInstance();
 
@@ -60,7 +63,10 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void commandReceipt(boolean isSuccess, Object reqObj, Object serviceObj) {
-
+        MsgNoticeBean.sendMsgNotice(
+                isSuccess ? MsgNoticeBean.NtEnum.MSG_SEND_SUCCESS : MsgNoticeBean.NtEnum.MSG_SEND_FAIL,
+                reqObj,
+                serviceObj);
     }
 
     @Override
@@ -87,32 +93,35 @@ public class CommandReceiver implements CommandListener {
     @Override
     public void loadAllContacts(Connect.SyncUserRelationship userRelationship) throws Exception {
         Connect.RelationShip relationShip = userRelationship.getRelationShip();
-        List<ContactEntity> friendInfoEntities = new ArrayList();
         List<Connect.FriendInfo> friendInfoList = relationShip.getFriendsList();
+
+        Map<String, ContactEntity> contactEntityMap = new HashMap<>();
         for (Connect.FriendInfo friendInfo : friendInfoList) {
-            String friendKey = friendInfo.getPubKey();
-            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendKey);
-            if (contactEntity == null) {
-                contactEntity = new ContactEntity();
-                contactEntity.setPub_key(friendKey);
-            }
+            String friendUid = friendInfo.getUid();
+
+            ContactEntity contactEntity = new ContactEntity();
+            contactEntity.setUid(friendInfo.getUid());
+            contactEntity.setCa_pub(friendInfo.getCaPub());
+            contactEntity.setConnectId(friendInfo.getConnectId());
             contactEntity.setUsername(friendInfo.getUsername());
             contactEntity.setAvatar(friendInfo.getAvatar());
-            contactEntity.setPub_key(friendInfo.getPubKey());
-            //contactEntity.setUid(friendInfo.getPubKey());
             contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
             contactEntity.setSource(friendInfo.getSource());
             contactEntity.setRemark(friendInfo.getRemark());
 
-            friendInfoEntities.add(contactEntity);
+            contactEntityMap.put(friendUid,contactEntity);
         }
+        Collection<ContactEntity> contactEntityCollection = contactEntityMap.values();
+        List<ContactEntity> friendInfoEntities=new ArrayList<ContactEntity>(contactEntityCollection);
+
 
         //To add a system message contact
         String connect = BaseApplication.getInstance().getString(R.string.app_name);
         ContactEntity connectEntity = ContactHelper.getInstance().loadFriendEntity(connect);
         if (connectEntity == null) {
             connectEntity = new ContactEntity();
-            connectEntity.setPub_key(connect);
+            connectEntity.setUid(connect);
+            connectEntity.setCa_pub(connect);
             connectEntity.setUsername(connect);
             connectEntity.setUid(connect);
             connectEntity.setSource(-1);
@@ -158,7 +167,7 @@ public class CommandReceiver implements CommandListener {
             List<Connect.GroupMember> members = groupInfo.getMembersList();
             List<GroupMemberEntity> memberEntities = new ArrayList<>();
             for (Connect.GroupMember member : members) {
-                GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, member.getAddress());
+                GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, member.getUid());
                 if (memberEntity == null) {
                     memberEntity = new GroupMemberEntity();
                     memberEntity.setIdentifier(groupKey);
@@ -181,37 +190,38 @@ public class CommandReceiver implements CommandListener {
         String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         List<Connect.ChangeRecord> recordsList = changeRecords.getChangeRecordsList();
         for (Connect.ChangeRecord record : recordsList) {
+            Connect.UserInfo userInfo = record.getFriendInfo();
+            String uid = userInfo.getUid();
+
             switch (record.getCategory()) {
                 case "del":
-                    ContactHelper.getInstance().deleteEntity(record.getAddress());
+                    ContactHelper.getInstance().deleteEntity(uid);
                     break;
                 case "add":
-                    Connect.UserInfo userInfo = record.getUserInfo();
-
                     boolean newFriend = false;
-                    String pubKey = userInfo.getPubKey();
-                    ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(pubKey);
+                    ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(uid);
                     if (entity == null) {
                         newFriend = true;
                         entity = new ContactEntity();
                     }
+                    entity.setUid(uid);
+                    entity.setCa_pub(userInfo.getCaPub());
+                    entity.setConnectId(userInfo.getConnectId());
                     entity.setUsername(userInfo.getUsername());
                     entity.setAvatar(userInfo.getAvatar());
-                    entity.setPub_key(pubKey);
-                    //entity.setAddress(userInfo.getAddress());
                     ContactHelper.getInstance().insertContact(entity);
 
                     if (newFriend) { // Add a welcome message
                         CFriendChat normalChat = new CFriendChat(entity);
                         String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, entity.getUsername());
                         ChatMsgEntity msgExtEntity = normalChat.txtMsg(content);
-                        msgExtEntity.setMessage_from(pubKey);
+                        msgExtEntity.setMessage_from(uid);
                         msgExtEntity.setMessage_to(mypublickey);
                         normalChat.updateRoomMsg("", content, TimeUtil.getCurrentTimeInLong(), -1, 1);
 
                         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                     }
-                    FailMsgsManager.getInstance().receiveFailMsgs(pubKey);
+                    FailMsgsManager.getInstance().receiveFailMsgs(uid);
                     break;
             }
         }
@@ -227,15 +237,31 @@ public class CommandReceiver implements CommandListener {
     }
 
     @Override
-    public void acceptFriendRequest(Connect.ReceiveAcceptFriendRequest friendRequest) {
-        FriendRequestEntity friendRequestEntity = ContactHelper.getInstance().loadFriendRequest(friendRequest.getAddress());
-        friendRequestEntity.setStatus(2);
-        ContactHelper.getInstance().inserFriendQuestEntity(friendRequestEntity);
+    public void acceptFriendRequest(Connect.FriendListChange listChange) {
+        Connect.UserInfo userInfo = listChange.getChange().getFriendInfo();
+
+        FriendRequestEntity friendRequestEntity = ContactHelper.getInstance().loadFriendRequest(userInfo.getUid());
+        if (friendRequestEntity != null) {
+            friendRequestEntity.setStatus(2);
+            ContactHelper.getInstance().inserFriendQuestEntity(friendRequestEntity);
+        }
+
+        ContactEntity contactEntity = new ContactEntity();
+        contactEntity.setUid(userInfo.getUid());
+        contactEntity.setUsername(userInfo.getUsername());
+        contactEntity.setAvatar(userInfo.getAvatar());
+        contactEntity.setCa_pub(userInfo.getCaPub());
+        contactEntity.setConnectId(userInfo.getConnectId());
+        ContactHelper.getInstance().insertContact(contactEntity);
+        ContactNotice.receiverFriend();
     }
 
     @Override
-    public void acceptDelFriend(Connect.SyncRelationship relationship) {
-        ParamManager.getInstance().putValue(ParamManager.COUNT_FRIENDLIST, relationship.getVersion());
+    public void acceptDelFriend(Connect.FriendListChange listChange) {
+        Connect.UserInfo userInfo = listChange.getChange().getFriendInfo();
+
+        ContactHelper.getInstance().deleteEntity(userInfo.getUid());
+        ContactNotice.receiverFriend();
     }
 
     @Override
@@ -356,12 +382,12 @@ public class CommandReceiver implements CommandListener {
                         ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberUid, 0);
                     }
 
-                    if (member.getUid().equals(groupAttorn.getAddress())) {//The new group manager
+                    if (member.getUid().equals(groupAttorn.getUid())) {//The new group manager
                         memberUid = member.getUid();
                         ContactHelper.getInstance().updateGroupMemberRole(groupKey, memberUid, 1);
 
                         String showName = "";
-                        if (groupAttorn.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
+                        if (groupAttorn.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
                             showName = context.getString(R.string.Chat_You);
                         } else {
                             showName = TextUtils.isEmpty(member.getNick()) ? member.getUsername() : member.getNick();
@@ -417,7 +443,7 @@ public class CommandReceiver implements CommandListener {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
             if (friendEntity == null) {
                 friendEntity = new ContactEntity();
-                friendEntity.setPub_key(userInfo.getPubKey());
+                friendEntity.setCa_pub(userInfo.getCaPub());
                 friendEntity.setAvatar(userInfo.getAvatar());
                 friendEntity.setUsername(userInfo.getUsername());
                 friendEntity.setUid(userInfo.getUid());
@@ -425,7 +451,7 @@ public class CommandReceiver implements CommandListener {
 
             CFriendChat normalChat = new CFriendChat(friendEntity);
             ChatMsgEntity msgExtEntity = normalChat.luckPacketMsg(1, packageInfo.getHashId(), 0L,packageInfo.getTips());
-            msgExtEntity.setMessage_from(friendEntity.getPub_key());
+            msgExtEntity.setMessage_from(friendEntity.getCa_pub());
             msgExtEntity.setMessage_to(mypublickey);
             msgExtEntity.setSend_status(1);
 

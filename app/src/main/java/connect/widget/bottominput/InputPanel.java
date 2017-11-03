@@ -6,7 +6,9 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import connect.widget.recordvoice.RecordView;
 import connect.ui.activity.R;
@@ -43,6 +45,9 @@ public class InputPanel extends LinearLayout {
     public void initView() {
         inputPanel = this;
         View view = LayoutInflater.from(getContext()).inflate(R.layout.view_inputpanel, this);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        view.setLayoutParams(params);
     }
 
     public void switchMoreView() {

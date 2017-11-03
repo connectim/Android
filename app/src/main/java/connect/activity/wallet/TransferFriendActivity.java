@@ -154,7 +154,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
     void goTransferOut(View view) {
         final HashMap<String,Long> outMap = new HashMap<>();
         for (ContactEntity friendEntity : presenter.getListFriend()) {
-            outMap.put(friendEntity.getPub_key(),transferEditView.getCurrentBtcLong());
+            outMap.put(friendEntity.getUid(),transferEditView.getCurrentBtcLong());
         }
         transferManager.transferConnectUser(null, outMap, new WalletListener<String>() {
             @Override
