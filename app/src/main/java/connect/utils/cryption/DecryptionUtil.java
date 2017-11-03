@@ -51,7 +51,7 @@ public class DecryptionUtil {
     public static synchronized byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
         rawECDHkey = EncryptionUtil.getKeyExtendedECDH(extendedECDH, rawECDHkey);
 
-        byte[] add = "ConnectEncrypted".getBytes();
+        byte[] add = gcmData.getAad().toByteArray();
         byte[] iv = gcmData.getIv().toByteArray();
         byte[] cipher = gcmData.getCiphertext().toByteArray();
         byte[] tag = gcmData.getTag().toByteArray();

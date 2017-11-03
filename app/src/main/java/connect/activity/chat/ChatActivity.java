@@ -23,7 +23,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import connect.activity.chat.activity.BaseChatActvity;
+import connect.activity.chat.activity.BaseChatSendActivity;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
@@ -75,7 +75,7 @@ import protos.Connect;
  * chat message
  * Created by gtq on 2016/11/22.
  */
-public class ChatActivity extends BaseChatActvity {
+public class ChatActivity extends BaseChatSendActivity {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -86,7 +86,7 @@ public class ChatActivity extends BaseChatActvity {
     @Bind(R.id.inputPanel)
     InputPanel inputPanel;
 
-    private String Tag = "_ChatActivity";
+    private static String TAG = "_ChatActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +178,7 @@ public class ChatActivity extends BaseChatActvity {
 
     @Override
     public void loadChatInfor() {
-        LogManager.getLogger().d(Tag, "loadChatInfor()");
+        LogManager.getLogger().d(TAG, "loadChatInfor()");
         new AsyncTask<Void, Void, List<ChatMsgEntity>>() {
 
             @Override
@@ -204,7 +204,7 @@ public class ChatActivity extends BaseChatActvity {
 
     @Override
     public void loadMoreMsgs() {
-        LogManager.getLogger().d(Tag, "loadMoreMsgs()");
+        LogManager.getLogger().d(TAG, "loadMoreMsgs()");
         new AsyncTask<Void, Void, List<ChatMsgEntity>>() {
             @Override
             protected List<ChatMsgEntity> doInBackground(Void... params) {

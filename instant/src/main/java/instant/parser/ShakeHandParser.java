@@ -140,12 +140,7 @@ public class ShakeHandParser extends InterParse {
     }
 
     private void welcomeMessage() {
-        String mypublickey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-        ChatMsgEntity msgExtEntity = RobotChat.getInstance().txtMsg(InstantSdk.instantSdk.getBaseContext().getString(R.string.Login_Welcome));
-        msgExtEntity.setMessage_from(RobotChat.getInstance().nickName());
-        msgExtEntity.setMessage_to(mypublickey);
-
-        ConnectLocalReceiver.receiver.welcome(msgExtEntity);
+        ConnectLocalReceiver.receiver.welcome();
     }
 
     /**

@@ -40,7 +40,7 @@ public class ConversionHelper extends BaseDao {
 
     /************************  select *****************************************/
     public int countUnReads() {
-        String sql = "SELECT sum(UNREAD_COUNT) FROM CONVERSION_ENTITY;";
+        String sql = "SELECT sum(UNREAD_COUNT) AS UNREAD_COUNT FROM CONVERSION_ENTITY WHERE NOTICE == 0 OR NOTICE IS NULL;";
 
         int unRead = 0;
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
@@ -150,7 +150,7 @@ public class ConversionHelper extends BaseDao {
 
     public void updateRoomEntity(String identify, String draf, String content, long messagetime) {
         String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,CONTENT = ? ,UNREAD_COUNT = 0 ,LAST_TIME = ? WHERE IDENTIFIER = ?;";
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{draf, content, "" + messagetime, identify});
+        daoSession.getDatabase().execSQL(sql, new Object[]{draf, content, messagetime, identify});
     }
 
     /************************ delete *****************************************/

@@ -8,21 +8,13 @@ public class UserBean implements Serializable{
     private String avatar;
     private String priKey;
     private String pubKey;
+    private String caPublicKey;
     private String phone;
     private String connectId;
     private String uid;
     private boolean isOpenPassword = false;
 
     public UserBean() {}
-
-    public UserBean(String name, String avatar, String priKey, String pubKey, String phone,String connectId) {
-        this.name = name;
-        this.avatar = avatar;
-        this.priKey = priKey;
-        this.pubKey = pubKey;
-        this.phone = phone;
-        this.connectId = connectId;
-    }
 
     public String getName() {
         return name;
@@ -86,5 +78,13 @@ public class UserBean implements Serializable{
 
     public void setOpenPassword(boolean openPassword) {
         isOpenPassword = openPassword;
+    }
+
+    public String getCaPublicKey() {
+        return caPublicKey;
+    }
+
+    public void setCaPublicKey(String caPublicKey) {
+        this.caPublicKey = caPublicKey;
     }
 }

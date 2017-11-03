@@ -114,7 +114,8 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                     userBean.setName(userInfo.getUsername());
                     userBean.setPhone(userBean.getPhone());
                     userBean.setPriKey(userBean.getPriKey());
-                    userBean.setPubKey(userBean.getPubKey());
+                    userBean.setPubKey(userInfo.getPubKey());
+                    userBean.setCaPublicKey(userInfo.getCaPub());
                     userBean.setUid(userInfo.getUid());
                     SharedPreferenceUtil.getInstance().putUser(userBean);
                     mView.launchHome();

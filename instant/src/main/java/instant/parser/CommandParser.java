@@ -549,10 +549,12 @@ public class CommandParser extends InterParse {
                 setSalt(ByteString.copyFrom(randomSalt)).
                 setExpired(expiredTime).build();
 
+        String caPublicKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
         String signInfo = SupportKeyUril.signHash(priKey, chatInfo.toByteArray());
-        Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder().
-                setSign(signInfo).
-                setData(chatInfo).build();
+        Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder()
+                .setCaPub(caPublicKey)
+                .setSign(signInfo)
+                .setData(chatInfo).build();
 
         UserOrderBean userOrderBean = new UserOrderBean();
         userOrderBean.uploadRandomCookie(cookie);

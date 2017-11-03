@@ -87,30 +87,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             String showName = TextUtils.isEmpty(roomAttr.getName()) ? "" : roomAttr.getName();
             String showAvatar = TextUtils.isEmpty(roomAttr.getAvatar()) ? "" : roomAttr.getAvatar();
 
-            /*if (TextUtils.isEmpty(showName) || TextUtils.isEmpty(showAvatar)) {//search detail info in local db
-                String roomKey = roomAttr.getRoomid();
-                if (roomAttr.getRoomtype() == 0) {
-                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);
-                    if (contactEntity != null) {
-                        showName = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
-                        showAvatar = contactEntity.getAvatar();
-                    }
-                } else if (roomAttr.getRoomtype() == 1) {
-                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomKey);
-                    if (groupEntity != null) {
-                        showName = groupEntity.getName();
-                        showAvatar = groupEntity.getAvatar();
-                    }
-                }
-
-                ConversionEntity converEntity = ConversionHelper.getInstance().loadRoomEnitity(roomKey);
-                if (converEntity != null) {
-                    converEntity.setName(showName);
-                    converEntity.setAvatar(showAvatar);
-                    ConversionHelper.getInstance().updateRoomEntity(converEntity);
-                }
-            }*/
-
             holder.nameTxt.setText(showName);
             GlideUtil.loadAvatarRound(holder.headImg, showAvatar);
             holder.bottomNotify.setVisibility(View.VISIBLE);

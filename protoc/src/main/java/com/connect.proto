@@ -1160,7 +1160,8 @@ message FriendChatCookie {
 
 message ChatCookie {
     string sign = 1;
-    ChatCookieData data = 2;
+    string ca_pub = 2;
+    ChatCookieData data = 3;
 }
 
 

@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:fadeScrollbars="true"
                 android:overScrollMode="never"
+                android:layout_marginBottom="@dimen/dp_16"
                 android:scrollbars="vertical"/>
         </RelativeLayout>
 

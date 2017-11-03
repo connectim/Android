@@ -1,16 +1,11 @@
 package connect.activity.login.presenter;
 
-import android.app.Activity;
 import android.os.Bundle;
 
-import java.util.List;
-
-import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneVerifyContract;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 import connect.utils.ExCountDownTimer;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastEUtil;
@@ -127,6 +122,7 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                     userBean.setPhone(mobile);
                     userBean.setPriKey(priKey);
                     userBean.setPubKey(pubKey);
+                    userBean.setCaPublicKey(userInfo.getCaPub());
                     userBean.setUid(userInfo.getUid());
                     SharedPreferenceUtil.getInstance().putUser(userBean);
                     mView.launchHome(userBean);
