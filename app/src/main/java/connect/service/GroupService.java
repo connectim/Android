@@ -120,7 +120,7 @@ public class GroupService extends Service {
 
                         List<GroupMemberEntity> memEntities = new ArrayList<>();
                         for (Connect.GroupMember member : groupInfo.getMembersList()) {
-                            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(pubkey, member.getAddress());
+                            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(pubkey, member.getUid());
                             if (memEntity == null) {
                                 memEntity = new GroupMemberEntity();
                                 memEntity.setIdentifier(pubkey);

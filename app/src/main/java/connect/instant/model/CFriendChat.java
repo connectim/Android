@@ -15,9 +15,25 @@ import instant.sender.model.FriendChat;
 
 public class CFriendChat extends FriendChat implements ConversationListener{
 
+    private ContactEntity contactEntity;
+
     public CFriendChat(ContactEntity contactEntity) {
-        super(contactEntity.getPub_key());
-        this.friendKey = contactEntity.getPub_key();
+        super(contactEntity.getCa_pub());
+        this.contactEntity = contactEntity;
+        this.friendKey = contactEntity.getCa_pub();
+    }
+
+    @Override
+    public String headImg() {
+        super.headImg();
+        return contactEntity.getAvatar();
+    }
+
+    @Override
+    public String nickName() {
+        super.nickName();
+        String nickName = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
+        return nickName;
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime) {
@@ -41,10 +57,10 @@ public class CFriendChat extends FriendChat implements ConversationListener{
         if (conversionEntity == null) {
             conversionEntity = new ConversionEntity();
             conversionEntity.setIdentifier(chatKey());
+            conversionEntity.setName(nickName());
+            conversionEntity.setAvatar(headImg());
         }
 
-        conversionEntity.setName(nickName());
-        conversionEntity.setAvatar(headImg());
         conversionEntity.setType(chatType());
         if (!TextUtils.isEmpty(showText)) {
             conversionEntity.setContent(showText);

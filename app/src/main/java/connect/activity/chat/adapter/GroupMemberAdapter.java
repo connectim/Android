@@ -118,7 +118,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
                         if (friendEntity == null) {
                             StrangerInfoActivity.startActivity(activity, indexEntity.getUid(), SourceType.GROUP);
                         } else {
-                            FriendInfoActivity.startActivity(activity, friendEntity.getPub_key());
+                            FriendInfoActivity.startActivity(activity, friendEntity.getUid());
                         }
                     }
                 }

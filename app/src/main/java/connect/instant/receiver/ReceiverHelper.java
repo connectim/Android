@@ -19,6 +19,8 @@ import instant.ui.InstantSdk;
 
 public class ReceiverHelper {
 
+    private static String TAG = "_ReceiverHelper";
+
     public void initInstantSDK() {
         Context context = BaseApplication.getInstance().getBaseContext();
 

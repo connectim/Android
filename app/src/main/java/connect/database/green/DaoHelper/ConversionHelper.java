@@ -147,6 +147,12 @@ public class ConversionHelper extends BaseDao {
     public void updateRoomEntity(ConversionEntity entity) {
         conversionEntityDao.update(entity);
     }
+
+    public void updateRoomEntity(String identify, String draf, String content, long messagetime) {
+        String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,CONTENT = ? ,UNREAD_COUNT = 0 ,LAST_TIME = ? WHERE IDENTIFIER = ?;";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{draf, content, "" + messagetime, identify});
+    }
+
     /************************ delete *****************************************/
     /**
      * remove room

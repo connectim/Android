@@ -113,7 +113,7 @@ public class SearchFriendActivity extends BaseActivity {
                     SearchFriendResultActivity.startActivity(mActivity, list.getConnectId());
                     break;
                 case 2:
-                    FriendInfoActivity.startActivity(mActivity, list.getPub_key());
+                    FriendInfoActivity.startActivity(mActivity, list.getUid());
                     break;
                 default:
                     break;

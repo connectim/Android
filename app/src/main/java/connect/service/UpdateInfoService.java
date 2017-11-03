@@ -335,7 +335,7 @@ public class UpdateInfoService extends Service {
                             Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
                             List<Connect.UserInfo> list = usersInfo.getUsersList();
                             for (Connect.UserInfo info : list) {
-                                ContactHelper.getInstance().updataFriendBlack(info.getPubKey());
+                                ContactHelper.getInstance().updataFriendBlack(info.getUid());
                             }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();

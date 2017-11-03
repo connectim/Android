@@ -25,7 +25,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
      */
     public static class Properties {
         public final static Property _id = new Property(0, Long.class, "_id", true, "_id");
-        public final static Property Pub_key = new Property(1, String.class, "pub_key", false, "PUB_KEY");
+        public final static Property Ca_pub = new Property(1, String.class, "ca_pub", false, "CA_PUB");
         public final static Property Uid = new Property(2, String.class, "uid", false, "UID");
         public final static Property ConnectId = new Property(3, String.class, "connectId", false, "CONNECT_ID");
         public final static Property Username = new Property(4, String.class, "username", false, "USERNAME");
@@ -50,7 +50,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CONTACT_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
-                "\"PUB_KEY\" TEXT NOT NULL UNIQUE ," + // 1: pub_key
+                "\"CA_PUB\" TEXT NOT NULL UNIQUE ," + // 1: ca_pub
                 "\"UID\" TEXT," + // 2: uid
                 "\"CONNECT_ID\" TEXT," + // 3: connectId
                 "\"USERNAME\" TEXT," + // 4: username
@@ -75,7 +75,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getPub_key());
+        stmt.bindString(2, entity.getCa_pub());
  
         String uid = entity.getUid();
         if (uid != null) {
@@ -126,7 +126,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getPub_key());
+        stmt.bindString(2, entity.getCa_pub());
  
         String uid = entity.getUid();
         if (uid != null) {
@@ -178,7 +178,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
     public ContactEntity readEntity(Cursor cursor, int offset) {
         ContactEntity entity = new ContactEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
-            cursor.getString(offset + 1), // pub_key
+            cursor.getString(offset + 1), // ca_pub
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // uid
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // connectId
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // username
@@ -194,7 +194,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
     @Override
     public void readEntity(Cursor cursor, ContactEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setPub_key(cursor.getString(offset + 1));
+        entity.setCa_pub(cursor.getString(offset + 1));
         entity.setUid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setConnectId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setUsername(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));

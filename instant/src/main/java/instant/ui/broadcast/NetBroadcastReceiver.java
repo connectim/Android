@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.parser.localreceiver.ConnectLocalReceiver;
+import instant.sender.ShakeHandSender;
 import instant.ui.InstantSdk;
 import instant.utils.TimeUtil;
 import instant.utils.log.LogManager;
@@ -17,7 +18,8 @@ import instant.utils.log.LogManager;
  */
 public class NetBroadcastReceiver extends BroadcastReceiver {
 
-    private String Tag = "_NetBroadcastReceiver";
+    private static String TAG = "_NetBroadcastReceiver";
+
     /** The default for repeated connection broadcast time */
     private static final int TIME_REPEART = 5000;
     /** The last received time */
@@ -35,16 +37,13 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
 
             if ((wifiState != null && NetworkInfo.State.CONNECTED == wifiState) ||
                     (mobileState != null && NetworkInfo.State.CONNECTED == mobileState)) {//Network connection is successful
-                LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Switch to the network environment");
+                LogManager.getLogger().d(TAG, "NetBroadcastReceiver onReceive()...Switch to the network environment");
 
-                if (isCanConnect()) {
-                    if (TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART) {
-                        lastReceiveTime = TimeUtil.getCurrentTimeInLong();
-                        //PushMessage.pushMessage(ServiceAck.CONNECT_START, new byte[0], ByteBuffer.allocate(0));
-                    }
+                if (isCanConnect() && TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART) {
+                    lastReceiveTime = TimeUtil.getCurrentTimeInLong();
                 }
             } else {
-                LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Network disconnection");
+                LogManager.getLogger().d(TAG, "NetBroadcastReceiver onReceive()...Network disconnection");
                 ConnectLocalReceiver.receiver.disConnect();
             }
         } catch (Exception e) {
@@ -54,6 +53,6 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
 
     public boolean isCanConnect() {
         UserCookie userCookie = Session.getInstance().getUserCookie(Session.CONNECT_USER);
-        return userCookie == null;
+        return userCookie != null;
     }
 }

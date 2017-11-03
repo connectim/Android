@@ -46,13 +46,12 @@ public class ShakeHandSender {
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                 priKey, ConfigUtil.getInstance().serverPubKey(), newConnection.toByteString());
 
-        String pukkey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
         String uid = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
         String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
-        Connect.TcpRequest imRequest = Connect.TcpRequest.newBuilder().
-                setUid(uid).
-                setSign(signHash).
-                setCipherData(gcmData).build();
+        Connect.TcpRequest imRequest = Connect.TcpRequest.newBuilder()
+                .setUid(uid)
+                .setSign(signHash)
+                .setCipherData(gcmData).build();
 
         SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, imRequest.toByteString());
     }

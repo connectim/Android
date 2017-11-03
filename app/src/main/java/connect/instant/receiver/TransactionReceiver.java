@@ -33,7 +33,7 @@ import protos.Connect;
 
 public class TransactionReceiver implements TransactionListener {
 
-    private String Tag = "_TransactionReceiver";
+    private static String TAG = "_TransactionReceiver";
 
     public static TransactionReceiver receiver = getInstance();
 
@@ -55,8 +55,8 @@ public class TransactionReceiver implements TransactionListener {
             stranger = new ContactEntity();
             stranger.setUsername(senderInfo.getUsername());
             stranger.setAvatar(senderInfo.getAvatar());
-            stranger.setPub_key(senderInfo.getPubKey());
             stranger.setUid(senderInfo.getUid());
+            stranger.setCa_pub(senderInfo.getCaPub());
         }
 
         CFriendChat normalChat = new CFriendChat(stranger);
@@ -129,13 +129,13 @@ public class TransactionReceiver implements TransactionListener {
         if (friendEntity == null) {
             FailMsgsManager.getInstance().insertReceiveMsg(billNotice.getSender(), TimeUtil.timestampToMsgid(), content);
         } else {
-            String pubkey = friendEntity.getPub_key();
+            String uid = friendEntity.getUid();
             CFriendChat normalChat = new CFriendChat(friendEntity);
             ChatMsgEntity msgExtEntity = normalChat.noticeMsg(1, content, hashId);
             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
             normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
 
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, uid, msgExtEntity);
         }
     }
 
@@ -205,10 +205,10 @@ public class TransactionReceiver implements TransactionListener {
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(friendInfo.getPubKey());
         if (friendEntity == null) {
             friendEntity = new ContactEntity();
-            friendEntity.setPub_key(friendInfo.getPubKey());
+            friendEntity.setUid(friendInfo.getUid());
+            friendEntity.setCa_pub(friendInfo.getCaPub());
             friendEntity.setAvatar(friendInfo.getAvatar());
             friendEntity.setUsername(friendInfo.getUsername());
-            friendEntity.setUid(friendInfo.getUid());
         }
 
         NormalChat normalChat = new CFriendChat(friendEntity);
@@ -216,7 +216,7 @@ public class TransactionReceiver implements TransactionListener {
         if (isMySendTo) {
             msgExtEntity.setSend_status(1);
         } else {
-            msgExtEntity.setMessage_from(friendEntity.getPub_key());
+            msgExtEntity.setMessage_from(friendEntity.getCa_pub());
             msgExtEntity.setMessage_to(mypublickey);
         }
 

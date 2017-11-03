@@ -4,7 +4,7 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.instant.model.CRobotChat;
 import connect.utils.NotificationBar;
 import instant.bean.ChatMsgEntity;
-import instant.bean.ConnectState;
+import connect.instant.bean.ConnectState;
 import instant.parser.inter.ConnectListener;
 
 /**
@@ -13,7 +13,7 @@ import instant.parser.inter.ConnectListener;
 
 public class ConnectReceiver implements ConnectListener {
 
-    private String Tag = "_ConnectReceiver";
+    private static String TAG = "_ConnectReceiver";
 
     public static ConnectReceiver receiver = getInstance();
 

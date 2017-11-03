@@ -114,9 +114,6 @@ bytes body=3;
 }
 
 //user ===============
-message UserAddress {
-string address=1;
-}
 message UserInfo {
     string username = 1;
     string avatar = 2;
@@ -155,10 +152,6 @@ string encryption_pri = 2;
 string password_hint = 3;
 }
 
-message SessionInfo {
-string address = 1;
-bool mute = 2;
-}
 message SettingUserInfo {
 string avatar = 1;
 string username = 2;
@@ -199,6 +192,7 @@ string type = 6;
 
 message SearchUser {
 string criteria = 1;
+int32  typ =2;
 }
 
 message FriendRecords {
@@ -229,12 +223,12 @@ bool recommend = 1;
 }
 
 message NOInterest {
-string address = 1;
+string uid = 1;
 }
 
 //setting ===============
 message Privacy {
-bool address=1;
+bool uid=1;
 bool phone_num=2;
 bool verify=3;
 bool sync_phone_book=4;
@@ -337,7 +331,7 @@ string avatar = 6;
 message GroupMember {
 string username=1;
 string avatar=2;
-string address=3;
+string uid=3;
 int32 role=4;
 string nick=5;
 string pub_key=6;
@@ -360,7 +354,7 @@ bool reviewed = 4;
 
 
 message GroupAttorn {
-string address = 1;
+string uid = 1;
 string identifier = 2;
 }
 
@@ -375,7 +369,7 @@ int32 source =4;
 message GroupReviewed {
 string identifier = 1;
 string verificationCode = 2;
-string address = 3;
+string uid = 3;
 string backup= 4;
 }
 
@@ -436,7 +430,7 @@ repeated AddGroupUserInfo users = 2;
 }
 
 message AddGroupUserInfo {
-string address=1;
+string uid=1;
 string backup=2;
 }
 
@@ -634,48 +628,37 @@ message SyncRelationship {
 string version = 1;
 }
 
-message FriendInfo {
-string username = 1;
-string avatar = 2;
-string pub_key = 3;
-string address = 4;
-bool common = 5;
-int32 source = 6;
-string remark = 7;
-}
-
 message SettingFriendInfo {
-string address = 1;
+string uid = 1;
 string remark = 2;
 bool common = 3;
 }
 
 message AddFriendRequest {
-string address = 1;
-GcmData tips = 2;
+string uid = 1;
+string tips = 2;
 int32 source = 3;
 }
 
 message AcceptFriendRequest {
-string address = 1;
+string uid = 1;
 int32 source=2;
 }
 
 message ReceiveAcceptFriendRequest {
-string address = 1;
+string uid = 1;
 string version = 2;
 }
 
 message RemoveRelationship {
-string address = 1;
+string uid = 1;
 }
 
 message ReceiveFriendRequest {
 UserInfo sender = 1;
-GcmData tips = 2;
+string  tips = 2;
 int32 source = 3;
 }
-
 
 message ChangeRecords {
 string version=1;
@@ -684,8 +667,7 @@ repeated ChangeRecord changeRecords = 2;
 
 message ChangeRecord {
 string category = 1;
-string address = 2;
-UserInfo userInfo = 3;
+UserInfo friend_info = 2;
 }
 
 message SyncUserRelationship {
@@ -736,11 +718,11 @@ bytes data = 4;
 }
 
 message ManageSession {
-string address = 1;
+string uid = 1;
 }
 
 message UpdateSession {
-string address = 1;
+string uid = 1;
 bool flag = 2;
 }
 
@@ -1221,7 +1203,7 @@ message MessageData {
 //文本消息
 message TextMessage{
 	string content=1;
-	repeated string at_addresses=2;
+	repeated string at_uids=2;
 	int64 snap_time = 3;
 }
 //emoj表情
@@ -1362,6 +1344,12 @@ message Mfa {
     string code=4;
 }
 
+message TcpRequest {
+    string uid = 1;
+    string sign = 2;
+    GcmData cipher_data = 3;
+}
+
 message ChangeMobileVerify {
     string mobile = 1;
     string token = 2;
@@ -1370,8 +1358,30 @@ message ChangeMobileVerify {
     string ex_token =5;
 }
 
-message TcpRequest {
-    string uid = 1;
-    string sign = 2;
-    GcmData cipher_data = 3;
+message PasswordCheck {
+    string mobile= 1;
+    string token = 2;
+    string password=3;
+    string ca_pub =4;
+}
+
+message FriendInfo {
+    string username = 1;
+    string avatar = 2;
+    string ca_pub = 3;
+    string uid = 4;
+    bool common = 5;
+    int32 source = 6;
+    string remark = 7;
+    string connect_id = 8;
+}
+
+message Preferences {
+bool phone_num=1;
+bool recommend = 2;
+}
+
+message FriendListChange {
+ChangeRecord change = 1;
+string version = 2;
 }

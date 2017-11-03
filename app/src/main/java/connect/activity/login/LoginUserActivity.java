@@ -82,9 +82,9 @@ public class LoginUserActivity extends BaseActivity implements LoginUserContract
         passwordEt.addTextChangedListener(textWatcher);
         nicknameEt.setText(userBean.getName());
         GlideUtil.loadAvatarRound(userheadImg, userBean.getAvatar());
-        if (!TextUtils.isEmpty(userBean.getPassHint())) {
+        /*if (!TextUtils.isEmpty(userBean.getPassHint())) {
             passwordhintTv.setText(getString(R.string.Login_Password_Hint, userBean.getPassHint()));
-        }
+        }*/
         passwordEt.setHint(R.string.Login_Password);
     }
 
@@ -96,7 +96,7 @@ public class LoginUserActivity extends BaseActivity implements LoginUserContract
     @OnClick(R.id.next_btn)
     void nextBtn(View view) {
         ProgressUtil.getInstance().showProgress(mActivity);
-        presenter.checkPassWord(userBean.getTalkKey(), passwordEt.getText().toString(),userBean);
+        //presenter.checkPassWord(userBean.getTalkKey(), passwordEt.getText().toString(),userBean);
     }
 
     private TextWatcher textWatcher = new TextWatcher() {

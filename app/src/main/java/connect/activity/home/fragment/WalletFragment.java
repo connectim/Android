@@ -27,8 +27,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.home.bean.WalletMenuBean;
+import connect.activity.set.GeneralActivity;
 import connect.activity.wallet.PacketActivity;
 import connect.activity.wallet.RequestActivity;
+import connect.activity.wallet.SafetySetActivity;
 import connect.activity.wallet.ScanTransferActivity;
 import connect.activity.wallet.TransactionActivity;
 import connect.activity.wallet.TransferActivity;
@@ -107,6 +109,7 @@ public class WalletFragment extends BaseFragment {
         menuList.add(new WalletMenuBean(R.mipmap.wallet_request2x, R.string.Wallet_Receipt));
         menuList.add(new WalletMenuBean(R.mipmap.wallet_transfer_icon2x, R.string.Wallet_Transfer));
         menuList.add(new WalletMenuBean(R.mipmap.wallet_packet_icon2x, R.string.Wallet_Packet));
+        menuList.add(new WalletMenuBean(R.mipmap.wallet_packet_icon2x, R.string.Set_Setting));
 
         WalletMenuAdapter walletMenuAdapter = new WalletMenuAdapter(menuList, mActivity);
         walletMenuRecycler.setLayoutManager(new GridLayoutManager(mActivity, 3));
@@ -172,6 +175,9 @@ public class WalletFragment extends BaseFragment {
                         break;
                     case 2:
                         PacketActivity.startActivity(mActivity);
+                        break;
+                    case 3:
+                        ActivityUtil.next(mActivity, SafetySetActivity.class);
                         break;
                 }
             }

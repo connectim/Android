@@ -35,12 +35,10 @@ public class LoginPassCheckUtil {
      * Enter the password dialog
      */
     private void showPassDialog(){
-        String passHint = SharedPreferenceUtil.getInstance().getUser().getPassHint();
-        passHint = TextUtils.isEmpty(passHint) ? "" : mContext.getString(R.string.Login_Password_Hint,passHint);
         DialogUtil.showEditView(mContext, mContext.getResources().getString(R.string.Set_Enter_Login_Password),
                 mContext.getResources().getString(R.string.Common_Cancel),
                 mContext.getResources().getString(R.string.Common_OK),
-                passHint, "", "", true, 32,new DialogUtil.OnItemClickListener() {
+                "", "", "", true, 32,new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         if(TextUtils.isEmpty(value)){
@@ -65,8 +63,8 @@ public class LoginPassCheckUtil {
         new AsyncTask<Void,Void,String>(){
             @Override
             protected String doInBackground(Void... params) {
-                String priKey = SupportKeyUril.decodeTalkKey(SharedPreferenceUtil.getInstance().getUser().getTalkKey(), pass);
-                return priKey;
+                //String priKey = SupportKeyUril.decodeTalkKey(SharedPreferenceUtil.getInstance().getUser().getTalkKey(), pass);
+                return "";
             }
 
             @Override

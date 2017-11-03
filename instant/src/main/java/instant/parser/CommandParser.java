@@ -2,7 +2,6 @@ package instant.parser;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 
 import java.io.ByteArrayInputStream;
@@ -19,7 +18,6 @@ import instant.bean.UserOrderBean;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.utils.SharedUtil;
-import instant.utils.StringUtil;
 import instant.utils.TimeUtil;
 import instant.utils.cryption.SupportKeyUril;
 import instant.utils.log.LogManager;
@@ -265,10 +263,13 @@ public class CommandParser extends InterParse {
         }
 
         if (isMySend) {//youself send add Friend request
-            if ((int) objs[1] == 1 || (int) objs[1] == 3) {
-                receiptUserSendAckMsg(msgid, false, objs[1]);
-            } else {
-                receiptUserSendAckMsg(msgid, true);
+            switch ((int) objs[1]) {
+                case 0:
+                    receiptUserSendAckMsg(msgid, true);
+                    break;
+                default:
+                    receiptUserSendAckMsg(msgid, false, objs[1]);
+                    break;
             }
         } else {
             Connect.ReceiveFriendRequest friendRequest = Connect.ReceiveFriendRequest.parseFrom(buffer);
@@ -286,17 +287,20 @@ public class CommandParser extends InterParse {
         switch ((int) objs[1]) {
             case 1:
                 receiptUserSendAckMsg(objs[0], false, objs[1]);
-                return;
+                break;
             case 4:
                 receiptUserSendAckMsg(objs[0], false, objs[1]);
-                return;
+                break;
+            default:
+                Connect.FriendListChange listChange = Connect.FriendListChange.parseFrom(buffer);
+
+                String version = listChange.getVersion();
+                SharedUtil.getInstance().putValue(SharedUtil.CONTACTS_VERSION, version);
+
+                CommandLocalReceiver.receiver.acceptFriendRequest(listChange);
+                receiptUserSendAckMsg(objs[0], true);
+                break;
         }
-
-        requestFriendsByVersion();
-        Connect.ReceiveAcceptFriendRequest friendRequest = Connect.ReceiveAcceptFriendRequest.parseFrom(buffer);
-        CommandLocalReceiver.receiver.acceptFriendRequest(friendRequest);
-
-        receiptUserSendAckMsg(objs[0], true);
     }
 
     /**
@@ -306,13 +310,20 @@ public class CommandParser extends InterParse {
      * @throws Exception
      */
     private void receiverAcceptDelFriend(ByteString buffer, Object... objs) throws Exception {
-        if ((int) objs[1] > 0) {//Delete failed When the two sides have been lifted friends relationship, there is also the local contact person
-            receiptUserSendAckMsg(objs[0], false, objs[1]);
-        } else {
-            receiptUserSendAckMsg(objs[0], true);
+        switch ((int) objs[1]) {
+            case 0:
+                Connect.FriendListChange listChange = Connect.FriendListChange.parseFrom(buffer);
 
-            Connect.SyncRelationship relationship = Connect.SyncRelationship.parseFrom(buffer);
-            CommandLocalReceiver.receiver.acceptDelFriend(relationship);
+                String version = listChange.getVersion();
+                SharedUtil.getInstance().putValue(SharedUtil.CONTACTS_VERSION, version);
+
+                CommandLocalReceiver.receiver.acceptDelFriend(listChange);
+
+                receiptUserSendAckMsg(objs[0], true);
+                break;
+            default://
+                receiptUserSendAckMsg(objs[0], false, objs[1]);
+                break;
         }
     }
 
@@ -403,10 +414,7 @@ public class CommandParser extends InterParse {
         UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
 
         if (userCookie == null) {
-            String gsonCookie = SharedUtil.getInstance().getStringValue(SharedUtil.COOKIE_CHATUSER);
-            if(!TextUtils.isEmpty(gsonCookie)){
-                userCookie = new Gson().fromJson(gsonCookie,UserCookie.class);
-            }
+            userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
         }
 
         if (userCookie != null) {

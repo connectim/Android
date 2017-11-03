@@ -7,15 +7,19 @@ import connect.activity.base.contract.BaseView;
 public interface SafetyLoginPassContract {
 
     interface View extends BaseView<SafetyLoginPassContract.Presenter> {
-        void setHint(String value);
-
         Activity getActivity();
 
-        void modifySuccess();
+        void modifySuccess(int type);
+
+        void changeBtnTiming(long time);
+
+        void changeBtnFinish();
     }
 
     interface Presenter extends BasePresenter {
-        void requestPass(String pass,String hint);
+        void requestPassword(String password, String code, int type);
+
+        void requestSendCode(String phone);
     }
 
 }

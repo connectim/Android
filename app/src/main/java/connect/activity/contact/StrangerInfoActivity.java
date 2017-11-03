@@ -2,6 +2,7 @@ package connect.activity.contact;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -61,11 +62,11 @@ public class StrangerInfoActivity extends BaseActivity {
     private StrangerInfoActivity mActivity;
     private Connect.UserInfo sendUserInfo;
     private SourceType sourceType;
-    private String address;
+    private String uid;
 
-    public static void startActivity(Activity activity, String address, SourceType sourceType) {
+    public static void startActivity(Activity activity, String uid, SourceType sourceType) {
         Bundle bundle = new Bundle();
-        bundle.putString("address", address);
+        bundle.putString("UID", uid);
         bundle.putSerializable("source", sourceType);
         ActivityUtil.next(activity, StrangerInfoActivity.class, bundle);
     }
@@ -83,10 +84,10 @@ public class StrangerInfoActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         Bundle bundle = getIntent().getExtras();
-        address = bundle.getString("address");
+        uid = bundle.getString("UID");
         sourceType = (SourceType) bundle.getSerializable("source");
-        addressTv.setText(address);
-        requestUserInfo(address);
+        addressTv.setText(uid);
+        requestUserInfo(uid);
     }
 
     @Override
@@ -174,6 +175,7 @@ public class StrangerInfoActivity extends BaseActivity {
 
     private void requestUserInfo(String address) {
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
+                .setTyp(1)
                 .setCriteria(address)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
@@ -196,7 +198,11 @@ public class StrangerInfoActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                String message = response.getMessage();
+                if (TextUtils.isEmpty(message)) {
+                    message = mActivity.getResources().getString(R.string.Network_equest_failed_please_try_again_later);
+                }
+                ToastEUtil.makeText(mActivity, message);
             }
         });
     }

@@ -23,7 +23,7 @@ import protos.Connect;
  */
 public class UnreachableReceiver implements UnreachableListener {
 
-    private String Tag = "_UnreachableReceiver";
+    private static String TAG = "_UnreachableReceiver";
 
     public static UnreachableReceiver receiver = getInstance();
 
@@ -71,7 +71,7 @@ public class UnreachableReceiver implements UnreachableListener {
     public void saltNotMatch(String msgid, String publicKey, Connect.ChatCookie cookie) throws Exception {
         Connect.ChatCookieData cookieData = cookie.getData();
 
-        LogManager.getLogger().d(Tag, "saltNotMatch :" + msgid);
+        LogManager.getLogger().d(TAG, "saltNotMatch :" + msgid);
         UserCookie userCookie = new UserCookie();
         userCookie.setPubKey(cookieData.getChatPubKey());
         userCookie.setSalt(cookieData.getSalt().toByteArray());
@@ -83,7 +83,7 @@ public class UnreachableReceiver implements UnreachableListener {
         if (friendEntity == null) {
             return;
         }
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, friendEntity.getPub_key());
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, friendEntity.getCa_pub());
 
         ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity != null) {
@@ -100,9 +100,9 @@ public class UnreachableReceiver implements UnreachableListener {
             return;
         }
 
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_HALF, friendEntity.getPub_key());
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_HALF, friendEntity.getCa_pub());
 
-        LogManager.getLogger().d(Tag, "halfRandom :" + msgid);
+        LogManager.getLogger().d(TAG, "halfRandom :" + msgid);
         ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity != null) {
             CFriendChat friendChat = new CFriendChat(friendEntity);

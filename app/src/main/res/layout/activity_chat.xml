@@ -4,15 +4,16 @@
                 android:layout_height="match_parent"
                 android:background="@color/color_bg_activity">
 
+    <connect.widget.TopToolBar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
         android:orientation="vertical">
-
-        <connect.widget.TopToolBar
-            android:id="@id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -23,7 +24,6 @@
                 android:id="@id/recycler_chat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
                 android:fadeScrollbars="true"
                 android:overScrollMode="never"
                 android:scrollbars="vertical"/>
@@ -32,8 +32,7 @@
         <connect.widget.bottominput.InputPanel
             android:id="@id/inputPanel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_00c400"/>
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

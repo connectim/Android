@@ -293,7 +293,7 @@
     </string>
     <string name="Login_Avatar_upload_failed">Avatar upload failed</string>
     <string name="Login_Camera_guide_tip">Tap to take photo and hold to record vedio</string>
-    <string name="Login_Code">CODE</string>
+    <string name="Login_Code">Code</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">Collecting Sounds as Random Seed...
     </string>
     <string name="Login_Decrypted_private_key">Private key</string>
@@ -308,6 +308,7 @@
     <string name="Login_Login">Login</string>
     <string name="Login_Next">Next</string>
     <string name="Login_Password">Password</string>
+    <string name="Login_Confirm_password">Confirm password</string>
     <string name="Login_Password_Hint">Password Hint: %s</string>
     <string name="Login_Password_Standard_Tip">Password (at least 8 characters)</string>
     <string name="Login_Password_incorrect">Password incorrect</string>
@@ -435,6 +436,10 @@
     <string name="Set_Payment_Password">Payment password</string>
     <string name="Set_Phone">Phone</string>
     <string name="Set_Phone_unbinded">Phone unbound</string>
+    <string name="Login_Secondary_authentication_password">Secondary authentication password</string>
+    <string name="Login_Secondary_authentication_password_describe">
+        Secondary authentication password for user when logging in, multiple protection account, improve the security of the account
+    </string>
     <string name="Set_Please_connect_at_least_4_points">Please connect at least 4 points</string>
     <string name="Set_Privacy">Privacy</string>
     <string name="Set_Profile_Photo">Profile Photo</string>

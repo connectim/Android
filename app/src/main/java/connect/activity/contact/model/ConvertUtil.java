@@ -36,15 +36,7 @@ public class ConvertUtil {
         requestEntity.setUsername(receiver.getSender().getUsername());
         requestEntity.setStatus(1);
         requestEntity.setRead(0);
-        byte[] tipsByte = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SharedPreferenceUtil.getInstance().getUser().getPriKey(),
-                receiver.getSender().getPubKey(),receiver.getTips());
-        String rusult = "";
-        try {
-            rusult = new String(tipsByte,"utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        requestEntity.setTips(rusult);
+        requestEntity.setTips(receiver.getTips());
         return requestEntity;
     }
 

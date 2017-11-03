@@ -26,7 +26,7 @@ public class SharedUtil {
     private static SharedUtil sharePreUtil;
     private static SharedPreferences sharePre;
 
-    private static String Tag = "_SharedUtil";
+    private static String TAG = "_SharedUtil";
 
     public static String CONTACTS_VERSION = "CONTACTS_VERSION";
     public static String WELCOME_VERSION = "WELCOME_VERSION";
@@ -109,7 +109,7 @@ public class SharedUtil {
                 }.getType());
 
                 int cookiesLength = userCookieList.size();
-                userCookie = userCookieList.get(cookiesLength);
+                userCookie = userCookieList.get(cookiesLength - 1);
             }
         }
         return userCookie;
@@ -171,7 +171,7 @@ public class SharedUtil {
                 }.getType());
 
                 int cookiesLength = userCookieList.size();
-                userCookie = userCookieList.get(cookiesLength);
+                userCookie = userCookieList.get(cookiesLength-1);
             }
         }
         return userCookie;

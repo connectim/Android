@@ -52,7 +52,7 @@ import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.MaterialBadgeTextView;
 import connect.widget.random.RandomVoiceActivity;
-import instant.bean.ConnectState;
+import connect.instant.bean.ConnectState;
 
 /**
  * Created by gtq on 2016/11/19.
@@ -186,8 +186,8 @@ public class HomeActivity extends BaseFragmentActivity {
         if (notice.object != null) {
             objs = (Object[]) notice.object;
         }
-        if(objs[0] instanceof MsgSendBean){
-            resolveUrlUtil.showMsgTip(notice,ResolveUrlUtil.TYPE_OPEN_WEB,false);
+        if (objs[0] instanceof MsgSendBean) {
+            resolveUrlUtil.showMsgTip(notice, ResolveUrlUtil.TYPE_OPEN_WEB, false);
         }
     }
 
