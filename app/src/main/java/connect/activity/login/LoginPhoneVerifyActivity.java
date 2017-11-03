@@ -180,7 +180,8 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements LoginPhone
     }
 
     @Override
-    public void launchPassVerify(Connect.UserInfo userInfo) {
-        // 密码二次验证
+    public void launchPassVerify(String mobile, String token) {
+        LoginPassVerifyActivity.startActivity(mActivity, mobile, token);
+        mActivity.finish();
     }
 }

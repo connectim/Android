@@ -6,7 +6,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.database.SharePreferenceUser;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.activity.wallet.bean.AddressBean;
 import connect.activity.wallet.contract.AddressBookContract;
@@ -29,7 +29,7 @@ public class AddressBookPresenter implements AddressBookContract.Presenter{
 
     @Override
     public void start() {
-        listAddress = SharePreferenceUser.getInstance().getAddressBook();
+        listAddress = ParamManager.getInstance().getTransferAddressBook();
         if(listAddress == null || listAddress.size() == 0){
             requestAddressBook();
         }else{

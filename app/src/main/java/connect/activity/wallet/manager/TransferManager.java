@@ -15,7 +15,7 @@ import java.util.List;
 import connect.activity.base.BaseApplication;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.WalletBean;
-import connect.database.SharePreferenceUser;
+import connect.activity.wallet.bean.WalletSetBean;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyAddressEntity;
@@ -530,7 +530,7 @@ public class TransferManager {
         if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_PRIKEY || currencyEntity.getCategory() == BaseCurrency.CATEGORY_CURRENCY){
             payload = currencyEntity.getPayload();
         }else if(currencyEntity.getCategory() == BaseCurrency.CATEGORY_BASESEED){
-            WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
+            WalletBean walletBean = ParamManager.getInstance().getWalletInfo();
             payload = walletBean.getPayload();
         }
 
@@ -605,9 +605,9 @@ public class TransferManager {
      */
     private Long getFee(){
         Long fee = 0L;
-        PaySetBean paySetBean = ParamManager.getInstance().getPaySet();
-        if(!paySetBean.isAutoFee()){
-            fee = paySetBean.getFee();
+        WalletSetBean walletSetBean = ParamManager.getInstance().getWalletSet();
+        if(!walletSetBean.isAutoFee()){
+            fee = walletSetBean.getFee();
         }
         return fee;
     }

@@ -1,5 +1,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="Chat">Чат</string>
     <string name="Chat_Add_as_a_friend_to_chat">Добавтьте в друзья, чтобы начать разговор</string>
     <string name="Chat_Agree">Согласие</string>
     <string name="Chat_Album_Permission_Get">Недостаточно прав для считывания фотоальбома системы,
@@ -140,16 +139,13 @@
     <string name="Chat_set_the_self_destruct_timer_to">После открытия текста %1$s и после
         уничтожения %2$s, информировать об удалении
     </string>
-    <string name="Common">Общий тип</string>
     <string name="Common_Cancel">Отменить</string>
     <string name="Common_Completed">Завершено</string>
     <string name="Common_Download_App">Загружается %s</string>
     <string name="Common_In">в %s</string>
     <string name="Common_Loading">Загружается...</string>
     <string name="Common_OK">Решено</string>
-    <string name="ErrorCode">Вид ошибки</string>
     <string name="ErrorCode_Request_Error">Ошибка запроса</string>
-    <string name="Link">Соединение контакта</string>
     <string name="Link_Friend">друзья</string>
     <string name="Link_From">От</string>
     <string name="Link_Open_in_Browser">Открыть в браузере</string>
@@ -205,10 +201,6 @@
     <string name="Link_Group_brief">Краткое описание группы</string>
     <string name="Link_Group_invitation_is_invalid">Срок пригласительного уже истек</string>
     <string name="Link_Group_is_QR_Code">QR-код группы</string>
-    <string name="Link_HASH_match_contact_firends_The_server_does_not_keep">Используя алгоритм
-        хеширования друзей путем сопоставления адресной книги/ n сервер не сохраняет ваши личные
-        данные
-    </string>
     <string name="Link_Hello_I_am">Привет, я %s</string>
     <string name="Link_Invite">Пригласить</string>
     <string name="Link_Invite_Count">Пригласить (%d)</string>
@@ -304,7 +296,6 @@
     </string>
     <string name="Link_update_Failed">Сбой при исправлении</string>
     <string name="Link_user_friends">%s друга</string>
-    <string name="Login">Логин модуля</string>
     <string name="Login_created_by_random_number_generator">Создается с помощью генератора случайных
         чисел
     </string>
@@ -315,8 +306,6 @@
     <string name="Login_Code">Код подтверждения</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">Собирание голосов как случайных чисел
     </string>
-    <string name="Login_Decrypted_private_key">Секретный ключ</string>
-    <string name="Login_Encrypted_private_key">Шифрование приватного ключа</string>
     <string name="Login_Generated_Failure">Сбой при создании, пожалуйста убедитесь, что вы настроили
         звук микрофона
     </string>
@@ -325,14 +314,10 @@
     <string name="Login_Generating_Private_and_Public_Key">Создание публичного и частного
         ключей...
     </string>
-    <string name="Login_Login">Вход в систему</string>
     <string name="Login_Next">Следующий шаг</string>
     <string name="Login_Password">Пароль</string>
     <string name="Login_Confirm_password">Подтверждение пароля</string>
-    <string name="Login_Password_Hint">Подсказка для пароля :%s</string>
-    <string name="Login_Password_Standard_Tip">Установите пароль (минимум 8 символов)</string>
     <string name="Login_Password_incorrect">Неправильный пароль</string>
-    <string name="Login_Phone_binded">Номер уже привязан</string>
     <string name="Login_Resend">Отправить заново</string>
     <string name="Login_Resend_Time">Отправить заново (%d)</string>
     <string name="Login_SMS_code_has_been_send">SMS-код был отправлен</string>
@@ -348,14 +333,6 @@
     <string name="Login_Verification_code_error">Ошибка кода подтверждения</string>
     <string name="Login_Welcome">Добро пожаловать</string>
     <string name="Login_creat_account">Создать учетную запись</string>
-    <string name="Login_export_encrypted_prikey_explain">Это ваш личный зашифрованный ключ/n Вы
-        можете экспортировать в фотогалерею или по электронной почте./ Для входа в систему вы можете
-        сканировать QR-код учетной записи
-    </string>
-    <string name="Login_export_prikey_explain">Это ваш личный ключ/n Вы можете экспортировать в
-        фотогалерею или по электронной почте./ Для входа в систему вы можете сканировать QR-код
-        учетной записи
-    </string>
     <string name="Login_guide_bitcoinWallet">Биткоин кошелек</string>
     <string name="Login_guide_bitcoinWalletDescribe">Денежный перевод биткоин/n так же просто, как
         отправка сообщения
@@ -376,13 +353,11 @@
     <string name="Message_send_fail_not_in_group">Сбой отправки информации, Вы не входите в данную
         группу
     </string>
-    <string name="Network">Вид сети</string>
     <string name="Network_No_data">Нет данных</string>
     <string name="Network_Timeout">Время ожидания истекло</string>
     <string name="Network_equest_failed_please_try_again_later">При сбое, просьба повторить попытку
         через минуту
     </string>
-    <string name="Set">Вид установки</string>
     <string name="Set_CONNECT_ID_regular">Идентификатор CONNECT должен состоять из 6-20 букв, цифр и
         символов подчеркивания, начинающихся с буквы
     </string>
@@ -394,18 +369,14 @@
     <string name="Set_Add_mobile">Привязать номер телефона</string>
     <string name="Set_Auto">Автоматичекая оплата</string>
     <string name="Set_BTC_symbol">฿</string>
-    <string name="Set_Backup_Private_Key">Резервное копирование приватного ключа</string>
-    <string name="Set_Backup_encrypted_private_key">Резервное копирование зашифрованого приватного
-        ключа
-    </string>
     <string name="Set_CONNECT_ID_can_only_be_set_once">CONNECT ID можно установить только один раз
     </string>
     <string name="Set_CONNECT_ID_set_success_no_set">После успешного завершения установки CONNECT ID
         , не возможно изменить
     </string>
-    <string name="Set_Change_Mobile">Изменить номер телефона</string>
     <string name="Set_Change_Pattern">Изменить рисунок</string>
-    <string name="Set_Change_password">Изменить пароль</string>
+    <string name="Set_Open_password">Открытие пароль проверки</string>
+    <string name="Set_Close_password">Закрытие пароль проверки</string>
     <string name="Set_Check_Update">Проверка обновлений</string>
     <string name="Set_Copied">Скопировано</string>
     <string name="Set_Currency">Монеты</string>
@@ -423,14 +394,11 @@
     <string name="Set_Enter_correct_please_enter_a_new_gesture">Просьба ввести новый правильный
         пароль-рисунок
     </string>
-    <string name="Set_Enter_new_password">Введите новый пароль</string>
-    <string name="Set_Export_Private_Key">Экспорт закрытого ключа</string>
     <string name="Set_FeedBack">Отзывы</string>
     <string name="Set_Found_new_version">Новая версия программы</string>
     <string name="Set_General">Общепринятый</string>
     <string name="Set_Help_and_feedback">Справка и отзывы</string>
     <string name="Set_ID">ID</string>
-    <string name="Set_Id_address">ID &amp; адрес биткоина</string>
     <string name="Set_Installed">Установлено</string>
     <string name="Set_Language">Язык</string>
     <string name="Set_Link_Mobile">Привязать телефон</string>
@@ -438,23 +406,21 @@
         попытку позже
     </string>
     <string name="Set_Log_Out">Выйти из учетной записи</string>
+    <string name="Set_Delete_account">Удалить счета</string>
     <string name="Set_Logging_out">Выход...</string>
     <string name="Set_Logout_delete_login_data_still_log">При выходе будут удалены данные
         регистрации и пароль-рисунок, Вы по-прежнему хотите выйти с этой учетной записи?
     </string>
+    <string name="Set_delete_account_hinit">Удалить счета назад убедитесь, что сумочка уже резервного копирования, уверен, удаление текущего счета?</string>
     <string name="Set_Miner_fee">Комиссионный сбор</string>
     <string name="Set_My_Profile">Мой профайл</string>
     <string name="Set_My_QR_code">Мой QR-код</string>
     <string name="Set_Name">Никнейм</string>
-    <string name="Set_Not_connected_to_mobile_network">Ваш номер телефона еще не привязан к учетной
-        записи
-    </string>
     <string name="Set_Not_synchronized">Несинхронизировано</string>
     <string name="Set_Now_update_app">Немедленно обновить</string>
     <string name="Set_Off">Закрыто</string>
     <string name="Set_On">Активирован</string>
     <string name="Set_Open_Source">Открыть исходный код</string>
-    <string name="Set_Password_Hint">Подсказка пароля:</string>
     <string name="Set_Password_incorrect_you_have_chance">Ошибка пароля, у вас еще есть %d попыток
     </string>
     <string name="Set_Patten_can_prevent_access_data_required_when_entering">Пароль-рисунок может
@@ -466,6 +432,7 @@
     <string name="Set_Payment">Оплатить</string>
     <string name="Set_Payment_Password">Платежный пароль</string>
     <string name="Set_Phone">Телефон</string>
+    <string name="Set_Area_code">Районный кодекс</string>
     <string name="Login_Secondary_authentication_password">Второй пароль сертификации</string>
     <string name="Login_Secondary_authentication_password_describe">
         Второй пароль для входа в систему сертификации для пользователей, многократно защиты счета, повысить безопасность счета
@@ -489,16 +456,11 @@
     <string name="Set_This_is_the_newest_version">Самая последняя новая версия</string>
     <string name="Set_Two_Patterns_do_not_match">При введении 2 раза, пароль-рисунок не совпал
     </string>
-    <string name="Set_Updated_time">Время обновления :%s</string>
     <string name="Set_Use_Login_Password">Пароль для входа в систему</string>
     <string name="Set_Verify_Phone">Проверка телеофна</string>
     <string name="Set_Versions_number">Версия программы : %s</string>
     <string name="Set_Vibrate">Вибрация</string>
     <string name="Set_Your_Phone">Ваш телефон</string>
-    <string name="Set_Your_cell_phone_number">Ваш номер телефона</string>
-    <string name="Set_Your_private_key_will_be_encrypted_with_new_password">Ваш закрытый ключ будет
-        зашифрован новым паролем
-    </string>
     <string name="Set_miner_fee_explain">Интернетный комиссионный сбор используется для оплаты
         запуска работы, т.е. чем выше комиссионый сбор, тем быстрее операционная сделка будет
         подтверждена блокччейном
@@ -508,11 +470,6 @@
     <string name="Set_verification_code_has_been_send_to_phone">Проверочный код был отправлен на ваш
         телефон
     </string>
-    <string name="Set_you_can_login_mobile_number_link_one_account">После внесения изменения, Вы
-        можете войти через новый зарегистрированый телефонный номер/ n один новый телефонный номер
-        может быть привязан к учетной записи один раз
-    </string>
-    <string name="Wallet">Модель кошелька</string>
     <string name="Wallet_Auto_fees_greater_than_the_maximum_continue">Плата (% SBTC) автоматически
         вычисляет больше, чем максимальное значение, следует ли продолжать?
     </string>
@@ -538,7 +495,6 @@
     <string name="Wallet_synchronization_data_failed">Синхронные данные не удалось</string>
     <string name="Wallet_Add_note">Оставить сообщение</string>
     <string name="Wallet_Address_Book">Часто употребляемая адресная книга</string>
-    <string name="Wallet_Amount">Денежная сумма</string>
     <string name="Wallet_Amount_BTC">Денежная сумма (BTC)</string>
     <string name="Wallet_Amount_is_too_small">Упаковать сделки возникает ошибка, наработать сумма
         слишком мал

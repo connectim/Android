@@ -10,6 +10,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.home.bean.ConversationAction;
+import connect.activity.set.bean.SystemSetBean;
 import connect.activity.wallet.manager.WalletManager;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -54,10 +55,10 @@ public class GeneralActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_General);
 
-        int soundValue = ParamManager.getInstance().getInt(ParamManager.SET_VOICE, 1);
-        soundTb.setSelected(soundValue != 0);
-        int vibrateValue = ParamManager.getInstance().getInt(ParamManager.SET_VIBRATION, 1);
-        vibrateTb.setSelected(vibrateValue != 0);
+
+        SystemSetBean systemSetBean = ParamManager.getInstance().getSystemSet();
+        soundTb.setSelected(systemSetBean.isRing());
+        vibrateTb.setSelected(systemSetBean.isVibrate());
 
         if (WalletManager.getInstance().isCreateWallet()) {
             currencyLl.setVisibility(View.VISIBLE);
@@ -68,14 +69,14 @@ public class GeneralActivity extends BaseActivity {
     public void soundCheckListener(View view) {
         boolean isSele = soundTb.isSelected();
         soundTb.setSelected(!isSele);
-        ParamManager.getInstance().putValue(ParamManager.SET_VOICE, !isSele ? "1" : "0");
+        SystemSetBean.putRing(!isSele);
     }
 
     @OnClick({R.id.vibrate_tb})
     public void vibrationCheckListener(View view) {
         boolean isSele = vibrateTb.isSelected();
         vibrateTb.setSelected(!isSele);
-        ParamManager.getInstance().putValue(ParamManager.SET_VIBRATION, !isSele ? "1" : "0");
+        SystemSetBean.putVibrate(!isSele);
     }
 
     @OnClick(R.id.left_img)

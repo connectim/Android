@@ -1,26 +1,35 @@
 package connect.activity.set;
 
+import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.protobuf.ByteString;
+
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.home.bean.HomeAction;
+import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.LoginPassCheckUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.ToastEUtil;
+import connect.utils.UriUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import instant.bean.UserOrderBean;
-import instant.utils.manager.FailMsgsManager;
+import protos.Connect;
 
 /**
  * Account and security.
@@ -37,8 +46,8 @@ public class SafetyActivity extends BaseActivity {
     LinearLayout passwordLl;
     @Bind(R.id.password_tv)
     TextView passwordTv;
-    @Bind(R.id.log_out_tv)
-    TextView logOutTv;
+    @Bind(R.id.delete_tv)
+    TextView deleteTv;
 
     private SafetyActivity mActivity;
     private UserBean userBean;
@@ -67,14 +76,15 @@ public class SafetyActivity extends BaseActivity {
         if (userBean != null && TextUtils.isEmpty(userBean.getPhone())) {
             phoneTv.setText(R.string.Set_Phone_unbinded);
         } else {
-            try {
+            phoneTv.setText(userBean.getPhone());
+            /*try {
                 String phoneNum = userBean.getPhone();
                 String[] splitArr = phoneNum.split("-");
                 String phone = splitArr == null || splitArr.length <= 1 ? phoneNum : splitArr[1];
                 phoneTv.setText(phone);
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
         if (userBean.isOpenPassword()) {
@@ -99,25 +109,49 @@ public class SafetyActivity extends BaseActivity {
         ActivityUtil.next(mActivity, SafetyLoginPassActivity.class);
     }
 
-    @OnClick(R.id.log_out_tv)
+    @OnClick(R.id.delete_tv)
     void logOut(View view) {
         DialogUtil.showAlertTextView(mActivity,
                 mActivity.getResources().getString(R.string.Set_tip_title),
-                mActivity.getResources().getString(R.string.Set_Logout_delete_login_data_still_log),
+                mActivity.getResources().getString(R.string.Set_delete_account_hinit),
                 "", "", false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
-                        ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
-                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
-
-                        FailMsgsManager.getInstance().removeAllFailMsg();
-                        UserOrderBean userOrderBean = new UserOrderBean();
-                        userOrderBean.connectLogout();
+                        ProgressUtil.getInstance().showProgress(mActivity);
+                        deleteAccount();
                     }
 
                     @Override
                     public void cancel() {}
                 });
+    }
+
+    /**
+     * delete account
+     */
+    private void deleteAccount(){
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.V2_SETTING_DELETE_USER, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                // 删除成功
+                NotificationManager mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE) ;
+                mNotificationManager.cancel(1001);
+                BaseApplication.getInstance().exitRegisterAccount();
+
+                List<Activity> list = BaseApplication.getInstance().getActivityList();
+                for (Activity activity : list) {
+                    if (!activity.getClass().getName().equals(mActivity.getClass().getName())) {
+                        activity.finish();
+                    }
+                }
+                mActivity.finish();
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+            }
+        });
     }
 
 }

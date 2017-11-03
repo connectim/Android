@@ -75,6 +75,7 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                             reSignInCa(smsValidateResp, countryCode + "-" + phone);
                             break;
                         case 3:
+                            mView.launchPassVerify(countryCode + "-" + phone, smsValidateResp.getToken());
                             break;
                         default:
                             break;
@@ -88,7 +89,6 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
             public void onError(Connect.HttpNotSignResponse response) {
                 ProgressUtil.getInstance().dismissProgress();
                 if(response.getCode() == 2416) {
-                    // 验证码错误
                     ToastEUtil.makeText(mView.getActivity(), R.string.Login_Verification_code_error,ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
             }
@@ -124,6 +124,7 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                     userBean.setPubKey(pubKey);
                     userBean.setCaPublicKey(userInfo.getCaPub());
                     userBean.setUid(userInfo.getUid());
+
                     SharedPreferenceUtil.getInstance().putUser(userBean);
                     mView.launchHome(userBean);
                 } catch (Exception e) {

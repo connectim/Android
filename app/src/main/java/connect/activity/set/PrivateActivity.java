@@ -1,35 +1,20 @@
 package connect.activity.set;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.contact.bean.PhoneContactBean;
 import connect.activity.set.bean.PrivateSetBean;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.StringUtil;
-import connect.utils.TimeUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.utils.permission.PermissionUtil;
-import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -46,10 +31,6 @@ public class PrivateActivity extends BaseActivity {
     View findRecommendTb;
     @Bind(R.id.black_list_ll)
     LinearLayout blackListLl;
-    @Bind(R.id.contacts_time_tv)
-    TextView contactsTimeTv;
-    @Bind(R.id.contacts_update_img)
-    ImageView contactsUpdateImg;
 
     private PrivateActivity mActivity;
     private PrivateSetBean privateSetBean;
@@ -72,21 +53,18 @@ public class PrivateActivity extends BaseActivity {
         privateSetBean = ParamManager.getInstance().getPrivateSet();
         if (privateSetBean != null) {
             findPhoneTb.setSelected(privateSetBean.getPhoneFind());
-            if (!TextUtils.isEmpty(privateSetBean.getUpdateTime())) {
-                contactsTimeTv.setText(mActivity.getString(R.string.Set_Updated_time,privateSetBean.getUpdateTime()));
-            }
             findRecommendTb.setSelected(privateSetBean.getRecommend());
         }
+
+        /*RotateAnimation animation = new RotateAnimation(0f,360f * 3, Animation.RELATIVE_TO_SELF,
+                0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+        animation.setDuration(1000);
+        animation.setFillAfter(false);*/
     }
 
     @OnClick(R.id.left_img)
     void goBack(View view) {
         ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.contacts_update_img)
-    void updateContact(View view) {
-        PermissionUtil.getInstance().requestPermission(mActivity,new String[]{PermissionUtil.PERMISSION_CONTACTS},permissionCallBack);
     }
 
     @OnClick(R.id.black_list_ll)
@@ -110,74 +88,6 @@ public class PrivateActivity extends BaseActivity {
         requestPrivate();
     }
 
-    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
-        @Override
-        public void granted(String[] permissions) {
-            requestContact();
-        }
-
-        @Override
-        public void deny(String[] permissions) {}
-    };
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity,requestCode,permissions,grantResults,permissionCallBack);
-    }
-
-    /**
-     * Synchronize the local contacts
-     */
-    private void requestContact() {
-        new AsyncTask<Void, Void, Connect.PhoneBook>() {
-            @Override
-            protected Connect.PhoneBook doInBackground(Void... params) {
-                return getPhoneHmacBook();
-            }
-
-            @Override
-            protected void onPostExecute(Connect.PhoneBook phoneBook) {
-                super.onPostExecute(phoneBook);
-                if (phoneBook == null) {
-                    ToastEUtil.makeText(mActivity,R.string.Link_contact_loading_failed_check_the_contact_pression,
-                            ToastEUtil.TOAST_STATUS_FAILE).show();
-                    return;
-                }
-                // Display synchronous animation
-                RotateAnimation animation = new RotateAnimation(0f,360f * 3, Animation.RELATIVE_TO_SELF,
-                        0.5f,Animation.RELATIVE_TO_SELF,0.5f);
-                animation.setDuration(1000);
-                animation.setFillAfter(false);
-                contactsUpdateImg.startAnimation(animation);
-
-                syncPhone(phoneBook);
-            }
-        }.execute();
-    }
-
-    /**
-     * Synchronize the encrypted phone number
-     *
-     * @param phoneBook phone data
-     */
-    private void syncPhone(Connect.PhoneBook phoneBook){
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PHONE_SYNC, phoneBook, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                privateSetBean.setUpdateTime(TimeUtil.getCurrentTimeInString(TimeUtil.DEFAULT_DATE_FORMAT));
-                ParamManager.getInstance().putPrivateSet(privateSetBean);
-                contactsTimeTv.setText(mActivity.getString(R.string.Set_Updated_time,privateSetBean.getUpdateTime()));
-                ToastEUtil.makeText(mActivity,R.string.Login_Update_successful,ToastEUtil.TOAST_STATUS_SUCCESS).show();
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity,R.string.Login_Updated_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
-            }
-        });
-    }
-
     /**
      * Update the new privacy Settings
      */
@@ -195,31 +105,6 @@ public class PrivateActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpResponse response) {}
         });
-    }
-
-    /**
-     * Access to local contacts, and to do Hmac phone number
-     *
-     * @return Phone number after I finish Hmac the PhoneBook
-     */
-    private Connect.PhoneBook getPhoneHmacBook(){
-        // For local contacts
-        List<PhoneContactBean> list = SystemDataUtil.getLocalAddressBook(mActivity);
-        if (null == list || list.size() == 0) {
-            return null;
-        }
-        // Do the Hmac to telephone number
-        Connect.PhoneBook.Builder builder = Connect.PhoneBook.newBuilder();
-        for (int i = 0; i < list.size(); i++) {
-            String phone = StringUtil.filterNumber(list.get(i).getPhone());
-            String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.SaltHMAC);
-            Connect.PhoneInfo phoneInfo = Connect.PhoneInfo.newBuilder()
-                    .setMobile(phoneHmac)
-                    .build();
-            builder.addMobiles(phoneInfo);
-        }
-        Connect.PhoneBook phoneBook = builder.build();
-        return phoneBook;
     }
 
 }

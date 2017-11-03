@@ -68,15 +68,16 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
         mActivity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
-        toolbarTop.setTitle(null, R.string.Set_Change_password);
 
         new SafetyLoginPassPresenter(this).start();
         userBean = SharedPreferenceUtil.getInstance().getUser();
 
         if (userBean.isOpenPassword()) {
             passwordEditLl.setVisibility(View.GONE);
+            toolbarTop.setTitle(null, R.string.Set_Close_password);
         } else {
             passwordEditLl.setVisibility(View.VISIBLE);
+            toolbarTop.setTitle(null, R.string.Set_Open_password);
         }
 
         passwordEdit.addTextChangedListener(textWatcher);

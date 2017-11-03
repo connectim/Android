@@ -13,6 +13,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.set.adapter.CurrencyAdapter;
 import connect.activity.wallet.bean.RateBean;
+import connect.activity.wallet.bean.WalletSetBean;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -58,7 +59,8 @@ public class GeneralCurrencyActivity extends BaseActivity {
     private void bindingAdapter(){
         List<RateBean> list = RateDataUtil.getInstance().getRateData();
         adapter = new CurrencyAdapter(mActivity);
-        RateBean rateBean = ParamManager.getInstance().getCountryRate();
+        String code = ParamManager.getInstance().getWalletSet().getCurrency();
+        RateBean rateBean = RateDataUtil.getInstance().getRate(code);
         adapter.setSeleCurrency(rateBean == null ? "" : rateBean.getCode());
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
@@ -68,7 +70,7 @@ public class GeneralCurrencyActivity extends BaseActivity {
         adapter.setItemClickListener(new CurrencyAdapter.OnItemClickListener() {
             @Override
             public void itemClick(RateBean rateBean) {
-                ParamManager.getInstance().putCountryRate(rateBean);
+                WalletSetBean.putCurrency(rateBean.getCode());
                 adapter.setSeleCurrency(rateBean.getCode());
                 adapter.notifyDataSetChanged();
             }

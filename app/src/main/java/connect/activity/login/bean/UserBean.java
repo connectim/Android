@@ -16,6 +16,17 @@ public class UserBean implements Serializable{
 
     public UserBean() {}
 
+    public UserBean(String name, String avatar, String priKey, String pubKey, String caPublicKey, String phone, String connectId, String uid) {
+        this.name = name;
+        this.avatar = avatar;
+        this.priKey = priKey;
+        this.pubKey = pubKey;
+        this.caPublicKey = caPublicKey;
+        this.phone = phone;
+        this.connectId = connectId;
+        this.uid = uid;
+    }
+
     public String getName() {
         return name;
     }

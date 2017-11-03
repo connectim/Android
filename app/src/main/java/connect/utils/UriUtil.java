@@ -30,6 +30,8 @@ public class UriUtil {
     public static String CONNECT_V2_SIGN_IN_CA = "/connect/v2/sign_in/ca";
     /** The private key is registered */
     public static String CONNECT_V2_SIGN_UP = "/connect/v2/sign_up";
+    /** The private key is registered */
+    public static String CONNECT_V2_SIGN_UP_PASSWORD = "/connect/v2/sign_in/password";
 
     /**======================================================================================
      *                                Login successfully initialized
@@ -67,20 +69,22 @@ public class UriUtil {
     public static String SETTING_SETTING_RECOMMEND = "/connect/v1/setting/recommend";
     /** private setting */
     public static String SETTING_PRIVACY = "/connect/v1/setting/privacy";
-    /** sync pay setting */
+    /** 钱包设置信息 */
     public static String SETTING_PAY_SUNC = "/connect/v1/setting/pay/setting/sync";
     /** pay setting */
     public static String SETTING_PAY_SETTING = "/connect/v1/setting/pay/setting";
-    /** Pay the password version */
+    /** 钱包版本号 */
     public static String SETTING_PAY_VERSION = "/connect/v1/setting/pay/pin/version";
     /** pay password setting */
     public static String SETTING_PAY_PIN_SETTING = "/connect/v1/setting/pay/pin/setting";
-    /** pay password setting */
+    /** Send a message authentication code */
     public static String V2_SMS_SEND = "/connect/v2/sms/send";
-    /** pay password setting */
+    /** Modify the second authentication password */
     public static String V2_SRTTING_PASSWORD_UPDATE = "/connect/v2/setting/password/update";
-    /** pay password setting */
+    /** Verify phone verification code */
     public static String V2_SETTING_MOBILE_VERIFY = "/connect/v2/setting/mobile/verify";
+    /** delete account */
+    public static String V2_SETTING_DELETE_USER = "/connect/v2/setting/delete_user";
 
 
     /**======================================================================================

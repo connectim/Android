@@ -16,9 +16,9 @@ import java.util.List;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.wallet.bean.WalletBean;
-import connect.database.SharePreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.CurrencyHelper;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
@@ -103,7 +103,7 @@ public class WalletManager {
                         WalletBean walletBean = new WalletBean(wallet.getPayload(), wallet.getVer(),
                                 wallet.getVersion(), wallet.getCheckSum());
                         // Save the currency information
-                        SharePreferenceUser.getInstance().putWalletInfo(walletBean);
+                        ParamManager.getInstance().putWalletInfo(walletBean);
                         List<WalletOuterClass.Coin> list = respSyncWallet.getCoinsList();
                         CurrencyHelper.getInstance().insertCurrencyListCoin(list);
                         listener.success(0);
@@ -235,7 +235,7 @@ public class WalletManager {
                 walletBean.setPayload(encoPinBean.getPayload());
                 walletBean.setCheckSum(checkSum);
                 walletBean.setVersion(1);
-                SharePreferenceUser.getInstance().putWalletInfo(walletBean);
+                ParamManager.getInstance().putWalletInfo(walletBean);
                 listener.success(walletBean);
             }
 
@@ -398,7 +398,7 @@ public class WalletManager {
      * @param listener
      */
     public void updateWallet(String payload, int ver, final WalletListener listener) {
-        final WalletBean walletBean =  SharePreferenceUser.getInstance().getWalletInfo();
+        final WalletBean walletBean =  ParamManager.getInstance().getWalletInfo();
         walletBean.setPayload(payload);
         walletBean.setVer(ver);
 
@@ -412,7 +412,7 @@ public class WalletManager {
             public void onResponse(Connect.HttpResponse response) {
                 walletBean.setCheckSum(checkSum);
                 walletBean.setVersion(walletBean.getVersion() + 1);
-                SharePreferenceUser.getInstance().putWalletInfo(walletBean);
+                ParamManager.getInstance().putWalletInfo(walletBean);
                 listener.success(walletBean);
             }
 

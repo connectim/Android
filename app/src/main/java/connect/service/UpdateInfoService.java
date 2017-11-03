@@ -26,7 +26,9 @@ import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.bean.PrivateSetBean;
+import connect.activity.set.bean.SystemSetBean;
 import connect.activity.wallet.bean.RateBean;
+import connect.activity.wallet.bean.WalletSetBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -98,21 +100,15 @@ public class UpdateInfoService extends Service {
     }
 
     public void updatePreferencesInfo() {
-        //get payment set
-        if (ParamManager.getInstance().getPaySet() == null) {
-            ParamManager.getInstance().putPaySet(PaySetBean.initPaySet());
-            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PaySet, "");
-        }
         //get private set
         if (ParamManager.getInstance().getPrivateSet() == null) {
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PrivateSet, "");
         }
-        if (ParamHelper.getInstance().loadParamEntity(ParamManager.COUNTRY_RATE) == null) {
-            String countryCode = SystemDataUtil.getCountryCode();
-            if(!TextUtils.isEmpty(countryCode)){
-                RateBean rateBean = RateDataUtil.getInstance().getRate(countryCode);
-                ParamManager.getInstance().putCountryRate(rateBean);
-            }
+        if(ParamManager.getInstance().getWalletSet() == null){
+            WalletSetBean.initWalletSet();
+        }
+        if(ParamManager.getInstance().getSystemSet() == null){
+            SystemSetBean.initSystemSet();
         }
         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.BlackList, "");
     }
@@ -129,9 +125,6 @@ public class UpdateInfoService extends Service {
                 break;
             case SALT_VERIFY://salt verify
                 verifySalt();
-                break;
-            case PaySet://pay set
-                requestSetPayInfo();
                 break;
             case PrivateSet://private set
                 requestPrivateInfo();
@@ -209,7 +202,6 @@ public class UpdateInfoService extends Service {
 
     public void connectSalt() {
         final byte[] bytes = SecureRandom.getSeed(64);
-
         Connect.GenerateToken generateToken = Connect.GenerateToken.newBuilder().setSalt(ByteString.copyFrom(bytes)).build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_USER_SALT, generateToken, EncryptionUtil.ExtendedECDH.EMPTY,
                 new ResultCall<Connect.HttpResponse>() {
@@ -238,61 +230,6 @@ public class UpdateInfoService extends Service {
         });
     }
 
-    public void requestSetPayInfo() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SUNC, ByteString.copyFrom(SupportKeyUril.createBinaryRandom()),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            PaySetBean paySetBean = null;
-                            if (structData == null || structData.getPlainData() == null) {
-                                paySetBean = PaySetBean.initPaySet();
-                            } else {
-                                Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.parseFrom(structData.getPlainData());
-                                paySetBean = new PaySetBean(paymentSetting);
-                                paySetBean.setAutoFee(false);
-                            }
-                            ParamManager.getInstance().putPaySet(paySetBean);
-                            getPayVersion(paySetBean);
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {}
-                });
-    }
-
-    private void getPayVersion(final PaySetBean paySetBean){
-        Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.newBuilder()
-                .setVersion("0")
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_VERSION, payPinVersion, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.PayPinVersion payPinVersion = Connect.PayPinVersion.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(payPinVersion)){
-                        paySetBean.setVersionPay(payPinVersion.getVersion());
-                        ParamManager.getInstance().putPaySet(paySetBean);
-                    }
-                } catch (InvalidProtocolBufferException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
-        });
-    }
-
     public void requestPrivateInfo() {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PRIVACY_INFO, ByteString.copyFrom(new byte[]{}),
                 new ResultCall<Connect.HttpResponse>() {
@@ -301,16 +238,13 @@ public class UpdateInfoService extends Service {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            PrivateSetBean privateSetBean = null;
-                            if (structData == null) {
-                                privateSetBean = PrivateSetBean.initSetBean();
-                            } else {
-                                Connect.Privacy privacy = Connect.Privacy.parseFrom(structData.getPlainData());
-                                privateSetBean = new PrivateSetBean();
-                                privateSetBean.setPhoneFind(privacy.getPhoneNum());
-                                privateSetBean.setRecommend(privacy.getRecommend());
+                            if (structData != null) {
+                                Connect.Preferences preferences = Connect.Preferences.parseFrom(structData.getPlainData());
+                                PrivateSetBean privateSetBean = new PrivateSetBean();
+                                privateSetBean.setPhoneFind(preferences.getPhoneNum());
+                                privateSetBean.setRecommend(preferences.getRecommend());
+                                ParamManager.getInstance().putPrivateSet(privateSetBean);
                             }
-                            ParamManager.getInstance().putPrivateSet(privateSetBean);
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
                         }

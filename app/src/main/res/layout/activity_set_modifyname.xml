@@ -49,5 +49,13 @@
         android:text="@string/Set_CONNECT_ID_set_success_no_set"
         android:visibility="gone"/>
 
+    <TextView
+        android:id="@+id/id_hint_tv"
+        style="@style/BaseTextStyle"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_5"
+        android:textColor="@color/color_858998"
+        android:text="@string/Set_CONNECT_ID_regular"
+        android:visibility="gone"/>
 
 </LinearLayout>

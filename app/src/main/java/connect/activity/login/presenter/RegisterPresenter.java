@@ -118,6 +118,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                     userBean.setCaPublicKey(userInfo.getCaPub());
                     userBean.setUid(userInfo.getUid());
                     SharedPreferenceUtil.getInstance().putUser(userBean);
+
                     mView.launchHome();
                 } catch (Exception e) {
                     e.printStackTrace();

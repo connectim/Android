@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.set.bean.PaySetBean;
+import connect.activity.wallet.bean.WalletSetBean;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -57,7 +58,7 @@ public class SafetyPayFeeActivity extends BaseActivity {
     RelativeLayout minerRela;
 
     private SafetyPayFeeActivity mActivity;
-    private PaySetBean paySetBean;
+    private WalletSetBean walletSetBean;
 
     public static void startActivity(Activity activity) {
         Bundle bundle = new Bundle();
@@ -79,8 +80,8 @@ public class SafetyPayFeeActivity extends BaseActivity {
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_Miner_fee);
-        paySetBean = ParamManager.getInstance().getPaySet();
-        autoSwitch.setSelected(paySetBean.isAutoFee());
+        walletSetBean = ParamManager.getInstance().getWalletSet();
+        autoSwitch.setSelected(walletSetBean.isAutoFee());
 
         InputFilter[] inputFilters = {new EditInputFilterPrice(Double.valueOf(0.01), 8)};
         feeEt.setFilters(inputFilters);
@@ -98,11 +99,11 @@ public class SafetyPayFeeActivity extends BaseActivity {
             titleSetFee.setAnimation(hiddenAction);
         }
 
-        if (paySetBean.isAutoFee()) {
-            feeEt.setText(RateFormatUtil.longToDoubleBtc(paySetBean.getAutoMaxFee()));
+        if (walletSetBean.isAutoFee()) {
+            feeEt.setText(RateFormatUtil.longToDoubleBtc(walletSetBean.getAutoMaxFee()));
             titleSetFee.setText(R.string.Wallet_Set_max_trasfer_fee);
         } else {
-            feeEt.setText(RateFormatUtil.longToDoubleBtc(paySetBean.getFee()));
+            feeEt.setText(RateFormatUtil.longToDoubleBtc(walletSetBean.getFee()));
             titleSetFee.setText(R.string.Wallet_Set_transaction_fee_specified);
         }
     }
@@ -116,12 +117,11 @@ public class SafetyPayFeeActivity extends BaseActivity {
     void saveFee(View view) {
         long fee = RateFormatUtil.doubleToLongBtc(Double.valueOf(feeEt.getText().toString()));
         if (fee >= 50) {
-            if (paySetBean.isAutoFee()) {
-                paySetBean.setAutoMaxFee(fee);
+            if (walletSetBean.isAutoFee()) {
+                walletSetBean = WalletSetBean.putAutoMaxFee(fee);
             } else {
-                paySetBean.setFee(fee);
+                requestSetPay(fee);
             }
-            requestSetPay();
         }
     }
 
@@ -129,8 +129,7 @@ public class SafetyPayFeeActivity extends BaseActivity {
     void autoFee(View view) {
         boolean isAuto = autoSwitch.isSelected();
         autoSwitch.setSelected(!isAuto);
-        paySetBean.setAutoFee(!isAuto);
-        ParamManager.getInstance().putPaySet(paySetBean);
+        walletSetBean = WalletSetBean.putAutoFee(!isAuto);
         updateView(true);
     }
 
@@ -156,17 +155,17 @@ public class SafetyPayFeeActivity extends BaseActivity {
         }
     };
 
-    private void requestSetPay() {
+    private void requestSetPay(final long fee) {
         Connect.PaymentSetting paymentSetting = Connect.PaymentSetting.newBuilder()
-                .setFee(paySetBean.getFee())
-                .setNoSecretPay(paySetBean.getNoSecretPay())
-                .setPayPin(paySetBean.getPayPin())
+                .setFee(fee)
+                .setNoSecretPay(false)
+                .setPayPin("")
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PAY_SETTING, paymentSetting, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 ToastEUtil.makeText(mActivity, R.string.Login_Save_successful).show();
-                ParamManager.getInstance().putPaySet(paySetBean);
+                WalletSetBean.putFee(fee);
                 ActivityUtil.goBack(mActivity);
             }
 

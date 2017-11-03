@@ -11,18 +11,16 @@ import com.wallet.bean.EncryptionPinBean;
 import com.wallet.currency.BaseCurrency;
 import com.wallet.inter.WalletListener;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.WalletBean;
+import connect.activity.wallet.bean.WalletSetBean;
 import connect.activity.wallet.manager.PinBean;
 import connect.activity.wallet.manager.PinManager;
 import connect.activity.wallet.manager.WalletManager;
-import connect.database.SharePreferenceUser;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.CurrencyEntity;
@@ -50,7 +48,7 @@ public class SafetyPayActivity extends BaseActivity {
     LinearLayout minerLl;
 
     private SafetyPayActivity mActivity;
-    private PaySetBean paySetBean;
+    private WalletSetBean walletSetBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +70,10 @@ public class SafetyPayActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_Payment);
 
-        paySetBean = ParamManager.getInstance().getPaySet();
-        if (paySetBean != null) {
-            minerTv.setText(paySetBean.isAutoFee() ? getString(R.string.Set_Auto) :
-                    getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(paySetBean.getFee()));
+        walletSetBean = ParamManager.getInstance().getWalletSet();
+        if (walletSetBean != null) {
+            minerTv.setText(walletSetBean.isAutoFee() ? getString(R.string.Set_Auto) :
+                    getString(R.string.Set_BTC_symbol) + " " + RateFormatUtil.longToDoubleBtc(walletSetBean.getFee()));
         }
     }
 
@@ -92,7 +90,7 @@ public class SafetyPayActivity extends BaseActivity {
     @OnClick(R.id.pas_ll)
     void goSetPassword(View view) {
         // Check payment password
-        WalletBean walletBean = SharePreferenceUser.getInstance().getWalletInfo();
+        WalletBean walletBean = ParamManager.getInstance().getWalletInfo();
         PinManager.getInstance().checkPwd(mActivity, walletBean.getPayload(), new WalletListener<PinBean>() {
             @Override
             public void success(final PinBean pinBean) {

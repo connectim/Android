@@ -14,11 +14,12 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.ui.activity.R;
+import connect.activity.base.BaseActivity;
 import connect.activity.set.contract.UserInfoNameContract;
 import connect.activity.set.presenter.UserInfoNamePresenter;
-import connect.activity.base.BaseActivity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.RegularUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.filter.StringLengthFilter;
 import connect.widget.TopToolBar;
@@ -26,7 +27,7 @@ import connect.widget.TopToolBar;
 /**
  * Modify the user nickname and connect Id.
  */
-public class UserInfoNameActivity extends BaseActivity implements UserInfoNameContract.View{
+public class UserInfoNameActivity extends BaseActivity implements UserInfoNameContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -36,6 +37,8 @@ public class UserInfoNameActivity extends BaseActivity implements UserInfoNameCo
     ImageButton closeIb;
     @Bind(R.id.id_tip_tv)
     TextView idTipTv;
+    @Bind(R.id.id_hint_tv)
+    TextView idHintTv;
 
     private UserInfoNameActivity mActivity;
     public static final String TYPE_NAME = "name";
@@ -67,7 +70,7 @@ public class UserInfoNameActivity extends BaseActivity implements UserInfoNameCo
 
         Bundle bundle = getIntent().getExtras();
         type = bundle.getString("type");
-        new UserInfoNamePresenter(this,type).start();
+        new UserInfoNamePresenter(this, type).start();
     }
 
     @OnClick(R.id.left_img)
@@ -97,10 +100,12 @@ public class UserInfoNameActivity extends BaseActivity implements UserInfoNameCo
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -122,8 +127,9 @@ public class UserInfoNameActivity extends BaseActivity implements UserInfoNameCo
         nameEt.setText(text);
         if (type.equals(TYPE_NUMBER)) {
             idTipTv.setVisibility(View.VISIBLE);
+            idHintTv.setVisibility(View.VISIBLE);
         }
-        InputFilter[] filters = { new StringLengthFilter(20) };
+        InputFilter[] filters = {new StringLengthFilter(20)};
         nameEt.setFilters(filters);
     }
 
@@ -133,7 +139,7 @@ public class UserInfoNameActivity extends BaseActivity implements UserInfoNameCo
         ActivityUtil.goBack(mActivity);
     }
 
-    private void checkEditInput(String inputStr){
+    private void checkEditInput(String inputStr) {
         if (TextUtils.isEmpty(inputStr)) {
             closeIb.setVisibility(View.GONE);
             toolbarTop.setRightTextEnable(false);
@@ -143,9 +149,9 @@ public class UserInfoNameActivity extends BaseActivity implements UserInfoNameCo
             toolbarTop.setRightTextEnable(true);
         }
 
-        switch (type){
+        switch (type) {
             case UserInfoNameActivity.TYPE_NUMBER:
-                if (inputStr.getBytes().length >= 6) {
+                if (RegularUtil.matches(inputStr, RegularUtil.PASSWORD)) {
                     toolbarTop.setRightTextEnable(true);
                 } else {
                     toolbarTop.setRightTextEnable(false);

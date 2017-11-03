@@ -72,7 +72,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (viewType == ViewType.VIEW_TYP_NOSEARCHS.ordinal()) {
 
             } else if (viewType == ViewType.VIEW_TYP_SERVER.ordinal()) {
-                ((ServerHolder)holder).nameTv.setText(friendEntity.getConnectId());
+                ((ServerHolder)holder).nameTv.setText(friendEntity.getUid());
                 ((ServerHolder)holder).contentRela.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

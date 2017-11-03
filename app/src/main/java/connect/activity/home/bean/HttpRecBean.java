@@ -14,7 +14,6 @@ public class HttpRecBean implements Serializable {
         SALTEXPIRE,//salt timeout
         SALT_VERIFY,//salt verify
         GroupInfo,//group information
-        PaySet,//pay setting
         PrivateSet,//private setting
         BlackList,//black list
         UpLoadBackUp,//upload backup

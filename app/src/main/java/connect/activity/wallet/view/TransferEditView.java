@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import connect.activity.base.BaseApplication;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.RateBean;
+import connect.activity.wallet.bean.WalletSetBean;
 import connect.activity.wallet.manager.WalletManager;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -66,7 +67,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     private RateBean btcBean;
     /** Currency external introduction of bitcoin corresponding transformation */
     private RateBean otherRate;
-    private PaySetBean paySetBean;
+    private WalletSetBean walletSetBean;
     private InputFilter[] btcInputFilters = {new EditInputFilterPrice(Double.valueOf(999),8)};
     private InputFilter[] otherInputFilters = {new EditInputFilterPrice(Double.valueOf(999999999),2)};
     /** Default input box 10000 */
@@ -105,8 +106,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
     public void initView(){
         btcBean = RateDataUtil.getInstance().getRateBTC();
-        otherRate = ParamManager.getInstance().getCountryRate();
-        paySetBean = ParamManager.getInstance().getPaySet();
+        walletSetBean = ParamManager.getInstance().getWalletSet();
 
         editTitleTv.setText(context.getString(R.string.Wallet_Amount_BTC));
         editSymbolTv.setText(btcBean.getSymbol());
@@ -116,10 +116,10 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         // Shielding EditText paste function
         amountInputEt.setCustomSelectionActionModeCallback(amountInputCallback);
         amountInputEt.setTag(1);
-        if (paySetBean != null && paySetBean.isAutoFee()) {
+        if (walletSetBean != null && walletSetBean.isAutoFee()) {
             feeTv.setText(R.string.Wallet_Auto_Calculate_Miner_Fee);
-        } else if(paySetBean != null) {
-            feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(paySetBean.getFee())));
+        } else if(walletSetBean != null) {
+            feeTv.setText(context.getString(R.string.Wallet_Fee_BTC, RateFormatUtil.longToDouble(walletSetBean.getFee())));
         }
 
         showBalance();
@@ -152,7 +152,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.transfer_tv:
-                if(otherRate == null || paySetBean == null){
+                if(otherRate == null || walletSetBean == null){
                     return;
                 }
                 if ((Integer)amountInputEt.getTag() == 1) {
@@ -318,10 +318,12 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
      * The exchange-rate
      */
     private void requestRate(){
-        if(otherRate == null || context == null){
+        String code = ParamManager.getInstance().getWalletSet().getCurrency();
+        RateBean rateBean = RateDataUtil.getInstance().getRate(code);
+        if(rateBean == null || context == null){
             return;
         }
-        HttpRequest.getInstance().get(otherRate.getUrl(), new Callback() {
+        HttpRequest.getInstance().get(rateBean.getUrl(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 amountInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
@@ -331,10 +333,8 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
             public void onResponse(Call call, Response response) throws IOException {
                 String tempResponse =  response.body().string();
                 Type type = new TypeToken<RateBean>() {}.getType();
-                RateBean rateBean = new Gson().fromJson(tempResponse, type);
+                otherRate = new Gson().fromJson(tempResponse, type);
                 amountInputEt.setText(RateFormatUtil.longToDoubleBtc(editDefault));
-                otherRate.setRate(rateBean.getRate());
-                ParamManager.getInstance().putCountryRate(otherRate);
             }
         });
     }
