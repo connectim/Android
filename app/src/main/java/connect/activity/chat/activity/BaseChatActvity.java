@@ -19,7 +19,6 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.instant.model.CRobotChat;
 import connect.ui.activity.R;
@@ -35,7 +34,6 @@ import instant.sender.model.BaseChat;
 import instant.sender.model.FriendChat;
 import instant.sender.model.GroupChat;
 import instant.sender.model.NormalChat;
-import instant.sender.model.RobotChat;
 import protos.Connect;
 
 /**

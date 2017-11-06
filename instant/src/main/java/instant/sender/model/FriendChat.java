@@ -23,7 +23,7 @@ import protos.Connect;
  */
 public class FriendChat extends NormalChat {
 
-    private String Tag = "FriendChat";
+    private static String TAG = "FriendChat";
 
     /** user Cookie */
     private UserCookie userCookie = null;
@@ -49,7 +49,7 @@ public class FriendChat extends NormalChat {
 
     @Override
     public ChatMsgEntity createBaseChat(MessageType type) {
-        String mypublickey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+        String mypublickey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
 
         ChatMsgEntity msgExtEntity = new ChatMsgEntity();
         msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());
