@@ -71,17 +71,17 @@ public class AddFriendPhoneActivity extends BaseActivity implements AddFriendPho
         adapter.setOnSelectListener(onSelectListener);
         recyclerview.setAdapter(adapter);
         siderbar.setOnTouchingLetterChangedListener(letterChangedListener);
-        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_CONTACTS}, permissomCallBack);
+        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_CONTACTS}, permissionCallBack);
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
     @OnClick(R.id.right_text)
-    void goinvite(View view) {
-        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_SMS}, permissomCallBack);
+    void goInvite(View view) {
+        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_SMS}, permissionCallBack);
     }
 
     SideBar.OnTouchingLetterChangedListener letterChangedListener = new SideBar.OnTouchingLetterChangedListener() {
@@ -94,7 +94,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements AddFriendPho
         }
     };
 
-    private PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack() {
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
         @Override
         public void granted(String[] permissions) {
             if (permissions != null && permissions.length > 0) {
@@ -137,7 +137,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements AddFriendPho
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissomCallBack);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissionCallBack);
     }
 
     @Override

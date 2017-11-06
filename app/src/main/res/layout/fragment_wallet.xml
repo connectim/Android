@@ -45,7 +45,7 @@
             android:id="@+id/wallet_menu_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_70"
+            android:layout_marginTop="@dimen/dp_50"
             android:fadingEdge="none"
             android:overScrollMode="never"/>
     </LinearLayout>
