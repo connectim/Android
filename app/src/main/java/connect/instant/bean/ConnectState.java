@@ -1,4 +1,6 @@
-package instant.bean;
+package connect.instant.bean;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 
@@ -16,10 +18,10 @@ public class ConnectState {
         return connectState;
     }
 
-    public void sendEvent(Serializable type, Serializable... objects) {
+    public void sendEvent(Serializable type) {
         ConnectState connectState = new ConnectState();
         connectState.setType((ConnectType) type);
-        //EventBus.getDefault().post(connectState);
+        EventBus.getDefault().post(connectState);
     }
 
     public enum ConnectType {

@@ -37,7 +37,6 @@ public abstract class BaseChatSendActivity extends BaseChatReceiveActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
     }
 
     /**
@@ -214,6 +213,5 @@ public abstract class BaseChatSendActivity extends BaseChatReceiveActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 }

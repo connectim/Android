@@ -1,11 +1,14 @@
 package connect.instant.model;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.ConversationAction;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ConversionEntity;
 import connect.instant.inter.ConversationListener;
+import connect.ui.activity.R;
 import instant.sender.model.RobotChat;
 
 /**
@@ -19,15 +22,25 @@ public class CRobotChat extends RobotChat implements ConversationListener{
     public CRobotChat() {
     }
 
-    public static CRobotChat getInstance() {
+    public synchronized static CRobotChat getInstance() {
         if (robotChat == null) {
-            synchronized (CRobotChat.class) {
-                if (robotChat == null) {
-                    robotChat = new CRobotChat();
-                }
-            }
+            robotChat = new CRobotChat();
         }
         return robotChat;
+    }
+
+    @Override
+    public String headImg() {
+        super.headImg();
+        Context context= BaseApplication.getInstance().getBaseContext();
+        return context.getString(R.string.app_name);
+    }
+
+    @Override
+    public String nickName() {
+        super.nickName();
+        Context context= BaseApplication.getInstance().getBaseContext();
+        return context.getString(R.string.app_name);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime) {

@@ -88,7 +88,7 @@ public class ContactHelper extends BaseDao {
     public List<ContactEntity> loadFriend() {
         String connect = BaseApplication.getInstance().getString(R.string.app_name);
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.where(ContactEntityDao.Properties.Pub_key.notEq(connect)).build();
+        queryBuilder.where(ContactEntityDao.Properties.Uid.notEq(connect)).build();
         List<ContactEntity> friendEntities = queryBuilder.list();
         return friendEntities;
     }
@@ -103,7 +103,7 @@ public class ContactHelper extends BaseDao {
         String connect = BaseApplication.getInstance().getString(R.string.app_name);
         pubkeys.add(connect);
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.where(ContactEntityDao.Properties.Pub_key.notIn(pubkeys)).build();
+        queryBuilder.where(ContactEntityDao.Properties.Uid.notIn(pubkeys)).build();
         List<ContactEntity> friendEntities = queryBuilder.list();
         return friendEntities;
     }
@@ -199,7 +199,7 @@ public class ContactHelper extends BaseDao {
             value = "";
         }
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.whereOr(ContactEntityDao.Properties.Pub_key.eq(value),
+        queryBuilder.whereOr(ContactEntityDao.Properties.Ca_pub.eq(value),
                 ContactEntityDao.Properties.ConnectId.eq(value),
                 ContactEntityDao.Properties.Uid.eq(value))
                 .limit(1).build();
@@ -271,12 +271,12 @@ public class ContactHelper extends BaseDao {
     /**
      * group entity
      *
-     * @param pukkey
+     * @param identify
      * @return
      */
-    public GroupEntity loadGroupEntity(String pukkey) {
+    public GroupEntity loadGroupEntity(String identify) {
         QueryBuilder<GroupEntity> queryBuilder = groupEntityDao.queryBuilder();
-        queryBuilder.where(GroupEntityDao.Properties.Identifier.eq(pukkey)).build();
+        queryBuilder.where(GroupEntityDao.Properties.Identifier.eq(identify)).build();
         List<GroupEntity> groupEntities = queryBuilder.list();
         return (groupEntities == null || groupEntities.size() == 0) ? null : groupEntities.get(0);
     }
@@ -402,11 +402,11 @@ public class ContactHelper extends BaseDao {
     /**
      * modify black list
      *
-     * @param pubKey
+     * @param uid
      */
-    public void updataFriendBlack(String pubKey) {
+    public void updataFriendBlack(String uid) {
         QueryBuilder<ContactEntity> qb = contactEntityDao.queryBuilder();
-        qb.where(ContactEntityDao.Properties.Pub_key.eq(pubKey));
+        qb.where(ContactEntityDao.Properties.Uid.eq(uid));
         List<ContactEntity> list = qb.list();
         if (list.size() > 0) {
             ContactEntity friendEntity = list.get(0);

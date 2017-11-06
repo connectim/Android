@@ -136,7 +136,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         addressTv.setText(friendEntity.getConnectId());
         sourceTv.setText(friendEntity.getSource() == null ? SourceType.UNKOWN.getString() : SourceType.getString(friendEntity.getSource()));
         aliasTv.setText(TextUtils.isEmpty(friendEntity.getRemark()) ? "" : friendEntity.getRemark());
-        addFavoritesTb.setSelected(friendEntity.getCommon() == null ? false : friendEntity.getCommon() == 1);
+        addFavoritesTb.setSelected(friendEntity.getCommon() != null && friendEntity.getCommon() == 1);
         addBlockTb.setSelected(friendEntity.getBlocked() == null ? false : friendEntity.getBlocked());
     }
 
@@ -174,7 +174,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.set_alias_rela)
     void goSetAlias(View view) {
-        FriendInfoAliasActivity.startActivity(mActivity, friendEntity.getPub_key());
+        FriendInfoAliasActivity.startActivity(mActivity, friendEntity.getUid());
     }
 
     @OnClick(R.id.transfer_record_rela)
@@ -210,7 +210,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
                 switch (position) {
                     case 0:
                         MsgSendBean msgSendBean = new MsgSendBean();
-                        msgSendBean.setPubkey(friendEntity.getPub_key());
+                        msgSendBean.setPubkey(friendEntity.getUid());
                         msgSendBean.setUid(friendEntity.getUid());
                         msgSendBean.setType(MsgSendBean.SendType.TypeDeleteFriend);
 

@@ -2,12 +2,9 @@ package instant.bean;
 
 import com.google.protobuf.ByteString;
 
-import java.io.UnsupportedEncodingException;
-
 import instant.parser.InterParse;
 import instant.utils.TimeUtil;
 import instant.utils.manager.FailMsgsManager;
-import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -28,16 +25,9 @@ public class UserOrderBean extends InterParse {
      * @return
      */
     public void requestAddFriend(Object... objects) {
-        String priKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
-        Connect.GcmData gcmData = null;
-        try {
-            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, priKey, (String) objects[1], ((String) objects[2]).getBytes("utf-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
         Connect.AddFriendRequest addFriend = Connect.AddFriendRequest.newBuilder()
-                .setAddress((String) objects[0])
-                .setTips(gcmData)
+                .setUid((String) objects[0])
+                .setTips(((String) objects[2]))
                 .setSource((Integer) objects[3]).build();
 
         String msgid = TimeUtil.timestampToMsgid();
@@ -54,7 +44,7 @@ public class UserOrderBean extends InterParse {
      */
     public void acceptFriendRequest(Object... objects) {
         Connect.AcceptFriendRequest friendRequest = Connect.AcceptFriendRequest.newBuilder()
-                .setAddress((String) objects[0])
+                .setUid((String) objects[0])
                 .setSource((Integer) objects[1])
                 .build();
 
@@ -72,7 +62,7 @@ public class UserOrderBean extends InterParse {
      */
     public void removeRelation(Object... objects) {
         Connect.RemoveRelationship removeRelation = Connect.RemoveRelationship.newBuilder()
-                .setAddress((String) objects[0]).build();
+                .setUid((String) objects[0]).build();
 
         String msgid = TimeUtil.timestampToMsgid();
         if (objects.length == 2) {
@@ -87,7 +77,7 @@ public class UserOrderBean extends InterParse {
      * @param objects
      */
     public  void noInterested(Object... objects) {
-        Connect.NOInterest noInterest = Connect.NOInterest.newBuilder().setAddress((String) objects[0]).build();
+        Connect.NOInterest noInterest = Connect.NOInterest.newBuilder().setUid((String) objects[0]).build();
 
         String msgid = TimeUtil.timestampToMsgid();
         if (objects.length == 2) {
@@ -103,7 +93,7 @@ public class UserOrderBean extends InterParse {
      */
     public void setFriend(Object... objects) {
         Connect.SettingFriendInfo friendInfo = Connect.SettingFriendInfo.newBuilder()
-                .setAddress((String) objects[0])
+                .setUid((String) objects[0])
                 .setRemark((String) objects[1])
                 .setCommon((Boolean) objects[2]).build();
 

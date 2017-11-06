@@ -96,7 +96,7 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
         Connect.GroupReviewed reviewed = Connect.GroupReviewed.newBuilder()
                 .setIdentifier(groupKey)
                 .setVerificationCode(code)
-                .setAddress(address)
+                .setUid(address)
                 .setBackup(backup).build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REVIEWED, reviewed, new ResultCall<Connect.HttpResponse>() {
             @Override
@@ -129,7 +129,7 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
         Connect.GroupReviewed reviewed = Connect.GroupReviewed.newBuilder()
                 .setIdentifier(pubkey)
                 .setVerificationCode(code)
-                .setAddress(address).build();
+                .setUid(address).build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REJECT, reviewed, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {

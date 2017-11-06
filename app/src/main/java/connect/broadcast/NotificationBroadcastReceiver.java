@@ -17,17 +17,17 @@ import connect.utils.log.LogManager;
  */
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
-    private String Tag = "NotificationBroadcastReceiver";
+    private static String TAG = "_NotificationBroadcastReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (BaseApplication.getInstance().isEmptyActivity()) {
-            LogManager.getLogger().d(Tag, "TO START ACTIVITY");
+            LogManager.getLogger().d(TAG, "TO START ACTIVITY");
             intent = new Intent(context, StartPageActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } else {
-            LogManager.getLogger().d(Tag, "TO CHAT ACTIVITY");
+            LogManager.getLogger().d(TAG, "TO CHAT ACTIVITY");
             Serializable talker = intent.getSerializableExtra("ROOM_TALKER");
 
             intent = new Intent(context, ChatActivity.class);

@@ -19,7 +19,9 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
+import connect.instant.model.CRobotChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.permission.PermissionUtil;
@@ -84,7 +86,7 @@ public abstract class BaseChatActvity extends BaseActivity {
                 normalChat = new GroupChat(talker.getTalkKey());
                 break;
             case CONNECT_SYSTEM:
-                normalChat = RobotChat.getInstance();
+                normalChat = CRobotChat.getInstance();
                 break;
         }
 

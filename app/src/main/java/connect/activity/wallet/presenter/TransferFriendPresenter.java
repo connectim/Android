@@ -119,10 +119,10 @@ public class TransferFriendPresenter implements TransferFriendContract.Presenter
 
             friendChat.sendPushMsg(msgExtEntity);
 
-            ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getPub_key());
+            ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getUid());
             if (roomEntity == null) {
                 roomEntity = new ConversionEntity();
-                roomEntity.setIdentifier(friendEntity.getPub_key());
+                roomEntity.setIdentifier(friendEntity.getUid());
                 roomEntity.setAvatar(friendEntity.getAvatar());
                 roomEntity.setName(friendEntity.getUsername());
                 roomEntity.setType(0);

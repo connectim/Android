@@ -77,7 +77,7 @@ public class FriendDelAdapter extends RecyclerView.Adapter<FriendDelAdapter.Frie
 
     public void removeData(ContactEntity friendEntity) {
         for(int i = 0;i < list.size();i ++){
-            if(friendEntity.getPub_key().equals(list.get(i).getPub_key())){
+            if(friendEntity.getUid().equals(list.get(i).getUid())){
                 list.remove(i);
                 notifyItemRemoved(i);
                 break;

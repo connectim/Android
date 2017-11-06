@@ -57,13 +57,13 @@ public class CommandLocalReceiver implements CommandListener {
     }
 
     @Override
-    public void acceptFriendRequest(Connect.ReceiveAcceptFriendRequest friendRequest) {
-        getCommandListener().acceptFriendRequest(friendRequest);
+    public void acceptFriendRequest(Connect.FriendListChange listChange) {
+        getCommandListener().acceptFriendRequest(listChange);
     }
 
     @Override
-    public void acceptDelFriend(Connect.SyncRelationship relationship) {
-        getCommandListener().acceptDelFriend(relationship);
+    public void acceptDelFriend(Connect.FriendListChange listChange) {
+        getCommandListener().acceptDelFriend(listChange);
     }
 
     @Override

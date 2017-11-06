@@ -26,7 +26,7 @@ import protos.Connect;
  */
 public class SenderManager implements LocalServiceListener{
 
-    private static String Tag="_ChatSendManager";
+    private static String Tag = "_SenderManager";
     public static SenderManager senderManager = getInstance();
 
     public static SenderManager getInstance() {

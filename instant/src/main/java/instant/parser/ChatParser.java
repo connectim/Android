@@ -22,7 +22,7 @@ import protos.Connect;
 
 public class ChatParser extends InterParse {
 
-    private String Tag = "_ChatParser";
+    private static String TAG = "_ChatParser";
 
     private byte ackByte;
     private Connect.MessagePost messagePost;
@@ -58,7 +58,7 @@ public class ChatParser extends InterParse {
         String priKey = null;
         String pubkey = null;
 
-        LogManager.getLogger().d(Tag, "Id: " + messageData.getChatMsg().getMsgId());
+        LogManager.getLogger().d(TAG, "Id: " + messageData.getChatMsg().getMsgId());
         EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
         if (TextUtils.isEmpty(chatSession.getPubKey())) {//old protocol
             priKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();

@@ -81,7 +81,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         List<Connect.AddGroupUserInfo> groupUserInfos = new ArrayList<>();
         for (ContactEntity entity : contactEntities) {
             String prikey = userBean.getPriKey();
-            byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(prikey, entity.getPub_key());
+            byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(prikey, entity.getCa_pub());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
             String pubkey = userBean.getPubKey();
@@ -89,7 +89,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
             String backup = String.format("%1$s/%2$s", pubkey, groupHex);
 
             Connect.AddGroupUserInfo groupUserInfo = Connect.AddGroupUserInfo.newBuilder()
-                    .setAddress(entity.getUid())
+                    .setUid(entity.getUid())
                     .setBackup(backup).build();
             groupUserInfos.add(groupUserInfo);
         }
@@ -151,7 +151,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         String stringMems = "";
         List<GroupMemberEntity> memEntities = new ArrayList<>();
         for (Connect.GroupMember member : groupInfo.getMembersList()) {
-            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, member.getAddress());
+            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, member.getUid());
             if (memEntity == null) {
                 memEntity = new GroupMemberEntity();
             }
@@ -188,12 +188,12 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         String prikey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
         for (ContactEntity member : contactEntities) {
             String msgid = TimeUtil.timestampToMsgid();
-            byte[] groupecdhkey = SupportKeyUril.getRawECDHKey(prikey, member.getPub_key());
+            byte[] groupecdhkey = SupportKeyUril.getRawECDHKey(prikey, member.getCa_pub());
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, groupecdhkey, groupMessage.toByteString());
 
             Connect.ChatMessage chatMessage = Connect.ChatMessage.newBuilder()
                     .setMsgId(msgid)
-                    .setTo(member.getPub_key())
+                    .setTo(member.getUid())
                     .setCipherData(gcmData).build();
 
             Connect.MessageData messageData = Connect.MessageData.newBuilder()

@@ -19,9 +19,9 @@ public interface CommandListener {
 
     void receiverFriendRequest(Connect.ReceiveFriendRequest friendRequest);
 
-    void acceptFriendRequest(Connect.ReceiveAcceptFriendRequest friendRequest);
+    void acceptFriendRequest(Connect.FriendListChange listChange);
 
-    void acceptDelFriend(Connect.SyncRelationship relationship);
+    void acceptDelFriend(Connect.FriendListChange listChange);
 
     void conversationMute(Connect.ManageSession manageSession);
 

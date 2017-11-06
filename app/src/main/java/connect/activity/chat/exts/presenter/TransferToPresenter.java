@@ -81,7 +81,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
 
                     if (ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)) {
                         contactEntity = new ContactEntity();
-                        contactEntity.setPub_key(sendUserInfo.getPubKey());
+                        contactEntity.setCa_pub(sendUserInfo.getCaPub());
                         contactEntity.setUsername(sendUserInfo.getUsername());
                         contactEntity.setUid(sendUserInfo.getUid());
                         contactEntity.setAvatar(sendUserInfo.getAvatar());
@@ -106,7 +106,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
     @Override
     public void requestSingleTransfer(Long currentlong) {
         HashMap<String,Long> outMap = new HashMap();
-        outMap.put(contactEntity.getPub_key(),currentlong);
+        outMap.put(contactEntity.getUid(),currentlong);
         transferManager.transferConnectUser(null, outMap, new WalletListener<String>() {
             @Override
             public void success(String value) {

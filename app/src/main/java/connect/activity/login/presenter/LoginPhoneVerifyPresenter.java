@@ -1,16 +1,11 @@
 package connect.activity.login.presenter;
 
-import android.app.Activity;
 import android.os.Bundle;
 
-import java.util.List;
-
-import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneVerifyContract;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 import connect.utils.ExCountDownTimer;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastEUtil;
@@ -120,7 +115,16 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                             priKey, imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), priKey, pubKey, mobile, userInfo.getConnectId(), userInfo.getUid());
+                    UserBean userBean = new UserBean();
+                    userBean.setAvatar(userInfo.getAvatar());
+                    userBean.setConnectId(userInfo.getConnectId());
+                    userBean.setName(userInfo.getUsername());
+                    userBean.setPhone(mobile);
+                    userBean.setPriKey(priKey);
+                    userBean.setPubKey(pubKey);
+                    userBean.setCaPublicKey(userInfo.getCaPub());
+                    userBean.setUid(userInfo.getUid());
+
                     SharedPreferenceUtil.getInstance().putUser(userBean);
                     mView.launchHome(userBean);
                 } catch (Exception e) {

@@ -195,7 +195,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
                     if (entity == null) {
                         StrangerInfoActivity.startActivity(activity, address, SourceType.SEARCH);
                     } else {
-                        FriendInfoActivity.startActivity(activity, entity.getPub_key());
+                        FriendInfoActivity.startActivity(activity, entity.getUid());
                     }
                 }
             }

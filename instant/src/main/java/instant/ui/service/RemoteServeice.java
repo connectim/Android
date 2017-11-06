@@ -1,9 +1,11 @@
 package instant.ui.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,11 +20,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import connect.im.IMessage;
+import instant.bean.Session;
 import instant.bean.SocketACK;
+import instant.bean.UserCookie;
 import instant.netty.BufferBean;
 import instant.netty.MessageDecoder;
 import instant.netty.MessageEncoder;
 import instant.netty.NettySession;
+import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.ui.InstantSdk;
 import instant.utils.ConfigUtil;
 import instant.utils.TimeUtil;
@@ -57,6 +62,8 @@ public class RemoteServeice extends Service {
     private PushBinder pushBinder;
     private PushConnect pushConnect;
 
+    private RemoteNetWorkBroadcastReceiver broadcastReceiver = new RemoteNetWorkBroadcastReceiver();
+
     @Override
     public IBinder onBind(Intent intent) {
         return pushBinder;
@@ -72,6 +79,11 @@ public class RemoteServeice extends Service {
         if (pushConnect == null) {
             pushConnect = new PushConnect();
         }
+
+        // 监听网络变换
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(broadcastReceiver, filter);
     }
 
     public static void startService(Context context) {
@@ -223,7 +235,7 @@ public class RemoteServeice extends Service {
 
     private final static int CONNECT_TIMEOUT = 30000;
     private final static int READERIDLE_TIME = 10;
-    private final static int WRITERIDLE_TIME = 10;
+    private final static int WRITERIDLE_TIME = 0;
 
     private static boolean canReConnect = true;
     private String socketAddress;
@@ -395,5 +407,52 @@ public class RemoteServeice extends Service {
             isMobileConn = false;
         }
         return isWifiConn || isMobileConn;
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
+
+    private class RemoteNetWorkBroadcastReceiver extends BroadcastReceiver {
+
+        /** The default for repeated connection broadcast time */
+        private static final int TIME_REPEART = 5000;
+        /** The last received time */
+        private long lastReceiveTime = 0;
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (context == null) {
+                    context = InstantSdk.instantSdk.getBaseContext();
+                }
+                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo.State wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+                NetworkInfo.State mobileState = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+
+                if ((wifiState != null && NetworkInfo.State.CONNECTED == wifiState) ||
+                        (mobileState != null && NetworkInfo.State.CONNECTED == mobileState)) {//Network connection is successful
+                    LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Switch to the network environment");
+
+                    if (isCanConnect() && (TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART)) {
+                        lastReceiveTime = TimeUtil.getCurrentTimeInLong();
+                        connectSuccess();
+                        reconDelay();
+                    }
+                } else {
+                    LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Network disconnection");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public boolean isCanConnect() {
+            UserCookie userCookie = Session.getInstance().getUserCookie(Session.CONNECT_USER);
+            return userCookie != null;
+        }
     }
 }

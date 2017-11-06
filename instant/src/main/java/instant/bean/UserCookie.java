@@ -8,6 +8,7 @@ import java.io.Serializable;
  */
 public class UserCookie implements Serializable {
 
+    private String uid;
     private String priKey;
     private String pubKey;
     private byte[] salt;
@@ -46,5 +47,13 @@ public class UserCookie implements Serializable {
 
     public void setPubKey(String pubKey) {
         this.pubKey = pubKey;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

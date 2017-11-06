@@ -17,7 +17,7 @@ public class ContactEntity implements Serializable {
     private Long _id;
     @NotNull
     @Unique
-    private String pub_key;
+    private String ca_pub;
 
     private String uid;
     private String connectId;
@@ -27,17 +27,12 @@ public class ContactEntity implements Serializable {
     private Integer common;
     private Integer source;
     private Boolean blocked;
-
-    @Generated(hash = 393979869)
-    public ContactEntity() {
-    }
-
-    @Generated(hash = 1252922715)
-    public ContactEntity(Long _id, @NotNull String pub_key, String uid,
+    @Generated(hash = 840680774)
+    public ContactEntity(Long _id, @NotNull String ca_pub, String uid,
             String connectId, String username, String avatar, String remark,
             Integer common, Integer source, Boolean blocked) {
         this._id = _id;
-        this.pub_key = pub_key;
+        this.ca_pub = ca_pub;
         this.uid = uid;
         this.connectId = connectId;
         this.username = username;
@@ -47,18 +42,26 @@ public class ContactEntity implements Serializable {
         this.source = source;
         this.blocked = blocked;
     }
-    
+    @Generated(hash = 393979869)
+    public ContactEntity() {
+    }
     public Long get_id() {
         return this._id;
     }
     public void set_id(Long _id) {
         this._id = _id;
     }
-    public String getPub_key() {
-        return this.pub_key;
+    public String getCa_pub() {
+        return this.ca_pub;
     }
-    public void setPub_key(String pub_key) {
-        this.pub_key = pub_key;
+    public void setCa_pub(String ca_pub) {
+        this.ca_pub = ca_pub;
+    }
+    public String getUid() {
+        return this.uid;
+    }
+    public void setUid(String uid) {
+        this.uid = uid;
     }
     public String getConnectId() {
         return this.connectId;
@@ -103,13 +106,5 @@ public class ContactEntity implements Serializable {
         this.blocked = blocked;
     }
 
-    public String getUid() {
-        return this.uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
     
-
 }

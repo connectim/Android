@@ -52,7 +52,6 @@ public class EncryptionUtil {
     public static Connect.GcmData encodeAESGCM(ExtendedECDH extendedECDH, byte[] rawECDHKey, byte[] encodes) {
         rawECDHKey = getKeyExtendedECDH(extendedECDH, rawECDHKey);
 
-        //byte[] ab = "ConnectEncrypted".getBytes();
         String abStr = TimeUtil.getCurrentTimeSecond() + "" + (int)((Math.random()*9+1)*100000);
         byte[] ab = abStr.getBytes();
 

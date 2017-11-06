@@ -25,7 +25,7 @@ import protos.Connect;
  */
 public class MessageHelper extends BaseDao {
 
-    private String Tag = "MessageHelper";
+    private static String TAG = "MessageHelper";
 
     private static MessageHelper messageHelper;
     private MessageEntityDao messageEntityDao;
@@ -35,13 +35,9 @@ public class MessageHelper extends BaseDao {
         messageEntityDao = daoSession.getMessageEntityDao();
     }
 
-    public static MessageHelper getInstance() {
+    public synchronized static MessageHelper getInstance() {
         if (messageHelper == null) {
-            synchronized (MessageHelper.class) {
-                if (messageHelper == null) {
-                    messageHelper = new MessageHelper();
-                }
-            }
+            messageHelper = new MessageHelper();
         }
         return messageHelper;
     }
@@ -64,7 +60,7 @@ public class MessageHelper extends BaseDao {
         ChatMsgEntity msgEntity = null;
         List<ChatMsgEntity> msgEntities = new ArrayList();
 
-        byte[] localHashKeys = connect.utils.cryption.SupportKeyUril.localHashKey().getBytes();
+        byte[] localHashKeys = SupportKeyUril.localHashKey().getBytes();
         while (cursor.moveToNext()) {
             msgEntity = new ChatMsgEntity();
             msgEntity.set_id(cursorGetLong(cursor, "_id"));
@@ -174,10 +170,6 @@ public class MessageHelper extends BaseDao {
     public void insertMsgExtEntity(ChatMsgEntity chatMsgEntity) {
         MessageEntity messageEntity = MessageEntity.chatMsgToMessageEntity(chatMsgEntity);
         insertMessageEntity(messageEntity);
-    }
-
-    public void insertMsgExtEntities(List<MessageEntity> messageEntities) {
-        messageEntityDao.insertOrReplaceInTx(messageEntities);
     }
 
     /********************************* delete ***********************************/

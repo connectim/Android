@@ -57,8 +57,8 @@ public class ConnectLocalReceiver implements ConnectListener{
     }
 
     @Override
-    public void welcome(ChatMsgEntity chatMsgEntity) {
-        getConnectListener().welcome(chatMsgEntity);
+    public void welcome() {
+        getConnectListener().welcome();
     }
 
     @Override

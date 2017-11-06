@@ -22,7 +22,7 @@ import protos.Connect;
 
 public class RobotReceiver implements RobotListener {
 
-    private String Tag = "_RobotReceiver";
+    private static String TAG = "_RobotReceiver";
 
     public static RobotReceiver receiver = getInstance();
 

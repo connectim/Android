@@ -4,8 +4,11 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.instant.model.CRobotChat;
 import connect.utils.NotificationBar;
 import instant.bean.ChatMsgEntity;
-import instant.bean.ConnectState;
+import connect.instant.bean.ConnectState;
+import instant.bean.Session;
 import instant.parser.inter.ConnectListener;
+import instant.sender.model.RobotChat;
+import instant.ui.InstantSdk;
 
 /**
  * Created by Administrator on 2017/10/18.
@@ -13,7 +16,7 @@ import instant.parser.inter.ConnectListener;
 
 public class ConnectReceiver implements ConnectListener {
 
-    private String Tag = "_ConnectReceiver";
+    private static String TAG = "_ConnectReceiver";
 
     public static ConnectReceiver receiver = getInstance();
 
@@ -50,9 +53,14 @@ public class ConnectReceiver implements ConnectListener {
     }
 
     @Override
-    public void welcome(ChatMsgEntity chatMsgEntity) {
-        MessageHelper.getInstance().insertMsgExtEntity(chatMsgEntity);
-        CRobotChat.getInstance().updateRoomMsg(null, chatMsgEntity.showContent(), chatMsgEntity.getCreatetime(), -1, 1);
+    public void welcome() {
+        String mypublickey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+        ChatMsgEntity msgEntity = RobotChat.getInstance().txtMsg(InstantSdk.instantSdk.getBaseContext().getString(instant.R.string.Login_Welcome));
+        msgEntity.setMessage_from(RobotChat.getInstance().nickName());
+        msgEntity.setMessage_to(mypublickey);
+
+        MessageHelper.getInstance().insertMsgExtEntity(msgEntity);
+        CRobotChat.getInstance().updateRoomMsg(null, msgEntity.showContent(), msgEntity.getCreatetime(), -1, 1);
     }
 
     @Override

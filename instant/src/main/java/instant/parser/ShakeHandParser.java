@@ -57,8 +57,8 @@ public class ShakeHandParser extends InterParse {
         Connect.IMResponse response = null;
         response = Connect.IMResponse.parser().parseFrom(buffer.array());
 
-        String publicKey=Session.getInstance().getUserCookie(Session.COOKIE_SHAKEHAND).getPubKey();
-        if (!SupportKeyUril.verifySign(publicKey,response.getSign(), response.getCipherData().toByteArray())) {
+        String publicKey = Session.getInstance().getUserCookie(Session.COOKIE_SHAKEHAND).getPubKey();
+        if (!SupportKeyUril.verifySign(publicKey, response.getSign(), response.getCipherData().toByteArray())) {
             throw new Exception("verifySign ");
         }
 
@@ -130,10 +130,9 @@ public class ShakeHandParser extends InterParse {
                 SharedUtil.getInstance().putValue(SharedUtil.WELCOME_VERSION, ++welcomeVersion);
                 welcomeMessage();
             }
-
-            requestFriendsByVersion();
         }
 
+        requestFriendsByVersion();
         connectLogin();
         pullOffLineMsg();
         checkCurVersion();
@@ -141,12 +140,7 @@ public class ShakeHandParser extends InterParse {
     }
 
     private void welcomeMessage() {
-        String mypublickey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-        ChatMsgEntity msgExtEntity = RobotChat.getInstance().txtMsg(InstantSdk.instantSdk.getBaseContext().getString(R.string.Login_Welcome));
-        msgExtEntity.setMessage_from(RobotChat.getInstance().nickName());
-        msgExtEntity.setMessage_to(mypublickey);
-
-        ConnectLocalReceiver.receiver.welcome(msgExtEntity);
+        ConnectLocalReceiver.receiver.welcome();
     }
 
     /**
