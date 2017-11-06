@@ -65,9 +65,10 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
     private String groupEcdh;
 
     @Override
-    public void requestGroupCreate(List<ContactEntity> contactEntities) {
-        this.contactEntities=contactEntities;
+    public void requestGroupCreate(List<ContactEntity> entities) {
+        this.contactEntities = entities;
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+
         this.groupName = String.format(activity.getString(R.string.Link_user_friends), userBean.getName());
 
         String ranprikey = SupportKeyUril.getNewPriKey();
@@ -129,12 +130,13 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         });
     }
 
-    public void insertLocalData(Connect.GroupInfo groupInfo){
+    public void insertLocalData(Connect.GroupInfo groupInfo) {
         this.groupKey = groupInfo.getGroup().getIdentifier();
 
         ConversionEntity roomEntity = new ConversionEntity();
         roomEntity.setType(1);
         roomEntity.setIdentifier(groupKey);
+        roomEntity.setName(groupName);
         roomEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
         roomEntity.setLast_time(TimeUtil.getCurrentTimeInLong());
         roomEntity.setContent(activity.getString(R.string.Chat_Tips));
@@ -150,20 +152,25 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.UpLoadBackUp, groupKey, groupEcdh);
         String stringMems = "";
         List<GroupMemberEntity> memEntities = new ArrayList<>();
-        for (Connect.GroupMember member : groupInfo.getMembersList()) {
-            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, member.getUid());
-            if (memEntity == null) {
-                memEntity = new GroupMemberEntity();
-            }
+        for (ContactEntity contact : contactEntities) {
+            GroupMemberEntity memEntity = new GroupMemberEntity();
             memEntity.setIdentifier(groupKey);
-            memEntity.setUid(member.getPubKey());
-            memEntity.setAvatar(member.getAvatar());
-            memEntity.setNick(member.getUsername());
-            memEntity.setRole(member.getRole());
-            memEntity.setUsername(member.getUsername());
+            memEntity.setUid(contact.getUid());
+            memEntity.setAvatar(contact.getAvatar());
+            memEntity.setNick(contact.getUsername());
+            memEntity.setRole(0);
+            memEntity.setUsername(contact.getUsername());
             memEntities.add(memEntity);
-            stringMems = stringMems + member.getUsername() + ",";
+            stringMems = stringMems + contact.getUsername() + ",";
         }
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        GroupMemberEntity memEntity = new GroupMemberEntity();
+        memEntity.setIdentifier(groupKey);
+        memEntity.setUid(userBean.getUid());
+        memEntity.setAvatar(userBean.getAvatar());
+        memEntity.setRole(1);
+        memEntity.setUsername(userBean.getName());
+        memEntities.add(memEntity);
         ContactHelper.getInstance().inserGroupMemEntity(memEntities);
 
         GroupChat groupChat = new GroupChat(groupKey);
@@ -175,8 +182,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
             @Override
             public void animFinish() {
-                GroupEntity tempEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUPCHAT,tempEntity.getIdentifier()));
+                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUPCHAT, groupKey));
             }
         }).show();
     }

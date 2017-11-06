@@ -3,6 +3,7 @@ package connect.instant.model;
 import android.text.TextUtils;
 
 import connect.activity.home.bean.ConversationAction;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
@@ -17,10 +18,18 @@ public class CFriendChat extends FriendChat implements ConversationListener{
 
     private ContactEntity contactEntity;
 
-    public CFriendChat(ContactEntity contactEntity) {
-        super(contactEntity.getCa_pub());
+    public CFriendChat(String friendKey) {
+        super(friendKey);
+
+        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendKey);
         this.contactEntity = contactEntity;
-        this.friendKey = contactEntity.getCa_pub();
+        this.friendKey = contactEntity.getUid();
+    }
+
+    public CFriendChat(ContactEntity contactEntity) {
+        super(contactEntity.getUid());
+        this.contactEntity = contactEntity;
+        this.friendKey = contactEntity.getUid();
     }
 
     @Override
@@ -56,7 +65,7 @@ public class CFriendChat extends FriendChat implements ConversationListener{
         ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(chatKey());
         if (conversionEntity == null) {
             conversionEntity = new ConversionEntity();
-            conversionEntity.setIdentifier(chatKey());
+            conversionEntity.setIdentifier(contactEntity.getUid());
             conversionEntity.setName(nickName());
             conversionEntity.setAvatar(headImg());
         }

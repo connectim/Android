@@ -96,6 +96,10 @@ public class ChatActivity extends BaseChatSendActivity {
         initView();
     }
 
+    /**
+     * @param activity
+     * @param talker
+     */
     public static void startActivity(Activity activity, Talker talker) {
         RoomSession.getInstance().setRoomType(talker.getTalkType());
         RoomSession.getInstance().setRoomKey(talker.getTalkKey());

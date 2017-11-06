@@ -49,13 +49,13 @@ public class FriendChat extends NormalChat {
 
     @Override
     public ChatMsgEntity createBaseChat(MessageType type) {
-        String mypublickey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
+        String myUid = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
 
         ChatMsgEntity msgExtEntity = new ChatMsgEntity();
         msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());
         msgExtEntity.setChatType(Connect.ChatType.PRIVATE.getNumber());
         msgExtEntity.setMessage_ower(chatKey());
-        msgExtEntity.setMessage_from(mypublickey);
+        msgExtEntity.setMessage_from(myUid);
         msgExtEntity.setMessage_to(chatKey());
         msgExtEntity.setMessageType(type.type);
         msgExtEntity.setRead_time(0L);

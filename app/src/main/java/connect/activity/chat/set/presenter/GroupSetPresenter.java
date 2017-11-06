@@ -38,12 +38,11 @@ import protos.Connect;
 
 public class GroupSetPresenter implements GroupSetContract.Presenter{
 
+    private final String TAG_ADD = "GROUP_ADD";
     private GroupSetContract.BView view;
 
     private String roomKey;
     private Activity activity;
-
-    private final String TAG_ADD = "GROUP_ADD";
 
     public GroupSetPresenter(GroupSetContract.BView view) {
         this.view = view;
@@ -107,8 +106,8 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
 
         view.groupName(groupEntity.getName());
 
-        String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myPublicKey);
+        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myUid);
         String myAlias = "";
         if (myMember != null) {
             myAlias = TextUtils.isEmpty(myMember.getNick()) ? myMember.getUsername() : myMember.getNick();

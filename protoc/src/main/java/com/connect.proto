@@ -228,11 +228,10 @@ string uid = 1;
 
 //setting ===============
 message Privacy {
-bool uid=1;
-bool phone_num=2;
-bool verify=3;
-bool sync_phone_book=4;
-bool recommend = 5;
+bool phone_num = 1;
+bool verify = 2;
+bool sync_phone_book = 3;
+bool recommend = 4;
 }
 
 message DeviceToken {
@@ -1393,4 +1392,9 @@ message UserInfoBase {
     string username = 1;
     string avatar = 2;
     string uid = 3;
+}
+
+
+message UsersInfoBase {
+repeated UserInfoBase users=1;
 }

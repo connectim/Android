@@ -50,8 +50,9 @@ public class MessageReceiver implements MessageListener {
     }
 
     @Override
-    public void singleChat(Connect.ChatMessage chatMessage, String publicKey, byte[] contents) throws Exception {
-        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(publicKey);
+    public void singleChat(Connect.ChatMessage chatMessage, byte[] contents) throws Exception {
+        String friendUid = chatMessage.getFrom();
+        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendUid);
         if (contactEntity == null) {
             return;
         }
@@ -81,7 +82,7 @@ public class MessageReceiver implements MessageListener {
                     MessageHelper.getInstance().insertMsgExtEntity(messageEntity);
 
                     Connect.DestructMessage destructMessage = Connect.DestructMessage.parseFrom(contents);
-                    ConversionSettingHelper.getInstance().updateBurnTime(publicKey, destructMessage.getTime());
+                    ConversionSettingHelper.getInstance().updateBurnTime(friendUid, destructMessage.getTime());
                     break;
                 case Self_destruct_Receipt:
                     Connect.ReadReceiptMessage readReceiptMessage = Connect.ReadReceiptMessage.parseFrom(contents);

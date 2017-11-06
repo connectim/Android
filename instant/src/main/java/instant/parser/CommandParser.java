@@ -119,8 +119,6 @@ public class CommandParser extends InterParse {
      * @throws Exception
      */
     private void receiveOffLineMsgs(ByteBuffer buffer) throws Exception {
-        //ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.START);
-
         Connect.StructData structData = imTransferToStructData(buffer);
         byte[] unGzip = unGZip(structData.getPlainData().toByteArray());
         //Whether offline news has been exhausted
@@ -436,6 +434,10 @@ public class CommandParser extends InterParse {
      */
     private void friencChatCookie(ByteString buffer, String msgid) throws Exception {
         Connect.ChatCookie chatCookie = Connect.ChatCookie.parseFrom(buffer);
+        if (!SupportKeyUril.verifySign(chatCookie.getCaPub(), chatCookie.getSign(), chatCookie.getData().toByteArray())) {
+            throw new Exception("Validation fails");
+        }
+
         Connect.ChatCookieData cookieData = chatCookie.getData();
         if (TextUtils.isEmpty(cookieData.getChatPubKey())) {//friend use old protocal
             return;
