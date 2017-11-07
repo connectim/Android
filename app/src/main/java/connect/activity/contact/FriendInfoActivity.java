@@ -191,7 +191,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         String remark = friendEntity.getRemark() == null ? "" : friendEntity.getRemark();
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.setFriend(friendEntity.getUid(), remark, !isSele, msgSendBean);
+        userOrderBean.settingFriend(friendEntity.getUid(), remark, !isSele, isSele ? "common" : "common_del", msgSendBean);
     }
 
     @OnClick(R.id.add_block_tb)

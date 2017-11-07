@@ -627,10 +627,19 @@ message SyncRelationship {
 string version = 1;
 }
 
+//category:
+//"ADD":        "add",
+//"DEL":        "del",
+//"COMMON":     "common",
+//"COMMON_DEL": "common_del",
+//"BLACK":      "black",
+//"BLACK_DEL":  "black_del",
+//"REMARK":     "remark",
 message SettingFriendInfo {
 string uid = 1;
 string remark = 2;
 bool common = 3;
+string category = 4;
 }
 
 message AddFriendRequest {
@@ -654,7 +663,7 @@ string uid = 1;
 }
 
 message ReceiveFriendRequest {
-FriendInfo sender = 1;
+UserInfoBase sender = 1;
 string  tips = 2;
 int32 source = 3;
 }

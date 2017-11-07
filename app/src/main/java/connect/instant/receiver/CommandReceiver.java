@@ -18,11 +18,9 @@ import connect.activity.contact.model.ConvertUtil;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.MsgNoticeBean;
-import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
@@ -233,7 +231,7 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void receiverFriendRequest(Connect.ReceiveFriendRequest friendRequest) {
-        if (friendRequest != null && friendRequest.getSender() != null && !friendRequest.getSender().getCaPub().equals("")) {
+        if (friendRequest != null && friendRequest.getSender() != null && !friendRequest.getSender().getUid().equals("")) {
             ConvertUtil convertUtil = new ConvertUtil();
             ContactHelper.getInstance().inserFriendQuestEntity(convertUtil.convertFriendRequestEntity(friendRequest));
             ContactNotice.receiverAddFriend();
@@ -244,8 +242,11 @@ public class CommandReceiver implements CommandListener {
     public void acceptFriendRequest(Connect.FriendListChange listChange) {
         Connect.FriendInfo friendInfo = listChange.getChange().getFriendInfo();
 
+        boolean newFriend = false;
         FriendRequestEntity friendRequestEntity = ContactHelper.getInstance().loadFriendRequest(friendInfo.getUid());
-        if (friendRequestEntity != null) {
+        if (friendRequestEntity == null) {
+            newFriend = true;
+        } else {
             friendRequestEntity.setStatus(2);
             ContactHelper.getInstance().inserFriendQuestEntity(friendRequestEntity);
         }
@@ -263,6 +264,19 @@ public class CommandReceiver implements CommandListener {
         ContactHelper.getInstance().insertContact(contactEntity);
 
         ContactNotice.receiverFriend();
+
+        if (newFriend) { // Add a welcome message
+            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+            CFriendChat normalChat = new CFriendChat(contactEntity);
+            String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, contactEntity.getUsername());
+            ChatMsgEntity msgExtEntity = normalChat.txtMsg(content);
+            msgExtEntity.setMessage_from(contactEntity.getUid());
+            msgExtEntity.setMessage_to(myUid);
+            normalChat.updateRoomMsg("", content, TimeUtil.getCurrentTimeInLong(), -1, 1);
+
+            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+        }
+        FailMsgsManager.getInstance().receiveFailMsgs(contactEntity.getUid());
     }
 
     @Override

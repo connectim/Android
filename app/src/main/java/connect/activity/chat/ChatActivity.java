@@ -197,8 +197,10 @@ public class ChatActivity extends BaseChatSendActivity {
                 if (entities.size() < 20 && encryEntity != null) {
                     long lastTime = entities.size() <= 0 ? TimeUtil.getCurrentTimeInLong() :
                             entities.get(0).getCreatetime();
-                    encryEntity.setCreatetime(lastTime);
-                    entities.add(0, encryEntity);
+                    if (Connect.ChatType.forNumber(normalChat.chatType()) != Connect.ChatType.CONNECT_SYSTEM) {
+                        encryEntity.setCreatetime(lastTime);
+                        entities.add(0, encryEntity);
+                    }
                 }
 
                 chatAdapter.insertItems(entities);

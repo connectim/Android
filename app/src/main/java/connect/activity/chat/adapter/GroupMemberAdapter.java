@@ -194,7 +194,9 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
 
     protected void removeGroupMember(final int position,final GroupMemberEntity entity) {
         Connect.DelOrQuitGroupMember delMember = Connect.DelOrQuitGroupMember.newBuilder()
-                .setIdentifier(entity.getUid()).build();
+                .setIdentifier(entity.getIdentifier())
+                .setUid(entity.getUid())
+                .build();
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REMOVE, delMember, new ResultCall<Connect.HttpResponse>() {
             @Override

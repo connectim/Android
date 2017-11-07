@@ -23,7 +23,6 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
 import connect.widget.pullTorefresh.EndlessScrollListener;
-import instant.bean.UserOrderBean;
 
 /**
  * Recommend friends
@@ -104,8 +103,7 @@ public class AddFriendRecommendActivity extends BaseActivity {
 
         @Override
         public void deleteItem(int position, RecommandFriendEntity entity) {
-            UserOrderBean userOrderBean = new UserOrderBean();
-            userOrderBean.noInterested(entity.getAddress(), "Not interested in");
+            //qwert
 
             ContactHelper.getInstance().removeRecommendEntity(entity.getPub_key());
             adapter.closeMenu();

@@ -117,7 +117,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         view.groupQRCode();
 
         boolean visiable = false;
-        if (!(myMember.getRole() == null || myMember.getRole() == 0)) {
+        if (!(myMember == null || myMember.getRole() == null || myMember.getRole() == 0)) {
             visiable = true;
         }
         view.groupManager(visiable);

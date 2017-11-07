@@ -26,7 +26,6 @@ public class MsgSendBean implements Serializable {
         TypeDeleteFriend,//remove friend
         TypeAddFavorites,//add command friend
         TypeFriendRemark,//friend nickname
-        TypeRecommendNoInterested,//Recommend friends are not interested in
         TypeOutPacket,//outer lucky pakcet
         TypeOutTransfer,//outer transfer
     }

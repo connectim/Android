@@ -11,9 +11,8 @@ import connect.activity.contact.bean.SourceType;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.utils.cryption.SupportKeyUril;
-import instant.bean.ChatMsgEntity;
 import connect.utils.glide.GlideUtil;
+import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
 /**
@@ -40,12 +39,12 @@ public class MsgCardHolder extends MsgChatHolder {
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String uid = cardMessage.getUid();
                 ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(cardMessage.getUid());
                 if (entity == null) {
-                    String address = SupportKeyUril.getAddressFromPubKey(cardMessage.getUid());
-                    StrangerInfoActivity.startActivity((Activity) context, address, SourceType.CARD);
+                    StrangerInfoActivity.startActivity((Activity) context, uid, SourceType.CARD);
                 } else {
-                    FriendInfoActivity.startActivity((Activity) context, cardMessage.getUid());
+                    FriendInfoActivity.startActivity((Activity) context, uid);
                 }
             }
         });
