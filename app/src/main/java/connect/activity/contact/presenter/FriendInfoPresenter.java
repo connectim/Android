@@ -101,25 +101,25 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     mView.setCommon(sendBean.getCommon());
                 } else if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
                     ContactHelper.getInstance().deleteEntity(sendBean.getUid());
-                    ContactHelper.getInstance().deleteRequestEntity(sendBean.getPubkey());
+                    ContactHelper.getInstance().deleteRequestEntity(sendBean.getUid());
                     ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
-
                     ContactNotice.receiverContact();
+
                     ToastEUtil.makeText(mView.getActivity(), R.string.Link_Delete_Successful).show();
                     ActivityUtil.goBack(mView.getActivity());
                 }
                 break;
             case MSG_SEND_FAIL:
                 Integer errorCode = (Integer) objs[1];
-                if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
+                if(sendBean.getType() == MsgSendBean.SendType.TypeAddFavorites) {
+                    ToastUtil.getInstance().showToast(errorCode + "");
+                }else if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Link_Delete_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
-                    ContactHelper.getInstance().deleteEntity(sendBean.getUid());
+                    /*ContactHelper.getInstance().deleteEntity(sendBean.getUid());
                     ContactHelper.getInstance().deleteRequestEntity(sendBean.getPubkey());
                     ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
                     ContactNotice.receiverContact();
-                    ActivityUtil.goBack(mView.getActivity());
-                } else {
-                    ToastUtil.getInstance().showToast(errorCode + "");
+                    ActivityUtil.goBack(mView.getActivity());*/
                 }
                 break;
         }
@@ -127,9 +127,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
 
     /**
      * Get the latest information from friends
-     *
-     * @param value  1: uid   2:connectid
-     * @param friendEntity
+     * 1: uid   2:connectid
      */
     @Override
     public void requestUserInfo(String value, final ContactEntity friendEntity) {
@@ -173,14 +171,11 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
 
     /**
      * Set friends blacklist
-     *
-     * @param block
-     * @param address friend address
      */
-    @Override
-    public void requestBlock(final boolean block,String address) {
+    /*@Override
+    public void requestBlock(final boolean block,String uid) {
         Connect.UserIdentifier userIdentifier = Connect.UserIdentifier.newBuilder()
-                .setUid(address)
+                .setUid(uid)
                 .build();
         String url;
         if (block) {
@@ -197,5 +192,5 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             @Override
             public void onError(Connect.HttpResponse response) {}
         });
-    }
+    }*/
 }

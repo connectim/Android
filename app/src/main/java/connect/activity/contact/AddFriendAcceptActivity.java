@@ -80,14 +80,13 @@ public class AddFriendAcceptActivity extends BaseActivity {
         requestEntity = (FriendRequestEntity) getIntent().getExtras().getSerializable("bean");
         GlideUtil.loadAvatarRound(avaterRimg, requestEntity.getAvatar());
         nameTv.setText(requestEntity.getUsername());
+        addressTv.setText(requestEntity.getUid());
         sourceTv.setText(SourceType.getString(requestEntity.getSource()));
         if (!TextUtils.isEmpty(requestEntity.getTips())) {
             tipsRela.setVisibility(View.VISIBLE);
             tipsRela.setBackgroundResource(R.mipmap.message_box_white2x);
             tipsTv.setText(requestEntity.getTips());
         }
-
-        addressTv.setText(requestEntity.getUid());
     }
 
     @OnClick(R.id.left_img)

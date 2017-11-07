@@ -57,7 +57,7 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_add_friend);
         ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
         initView();
     }
 
@@ -78,12 +78,13 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
         new AddFriendPresenter(this).start();
 
         presenter.initGrid(recycler);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         requestAdapter = new NewRequestAdapter(mActivity);
+        requestAdapter.setOnAcceptListener(onAcceptListener);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.addItemDecoration(new LineDecoration(mActivity));
         recyclerview.setAdapter(requestAdapter);
-        requestAdapter.setOnAcceptListener(onAcceptListener);
         recyclerview.addOnScrollListener(onScrollListener);
 
         presenter.requestRecommendUser();
@@ -98,13 +99,13 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
     @Override
     public void itemClick(int tag) {
         switch (tag) {
-            case 0://scan qrcode
+            case 0:
                 ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
                 break;
             case 1:
                 ActivityUtil.next(mActivity, AddFriendPhoneActivity.class);
                 break;
-            case 2://share
+            case 2:
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, ConfigUtil.getInstance().shareCardAddress()
@@ -128,14 +129,15 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
     private NewRequestAdapter.OnAcceptListener onAcceptListener = new NewRequestAdapter.OnAcceptListener() {
         @Override
         public void accept(int position, FriendRequestEntity entity) {
-            if (entity.getStatus() == 4) {
+            if (entity.getStatus() == NewRequestAdapter.RECOMMEND_ADD_FRIEND) {
                 StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
             } else {
-                MsgSendBean msgSendBean = new MsgSendBean();
+                /*MsgSendBean msgSendBean = new MsgSendBean();
                 msgSendBean.setType(MsgSendBean.SendType.TypeAcceptFriendQuest);
                 msgSendBean.setUid(entity.getUid());
                 UserOrderBean userOrderBean = new UserOrderBean();
-                userOrderBean.acceptFriendRequest(entity.getUid(), entity.getSource(), msgSendBean);
+                userOrderBean.acceptFriendRequest(entity.getUid(), entity.getSource(), msgSendBean);*/
+                AddFriendAcceptActivity.startActivity(mActivity, entity);
             }
         }
 
@@ -144,18 +146,15 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
             if (TextUtils.isEmpty(entity.getUid())) {
                 //load more
                 ActivityUtil.next(mActivity, AddFriendRecommendActivity.class);
-            } else if (entity.getStatus() == 4) {
+            } else if (entity.getStatus() == NewRequestAdapter.RECOMMEND_ADD_FRIEND) {
                 //introduce
                 StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
             } else {
-                if (entity.getStatus() == 1) {
-                    AddFriendAcceptActivity.startActivity(mActivity, entity);
-                    return;
-                }
                 ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(entity.getUid());
-                if (friendEntity == null) {
-                    StrangerInfoActivity.startActivity(mActivity, entity.getUid(),
-                            SourceType.getSourceType(entity.getSource()));
+                if (entity.getStatus() == NewRequestAdapter.ACCEPTE_ADD_FRIEND) {
+                    AddFriendAcceptActivity.startActivity(mActivity, entity);
+                } else if (friendEntity == null) {
+                    StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.getSourceType(entity.getSource()));
                 } else {
                     FriendInfoActivity.startActivity(mActivity, entity.getUid());
                 }
@@ -165,27 +164,23 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
         @Override
         public void deleteItem(int position, FriendRequestEntity entity) {
             requestAdapter.closeMenu();
-            if (entity.getStatus() == 4) {
-                //introduce
-                MsgSendBean msgSendBean = new MsgSendBean();
+            if (entity.getStatus() == NewRequestAdapter.RECOMMEND_ADD_FRIEND) {
+                /*MsgSendBean msgSendBean = new MsgSendBean();
                 msgSendBean.setType(MsgSendBean.SendType.TypeRecommendNoInterested);
                 msgSendBean.setPubkey(entity.getUid());
                 UserOrderBean userOrderBean = new UserOrderBean();
-                userOrderBean.noInterested(entity.getUid(), msgSendBean);
+                userOrderBean.noInterested(entity.getUid(), msgSendBean);*/
             } else {
                 ContactHelper.getInstance().deleteRequestEntity(entity.getUid());
                 presenter.queryFriend();
-                ContactNotice.receiverAddFriend();
             }
         }
     };
 
     /**
      * The message returns the result
-     *
-     * @param notice result
      */
-    @Subscribe
+    /*@Subscribe
     public void onEventMainThread(MsgNoticeBean notice) {
         Object[] objs = null;
         if (notice.object != null) {
@@ -195,7 +190,8 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
             case MSG_SEND_SUCCESS:
                 MsgSendBean sendBean = (MsgSendBean) objs[0];
                 if (sendBean.getType() == MsgSendBean.SendType.TypeAcceptFriendQuest) {
-                    presenter.updateRequestAddSuccess(ContactHelper.getInstance().loadFriendRequest(sendBean.getUid()));
+                    presenter.updateRequestStatus(ContactHelper.getInstance().loadFriendRequest(sendBean.getUid()),
+                            NewRequestAdapter.FINISH_ADD_FRIEND);
                 } else if (sendBean.getType() == MsgSendBean.SendType.TypeRecommendNoInterested) {
                     ContactHelper.getInstance().removeRecommendEntity(sendBean.getPubkey());
                     presenter.queryFriend();
@@ -207,7 +203,7 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
             default:
                 break;
         }
-    }
+    }*/
 
     @Override
     public void setPresenter(AddFriendContract.Presenter presenter) {
@@ -221,19 +217,15 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
 
     /**
      * After the access to the data update interface
-     *
-     * @param sizeRecommend recommend count
-     * @param listFina list data
      */
     @Override
-    public void notifyData(int sizeRecommend, ArrayList<FriendRequestEntity> listFina) {
-        requestAdapter.setRecommendCount(sizeRecommend);
-        requestAdapter.setDataNotify(listFina);
+    public void notifyData(boolean isShowMoreRecommend, ArrayList<FriendRequestEntity> listFina) {
+        requestAdapter.setDataNotify(isShowMoreRecommend, listFina);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        //EventBus.getDefault().unregister(this);
     }
 }

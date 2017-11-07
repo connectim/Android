@@ -29,6 +29,7 @@ public class MsgSendBean implements Serializable {
         TypeRecommendNoInterested,//Recommend friends are not interested in
         TypeOutPacket,//outer lucky pakcet
         TypeOutTransfer,//outer transfer
+        TypeFriendBlock,//friend block
     }
 
     public String getUsername() {

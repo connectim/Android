@@ -22,19 +22,23 @@ import connect.widget.SideScrollView;
 
 public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.ViewHolder> {
 
+    public static int ACCEPTE_ADD_FRIEND = 1;
+    public static int FINISH_ADD_FRIEND = 2;
+    public static int VALIDATION_ADD_FRIEND = 3;
+    public static int RECOMMEND_ADD_FRIEND = 4;
     private ArrayList<FriendRequestEntity> mList = new ArrayList<>();
     private OnAcceptListener onAcceptListener;
-    private int recommendCount;
-
     private Activity activity;
+    private boolean isShowMoreRecommend;
 
     public NewRequestAdapter(Activity activity){
         this.activity=activity;
     }
 
-    public void setDataNotify(List list) {
+    public void setDataNotify(boolean isShowMoreRecommend, List list) {
         mList.clear();
         mList.addAll(0, list);
+        this.isShowMoreRecommend = isShowMoreRecommend;
         notifyDataSetChanged();
     }
 
@@ -49,28 +53,12 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         final FriendRequestEntity friendRequestEntity = mList.get(position);
-
         viewHolder.txt.setVisibility(View.VISIBLE);
         viewHolder.sideScrollView.setVisibility(View.VISIBLE);
 
-        if (position == 0 || (mList.get(position - 1).getStatus() == 4 && friendRequestEntity.getStatus() != 4)) {
-            viewHolder.topRela.setVisibility(View.VISIBLE);
-            if(friendRequestEntity.getStatus() == 4){
-                viewHolder.txt.setText(R.string.Link_People_you_may_know);
-                if(recommendCount == 4){
-                    viewHolder.moreTv.setVisibility(View.VISIBLE);
-                    viewHolder.moreTv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onAcceptListener.itemClick(position, new FriendRequestEntity());
-                        }
-                    });
-                }
-            }else{
-                viewHolder.txt.setText(R.string.Link_Your_invitation);
-                viewHolder.moreTv.setVisibility(View.GONE);
-            }
-        } else {
+        if(position == 0 || (friendRequestEntity.getStatus() != mList.get(position - 1).getStatus())){
+            showTopView(friendRequestEntity, position, viewHolder);
+        }else {
             viewHolder.topRela.setVisibility(View.GONE);
         }
 
@@ -80,30 +68,12 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
         showRequestBtn(viewHolder.statusBtn, friendRequestEntity, position);
         viewHolder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
         viewHolder.contentLayout.setTag(viewHolder.sideScrollView);
-        viewHolder.contentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SideScrollView scrollView = (SideScrollView) v.getTag();
-                if (menuIsOpen(scrollView)) {
-                    closeMenu();
-                }
-                onAcceptListener.itemClick(position, friendRequestEntity);
-            }
-        });
-
-        viewHolder.statusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onAcceptListener.accept(position, friendRequestEntity);
-            }
-        });
-        viewHolder.deleteTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeMenu();
-                onAcceptListener.deleteItem(position, friendRequestEntity);
-            }
-        });
+        viewHolder.contentLayout.setOnClickListener(onClickListener);
+        viewHolder.contentLayout.setTag(position);
+        viewHolder.statusBtn.setOnClickListener(onClickListener);
+        viewHolder.statusBtn.setTag(position);
+        viewHolder.deleteTv.setOnClickListener(onClickListener);
+        viewHolder.deleteTv.setTag(position);
     }
 
     @Override
@@ -116,11 +86,61 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
         return mList.size();
     }
 
+    View.OnClickListener onClickListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            int position = (int)v.getTag();
+            FriendRequestEntity entity = mList.get(position);
+            switch (v.getId()){
+                case R.id.content_layout:
+                    SideScrollView scrollView = (SideScrollView) v.getTag();
+                    if (menuIsOpen(scrollView)) {
+                        closeMenu();
+                    }
+                    onAcceptListener.itemClick(position, entity);
+                    break;
+                case R.id.status_btn:
+                    onAcceptListener.accept(position, entity);
+                    break;
+                case R.id.delete_tv:
+                    closeMenu();
+                    onAcceptListener.deleteItem(position, entity);
+                    break;
+                case R.id.more_tv:
+                    onAcceptListener.itemClick(position, new FriendRequestEntity());
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private void showTopView(FriendRequestEntity entity, final int position, ViewHolder viewHolder){
+        viewHolder.topRela.setVisibility(View.VISIBLE);
+        if(entity.getStatus() == RECOMMEND_ADD_FRIEND){
+            viewHolder.txt.setText(R.string.Link_People_you_may_know);
+            if(isShowMoreRecommend){
+                viewHolder.moreTv.setVisibility(View.VISIBLE);
+                viewHolder.moreTv.setTag(position);
+
+                viewHolder.moreTv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onAcceptListener.itemClick(position, new FriendRequestEntity());
+                    }
+                });
+            }
+        }else{
+            viewHolder.txt.setText(R.string.Link_Your_invitation);
+            viewHolder.moreTv.setVisibility(View.GONE);
+        }
+    }
+
     private void showRequestBtn(Button btn, final FriendRequestEntity requestEntity, final int position) {
         switch (requestEntity.getStatus()) {//1：To be accepted  2：Have been added 3：In the validation 4：Recommend friends
             case 1:
             case 4:
-                if(requestEntity.getStatus() == 1){
+                if(requestEntity.getStatus() == ACCEPTE_ADD_FRIEND){
                     btn.setText(R.string.Link_Accept);
                 }else{
                     btn.setText(R.string.Link_Add);
@@ -180,10 +200,6 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
             moreTv= (TextView) itemview.findViewById(R.id.more_tv);
             ((SideScrollView) itemView.findViewById(R.id.side_scroll_view)).setSideScrollListener(sideScrollListener);
         }
-    }
-
-    public void setRecommendCount(int count){
-        this.recommendCount = count;
     }
 
     public Boolean menuIsOpen(SideScrollView scrollView) {

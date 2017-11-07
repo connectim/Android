@@ -81,6 +81,7 @@ public class UserInfoNamePresenter implements UserInfoNameContract.Presenter{
                     public void onResponse(Connect.HttpNotSignResponse response) {
                         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                         userBean.setConnectId(value);
+                        userBean.setUpdateConnectId(true);
                         SharedPreferenceUtil.getInstance().putUser(userBean);
                         mView.setFinish();
                     }

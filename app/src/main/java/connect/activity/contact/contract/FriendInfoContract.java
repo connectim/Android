@@ -26,7 +26,7 @@ public interface FriendInfoContract {
 
         void checkOnEvent(MsgNoticeBean notice);
 
-        void requestBlock(boolean block,String address);
+        //void requestBlock(boolean block,String uid);
 
         ImageWatcher getImageWatcher();
 

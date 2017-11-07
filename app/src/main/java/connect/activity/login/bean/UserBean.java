@@ -13,10 +13,11 @@ public class UserBean implements Serializable{
     private String connectId;
     private String uid;
     private boolean isOpenPassword = false;
+    private boolean updateConnectId;
 
     public UserBean() {}
 
-    public UserBean(String name, String avatar, String priKey, String pubKey, String caPublicKey, String phone, String connectId, String uid) {
+    public UserBean(String name, String avatar, String priKey, String pubKey, String caPublicKey, String phone, String connectId, String uid, boolean updateConnectId) {
         this.name = name;
         this.avatar = avatar;
         this.priKey = priKey;
@@ -25,6 +26,7 @@ public class UserBean implements Serializable{
         this.phone = phone;
         this.connectId = connectId;
         this.uid = uid;
+        this.updateConnectId = updateConnectId;
     }
 
     public String getName() {
@@ -97,5 +99,13 @@ public class UserBean implements Serializable{
 
     public void setCaPublicKey(String caPublicKey) {
         this.caPublicKey = caPublicKey;
+    }
+
+    public boolean isUpdateConnectId() {
+        return updateConnectId;
+    }
+
+    public void setUpdateConnectId(boolean updateConnectId) {
+        this.updateConnectId = updateConnectId;
     }
 }

@@ -82,11 +82,11 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     private FriendInfoActivity mActivity;
     private FriendInfoContract.Presenter presenter;
     private ContactEntity friendEntity;
-    private String pubKey;
+    private String uid;
 
-    public static void startActivity(Activity activity, String pubKey) {
+    public static void startActivity(Activity activity, String uid) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("pubKey", pubKey);
+        bundle.putSerializable("uid", uid);
         ActivityUtil.next(activity, FriendInfoActivity.class, bundle);
     }
 
@@ -103,7 +103,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     protected void onStart() {
         super.onStart();
         if (null != presenter) {
-            friendEntity = ContactHelper.getInstance().loadFriendEntity(pubKey);
+            friendEntity = ContactHelper.getInstance().loadFriendEntity(uid);
             updateView(friendEntity);
         }
     }
@@ -116,14 +116,14 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         toolbar.setTitle(null, R.string.Link_Profile);
 
         Bundle bundle = getIntent().getExtras();
-        pubKey = bundle.getString("pubKey");
-        friendEntity = ContactHelper.getInstance().loadFriendEntity(pubKey);
+        uid = bundle.getString("uid");
+        friendEntity = ContactHelper.getInstance().loadFriendEntity(uid);
         updateView(friendEntity);
 
         new FriendInfoPresenter(this).start();
         presenter.requestUserInfo(friendEntity.getUid(), friendEntity);
 
-        if(WalletManager.isShowWallet()){
+        if(!WalletManager.isShowWallet()){
             transferImgs.setVisibility(View.GONE);
         }
     }
@@ -197,7 +197,9 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @OnClick(R.id.add_block_tb)
     void switchBlock(View view) {
         boolean isSele = addBlockTb.isSelected();
-        presenter.requestBlock(!isSele, friendEntity.getUid());
+        //presenter.requestBlock(!isSele, friendEntity.getUid());
+        //设置黑名单走Socket
+
     }
 
     @OnClick(R.id.delete_friend_tv)

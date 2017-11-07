@@ -1,14 +1,15 @@
 package connect.activity.contact;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -17,13 +18,15 @@ import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.RecommendAdapter;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.home.view.LineDecoration;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.RecommandFriendEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
 import connect.widget.pullTorefresh.EndlessScrollListener;
-import instant.bean.UserOrderBean;
+import protos.Connect;
 
 /**
  * Recommend friends
@@ -54,7 +57,7 @@ public class AddFriendRecommendActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         page = 1;
-        queryRecommend();
+        requestRecommendUser();
     }
 
     @Override
@@ -73,13 +76,19 @@ public class AddFriendRecommendActivity extends BaseActivity {
         adapter = new RecommendAdapter(mActivity);
         adapter.setOnAddListener(onAddListener);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(endlessScrollListener);
+        //recyclerview.addOnScrollListener(endlessScrollListener);
+    }
+
+    @OnClick(R.id.left_img)
+    void goBack(View view) {
+        ActivityUtil.goBack(mActivity);
     }
 
     SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
         @Override
         public void onRefresh() {
-            refreshview.setRefreshing(false);
+            page = 1;
+            requestRecommendUser();
         }
     };
 
@@ -87,59 +96,62 @@ public class AddFriendRecommendActivity extends BaseActivity {
         @Override
         public void onLoadMore() {
             page++;
-            queryRecommend();
+            requestRecommendUser();
         }
     };
 
     private RecommendAdapter.OnAddListener onAddListener = new RecommendAdapter.OnAddListener() {
         @Override
-        public void add(int position, RecommandFriendEntity entity) {
-            StrangerInfoActivity.startActivity(mActivity, entity.getAddress(), SourceType.RECOMMEND);
+        public void add(int position, Connect.UserInfoBase entity) {
+            StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
         }
 
         @Override
-        public void itemClick(int position, RecommandFriendEntity entity) {
-            StrangerInfoActivity.startActivity(mActivity, entity.getAddress(), SourceType.RECOMMEND);
+        public void itemClick(int position, Connect.UserInfoBase entity) {
+            StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
         }
 
         @Override
-        public void deleteItem(int position, RecommandFriendEntity entity) {
-            UserOrderBean userOrderBean = new UserOrderBean();
-            userOrderBean.noInterested(entity.getAddress(), "Not interested in");
+        public void deleteItem(int position, Connect.UserInfoBase entity) {
+            /*UserOrderBean userOrderBean = new UserOrderBean();
+            userOrderBean.noInterested(entity.getUid(), "Not interested in");*/
+            // Http不感兴趣推荐
 
-            ContactHelper.getInstance().removeRecommendEntity(entity.getPub_key());
             adapter.closeMenu();
 
-            ArrayList<RecommandFriendEntity> data = adapter.getData();
+            ArrayList<Connect.UserInfoBase> data = adapter.getData();
             data.remove(entity);
             adapter.notifyDataSetChanged();
         }
     };
 
-    @OnClick(R.id.left_img)
-    void goBack(View view) {
-        ActivityUtil.goBack(mActivity);
-    }
+    public void requestRecommendUser() {
+        // 可能需要分页拉取推荐
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_RECOMMEND, ByteString.copyFrom(new byte[]{}),
+                new ResultCall<Connect.HttpResponse>() {
+                    @Override
+                    public void onResponse(Connect.HttpResponse response) {
+                        try {
+                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            if(structData != null){
+                                Connect.UsersInfoBase usersInfoBase = Connect.UsersInfoBase.parseFrom(structData.getPlainData());
+                                refreshview.setRefreshing(false);
+                                adapter.setDataNotify(usersInfoBase.getUsersList(), true);
+                                /*if (page > 1) {
+                                    adapter.setDataNotify(usersInfoBase.getUsersList(), false);
+                                } else {
+                                    adapter.setDataNotify(usersInfoBase.getUsersList(), true);
+                                }*/
+                            }
+                        } catch (InvalidProtocolBufferException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-    private void queryRecommend() {
-        new AsyncTask<Void, Void, List<RecommandFriendEntity>>() {
-            @Override
-            protected List<RecommandFriendEntity> doInBackground(Void... params) {
-                List<RecommandFriendEntity> list = ContactHelper.getInstance().loadRecommendEntity(page, MAX_RECOMMEND_COUNT);
-                return list;
-            }
-
-            @Override
-            protected void onPostExecute(List<RecommandFriendEntity> recommendEntities) {
-                super.onPostExecute(recommendEntities);
-                refreshview.setRefreshing(false);
-                if (page > 1) {
-                    adapter.setDataNotify(recommendEntities, false);
-                } else {
-                    adapter.setDataNotify(recommendEntities, true);
-                }
-            }
-        }.execute();
+                    @Override
+                    public void onError(Connect.HttpResponse response) {}
+                });
     }
 
 }

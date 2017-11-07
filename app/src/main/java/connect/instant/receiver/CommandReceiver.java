@@ -190,7 +190,7 @@ public class CommandReceiver implements CommandListener {
         String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         List<Connect.ChangeRecord> recordsList = changeRecords.getChangeRecordsList();
         for (Connect.ChangeRecord record : recordsList) {
-            Connect.UserInfo userInfo = record.getFriendInfo();
+            Connect.FriendInfo userInfo = record.getFriendInfo();
             String uid = userInfo.getUid();
 
             switch (record.getCategory()) {
@@ -229,7 +229,7 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void receiverFriendRequest(Connect.ReceiveFriendRequest friendRequest) {
-        if (friendRequest != null && friendRequest.getSender() != null && !friendRequest.getSender().getPubKey().equals("")) {
+        if (friendRequest != null && friendRequest.getSender() != null && !friendRequest.getSender().getUid().equals("")) {
             ConvertUtil convertUtil = new ConvertUtil();
             ContactHelper.getInstance().inserFriendQuestEntity(convertUtil.convertFriendRequestEntity(friendRequest));
             ContactNotice.receiverAddFriend();
@@ -238,7 +238,7 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void acceptFriendRequest(Connect.FriendListChange listChange) {
-        Connect.UserInfo userInfo = listChange.getChange().getFriendInfo();
+        Connect.FriendInfo userInfo = listChange.getChange().getFriendInfo();
 
         FriendRequestEntity friendRequestEntity = ContactHelper.getInstance().loadFriendRequest(userInfo.getUid());
         if (friendRequestEntity != null) {
@@ -258,7 +258,7 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void acceptDelFriend(Connect.FriendListChange listChange) {
-        Connect.UserInfo userInfo = listChange.getChange().getFriendInfo();
+        Connect.FriendInfo userInfo = listChange.getChange().getFriendInfo();
 
         ContactHelper.getInstance().deleteEntity(userInfo.getUid());
         ContactNotice.receiverFriend();

@@ -128,7 +128,7 @@ public class LoginPassVerifyActivity extends BaseActivity {
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
                     UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), priKey, pubKey,
-                            userInfo.getCaPub(),mobile, userInfo.getConnectId(), userInfo.getUid());
+                            userInfo.getCaPub(),mobile, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
                     userBean.setOpenPassword(true);
                     SharedPreferenceUtil.getInstance().putUser(userBean);
 

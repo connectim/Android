@@ -53,6 +53,7 @@ public class SearchFriendResultActivity extends BaseActivity {
     LinearLayout resultLin;
 
     private SearchFriendResultActivity mActivity;
+    private Connect.UserInfo userInfoBase;
 
     public static void startActivity(Activity activity, String text) {
         Bundle bundle = new Bundle();
@@ -75,68 +76,12 @@ public class SearchFriendResultActivity extends BaseActivity {
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Search_friends);
         toolbar.setRightImg(R.mipmap.search3x);
-        toolbar.setRightListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                search();
-            }
-        });
 
         searchEdit.setOnKeyListener(keyListener);
         searchEdit.addTextChangedListener(textWatcher);
         String text = getIntent().getExtras().getString("text");
         searchEdit.setText(text);
-        if(!TextUtils.isEmpty(text)){
-            requestSearch(text);
-        }
-        search();
-    }
-
-    private void updateView(final Connect.UserInfo userInfo){
-        resultLin.removeAllViews();
-        if(userInfo != null){
-            noResultTv.setVisibility(View.GONE);
-            View view = LayoutInflater.from(mActivity).inflate(R.layout.item_contact_search_result,null);
-            ImageView avatar = (ImageView)view.findViewById(R.id.avatar_rimg);
-            TextView nickname = (TextView)view.findViewById(R.id.nickname_tv);
-            Button statusBtn = (Button)view.findViewById(R.id.status_btn);
-            statusBtn.setText(R.string.Link_Add);
-            GlideUtil.loadAvatarRound(avatar,userInfo.getAvatar());
-            nickname.setText(userInfo.getUsername());
-
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
-            if(userInfo.getPubKey().equals(SharedPreferenceUtil.getInstance().getUser().getPubKey())){
-                resultLin.removeAllViews();
-                noResultTv.setVisibility(View.VISIBLE);
-            }else if(friendEntity != null){
-                statusBtn.setVisibility(View.GONE);
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        FriendInfoActivity.startActivity(mActivity,userInfo.getPubKey());
-                    }
-                });
-                resultLin.addView(view);
-            }else{
-                statusBtn.setVisibility(View.VISIBLE);
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        StrangerInfoActivity.startActivity(mActivity,userInfo.getUid(), SourceType.SEARCH);
-                    }
-                });
-                statusBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        StrangerInfoActivity.startActivity(mActivity,userInfo.getUid(), SourceType.SEARCH);
-                    }
-                });
-                resultLin.addView(view);
-            }
-        }else{
-            resultLin.removeAllViews();
-            noResultTv.setVisibility(View.VISIBLE);
-        }
+        requestSearch();
     }
 
     @OnClick(R.id.left_img)
@@ -144,9 +89,55 @@ public class SearchFriendResultActivity extends BaseActivity {
         ActivityUtil.goBack(mActivity);
     }
 
+    @OnClick(R.id.right_lin)
+    void searchUser(View view) {
+        requestSearch();
+    }
+
     @OnClick(R.id.del_tv)
     void delEdit(View view) {
         searchEdit.setText("");
+    }
+
+    private void updateView(Connect.UserInfo userInfo){
+        resultLin.removeAllViews();
+        if(userInfo == null){
+            resultLin.removeAllViews();
+            noResultTv.setVisibility(View.VISIBLE);
+            return;
+        }else{
+            userInfoBase = userInfo;
+            noResultTv.setVisibility(View.GONE);
+        }
+
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_contact_search_result,null);
+        ImageView avatar = (ImageView)view.findViewById(R.id.avatar_rimg);
+        TextView nickname = (TextView)view.findViewById(R.id.nickname_tv);
+        Button statusBtn = (Button)view.findViewById(R.id.status_btn);
+        statusBtn.setText(R.string.Link_Add);
+        GlideUtil.loadAvatarRound(avatar,userInfo.getAvatar());
+        nickname.setText(userInfo.getUsername());
+
+        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
+        if(userInfo.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getUid())){
+            // Query the user themselves
+            resultLin.removeAllViews();
+            noResultTv.setVisibility(View.VISIBLE);
+        }else if(friendEntity != null){
+            // Query the user is already a good friend relationship
+            statusBtn.setVisibility(View.GONE);
+            view.setOnClickListener(onClickListener);
+            view.setTag(1);
+            resultLin.addView(view);
+        }else{
+            // Query the user is a stranger
+            statusBtn.setVisibility(View.VISIBLE);
+            view.setOnClickListener(onClickListener);
+            statusBtn.setOnClickListener(onClickListener);
+            view.setTag(2);
+            statusBtn.setTag(2);
+            resultLin.addView(view);
+        }
     }
 
     private View.OnKeyListener keyListener = new View.OnKeyListener(){
@@ -156,7 +147,7 @@ public class SearchFriendResultActivity extends BaseActivity {
                 ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                         .hideSoftInputFromWindow(SearchFriendResultActivity.this.getCurrentFocus()
                                 .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                search();
+                requestSearch();
             }
             return false;
         }
@@ -177,19 +168,29 @@ public class SearchFriendResultActivity extends BaseActivity {
         }
     };
 
-    private void search() {
+    View.OnClickListener onClickListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            int tag = (int)v.getTag();
+            if(tag == 1){
+                FriendInfoActivity.startActivity(mActivity, userInfoBase.getUid());
+            }else if(tag == 2){
+                StrangerInfoActivity.startActivity(mActivity, userInfoBase.getUid(), SourceType.SEARCH);
+            }
+        }
+    };
+
+    private void requestSearch(){
         String searchContext = searchEdit.getText().toString().trim();
         if (TextUtils.isEmpty(searchContext)) {
             resultLin.removeAllViews();
             noResultTv.setVisibility(View.VISIBLE);
             return;
         }
-        requestSearch(searchContext);
-    }
 
-    private void requestSearch(String text){
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
-                .setCriteria(text)
+                .setTyp(2)
+                .setCriteria(searchContext)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
             @Override
