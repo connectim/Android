@@ -16,7 +16,7 @@ public class MsgSendBean implements Serializable {
     private Boolean common;
     private Integer source;
     private String remark;
-    private Boolean block;
+    private Boolean black;
     private SendType type;
     private String tips;
 
@@ -79,12 +79,12 @@ public class MsgSendBean implements Serializable {
         this.remark = remark;
     }
 
-    public Boolean getBlock() {
-        return block;
+    public Boolean getBlack() {
+        return black;
     }
 
-    public void setBlock(Boolean block) {
-        this.block = block;
+    public void setBlack(Boolean black) {
+        this.black = black;
     }
 
     public SendType getType() {

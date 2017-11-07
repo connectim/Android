@@ -85,6 +85,7 @@ public class ContactListManage {
             if(friendEntity.getUid().equals(pubKeyExc)){
                 continue;
             }
+
             ContactBean contactBean = new ContactBean();
             String name = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
             contactBean.setName(name);

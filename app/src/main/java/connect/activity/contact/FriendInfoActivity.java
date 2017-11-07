@@ -188,18 +188,20 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         MsgSendBean msgSendBean = new MsgSendBean();
         msgSendBean.setType(MsgSendBean.SendType.TypeAddFavorites);
         msgSendBean.setCommon(!isSele);
-        String remark = friendEntity.getRemark() == null ? "" : friendEntity.getRemark();
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.settingFriend(friendEntity.getUid(), remark, !isSele, isSele ? "common" : "common_del", msgSendBean);
+        userOrderBean.settingFriend(friendEntity.getUid(), !isSele ? "common" : "common_del", !isSele, "", msgSendBean);
     }
 
     @OnClick(R.id.add_block_tb)
     void switchBlock(View view) {
         boolean isSele = addBlockTb.isSelected();
-        //presenter.requestBlock(!isSele, friendEntity.getUid());
-        //设置黑名单走Socket
+        MsgSendBean msgSendBean = new MsgSendBean();
+        msgSendBean.setType(MsgSendBean.SendType.TypeFriendBlock);
+        msgSendBean.setBlack(!isSele);
 
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.settingFriend(friendEntity.getUid(), !isSele ? "black" : "black_del", !isSele, "", msgSendBean);
     }
 
     @OnClick(R.id.delete_friend_tv)
@@ -212,12 +214,11 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
                 switch (position) {
                     case 0:
                         MsgSendBean msgSendBean = new MsgSendBean();
-                        msgSendBean.setPubkey(friendEntity.getUid());
                         msgSendBean.setUid(friendEntity.getUid());
                         msgSendBean.setType(MsgSendBean.SendType.TypeDeleteFriend);
 
                         UserOrderBean userOrderBean = new UserOrderBean();
-                        userOrderBean.removeRelation(friendEntity.getUid(), msgSendBean);
+                        userOrderBean.settingFriend(friendEntity.getUid(), "del", false, "", msgSendBean);
                         break;
                     default:
                         break;
@@ -258,9 +259,9 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     }
 
     @Override
-    public void setBlock(boolean block) {
-        addBlockTb.setSelected(block);
-        friendEntity.setBlocked(block);
+    public void setBlack(boolean black) {
+        addBlockTb.setSelected(black);
+        friendEntity.setBlocked(black);
         ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
         ContactNotice.receiverFriend();
     }

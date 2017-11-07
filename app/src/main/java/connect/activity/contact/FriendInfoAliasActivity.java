@@ -76,13 +76,13 @@ public class FriendInfoAliasActivity extends BaseActivity {
 
     @OnClick(R.id.save_tv)
     void goSave(View view) {
-        friendEntity.setRemark(nicknameEt.getText().toString());
+        String remark = nicknameEt.getText().toString();
+        friendEntity.setRemark(remark);
         MsgSendBean msgSendBean = new MsgSendBean();
         msgSendBean.setType(MsgSendBean.SendType.TypeFriendRemark);
-        boolean common = friendEntity.getCommon() != null && friendEntity.getCommon() == 1;
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.settingFriend(friendEntity.getUid(), friendEntity.getRemark(), common, "remark", msgSendBean);
+        userOrderBean.settingFriend(friendEntity.getUid(), "remark", false, remark, msgSendBean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

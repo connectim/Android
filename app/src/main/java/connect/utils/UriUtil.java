@@ -171,8 +171,6 @@ public class UriUtil {
     /**======================================================================================
      *                                contact
      * ====================================================================================== */
-    /** add in blacklist */
-    public static String CONNEXT_V1_BLACKLIST = "/connect/v1/blacklist/";
     /** remove from blacklist */
     public static String CONNEXT_V1_BLACKLIST_REMOVE = "/connect/v1/blacklist/remove";
     /** get blacklist */

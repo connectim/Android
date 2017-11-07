@@ -18,7 +18,7 @@ public interface FriendInfoContract {
 
         void setCommon(boolean isCommon);
 
-        void setBlock(boolean block);
+        void setBlack(boolean black);
     }
 
     interface Presenter extends BasePresenter {

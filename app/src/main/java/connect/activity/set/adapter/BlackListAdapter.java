@@ -14,13 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 import protos.Connect;
 
 public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.ViewHolder> {
 
-    private ArrayList<Connect.UserInfo> mDataList = new ArrayList<>();
+    private ArrayList<ContactEntity> mDataList = new ArrayList<>();
     private OnItemChildClickListener childListener;
 
     private Activity activity;
@@ -39,7 +40,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder,final int position) {
-        final Connect.UserInfo userInfo = mDataList.get(position);
+        final ContactEntity userInfo = mDataList.get(position);
         GlideUtil.loadAvatarRound(holder.avatarRimg, userInfo.getAvatar());
         holder.nicknameTv.setText(userInfo.getUsername());
         holder.statusBtn.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +61,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         return mDataList.size();
     }
 
-    public void setDataNotify(List<Connect.UserInfo> list) {
+    public void setDataNotify(List<ContactEntity> list) {
         mDataList.clear();
         mDataList.addAll(list);
         notifyDataSetChanged();
@@ -96,6 +97,6 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     }
 
     public interface OnItemChildClickListener {
-        void remove(int position, Connect.UserInfo userInfo);
+        void remove(int position, ContactEntity userInfo);
     }
 }

@@ -5,27 +5,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.contact.bean.MsgSendBean;
+import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.set.adapter.BlackListAdapter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
+import connect.utils.ToastUtil;
 import connect.widget.TopToolBar;
-import protos.Connect;
+import instant.bean.UserOrderBean;
 
 /**
  * The user black list
@@ -45,6 +44,7 @@ public class PrivateBlackActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_black_list);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         initView();
     }
 
@@ -60,7 +60,9 @@ public class PrivateBlackActivity extends BaseActivity {
         adapter = new BlackListAdapter(mActivity);
         adapter.setOnItemChildListence(childClickListener);
         recyclerview.setAdapter(adapter);
-        requestList();
+
+        List<ContactEntity> list = ContactHelper.getInstance().loadFriendBlack();
+        adapter.setDataNotify(list);
     }
 
     @OnClick(R.id.left_img)
@@ -70,65 +72,46 @@ public class PrivateBlackActivity extends BaseActivity {
 
     private BlackListAdapter.OnItemChildClickListener childClickListener = new BlackListAdapter.OnItemChildClickListener() {
         @Override
-        public void remove(int position, Connect.UserInfo userInfo) {
-            requestBlock(position, userInfo);
+        public void remove(int position, ContactEntity userInfo) {
+            MsgSendBean msgSendBean = new MsgSendBean();
+            msgSendBean.setType(MsgSendBean.SendType.TypeFriendBlock);
+            msgSendBean.setUid(userInfo.getUid());
+            msgSendBean.setTips(position + "");
+
+            UserOrderBean userOrderBean = new UserOrderBean();
+            userOrderBean.settingFriend(userInfo.getUid(), "black_del", false, "", msgSendBean);
         }
     };
 
-    /**
-     * To obtain a black list
-     */
-    private void requestList() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_LIST, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
-                            List<Connect.UserInfo> list = usersInfo.getUsersList();
-                            ArrayList<Connect.UserInfo> listCheck = new ArrayList<>();
-                            for (Connect.UserInfo userInfo : list) {
-                                if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
-                                    listCheck.add(userInfo);
-                                }
-                            }
-                            adapter.setDataNotify(listCheck);
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(MsgNoticeBean notice) {
+        Object[] objs = null;
+        if (notice.object != null) {
+            objs = (Object[]) notice.object;
+        }
+        switch (notice.ntEnum) {
+            case MSG_SEND_SUCCESS:
+                MsgSendBean sendBean = (MsgSendBean) objs[0];
+                if(sendBean.getType() == MsgSendBean.SendType.TypeFriendBlock){
+                    ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(sendBean.getUid());
+                    if (null != friendEntity) {
+                        friendEntity.setBlocked(false);
+                        ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
                     }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {}
-                });
+                    adapter.removeDataNotify(Integer.valueOf(sendBean.getTips()));
+                }
+                break;
+            case MSG_SEND_FAIL:
+                Integer errorCode = (Integer) objs[1];
+                ToastUtil.getInstance().showToast(errorCode + "");
+                break;
+        }
     }
 
-    /**
-     * remove black user
-     *
-     * @param position
-     * @param userInfo
-     */
-    private void requestBlock(final int position, final Connect.UserInfo userInfo) {
-        Connect.UserIdentifier userIdentifier = Connect.UserIdentifier.newBuilder()
-                .setUid(userInfo.getUid())
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_REMOVE, userIdentifier, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
-                if (null != friendEntity) {
-                    friendEntity.setBlocked(false);
-                    ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
-                }
-                adapter.removeDataNotify(position);
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {}
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
 }
