@@ -132,9 +132,11 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         @Override
         public void seleFriend(List<ContactEntity> list) {
             if (list == null || list.size() < 2) {
+                toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_6d6e75);
                 toolbar.setRightListener(null);
             } else {
+                toolbar.setRightTextEnable(true);
                 toolbar.setRightTextColor(R.color.color_green);
                 toolbar.setRightListener(new View.OnClickListener() {
                     @Override

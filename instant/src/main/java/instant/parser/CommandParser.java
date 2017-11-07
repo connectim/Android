@@ -96,9 +96,6 @@ public class CommandParser extends InterParse {
                 case 0x12://outer red packet
                     handlerOuterRedPacket(command.getDetail(), msgid, command.getErrNo());
                     break;
-                case 0x15://Not interested in
-                    receiverInterested(command.getDetail(), msgid, command.getErrNo());
-                    break;
                 case 0x17://upload cookie
                     chatCookieInfo(command.getErrNo());
                     break;
@@ -119,8 +116,6 @@ public class CommandParser extends InterParse {
      * @throws Exception
      */
     private void receiveOffLineMsgs(ByteBuffer buffer) throws Exception {
-        //ConnectState.getInstance().sendEventDelay(ConnectState.ConnectType.START);
-
         Connect.StructData structData = imTransferToStructData(buffer);
         byte[] unGzip = unGZip(structData.getPlainData().toByteArray());
         //Whether offline news has been exhausted
@@ -171,9 +166,6 @@ public class CommandParser extends InterParse {
                                 break;
                             case 0x12://outer red packet
                                 handlerOuterRedPacket(transferDataByte);
-                                break;
-                            case 0x15://Not interested in
-                                receiverInterested(transferDataByte);
                                 break;
                         }
                         break;
@@ -334,7 +326,19 @@ public class CommandParser extends InterParse {
      * @throws Exception
      */
     private void receiverSetUserInfo(ByteString buffer, Object... objs) throws Exception {
-        receiptUserSendAckMsg(objs[0], true);
+        boolean setState = false;
+        if (objs.length <= 0) {
+            setState = true;
+        }
+
+        switch ((int) objs[1]) {
+            case 0:
+                setState = true;
+                break;
+            default:
+                break;
+        }
+        receiptUserSendAckMsg(objs[0], setState);
     }
 
     /**
@@ -355,20 +359,6 @@ public class CommandParser extends InterParse {
     private void updateGroupInfo(ByteString buffer, Object... objs) throws Exception {
         Connect.GroupChange groupChange = Connect.GroupChange.parseFrom(buffer);
         CommandLocalReceiver.receiver.updateGroupChange(groupChange);
-    }
-
-    /**
-     * Not interested in
-     *
-     * @param buffer
-     * @throws Exception
-     */
-    private void receiverInterested(ByteString buffer, Object... objs) throws Exception {
-        if ((int) objs[1] > 0) {//The operation failure Repeated friend recommended
-            receiptUserSendAckMsg(objs[0], false, objs[1]);
-        } else {
-            receiptUserSendAckMsg(objs[0], true);
-        }
     }
 
     /**
@@ -436,6 +426,10 @@ public class CommandParser extends InterParse {
      */
     private void friencChatCookie(ByteString buffer, String msgid) throws Exception {
         Connect.ChatCookie chatCookie = Connect.ChatCookie.parseFrom(buffer);
+        if (!SupportKeyUril.verifySign(chatCookie.getCaPub(), chatCookie.getSign(), chatCookie.getData().toByteArray())) {
+            throw new Exception("Validation fails");
+        }
+
         Connect.ChatCookieData cookieData = chatCookie.getData();
         if (TextUtils.isEmpty(cookieData.getChatPubKey())) {//friend use old protocal
             return;

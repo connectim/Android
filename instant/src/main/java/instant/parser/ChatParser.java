@@ -58,7 +58,7 @@ public class ChatParser extends InterParse {
         String priKey = null;
         String pubkey = null;
 
-        LogManager.getLogger().d(TAG, "Id: " + messageData.getChatMsg().getMsgId());
+        LogManager.getLogger().d(TAG, "Id: " + chatMessage.getMsgId());
         EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
         if (TextUtils.isEmpty(chatSession.getPubKey())) {//old protocol
             priKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
@@ -85,7 +85,7 @@ public class ChatParser extends InterParse {
         }
 
         byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, priKey, pubkey, messageData.getChatMsg().getCipherData());
-        MessageLocalReceiver.localReceiver.singleChat(chatMessage, pubkey, contents);
+        MessageLocalReceiver.localReceiver.singleChat(chatMessage, contents);
     }
 
     /**

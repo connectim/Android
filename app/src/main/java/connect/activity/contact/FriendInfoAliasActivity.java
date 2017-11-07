@@ -82,7 +82,7 @@ public class FriendInfoAliasActivity extends BaseActivity {
         boolean common = friendEntity.getCommon() != null && friendEntity.getCommon() == 1;
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.setFriend(friendEntity.getUid(), friendEntity.getRemark(), common, msgSendBean);
+        userOrderBean.settingFriend(friendEntity.getUid(), friendEntity.getRemark(), common, "remark", msgSendBean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

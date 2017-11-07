@@ -18,12 +18,13 @@ import protos.Connect;
  * Created by gtq on 2016/12/19.
  */
 public class GroupChat extends NormalChat {
-    private static String Tag = "GroupChat";
+
+    private static String TAG = "GroupChat";
 
     protected String groupKey;
-    protected String groupName;
-    protected String groupEcdh;
-    protected String myGroupName;
+    protected String groupName = "";
+    protected String groupEcdh = "";
+    protected String myGroupName = "";
 
     public GroupChat(String groupKey) {
         this.groupKey = groupKey;
@@ -31,13 +32,13 @@ public class GroupChat extends NormalChat {
 
     @Override
     public ChatMsgEntity createBaseChat(MessageType type) {
-        String mypublickey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+        String myUid = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
 
         ChatMsgEntity msgExtEntity = new ChatMsgEntity();
         msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());
         msgExtEntity.setChatType(Connect.ChatType.GROUPCHAT.getNumber());
         msgExtEntity.setMessage_ower(chatKey());
-        msgExtEntity.setMessage_from(mypublickey);
+        msgExtEntity.setMessage_from(myUid);
         msgExtEntity.setMessage_to(chatKey());
         msgExtEntity.setMessageType(type.type);
         msgExtEntity.setRead_time(0L);

@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ConversionHelper;
-import connect.database.green.bean.ContactEntity;
 import protos.Connect;
 
 /**
@@ -29,7 +27,6 @@ public class RoomSession {
     private Map<String, String> keyMap = new HashMap<>();
     private Connect.ChatType chatType = Connect.ChatType.PRIVATE;
     private String chatKey;
-    private String chatAvatar;
 
     private long burntime;
 
@@ -73,10 +70,6 @@ public class RoomSession {
                     break;
             }
         }
-        return chatAvatar;
-    }
-
-    public void setChatAvatar(String chatAvatar) {
-        this.chatAvatar = chatAvatar;
+        return avatar;
     }
 }

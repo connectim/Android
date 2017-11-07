@@ -72,34 +72,28 @@ public class UserOrderBean extends InterParse {
     }
 
     /**
-     * Not interested in
+     * Modify the friends setting
      *
-     * @param objects
+     * @param category: "ADD":        "add",
+     *                  "DEL":        "del",
+     *                  "COMMON":     "common",
+     *                  "COMMON_DEL": "common_del",
+     *                  "BLACK":      "black",
+     *                  "BLACK_DEL":  "black_del",
+     *                  "REMARK":     "remark",
+     * @param uid
      */
-    public  void noInterested(Object... objects) {
-        Connect.NOInterest noInterest = Connect.NOInterest.newBuilder().setUid((String) objects[0]).build();
-
-        String msgid = TimeUtil.timestampToMsgid();
-        if (objects.length == 2) {
-            FailMsgsManager.getInstance().insertFailMsg("", msgid, null,null,  objects[1]);
-        }
-        commandToIMTransfer(msgid, SocketACK.NO_INTERESTED, noInterest.toByteString());
-    }
-
-    /**
-     * Modify the friends remark and common friends
-     *
-     * @param objects
-     */
-    public void setFriend(Object... objects) {
+    public void settingFriend(String uid, String category, boolean common, String remark, Object obj) {
         Connect.SettingFriendInfo friendInfo = Connect.SettingFriendInfo.newBuilder()
-                .setUid((String) objects[0])
-                .setRemark((String) objects[1])
-                .setCommon((Boolean) objects[2]).build();
+                .setUid(uid)
+                .setCategory(category)
+                .setCommon(common)
+                .setRemark(remark)
+                .build();
 
         String msgid = TimeUtil.timestampToMsgid();
-        if (objects.length == 4) {
-            FailMsgsManager.getInstance().insertFailMsg("", msgid, null,null, objects[3]);
+        if (obj != null) {
+            FailMsgsManager.getInstance().insertFailMsg("", msgid, null, null, obj);
         }
         commandToIMTransfer(msgid, SocketACK.SET_FRIEND, friendInfo.toByteString());
     }
@@ -158,7 +152,7 @@ public class UserOrderBean extends InterParse {
 
         commandToIMTransfer(msgid, SocketACK.DOWNLOAD_FRIENDCOOKIE, chatInfo.toByteString());
 
-        FailMsgsManager.getInstance().insertFailMsg("", msgid, null,null,pubkey);
+        FailMsgsManager.getInstance().insertFailMsg("", msgid, null, null, pubkey);
     }
 
     /**

@@ -54,10 +54,7 @@ public class PhotoUpload extends BaseFileUp {
                     File firstFile = BitmapUtil.getInstance().compress(filePath);
                     File secondFile = BitmapUtil.getInstance().compress(firstFile.getAbsolutePath());
                     thumbCompressFile = firstFile.getAbsolutePath();
-                    thumbCompressFile = secondFile.getAbsolutePath();
-
-//            firstFile.delete();
-//            secondFile.delete();
+                    sourceCompressFile = secondFile.getAbsolutePath();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -96,6 +93,10 @@ public class PhotoUpload extends BaseFileUp {
 
                 gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
                 mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(gcmData).build();
+
+
+                FileUtil.deleteFile(thumbCompressFile);
+                FileUtil.deleteFile(sourceCompressFile);
                 return null;
             }
 

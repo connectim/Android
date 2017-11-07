@@ -3,6 +3,7 @@ package connect.instant.model;
 import android.text.TextUtils;
 
 import connect.activity.home.bean.ConversationAction;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.GroupEntity;
@@ -17,6 +18,17 @@ import instant.sender.model.GroupChat;
 public class CGroupChat extends GroupChat implements ConversationListener{
 
     private GroupEntity groupEntity;
+
+    public CGroupChat(String groupKey) {
+        super(groupKey);
+        this.groupKey = groupKey;
+
+        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+        this.groupEntity = groupEntity;
+        this.groupKey = groupEntity.getIdentifier();
+        this.groupEcdh = groupEntity.getEcdh_key();
+        this.groupName = groupEntity.getName();
+    }
 
     public CGroupChat(GroupEntity groupEntity) {
         super(groupEntity.getIdentifier());

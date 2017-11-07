@@ -2,11 +2,18 @@ package connect.instant.model;
 
 import android.text.TextUtils;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.ConversationAction;
+import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
+import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.instant.inter.ConversationListener;
+import connect.ui.activity.R;
+import connect.utils.TimeUtil;
+import instant.bean.ChatMsgEntity;
 import instant.sender.model.FriendChat;
 
 /**
@@ -17,10 +24,18 @@ public class CFriendChat extends FriendChat implements ConversationListener{
 
     private ContactEntity contactEntity;
 
-    public CFriendChat(ContactEntity contactEntity) {
-        super(contactEntity.getCa_pub());
+    public CFriendChat(String friendKey) {
+        super(friendKey);
+
+        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendKey);
         this.contactEntity = contactEntity;
-        this.friendKey = contactEntity.getCa_pub();
+        this.friendKey = contactEntity.getUid();
+    }
+
+    public CFriendChat(ContactEntity contactEntity) {
+        super(contactEntity.getUid());
+        this.contactEntity = contactEntity;
+        this.friendKey = contactEntity.getUid();
     }
 
     @Override
@@ -34,6 +49,20 @@ public class CFriendChat extends FriendChat implements ConversationListener{
         super.nickName();
         String nickName = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
         return nickName;
+    }
+
+    /**
+     * 打招呼 消息
+     */
+    public void createWelcomeMessage() {
+        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+        String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, nickName());
+        ChatMsgEntity msgExtEntity = txtMsg(content);
+        msgExtEntity.setMessage_from(friendKey);
+        msgExtEntity.setMessage_to(myUid);
+        updateRoomMsg("", content, TimeUtil.getCurrentTimeInLong(), -1, 1);
+
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime) {
@@ -56,7 +85,7 @@ public class CFriendChat extends FriendChat implements ConversationListener{
         ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(chatKey());
         if (conversionEntity == null) {
             conversionEntity = new ConversionEntity();
-            conversionEntity.setIdentifier(chatKey());
+            conversionEntity.setIdentifier(contactEntity.getUid());
             conversionEntity.setName(nickName());
             conversionEntity.setAvatar(headImg());
         }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
