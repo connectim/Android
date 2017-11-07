@@ -25,7 +25,7 @@
             android:layout_toLeftOf="@+id/del_tv"
             android:paddingLeft="@dimen/dp_15"
             android:imeOptions="actionSearch"
-            android:maxLines="1"
+            android:singleLine="true"
             android:hint="@string/Link_search_someThing"
             android:gravity="center_vertical"/>
         <ImageView

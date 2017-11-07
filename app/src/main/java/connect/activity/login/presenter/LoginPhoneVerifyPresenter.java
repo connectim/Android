@@ -58,9 +58,6 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
         HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SMS_VALIDATE, mobileVerify, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                // 用户存在 走登录流程
-                // 判断是否有二次密码认证
-                // 1:新用户 2:老用户不需要验证密码 3:老用户需要验证密码
                 try {
                     ProgressUtil.getInstance().dismissProgress();
                     Connect.SmsValidateResp smsValidateResp = Connect.SmsValidateResp.parseFrom(response.getBody());
@@ -96,7 +93,7 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
     }
 
     /**
-     * 更新CA认证
+     * update CA data
      */
     private void reSignInCa(Connect.SmsValidateResp smsValidateResp, final String mobile){
         final String priKey = SupportKeyUril.getNewPriKey();
@@ -115,15 +112,8 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                             priKey, imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    UserBean userBean = new UserBean();
-                    userBean.setAvatar(userInfo.getAvatar());
-                    userBean.setConnectId(userInfo.getConnectId());
-                    userBean.setName(userInfo.getUsername());
-                    userBean.setPhone(mobile);
-                    userBean.setPriKey(priKey);
-                    userBean.setPubKey(pubKey);
-                    userBean.setCaPublicKey(userInfo.getCaPub());
-                    userBean.setUid(userInfo.getUid());
+                    UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), priKey, pubKey,
+                            userInfo.getCaPub(),mobile, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
 
                     SharedPreferenceUtil.getInstance().putUser(userBean);
                     mView.launchHome(userBean);

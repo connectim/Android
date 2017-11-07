@@ -28,6 +28,7 @@ public class MsgSendBean implements Serializable {
         TypeFriendRemark,//friend nickname
         TypeOutPacket,//outer lucky pakcet
         TypeOutTransfer,//outer transfer
+        TypeFriendBlock,//friend block
     }
 
     public String getUsername() {

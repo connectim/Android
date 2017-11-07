@@ -1131,16 +1131,16 @@ message AppInfo {
 }
 
 message ExoprtPrivkeyQrcode{
-int32 version = 1;
-string username = 2;
-string encription_pri = 3;
-string password_hint = 4;
-string phone = 5;
-string avatar = 6;
-string connect_id = 7;
+    int32 version = 1;
+    string username = 2;
+    string encription_pri = 3;
+    string password_hint = 4;
+    string phone = 5;
+    string avatar = 6;
+    string connect_id = 7;
 }
 message ContactsNotificatedAddress {
-repeated string addresses = 1;
+    repeated string addresses = 1;
 }
 
 message RemoveGroup {
@@ -1387,13 +1387,13 @@ message FriendInfo {
 }
 
 message Preferences {
-bool phone_num=1;
-bool recommend = 2;
+    bool phone_num=1;
+    bool recommend = 2;
 }
 
 message FriendListChange {
-ChangeRecord change = 1;
-string version = 2;
+    ChangeRecord change = 1;
+    string version = 2;
 }
 
 
@@ -1406,9 +1406,4 @@ message UserInfoBase {
 
 message UsersInfoBase {
 repeated UserInfoBase users=1;
-}
-
-
-message NOInterest {
-    string uid = 1;
 }

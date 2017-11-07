@@ -158,6 +158,7 @@ public class ResolveScanUtil {
         }
 
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
+                .setTyp(1)
                 .setCriteria(value)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {

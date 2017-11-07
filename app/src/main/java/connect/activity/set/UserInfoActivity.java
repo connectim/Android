@@ -1,10 +1,7 @@
 package connect.activity.set;
 
 import android.app.Activity;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -94,7 +91,7 @@ public class UserInfoActivity extends BaseActivity {
 
     @OnClick(R.id.id_ll)
     void goNumber(View view) {
-        if (TextUtils.isEmpty(userBean.getConnectId())) {
+        if (!userBean.isUpdateConnectId()) {
             UserInfoNameActivity.startActivity(mActivity, UserInfoNameActivity.TYPE_NUMBER);
         } else {
             ToastEUtil.makeText(mActivity, R.string.Set_CONNECT_ID_can_only_be_set_once, ToastEUtil.TOAST_STATUS_FAILE).show();

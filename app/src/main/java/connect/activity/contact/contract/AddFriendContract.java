@@ -16,7 +16,7 @@ public interface AddFriendContract {
 
         void itemClick(int tag);
 
-        void notifyData(int sizeRecommend,ArrayList<FriendRequestEntity> listFina);
+        void notifyData(boolean isShowMoreRecommend, ArrayList<FriendRequestEntity> listFina);
     }
 
     interface Presenter extends BasePresenter {
@@ -26,7 +26,7 @@ public interface AddFriendContract {
 
         void queryFriend();
 
-        void updateRequestAddSuccess(FriendRequestEntity entity);
+        //void updateRequestStatus(FriendRequestEntity entity, int status);
 
         void requestRecommendUser();
     }

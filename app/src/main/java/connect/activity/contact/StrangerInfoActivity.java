@@ -173,10 +173,10 @@ public class StrangerInfoActivity extends BaseActivity {
         }
     }
 
-    private void requestUserInfo(String address) {
+    private void requestUserInfo(String uid) {
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setTyp(1)
-                .setCriteria(address)
+                .setCriteria(uid)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
             @Override

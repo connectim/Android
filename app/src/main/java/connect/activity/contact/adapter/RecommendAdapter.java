@@ -14,16 +14,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.database.green.bean.RecommandFriendEntity;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.SideScrollView;
+import protos.Connect;
 
 public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder> {
 
     private Activity activity;
-    private ArrayList<RecommandFriendEntity> mList = new ArrayList<>();
+    private ArrayList<Connect.UserInfoBase> mList = new ArrayList<>();
     private OnAddListener onAddListener;
 
     public RecommendAdapter(Activity activity) {
@@ -40,26 +40,26 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        final RecommandFriendEntity recommendEntity = mList.get(position);
+        final Connect.UserInfoBase userInfoBase = mList.get(position);
         viewHolder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
-        GlideUtil.loadAvatarRound(viewHolder.avatarRimg,recommendEntity.getAvatar() + "?size=80");
-        viewHolder.nicknameTv.setText(recommendEntity.getUsername());
+        GlideUtil.loadAvatarRound(viewHolder.avatarRimg,userInfoBase.getAvatar() + "?size=80");
+        viewHolder.nicknameTv.setText(userInfoBase.getUsername());
         viewHolder.statusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddListener.add(position,recommendEntity);
+                onAddListener.add(position,userInfoBase);
             }
         });
         viewHolder.contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddListener.itemClick(position,recommendEntity);
+                onAddListener.itemClick(position,userInfoBase);
             }
         });
         viewHolder.deleteTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddListener.deleteItem(position,recommendEntity);
+                onAddListener.deleteItem(position, userInfoBase);
             }
         });
     }
@@ -81,7 +81,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
         notifyDataSetChanged();
     }
 
-    public ArrayList<RecommandFriendEntity> getData(){
+    public ArrayList<Connect.UserInfoBase> getData(){
         return mList;
     }
 
@@ -145,11 +145,11 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
 
     public interface OnAddListener {
 
-        void add(int position, RecommandFriendEntity entity);
+        void add(int position, Connect.UserInfoBase entity);
 
-        void itemClick(int position, RecommandFriendEntity entity);
+        void itemClick(int position, Connect.UserInfoBase entity);
 
-        void deleteItem(int position, RecommandFriendEntity entity);
+        void deleteItem(int position, Connect.UserInfoBase entity);
 
     }
 

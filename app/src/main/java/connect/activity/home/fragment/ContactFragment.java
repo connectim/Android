@@ -132,7 +132,7 @@ public class ContactFragment extends BaseFragment {
                     break;
                 case 3:
                 case 4:
-                    FriendInfoActivity.startActivity(mActivity, entity.getPub_key());
+                    FriendInfoActivity.startActivity(mActivity, entity.getUid());
                     break;
                 default:
                     break;
