@@ -64,7 +64,7 @@ public class ConvertUtil {
                     contactBean.setAvater(userInfo.getAvatar());
                     contactBean.setPhone(bookUserInfo.getPhoneHash());
 
-                    ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
+                    ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
                     if (friendEntity != null) {
                         // Check whether as a friend
                         contactBean.setStatus(2);

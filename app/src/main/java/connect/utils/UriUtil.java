@@ -185,6 +185,8 @@ public class UriUtil {
     public static String CONNEXT_V1_USERS_FRIEND_RECORDS = "/connect/v1/users/friends/records";
     /** Get users by search public key */
     public static String CONNEXT_V1_USERS_SEARCHBYPUBKEY = "/connect/v1/users/searchByPubKey";
+    /** Get users by search public key */
+    public static String CONNEXT_V1_USERS_DISINCLINE = "/connect/v1/users/disincline";
 
     /**======================================================================================
      *                                      setting group

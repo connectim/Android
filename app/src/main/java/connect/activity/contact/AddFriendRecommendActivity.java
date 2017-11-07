@@ -25,7 +25,6 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
 
 /**
@@ -42,8 +41,6 @@ public class AddFriendRecommendActivity extends BaseActivity {
 
     private AddFriendRecommendActivity mActivity;
     private RecommendAdapter adapter;
-    private int MAX_RECOMMEND_COUNT = 20;
-    private int page = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +53,6 @@ public class AddFriendRecommendActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        page = 1;
         requestRecommendUser();
     }
 
@@ -76,7 +72,6 @@ public class AddFriendRecommendActivity extends BaseActivity {
         adapter = new RecommendAdapter(mActivity);
         adapter.setOnAddListener(onAddListener);
         recyclerview.setAdapter(adapter);
-        //recyclerview.addOnScrollListener(endlessScrollListener);
     }
 
     @OnClick(R.id.left_img)
@@ -87,15 +82,6 @@ public class AddFriendRecommendActivity extends BaseActivity {
     SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
         @Override
         public void onRefresh() {
-            page = 1;
-            requestRecommendUser();
-        }
-    };
-
-    EndlessScrollListener endlessScrollListener = new EndlessScrollListener(){
-        @Override
-        public void onLoadMore() {
-            page++;
             requestRecommendUser();
         }
     };
@@ -113,20 +99,11 @@ public class AddFriendRecommendActivity extends BaseActivity {
 
         @Override
         public void deleteItem(int position, Connect.UserInfoBase entity) {
-            /*UserOrderBean userOrderBean = new UserOrderBean();
-            userOrderBean.noInterested(entity.getUid(), "Not interested in");*/
-            // Http不感兴趣推荐
-
-            adapter.closeMenu();
-
-            ArrayList<Connect.UserInfoBase> data = adapter.getData();
-            data.remove(entity);
-            adapter.notifyDataSetChanged();
+            requestNoInterest(entity);
         }
     };
 
     public void requestRecommendUser() {
-        // 可能需要分页拉取推荐
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_RECOMMEND, ByteString.copyFrom(new byte[]{}),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
@@ -138,11 +115,6 @@ public class AddFriendRecommendActivity extends BaseActivity {
                                 Connect.UsersInfoBase usersInfoBase = Connect.UsersInfoBase.parseFrom(structData.getPlainData());
                                 refreshview.setRefreshing(false);
                                 adapter.setDataNotify(usersInfoBase.getUsersList(), true);
-                                /*if (page > 1) {
-                                    adapter.setDataNotify(usersInfoBase.getUsersList(), false);
-                                } else {
-                                    adapter.setDataNotify(usersInfoBase.getUsersList(), true);
-                                }*/
                             }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();
@@ -152,6 +124,24 @@ public class AddFriendRecommendActivity extends BaseActivity {
                     @Override
                     public void onError(Connect.HttpResponse response) {}
                 });
+    }
+
+    public void requestNoInterest(final Connect.UserInfoBase entity) {
+        Connect.NOInterest noInterest = Connect.NOInterest.newBuilder()
+                .setUid(entity.getUid())
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_DISINCLINE, noInterest, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                adapter.closeMenu();
+                ArrayList<Connect.UserInfoBase> data = adapter.getData();
+                data.remove(entity);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {}
+        });
     }
 
 }

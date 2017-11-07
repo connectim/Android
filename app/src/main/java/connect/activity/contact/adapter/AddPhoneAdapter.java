@@ -106,7 +106,7 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        if (!TextUtils.isEmpty(mDataList.get(position).getAddress())) {
+        if (!TextUtils.isEmpty(mDataList.get(position).getAvater())) {
             return ITEMTYPE.VIEW_TYP_SERVER.ordinal();
         } else if (!TextUtils.isEmpty(mDataList.get(position).getPhone())) {
             return ITEMTYPE.VIEW_TYP_LOAD.ordinal();
@@ -116,9 +116,7 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     class TitleViewHolder extends RecyclerView.ViewHolder {
-
         TextView titleTv;
-
         public TitleViewHolder(View itemView) {
             super(itemView);
             titleTv = (TextView) itemView.findViewById(R.id.title_tv);
@@ -126,12 +124,10 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     class ServerHolder extends RecyclerView.ViewHolder{
-
         ImageView avater;
         TextView nameTvS;
         TextView nicName;
         Button addBtn;
-
         public ServerHolder(View itemView) {
             super(itemView);
             avater = (ImageView)itemView.findViewById(R.id.avatar_rimg);
@@ -142,12 +138,10 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     class LoaderHolder extends RecyclerView.ViewHolder{
-
         TextView txt;
         View select;
         TextView nameTv;
         TextView phoneTv;
-
         public LoaderHolder(View itemView) {
             super(itemView);
             txt = (TextView)itemView.findViewById(R.id.txt);
@@ -205,7 +199,8 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setDataNotify(List<PhoneContactBean> list) {
+    public void setDataNotify(int serverSize, List<PhoneContactBean> list) {
+        this.serverSize = serverSize;
         mDataList.clear();
         mDataList.addAll(list);
         notifyDataSetChanged();
@@ -217,10 +212,6 @@ public class AddPhoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setOnSelectListener(OnSelectListener onSelectListener){
         this.onSelectListener = onSelectListener;
-    }
-
-    public void setServerSize(int size){
-        this.serverSize = size;
     }
 
     public int getPositionForSection(char selectchar) {

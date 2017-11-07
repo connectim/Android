@@ -17,11 +17,9 @@ import connect.activity.contact.bean.PhoneContactBean;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.AddFriendPhoneContract;
 import connect.activity.contact.presenter.AddFriendPhonePresenter;
-import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.permission.PermissionUtil;
-import connect.utils.system.SystemUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
 
@@ -101,13 +99,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements AddFriendPho
                 if (permissions[0].equals(PermissionUtil.PERMISSION_CONTACTS)) {
                     presenter.requestContact();
                 } else if (permissions[0].equals(PermissionUtil.PERMISSION_SMS)) {
-                    String numbers = "";
-                    List<PhoneContactBean> seleList = adapter.getSeleList();
-                    for (PhoneContactBean contactBean : seleList) {
-                        numbers = numbers + contactBean.getPhone() + ";";
-                    }
-                    SystemUtil.sendPhoneSMS(mActivity, numbers, getString(R.string.Link_invite_encrypted_chat_with_APP_Download,
-                            SharedPreferenceUtil.getInstance().getUser().getName()));
+                    presenter.sendMessage(adapter.getSeleList());
                 }
             }
         }
@@ -152,8 +144,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements AddFriendPho
 
     @Override
     public void updateView(int size, List<PhoneContactBean> list) {
-        adapter.setServerSize(size);
-        adapter.setDataNotify(list);
+        adapter.setDataNotify(size, list);
     }
 
 }
