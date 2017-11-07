@@ -72,16 +72,23 @@ public class UserOrderBean extends InterParse {
     }
 
     /**
-     * Modify the friends remark and common friends
+     * Modify the friends setting
      *
+     * @param category: "ADD":        "add",
+     *                  "DEL":        "del",
+     *                  "COMMON":     "common",
+     *                  "COMMON_DEL": "common_del",
+     *                  "BLACK":      "black",
+     *                  "BLACK_DEL":  "black_del",
+     *                  "REMARK":     "remark",
      * @param uid
      */
-    public void settingFriend(String uid, String remark, boolean common, String category, Object obj) {
+    public void settingFriend(String uid, String category, boolean common, String remark, Object obj) {
         Connect.SettingFriendInfo friendInfo = Connect.SettingFriendInfo.newBuilder()
                 .setUid(uid)
-                .setRemark(remark)
-                .setCommon(common)
                 .setCategory(category)
+                .setCommon(common)
+                .setRemark(remark)
                 .build();
 
         String msgid = TimeUtil.timestampToMsgid();

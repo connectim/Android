@@ -2,12 +2,18 @@ package connect.instant.model;
 
 import android.text.TextUtils;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.ConversationAction;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
+import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.instant.inter.ConversationListener;
+import connect.ui.activity.R;
+import connect.utils.TimeUtil;
+import instant.bean.ChatMsgEntity;
 import instant.sender.model.FriendChat;
 
 /**
@@ -43,6 +49,20 @@ public class CFriendChat extends FriendChat implements ConversationListener{
         super.nickName();
         String nickName = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
         return nickName;
+    }
+
+    /**
+     * 打招呼 消息
+     */
+    public void createWelcomeMessage() {
+        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+        String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, nickName());
+        ChatMsgEntity msgExtEntity = txtMsg(content);
+        msgExtEntity.setMessage_from(friendKey);
+        msgExtEntity.setMessage_to(myUid);
+        updateRoomMsg("", content, TimeUtil.getCurrentTimeInLong(), -1, 1);
+
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime) {

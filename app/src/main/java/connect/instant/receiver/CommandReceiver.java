@@ -185,23 +185,23 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void contactChanges(Connect.ChangeRecords changeRecords) {
-        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         List<Connect.ChangeRecord> recordsList = changeRecords.getChangeRecordsList();
         for (Connect.ChangeRecord record : recordsList) {
             Connect.FriendInfo friendInfo = record.getFriendInfo();
             String uid = friendInfo.getUid();
 
+            ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(uid);
             switch (record.getCategory()) {
                 case "del":
                     ContactHelper.getInstance().deleteEntity(uid);
                     break;
                 case "add":
                     boolean newFriend = false;
-                    ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(uid);
                     if (entity == null) {
                         newFriend = true;
                         entity = new ContactEntity();
                     }
+
                     entity.setUid(uid);
                     entity.setCa_pub(friendInfo.getCaPub());
                     entity.setConnectId(friendInfo.getConnectId());
@@ -215,15 +215,34 @@ public class CommandReceiver implements CommandListener {
 
                     if (newFriend) { // Add a welcome message
                         CFriendChat normalChat = new CFriendChat(entity);
-                        String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, entity.getUsername());
-                        ChatMsgEntity msgExtEntity = normalChat.txtMsg(content);
-                        msgExtEntity.setMessage_from(uid);
-                        msgExtEntity.setMessage_to(mypublickey);
-                        normalChat.updateRoomMsg("", content, TimeUtil.getCurrentTimeInLong(), -1, 1);
-
-                        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                        normalChat.createWelcomeMessage();
                     }
                     FailMsgsManager.getInstance().receiveFailMsgs(uid);
+                    break;
+                case "common":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendCommon(uid, 1);
+                    }
+                    break;
+                case "common_del":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendCommon(uid, 0);
+                    }
+                    break;
+                case "black":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendBlack(uid, true);
+                    }
+                    break;
+                case "black_del":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendBlack(uid, false);
+                    }
+                    break;
+                case "remark":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendRemark(uid, friendInfo.getRemark());
+                    }
                     break;
             }
         }
@@ -265,16 +284,9 @@ public class CommandReceiver implements CommandListener {
 
         ContactNotice.receiverFriend();
 
-        if (newFriend) { // Add a welcome message
-            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+        if (newFriend) {
             CFriendChat normalChat = new CFriendChat(contactEntity);
-            String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, contactEntity.getUsername());
-            ChatMsgEntity msgExtEntity = normalChat.txtMsg(content);
-            msgExtEntity.setMessage_from(contactEntity.getUid());
-            msgExtEntity.setMessage_to(myUid);
-            normalChat.updateRoomMsg("", content, TimeUtil.getCurrentTimeInLong(), -1, 1);
-
-            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+            normalChat.createWelcomeMessage();
         }
         FailMsgsManager.getInstance().receiveFailMsgs(contactEntity.getUid());
     }

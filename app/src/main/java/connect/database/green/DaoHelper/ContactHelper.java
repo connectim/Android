@@ -401,27 +401,47 @@ public class ContactHelper extends BaseDao {
      *
      * @param uid
      */
-    public void updataFriendBlack(String uid) {
-        QueryBuilder<ContactEntity> qb = contactEntityDao.queryBuilder();
-        qb.where(ContactEntityDao.Properties.Uid.eq(uid));
-        List<ContactEntity> list = qb.list();
-        if (list.size() > 0) {
-            ContactEntity friendEntity = list.get(0);
-            friendEntity.setBlocked(true);
-            contactEntityDao.insertOrReplace(friendEntity);
-        }
+    public void updataFriendBlack(String uid, boolean black) {
+        updateFriend(uid, black ? 1 : 0, -1, "");
+    }
+
+    /**
+     * modify friend common
+     *
+     * @param uid
+     */
+    public void updataFriendCommon(String uid,int common) {
+        updateFriend(uid, -1, common, "");
+    }
+
+    /**
+     * modify friend common
+     *
+     * @param uid
+     */
+    public void updataFriendRemark(String uid, String remark) {
+        updateFriend(uid, -1, -1, remark);
+    }
+
+    public void updateFriend(String uid, int isblack, int iscommon, String remark) {
+        String sql = "UPDATE CONTACT_ENTITY SET " +
+                (isblack == -1 ? " " : "BLOCKED = " + isblack + "  ") +
+                (iscommon == -1 ? " " : "COMMON = " + iscommon + "  ") +
+                (TextUtils.isEmpty(remark) ? " " : "REMARK =  " + remark + " ") +
+                "WHERE UID = ? ;";
+        daoSession.getDatabase().execSQL(sql, new Object[]{uid});
     }
 
     /**
      * modify recommend friend
      */
-    public void updataRecommendFriend(String pubKey) {
+    public void updataRecommendFriend(String pubKey,int recommend) {
         QueryBuilder<RecommandFriendEntity> qb = recommandFriendEntityDao.queryBuilder();
         qb.where(RecommandFriendEntityDao.Properties.Pub_key.eq(pubKey));
         List<RecommandFriendEntity> list = qb.list();
         if (list.size() > 0) {
             RecommandFriendEntity recommendEntity = list.get(0);
-            recommendEntity.setStatus(1);
+            recommendEntity.setStatus(recommend);
             recommandFriendEntityDao.insertOrReplace(recommendEntity);
         }
     }

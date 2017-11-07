@@ -1407,3 +1407,8 @@ message UserInfoBase {
 message UsersInfoBase {
 repeated UserInfoBase users=1;
 }
+
+
+message NOInterest {
+    string uid = 1;
+}
