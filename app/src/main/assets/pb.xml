@@ -133,7 +133,6 @@
 
     <GroupInfo>
         <attr name='group' type='proto'></attr>
-        <attr name='members' type='list'></attr>
     </GroupInfo>
 
     <GroupAttorn>

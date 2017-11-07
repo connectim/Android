@@ -42,7 +42,7 @@ public class ContactHelper extends BaseDao {
     private GroupEntityDao groupEntityDao;
     private GroupMemberEntityDao groupMemberEntityDao;
 
-    private static String Tag = "_ContactHelper";
+    private static String TAG = "_ContactHelper";
 
     public ContactHelper() {
         super();
@@ -53,13 +53,9 @@ public class ContactHelper extends BaseDao {
         recommandFriendEntityDao = daoSession.getRecommandFriendEntityDao();
     }
 
-    public static ContactHelper getInstance() {
+    public synchronized static ContactHelper getInstance() {
         if (contactHelper == null) {
-            synchronized (ContactHelper.class) {
-                if (contactHelper == null) {
-                    contactHelper = new ContactHelper();
-                }
-            }
+            contactHelper = new ContactHelper();
         }
         return contactHelper;
     }
@@ -141,8 +137,9 @@ public class ContactHelper extends BaseDao {
 
         String sql = "SELECT F.USERNAME AS FNAME, F.REMARK AS FREMARK, F.AVATAR AS FAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM CONTACT_ENTITY F LEFT OUTER JOIN CONVERSION_ENTITY C WHERE F.UID = ? AND F.UID = C.IDENTIFIER LIMIT 1;";
 
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{uid});
+
         Talker talker = new Talker(Connect.ChatType.PRIVATE, uid);
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
         while (cursor.moveToNext()) {
             String userName = cursorGetString(cursor, "FNAME");
             String userRemark = cursorGetString(cursor, "FREMARK");
@@ -170,7 +167,7 @@ public class ContactHelper extends BaseDao {
         String sql = "SELECT G.NAME AS GNAME, G.AVATAR AS GAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM GROUP_ENTITY G LEFT OUTER JOIN CONVERSION_ENTITY C WHERE G.IDENTIFIER = ? AND G.IDENTIFIER = C.IDENTIFIER LIMIT 1;";
 
         Talker talker = new Talker(Connect.ChatType.GROUPCHAT, identify);
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{identify});
         while (cursor.moveToNext()) {
             String groupName = cursorGetString(cursor, "GNAME");
             String groupAvatar = cursorGetString(cursor, "GAVATAR");
@@ -404,27 +401,47 @@ public class ContactHelper extends BaseDao {
      *
      * @param uid
      */
-    public void updataFriendBlack(String uid) {
-        QueryBuilder<ContactEntity> qb = contactEntityDao.queryBuilder();
-        qb.where(ContactEntityDao.Properties.Uid.eq(uid));
-        List<ContactEntity> list = qb.list();
-        if (list.size() > 0) {
-            ContactEntity friendEntity = list.get(0);
-            friendEntity.setBlocked(true);
-            contactEntityDao.insertOrReplace(friendEntity);
-        }
+    public void updataFriendBlack(String uid, boolean black) {
+        updateFriend(uid, black ? 1 : 0, -1, "");
+    }
+
+    /**
+     * modify friend common
+     *
+     * @param uid
+     */
+    public void updataFriendCommon(String uid,int common) {
+        updateFriend(uid, -1, common, "");
+    }
+
+    /**
+     * modify friend common
+     *
+     * @param uid
+     */
+    public void updataFriendRemark(String uid, String remark) {
+        updateFriend(uid, -1, -1, remark);
+    }
+
+    public void updateFriend(String uid, int isblack, int iscommon, String remark) {
+        String sql = "UPDATE CONTACT_ENTITY SET " +
+                (isblack == -1 ? " " : "BLOCKED = " + isblack + "  ") +
+                (iscommon == -1 ? " " : "COMMON = " + iscommon + "  ") +
+                (TextUtils.isEmpty(remark) ? " " : "REMARK =  " + remark + " ") +
+                "WHERE UID = ? ;";
+        daoSession.getDatabase().execSQL(sql, new Object[]{uid});
     }
 
     /**
      * modify recommend friend
      */
-    public void updataRecommendFriend(String pubKey) {
+    public void updataRecommendFriend(String pubKey,int recommend) {
         QueryBuilder<RecommandFriendEntity> qb = recommandFriendEntityDao.queryBuilder();
         qb.where(RecommandFriendEntityDao.Properties.Pub_key.eq(pubKey));
         List<RecommandFriendEntity> list = qb.list();
         if (list.size() > 0) {
             RecommandFriendEntity recommendEntity = list.get(0);
-            recommendEntity.setStatus(1);
+            recommendEntity.setStatus(recommend);
             recommandFriendEntityDao.insertOrReplace(recommendEntity);
         }
     }
@@ -594,8 +611,10 @@ public class ContactHelper extends BaseDao {
      */
     public void removeMemberEntity(String groupkey, String uid) {
         QueryBuilder<GroupMemberEntity> qb = groupMemberEntityDao.queryBuilder();
-        DeleteQuery<GroupMemberEntity> bd = qb.where(GroupMemberEntityDao.Properties.Identifier.eq(groupkey),
-                qb.or(GroupMemberEntityDao.Properties.Identifier.eq(groupkey), GroupMemberEntityDao.Properties.Uid.eq(uid))).buildDelete();
+        DeleteQuery<GroupMemberEntity> bd = qb.where(
+                GroupMemberEntityDao.Properties.Identifier.eq(groupkey),
+                GroupMemberEntityDao.Properties.Uid.eq(uid))
+                .buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }
 

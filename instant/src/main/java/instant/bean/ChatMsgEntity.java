@@ -1,7 +1,6 @@
 package instant.bean;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -9,7 +8,6 @@ import java.io.Serializable;
 
 import instant.R;
 import instant.ui.InstantSdk;
-import instant.utils.SharedUtil;
 import instant.utils.StringUtil;
 import protos.Connect;
 
@@ -206,7 +204,7 @@ public final class ChatMsgEntity implements Serializable {
     }
 
     public MsgDirect parseDirect() {
-        String mypubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+        String mypubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
         return mypubkey.equals(getMessage_from()) ? MsgDirect.To : MsgDirect.From;
     }
 

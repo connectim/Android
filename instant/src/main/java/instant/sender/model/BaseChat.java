@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
-import protos.Connect;
 
 /**
  * Created by pujin on 2017/1/19.

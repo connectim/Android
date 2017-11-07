@@ -28,6 +28,7 @@ import connect.activity.contact.bean.SourceType;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
+import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
@@ -210,6 +211,12 @@ public class SearchFriendResultActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpResponse response) {
                 updateView(null);
+
+                String errorMessage = response.getMessage();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    errorMessage = mActivity.getString(R.string.Network_equest_failed_please_try_again_later);
+                }
+                ToastEUtil.makeText(mActivity, errorMessage, 2).show();
             }
         });
     }

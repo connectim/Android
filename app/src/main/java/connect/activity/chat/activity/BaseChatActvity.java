@@ -19,8 +19,9 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
+import connect.instant.model.CFriendChat;
+import connect.instant.model.CGroupChat;
 import connect.instant.model.CRobotChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -32,10 +33,7 @@ import connect.widget.imagewatcher.ImageWatcher;
 import connect.widget.imagewatcher.ImageWatcherUtil;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.BaseChat;
-import instant.sender.model.FriendChat;
-import instant.sender.model.GroupChat;
 import instant.sender.model.NormalChat;
-import instant.sender.model.RobotChat;
 import protos.Connect;
 
 /**
@@ -80,10 +78,10 @@ public abstract class BaseChatActvity extends BaseActivity {
         Connect.ChatType chatType = talker.getTalkType();
         switch (chatType) {
             case PRIVATE:
-                normalChat = new FriendChat(talker.getTalkKey());
+                normalChat = new CFriendChat(talker.getTalkKey());
                 break;
             case GROUPCHAT:
-                normalChat = new GroupChat(talker.getTalkKey());
+                normalChat = new CGroupChat(talker.getTalkKey());
                 break;
             case CONNECT_SYSTEM:
                 normalChat = CRobotChat.getInstance();

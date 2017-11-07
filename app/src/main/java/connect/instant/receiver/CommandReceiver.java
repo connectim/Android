@@ -18,11 +18,9 @@ import connect.activity.contact.model.ConvertUtil;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.MsgNoticeBean;
-import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
@@ -187,41 +185,64 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void contactChanges(Connect.ChangeRecords changeRecords) {
-        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         List<Connect.ChangeRecord> recordsList = changeRecords.getChangeRecordsList();
         for (Connect.ChangeRecord record : recordsList) {
-            Connect.FriendInfo userInfo = record.getFriendInfo();
-            String uid = userInfo.getUid();
+            Connect.FriendInfo friendInfo = record.getFriendInfo();
+            String uid = friendInfo.getUid();
 
+            ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(uid);
             switch (record.getCategory()) {
                 case "del":
                     ContactHelper.getInstance().deleteEntity(uid);
                     break;
                 case "add":
                     boolean newFriend = false;
-                    ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(uid);
                     if (entity == null) {
                         newFriend = true;
                         entity = new ContactEntity();
                     }
+
                     entity.setUid(uid);
-                    entity.setCa_pub(userInfo.getCaPub());
-                    entity.setConnectId(userInfo.getConnectId());
-                    entity.setUsername(userInfo.getUsername());
-                    entity.setAvatar(userInfo.getAvatar());
+                    entity.setCa_pub(friendInfo.getCaPub());
+                    entity.setConnectId(friendInfo.getConnectId());
+                    entity.setUsername(friendInfo.getUsername());
+                    entity.setAvatar(friendInfo.getAvatar());
+                    entity.setCommon(friendInfo.getCommon() ? 1 : 0);
+                    entity.setBlocked(friendInfo.getBlackList());
+                    entity.setRemark(friendInfo.getRemark());
+                    entity.setSource(friendInfo.getSource());
                     ContactHelper.getInstance().insertContact(entity);
 
                     if (newFriend) { // Add a welcome message
                         CFriendChat normalChat = new CFriendChat(entity);
-                        String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, entity.getUsername());
-                        ChatMsgEntity msgExtEntity = normalChat.txtMsg(content);
-                        msgExtEntity.setMessage_from(uid);
-                        msgExtEntity.setMessage_to(mypublickey);
-                        normalChat.updateRoomMsg("", content, TimeUtil.getCurrentTimeInLong(), -1, 1);
-
-                        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                        normalChat.createWelcomeMessage();
                     }
                     FailMsgsManager.getInstance().receiveFailMsgs(uid);
+                    break;
+                case "common":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendCommon(uid, 1);
+                    }
+                    break;
+                case "common_del":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendCommon(uid, 0);
+                    }
+                    break;
+                case "black":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendBlack(uid, true);
+                    }
+                    break;
+                case "black_del":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendBlack(uid, false);
+                    }
+                    break;
+                case "remark":
+                    if (entity != null) {
+                        ContactHelper.getInstance().updataFriendRemark(uid, friendInfo.getRemark());
+                    }
                     break;
             }
         }
@@ -238,29 +259,43 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void acceptFriendRequest(Connect.FriendListChange listChange) {
-        Connect.FriendInfo userInfo = listChange.getChange().getFriendInfo();
+        Connect.FriendInfo friendInfo = listChange.getChange().getFriendInfo();
 
-        FriendRequestEntity friendRequestEntity = ContactHelper.getInstance().loadFriendRequest(userInfo.getUid());
-        if (friendRequestEntity != null) {
+        boolean newFriend = false;
+        FriendRequestEntity friendRequestEntity = ContactHelper.getInstance().loadFriendRequest(friendInfo.getUid());
+        if (friendRequestEntity == null) {
+            newFriend = true;
+        } else {
             friendRequestEntity.setStatus(2);
             ContactHelper.getInstance().inserFriendQuestEntity(friendRequestEntity);
         }
 
         ContactEntity contactEntity = new ContactEntity();
-        contactEntity.setUid(userInfo.getUid());
-        contactEntity.setUsername(userInfo.getUsername());
-        contactEntity.setAvatar(userInfo.getAvatar());
-        contactEntity.setCa_pub(userInfo.getCaPub());
-        contactEntity.setConnectId(userInfo.getConnectId());
+        contactEntity.setUid(friendInfo.getUid());
+        contactEntity.setUsername(friendInfo.getUsername());
+        contactEntity.setAvatar(friendInfo.getAvatar());
+        contactEntity.setCa_pub(friendInfo.getCaPub());
+        contactEntity.setConnectId(friendInfo.getConnectId());
+        contactEntity.setRemark(friendInfo.getRemark());
+        contactEntity.setBlocked(friendInfo.getBlackList());
+        contactEntity.setCommon(friendInfo.getCommon()?1:0);
+        contactEntity.setSource(friendInfo.getSource());
         ContactHelper.getInstance().insertContact(contactEntity);
+
         ContactNotice.receiverFriend();
+
+        if (newFriend) {
+            CFriendChat normalChat = new CFriendChat(contactEntity);
+            normalChat.createWelcomeMessage();
+        }
+        FailMsgsManager.getInstance().receiveFailMsgs(contactEntity.getUid());
     }
 
     @Override
     public void acceptDelFriend(Connect.FriendListChange listChange) {
-        Connect.FriendInfo userInfo = listChange.getChange().getFriendInfo();
+        Connect.FriendInfo friendInfo = listChange.getChange().getFriendInfo();
 
-        ContactHelper.getInstance().deleteEntity(userInfo.getUid());
+        ContactHelper.getInstance().deleteEntity(friendInfo.getUid());
         ContactNotice.receiverFriend();
     }
 

@@ -3,6 +3,7 @@ package instant.parser;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
+import instant.utils.log.LogManager;
 import instant.utils.manager.FailMsgsManager;
 import instant.parser.localreceiver.RobotLocalReceiver;
 import instant.parser.localreceiver.UnreachableLocalReceiver;
@@ -14,7 +15,7 @@ import protos.Connect;
  */
 public class MessageParser extends InterParse {
 
-    private String Tag = "_MessageParser";
+    private static String TAG = "_MessageParser";
 
     /**
      * Parsing the source 0:offline message 1:online message
@@ -134,6 +135,8 @@ public class MessageParser extends InterParse {
         } else {
             backOnLineAck(5, rejectMessage.getMsgId());
         }
+
+        LogManager.getLogger().d(TAG, "unavailableMsg: " + rejectMessage.getStatus());
 
         String msgid = rejectMessage.getMsgId();
         String recPublicKey = rejectMessage.getUid();

@@ -113,10 +113,6 @@ public class AddFriendRecommendActivity extends BaseActivity {
 
         @Override
         public void deleteItem(int position, Connect.UserInfoBase entity) {
-            /*UserOrderBean userOrderBean = new UserOrderBean();
-            userOrderBean.noInterested(entity.getUid(), "Not interested in");*/
-            // Http不感兴趣推荐
-
             adapter.closeMenu();
 
             ArrayList<Connect.UserInfoBase> data = adapter.getData();

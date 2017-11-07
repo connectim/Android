@@ -165,11 +165,7 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
         public void deleteItem(int position, FriendRequestEntity entity) {
             requestAdapter.closeMenu();
             if (entity.getStatus() == NewRequestAdapter.RECOMMEND_ADD_FRIEND) {
-                /*MsgSendBean msgSendBean = new MsgSendBean();
-                msgSendBean.setType(MsgSendBean.SendType.TypeRecommendNoInterested);
-                msgSendBean.setPubkey(entity.getUid());
-                UserOrderBean userOrderBean = new UserOrderBean();
-                userOrderBean.noInterested(entity.getUid(), msgSendBean);*/
+
             } else {
                 ContactHelper.getInstance().deleteRequestEntity(entity.getUid());
                 presenter.queryFriend();
@@ -190,11 +186,15 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
             case MSG_SEND_SUCCESS:
                 MsgSendBean sendBean = (MsgSendBean) objs[0];
                 if (sendBean.getType() == MsgSendBean.SendType.TypeAcceptFriendQuest) {
+<<<<<<< HEAD
+                    presenter.updateRequestAddSuccess(ContactHelper.getInstance().loadFriendRequest(sendBean.getUid()));
+=======
                     presenter.updateRequestStatus(ContactHelper.getInstance().loadFriendRequest(sendBean.getUid()),
                             NewRequestAdapter.FINISH_ADD_FRIEND);
                 } else if (sendBean.getType() == MsgSendBean.SendType.TypeRecommendNoInterested) {
                     ContactHelper.getInstance().removeRecommendEntity(sendBean.getPubkey());
                     presenter.queryFriend();
+>>>>>>> 093cad462a35b83509ad781b4a6703f964f88c9a
                 }
                 break;
             case MSG_SEND_FAIL:

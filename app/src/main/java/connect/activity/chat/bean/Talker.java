@@ -11,6 +11,7 @@ import protos.Connect;
 public class Talker implements Serializable {
 
     private Connect.ChatType talkType = Connect.ChatType.PRIVATE;
+    /** Uid */
     private String talkKey = "";
 
     private String nickName;

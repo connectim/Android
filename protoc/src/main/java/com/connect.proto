@@ -228,11 +228,10 @@ string uid = 1;
 
 //setting ===============
 message Privacy {
-bool uid=1;
-bool phone_num=2;
-bool verify=3;
-bool sync_phone_book=4;
-bool recommend = 5;
+bool phone_num = 1;
+bool verify = 2;
+bool sync_phone_book = 3;
+bool recommend = 4;
 }
 
 message DeviceToken {
@@ -628,10 +627,19 @@ message SyncRelationship {
 string version = 1;
 }
 
+//category:
+//"ADD":        "add",
+//"DEL":        "del",
+//"COMMON":     "common",
+//"COMMON_DEL": "common_del",
+//"BLACK":      "black",
+//"BLACK_DEL":  "black_del",
+//"REMARK":     "remark",
 message SettingFriendInfo {
 string uid = 1;
 string remark = 2;
 bool common = 3;
+string category = 4;
 }
 
 message AddFriendRequest {
@@ -655,7 +663,7 @@ string uid = 1;
 }
 
 message ReceiveFriendRequest {
-UserInfo sender = 1;
+UserInfoBase sender = 1;
 string  tips = 2;
 int32 source = 3;
 }
@@ -667,7 +675,7 @@ repeated ChangeRecord changeRecords = 2;
 
 message ChangeRecord {
 string category = 1;
-UserInfo friend_info = 2;
+FriendInfo friend_info = 2;
 }
 
 message SyncUserRelationship {
@@ -1386,4 +1394,16 @@ message Preferences {
 message FriendListChange {
     ChangeRecord change = 1;
     string version = 2;
+}
+
+
+message UserInfoBase {
+    string username = 1;
+    string avatar = 2;
+    string uid = 3;
+}
+
+
+message UsersInfoBase {
+repeated UserInfoBase users=1;
 }
