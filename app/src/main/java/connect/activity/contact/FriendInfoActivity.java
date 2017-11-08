@@ -122,7 +122,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
         new FriendInfoPresenter(this).start();
         presenter.requestUserInfo(friendEntity.getUid(), friendEntity);
-
         if(!WalletManager.isShowWallet()){
             transferImgs.setVisibility(View.GONE);
         }
