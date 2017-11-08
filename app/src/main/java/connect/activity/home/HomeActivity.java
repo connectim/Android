@@ -39,6 +39,7 @@ import connect.activity.home.fragment.ConversationFragment;
 import connect.activity.home.fragment.SetFragment;
 import connect.activity.home.fragment.WalletFragment;
 import connect.activity.home.view.CheckUpdata;
+import connect.activity.login.LoginPhoneActivity;
 import connect.activity.wallet.manager.WalletManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -167,6 +168,8 @@ public class HomeActivity extends BaseFragmentActivity {
 
                 mHandler.removeMessages(TIMEOUT_DELAYEXIT);
                 BaseApplication.getInstance().exitRegisterAccount();
+                Intent intent = new Intent(activity, LoginPhoneActivity.class);
+                activity.startActivity(intent);
                 finish();
                 break;
             case TOCHAT:

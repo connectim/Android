@@ -138,9 +138,12 @@ public class ConnectService extends Service {
 
         @Override
         public void connectExit() throws RemoteException {
-            unbindService(localConnect);
-            localConnect = null;
-            stopSelf();
+            LogManager.getLogger().d(Tag, "connectExit");
+            if (localBinder != null) {
+                unbindService(localConnect);
+                localConnect = null;
+                stopSelf();
+            }
         }
     }
 

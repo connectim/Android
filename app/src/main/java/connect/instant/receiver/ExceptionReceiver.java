@@ -22,6 +22,6 @@ public class ExceptionReceiver implements ExceptionListener{
 
     @Override
     public void exitAccount() {
-        HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
+        HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
     }
 }

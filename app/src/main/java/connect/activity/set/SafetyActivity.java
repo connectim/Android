@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
+import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
@@ -133,10 +134,7 @@ public class SafetyActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.V2_SETTING_DELETE_USER, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                // 删除成功
-                NotificationManager mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE) ;
-                mNotificationManager.cancel(1001);
-                BaseApplication.getInstance().exitRegisterAccount();
+                HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
 
                 List<Activity> list = BaseApplication.getInstance().getActivityList();
                 for (Activity activity : list) {

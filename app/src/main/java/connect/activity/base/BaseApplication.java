@@ -97,8 +97,5 @@ public class BaseApplication extends Application implements InterAccount {
         GroupService.stopServer(this.getApplicationContext());
 
         ProgressUtil.getInstance().dismissProgress();
-
-        Intent intent = new Intent(this.getBaseContext(), LoginPhoneActivity.class);
-        this.getBaseContext().startActivity(intent);
     }
 }
