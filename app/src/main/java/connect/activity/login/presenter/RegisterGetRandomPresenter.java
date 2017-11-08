@@ -135,7 +135,7 @@ public class RegisterGetRandomPresenter implements RegisterGetRandomContract.Pre
 
     @Override
     public void finishSuccess(final HashMap<String, String> hashMap) {
-        if (hashMap != null && hashMap.size() == 3) {
+        if (hashMap != null && hashMap.size() == 2) {
             mView.changeViewStatus(3);
             Handler handler = new Handler(Looper.getMainLooper()) {
                 @Override

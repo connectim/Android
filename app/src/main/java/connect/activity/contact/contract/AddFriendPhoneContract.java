@@ -18,6 +18,8 @@ public interface AddFriendPhoneContract {
 
     interface Presenter extends BasePresenter {
         void requestContact();
+
+        void sendMessage(List<PhoneContactBean> list);
     }
 
 }

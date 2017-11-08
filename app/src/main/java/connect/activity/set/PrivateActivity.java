@@ -55,7 +55,6 @@ public class PrivateActivity extends BaseActivity {
             findPhoneTb.setSelected(privateSetBean.getPhoneFind());
             findRecommendTb.setSelected(privateSetBean.getRecommend());
         }
-
         /*RotateAnimation animation = new RotateAnimation(0f,360f * 3, Animation.RELATIVE_TO_SELF,
                 0.5f,Animation.RELATIVE_TO_SELF,0.5f);
         animation.setDuration(1000);

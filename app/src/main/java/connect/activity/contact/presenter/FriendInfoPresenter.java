@@ -102,11 +102,13 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                 } else if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
                     ContactHelper.getInstance().deleteEntity(sendBean.getUid());
                     ContactHelper.getInstance().deleteRequestEntity(sendBean.getUid());
-                    ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
+                    ContactHelper.getInstance().removeFriend(sendBean.getUid());
                     ContactNotice.receiverContact();
 
                     ToastEUtil.makeText(mView.getActivity(), R.string.Link_Delete_Successful).show();
                     ActivityUtil.goBack(mView.getActivity());
+                } else if(sendBean.getType() == MsgSendBean.SendType.TypeFriendBlock){
+                    mView.setBlack(sendBean.getBlack());
                 }
                 break;
             case MSG_SEND_FAIL:
@@ -115,11 +117,8 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     ToastUtil.getInstance().showToast(errorCode + "");
                 }else if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
                     ToastEUtil.makeText(mView.getActivity(),R.string.Link_Delete_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
-                    /*ContactHelper.getInstance().deleteEntity(sendBean.getUid());
-                    ContactHelper.getInstance().deleteRequestEntity(sendBean.getPubkey());
-                    ContactHelper.getInstance().removeFriend(sendBean.getPubkey());
-                    ContactNotice.receiverContact();
-                    ActivityUtil.goBack(mView.getActivity());*/
+                }else if(sendBean.getType() == MsgSendBean.SendType.TypeFriendBlock) {
+                    ToastUtil.getInstance().showToast(errorCode + "");
                 }
                 break;
         }
@@ -169,28 +168,4 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
         });
     }
 
-    /**
-     * Set friends blacklist
-     */
-    /*@Override
-    public void requestBlock(final boolean block,String uid) {
-        Connect.UserIdentifier userIdentifier = Connect.UserIdentifier.newBuilder()
-                .setUid(uid)
-                .build();
-        String url;
-        if (block) {
-            url = UriUtil.CONNEXT_V1_BLACKLIST;
-        } else {
-            url = UriUtil.CONNEXT_V1_BLACKLIST_REMOVE;
-        }
-        OkHttpUtil.getInstance().postEncrySelf(url, userIdentifier, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                mView.setBlock(block);
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {}
-        });
-    }*/
 }

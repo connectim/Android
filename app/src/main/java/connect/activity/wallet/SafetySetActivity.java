@@ -47,8 +47,8 @@ public class SafetySetActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_Account_security);
 
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        /*if (userBean != null && TextUtils.isEmpty(userBean.getPatterStr())) {
+        /*UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        if (userBean != null && TextUtils.isEmpty(userBean.getPatterStr())) {
             patternTv.setText(R.string.Set_Off);
         } else {
             patternTv.setText(R.string.Set_On);

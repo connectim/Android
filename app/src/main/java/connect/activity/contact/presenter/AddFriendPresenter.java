@@ -26,7 +26,7 @@ import protos.Connect;
 public class AddFriendPresenter implements AddFriendContract.Presenter{
 
     private AddFriendContract.View mView;
-    private Connect.UsersInfoBase usersInfoBase;
+    private ArrayList<FriendRequestEntity> listRecommend = new ArrayList<>();
 
     public AddFriendPresenter(AddFriendContract.View mView) {
         this.mView = mView;
@@ -67,14 +67,17 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                             if(structData != null){
-                                usersInfoBase = Connect.UsersInfoBase.parseFrom(structData.getPlainData());
-                                /*ArrayList<Connect.UserInfoBase> list = new ArrayList<>();
-                                for(Connect.UserInfo userInfo : usersInfo.getUsersList()){
-                                    if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
-                                        list.add(userInfo);
-                                    }
+                                Connect.UsersInfoBase usersInfoBase = Connect.UsersInfoBase.parseFrom(structData.getPlainData());
+                                for(Connect.UserInfoBase userInfoBase : usersInfoBase.getUsersList()){
+                                    FriendRequestEntity requestEntity = new FriendRequestEntity();
+                                    requestEntity.setUid(userInfoBase.getUid());
+                                    requestEntity.setAvatar(userInfoBase.getAvatar());
+                                    requestEntity.setUsername(userInfoBase.getUsername());
+                                    requestEntity.setStatus(4);
+                                    listRecommend.add(requestEntity);
+                                    if(listRecommend.size() == 4)
+                                        break;
                                 }
-                                ContactHelper.getInstance().inserRecommendEntity(list);*/
                             }
                             queryFriend();
                         } catch (InvalidProtocolBufferException e) {
@@ -96,18 +99,7 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
             @Override
             protected ArrayList<FriendRequestEntity> doInBackground(Void... params) {
                 ArrayList<FriendRequestEntity> listFinal = new ArrayList<>();
-                if(usersInfoBase != null){
-                    for(Connect.UserInfoBase userInfoBase : usersInfoBase.getUsersList()){
-                        FriendRequestEntity requestEntity = new FriendRequestEntity();
-                        requestEntity.setUid(userInfoBase.getUid());
-                        requestEntity.setAvatar(userInfoBase.getAvatar());
-                        requestEntity.setUsername(userInfoBase.getUsername());
-                        requestEntity.setStatus(4);
-                        listFinal.add(requestEntity);
-                        if(listFinal.size() == 4)
-                            break;
-                    }
-                }
+                listFinal.addAll(listRecommend);
                 listFinal.addAll(ContactHelper.getInstance().loadFriendRequest());
                 return listFinal;
             }
@@ -115,13 +107,31 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
             @Override
             protected void onPostExecute(ArrayList<FriendRequestEntity> list) {
                 super.onPostExecute(list);
-                boolean isShowMoreRecommend = false;
-                if(usersInfoBase != null){
-                    isShowMoreRecommend = usersInfoBase.getUsersList().size() > 4 ? true : false;
-                }
-                mView.notifyData(isShowMoreRecommend, list);
+                mView.notifyData(listRecommend.size() >= 4 ? true : false, list);
             }
         }.execute();
+    }
+
+    @Override
+    public void requestNoInterest(final String uid) {
+        Connect.NOInterest noInterest = Connect.NOInterest.newBuilder()
+                .setUid(uid)
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_DISINCLINE, noInterest, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                for(FriendRequestEntity entity : listRecommend){
+                    if(entity.getUid().equals(uid)){
+                        listRecommend.remove(entity);
+                        break;
+                    }
+                }
+                queryFriend();
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {}
+        });
     }
 
     /**
@@ -143,28 +153,5 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
             }
         }.execute();
     }
-
-    /**
-     * Add friends success, update the database
-     */
-    /*@Override
-    public void updateRequestStatus(final FriendRequestEntity entity, int status) {
-        entity.setRead(1);
-        entity.setStatus(status);
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                ContactHelper.getInstance().inserFriendQuestEntity(entity);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                queryFriend();
-                ContactNotice.receiverAddFriend();
-            }
-        }.execute();
-    }*/
 
 }

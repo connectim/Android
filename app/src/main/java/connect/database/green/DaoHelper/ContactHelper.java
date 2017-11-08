@@ -89,6 +89,13 @@ public class ContactHelper extends BaseDao {
         return friendEntities;
     }
 
+    public List<ContactEntity> loadFriendBlack() {
+        QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
+        queryBuilder.where(ContactEntityDao.Properties.Blocked.eq(true)).build();
+        List<ContactEntity> friendEntities = queryBuilder.list();
+        return friendEntities;
+    }
+
     public List<ContactEntity> loadFriend(String pubkey) {
         List<String> strings = new ArrayList<>();
         strings.add(pubkey);
@@ -530,12 +537,12 @@ public class ContactHelper extends BaseDao {
     /**
      * remove friend and remove room list/message/file
      *
-     * @param pubkey
+     * @param uid
      */
-    public void removeFriend(String pubkey) {
-        ConversionHelper.getInstance().deleteRoom(pubkey);
-        MessageHelper.getInstance().deleteRoomMsg(pubkey);
-        FileUtil.deleteContactFile(pubkey);
+    public void removeFriend(String uid) {
+        ConversionHelper.getInstance().deleteRoom(uid);
+        MessageHelper.getInstance().deleteRoomMsg(uid);
+        FileUtil.deleteContactFile(uid);
 
         ConversationAction.conversationAction.sendEvent();
     }

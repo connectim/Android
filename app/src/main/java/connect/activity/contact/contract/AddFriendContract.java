@@ -29,6 +29,8 @@ public interface AddFriendContract {
         //void updateRequestStatus(FriendRequestEntity entity, int status);
 
         void requestRecommendUser();
+
+        void requestNoInterest(String uid);
     }
 
 }

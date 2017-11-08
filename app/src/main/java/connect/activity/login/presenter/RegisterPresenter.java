@@ -28,7 +28,8 @@ import protos.Connect;
 public class RegisterPresenter implements RegisterContract.Presenter {
 
     private RegisterContract.View mView;
-    private String headPath = "https://short.connect.im/avatar/v1/b040e0a970bc6d80b675586c5a55f9e9109168ba.png";
+    //private String headPath = "https://short.connect.im/avatar/v1/b040e0a970bc6d80b675586c5a55f9e9109168ba.png";
+    private String headPath = "http://192.168.40.4:18081/avatar/v1/2ks8as909jaey9mxwv87d4uprgdteuwxc2mkd0w8.jpg";
 
     public RegisterPresenter(RegisterContract.View mView) {
         this.mView = mView;
