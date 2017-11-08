@@ -1,6 +1,5 @@
 package instant.parser.localreceiver;
 
-import instant.bean.ChatMsgEntity;
 import instant.parser.inter.ConnectListener;
 
 /**

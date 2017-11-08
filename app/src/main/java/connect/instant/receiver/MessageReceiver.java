@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.home.bean.HttpRecBean;
+import connect.activity.home.bean.GroupRecBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -111,11 +111,11 @@ public class MessageReceiver implements MessageListener {
 
         if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {//group backup
             FailMsgsManager.getInstance().insertReceiveMsg(groupIdentify, chatMessage.getMsgId(), messagePost);
-            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupIdentify);
+            GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
         } else {
             byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
             if (contents.length < 3) {
-                HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupIdentify);
+                GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
             } else {
                 ChatMsgEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), groupIdentify,
                         chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
@@ -146,6 +146,6 @@ public class MessageReceiver implements MessageListener {
 
     @Override
     public void inviteJoinGroup(Connect.CreateGroupMessage groupMessage) {
-       HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupMessage.getIdentifier());
+        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupMessage.getIdentifier());
     }
 }

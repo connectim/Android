@@ -5,8 +5,10 @@ import android.content.Context;
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
+import instant.parser.inter.ExceptionListener;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.parser.localreceiver.ConnectLocalReceiver;
+import instant.parser.localreceiver.ExceptionLocalReceiver;
 import instant.parser.localreceiver.MessageLocalReceiver;
 import instant.parser.localreceiver.RobotLocalReceiver;
 import instant.parser.localreceiver.TransactionLocalReceiver;
@@ -33,5 +35,6 @@ public class ReceiverHelper {
         RobotLocalReceiver.localReceiver.registerRobotListener(RobotReceiver.receiver);
         UnreachableLocalReceiver.localReceiver.registerUnreachableListener(UnreachableReceiver.receiver);
         MessageLocalReceiver.localReceiver.registerMessageListener(MessageReceiver.receiver);
+        ExceptionLocalReceiver.localReceiver.registerConnect(ExceptionReceiver.receiver);
     }
 }

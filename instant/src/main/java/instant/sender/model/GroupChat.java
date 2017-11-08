@@ -19,7 +19,7 @@ import protos.Connect;
  */
 public class GroupChat extends NormalChat {
 
-    private static String TAG = "GroupChat";
+    private static String TAG = "_GroupChat";
 
     protected String groupKey;
     protected String groupName = "";
@@ -61,7 +61,7 @@ public class GroupChat extends NormalChat {
         builder.setChatMsg(chatMessageBuilder);
 
         Connect.MessageData messageData = builder.build();
-        Connect.MessagePost messagePost=normalChatMessage(messageData);
+        Connect.MessagePost messagePost = normalChatMessage(messageData);
 
         SenderManager.getInstance().sendAckMsg(SocketACK.GROUP_CHAT, groupKey, messageData.getChatMsg().getMsgId(), messagePost.toByteString());
     }

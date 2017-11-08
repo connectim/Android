@@ -68,7 +68,8 @@ public class DaoManager {
                     null);
 
             Database db = null;
-            if (ConfigUtil.getInstance().appMode()) {//release version
+            boolean appMode = ConfigUtil.getInstance().appMode();
+            if (appMode) {//release version
                 setDebug(false);//log
                 db = helper.getEncryptedWritableDb(DB_PWD);
             } else {//debug version

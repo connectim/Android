@@ -395,7 +395,6 @@
 
         <service
             android:name="connect.service.GroupService"
-            android:enabled="false"
             android:exported="false">
         </service>
     </application>

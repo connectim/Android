@@ -9,6 +9,7 @@ import java.util.List;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.contract.GroupCreateContract;
+import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
@@ -32,7 +33,9 @@ import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
+import instant.bean.Session;
 import instant.bean.SocketACK;
+import instant.bean.UserCookie;
 import instant.sender.SenderManager;
 import instant.sender.model.GroupChat;
 import protos.Connect;
@@ -149,7 +152,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         groupEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
         ContactHelper.getInstance().inserGroupEntity(groupEntity);
 
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.UpLoadBackUp, groupKey, groupEcdh);
+        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.UpLoadBackUp, groupKey, groupEcdh);
         String stringMems = "";
         List<GroupMemberEntity> memEntities = new ArrayList<>();
         for (ContactEntity contact : contactEntities) {
@@ -188,25 +191,42 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
     }
 
     public void groupCreateBroadcast() {
-        Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.newBuilder().setSecretKey(groupEcdh)
-                .setIdentifier(groupKey).build();
+        Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.newBuilder()
+                .setIdentifier(groupKey)
+                .setSecretKey(groupEcdh)
+                .build();
 
         String prikey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
         for (ContactEntity member : contactEntities) {
             String msgid = TimeUtil.timestampToMsgid();
             byte[] groupecdhkey = SupportKeyUril.getRawECDHKey(prikey, member.getCa_pub());
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, groupecdhkey, groupMessage.toByteString());
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, groupecdhkey, groupMessage.toByteArray());
 
             Connect.ChatMessage chatMessage = Connect.ChatMessage.newBuilder()
                     .setMsgId(msgid)
                     .setTo(member.getUid())
-                    .setCipherData(gcmData).build();
+                    .setCipherData(gcmData)
+                    .build();
 
             Connect.MessageData messageData = Connect.MessageData.newBuilder()
                     .setChatMsg(chatMessage)
                     .build();
+            Connect.MessagePost messagePost = normalChatMessage(messageData);
 
-            SenderManager.senderManager.sendAckMsg(SocketACK.GROUP_INVITE, groupKey,msgid, messageData.toByteString());
+            SenderManager.senderManager.sendAckMsg(SocketACK.GROUP_INVITE, groupKey, msgid, messagePost.toByteString());
         }
+    }
+
+    public Connect.MessagePost normalChatMessage(Connect.MessageData data) {
+        UserCookie connectCookie = Session.getInstance().getUserCookie(Session.CONNECT_USER);
+        String publicKey=connectCookie.getPubKey();
+        String priKey = connectCookie.getPriKey();
+
+        //messagePost
+        String postsign = instant.utils.cryption.SupportKeyUril.signHash(priKey, data.toByteArray());
+        return Connect.MessagePost.newBuilder().
+                setMsgData(data).setSign(postsign).
+                setPubKey(publicKey).
+                build();
     }
 }

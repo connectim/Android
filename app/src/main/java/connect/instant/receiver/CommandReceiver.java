@@ -15,6 +15,7 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.model.ConvertUtil;
+import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.MsgNoticeBean;
@@ -137,7 +138,7 @@ public class CommandReceiver implements CommandListener {
             String groupKey = group.getIdentifier();
             String[] collaboratives = groupInfo.getEcdh().split("/");
             if (collaboratives.length < 2) {//Download failed
-                HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
+                GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
             } else {// Download successful
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
                 if (groupEntity == null) {
@@ -320,7 +321,7 @@ public class CommandReceiver implements CommandListener {
                 groupKey = group.getIdentifier();
                 groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
                 if (groupEntity == null || TextUtils.isEmpty(group.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
-                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
+                    GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
 
                     FailMsgsManager.getInstance().insertReceiveMsg(group.getIdentifier(), TimeUtil.timestampToMsgid(), context.getString(R.string.Link_Join_Group));
                 } else {
@@ -357,7 +358,7 @@ public class CommandReceiver implements CommandListener {
                 }
 
                 if (groupEntity == null) {//The request of details
-                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
+                    GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
                 } else {
                     ContactHelper.getInstance().inserGroupMemEntity(memEntities);
 
@@ -444,7 +445,7 @@ public class CommandReceiver implements CommandListener {
                 groupKey = groupSetting.getIdentifier();
                 groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
                 if (groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
-                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupKey);
+                    GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
                 } else {
                     groupEntity.setSummary(groupSetting.getSummary());
                     groupEntity.setVerify(groupSetting.getPublic() ? 1 : 0);

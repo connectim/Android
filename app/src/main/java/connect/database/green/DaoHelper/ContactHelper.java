@@ -450,8 +450,8 @@ public class ContactHelper extends BaseDao {
         updateGroupMember(identify, publickey, null, null, role, null);
     }
 
-    public void updateGroupMemberNickName(String identify, String publickey, String nickname) {
-        updateGroupMember(identify, publickey, null, null, null, nickname);
+    public void updateGroupMemberNickName(String identify, String uid, String nickname) {
+        updateGroupMember(identify, uid, null, null, null, nickname);
     }
 
     public void updateGroupMember(String identify, String uid, String username, String avatar, Integer role, String nickname) {

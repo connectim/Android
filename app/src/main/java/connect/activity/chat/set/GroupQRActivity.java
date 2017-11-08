@@ -17,13 +17,11 @@ import connect.activity.chat.set.contract.GroupQRContract;
 import connect.activity.chat.set.presenter.GroupQRPresenter;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.DialogUtil;
-import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
@@ -48,7 +46,6 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
     private static String TAG = "_GroupQRActivity";
     private static String GROUP_IDENTIFY = "GROUP_IDENTIFY";
     private String groupKey = null;
-    private GroupEntity groupEntity = null;
     private GroupQRContract.Presenter presenter;
 
     @Override
@@ -97,7 +94,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
                                     false, new DialogUtil.OnItemClickListener() {
                                         @Override
                                         public void confirm(String value) {
-                                            presenter.requestGroupQR(UriUtil.GROUP_REFRESH_HASH);
+                                            presenter.requestGroupQR(false);
                                         }
 
                                         @Override
@@ -117,7 +114,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
 
         groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         new GroupQRPresenter(this).start();
-        presenter.requestGroupQR(UriUtil.GROUP_HASH);
+        presenter.requestGroupQR(true);
     }
 
     @Override
@@ -143,7 +140,7 @@ public class GroupQRActivity extends BaseActivity implements GroupQRContract.BVi
 
     @Override
     public void groupName(String groupname) {
-        txt1.setText(groupEntity.getName());
+        txt1.setText(groupname);
     }
 
     @Override
