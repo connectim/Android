@@ -23,7 +23,7 @@ import protos.Connect;
  */
 public class FriendChat extends NormalChat {
 
-    private static String TAG = "FriendChat";
+    private static String TAG = "_FriendChat";
 
     /** user Cookie */
     private UserCookie userCookie = null;
@@ -195,5 +195,32 @@ public class FriendChat extends NormalChat {
 
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
+    }
+
+    public void createGroupBroadToMember(String groupIdentify, String publicKey, Connect.CreateGroupMessage groupMessage) {
+        String msgid = instant.utils.TimeUtil.timestampToMsgid();
+        String privateKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
+        byte[] groupecdhkey = SupportKeyUril.getRawECDHKey(privateKey, publicKey);
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(
+                EncryptionUtil.ExtendedECDH.EMPTY,
+                groupecdhkey,
+                groupMessage.toByteArray());
+
+        Connect.ChatMessage chatMessage = Connect.ChatMessage.newBuilder()
+                .setMsgId(msgid)
+                .setTo(friendKey)
+                .setCipherData(gcmData)
+                .build();
+
+        Connect.MessageData messageData = Connect.MessageData.newBuilder()
+                .setChatMsg(chatMessage)
+                .build();
+
+        Connect.MessagePost messagePost = normalChatMessage(messageData);
+        SenderManager.senderManager.sendAckMsg(
+                SocketACK.GROUP_INVITE,
+                groupIdentify,
+                msgid,
+                messagePost.toByteString());
     }
 }

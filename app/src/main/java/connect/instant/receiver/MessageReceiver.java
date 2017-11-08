@@ -146,6 +146,7 @@ public class MessageReceiver implements MessageListener {
 
     @Override
     public void inviteJoinGroup(Connect.CreateGroupMessage groupMessage) {
-        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupMessage.getIdentifier());
+        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.UpLoadBackUp, groupMessage.getIdentifier(),groupMessage.getSecretKey());
+        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo,groupMessage.getIdentifier());
     }
 }

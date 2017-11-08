@@ -14,13 +14,17 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.GroupRecBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -105,12 +109,12 @@ public class GroupService extends Service {
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
                         Connect.Group group = groupInfo.getGroup();
-                        String pubkey = group.getIdentifier();
+                        String groupIdentifier = group.getIdentifier();
 
-                        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+                        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupIdentifier);
                         if (groupEntity == null) {
                             groupEntity = new GroupEntity();
-                            groupEntity.setIdentifier(pubkey);
+                            groupEntity.setIdentifier(groupIdentifier);
                             String groupname = group.getName();
                             if (TextUtils.isEmpty(groupname)) {
                                 groupname = "groupname9";
@@ -121,23 +125,23 @@ public class GroupService extends Service {
                             ContactHelper.getInstance().inserGroupEntity(groupEntity);
                         }
 
-                        List<GroupMemberEntity> memEntities = new ArrayList<>();
+                        Map<String, GroupMemberEntity> memberEntityMap = new HashMap<>();
                         for (Connect.GroupMember member : groupInfo.getMembersList()) {
-                            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(pubkey, member.getUid());
-                            if (memEntity == null) {
-                                memEntity = new GroupMemberEntity();
-                                memEntity.setIdentifier(pubkey);
-                                memEntity.setUid(member.getPubKey());
-                                memEntity.setAvatar(member.getAvatar());
-                                memEntity.setNick(member.getUsername());
-                                memEntity.setUsername(member.getUsername());
-                                memEntity.setRole(member.getRole());
-                                memEntities.add(memEntity);
-                            }
+                            GroupMemberEntity memEntity = new GroupMemberEntity();
+                            memEntity.setIdentifier(groupIdentifier);
+                            memEntity.setUid(member.getUid());
+                            memEntity.setAvatar(member.getAvatar());
+                            memEntity.setNick(member.getUsername());
+                            memEntity.setUsername(member.getUsername());
+                            memEntity.setRole(member.getRole());
+                            memberEntityMap.put(member.getUid(), memEntity);
                         }
+                        Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
+                        List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
+                        ContactHelper.getInstance().inserGroupMemEntity(memEntities);
 
                         ContactHelper.getInstance().inserGroupMemEntity(memEntities);
-                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.DownBackUp, pubkey);
+                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.DownBackUp, groupIdentifier);
                         ContactNotice.receiverGroup();
                     }
                 } catch (Exception e) {

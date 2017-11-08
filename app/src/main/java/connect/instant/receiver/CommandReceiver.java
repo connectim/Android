@@ -163,24 +163,22 @@ public class CommandReceiver implements CommandListener {
                 }
             }
 
+            Map<String, GroupMemberEntity> memberEntityMap = new HashMap<>();
             List<Connect.GroupMember> members = groupInfo.getMembersList();
-            List<GroupMemberEntity> memberEntities = new ArrayList<>();
             for (Connect.GroupMember member : members) {
-                GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, member.getUid());
-                if (memberEntity == null) {
-                    memberEntity = new GroupMemberEntity();
-                    memberEntity.setIdentifier(groupKey);
-                    memberEntity.setUid(member.getPubKey());
-                    memberEntity.setAvatar(member.getAvatar());
-                    memberEntity.setUsername(member.getUsername());
-                    memberEntity.setNick(member.getNick());
-                    memberEntity.setRole(member.getRole());
-                    memberEntity.setUsername(member.getUsername());
-
-                    memberEntities.add(memberEntity);
-                }
+                GroupMemberEntity memberEntity = new GroupMemberEntity();
+                memberEntity.setIdentifier(groupKey);
+                memberEntity.setUid(member.getUid());
+                memberEntity.setAvatar(member.getAvatar());
+                memberEntity.setUsername(member.getUsername());
+                memberEntity.setNick(member.getNick());
+                memberEntity.setRole(member.getRole());
+                memberEntity.setUsername(member.getUsername());
+                memberEntityMap.put(member.getUid(), memberEntity);
             }
-            ContactHelper.getInstance().inserGroupMemEntity(memberEntities);
+            Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
+            List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
+            ContactHelper.getInstance().inserGroupMemEntity(memEntities);
         }
     }
 
@@ -338,28 +336,25 @@ public class CommandReceiver implements CommandListener {
             case 1://Add members
                 groupKey = groupChange.getIdentifier();
                 groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-
                 Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(groupChange.getDetail());
                 List<Connect.UserInfo> userInfos = usersInfo.getUsersList();
-                List<GroupMemberEntity> memEntities = new ArrayList<>();
-                for (Connect.UserInfo info : userInfos) {
-                    GroupMemberEntity groupMemEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, info.getUid());
-                    if (groupMemEntity == null) {
-                        groupMemEntity = new GroupMemberEntity();
+
+                if (groupEntity == null) {//The request of details
+                    GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
+                } else {
+                    Map<String, GroupMemberEntity> memberEntityMap = new HashMap<>();
+                    for (Connect.UserInfo info : userInfos) {
+                        GroupMemberEntity groupMemEntity = new GroupMemberEntity();
                         groupMemEntity.setIdentifier(groupKey);
                         groupMemEntity.setUid(info.getUid());
                         groupMemEntity.setUsername(info.getUsername());
                         groupMemEntity.setNick(info.getUsername());
                         groupMemEntity.setAvatar(info.getAvatar());
                         groupMemEntity.setRole(0);
-
-                        memEntities.add(groupMemEntity);
+                        memberEntityMap.put(info.getUid(), groupMemEntity);
                     }
-                }
-
-                if (groupEntity == null) {//The request of details
-                    GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
-                } else {
+                    Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
+                    List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
                     ContactHelper.getInstance().inserGroupMemEntity(memEntities);
 
                     normalChat = new CGroupChat(groupEntity);
