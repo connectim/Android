@@ -125,9 +125,10 @@ public class WalletFragment extends BaseFragment {
 
     @OnClick(R.id.right_lin)
     void goScan(View view) {
-        if (currencyEntity != null) {
+        ActivityUtil.nextBottomToTop(mActivity, ScanTransferActivity.class, null, -1);
+        /*if (currencyEntity != null) {
             ActivityUtil.nextBottomToTop(mActivity, ScanTransferActivity.class, null, -1);
-        }
+        }*/
     }
 
     @OnClick(R.id.left_img)
@@ -288,4 +289,5 @@ public class WalletFragment extends BaseFragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
 }
