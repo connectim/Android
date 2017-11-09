@@ -86,17 +86,18 @@ public class PhotoUpload extends BaseFileUp {
                 } else {
                     Connect.GcmData firstGcmData = encodeAESGCMStructData(thumbCompressFile);
                     Connect.GcmData secondGcmData = encodeAESGCMStructData(sourceCompressFile);
-                    richMedia = Connect.RichMedia.newBuilder().
-                            setThumbnail(firstGcmData.toByteString()).
-                            setEntity(secondGcmData.toByteString()).build();
+                    richMedia = Connect.RichMedia.newBuilder()
+                            .setThumbnail(firstGcmData.toByteString())
+                            .setEntity(secondGcmData.toByteString())
+                            .build();
                 }
 
                 gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
                 mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(gcmData).build();
 
 
-                FileUtil.deleteFile(thumbCompressFile);
-                FileUtil.deleteFile(sourceCompressFile);
+//                FileUtil.deleteFile(thumbCompressFile);
+//                FileUtil.deleteFile(sourceCompressFile);
                 return null;
             }
 

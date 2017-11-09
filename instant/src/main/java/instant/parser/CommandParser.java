@@ -430,27 +430,26 @@ public class CommandParser extends InterParse {
             throw new Exception("Validation fails");
         }
 
-        Connect.ChatCookieData cookieData = chatCookie.getData();
-        if (TextUtils.isEmpty(cookieData.getChatPubKey())) {//friend use old protocal
+        Connect.ChatCookieData chatCookieData = chatCookie.getData();
+        if (TextUtils.isEmpty(chatCookieData.getChatPubKey())) {//friend use old protocal
             return;
         }
 
-        byte[] friendSalt = cookieData.getSalt().toByteArray();
+        byte[] friendSalt = chatCookieData.getSalt().toByteArray();
         Map<String, Object> failMap = FailMsgsManager.getInstance().getFailMap(msgid);
         if (failMap == null) {
             return;
         }
 
-        String friendPublickey = (String) failMap.get(FailMsgsManager.EXT);
-        if (!TextUtils.isEmpty(friendPublickey)) {
-            UserCookie friendCookie = new UserCookie();
-            friendCookie.setPubKey(cookieData.getChatPubKey());
-            friendCookie.setSalt(friendSalt);
-            friendCookie.setExpiredTime(cookieData.getExpired());
-            Session.getInstance().setUserCookie(friendPublickey, friendCookie);
+        String friendCaPublickey = chatCookie.getCaPub();
+        UserCookie friendCookie = new UserCookie();
+        String caPublicKey = chatCookieData.getChatPubKey();
+        friendCookie.setPubKey(caPublicKey);
+        friendCookie.setSalt(friendSalt);
+        friendCookie.setExpiredTime(chatCookieData.getExpired());
+        Session.getInstance().setUserCookie(friendCaPublickey, friendCookie);
 
-            SharedUtil.getInstance().insertFriendCookie(friendPublickey, friendCookie);
-        }
+        SharedUtil.getInstance().insertFriendCookie(friendCaPublickey, friendCookie);
     }
 
     /**
@@ -541,14 +540,16 @@ public class CommandParser extends InterParse {
         Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
                 setChatPubKey(randomPubKey).
                 setSalt(ByteString.copyFrom(randomSalt)).
-                setExpired(expiredTime).build();
+                setExpired(expiredTime)
+                .build();
 
         String caPublicKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
         String signInfo = SupportKeyUril.signHash(priKey, chatInfo.toByteArray());
         Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder()
                 .setCaPub(caPublicKey)
                 .setSign(signInfo)
-                .setData(chatInfo).build();
+                .setData(chatInfo)
+                .build();
 
         UserOrderBean userOrderBean = new UserOrderBean();
         userOrderBean.uploadRandomCookie(cookie);

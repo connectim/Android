@@ -137,13 +137,13 @@ public class SharedUtil {
 
 
     /******************************  Friend Cookie  ********************************************************/
-    public void insertFriendCookie(String publicKey, UserCookie userCookie) {
-        String friendCookieKey = COOKIE_CHATFRIEND + publicKey;
+    public void insertFriendCookie(String friendCaPublicKey, UserCookie userCookie) {
+        String friendCookieKey = COOKIE_CHATFRIEND + friendCaPublicKey;
         if (sharePre.contains(friendCookieKey)) {
             String gsonCookies = sharePre.getString(friendCookieKey, "");
             if (TextUtils.isEmpty(gsonCookies)) {
                 remove(friendCookieKey);
-                insertFriendCookie(publicKey, userCookie);
+                insertFriendCookie(friendCaPublicKey, userCookie);
             } else {
                 List<UserCookie> friendCookieList = new Gson().fromJson(gsonCookies, new TypeToken<List<UserCookie>>() {
                 }.getType());
@@ -161,8 +161,8 @@ public class SharedUtil {
         }
     }
 
-    public UserCookie loadFriendCookie(String publicKey) {
-        String friendCookieKey = COOKIE_CHATFRIEND + publicKey;
+    public UserCookie loadFriendCookie(String friendCaPublicKey) {
+        String friendCookieKey = COOKIE_CHATFRIEND + friendCaPublicKey;
         UserCookie userCookie = null;
         if (sharePre.contains(friendCookieKey)) {
             String gsonCookies = sharePre.getString(friendCookieKey, "");

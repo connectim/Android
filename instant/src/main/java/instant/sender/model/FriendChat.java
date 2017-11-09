@@ -30,7 +30,7 @@ public class FriendChat extends NormalChat {
     /** friend Cookie */
     private UserCookie friendCookie = null;
 
-    protected String friendKey = null;
+    protected String friendUid = null;
 
     public enum EncryType {
         NORMAL,
@@ -40,11 +40,11 @@ public class FriendChat extends NormalChat {
 
     private EncryType encryType = EncryType.BOTH;
 
-    public FriendChat(String friendKey) {
-        this.friendKey = friendKey;
+    public FriendChat(String uid) {
+        this.friendUid = uid;
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.friendChatCookie(friendKey);
+        userOrderBean.friendChatCookie(friendUid);
     }
 
     @Override
@@ -141,12 +141,12 @@ public class FriendChat extends NormalChat {
 
     @Override
     public String chatKey() {
-        return friendKey;
+        return friendUid;
     }
 
     @Override
     public long destructReceipt() {
-        return MessageLocalReceiver.localReceiver.chatBurnTime(friendKey);
+        return MessageLocalReceiver.localReceiver.chatBurnTime(friendUid);
     }
 
     @Override
@@ -163,8 +163,8 @@ public class FriendChat extends NormalChat {
     }
 
     private void loadUserCookie() {
-        String pubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-        userCookie = Session.getInstance().getUserCookie(pubkey);
+        String caPublicKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+        userCookie = Session.getInstance().getUserCookie(caPublicKey);
         if (userCookie == null) {
             userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
         }
@@ -174,10 +174,10 @@ public class FriendChat extends NormalChat {
         }
     }
 
-    public void loadFriendCookie(String pubkey) {
-        friendCookie = Session.getInstance().getUserCookie(pubkey);
+    public void loadFriendCookie(String friendCapublicKey) {
+        friendCookie = Session.getInstance().getUserCookie(friendCapublicKey);
         if (friendCookie == null) {
-            friendCookie =  SharedUtil.getInstance().loadFriendCookie(pubkey);
+            friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendCapublicKey);
         }
 
         if (friendCookie == null) {
@@ -208,7 +208,7 @@ public class FriendChat extends NormalChat {
 
         Connect.ChatMessage chatMessage = Connect.ChatMessage.newBuilder()
                 .setMsgId(msgid)
-                .setTo(friendKey)
+                .setTo(friendUid)
                 .setCipherData(gcmData)
                 .build();
 
