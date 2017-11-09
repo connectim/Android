@@ -15,6 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.set.adapter.BlackListAdapter;
@@ -97,6 +98,7 @@ public class PrivateBlackActivity extends BaseActivity {
                     if (null != friendEntity) {
                         friendEntity.setBlocked(false);
                         ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
+                        ContactNotice.receiverFriend();
                     }
                     adapter.removeDataNotify(Integer.valueOf(sendBean.getTips()));
                 }
