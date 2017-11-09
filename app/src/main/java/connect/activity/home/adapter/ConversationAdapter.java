@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.bean.Talker;
+import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.RoomAttrBean;
@@ -171,7 +172,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
                     roomAttr.setDisturb(disturb);
                     if (roomAttrBeanList.get(position).getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE) {
-                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupNotificaton, roomid, disturb);
+                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupNotificaton, roomid, disturb);
                     }
                 }
             }

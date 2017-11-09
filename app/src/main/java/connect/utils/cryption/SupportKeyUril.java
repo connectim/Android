@@ -148,12 +148,12 @@ public class SupportKeyUril {
             throw new RuntimeException("UserBean is Null");
         }
 
-        String privateKey = userBean.getPriKey();
-        if (TextUtils.isEmpty(privateKey)) {
-            throw new RuntimeException("privateKey is Null");
+        String myUid = userBean.getUid();
+        if (TextUtils.isEmpty(myUid)) {
+            throw new RuntimeException("myUid is Null");
         }
 
-        String key = AllNativeMethod.cdGetHash256(privateKey);
+        String key = AllNativeMethod.cdGetHash256(myUid);
         key = AllNativeMethod.cdGetHash256(key);
         return key;
     }

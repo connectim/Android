@@ -81,9 +81,10 @@ public class MessageHelper extends BaseDao {
             msgEntity.setPayCount(cursorGetInt(cursor, "PAY_COUNT"));
             msgEntity.setCrowdCount(cursorGetInt(cursor, "CROWD_COUNT"));
 
-            if (!TextUtils.isEmpty(msgEntity.getContent())) {
+            String content = msgEntity.getContent();
+            if (!TextUtils.isEmpty(content)) {
                 try {
-                    Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(msgEntity.getContent()));
+                    Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(content));
                     byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
                     msgEntity.setContents(contents);
                 } catch (Exception e) {

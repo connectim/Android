@@ -19,6 +19,8 @@ public class ContactEntity implements Serializable {
     @Unique
     private String ca_pub;
 
+    @NotNull
+    @Unique
     private String uid;
     private String connectId;
     private String username;
@@ -27,8 +29,9 @@ public class ContactEntity implements Serializable {
     private Integer common;
     private Integer source;
     private Boolean blocked;
-    @Generated(hash = 840680774)
-    public ContactEntity(Long _id, @NotNull String ca_pub, String uid,
+
+    @Generated(hash = 255488888)
+    public ContactEntity(Long _id, @NotNull String ca_pub, @NotNull String uid,
             String connectId, String username, String avatar, String remark,
             Integer common, Integer source, Boolean blocked) {
         this._id = _id;

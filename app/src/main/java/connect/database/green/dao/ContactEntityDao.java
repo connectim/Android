@@ -51,7 +51,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"CONTACT_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
                 "\"CA_PUB\" TEXT NOT NULL UNIQUE ," + // 1: ca_pub
-                "\"UID\" TEXT," + // 2: uid
+                "\"UID\" TEXT NOT NULL UNIQUE ," + // 2: uid
                 "\"CONNECT_ID\" TEXT," + // 3: connectId
                 "\"USERNAME\" TEXT," + // 4: username
                 "\"AVATAR\" TEXT," + // 5: avatar
@@ -76,11 +76,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
             stmt.bindLong(1, _id);
         }
         stmt.bindString(2, entity.getCa_pub());
- 
-        String uid = entity.getUid();
-        if (uid != null) {
-            stmt.bindString(3, uid);
-        }
+        stmt.bindString(3, entity.getUid());
  
         String connectId = entity.getConnectId();
         if (connectId != null) {
@@ -127,11 +123,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
             stmt.bindLong(1, _id);
         }
         stmt.bindString(2, entity.getCa_pub());
- 
-        String uid = entity.getUid();
-        if (uid != null) {
-            stmt.bindString(3, uid);
-        }
+        stmt.bindString(3, entity.getUid());
  
         String connectId = entity.getConnectId();
         if (connectId != null) {
@@ -179,7 +171,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         ContactEntity entity = new ContactEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
             cursor.getString(offset + 1), // ca_pub
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // uid
+            cursor.getString(offset + 2), // uid
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // connectId
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // username
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // avatar
@@ -195,7 +187,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
     public void readEntity(Cursor cursor, ContactEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setCa_pub(cursor.getString(offset + 1));
-        entity.setUid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setUid(cursor.getString(offset + 2));
         entity.setConnectId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setUsername(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setAvatar(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));

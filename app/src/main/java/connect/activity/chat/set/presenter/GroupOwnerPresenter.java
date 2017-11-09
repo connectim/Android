@@ -7,6 +7,7 @@ import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.contract.GroupOwnerContract;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.ui.activity.R;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -36,16 +37,18 @@ public class GroupOwnerPresenter implements GroupOwnerContract.Presenter{
     }
 
     @Override
-    public void groupOwnerTo(String memberKey, final String address) {
+    public void groupOwnerTo(String memberKey, final String memberUid) {
         Connect.GroupAttorn attorn = Connect.GroupAttorn.newBuilder()
                 .setIdentifier(memberKey)
-                .setUid(address).build();
+                .setUid(memberUid)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_ATTORN, attorn, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
-                ContactHelper.getInstance().updateGroupMemberRole(roomKey, myPublicKey, 0);
-                ContactHelper.getInstance().updateGroupMemberRole(roomKey, address, 1);
+                String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+                ContactHelper.getInstance().updateGroupMemberRole(roomKey, myUid, 0);
+                ContactHelper.getInstance().updateGroupMemberRole(roomKey, memberUid, 1);
 
                 GroupSetActivity.startActivity(activity, roomKey);
             }
@@ -53,9 +56,10 @@ public class GroupOwnerPresenter implements GroupOwnerContract.Presenter{
             @Override
             public void onError(Connect.HttpResponse response) {
                 String message = response.getMessage();
-                if (!TextUtils.isEmpty(message)) {
-                    ToastEUtil.makeText(activity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                if (TextUtils.isEmpty(message)) {
+                    message = activity.getString(R.string.Network_equest_failed_please_try_again_later);
                 }
+                ToastEUtil.makeText(activity, message, ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         });
     }

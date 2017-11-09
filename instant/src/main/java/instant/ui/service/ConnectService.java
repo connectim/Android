@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 
 import connect.im.IMessage;
 import instant.parser.CommandParser;
+import instant.parser.ErrorParser;
 import instant.parser.ExceptionParser;
 import instant.parser.InterParse;
 import instant.parser.MessageParser;
@@ -137,9 +138,12 @@ public class ConnectService extends Service {
 
         @Override
         public void connectExit() throws RemoteException {
-            unbindService(localConnect);
-            localConnect = null;
-            stopSelf();
+            LogManager.getLogger().d(Tag, "connectExit");
+            if (localBinder != null) {
+                unbindService(localConnect);
+                localConnect = null;
+                stopSelf();
+            }
         }
     }
 
@@ -187,6 +191,9 @@ public class ConnectService extends Service {
                         break;
                     case 0x06://Be offline
                         interParse = new ExceptionParser(ext, body);
+                        break;
+                    case 0x08://error
+                        interParse = new ErrorParser(ext, body);
                         break;
                 }
 

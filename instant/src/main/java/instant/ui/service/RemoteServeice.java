@@ -172,9 +172,14 @@ public class RemoteServeice extends Service {
         @Override
         public void connectExit() throws RemoteException {
             stopConnect();
-            localBinder.connectExit();
-            unbindService(pushConnect);
-            pushConnect = null;
+            if (localBinder != null) {
+                localBinder.connectExit();
+                localBinder = null;
+            }
+            if (pushConnect != null) {
+                unbindService(pushConnect);
+                pushConnect = null;
+            }
             stopSelf();
         }
     }

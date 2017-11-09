@@ -19,7 +19,7 @@ import protos.Connect;
 
 public class MsgHandleJoinGroupHolder extends MsgChatHolder {
 
-    private ImageView roundedImageView;
+    private ImageView imageView;
     private TextView txt1;
     private TextView txt3;
 
@@ -28,7 +28,7 @@ public class MsgHandleJoinGroupHolder extends MsgChatHolder {
 
     public MsgHandleJoinGroupHolder(View itemView) {
         super(itemView);
-        roundedImageView = (ImageView) itemView.findViewById(R.id.roundimg1);
+        imageView = (ImageView) itemView.findViewById(R.id.roundimg1);
         txt1 = (TextView) itemView.findViewById(R.id.txt1);
         txt3 = (TextView) itemView.findViewById(R.id.txt3);
     }
@@ -40,7 +40,7 @@ public class MsgHandleJoinGroupHolder extends MsgChatHolder {
 
         Connect.UserInfo userInfo = reviewed.getUserInfo();
 
-        GlideUtil.loadAvatarRound(roundedImageView, userInfo.getAvatar());
+        GlideUtil.loadAvatarRound(imageView, userInfo.getAvatar());
         txt1.setText(context.getString(R.string.Link_apply_to_join_group_chat, userInfo.getUsername(), reviewed.getName()));
 
         groupApplyKey = reviewed.getIdentifier() + userInfo.getPubKey();

@@ -50,8 +50,8 @@ public class GroupMyAliasPresenter implements GroupMyAliasContract.Presenter {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_MEMUPDATE, memberInfo, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
-                ContactHelper.getInstance().updateGroupMemberNickName(groupKey, myPublicKey, myalias);
+                String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+                ContactHelper.getInstance().updateGroupMemberNickName(groupKey, myUid, myalias);
 
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATEMYNAME);
                 GroupSetActivity.startActivity(activity, groupKey);

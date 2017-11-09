@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,6 +24,8 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTouch;
 import connect.activity.chat.activity.BaseChatSendActivity;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.LinkMessageRow;
@@ -85,6 +88,8 @@ public class ChatActivity extends BaseChatSendActivity {
     RecordView recordview;
     @Bind(R.id.inputPanel)
     InputPanel inputPanel;
+    @Bind(R.id.relativelayout_1)
+    RelativeLayout relativelayout1;
 
     private static String TAG = "_ChatActivity";
 
@@ -451,6 +456,15 @@ public class ChatActivity extends BaseChatSendActivity {
                     ConversationAction.conversationAction.sendEvent();
                 }
             }
+        }
+    }
+
+    @OnClick({R.id.relativelayout_1})
+    public void onClickView(View view) {
+        switch (view.getId()) {
+            case R.id.relativelayout_1:
+                inputPanel.hideBottomPanel();
+                break;
         }
     }
 

@@ -13,7 +13,6 @@ public class HttpRecBean implements Serializable {
     public enum HttpRecType {
         SALTEXPIRE,//salt timeout
         SALT_VERIFY,//salt verify
-        GroupInfo,//group information
         PrivateSet,//private setting
         BlackList,//black list
         UpLoadBackUp,//upload backup

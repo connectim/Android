@@ -2,6 +2,7 @@ package connect.activity.chat.set.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import connect.activity.chat.set.contract.GroupQRContract;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -43,14 +44,17 @@ public class GroupQRPresenter implements GroupQRContract.Presenter {
         }
 
         view.groupAvatar(groupEntity.getAvatar());
+        view.groupName(groupEntity.getName());
     }
 
     @Override
-    public void requestGroupQR(String url) {
-        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomKey);
+    public void requestGroupQR(boolean isrequest) {
         Connect.GroupId groupId = Connect.GroupId.newBuilder()
-                .setIdentifier(groupEntity.getIdentifier()).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_HASH, groupId, new ResultCall<Connect.HttpResponse>() {
+                .setIdentifier(roomKey)
+                .build();
+
+        String url = isrequest ? UriUtil.GROUP_HASH : UriUtil.GROUP_REFRESH_HASH;
+        OkHttpUtil.getInstance().postEncrySelf(url, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
@@ -68,7 +72,11 @@ public class GroupQRPresenter implements GroupQRContract.Presenter {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(activity, activity.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                String errorMessage = response.getMessage();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    errorMessage = activity.getString(R.string.Network_equest_failed_please_try_again_later);
+                }
+                ToastEUtil.makeText(activity, errorMessage, ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         });
     }
@@ -100,7 +108,11 @@ public class GroupQRPresenter implements GroupQRContract.Presenter {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(activity,R.string.Link_The_group_is_not_public_Not_Share,ToastEUtil.TOAST_STATUS_FAILE).show();
+                String errorMessage = response.getMessage();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    errorMessage = activity.getString(R.string.Link_The_group_is_not_public_Not_Share);
+                }
+                ToastEUtil.makeText(activity, errorMessage, ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         });
     }

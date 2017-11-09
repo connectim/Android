@@ -22,7 +22,7 @@ public interface GroupQRContract {
 
     interface Presenter extends BasePresenter {
 
-        void requestGroupQR(String url);
+        void requestGroupQR(boolean isrequest);
 
         void requestGroupShare();
     }
