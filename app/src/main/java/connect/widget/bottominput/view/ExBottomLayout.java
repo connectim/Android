@@ -174,7 +174,7 @@ public class ExBottomLayout extends RelativeLayout {
     }
 
     public void hideEmojiView() {
-        includeMore.setVisibility(GONE);
+        includeEmoji.setVisibility(GONE);
     }
 
     public void hideExView() {
