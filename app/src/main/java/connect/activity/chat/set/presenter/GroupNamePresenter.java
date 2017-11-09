@@ -46,8 +46,10 @@ public class GroupNamePresenter implements GroupNameContract.Presenter{
 
     @Override
     public void updateGroupName(final String groupName) {
-        final Connect.UpdateGroupInfo groupInfo = Connect.UpdateGroupInfo.newBuilder()
-                .setName(groupName).setIdentifier(groupKey).build();
+        Connect.UpdateGroupInfo groupInfo = Connect.UpdateGroupInfo.newBuilder()
+                .setIdentifier(groupKey)
+                .setName(groupName)
+                .build();
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_UPDATE, groupInfo, new ResultCall<Connect.HttpResponse>() {
 
@@ -66,7 +68,11 @@ public class GroupNamePresenter implements GroupNameContract.Presenter{
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(activity, R.string.Link_Update_Group_Name_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
+                String errorMessage = response.getMessage();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    errorMessage = activity.getString(R.string.Link_Update_Group_Name_Failed);
+                }
+                ToastEUtil.makeText(activity, errorMessage, ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         });
     }

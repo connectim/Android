@@ -6,8 +6,8 @@ import android.text.TextUtils;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.Talker;
+import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HomeAction;
-import connect.activity.home.bean.HttpRecBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -169,7 +169,7 @@ public class TransactionReceiver implements TransactionListener {
                 receiverName, senderName);
         TransactionEntity transEntity = TransactionHelper.getInstance().loadTransEntity(hashId);
         if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
-            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, groupid);
+            GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupid);
 
             FailMsgsManager.getInstance().insertReceiveMsg(groupid, TimeUtil.timestampToMsgid(), content);
             if (transEntity.getPay_count() == transEntity.getCrowd_count()) {

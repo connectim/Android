@@ -148,7 +148,9 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
     @Override
     public void syncGroupInfo() {
         Connect.GroupId groupId = Connect.GroupId.newBuilder()
-                .setIdentifier(roomKey).build();
+                .setIdentifier(roomKey)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_SETTING_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -160,8 +162,8 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
                         view.noticeSwitch(settingInfo.getMute());
 
                         if (settingInfo.getPublic()) {
-                            String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
-                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myPublicKey);
+                            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myUid);
                             if (myMember == null || myMember.getRole() == 0) {
                                 view.groupNameClickable(false);
                             } else {
@@ -187,7 +189,9 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
     public void updateGroupMute(final boolean state) {
         Connect.UpdateGroupMute groupMute = Connect.UpdateGroupMute.newBuilder()
                 .setIdentifier(roomKey)
-                .setMute(state).build();
+                .setMute(state)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_MUTE, groupMute, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {

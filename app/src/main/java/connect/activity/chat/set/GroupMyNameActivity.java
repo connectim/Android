@@ -62,13 +62,6 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
                 ActivityUtil.goBack(activity);
             }
         });
-        toolbar.setRightListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String myalias = edittxt2.getText().toString();
-                presenter.updateMyAliasInGroup(myalias);
-            }
-        });
 
         groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         edittxt2.addTextChangedListener(textWatcher);
@@ -90,9 +83,11 @@ public class GroupMyNameActivity extends BaseActivity implements GroupMyAliasCon
         @Override
         public void afterTextChanged(Editable s) {
             if (s.length() == 0) {
+                toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_68656f);
                 toolbar.setRightListener(null);
             } else {
+                toolbar.setRightTextEnable(true);
                 toolbar.setRightTextColor(R.color.color_green);
                 toolbar.setRightListener(new View.OnClickListener() {
                     @Override

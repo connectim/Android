@@ -24,13 +24,9 @@ public class OkHttpUtil {
 
     private static OkHttpUtil mInstance;
 
-    public static OkHttpUtil getInstance() {
+    public synchronized static OkHttpUtil getInstance() {
         if (mInstance == null) {
-            synchronized (OkHttpUtil.class) {
-                if (mInstance == null) {
-                    mInstance = new OkHttpUtil();
-                }
-            }
+            mInstance = new OkHttpUtil();
         }
         return mInstance;
     }

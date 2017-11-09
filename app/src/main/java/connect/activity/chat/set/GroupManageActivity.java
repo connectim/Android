@@ -97,7 +97,7 @@ public class GroupManageActivity extends BaseActivity implements GroupManagerCon
         ImageView img1 = (ImageView) view.findViewById(R.id.img1);
 
         txt1.setText(getString(R.string.Link_Group_Introduction));
-        img1.setBackgroundResource(R.mipmap.app_right_arrow);
+        img1.setImageResource(R.mipmap.app_right_arrow);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +113,7 @@ public class GroupManageActivity extends BaseActivity implements GroupManagerCon
         ImageView img1 = (ImageView) view.findViewById(R.id.img1);
 
         txt1.setText(getString(R.string.Link_Ownership_Transfer));
-        img1.setBackgroundResource(R.mipmap.app_right_arrow);
+        img1.setImageResource(R.mipmap.app_right_arrow);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

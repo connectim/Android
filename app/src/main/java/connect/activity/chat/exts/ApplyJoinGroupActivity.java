@@ -19,6 +19,7 @@ import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.exts.contract.JoinGroupContract;
 import connect.activity.chat.exts.presenter.JoinGroupPresenter;
+import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HttpRecBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -195,9 +196,9 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
                     String gKey = groupKey[0];
                     GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(gKey);
                     if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
-                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.GroupInfo, gKey);
+                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, gKey);
                     } else {
-                        Talker talker = new Talker(Connect.ChatType.GROUPCHAT,gKey);
+                        Talker talker = new Talker(Connect.ChatType.GROUPCHAT, gKey);
                         ChatActivity.startActivity(activity, talker);
                     }
                     break;

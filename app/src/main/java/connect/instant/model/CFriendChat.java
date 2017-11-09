@@ -14,7 +14,13 @@ import connect.instant.inter.ConversationListener;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import instant.bean.ChatMsgEntity;
+import instant.bean.Session;
+import instant.bean.SocketACK;
+import instant.sender.SenderManager;
 import instant.sender.model.FriendChat;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
+import protos.Connect;
 
 /**
  * Created by Administrator on 2017/10/19.

@@ -14,13 +14,17 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import connect.activity.contact.bean.ContactNotice;
-import connect.activity.home.bean.HttpRecBean;
+import connect.activity.home.bean.GroupRecBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -66,13 +70,13 @@ public class GroupService extends Service {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(HttpRecBean httpRec) {
+    public void onEventMainThread(GroupRecBean groupRecBean) {
         Object[] objects = null;
-        if (httpRec.obj != null) {
-            objects = (Object[]) httpRec.obj;
+        if (groupRecBean.obj != null) {
+            objects = (Object[]) groupRecBean.obj;
         }
 
-        switch (httpRec.httpRecType) {
+        switch (groupRecBean.groupRecType) {
             case GroupInfo://get group information
                 groupInfo((String) objects[0]);
                 break;
@@ -92,7 +96,10 @@ public class GroupService extends Service {
     }
 
     public void groupInfo(String pubkey) {
-        Connect.GroupId groupId = Connect.GroupId.newBuilder().setIdentifier(pubkey).build();
+        Connect.GroupId groupId = Connect.GroupId.newBuilder()
+                .setIdentifier(pubkey)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PULLINFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -102,12 +109,12 @@ public class GroupService extends Service {
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
                         Connect.Group group = groupInfo.getGroup();
-                        String pubkey = group.getIdentifier();
+                        String groupIdentifier = group.getIdentifier();
 
-                        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubkey);
+                        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupIdentifier);
                         if (groupEntity == null) {
                             groupEntity = new GroupEntity();
-                            groupEntity.setIdentifier(pubkey);
+                            groupEntity.setIdentifier(groupIdentifier);
                             String groupname = group.getName();
                             if (TextUtils.isEmpty(groupname)) {
                                 groupname = "groupname9";
@@ -118,23 +125,23 @@ public class GroupService extends Service {
                             ContactHelper.getInstance().inserGroupEntity(groupEntity);
                         }
 
-                        List<GroupMemberEntity> memEntities = new ArrayList<>();
+                        Map<String, GroupMemberEntity> memberEntityMap = new HashMap<>();
                         for (Connect.GroupMember member : groupInfo.getMembersList()) {
-                            GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(pubkey, member.getUid());
-                            if (memEntity == null) {
-                                memEntity = new GroupMemberEntity();
-                                memEntity.setIdentifier(pubkey);
-                                memEntity.setUid(member.getPubKey());
-                                memEntity.setAvatar(member.getAvatar());
-                                memEntity.setNick(member.getUsername());
-                                memEntity.setUsername(member.getUsername());
-                                memEntity.setRole(member.getRole());
-                                memEntities.add(memEntity);
-                            }
+                            GroupMemberEntity memEntity = new GroupMemberEntity();
+                            memEntity.setIdentifier(groupIdentifier);
+                            memEntity.setUid(member.getUid());
+                            memEntity.setAvatar(member.getAvatar());
+                            memEntity.setNick(member.getUsername());
+                            memEntity.setUsername(member.getUsername());
+                            memEntity.setRole(member.getRole());
+                            memberEntityMap.put(member.getUid(), memEntity);
                         }
+                        Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
+                        List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
+                        ContactHelper.getInstance().inserGroupMemEntity(memEntities);
 
                         ContactHelper.getInstance().inserGroupMemEntity(memEntities);
-                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownBackUp, pubkey);
+                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.DownBackUp, groupIdentifier);
                         ContactNotice.receiverGroup();
                     }
                 } catch (Exception e) {
@@ -162,7 +169,9 @@ public class GroupService extends Service {
 
             Connect.GroupCollaborative collaborative = Connect.GroupCollaborative.newBuilder()
                     .setIdentifier(groupkey)
-                    .setCollaborative(collaFormat).build();
+                    .setCollaborative(collaFormat)
+                    .build();
+
             OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_UPLOADKEY, collaborative, new ResultCall<Connect.HttpResponse>() {
                 @Override
                 public void onResponse(Connect.HttpResponse response) {
@@ -180,7 +189,9 @@ public class GroupService extends Service {
 
     public void downloadBackUp(final String pubkey) {
         Connect.GroupId groupId = Connect.GroupId.newBuilder()
-                .setIdentifier(pubkey).build();
+                .setIdentifier(pubkey)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_DOWNLOAD_KEY, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -193,7 +204,7 @@ public class GroupService extends Service {
                     }
                     String[] infos = groupCollaborative.getCollaborative().split("/");
                     if (infos.length < 2) {
-                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownGroupBackUp, pubkey);
+                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.DownGroupBackUp, pubkey);
                     } else {
                         byte[] ecdHkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), infos[0]);
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
@@ -213,14 +224,16 @@ public class GroupService extends Service {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.DownGroupBackUp, pubkey);
+                GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.DownGroupBackUp, pubkey);
             }
         });
     }
 
     public void downloadGroupBackUp(final String pubkey) {
         Connect.GroupId groupId = Connect.GroupId.newBuilder()
-                .setIdentifier(pubkey).build();
+                .setIdentifier(pubkey)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_BACKUP, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -241,7 +254,7 @@ public class GroupService extends Service {
                         String groupEcdh = groupMessage.getSecretKey();
                         downGroupBackUpSuccess(pubkey, groupEcdh);
 
-                        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.UpLoadBackUp, pubkey, groupEcdh);
+                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.UpLoadBackUp, pubkey, groupEcdh);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -273,7 +286,9 @@ public class GroupService extends Service {
     private void updateGroupMute(final String groupkey, final int state) {
         Connect.UpdateGroupMute groupMute = Connect.UpdateGroupMute.newBuilder()
                 .setIdentifier(groupkey)
-                .setMute(state == 1).build();
+                .setMute(state == 1)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_MUTE, groupMute, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
