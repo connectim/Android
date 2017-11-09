@@ -150,9 +150,7 @@ public class FriendInfoRecordActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
+            public void onError(Connect.HttpResponse response) {}
         });
     }
 

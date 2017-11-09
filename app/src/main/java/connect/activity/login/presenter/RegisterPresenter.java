@@ -87,18 +87,18 @@ public class RegisterPresenter implements RegisterContract.Presenter {
      *
      * @param nicName
      * @param token Check the phone number of the token
-     * @param userBean
+     * @param userBeanOut
      */
     @Override
-    public void registerUser(final String nicName, final String token, final UserBean userBean) {
+    public void registerUser(final String nicName, final String token, final UserBean userBeanOut) {
         Connect.RegisterUser registerUser = Connect.RegisterUser.newBuilder()
                 .setToken(token)
-                .setMobile(userBean.getPhone())
+                .setMobile(userBeanOut.getPhone())
                 .setAvatar(headPath)
                 .setUsername(nicName)
-                .setCaPub(userBean.getPubKey())
+                .setCaPub(userBeanOut.getPubKey())
                 .build();
-        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBean.getPriKey(), userBean.getPubKey(), registerUser.toByteString());
+        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBeanOut.getPriKey(), userBeanOut.getPubKey(), registerUser.toByteString());
         HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_UP, imRequest, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -106,18 +106,11 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                     ProgressUtil.getInstance().dismissProgress();
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
-                            userBean.getPriKey(), imResponse.getCipherData());
+                            userBeanOut.getPriKey(), imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
-                    UserBean userBean = new UserBean();
-                    userBean.setAvatar(userInfo.getAvatar());
-                    userBean.setConnectId(userInfo.getConnectId());
-                    userBean.setName(userInfo.getUsername());
-                    userBean.setPhone(userBean.getPhone());
-                    userBean.setPriKey(userBean.getPriKey());
-                    userBean.setPubKey(userInfo.getPubKey());
-                    userBean.setCaPublicKey(userInfo.getCaPub());
-                    userBean.setUid(userInfo.getUid());
+                    UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), userBeanOut.getPriKey(), userBeanOut.getPubKey(),
+                            userInfo.getCaPub(), userBeanOut.getPhone(), userInfo.getConnectId(), userInfo.getUid(), false);
                     SharedPreferenceUtil.getInstance().putUser(userBean);
 
                     mView.launchHome();

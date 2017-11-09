@@ -126,7 +126,6 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
 
     /**
      * Get the latest information from friends
-     * 1: uid   2:connectid
      */
     @Override
     public void requestUserInfo(String value, final ContactEntity friendEntity) {

@@ -147,7 +147,7 @@ public class RegisterGetRandomActivity extends BaseActivity implements RegisterG
                 statusTv.setText(R.string.Login_Generating_Private_and_Public_Key);
                 break;
             case 2:
-                statusTv.setText(R.string.Login_Generating_Bitcoin_address);
+                statusTv.setText(R.string.Login_Generating_Private_and_Public_Key);
                 break;
             case 3:
                 statusTv.setText(R.string.Login_Generated_Successful);

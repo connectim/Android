@@ -425,8 +425,6 @@ public class WalletManager {
 
     /**
      * Into a Long
-     * @param value
-     * @return
      */
     public long doubleToLongCurrency(double value){
         return Math.round(value * BTC_TO_LONG);
@@ -434,8 +432,6 @@ public class WalletManager {
 
     /**
      * Converted to Double type
-     * @param value
-     * @return
      */
     public String longToDoubleCurrency(long value) {
         DecimalFormat myFormat = new DecimalFormat(PATTERN_BTC);
@@ -445,7 +441,6 @@ public class WalletManager {
 
     /**
      * Determine whether to create the wallet
-     * @return
      */
     public boolean isCreateWallet(){
         boolean isCreate;

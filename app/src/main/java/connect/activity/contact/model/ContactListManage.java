@@ -82,9 +82,8 @@ public class ContactListManage {
         ArrayList<ContactBean> favoritesList = new ArrayList<>();
         ArrayList<ContactBean> friendList = new ArrayList<>();
         for(ContactEntity friendEntity : loacalFriend){
-            if(friendEntity.getUid().equals(pubKeyExc)){
-                continue;
-            }
+            if(friendEntity.getUid().equals(pubKeyExc)) continue;
+            if(friendEntity.getBlocked() != null && friendEntity.getBlocked()) continue;
 
             ContactBean contactBean = new ContactBean();
             String name = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();

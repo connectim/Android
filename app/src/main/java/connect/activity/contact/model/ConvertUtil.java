@@ -5,24 +5,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import connect.database.SharedPreferenceUtil;
+import connect.activity.contact.bean.PhoneContactBean;
+import connect.activity.contact.presenter.AddFriendPhonePresenter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
-import connect.activity.contact.presenter.AddFriendPhonePresenter;
-import connect.activity.contact.bean.PhoneContactBean;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
- * Created by Administrator on 2016/12/29.
+ * Add local contacts and friends
  */
 public class ConvertUtil {
 

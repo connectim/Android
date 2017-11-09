@@ -145,7 +145,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     }
 
     @OnClick(R.id.avatar_rimg)
-    void goimage(View view) {
+    void goImage(View view) {
         presenter.getImageWatcher().showSingle((ImageView) view, avatarRimg, friendEntity.getAvatar() + "?size=400");
     }
 
@@ -183,24 +183,24 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.add_favorites_tb)
     void switchFavorites(View view) {
-        boolean isSele = addFavoritesTb.isSelected();
+        boolean isSelect = addFavoritesTb.isSelected();
         MsgSendBean msgSendBean = new MsgSendBean();
         msgSendBean.setType(MsgSendBean.SendType.TypeAddFavorites);
-        msgSendBean.setCommon(!isSele);
+        msgSendBean.setCommon(!isSelect);
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.settingFriend(friendEntity.getUid(), !isSele ? "common" : "common_del", !isSele, "", msgSendBean);
+        userOrderBean.settingFriend(friendEntity.getUid(), !isSelect ? "common" : "common_del", !isSelect, "", msgSendBean);
     }
 
     @OnClick(R.id.add_block_tb)
     void switchBlock(View view) {
-        boolean isSele = addBlockTb.isSelected();
+        boolean isSelect = addBlockTb.isSelected();
         MsgSendBean msgSendBean = new MsgSendBean();
         msgSendBean.setType(MsgSendBean.SendType.TypeFriendBlock);
-        msgSendBean.setBlack(!isSele);
+        msgSendBean.setBlack(!isSelect);
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.settingFriend(friendEntity.getUid(), !isSele ? "black" : "black_del", !isSele, "", msgSendBean);
+        userOrderBean.settingFriend(friendEntity.getUid(), !isSelect ? "black" : "black_del", !isSelect, "", msgSendBean);
     }
 
     @OnClick(R.id.delete_friend_tv)
