@@ -31,7 +31,6 @@ public class DaoMaster extends AbstractDaoMaster {
         GroupMemberEntityDao.createTable(db, ifNotExists);
         MessageEntityDao.createTable(db, ifNotExists);
         ParamEntityDao.createTable(db, ifNotExists);
-        RecommandFriendEntityDao.createTable(db, ifNotExists);
         TransactionEntityDao.createTable(db, ifNotExists);
     }
 
@@ -47,7 +46,6 @@ public class DaoMaster extends AbstractDaoMaster {
         GroupMemberEntityDao.dropTable(db, ifExists);
         MessageEntityDao.dropTable(db, ifExists);
         ParamEntityDao.dropTable(db, ifExists);
-        RecommandFriendEntityDao.dropTable(db, ifExists);
         TransactionEntityDao.dropTable(db, ifExists);
     }
 
@@ -77,7 +75,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(GroupMemberEntityDao.class);
         registerDaoClass(MessageEntityDao.class);
         registerDaoClass(ParamEntityDao.class);
-        registerDaoClass(RecommandFriendEntityDao.class);
         registerDaoClass(TransactionEntityDao.class);
     }
 

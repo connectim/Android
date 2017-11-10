@@ -1,8 +1,5 @@
 package connect.widget.zxing.utils;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,6 +9,9 @@ import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 import connect.ui.activity.R;
 

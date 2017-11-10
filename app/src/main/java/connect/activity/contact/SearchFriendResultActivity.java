@@ -190,7 +190,6 @@ public class SearchFriendResultActivity extends BaseActivity {
         }
 
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
-                .setTyp(2)
                 .setCriteria(searchContext)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {

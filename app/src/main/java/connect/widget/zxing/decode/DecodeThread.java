@@ -2,7 +2,9 @@ package connect.widget.zxing.decode;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import java.util.concurrent.CountDownLatch;
+
 import connect.activity.base.BaseScanActivity;
 
 /**

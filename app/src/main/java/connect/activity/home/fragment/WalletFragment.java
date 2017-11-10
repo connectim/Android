@@ -125,10 +125,9 @@ public class WalletFragment extends BaseFragment {
 
     @OnClick(R.id.right_lin)
     void goScan(View view) {
-        ActivityUtil.nextBottomToTop(mActivity, ScanTransferActivity.class, null, -1);
-        /*if (currencyEntity != null) {
+        if (currencyEntity != null) {
             ActivityUtil.nextBottomToTop(mActivity, ScanTransferActivity.class, null, -1);
-        }*/
+        }
     }
 
     @OnClick(R.id.left_img)

@@ -3,8 +3,9 @@ package connect.widget.zxing.decode;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import connect.widget.zxing.utils.QrUtils;
 import com.google.zxing.Result;
+
+import connect.widget.zxing.utils.QrUtils;
 
 /**
  * Qr code parsing images threads
@@ -28,7 +29,7 @@ public class DecodeImageThread implements Runnable {
     public void run() {
         if (null == mData) {
             if (!TextUtils.isEmpty(mImgPath)) {
-                Bitmap bitmap = QrUtils.decodeSampledBitmapFromFile(mImgPath, MAX_PICTURE_PIXEL, MAX_PICTURE_PIXEL);
+                Bitmap bitmap = QrUtils.decodeSampledBitmapFromFile(mImgPath, 400, 400);
                 this.mData = QrUtils.getYUV420sp(bitmap.getWidth(), bitmap.getHeight(), bitmap);
                 this.mWidth = bitmap.getWidth();
                 this.mHeight = bitmap.getHeight();

@@ -129,8 +129,8 @@ public class UserInfoNameActivity extends BaseActivity implements UserInfoNameCo
             idTipTv.setVisibility(View.VISIBLE);
             idHintTv.setVisibility(View.VISIBLE);
         }
-        InputFilter[] filters = {new StringLengthFilter(20)};
-        nameEt.setFilters(filters);
+        /*InputFilter[] filters = {new StringLengthFilter(20)};
+        nameEt.setFilters(filters);*/
     }
 
     @Override

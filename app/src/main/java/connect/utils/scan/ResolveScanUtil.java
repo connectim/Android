@@ -33,14 +33,12 @@ import protos.Connect;
  */
 public class ResolveScanUtil {
 
-    public static final String TYPE_WEB_GROUP_ = "group:";
-    private String Url_Matches = "(?:(?:(?:[a-z]+:)?//))?(?:localhost|(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#][^\\s\"]*)?";
-    private String Url_Packet_Transfer_Group =  "(http|https)://.*.connect.im/share/v1/(packet|transfer|group)\\?token=.+";
     private Activity activity;
-    private final String ID_FRIEND = "friend";
-    private final String ID_STRANGER = "stranger";
-    private final String ID_INEXISTENCE = "inexistence";
-    public static String TRANSFER_SCAN_HEAD = "bitcoin:";
+    public static String CONNECT_HEAD = "con_profile://";
+    private final String TYPE_WEB_GROUP_ = "group:";
+    private final String Url_Matches = "(?:(?:(?:[a-z]+:)?//))?(?:localhost|(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#][^\\s\"]*)?";
+    private final String Url_Packet_Transfer_Group =  "(http|https)://.*.connect.im/share/v1/(packet|transfer|group)\\?token=.+";
+    private final String TRANSFER_SCAN_HEAD = "bitcoin:";
 
     public ResolveScanUtil(Activity activity) {
         this.activity = activity;
@@ -117,32 +115,28 @@ public class ResolveScanUtil {
     }
 
     /**
-     * The two-dimensional code is string
+     * The two-dimensional code is connect id
      */
     private void dealScanValue(final String value){
-        if(SupportKeyUril.checkAddress(value)){
-            TransferAddressActivity.startActivity(activity,value,null);
-        }else{
-            requestUserInfo(value, new OnResultBack() {
-                @Override
-                public void call(String status) {
-                    switch (status){
-                        case ID_FRIEND:
-                            FriendInfoActivity.startActivity(activity, value);
-                            break;
-                        case ID_STRANGER:
-                            StrangerInfoActivity.startActivity(activity, value, SourceType.QECODE);
-                            break;
-                        case ID_INEXISTENCE:
-                            ToastEUtil.makeText(activity, R.string.Login_scan_string_error).show();
-                            break;
-                        default:
-                            break;
-                    }
-                    ActivityUtil.goBack(activity);
+        requestUserInfo(value, new OnResultBack() {
+            @Override
+            public void call(int status) {
+                switch (status){
+                    case 1:
+                        FriendInfoActivity.startActivity(activity, value);
+                        break;
+                    case 2:
+                        StrangerInfoActivity.startActivity(activity, value, SourceType.QECODE);
+                        break;
+                    case 3:
+                        ToastEUtil.makeText(activity, R.string.Login_scan_string_error, ToastEUtil.TOAST_STATUS_FAILE).show();
+                        break;
+                    default:
+                        break;
                 }
-            });
-        }
+                ActivityUtil.goBack(activity);
+            }
+        });
     }
 
     /**
@@ -150,15 +144,22 @@ public class ResolveScanUtil {
      * @param value
      * @param onResultBack
      */
-    private void requestUserInfo(final String value, final OnResultBack onResultBack) {
+    private void requestUserInfo(String value, final OnResultBack onResultBack) {
+        if(!value.contains(CONNECT_HEAD)){
+            onResultBack.call(3);
+            return;
+        }else{
+            value = value.replace(CONNECT_HEAD, "");
+        }
+
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(value);
         if(contactEntity != null){
-            onResultBack.call(ID_FRIEND);
+            onResultBack.call(1);
             return;
         }
 
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
-                .setTyp(1)
+                .setTyp(2)
                 .setCriteria(value)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
@@ -168,10 +169,10 @@ public class ResolveScanUtil {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(sendUserInfo != null && ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)){
-                        onResultBack.call(ID_STRANGER);
+                    if(sendUserInfo != null){
+                        onResultBack.call(2);
                     }else{
-                        onResultBack.call(ID_INEXISTENCE);
+                        onResultBack.call(3);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -181,14 +182,17 @@ public class ResolveScanUtil {
             @Override
             public void onError(Connect.HttpResponse response) {
                 if(response.getCode() == 2404){
-                    onResultBack.call(ID_INEXISTENCE);
+                    onResultBack.call(3);
                 }
             }
         });
     }
 
+    /**
+     * status (1:friend 2:stranger 3:no found)
+     */
     public interface OnResultBack{
-        void call(String status);
+        void call(int status);
     }
 
 }

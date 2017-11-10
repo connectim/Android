@@ -2,6 +2,7 @@ package connect.widget.zxing.camera;
 
 import android.hardware.Camera;
 import android.util.Log;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;

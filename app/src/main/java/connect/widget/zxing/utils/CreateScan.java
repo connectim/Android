@@ -3,8 +3,6 @@ package connect.widget.zxing.utils;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import connect.ui.activity.R;
-import connect.activity.base.BaseApplication;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
@@ -13,18 +11,23 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.Hashtable;
 
+import connect.activity.base.BaseApplication;
+import connect.ui.activity.R;
+
 /**
  * Generate two-dimensional code
  */
 public class CreateScan {
 
-    /** Default width height */
+    /** Default width */
     private int widthDef = 600;
+    /** Default height */
     private int heightDef = 600;
-    private int defultBg = BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff);
+    /** Default background */
+    private int defaultBg = BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff);
 
     public Bitmap generateQRCode(String content) {
-        return generateQRCode(content,defultBg);
+        return generateQRCode(content,defaultBg);
     }
 
     public Bitmap generateQRCode(String content,int colorBg) {
@@ -42,10 +45,11 @@ public class CreateScan {
         } catch (WriterException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
-    private Bitmap bitMatrix2Bitmap(BitMatrix matrix,int colorBg) {
+    private Bitmap bitMatrix2Bitmap(BitMatrix matrix, int colorBg) {
         int w = matrix.getWidth();
         int h = matrix.getHeight();
         int[] rawData = new int[w * h];

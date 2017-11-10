@@ -3,12 +3,13 @@ package connect.widget.zxing.utils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
+import com.google.zxing.Result;
+
 import connect.activity.base.BaseScanActivity;
 import connect.ui.activity.R;
 import connect.widget.zxing.camera.CameraManager;
 import connect.widget.zxing.decode.DecodeThread;
-
-import com.google.zxing.Result;
 
 /**
  * This class handles all the messaging which comprises the state machine for capture.

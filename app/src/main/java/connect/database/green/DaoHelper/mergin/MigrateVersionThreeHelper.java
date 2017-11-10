@@ -11,7 +11,6 @@ import connect.database.green.dao.FriendRequestEntityDao;
 import connect.database.green.dao.GroupEntityDao;
 import connect.database.green.dao.GroupMemberEntityDao;
 import connect.database.green.dao.MessageEntityDao;
-import connect.database.green.dao.RecommandFriendEntityDao;
 import connect.database.green.dao.TransactionEntityDao;
 import connect.utils.log.LogManager;
 
@@ -30,7 +29,6 @@ public class MigrateVersionThreeHelper extends MigrateVerisonHelper{
 
     @Override
     public void migrate() {
-        migrateRecommandFriend(database);
         migrateFriendRequest(database);
         migrateGroup(database);
         migrateGroupMember(database);
@@ -39,41 +37,6 @@ public class MigrateVersionThreeHelper extends MigrateVerisonHelper{
         migrateConversionSetting(database);
         migrateMessage(database);
         migrateContact(database);
-    }
-
-    protected void migrateRecommandFriend(Database db) {
-        String oldTableName = "RECOMMEND_ENTITY";
-        String tableName = RecommandFriendEntityDao.TABLENAME;
-        String tempTableName = tableName + "temp";
-        StringBuilder insertTableStringBuilder = new StringBuilder();
-
-        try {
-            if (MigrationHelper.isTableExists(db, false, tableName)) {
-                return;
-            }
-
-            //Create a temporary table
-            RecommandFriendEntityDao.createTable(db, true);
-            insertTableStringBuilder.append("CREATE TEMPORARY TABLE ").append(tempTableName);
-            insertTableStringBuilder.append(" AS SELECT * FROM ").append(oldTableName).append(";");
-            db.execSQL(insertTableStringBuilder.toString());
-        } catch (SQLException e) {
-            LogManager.getLogger().d(Tag, "[Failed to generate temp table]" + tempTableName);
-        }
-
-        try {
-            //Migrate the temporary table data to the new table
-            String sqlSyntax = "INSERT INTO " + tableName +
-                    "(username,address,avatar,pub_key,status) SELECT USERNAME ,ADDRESS,AVATAR,PUBKEY,STATUS FROM " +
-                    tempTableName + ";";
-            db.execSQL(sqlSyntax);
-
-            //Delete the previous table
-            String dropTable = "DROP TABLE " + oldTableName + ";";
-            db.execSQL(dropTable);
-        } catch (SQLException e) {
-            LogManager.getLogger().d(Tag, "[Failed to restore data from temp table ]" + tempTableName);
-        }
     }
 
     protected void migrateFriendRequest(Database db) {

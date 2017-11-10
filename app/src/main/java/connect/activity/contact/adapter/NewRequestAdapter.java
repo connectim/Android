@@ -68,8 +68,16 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
         showRequestBtn(viewHolder.statusBtn, friendRequestEntity, position);
         viewHolder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
         viewHolder.contentLayout.setTag(viewHolder.sideScrollView);
-        viewHolder.contentLayout.setOnClickListener(onClickListener);
-        viewHolder.contentLayout.setTag(position);
+        viewHolder.contentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SideScrollView scrollView = (SideScrollView) v.getTag();
+                if (menuIsOpen(scrollView)) {
+                    closeMenu();
+                }
+                onAcceptListener.itemClick(position, friendRequestEntity);
+            }
+        });
         viewHolder.statusBtn.setOnClickListener(onClickListener);
         viewHolder.statusBtn.setTag(position);
         viewHolder.deleteTv.setOnClickListener(onClickListener);
@@ -92,13 +100,6 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
             int position = (int)v.getTag();
             FriendRequestEntity entity = mList.get(position);
             switch (v.getId()){
-                case R.id.content_layout:
-                    SideScrollView scrollView = (SideScrollView) v.getTag();
-                    if (menuIsOpen(scrollView)) {
-                        closeMenu();
-                    }
-                    onAcceptListener.itemClick(position, entity);
-                    break;
                 case R.id.status_btn:
                     onAcceptListener.accept(position, entity);
                     break;

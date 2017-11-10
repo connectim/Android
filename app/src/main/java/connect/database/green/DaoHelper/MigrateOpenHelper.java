@@ -19,7 +19,6 @@ import connect.database.green.dao.GroupEntityDao;
 import connect.database.green.dao.GroupMemberEntityDao;
 import connect.database.green.dao.MessageEntityDao;
 import connect.database.green.dao.ParamEntityDao;
-import connect.database.green.dao.RecommandFriendEntityDao;
 import connect.database.green.dao.TransactionEntityDao;
 
 public class MigrateOpenHelper extends DaoMaster.OpenHelper {
@@ -83,7 +82,6 @@ public class MigrateOpenHelper extends DaoMaster.OpenHelper {
                 ContactEntityDao.class,
                 GroupEntityDao.class,
                 GroupMemberEntityDao.class,
-                RecommandFriendEntityDao.class,
                 FriendRequestEntityDao.class,
                 ConversionEntityDao.class,
                 ConversionSettingEntityDao.class,

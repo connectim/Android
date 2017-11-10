@@ -112,7 +112,7 @@
             android:name="connect.activity.set.AboutActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.set.UserAddressActivity"
+            android:name="connect.activity.set.UserConnectIdActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.set.SafetyActivity"

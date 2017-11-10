@@ -20,7 +20,6 @@ import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.database.green.bean.MessageEntity;
 import connect.database.green.bean.ParamEntity;
-import connect.database.green.bean.RecommandFriendEntity;
 import connect.database.green.bean.TransactionEntity;
 import connect.database.green.dao.DaoMaster;
 import connect.database.green.dao.DaoSession;
@@ -87,7 +86,6 @@ public class DaoManagerTest {
         groupMemberEntityTest();
         messageEntityTest();
         paramEntityTest();
-        recommandEntityTest();
         transactionEntityTest();
     }
 
@@ -326,22 +324,6 @@ public class DaoManagerTest {
         ParamEntity tempEntity = daoSession.getParamEntityDao().load(100001L);
         String key = tempEntity.getKey();
         Assert.assertSame(key, "Key");
-    }
-
-    @Test
-    public void recommandEntityTest() {
-        RecommandFriendEntity friendEntity = new RecommandFriendEntity();
-        friendEntity.set_id(100001L);
-        friendEntity.setPub_key("Pub_key");
-        friendEntity.setUsername("Username");
-        friendEntity.setAvatar("Avatar");
-        friendEntity.setAddress("Address");
-        // daoSession.getRecommandFriendEntityDao().insert(friendEntity);
-        daoSession.getRecommandFriendEntityDao().insert(friendEntity);
-
-        RecommandFriendEntity tempEntity = daoSession.getRecommandFriendEntityDao().load(100001L);
-        String username = tempEntity.getUsername();
-        Assert.assertSame(username, "Username");
     }
 
     @Test
