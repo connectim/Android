@@ -9,12 +9,15 @@ import java.io.InputStream;
 
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.utils.StringUtil;
 import connect.utils.chatfile.inter.InterFileDown;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.HttpRequest;
+import instant.bean.Session;
+import instant.bean.UserCookie;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -29,13 +32,13 @@ public class DownLoadFile {
     private Handler mDelivery = new Handler(Looper.getMainLooper());
 
     private Connect.ChatType chatType;
-    private String uid;
+    private String identify;
     private String url;
     private InterFileDown fileDownLoad;
 
-    public DownLoadFile(Connect.ChatType chatType, String uid, String url, final InterFileDown fileDownLoad) {
+    public DownLoadFile(Connect.ChatType chatType, String identify, String url, final InterFileDown fileDownLoad) {
         this.chatType = chatType;
-        this.uid = uid;
+        this.identify = identify;
         this.url = url;
         this.fileDownLoad = fileDownLoad;
     }
@@ -109,9 +112,17 @@ public class DownLoadFile {
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(bytes);
                         Connect.StructData structData = null;
                         if (chatType == Connect.ChatType.PRIVATE) {//private chat
-                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, SharedPreferenceUtil.getInstance().getUser().getPriKey(), uid, gcmData);
+                            String caPublicKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+                            UserCookie userCookie = Session.getInstance().getUserCookie(caPublicKey);
+                            String myPrivateKey = userCookie.getPriKey();
+
+                            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(identify);
+                            UserCookie friendCookie = Session.getInstance().getUserCookie(friendEntity.getCa_pub());
+                            String friendPublicKey = friendCookie.getPubKey();
+
+                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, gcmData);
                         } else if (chatType == Connect.ChatType.GROUPCHAT) {//group chat
-                            GroupEntity groupEntity= ContactHelper.getInstance().loadGroupEntity(uid);
+                            GroupEntity groupEntity= ContactHelper.getInstance().loadGroupEntity(identify);
                             structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
                         }
                         byte[] dataFile = structData.getPlainData().toByteArray();

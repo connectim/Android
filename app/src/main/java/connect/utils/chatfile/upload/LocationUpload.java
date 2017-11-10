@@ -24,7 +24,7 @@ import protos.Connect;
 
 public class LocationUpload extends BaseFileUp {
 
-    private String Tag = "_LocationUpload";
+    private static String TAG = "_LocationUpload";
 
     public LocationUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
         this.context = context;

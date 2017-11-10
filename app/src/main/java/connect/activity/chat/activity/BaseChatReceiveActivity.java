@@ -177,7 +177,7 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
             case UNARRIVE_UPDATE://update chat Cookie
                 if (normalChat.chatKey().equals(objects[0])) {
                     ((FriendChat) normalChat).setFriendCookie(null);
-                    ((FriendChat) normalChat).loadFriendCookie(normalChat.chatKey());
+                    ((FriendChat) normalChat).loadFriendCookie();
                 }
                 break;
             case UNARRIVE_HALF:

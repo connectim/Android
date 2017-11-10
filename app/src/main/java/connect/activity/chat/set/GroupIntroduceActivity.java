@@ -62,6 +62,13 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
                 ActivityUtil.goBack(activity);
             }
         });
+        toolbar.setRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String introduce = edit.getText().toString();
+                presenter.requestUpdateGroupSummary(introduce);
+            }
+        });
 
         groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         edit.addTextChangedListener(textWatcher);
@@ -85,17 +92,9 @@ public class GroupIntroduceActivity extends BaseActivity implements GroupIntrodu
             if (s.length() == 0) {
                 toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_68656f);
-                toolbar.setRightListener(null);
             } else {
                 toolbar.setRightTextEnable(true);
                 toolbar.setRightTextColor(R.color.color_green);
-                toolbar.setRightListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String introduce = edit.getText().toString();
-                        presenter.requestUpdateGroupSummary(introduce);
-                    }
-                });
             }
         }
     }

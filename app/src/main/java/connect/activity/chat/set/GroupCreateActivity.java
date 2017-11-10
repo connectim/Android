@@ -77,6 +77,22 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
                 ActivityUtil.goBack(activity);
             }
         });
+        toolbar.setRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<ContactEntity> selectEntities = adapter.getSelectEntities();
+                if (selectEntities == null || selectEntities.size() < 1) {
+                    toolbar.setRightTextColor(R.color.color_6d6e75);
+                    return;
+                }
+                presenter.requestGroupCreate(selectEntities);
+
+                toolbar.setRightListener(null);
+                Message message = new Message();
+                message.what = 100;
+                handler.sendMessageDelayed(message, 3000);
+            }
+        });
 
         pubKey = getIntent().getStringExtra(UID);
         linearLayoutManager = new LinearLayoutManager(activity);
@@ -138,22 +154,6 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
             } else {
                 toolbar.setRightTextEnable(true);
                 toolbar.setRightTextColor(R.color.color_green);
-                toolbar.setRightListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        List<ContactEntity> selectEntities = adapter.getSelectEntities();
-                        if (selectEntities == null || selectEntities.size() < 1) {
-                            toolbar.setRightTextColor(R.color.color_6d6e75);
-                            return;
-                        }
-                        presenter.requestGroupCreate(selectEntities);
-
-                        toolbar.setRightListener(null);
-                        Message message = new Message();
-                        message.what = 100;
-                        handler.sendMessageDelayed(message, 3000);
-                    }
-                });
             }
         }
     }
