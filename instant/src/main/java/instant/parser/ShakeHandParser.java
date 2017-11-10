@@ -57,12 +57,12 @@ public class ShakeHandParser extends InterParse {
         Connect.IMResponse response = null;
         response = Connect.IMResponse.parser().parseFrom(buffer.array());
 
-        String publicKey = Session.getInstance().getUserCookie(Session.COOKIE_SHAKEHAND).getPubKey();
+        String publicKey = Session.getInstance().getRandomCookie().getPubKey();
         if (!SupportKeyUril.verifySign(publicKey, response.getSign(), response.getCipherData().toByteArray())) {
             throw new Exception("verifySign ");
         }
 
-        UserCookie userCookie = Session.getInstance().getUserCookie(Session.CONNECT_USER);
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
         String pubkey = userCookie.getPubKey();
         String priKey = userCookie.getPriKey();
 
@@ -72,7 +72,7 @@ public class ShakeHandParser extends InterParse {
 
         ByteString pubKey = newConnection.getPubKey();
         ByteString salt = newConnection.getSalt();
-        UserCookie tempCookie = Session.getInstance().getUserCookie(Session.COOKIE_SHAKEHAND);
+        UserCookie tempCookie = Session.getInstance().getRandomCookie();
         byte[] saltXor = SupportKeyUril.xor(tempCookie.getSalt(),
                 salt.toByteArray());
         byte[] ecdHkey = SupportKeyUril.getRawECDHKey(tempCookie.getPriKey(),
@@ -80,7 +80,7 @@ public class ShakeHandParser extends InterParse {
         byte[] saltByte = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdHkey,
                 ecdHkey.length, saltXor, saltXor.length, 12, 32);
         tempCookie.setSalt(saltByte);
-        Session.getInstance().setUserCookie(Session.COOKIE_SHAKEHAND, tempCookie);
+        Session.getInstance().setRandomCookie(tempCookie);
 
         //Data encryption devices
         String deviceName = Build.DEVICE;
@@ -96,7 +96,7 @@ public class ShakeHandParser extends InterParse {
                 .setUuid(uuid);
 
 
-        UserCookie oldChatCookie = Session.getInstance().getUserCookie(pubkey);
+        UserCookie oldChatCookie = SharedUtil.getInstance().loadLastChatUserCookie();
         if (oldChatCookie != null) {
             Connect.ChatCookieData cookieData = Connect.ChatCookieData.newBuilder().
                     setChatPubKey(oldChatCookie.getPubKey()).

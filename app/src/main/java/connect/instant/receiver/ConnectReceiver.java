@@ -54,7 +54,7 @@ public class ConnectReceiver implements ConnectListener {
 
     @Override
     public void welcome() {
-        String mypublickey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+        String mypublickey = Session.getInstance().getConnectCookie().getPubKey();
         ChatMsgEntity msgEntity = RobotChat.getInstance().txtMsg(InstantSdk.instantSdk.getBaseContext().getString(instant.R.string.Login_Welcome));
         msgEntity.setMessage_from(RobotChat.getInstance().nickName());
         msgEntity.setMessage_to(mypublickey);

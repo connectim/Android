@@ -71,14 +71,13 @@ public class BaseApplication extends Application implements InterAccount {
 
     @Override
     public void initRegisterAccount() {
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        Session.getInstance().clearUserCookie();
         FileUtil.getExternalStorePath();
 
         // IM SDK
         new ReceiverHelper().initInstantSDK();
 
         // Bugly
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         CrashReport.setUserId(userBean.getUid());
         CrashReport.setUserSceneTag(this.getBaseContext(), Integer.valueOf(ConfigUtil.getInstance().getCrashTags()));
     }

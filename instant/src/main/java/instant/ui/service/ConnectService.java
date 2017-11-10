@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import connect.im.IMessage;
+import instant.bean.Session;
 import instant.parser.CommandParser;
 import instant.parser.ErrorParser;
 import instant.parser.ExceptionParser;
@@ -22,6 +23,7 @@ import instant.parser.ReceiptParser;
 import instant.parser.ShakeHandParser;
 import instant.sender.HeartBeatSender;
 import instant.sender.ShakeHandSender;
+import instant.utils.SharedUtil;
 import instant.utils.TimeUtil;
 import instant.utils.log.LogManager;
 
@@ -139,6 +141,9 @@ public class ConnectService extends Service {
         @Override
         public void connectExit() throws RemoteException {
             LogManager.getLogger().d(Tag, "connectExit");
+
+            Session.getInstance().clearUserCookie();
+            SharedUtil.getInstance().closeShare();
             if (localBinder != null) {
                 unbindService(localConnect);
                 localConnect = null;

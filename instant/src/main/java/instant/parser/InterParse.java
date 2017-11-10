@@ -50,13 +50,13 @@ public abstract class InterParse {
     protected synchronized Connect.StructData imTransferToStructData(ByteBuffer buffer) throws Exception {
         Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(buffer.array());
 
-        String publicKey=Session.getInstance().getUserCookie(Session.COOKIE_SHAKEHAND).getPubKey();
+        String publicKey=Session.getInstance().getRandomCookie().getPubKey();
         if (!SupportKeyUril.verifySign(publicKey,imTransferData.getSign(), imTransferData.getCipherData().toByteArray())) {
             throw new Exception("Validation fails");
         }
 
         byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE,
-                Session.getInstance().getUserCookie(Session.COOKIE_SHAKEHAND).getSalt(), imTransferData.getCipherData());
+                Session.getInstance().getRandomCookie().getSalt(), imTransferData.getCipherData());
         return Connect.StructData.parseFrom(bytes);
     }
 
@@ -74,10 +74,10 @@ public abstract class InterParse {
 
     protected void backAck(SocketACK socketack, int type, String msgid) {
         Connect.Ack ack = Connect.Ack.newBuilder().setType(type).setMsgId(msgid).build();
-        String priKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
+        String priKey = Session.getInstance().getConnectCookie().getPriKey();
 
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE,
-                Session.getInstance().getUserCookie(Session.COOKIE_SHAKEHAND).getSalt(), ack.toByteString());
+                Session.getInstance().getRandomCookie().getSalt(), ack.toByteString());
 
         String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()

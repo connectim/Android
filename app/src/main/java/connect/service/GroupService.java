@@ -250,11 +250,13 @@ public class GroupService extends Service {
                         byte[] ecdHkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), infos[0]);
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
                         structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, ecdHkey, gcmData);
-                        Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData().toByteArray());
-                        String groupEcdh = groupMessage.getSecretKey();
-                        downGroupBackUpSuccess(pubkey, groupEcdh);
+                        if (structData != null) {
+                            Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(structData.getPlainData().toByteArray());
+                            String groupEcdh = groupMessage.getSecretKey();
+                            downGroupBackUpSuccess(pubkey, groupEcdh);
 
-                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.UpLoadBackUp, pubkey, groupEcdh);
+                            GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.UpLoadBackUp, pubkey, groupEcdh);
+                        }
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

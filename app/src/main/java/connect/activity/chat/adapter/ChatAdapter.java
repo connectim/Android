@@ -26,7 +26,6 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
-import connect.utils.TimeUtil;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MsgDirect;
 import protos.Connect;
@@ -37,6 +36,7 @@ import protos.Connect;
 public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
 
     private static String TAG = "_ChatAdapter";
+    private static final int MESSAGE_LIMIT = 20;
     private List<ChatMsgEntity> msgEntities = new ArrayList<>();
     private Map<String, ChatMsgEntity> msgEntityMap = new HashMap<>();
 
@@ -92,19 +92,27 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
 
         long lasttime = 0;
         if (position == 0) {
-            String messageId = msgExtEntity.getMessage_id();
-            MessageEntity lastMsgEntity = MessageHelper.getInstance().loadMsgLessMsgid(messageId);
-            if (lastMsgEntity != null) {
-                lasttime = lastMsgEntity.getCreatetime();
+            if (msgEntities.size() >= MESSAGE_LIMIT) {
+                String messageId = msgExtEntity.getMessage_id();
+                MessageEntity lastMsgEntity = MessageHelper.getInstance().loadMsgLessMsgid(messageId);
+                if (lastMsgEntity != null) {
+                    lasttime = lastMsgEntity.getCreatetime();
+                }
             }
         } else {
             ChatMsgEntity lastMsgEntity = msgEntities.get(position - 1);
             lasttime = lastMsgEntity.getCreatetime();
+
         }
 
         long curtime = msgExtEntity.getCreatetime();
         try {
             holder.buildMsgTime(lasttime, curtime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
             holder.buildRowData(holder, msgExtEntity);
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,9 +159,31 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
     }
 
     public void insertItems(final List<ChatMsgEntity> entities) {
-        for (ChatMsgEntity msgEntity : entities) {
-            insertItem(msgEntity);
-        }
+        BaseListener listener = new BaseListener() {
+            @Override
+            public void Success(Object ts) {
+                int size = entities.size();
+                for (int i = size - 1; i >= 0; i--) {
+                    ChatMsgEntity entity = entities.get(i);
+                    String messageId = entity.getMessage_id();
+
+                    msgEntities.add(0, entities.get(i));
+                    msgEntityMap.put(messageId, entity);
+                }
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void fail(Object... objects) {
+
+            }
+        };
+
+        Message message = new Message();
+        message.what = 50;
+        message.obj = listener;
+        itemsUpdateHandler.sendMessage(message);
     }
 
     public void removeItem(final ChatMsgEntity t) {

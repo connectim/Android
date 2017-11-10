@@ -198,16 +198,17 @@ public class ChatActivity extends BaseChatSendActivity {
             @Override
             protected void onPostExecute(List<ChatMsgEntity> entities) {
                 super.onPostExecute(entities);
-                ChatMsgEntity encryEntity = normalChat.encryptChatMsg();
-                if (entities.size() < 20 && encryEntity != null) {
-                    long lastTime = entities.size() <= 0 ? TimeUtil.getCurrentTimeInLong() :
-                            entities.get(0).getCreatetime();
+
+                if (entities.size() == 0) {
+                    long timestamp = TimeUtil.getCurrentTimeInLong();
                     if (Connect.ChatType.forNumber(normalChat.chatType()) != Connect.ChatType.CONNECT_SYSTEM) {
-                        encryEntity.setCreatetime(lastTime);
+                        ChatMsgEntity encryEntity = normalChat.encryptChatMsg();
+                        encryEntity.setCreatetime(timestamp);
                         entities.add(0, encryEntity);
+
+                        MessageHelper.getInstance().insertMsgExtEntity(encryEntity);
                     }
                 }
-
                 chatAdapter.insertItems(entities);
             }
         }.execute();

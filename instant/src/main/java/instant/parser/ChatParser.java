@@ -61,10 +61,10 @@ public class ChatParser extends InterParse {
         LogManager.getLogger().d(TAG, "Id: " + chatMessage.getMsgId());
         EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
         if (TextUtils.isEmpty(chatSession.getPubKey())) {//old protocol
-            priKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
+            priKey = Session.getInstance().getConnectCookie().getPriKey();
             pubkey = friendPubKey;
         } else if (null == chatSession.getVer() || chatSession.getVer().size() == 0) {//half random
-            priKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
+            priKey = Session.getInstance().getConnectCookie().getPriKey();
 
             ByteString fromSalt = chatSession.getSalt();
             pubkey = chatSession.getPubKey();
@@ -105,7 +105,7 @@ public class ChatParser extends InterParse {
      */
     protected void inviteJoinGroup(Connect.MessagePost msgpost) throws Exception {
         String publicKey = msgpost.getPubKey();
-        String privateKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
+        String privateKey = Session.getInstance().getConnectCookie().getPriKey();
 
         Connect.MessageData messageData = msgpost.getMsgData();
         Connect.ChatMessage chatMessage = messageData.getChatMsg();
