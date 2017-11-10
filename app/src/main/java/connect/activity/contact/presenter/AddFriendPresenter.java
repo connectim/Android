@@ -1,8 +1,6 @@
 package connect.activity.contact.presenter;
 
 import android.os.AsyncTask;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -11,11 +9,8 @@ import java.util.ArrayList;
 
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.contract.AddFriendContract;
-import connect.activity.home.bean.WalletMenuBean;
-import connect.activity.wallet.adapter.WalletMenuAdapter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
-import connect.ui.activity.R;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -34,24 +29,6 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
 
     @Override
     public void start() {}
-
-    @Override
-    public void initGrid(RecyclerView recycler) {
-        ArrayList<WalletMenuBean> menuList = new ArrayList<>();
-        menuList.add(new WalletMenuBean(R.mipmap.contract_add_scan3x, R.string.Link_Scan));
-        menuList.add(new WalletMenuBean(R.mipmap.contract_add_contacts3x, R.string.Link_Contacts));
-        menuList.add(new WalletMenuBean(R.mipmap.contract_add_more3x, R.string.Link_More));
-
-        WalletMenuAdapter walletMenuAdapter = new WalletMenuAdapter(menuList, mView.getActivity());
-        recycler.setLayoutManager(new GridLayoutManager(mView.getActivity(), 3));
-        recycler.setAdapter(walletMenuAdapter);
-        walletMenuAdapter.setOnItemClickListener(new WalletMenuAdapter.OnItemClickListener() {
-            @Override
-            public void itemClick(int position) {
-                mView.itemClick(position);
-            }
-        });
-    }
 
     /**
      * Get recommended friends

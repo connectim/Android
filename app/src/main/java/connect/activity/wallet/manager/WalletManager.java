@@ -37,7 +37,7 @@ import wallet_gateway.WalletOuterClass;
 
 public class WalletManager {
 
-    private static boolean isShowWallet = true;
+    private static boolean isShowWallet = false;
     private static WalletManager walletManager;
     public final double BTC_TO_LONG = Math.pow(10,8);
     public final String PATTERN_BTC = "##0.00000000";

@@ -118,12 +118,12 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         Bundle bundle = getIntent().getExtras();
         uid = bundle.getString("uid");
         friendEntity = ContactHelper.getInstance().loadFriendEntity(uid);
-        updateView(friendEntity);
 
         new FriendInfoPresenter(this).start();
         presenter.requestUserInfo(friendEntity.getUid(), friendEntity);
         if(!WalletManager.isShowWallet()){
             transferImgs.setVisibility(View.GONE);
+            transferRecordRela.setVisibility(View.GONE);
         }
     }
 

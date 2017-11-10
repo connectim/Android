@@ -96,7 +96,7 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         if (TextUtils.isEmpty(connectId)) {
             return;
         }
-        Bitmap bitmap = createScan.generateQRCode(connectId, getResources().getColor(R.color.color_00ffbf));
+        Bitmap bitmap = createScan.generateQRCode(ResolveScanUtil.CONNECT_HEAD + connectId, getResources().getColor(R.color.color_00ffbf));
         scanImg.setImageBitmap(bitmap);
         bottomScanImg.setImageBitmap(bitmap);
         addressTv.setText(connectId);

@@ -1,12 +1,12 @@
 package connect.activity.contact;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -19,13 +19,11 @@ import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.AddFriendContract;
 import connect.activity.contact.presenter.AddFriendPresenter;
 import connect.activity.home.view.LineDecoration;
-import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ConfigUtil;
 import connect.widget.TopToolBar;
 
 /**
@@ -35,10 +33,10 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
-    @Bind(R.id.wallet_menu_recycler)
-    RecyclerView recycler;
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
+    @Bind(R.id.contact_rela)
+    RelativeLayout contactRela;
 
     private AddFriendActivity mActivity;
     private AddFriendContract.Presenter presenter;
@@ -68,7 +66,6 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
         toolbar.setTitle(null, R.string.Link_New_friend);
         new AddFriendPresenter(this).start();
 
-        presenter.initGrid(recycler);
         requestAdapter = new NewRequestAdapter(mActivity);
         requestAdapter.setOnAcceptListener(onAcceptListener);
 
@@ -87,29 +84,12 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
         ActivityUtil.goBack(mActivity);
     }
 
-    @Override
-    public void itemClick(int tag) {
-        switch (tag) {
-            case 0:
-                ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
-                break;
-            case 1:
-                ActivityUtil.next(mActivity, AddFriendPhoneActivity.class);
-                break;
-            case 2:
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, ConfigUtil.getInstance().shareCardAddress()
-                        + "?address=" + SharedPreferenceUtil.getInstance().getUser().getUid());
-                shareIntent.setType("text/plain");
-                startActivity(Intent.createChooser(shareIntent, "share to"));
-                break;
-            default:
-                break;
-        }
+    @OnClick(R.id.contact_rela)
+    void goContact(View view) {
+        ActivityUtil.next(mActivity, AddFriendPhoneActivity.class);
     }
 
-    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener(){
+    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);

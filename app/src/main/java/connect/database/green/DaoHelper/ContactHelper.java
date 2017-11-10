@@ -19,12 +19,11 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.database.green.bean.RecommandFriendEntity;
+
 import connect.database.green.dao.ContactEntityDao;
 import connect.database.green.dao.FriendRequestEntityDao;
 import connect.database.green.dao.GroupEntityDao;
 import connect.database.green.dao.GroupMemberEntityDao;
-import connect.database.green.dao.RecommandFriendEntityDao;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import protos.Connect;
@@ -37,7 +36,6 @@ public class ContactHelper extends BaseDao {
 
     private static ContactHelper contactHelper;
     private FriendRequestEntityDao friendRequestEntityDao;
-    private RecommandFriendEntityDao recommandFriendEntityDao;
     private ContactEntityDao contactEntityDao;
     private GroupEntityDao groupEntityDao;
     private GroupMemberEntityDao groupMemberEntityDao;
@@ -50,7 +48,6 @@ public class ContactHelper extends BaseDao {
         groupEntityDao = daoSession.getGroupEntityDao();
         groupMemberEntityDao = daoSession.getGroupMemberEntityDao();
         friendRequestEntityDao = daoSession.getFriendRequestEntityDao();
-        recommandFriendEntityDao = daoSession.getRecommandFriendEntityDao();
     }
 
     public synchronized static ContactHelper getInstance() {
@@ -364,21 +361,6 @@ public class ContactHelper extends BaseDao {
         return entities == null || entities.size() == 0 ? null : entities.get(0);
     }
 
-    /**
-     * query recommand friend
-     *
-     * @return
-     */
-    public List<RecommandFriendEntity> loadRecommendEntity(int page, int pageSize) {
-        QueryBuilder<RecommandFriendEntity> queryBuilder = recommandFriendEntityDao.queryBuilder();
-        queryBuilder.where(RecommandFriendEntityDao.Properties.Status.eq(0)).build();
-        queryBuilder.offset((page - 1) * pageSize);
-        queryBuilder.limit(pageSize);
-        List<RecommandFriendEntity> list = queryBuilder.list();
-        Collections.reverse(list);
-        return list;
-    }
-
     /*********************************  update ***********************************/
 
     /**
@@ -439,20 +421,6 @@ public class ContactHelper extends BaseDao {
         daoSession.getDatabase().execSQL(sql, new Object[]{uid});
     }
 
-    /**
-     * modify recommend friend
-     */
-    public void updataRecommendFriend(String pubKey,int recommend) {
-        QueryBuilder<RecommandFriendEntity> qb = recommandFriendEntityDao.queryBuilder();
-        qb.where(RecommandFriendEntityDao.Properties.Pub_key.eq(pubKey));
-        List<RecommandFriendEntity> list = qb.list();
-        if (list.size() > 0) {
-            RecommandFriendEntity recommendEntity = list.get(0);
-            recommendEntity.setStatus(recommend);
-            recommandFriendEntityDao.insertOrReplace(recommendEntity);
-        }
-    }
-
     public void updateGroupMemberRole(String identify, String publickey, Integer role) {
         updateGroupMember(identify, publickey, null, null, role, null);
     }
@@ -503,34 +471,6 @@ public class ContactHelper extends BaseDao {
      */
     public void inserGroupMemEntity(List<GroupMemberEntity> entities) {
         groupMemberEntityDao.insertOrReplaceInTx(entities);
-    }
-
-    /**
-     * add group recommend friend
-     *
-     * @param entities
-     */
-    public void inserRecommendEntity(List<Connect.UserInfo> entities) {
-        for (Connect.UserInfo userInfo : entities) {
-            RecommandFriendEntity recommendEntity = new RecommandFriendEntity();
-            recommendEntity.setPub_key(userInfo.getPubKey());
-            recommendEntity.setUsername(userInfo.getUsername());
-            recommendEntity.setAddress(userInfo.getUid());
-            recommendEntity.setAvatar(userInfo.getAvatar());
-            recommendEntity.setStatus(userInfo.getRecommend() ? 1 : 0);
-            inserRecommendEntity(recommendEntity);
-        }
-    }
-
-    public void inserRecommendEntity(RecommandFriendEntity entity) {
-        QueryBuilder<RecommandFriendEntity> qb = recommandFriendEntityDao.queryBuilder();
-        qb.where(RecommandFriendEntityDao.Properties.Pub_key.eq(entity.getPub_key()));
-        List<RecommandFriendEntity> list = qb.list();
-        if (list.size() > 0) {
-            return;
-        }
-        entity.setStatus(0);
-        recommandFriendEntityDao.insert(entity);
     }
 
     /********************************* delete ***********************************/
@@ -622,17 +562,6 @@ public class ContactHelper extends BaseDao {
                 GroupMemberEntityDao.Properties.Identifier.eq(groupkey),
                 GroupMemberEntityDao.Properties.Uid.eq(uid))
                 .buildDelete();
-        bd.executeDeleteWithoutDetachingEntities();
-    }
-
-    /**
-     * remove recommend entity
-     *
-     * @param pubkey
-     */
-    public void removeRecommendEntity(String pubkey) {
-        QueryBuilder<RecommandFriendEntity> qb = recommandFriendEntityDao.queryBuilder();
-        DeleteQuery<RecommandFriendEntity> bd = qb.where(RecommandFriendEntityDao.Properties.Pub_key.eq(pubkey)).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }
 

@@ -288,4 +288,5 @@ public class WalletFragment extends BaseFragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
 }

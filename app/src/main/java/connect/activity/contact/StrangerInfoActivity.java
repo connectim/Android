@@ -161,7 +161,6 @@ public class StrangerInfoActivity extends BaseActivity {
                     requestEntity.setStatus(3);
                     requestEntity.setRead(1);
                     ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
-                    ContactHelper.getInstance().updataRecommendFriend(requestEntity.getUid(),1);
 
                     ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
                     ActivityUtil.goBack(mActivity);

@@ -11,6 +11,7 @@ import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
+import connect.utils.scan.ResolveScanUtil;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 
@@ -19,9 +20,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by Administrator on 2017/1/9.
+ * show connect id
  */
-public class UserAddressActivity extends BaseActivity {
+public class UserConnectIdActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -30,7 +31,7 @@ public class UserAddressActivity extends BaseActivity {
     @Bind(R.id.address_tv)
     TextView addressTv;
 
-    private UserAddressActivity mActivity;
+    private UserConnectIdActivity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +49,15 @@ public class UserAddressActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_My_QR_code);
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
 
+        String connectIdStr = ResolveScanUtil.CONNECT_HEAD + userBean.getConnectId();
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(userBean.getConnectId(),mActivity.getResources().getColor(R.color.color_00ffbf));
+        Bitmap bitmap = createScan.generateQRCode(connectIdStr, mActivity.getResources().getColor(R.color.color_00ffbf));
         scanImg.setImageBitmap(bitmap);
-        addressTv.setText(userBean.getConnectId());
+        addressTv.setText(connectIdStr);
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view){
+    void goBack(View view){
         ActivityUtil.goBack(mActivity);
     }
 

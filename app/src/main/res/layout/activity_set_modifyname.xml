@@ -25,6 +25,7 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_toLeftOf="@+id/close_ib"
             android:textSize="@dimen/sp_18"
+            android:maxLength="20"
             android:singleLine="true"
             android:background="@null"/>
         <ImageButton
