@@ -3,19 +3,19 @@ package connect.utils.chatfile.upload;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.google.protobuf.ByteString;
 import com.netcompss.ffmpeg4android.CommandValidationException;
 import com.netcompss.ffmpeg4android.GeneralUtils;
 import com.netcompss.loader.LoadJNI;
 
 import java.io.File;
 
-import connect.utils.chatfile.inter.BaseFileUp;
-import connect.activity.login.bean.UserBean;
-import connect.database.SharedPreferenceUtil;
 import connect.utils.FileUtil;
+import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
+import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
 import protos.Connect;
 
@@ -24,7 +24,7 @@ import protos.Connect;
  */
 public class VideoUpload extends BaseFileUp {
 
-    private String Tag = "_VideoUpload";
+    private static String TAG = "_VideoUpload";
 
     public VideoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
         this.context = context;
@@ -78,6 +78,7 @@ public class VideoUpload extends BaseFileUp {
                     thumbCompressFile = videoMessage.getCover();
                     sourceCompressFile = videoMessage.getUrl();
 
+                    fileEncrypt();
 //            sourceCompressFile = videoCompress(filePath);
 //            thumbCompressFile.delete();
 //            sourceCompressFile.delete();
@@ -90,7 +91,7 @@ public class VideoUpload extends BaseFileUp {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                fileEncrypt();
+                fileUpload();
             }
         }.execute();
     }
@@ -98,33 +99,29 @@ public class VideoUpload extends BaseFileUp {
     @Override
     public void fileEncrypt() {
         super.fileEncrypt();
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                    if (baseChat.chatType() != Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-                        Connect.GcmData firstGcmData = encodeAESGCMStructData(thumbCompressFile);
-                        Connect.GcmData secondGcmData = encodeAESGCMStructData(sourceCompressFile);
+        Connect.RichMedia richMedia = null;
+        Connect.GcmData gcmData = null;
+        if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
+            richMedia = Connect.RichMedia.newBuilder().
+                    setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(thumbCompressFile))).
+                    setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(sourceCompressFile))).build();
+        } else {
+            Connect.GcmData firstGcmData = encodeAESGCMStructData(thumbCompressFile);
+            Connect.GcmData secondGcmData = encodeAESGCMStructData(sourceCompressFile);
 
-                        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
-                                setThumbnail(firstGcmData.toByteString()).
-                                setEntity(secondGcmData.toByteString()).build();
-                        firstGcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
-                        mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(firstGcmData).build();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
+            richMedia = Connect.RichMedia.newBuilder().
+                    setThumbnail(firstGcmData.toByteString()).
+                    setEntity(secondGcmData.toByteString()).build();
+        }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                fileUpload();
-            }
-        }.execute();
+        UserCookie userCookie = loadUserCookie();
+        String myPrivateKey = userCookie.getPriKey();
+        String myPublicKey = userCookie.getPubKey();
+        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, myPrivateKey, richMedia.toByteString());
+        mediaFile = Connect.MediaFile.newBuilder()
+                .setPubKey(myPublicKey)
+                .setCipherData(gcmData)
+                .build();
     }
 
     @Override

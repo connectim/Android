@@ -456,7 +456,7 @@ public class RemoteServeice extends Service {
         }
 
         public boolean isCanConnect() {
-            UserCookie userCookie = Session.getInstance().getUserCookie(Session.CONNECT_USER);
+            UserCookie userCookie = Session.getInstance().getConnectCookie();
             return userCookie != null;
         }
     }

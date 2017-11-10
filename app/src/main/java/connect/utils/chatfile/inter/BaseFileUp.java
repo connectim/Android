@@ -43,8 +43,7 @@ public abstract class BaseFileUp implements InterFileUp {
     public FileUploadListener fileUpListener;
 
     public UserCookie loadUserCookie() {
-        String pubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-        UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
+        UserCookie userCookie = Session.getInstance().getChatCookie();
         if (userCookie == null) {
             userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
         }
@@ -53,7 +52,7 @@ public abstract class BaseFileUp implements InterFileUp {
     }
 
     public UserCookie loadFriendCookie(String caPublicKey) {
-        UserCookie friendCookie = Session.getInstance().getUserCookie(caPublicKey);
+        UserCookie friendCookie = Session.getInstance().getFriendCookie(caPublicKey);
         if (friendCookie == null) {
             friendCookie = SharedUtil.getInstance().loadFriendCookie(caPublicKey);
         }

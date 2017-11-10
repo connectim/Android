@@ -24,8 +24,7 @@ public class HeartBeatSender {
      */
     public void checkUserCookie() {
         boolean checkExpire = false;
-        UserCookie connectUser =Session.getInstance().getUserCookie(Session.CONNECT_USER);
-        UserCookie userCookie = Session.getInstance().getUserCookie(connectUser.getPubKey());
+        UserCookie userCookie = Session.getInstance().getChatCookie();
         if (userCookie != null) {
             long curTime = TimeUtil.getCurrentTimeSecond();
             checkExpire = curTime >= userCookie.getExpiredTime();

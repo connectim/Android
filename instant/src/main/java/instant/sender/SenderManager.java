@@ -119,9 +119,9 @@ public class SenderManager implements LocalServiceListener{
 
                 ByteBuffer byteBuffer = null;
                 if (transfer) { // transferData,Encapsulating server checksum data
-                    String priKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
+                    String priKey = Session.getInstance().getConnectCookie().getPriKey();
                     Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE,
-                            Session.getInstance().getUserCookie(Session.COOKIE_SHAKEHAND).getSalt(), bytes);
+                            Session.getInstance().getRandomCookie().getSalt(), bytes);
                     String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
                     Connect.IMTransferData transferData = Connect.IMTransferData.newBuilder().
                             setSign(signHash).setCipherData(gcmData).build();

@@ -26,7 +26,7 @@ public class ShakeHandSender {
     public void firstLoginShake() {
         ConnectLocalReceiver.receiver.requestLogin();
 
-        UserCookie userCookie = Session.getInstance().getUserCookie(Session.CONNECT_USER);
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
         String priKey = userCookie.getPriKey();
 
         String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
@@ -41,17 +41,18 @@ public class ShakeHandSender {
         tempCookie.setPriKey(randomPriKey);
         tempCookie.setPubKey(randomPubKey);
         tempCookie.setSalt(cdSeed.getBytes());
-        Session.getInstance().setUserCookie(Session.COOKIE_SHAKEHAND, tempCookie);
+        Session.getInstance().setRandomCookie(tempCookie);
 
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                 priKey, ConfigUtil.getInstance().serverPubKey(), newConnection.toByteString());
 
-        String uid = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
+        String uid = Session.getInstance().getConnectCookie().getUid();
         String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
         Connect.TcpRequest imRequest = Connect.TcpRequest.newBuilder()
                 .setUid(uid)
                 .setSign(signHash)
-                .setCipherData(gcmData).build();
+                .setCipherData(gcmData)
+                .build();
 
         SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, imRequest.toByteString());
     }

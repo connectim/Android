@@ -42,10 +42,19 @@ public class SharedUtil {
     private synchronized static SharedUtil getInstance(Context context) {
         if (null == sharePreUtil || null == sharePre) {
             sharePreUtil = new SharedUtil();
-            String myUid = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
+            String myUid = Session.getInstance().getConnectCookie().getUid();
             sharePre = context.getSharedPreferences(SHAREPREFERENCES_NAME + ":" + myUid, Context.MODE_PRIVATE);
         }
         return sharePreUtil;
+    }
+
+    public void closeShare() {
+        if (sharePre != null) {
+            sharePre = null;
+        }
+        if (sharePreUtil != null) {
+            sharePreUtil = null;
+        }
     }
 
     public void putValue(String key,String value) {

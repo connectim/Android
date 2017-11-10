@@ -182,7 +182,7 @@ public class CommandParser extends InterParse {
         if (offComplete) {
             ConnectLocalReceiver.receiver.connectSuccess();
 
-            String pubKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+            String pubKey = Session.getInstance().getConnectCookie().getPubKey();
             Session.getInstance().setUpFailTime(pubKey, 0);
             uploadRandomCookie();
         }
@@ -367,7 +367,7 @@ public class CommandParser extends InterParse {
      * @param errNum
      */
     public void chatCookieInfo(int errNum) {
-        String pubKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+        String pubKey = Session.getInstance().getConnectCookie().getPubKey();
         switch (errNum) {
             case 0://Save the generated temporary cookies
                 Session.getInstance().setUpFailTime(pubKey, 0);
@@ -384,12 +384,12 @@ public class CommandParser extends InterParse {
                 if (failTime <= 2) {
                     uploadRandomCookie();
                 } else {
-                    Session.getInstance().setUserCookie(pubKey, null);
+                    Session.getInstance().removeConnectCookie();
                 }
                 Session.getInstance().setUpFailTime(pubKey, ++failTime);
                 break;
             case 4://cookie is overdue ,user old protocal
-                Session.getInstance().setUserCookie(pubKey, null);
+                Session.getInstance().removeConnectCookie();
                 break;
         }
     }
@@ -400,13 +400,10 @@ public class CommandParser extends InterParse {
     private void uploadRandomCookie() {
         long curTime = TimeUtil.getCurrentTimeSecond();
         boolean needUpload = true;//If you want to generate a temporary session cookies
-        String pubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-        UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
-
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
         if (userCookie == null) {
             userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
         }
-
         if (userCookie != null) {
             if (curTime < userCookie.getExpiredTime()) {
                 needUpload = false;
@@ -447,7 +444,7 @@ public class CommandParser extends InterParse {
         friendCookie.setPubKey(caPublicKey);
         friendCookie.setSalt(friendSalt);
         friendCookie.setExpiredTime(chatCookieData.getExpired());
-        Session.getInstance().setUserCookie(friendCaPublickey, friendCookie);
+        Session.getInstance().setFriendCookie(friendCaPublickey, friendCookie);
 
         SharedUtil.getInstance().insertFriendCookie(friendCaPublickey, friendCookie);
     }
@@ -503,12 +500,13 @@ public class CommandParser extends InterParse {
         }
     }
 
+    /**
+     * 重新上传 用户Cookie
+     */
     public void reloadUserCookie() {
         long curTime = TimeUtil.getCurrentTimeSecond();
-        String pubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-
         boolean reGenerate = true;
-        UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
+        UserCookie userCookie = Session.getInstance().getChatCookie();
         if (userCookie == null) {
             userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
         }
@@ -519,32 +517,31 @@ public class CommandParser extends InterParse {
             }
         }
 
-        String priKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
         String randomPriKey = null;
         String randomPubKey = null;
         byte[] randomSalt = null;
-        long expiredTime = 0;
 
         if (reGenerate) {
             randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
             randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
             randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
-            expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
         } else {
             randomPriKey = userCookie.getPriKey();
             randomPubKey = userCookie.getPubKey();
             randomSalt = userCookie.getSalt();
-            expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
         }
 
+        long expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
         Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
                 setChatPubKey(randomPubKey).
                 setSalt(ByteString.copyFrom(randomSalt)).
                 setExpired(expiredTime)
                 .build();
 
-        String caPublicKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-        String signInfo = SupportKeyUril.signHash(priKey, chatInfo.toByteArray());
+        UserCookie connecCookie = Session.getInstance().getConnectCookie();
+        String caPublicKey = connecCookie.getPubKey();
+        String caPrivateKey = connecCookie.getPriKey();
+        String signInfo = SupportKeyUril.signHash(caPrivateKey, chatInfo.toByteArray());
         Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder()
                 .setCaPub(caPublicKey)
                 .setSign(signInfo)
@@ -559,7 +556,7 @@ public class CommandParser extends InterParse {
         userCookie.setPubKey(randomPubKey);
         userCookie.setSalt(randomSalt);
         userCookie.setExpiredTime(expiredTime);
-        Session.getInstance().setUserCookie(pubkey, userCookie);
+        Session.getInstance().setChatCookie(userCookie);
 
         SharedUtil.getInstance().insertChatUserCookie(userCookie);
     }

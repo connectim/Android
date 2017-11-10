@@ -66,6 +66,10 @@ public class TimeUtil {
         return getCurrentTimeInLong() + String.valueOf(pross).substring(1, 3 + 1);
     }
 
+    public static String getMsgTime(long timestamp) throws Exception {
+        return getMsgTime(timestamp, getCurrentTimeInLong());
+    }
+
     /**
      * Timestamp to descriptive time
      * @param lastTime

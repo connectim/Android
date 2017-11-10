@@ -215,7 +215,7 @@ public class SupportKeyUril {
      * @return
      */
     public static synchronized boolean verifySign(String sign, byte[] data) {
-        return verifySign(Session.getInstance().getUserCookie(Session.COOKIE_SHAKEHAND).getPubKey(), sign, data);
+        return verifySign(Session.getInstance().getRandomCookie().getPubKey(), sign, data);
     }
 
     public static synchronized boolean verifySign(String puk, String sign, byte[] data) {

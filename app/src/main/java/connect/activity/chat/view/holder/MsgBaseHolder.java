@@ -23,7 +23,7 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
     private TextView timeTxt;
 
     /** The message time interval */
-    private long MSG_TIMESPACE = 5 * 1000 * 60;
+    private static long MSG_TIMESPACE = 5 * 60;
     private ChatMsgEntity msgExtEntity;
 
     public MsgBaseHolder(View itemView) {
@@ -48,7 +48,9 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
     public void buildMsgTime(long lasttime, long nexttime) {
         String showtime = "";
         try {
-            if (Math.abs(lasttime - nexttime) > MSG_TIMESPACE) {
+            if (lasttime == 0) {
+                showtime = TimeUtil.getMsgTime(nexttime);
+            } else if (Math.abs(lasttime - nexttime) > MSG_TIMESPACE) {
                 showtime = TimeUtil.getMsgTime(lasttime, nexttime);
             }
             showTime(showtime);
