@@ -10,7 +10,6 @@ import instant.bean.UserCookie;
 import instant.bean.UserOrderBean;
 import instant.parser.localreceiver.MessageLocalReceiver;
 import instant.sender.SenderManager;
-import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.utils.SharedUtil;
 import instant.utils.TimeUtil;
 import instant.utils.cryption.EncryptionUtil;
@@ -30,7 +29,8 @@ public class FriendChat extends NormalChat {
     /** friend Cookie */
     private UserCookie friendCookie = null;
 
-    protected String friendKey = null;
+    protected String friendUid = null;
+    protected String friendCaPublicKey;
 
     public enum EncryType {
         NORMAL,
@@ -40,11 +40,12 @@ public class FriendChat extends NormalChat {
 
     private EncryType encryType = EncryType.BOTH;
 
-    public FriendChat(String friendKey) {
-        this.friendKey = friendKey;
+    public FriendChat(String uid, String friendCaPublicKey) {
+        this.friendUid = uid;
+        this.friendCaPublicKey = friendCaPublicKey;
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.friendChatCookie(friendKey);
+        userOrderBean.friendChatCookie(friendUid);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class FriendChat extends NormalChat {
             String friendKey = null;
 
             loadUserCookie();
-            loadFriendCookie(chatKey());
+            loadFriendCookie();
             EncryptionUtil.ExtendedECDH ecdhExts = null;
             Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
             Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
@@ -141,12 +142,12 @@ public class FriendChat extends NormalChat {
 
     @Override
     public String chatKey() {
-        return friendKey;
+        return friendUid;
     }
 
     @Override
     public long destructReceipt() {
-        return MessageLocalReceiver.localReceiver.chatBurnTime(friendKey);
+        return MessageLocalReceiver.localReceiver.chatBurnTime(friendUid);
     }
 
     @Override
@@ -163,8 +164,8 @@ public class FriendChat extends NormalChat {
     }
 
     private void loadUserCookie() {
-        String pubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-        userCookie = Session.getInstance().getUserCookie(pubkey);
+        String caPublicKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+        userCookie = Session.getInstance().getUserCookie(caPublicKey);
         if (userCookie == null) {
             userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
         }
@@ -174,10 +175,10 @@ public class FriendChat extends NormalChat {
         }
     }
 
-    public void loadFriendCookie(String pubkey) {
-        friendCookie = Session.getInstance().getUserCookie(pubkey);
+    public void loadFriendCookie() {
+        friendCookie = Session.getInstance().getUserCookie(friendCaPublicKey);
         if (friendCookie == null) {
-            friendCookie =  SharedUtil.getInstance().loadFriendCookie(pubkey);
+            friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendCaPublicKey);
         }
 
         if (friendCookie == null) {
@@ -208,7 +209,7 @@ public class FriendChat extends NormalChat {
 
         Connect.ChatMessage chatMessage = Connect.ChatMessage.newBuilder()
                 .setMsgId(msgid)
-                .setTo(friendKey)
+                .setTo(friendUid)
                 .setCipherData(gcmData)
                 .build();
 

@@ -1,12 +1,14 @@
 package connect.utils.chatfile.inter;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.instant.inter.ConversationListener;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
@@ -15,13 +17,16 @@ import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
+import instant.bean.Session;
+import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
 import instant.sender.model.GroupChat;
+import instant.utils.SharedUtil;
+import instant.utils.cryption.EncryptionUtil;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -30,12 +35,30 @@ import protos.Connect;
  */
 public abstract class BaseFileUp implements InterFileUp {
 
-    private String Tag = "_FileUpLoad";
+    private static String TAG = "_BaseFileUp";
     protected Context context;
     protected ChatMsgEntity msgExtEntity;
     protected BaseChat baseChat;
     protected Connect.MediaFile mediaFile;
     public FileUploadListener fileUpListener;
+
+    public UserCookie loadUserCookie() {
+        String pubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
+        UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
+        if (userCookie == null) {
+            userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
+        }
+
+        return userCookie;
+    }
+
+    public UserCookie loadFriendCookie(String caPublicKey) {
+        UserCookie friendCookie = Session.getInstance().getUserCookie(caPublicKey);
+        if (friendCookie == null) {
+            friendCookie = SharedUtil.getInstance().loadFriendCookie(caPublicKey);
+        }
+        return friendCookie;
+    }
 
     /**
      * File encryption
@@ -44,15 +67,20 @@ public abstract class BaseFileUp implements InterFileUp {
      * @return
      */
     public Connect.GcmData encodeAESGCMStructData(String filePath) {
-        String priKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
-
         byte[] fileSie = FileUtil.filePathToByteArray(filePath);
         ByteString fileBytes = ByteString.copyFrom(fileSie);
-        LogManager.getLogger().d(Tag, "ByteString size:" + fileBytes.size());
+        LogManager.getLogger().d(TAG, "ByteString size:" + fileBytes.size());
 
         Connect.GcmData gcmData = null;
         if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
-            gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, priKey, baseChat.chatKey(), fileBytes);
+            UserCookie userCookie = loadUserCookie();
+            String myPrivateKey = userCookie.getPriKey();
+
+            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(baseChat.chatKey());
+            UserCookie friendCookie = loadFriendCookie(friendEntity.getCa_pub());
+            String friendPublicKey = friendCookie.getPubKey();
+
+            gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, fileBytes);
         } else if (baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
             gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), fileBytes);
         }
@@ -64,8 +92,14 @@ public abstract class BaseFileUp implements InterFileUp {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
+                    UserCookie userCookie = loadUserCookie();
+                    String myPrivateKey = userCookie.getPriKey();
+
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(connect.utils.cryption.EncryptionUtil.ExtendedECDH.EMPTY,
+                            myPrivateKey,
+                            imResponse.getCipherData());
+
                     Connect.FileData fileData = Connect.FileData.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(fileData)) {
                         fileResult.resultUpUrl(fileData);
@@ -77,7 +111,11 @@ public abstract class BaseFileUp implements InterFileUp {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(context, context.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                String errorMessage = response.getMessage();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    errorMessage = context.getString(R.string.Network_equest_failed_please_try_again_later);
+                }
+                ToastEUtil.makeText(context, errorMessage, 2).show();
             }
         });
     }

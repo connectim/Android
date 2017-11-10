@@ -14,13 +14,7 @@ import connect.instant.inter.ConversationListener;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import instant.bean.ChatMsgEntity;
-import instant.bean.Session;
-import instant.bean.SocketACK;
-import instant.sender.SenderManager;
 import instant.sender.model.FriendChat;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
-import protos.Connect;
 
 /**
  * Created by Administrator on 2017/10/19.
@@ -30,18 +24,17 @@ public class CFriendChat extends FriendChat implements ConversationListener{
 
     private ContactEntity contactEntity;
 
-    public CFriendChat(String friendKey) {
-        super(friendKey);
-
-        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendKey);
+    public CFriendChat(String uid) {
+        super(uid, "");
+        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(uid);
         this.contactEntity = contactEntity;
-        this.friendKey = contactEntity.getUid();
+        this.friendCaPublicKey = contactEntity.getCa_pub();
     }
 
     public CFriendChat(ContactEntity contactEntity) {
-        super(contactEntity.getUid());
+        super(contactEntity.getUid(), "");
         this.contactEntity = contactEntity;
-        this.friendKey = contactEntity.getUid();
+        this.friendCaPublicKey = contactEntity.getCa_pub();
     }
 
     @Override
@@ -64,7 +57,7 @@ public class CFriendChat extends FriendChat implements ConversationListener{
         String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
         String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Link_Hello_I_am, nickName());
         ChatMsgEntity msgExtEntity = txtMsg(content);
-        msgExtEntity.setMessage_from(friendKey);
+        msgExtEntity.setMessage_from(friendUid);
         msgExtEntity.setMessage_to(myUid);
         updateRoomMsg("", content, TimeUtil.getCurrentTimeInLong(), -1, 1);
 
