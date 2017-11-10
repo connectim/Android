@@ -10,7 +10,6 @@ import instant.bean.UserCookie;
 import instant.bean.UserOrderBean;
 import instant.parser.localreceiver.MessageLocalReceiver;
 import instant.sender.SenderManager;
-import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.utils.SharedUtil;
 import instant.utils.TimeUtil;
 import instant.utils.cryption.EncryptionUtil;
@@ -31,6 +30,7 @@ public class FriendChat extends NormalChat {
     private UserCookie friendCookie = null;
 
     protected String friendUid = null;
+    protected String friendCaPublicKey;
 
     public enum EncryType {
         NORMAL,
@@ -40,8 +40,9 @@ public class FriendChat extends NormalChat {
 
     private EncryType encryType = EncryType.BOTH;
 
-    public FriendChat(String uid) {
+    public FriendChat(String uid, String friendCaPublicKey) {
         this.friendUid = uid;
+        this.friendCaPublicKey = friendCaPublicKey;
 
         UserOrderBean userOrderBean = new UserOrderBean();
         userOrderBean.friendChatCookie(friendUid);
@@ -75,7 +76,7 @@ public class FriendChat extends NormalChat {
             String friendKey = null;
 
             loadUserCookie();
-            loadFriendCookie(chatKey());
+            loadFriendCookie();
             EncryptionUtil.ExtendedECDH ecdhExts = null;
             Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
             Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
@@ -174,10 +175,10 @@ public class FriendChat extends NormalChat {
         }
     }
 
-    public void loadFriendCookie(String friendCapublicKey) {
-        friendCookie = Session.getInstance().getUserCookie(friendCapublicKey);
+    public void loadFriendCookie() {
+        friendCookie = Session.getInstance().getUserCookie(friendCaPublicKey);
         if (friendCookie == null) {
-            friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendCapublicKey);
+            friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendCaPublicKey);
         }
 
         if (friendCookie == null) {

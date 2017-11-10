@@ -97,10 +97,14 @@ public class CommandReceiver implements CommandListener {
         Map<String, ContactEntity> contactEntityMap = new HashMap<>();
         for (Connect.FriendInfo friendInfo : friendInfoList) {
             String friendUid = friendInfo.getUid();
+            String friendCapPublicKey = friendInfo.getCaPub();
+            if (TextUtils.isEmpty(friendUid) || TextUtils.isEmpty(friendCapPublicKey)) {
+                continue;
+            }
 
             ContactEntity contactEntity = new ContactEntity();
-            contactEntity.setUid(friendInfo.getUid());
-            contactEntity.setCa_pub(friendInfo.getCaPub());
+            contactEntity.setUid(friendUid);
+            contactEntity.setCa_pub(friendCapPublicKey);
             contactEntity.setConnectId(friendInfo.getConnectId());
             contactEntity.setUsername(friendInfo.getUsername());
             contactEntity.setAvatar(friendInfo.getAvatar());

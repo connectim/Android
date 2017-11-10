@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.ui.InstantSdk;
 
@@ -22,7 +23,7 @@ import instant.ui.InstantSdk;
 public class SharedUtil {
 
     /** user SharedPreference name */
-    private static final String SHAREPREFERENCES_NAME = "SHAREPREFERENCES_INSTANT";
+    private static final String SHAREPREFERENCES_NAME = "SHARE_INSTANT";
     private static SharedUtil sharePreUtil;
     private static SharedPreferences sharePre;
 
@@ -41,7 +42,8 @@ public class SharedUtil {
     private synchronized static SharedUtil getInstance(Context context) {
         if (null == sharePreUtil || null == sharePre) {
             sharePreUtil = new SharedUtil();
-            sharePre = context.getSharedPreferences(SHAREPREFERENCES_NAME, Context.MODE_PRIVATE);
+            String myUid = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
+            sharePre = context.getSharedPreferences(SHAREPREFERENCES_NAME + ":" + myUid, Context.MODE_PRIVATE);
         }
         return sharePreUtil;
     }

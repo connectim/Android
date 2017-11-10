@@ -14,7 +14,7 @@ import protos.Connect;
 /**
  * Created by Administrator on 2017/10/9.
  */
-public final class ChatMsgEntity implements Serializable {
+public final class ChatMsgEntity implements Serializable, Cloneable {
 
     static final long serialVersionUID = 42L;
 

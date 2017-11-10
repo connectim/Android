@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
@@ -18,7 +17,6 @@ import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
@@ -26,9 +24,9 @@ import instant.bean.ChatMsgEntity;
 import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
-import instant.sender.model.FriendChat;
 import instant.sender.model.GroupChat;
 import instant.utils.SharedUtil;
+import instant.utils.cryption.EncryptionUtil;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -44,7 +42,7 @@ public abstract class BaseFileUp implements InterFileUp {
     protected Connect.MediaFile mediaFile;
     public FileUploadListener fileUpListener;
 
-    private UserCookie loadUserCookie() {
+    public UserCookie loadUserCookie() {
         String pubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
         UserCookie userCookie = Session.getInstance().getUserCookie(pubkey);
         if (userCookie == null) {
@@ -94,8 +92,14 @@ public abstract class BaseFileUp implements InterFileUp {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
+                    UserCookie userCookie = loadUserCookie();
+                    String myPrivateKey = userCookie.getPriKey();
+
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(connect.utils.cryption.EncryptionUtil.ExtendedECDH.EMPTY,
+                            myPrivateKey,
+                            imResponse.getCipherData());
+
                     Connect.FileData fileData = Connect.FileData.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(fileData)) {
                         fileResult.resultUpUrl(fileData);

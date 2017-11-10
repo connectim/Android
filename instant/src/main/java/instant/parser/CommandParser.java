@@ -30,7 +30,7 @@ import protos.Connect;
  */
 public class CommandParser extends InterParse {
 
-    private String Tag = "_CommandParser";
+    private static String TAG = "_CommandParser";
 
     public CommandParser(byte ackByte, ByteBuffer byteBuffer) {
         super(ackByte, byteBuffer);
@@ -127,7 +127,7 @@ public class CommandParser extends InterParse {
             List<Connect.OfflineMsg> msgList = offlineMsgs.getOfflineMsgsList();
 
             for (Connect.OfflineMsg offlineMsg : msgList) {
-                LogManager.getLogger().d(Tag, "msgList:" + msgList.size());
+                LogManager.getLogger().d(TAG, "msgList:" + msgList.size());
 
                 Connect.ProducerMsgDetail msgDetail = offlineMsg.getBody();
                 int extension = msgDetail.getExt();
@@ -373,7 +373,7 @@ public class CommandParser extends InterParse {
                 Session.getInstance().setUpFailTime(pubKey, 0);
 
                 try {
-                    //FailMsgsManager.getInstance().sendExpireMsg();
+                    FailMsgsManager.getInstance().sendFailMsgs();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -427,7 +427,7 @@ public class CommandParser extends InterParse {
     private void friencChatCookie(ByteString buffer, String msgid) throws Exception {
         Connect.ChatCookie chatCookie = Connect.ChatCookie.parseFrom(buffer);
         if (!SupportKeyUril.verifySign(chatCookie.getCaPub(), chatCookie.getSign(), chatCookie.getData().toByteArray())) {
-            throw new Exception("Validation fails");
+            throw new Exception(TAG + ":  Validation fails");
         }
 
         Connect.ChatCookieData chatCookieData = chatCookie.getData();
