@@ -21,6 +21,7 @@ import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -30,6 +31,8 @@ import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
+import instant.bean.UserOrderBean;
+import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
 /**
@@ -134,15 +137,9 @@ public class SafetyActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.V2_SETTING_DELETE_USER, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
+                ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
+                BaseApplication.getInstance().deleteDatabase(DaoManager.getInstance().getDBName());
                 HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
-
-                List<Activity> list = BaseApplication.getInstance().getActivityList();
-                for (Activity activity : list) {
-                    if (!activity.getClass().getName().equals(mActivity.getClass().getName())) {
-                        activity.finish();
-                    }
-                }
-                mActivity.finish();
             }
 
             @Override
