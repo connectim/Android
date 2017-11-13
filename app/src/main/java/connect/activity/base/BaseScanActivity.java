@@ -3,12 +3,10 @@ package connect.activity.base;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -30,7 +28,6 @@ import java.lang.reflect.Field;
 import java.util.Hashtable;
 
 import connect.ui.activity.R;
-import connect.utils.BitmapUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastUtil;
 import connect.utils.log.LogManager;
@@ -41,10 +38,6 @@ import connect.widget.zxing.utils.BeepManager;
 import connect.widget.zxing.utils.CaptureActivityHandler;
 import connect.widget.zxing.utils.InactivityTimer;
 
-
-/**
- * Created by Administrator on 2016/12/27.
- */
 public abstract class BaseScanActivity extends BaseActivity {
 
     private final String TAG = BaseScanActivity.class.getSimpleName();

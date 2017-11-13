@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <View
+        android:id="@+id/line_view"
         style="@style/BaseViewLine.d1d5da"/>
 
     <TextView

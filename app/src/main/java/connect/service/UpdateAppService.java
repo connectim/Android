@@ -88,7 +88,7 @@ public class UpdateAppService extends Service {
                 startActivity(intents);
                 android.os.Process.killProcess(android.os.Process.myPid());
             }else{
-                //6.0 os
+                //7.0 FileProvider
                 if(file.exists()){
                     openFile(file,context);
                 }
@@ -97,7 +97,8 @@ public class UpdateAppService extends Service {
 
         public void openFile(File file, Context context) {
             Intent intent = new Intent();
-            intent.addFlags(268435456);
+            // intent.addFlags(268435456);  268435456 --> 0x10000000
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setAction("android.intent.action.VIEW");
             String type = getMIMEType(file);
             intent.setDataAndType(Uri.fromFile(file), type);

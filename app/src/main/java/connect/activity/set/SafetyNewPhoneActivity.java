@@ -3,6 +3,7 @@ package connect.activity.set;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -209,18 +210,10 @@ public class SafetyNewPhoneActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.V2_SETTING_MOBILE_VERIFY, changeMobileVerify, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                try{
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.SecurityToken securityToken = Connect.SecurityToken .parseFrom(structData.getPlainData());
-
-                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                    userBean.setPhone(phone);
-                    SharedPreferenceUtil.getInstance().putUser(userBean);
-                    mActivity.finish();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
+                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                userBean.setPhone(phone);
+                SharedPreferenceUtil.getInstance().putUser(userBean);
+                mActivity.finish();
             }
 
             @Override

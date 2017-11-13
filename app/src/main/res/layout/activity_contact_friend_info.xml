@@ -177,7 +177,8 @@
                     android:src="@mipmap/group_item_arrow"/>
             </RelativeLayout>
 
-            <View style="@style/BaseViewLine.d1d5da"/>
+            <View style="@style/BaseViewLine.d1d5da"
+                android:id="@+id/transfer_line_view"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"

@@ -17,6 +17,7 @@
         android:visibility="gone"/>
 
     <View
+        android:id="@+id/line_view"
         style="@style/BaseViewLine.d1d5da"/>
 
     <connect.widget.SideScrollView

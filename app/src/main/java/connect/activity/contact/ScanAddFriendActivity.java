@@ -28,6 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseScanActivity;
 import connect.activity.home.bean.MsgNoticeBean;
+import connect.activity.set.UserConnectIdActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -53,24 +54,10 @@ public class ScanAddFriendActivity extends BaseScanActivity {
     RelativeLayout captureContainer;
     @Bind(R.id.right_img)
     ImageView rightImg;
-    @Bind(R.id.scan_img)
-    ImageView scanImg;
-    @Bind(R.id.address_tv)
-    TextView addressTv;
-    @Bind(R.id.scan_rela)
-    RelativeLayout scanRela;
     @Bind(R.id.content_rela)
     RelativeLayout contentRela;
     @Bind(R.id.bottom_capture_img)
     TextView bottomCaptureImg;
-    @Bind(R.id.bottom_scan_img)
-    ImageView bottomScanImg;
-    @Bind(R.id.bottom_scan_rela)
-    RelativeLayout bottomScanRela;
-    @Bind(R.id.move_down_img)
-    ImageView moveDownImg;
-    @Bind(R.id.move_up_img)
-    ImageView moveUpImg;
     @Bind(R.id.photos_tv)
     TextView photosTv;
 
@@ -90,16 +77,6 @@ public class ScanAddFriendActivity extends BaseScanActivity {
     public void initView() {
         mActivity = this;
         setViewFind(capturePreview, captureCropView, captureContainer);
-
-        CreateScan createScan = new CreateScan();
-        String connectId = SharedPreferenceUtil.getInstance().getUser().getConnectId();
-        if (TextUtils.isEmpty(connectId)) {
-            return;
-        }
-        Bitmap bitmap = createScan.generateQRCode(ResolveScanUtil.CONNECT_HEAD + connectId, getResources().getColor(R.color.color_00ffbf));
-        scanImg.setImageBitmap(bitmap);
-        bottomScanImg.setImageBitmap(bitmap);
-        addressTv.setText(connectId);
         resolveScanUtil = new ResolveScanUtil(mActivity);
     }
 
@@ -110,73 +87,7 @@ public class ScanAddFriendActivity extends BaseScanActivity {
 
     @OnClick(R.id.bottom_capture_img)
     void switchScan(View view) {
-        onStart();
-        moveDownImg.setVisibility(View.GONE);
-
-        float xScale = (float) bottomScanRela.getWidth() / scanRela.getWidth();
-        float yScale = (float) bottomScanRela.getHeight() / scanRela.getHeight();
-        Animation scaleAnimation = new ScaleAnimation(1f, xScale, 1f, yScale,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1f);
-
-        float yTrans = bottomScanRela.getBottom() - scanRela.getBottom() + SystemUtil.dipToPx(35);
-        Animation translateAnimation = new TranslateAnimation(0f, 0f, 1f, yTrans);
-        AnimationSet set = new AnimationSet(true);
-        set.addAnimation(scaleAnimation);
-        set.addAnimation(translateAnimation);
-        set.setDuration(500);
-        scanRela.startAnimation(set);
-        set.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {}
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                bottomScanRela.setVisibility(View.VISIBLE);
-                bottomCaptureImg.setVisibility(View.GONE);
-                scanRela.setVisibility(View.GONE);
-                moveUpImg.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {}
-        });
-    }
-
-    @OnClick(R.id.bottom_scan_rela)
-    void switchAddress(View view) {
-        onPause();
-        moveUpImg.setVisibility(View.GONE);
-        bottomCaptureImg.setVisibility(View.VISIBLE);
-
-        float scanRelaHeight = (float) SystemUtil.dipToPx(270);
-        float scanRelaWith = (float) SystemUtil.dipToPx(250);
-        float xScale = scanRelaWith / bottomScanRela.getWidth();
-        float yScale = scanRelaHeight / bottomScanRela.getHeight();
-        Animation scaleAnimation = new ScaleAnimation(1f, xScale, 1f, yScale,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1f);
-
-        float yTrans = contentRela.getTop() - bottomScanRela.getTop() - (bottomScanRela.getHeight() - scanRelaHeight) + SystemUtil.dipToPx(40);
-        Animation translateAnimation = new TranslateAnimation(0f, 0f, 1f, yTrans);
-
-        AnimationSet set = new AnimationSet(true);
-        set.addAnimation(scaleAnimation);
-        set.addAnimation(translateAnimation);
-        set.setDuration(500);
-        bottomScanRela.startAnimation(set);
-        set.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {}
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                bottomScanRela.setVisibility(View.GONE);
-                scanRela.setVisibility(View.VISIBLE);
-                moveDownImg.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {}
-        });
+        ActivityUtil.next(mActivity, UserConnectIdActivity.class);
     }
 
     @OnClick(R.id.photos_tv)

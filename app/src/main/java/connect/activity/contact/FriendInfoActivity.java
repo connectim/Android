@@ -15,7 +15,9 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -78,6 +80,8 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     LinearLayout idLin;
     @Bind(R.id.transfer_record_rela)
     RelativeLayout transferRecordRela;
+    @Bind(R.id.transfer_line_view)
+    View transferLineView;
 
     private FriendInfoActivity mActivity;
     private FriendInfoContract.Presenter presenter;
@@ -121,9 +125,10 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
         new FriendInfoPresenter(this).start();
         presenter.requestUserInfo(friendEntity.getUid(), friendEntity);
-        if(!WalletManager.isShowWallet()){
+        if (!WalletManager.isShowWallet()) {
             transferImgs.setVisibility(View.GONE);
             transferRecordRela.setVisibility(View.GONE);
+            transferLineView.setVisibility(View.GONE);
         }
     }
 
@@ -158,7 +163,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.message_img)
     void goSendMessage(View view) {
-        ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.PRIVATE,friendEntity.getUid()));
+        ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.PRIVATE, friendEntity.getUid()));
     }
 
     @OnClick(R.id.transfer_imgs)
@@ -168,7 +173,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.share_img)
     void goSendShare(View view) {
-        ConversationActivity.startActivity(mActivity, ConverType.CAED,friendEntity);
+        ConversationActivity.startActivity(mActivity, ConverType.CAED, friendEntity);
     }
 
     @OnClick(R.id.set_alias_rela)
@@ -235,7 +240,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ConversationActivity.CODE_REQUEST && requestCode == ConversationActivity.CODE_REQUEST) {
-            presenter.shareFriendCard(mActivity ,data,friendEntity);
+            presenter.shareFriendCard(mActivity, data, friendEntity);
         }
     }
 
