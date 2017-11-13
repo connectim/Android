@@ -18,6 +18,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.MsgNoticeBean;
+import connect.activity.home.view.LineDecoration;
 import connect.activity.set.adapter.BlackListAdapter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
@@ -59,6 +60,7 @@ public class PrivateBlackActivity extends BaseActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new BlackListAdapter(mActivity);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
         adapter.setOnItemChildListence(childClickListener);
         recyclerview.setAdapter(adapter);
 

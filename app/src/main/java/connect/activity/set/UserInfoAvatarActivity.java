@@ -71,7 +71,7 @@ public class UserInfoAvatarActivity extends BaseActivity implements UserInfoAvat
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -116,7 +116,7 @@ public class UserInfoAvatarActivity extends BaseActivity implements UserInfoAvat
                 case TakePictureActivity.REQUEST_CODE:
                 case ClipImageActivity.REQUEST_CODE:
                     String path = data.getExtras().getString("path");
-                    presenter.requestAvater(path);
+                    presenter.requestAvatar(path);
                     break;
                 default:
                     break;
@@ -130,7 +130,7 @@ public class UserInfoAvatarActivity extends BaseActivity implements UserInfoAvat
     }
 
     @Override
-    public void requestAvaFninish(String path) {
+    public void requestAvaFinish(String path) {
         ToastEUtil.makeText(mActivity,R.string.Set_Set_Avatar_success).show();
         GlideUtil.loadAvatarRound(avatarImg, path + "?size=400", 0);
     }

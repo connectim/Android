@@ -1,6 +1,7 @@
 package connect.activity.contact.presenter;
 
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -45,6 +46,8 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
                             if(structData != null){
                                 Connect.UsersInfoBase usersInfoBase = Connect.UsersInfoBase.parseFrom(structData.getPlainData());
                                 for(Connect.UserInfoBase userInfoBase : usersInfoBase.getUsersList()){
+                                    if(TextUtils.isEmpty(userInfoBase.getAvatar())) continue;
+
                                     FriendRequestEntity requestEntity = new FriendRequestEntity();
                                     requestEntity.setUid(userInfoBase.getUid());
                                     requestEntity.setAvatar(userInfoBase.getAvatar());

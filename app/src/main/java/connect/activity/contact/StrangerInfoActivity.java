@@ -54,8 +54,6 @@ public class StrangerInfoActivity extends BaseActivity {
     TextView addressTv;
     @Bind(R.id.addFriend_btn)
     Button addFriendBtn;
-    @Bind(R.id.transfer_btn)
-    Button transferBtn;
     @Bind(R.id.source_tv)
     TextView sourceTv;
 
@@ -66,7 +64,7 @@ public class StrangerInfoActivity extends BaseActivity {
 
     public static void startActivity(Activity activity, String uid, SourceType sourceType) {
         Bundle bundle = new Bundle();
-        bundle.putString("UID", uid);
+        bundle.putString("uid", uid);
         bundle.putSerializable("source", sourceType);
         ActivityUtil.next(activity, StrangerInfoActivity.class, bundle);
     }
@@ -84,7 +82,7 @@ public class StrangerInfoActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         Bundle bundle = getIntent().getExtras();
-        uid = bundle.getString("UID");
+        uid = bundle.getString("uid");
         sourceType = (SourceType) bundle.getSerializable("source");
         addressTv.setText(uid);
         requestUserInfo(uid);
@@ -129,17 +127,8 @@ public class StrangerInfoActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void cancel() {
-
-                    }
+                    public void cancel() {}
                 });
-    }
-
-    @OnClick(R.id.transfer_btn)
-    void goTransfer(View view) {
-        if(sendUserInfo != null){
-            TransferToActivity.startActivity(mActivity, sendUserInfo.getUid());
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

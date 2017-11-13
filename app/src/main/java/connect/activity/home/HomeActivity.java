@@ -54,6 +54,8 @@ import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.MaterialBadgeTextView;
 import connect.widget.random.RandomVoiceActivity;
 import connect.instant.bean.ConnectState;
+import instant.bean.UserOrderBean;
+import instant.utils.manager.FailMsgsManager;
 
 /**
  * Created by gtq on 2016/11/19.
@@ -160,6 +162,10 @@ public class HomeActivity extends BaseFragmentActivity {
 
         switch (action.getType()) {
             case DELAY_EXIT://Timeout logged out
+                FailMsgsManager.getInstance().removeAllFailMsg();
+                UserOrderBean userOrderBean = new UserOrderBean();
+                userOrderBean.connectLogout();
+
                 mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 1000);
                 break;
             case EXIT:

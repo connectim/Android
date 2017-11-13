@@ -68,21 +68,7 @@
     <Button
         android:id="@+id/addFriend_btn"
         style="@style/ButtonLongStyle"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_90"
         android:text="@string/Link_Add_to_Contacts"/>
-
-    <Button
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:id="@+id/transfer_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_40"
-        android:background="@drawable/shape_stroke_5554d5"
-        android:textAllCaps="false"
-        android:textSize="@dimen/sp_18"
-        android:textColor="@color/color_ffffff"
-        android:text="@string/Wallet_Transfer"/>
 
 </LinearLayout>

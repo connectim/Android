@@ -75,81 +75,9 @@
             android:drawableTop="@mipmap/contract_add_scan3x"
             android:textSize="@dimen/sp_12"
             android:textColor="@color/color_ffffff"
-            android:text="@string/Link_Scan"
+            android:text="@string/Set_My_QR_code"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/dp_80"
-            android:visibility="gone"/>
-
-        <RelativeLayout
-            android:id="@+id/bottom_scan_rela"
-            android:layout_width="@dimen/dp_130"
-            android:layout_height="@dimen/dp_150"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/shape_stroke_00ffbf"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_below="@+id/move_up_img">
-
-            <TextView
-                style="@style/BaseTextStyle"
-                android:layout_below="@+id/bottom_scan_img"
-                android:text="@string/Set_My_QR_code"
-                android:layout_marginTop="@dimen/dp_5"
-                android:layout_centerHorizontal="true" />
-
-            <ImageView
-                android:contentDescription="@string/app_name"
-                android:id="@+id/bottom_scan_img"
-                android:layout_marginTop="12dp"
-                android:layout_width="@dimen/dp_100"
-                android:layout_height="@dimen/dp_100"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/scan_rela"
-            android:layout_width="@dimen/dp_250"
-            android:layout_height="@dimen/dp_270"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/shape_stroke_00ffbf"
-            android:layout_below="@id/capture_mask_top"
-            android:visibility="gone">
-            <ImageView
-                android:contentDescription="@string/app_name"
-                android:id="@+id/scan_img"
-                android:layout_width="@dimen/dp_180"
-                android:layout_height="@dimen/dp_180"
-                android:layout_marginTop="@dimen/dp_35"
-                android:layout_centerHorizontal="true"/>
-            <TextView
-                android:id="@+id/address_tv"
-                style="@style/BaseTextStyle"
-                android:text=""
-                android:layout_marginTop="@dimen/dp_15"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/scan_img"/>
-        </RelativeLayout>
-
-        <ImageView
-            android:contentDescription="@string/app_name"
-            android:id="@+id/move_down_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/scan_rela"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_centerHorizontal="true"
-            android:src="@mipmap/move_down2x"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:contentDescription="@string/app_name"
-            android:id="@+id/move_up_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_30"
-            android:layout_below="@+id/content_rela"
-            android:layout_centerHorizontal="true"
-            android:src="@mipmap/move_up2x"/>
+            android:layout_marginBottom="@dimen/dp_80" />
 
     </RelativeLayout>
 

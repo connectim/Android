@@ -81,6 +81,13 @@ public class DaoManager {
         return mDaoMaster;
     }
 
+    public String getDBName(){
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        String name = "connect_" + StringUtil.bytesToHexString(TransformUtil.digest(TransformUtil.MD5,
+                StringUtil.hexStringToBytes(userBean.getUid())));
+        return name;
+    }
+
     public DaoSession getDaoSession() {
         if (null == mDaoSession) {
             if (null == mDaoMaster) {
@@ -132,4 +139,5 @@ public class DaoManager {
         TransactionHelper.closeHelper();
         CurrencyHelper.closeHelper();
     }
+
 }

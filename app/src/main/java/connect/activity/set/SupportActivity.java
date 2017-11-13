@@ -46,7 +46,7 @@ public class SupportActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_Help_and_feedback);
         toolbarTop.setRightText(R.string.Set_FeedBack);
         toolbarTop.setRightTextEnable(true);
-        String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
+        String languageCode = SharedPreferenceUtil.getInstance().getLanguageCode();
 
         webView.loadUrl("https://www.connect.im/mobile/faqs?locale=" + languageCode);
         webView.setWebViewClient(new WebViewClient() {
@@ -60,7 +60,7 @@ public class SupportActivity extends BaseActivity {
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -111,7 +111,7 @@ public class SupportActivity extends BaseActivity {
                 webView.goBack();
                 return true;
             } else {
-                goback(new View(mActivity));
+                goBack(new View(mActivity));
             }
         }
         return super.onKeyDown(keyCode, event);

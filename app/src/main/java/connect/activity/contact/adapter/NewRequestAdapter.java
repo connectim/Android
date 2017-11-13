@@ -56,7 +56,8 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
         viewHolder.txt.setVisibility(View.VISIBLE);
         viewHolder.sideScrollView.setVisibility(View.VISIBLE);
 
-        if(position == 0 || (friendRequestEntity.getStatus() != mList.get(position - 1).getStatus())){
+        if(position == 0 || (friendRequestEntity.getStatus() != RECOMMEND_ADD_FRIEND &&
+                mList.get(position - 1).getStatus() == RECOMMEND_ADD_FRIEND)){
             showTopView(friendRequestEntity, position, viewHolder);
         }else {
             viewHolder.topRela.setVisibility(View.GONE);

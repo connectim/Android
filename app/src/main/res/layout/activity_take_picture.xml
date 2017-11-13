@@ -41,6 +41,40 @@
                 android:src="@mipmap/album3x"/>
 
             <RelativeLayout
+                android:id="@+id/retake_rela"
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_toLeftOf="@+id/takePhoto_img"
+                android:layout_centerVertical="true"
+                android:background="@drawable/shape_circular_c3c3ca"
+                android:visibility="gone">
+                <ImageView
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/retake_photo3x"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/send_rela"
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_toRightOf="@+id/takePhoto_img"
+                android:layout_centerVertical="true"
+                android:background="@drawable/shape_circular_ffffff"
+                android:visibility="gone">
+                <ImageView
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/send_photo3x"/>
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/takePhoto_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

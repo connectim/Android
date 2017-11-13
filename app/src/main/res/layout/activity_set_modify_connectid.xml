@@ -19,7 +19,7 @@
         android:background="@drawable/shape_stroke_20_ffffff">
         <EditText
             style="@style/EditStyle"
-            android:id="@+id/name_et"
+            android:id="@+id/connect_id_et"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/dp_10"
@@ -28,7 +28,7 @@
             android:maxLength="20"
             android:singleLine="true"
             android:background="@null"
-            android:hint="@string/Set_Name"/>
+            android:hint="@string/Set_ID"/>
         <ImageButton
             android:contentDescription="@string/app_name"
             android:id="@+id/close_ib"
@@ -41,5 +41,21 @@
             android:background="@color/color_clear"
             android:visibility="gone"/>
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/id_tip_tv"
+        style="@style/BaseTextStyle"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_5"
+        android:textColor="@color/color_858998"
+        android:text="@string/Set_CONNECT_ID_set_success_no_set" />
+
+    <TextView
+        android:id="@+id/id_hint_tv"
+        style="@style/BaseTextStyle"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_5"
+        android:textColor="@color/color_858998"
+        android:text="@string/Set_CONNECT_ID_regular" />
 
 </LinearLayout>

@@ -149,10 +149,6 @@ public class SetFragment extends BaseFragment {
                     public void confirm(String value) {
                         ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
                         HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
-
-                        FailMsgsManager.getInstance().removeAllFailMsg();
-                        UserOrderBean userOrderBean = new UserOrderBean();
-                        userOrderBean.connectLogout();
                     }
 
                     @Override

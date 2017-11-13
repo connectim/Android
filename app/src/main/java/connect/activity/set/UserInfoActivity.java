@@ -86,13 +86,13 @@ public class UserInfoActivity extends BaseActivity {
 
     @OnClick(R.id.name_ll)
     void goName(View view) {
-        UserInfoNameActivity.startActivity(mActivity, UserInfoNameActivity.TYPE_NAME);
+        UserInfoNameActivity.startActivity(mActivity);
     }
 
     @OnClick(R.id.id_ll)
     void goNumber(View view) {
         if (!userBean.isUpdateConnectId()) {
-            UserInfoNameActivity.startActivity(mActivity, UserInfoNameActivity.TYPE_NUMBER);
+            UserInfoConnectIdActivity.startActivity(mActivity);
         } else {
             ToastEUtil.makeText(mActivity, R.string.Set_CONNECT_ID_can_only_be_set_once, ToastEUtil.TOAST_STATUS_FAILE).show();
         }

@@ -122,8 +122,10 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 String currLetter = contactManage.checkShowFriendTop(currBean, mData.get(position - 1));
                 if (TextUtils.isEmpty(currLetter)) {
                     ((FriendHolder) holder).topTv.setVisibility(View.GONE);
+                    ((FriendHolder) holder).lineView.setVisibility(View.VISIBLE);
                 } else {
                     ((FriendHolder) holder).topTv.setVisibility(View.VISIBLE);
+                    ((FriendHolder) holder).lineView.setVisibility(View.GONE);
                     ((FriendHolder) holder).topTv.setCompoundDrawables(null, null, null, null);
                     switch (currBean.getStatus()) {
                         case 2: // group
@@ -152,8 +154,10 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 String connectLetter = contactManage.checkShowFriendTop(currBean, mData.get(position - 1));
                 if (TextUtils.isEmpty(connectLetter)) {
                     ((ConnectHolder) holder).topTv.setVisibility(View.GONE);
+                    ((ConnectHolder) holder).lineView.setVisibility(View.VISIBLE);
                 } else {
                     ((ConnectHolder) holder).topTv.setVisibility(View.VISIBLE);
+                    ((ConnectHolder) holder).lineView.setVisibility(View.GONE);
                     ((ConnectHolder) holder).topTv.setCompoundDrawables(null, null, null, null);
                     ((ConnectHolder) holder).topTv.setText(connectLetter);
                 }
@@ -220,6 +224,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         SideScrollView sideView;
         RelativeLayout contentLayout;
         ImageView bottomSetImg;
+        View lineView;
 
         public FriendHolder(View itemView) {
             super(itemView);
@@ -231,17 +236,20 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             name = (TextView) itemView.findViewById(R.id.name_tv);
             contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
             sideView.setSideScrollListener(sideScrollListener);
+            lineView = itemView.findViewById(R.id.line_view);
         }
     }
     class ConnectHolder extends RecyclerView.ViewHolder{
 
         TextView topTv;
         RelativeLayout contentLayout;
+        View lineView;
 
         public ConnectHolder(View itemView) {
             super(itemView);
             contentLayout = (RelativeLayout)itemView.findViewById(R.id.content_layout);
             topTv = (TextView)itemView.findViewById(R.id.top_tv);
+            lineView = itemView.findViewById(R.id.line_view);
         }
     }
 

@@ -55,10 +55,10 @@ public class ResolveScanUtil {
         }else if(value.contains(TYPE_WEB_GROUP_)){
             // Determine whether to join the group of links
             dealScanGroup(value);
-        }else if(value.contains(TRANSFER_SCAN_HEAD)){
+        }/*else if(value.contains(TRANSFER_SCAN_HEAD)){
             // Determine whether to transfer links
             dealScanTransfer(value);
-        }else {
+        }*/else {
             dealScanValue(value);
         }
     }
@@ -120,13 +120,13 @@ public class ResolveScanUtil {
     private void dealScanValue(final String value){
         requestUserInfo(value, new OnResultBack() {
             @Override
-            public void call(int status) {
+            public void call(int status, String uid) {
                 switch (status){
                     case 1:
-                        FriendInfoActivity.startActivity(activity, value);
+                        FriendInfoActivity.startActivity(activity, uid);
                         break;
                     case 2:
-                        StrangerInfoActivity.startActivity(activity, value, SourceType.QECODE);
+                        StrangerInfoActivity.startActivity(activity, uid, SourceType.QECODE);
                         break;
                     case 3:
                         ToastEUtil.makeText(activity, R.string.Login_scan_string_error, ToastEUtil.TOAST_STATUS_FAILE).show();
@@ -146,7 +146,7 @@ public class ResolveScanUtil {
      */
     private void requestUserInfo(String value, final OnResultBack onResultBack) {
         if(!value.contains(CONNECT_HEAD)){
-            onResultBack.call(3);
+            onResultBack.call(3, "");
             return;
         }else{
             value = value.replace(CONNECT_HEAD, "");
@@ -154,7 +154,7 @@ public class ResolveScanUtil {
 
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(value);
         if(contactEntity != null){
-            onResultBack.call(1);
+            onResultBack.call(1, contactEntity.getUid());
             return;
         }
 
@@ -170,9 +170,9 @@ public class ResolveScanUtil {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     if(sendUserInfo != null){
-                        onResultBack.call(2);
+                        onResultBack.call(2, sendUserInfo.getUid());
                     }else{
-                        onResultBack.call(3);
+                        onResultBack.call(3, "");
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -182,7 +182,7 @@ public class ResolveScanUtil {
             @Override
             public void onError(Connect.HttpResponse response) {
                 if(response.getCode() == 2404){
-                    onResultBack.call(3);
+                    onResultBack.call(3, "");
                 }
             }
         });
@@ -192,7 +192,7 @@ public class ResolveScanUtil {
      * status (1:friend 2:stranger 3:no found)
      */
     public interface OnResultBack{
-        void call(int status);
+        void call(int status, String uid);
     }
 
 }

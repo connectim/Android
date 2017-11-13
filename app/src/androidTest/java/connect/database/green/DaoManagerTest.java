@@ -34,7 +34,7 @@ public class DaoManagerTest {
 
     private String dbName = "connect.db";
     private String dbPwd = "connectpwd";
-    private Context context= BaseApplication.getInstance();;
+    private Context context= BaseApplication.getInstance();
     private DaoMaster daoMaster;
     private DaoSession daoSession;
     private Database database;
