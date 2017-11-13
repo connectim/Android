@@ -27,7 +27,6 @@ import instant.netty.BufferBean;
 import instant.netty.MessageDecoder;
 import instant.netty.MessageEncoder;
 import instant.netty.NettySession;
-import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.ui.InstantSdk;
 import instant.utils.ConfigUtil;
 import instant.utils.TimeUtil;
@@ -55,7 +54,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class RemoteServeice extends Service {
 
-    private String Tag = "_RemoteServeice";
+    private static String TAG = "_RemoteServeice";
 
     private RemoteServeice service;
     private IMessage localBinder;
@@ -95,7 +94,7 @@ public class RemoteServeice extends Service {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            LogManager.getLogger().d(Tag, "PushConnect :onServiceConnected");
+            LogManager.getLogger().d(TAG, "PushConnect :onServiceConnected");
 
             localBinder = IMessage.Stub.asInterface(service);
 
@@ -107,7 +106,7 @@ public class RemoteServeice extends Service {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            LogManager.getLogger().d(Tag, "PushConnect :onServiceDisconnected");
+            LogManager.getLogger().d(TAG, "PushConnect :onServiceDisconnected");
 
             if (service == null) {
                 service = RemoteServeice.this;
@@ -125,7 +124,7 @@ public class RemoteServeice extends Service {
 
         @Override
         public void serviceBind() throws RemoteException {
-            LogManager.getLogger().d(Tag, "serviceBind");
+            LogManager.getLogger().d(TAG, "serviceBind");
 
             Intent intent = new Intent(service, SenderService.class);
             bindService(intent, pushConnect, Service.BIND_IMPORTANT);
@@ -133,7 +132,7 @@ public class RemoteServeice extends Service {
 
         @Override
         public void connectStart() throws RemoteException {
-            LogManager.getLogger().d(Tag, "connectStart");
+            LogManager.getLogger().d(TAG, "connectStart");
 
             connectService();
         }
@@ -219,7 +218,7 @@ public class RemoteServeice extends Service {
     }
 
     public void reconDelay() {
-        LogManager.getLogger().d(Tag, "connectServer reconDelay()...");
+        LogManager.getLogger().d(TAG, "connectServer reconDelay()...");
         if (canReConnect && !reconHandler.hasMessages(TAG_CONNECT)) {
             if (reconFibonacci[0] + reconFibonacci[1] > 34000) {//10 time repeat
                 resetFibonacci();
@@ -229,7 +228,7 @@ public class RemoteServeice extends Service {
             reconFibonacci[0] = reconFibonacci[1];
             reconFibonacci[1] = count;
 
-            LogManager.getLogger().d(Tag, "connectServer reconDelay()..." + count / 1000 + "s reconnect");
+            LogManager.getLogger().d(TAG, "connectServer reconDelay()..." + count / 1000 + "s reconnect");
             Message msg = Message.obtain(reconHandler, TAG_CONNECT);
             reconHandler.sendMessageDelayed(msg, count);
         }
@@ -247,7 +246,7 @@ public class RemoteServeice extends Service {
     private int socketPort;
 
     public void connectService() {
-        LogManager.getLogger().d(Tag, "connectService");
+        LogManager.getLogger().d(TAG, "connectService");
         NettySession.getInstance().shutDown();
 
         connectRunable = new ConnectRunable();
@@ -278,17 +277,17 @@ public class RemoteServeice extends Service {
                 }
             });
 
-            LogManager.getLogger().d(Tag, "connectService() info ==> ip:" + socketAddress + ";  port:" + socketPort);
+            LogManager.getLogger().d(TAG, "connectService() info ==> ip:" + socketAddress + ";  port:" + socketPort);
             ChannelFuture future = bootstrap.connect(socketAddress, socketPort);
             try {
                 future.addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
                         if (future.isSuccess()) {
-                            LogManager.getLogger().d(Tag, "connectService() isSuccess ==> ");
+                            LogManager.getLogger().d(TAG, "connectService() isSuccess ==> ");
                             localBinder.connectStart();
                         } else if (!future.isSuccess()) {
-                            LogManager.getLogger().d(Tag, "connectService() isFail ==> ");
+                            LogManager.getLogger().d(TAG, "connectService() isFail ==> ");
                             reconDelay();
                         }
                     }
@@ -301,10 +300,10 @@ public class RemoteServeice extends Service {
                 channel.closeFuture().sync();
             } catch (Exception e) {
                 e.printStackTrace();
-                LogManager.getLogger().d(Tag, "connectService() Exception ==> " + e.getMessage());
+                LogManager.getLogger().d(TAG, "connectService() Exception ==> " + e.getMessage());
                 reconDelay();
             }finally {
-                LogManager.getLogger().d(Tag, "connectService() finally ==> ");
+                LogManager.getLogger().d(TAG, "connectService() finally ==> ");
                 NettySession.getInstance().shutDown();
                 reconDelay();
             }
@@ -312,13 +311,13 @@ public class RemoteServeice extends Service {
     }
 
     public void stopConnect() {
-        LogManager.getLogger().d(Tag, "stopConnect() ==> ");
+        LogManager.getLogger().d(TAG, "stopConnect() ==> ");
         canReConnect = false;
         NettySession.getInstance().shutDown();
     }
 
     /** Recently received a message of time */
-    private long lastReceiverTime;
+    private long lastReceiverTime = TimeUtil.getCurrentTimeInLong();
     /** Heart rate */
     private final static long HEART_FREQUENCY = (READERIDLE_TIME + WRITERIDLE_TIME + 5) * 1000;
 
@@ -330,7 +329,7 @@ public class RemoteServeice extends Service {
             super.channelRead(ctx, msg);
             lastReceiverTime = TimeUtil.getCurrentTimeInLong();
             BufferBean bufferBean = (BufferBean) msg;
-            LogManager.getLogger().d(Tag, "channelRead() ==> ack:[" +
+            LogManager.getLogger().d(TAG, "channelRead() ==> ack:[" +
                     bufferBean.getAck()[0] + "][" + bufferBean.getAck()[1]+"]");
 
             localBinder.connectMessage(bufferBean.getAck(), bufferBean.getMessage());
@@ -345,7 +344,7 @@ public class RemoteServeice extends Service {
                         event.state() == IdleState.ALL_IDLE) {
                     long curtime = TimeUtil.getCurrentTimeInLong();
                     if (curtime < lastReceiverTime + HEART_FREQUENCY) {
-                        LogManager.getLogger().d(Tag, "userEventTriggered() ==> " + (curtime - lastReceiverTime));
+                        LogManager.getLogger().d(TAG, "userEventTriggered() ==> " + (curtime - lastReceiverTime));
                         try {
                             localBinder.heartBeat();
                         } catch (RemoteException e) {
@@ -354,7 +353,7 @@ public class RemoteServeice extends Service {
                         }
                     } else {//connect timeout
                         ctx.close();
-                        LogManager.getLogger().d(Tag, "userEventTriggered() ==> connect timeout" + (curtime - lastReceiverTime));
+                        LogManager.getLogger().d(TAG, "userEventTriggered() ==> connect timeout" + (curtime - lastReceiverTime));
                         reconDelay();
                     }
                 }
@@ -364,7 +363,7 @@ public class RemoteServeice extends Service {
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             super.channelActive(ctx);
-            LogManager.getLogger().d(Tag, "channelActive() == ");
+            LogManager.getLogger().d(TAG, "channelActive() == ");
             //localBinder.connectMessage(ServiceAck.HAND_SHAKE.getAck(), new byte[0], new byte[0]);
         }
 
@@ -378,7 +377,7 @@ public class RemoteServeice extends Service {
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
             super.channelInactive(ctx);
             ctx.close();
-            LogManager.getLogger().d(Tag, "channelInactive() ==> connection is broken");
+            LogManager.getLogger().d(TAG, "channelInactive() ==> connection is broken");
 
             reconDelay();
         }
@@ -387,7 +386,7 @@ public class RemoteServeice extends Service {
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             super.exceptionCaught(ctx, cause);
             ctx.close();
-            LogManager.getLogger().d(Tag, "exceptionCaught() ==");
+            LogManager.getLogger().d(TAG, "exceptionCaught() ==");
 
             reconDelay();
         }
@@ -440,7 +439,7 @@ public class RemoteServeice extends Service {
 
                 if ((wifiState != null && NetworkInfo.State.CONNECTED == wifiState) ||
                         (mobileState != null && NetworkInfo.State.CONNECTED == mobileState)) {//Network connection is successful
-                    LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Switch to the network environment");
+                    LogManager.getLogger().d(TAG, "NetBroadcastReceiver onReceive()...Switch to the network environment");
 
                     if (isCanConnect() && (TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART)) {
                         lastReceiveTime = TimeUtil.getCurrentTimeInLong();
@@ -448,7 +447,7 @@ public class RemoteServeice extends Service {
                         reconDelay();
                     }
                 } else {
-                    LogManager.getLogger().d(Tag, "NetBroadcastReceiver onReceive()...Network disconnection");
+                    LogManager.getLogger().d(TAG, "NetBroadcastReceiver onReceive()...Network disconnection");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

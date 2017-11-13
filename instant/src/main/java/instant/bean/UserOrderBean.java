@@ -152,7 +152,6 @@ public class UserOrderBean extends InterParse {
                 .build();
 
         commandToIMTransfer(msgid, SocketACK.DOWNLOAD_FRIENDCOOKIE, chatInfo.toByteString());
-
         FailMsgsManager.getInstance().insertFailMsg("", msgid, null, null, friendUid);
     }
 
@@ -162,5 +161,41 @@ public class UserOrderBean extends InterParse {
     public void connectLogout() {
         String msgid = TimeUtil.timestampToMsgid();
         commandToIMTransfer(msgid, SocketACK.CONTACT_LOGOUT, ByteString.copyFrom(new byte[]{}));
+    }
+
+    /**
+     * 开启阅后即焚时间
+     *
+     * @param uid
+     * @param friendUid
+     * @param time 开始时间
+     * @return
+     */
+    public void burnReadSetting(String uid, String friendUid, int time) {
+        Connect.EphemeralSetting setting = Connect.EphemeralSetting.newBuilder()
+                .setUid(uid)
+                .setFriendUid(friendUid)
+                .setDeadline(time)
+                .build();
+        String msgid = TimeUtil.timestampToMsgid();
+        commandToIMTransfer(msgid, SocketACK.BURNREAD_SETTING, setting.toByteString());
+    }
+
+    /**
+     * 阅后即焚消息已读
+     *
+     * @param uid
+     * @param friendUid
+     * @param messageid 已读消息id
+     * @return
+     */
+    public void burnReadReceipt(String uid, String friendUid, String messageid) {
+        Connect.EphemeralAck setting = Connect.EphemeralAck.newBuilder()
+                .setUid(uid)
+                .setFriendUid(friendUid)
+                .setMsgID(messageid)
+                .build();
+        String msgid = TimeUtil.timestampToMsgid();
+        commandToIMTransfer(msgid, SocketACK.BURNREAD_RECEIPT, setting.toByteString());
     }
 }

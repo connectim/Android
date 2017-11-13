@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/color_white">
+                android:background="@color/color_f0f0f6">
 
     <connect.activity.home.view.ConnectStateView
         android:id="@id/connectstate"

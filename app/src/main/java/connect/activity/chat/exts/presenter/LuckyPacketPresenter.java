@@ -85,7 +85,7 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
                             friendEntity.getUsername(), friendEntity.getUid()));
                 }
 
-                MsgSend.sendOuterMsg(LinkMessageRow.Lucky_Packet, 0, hashId, tips, amount);
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Lucky_Packet, 0, hashId, tips, amount);
                 ToastEUtil.makeText(activity, R.string.Link_Send_successful).show();
                 ActivityUtil.goBack(activity);
             }

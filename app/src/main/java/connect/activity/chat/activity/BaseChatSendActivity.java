@@ -1,5 +1,6 @@
 package connect.activity.chat.activity;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -10,13 +11,22 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.List;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.GeoAddressBean;
 import connect.activity.chat.bean.MsgSend;
+import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
+import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
+import connect.database.green.bean.ConversionSettingEntity;
+import connect.instant.model.CFriendChat;
+import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
+import connect.utils.TimeUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.chatfile.upload.LocationUpload;
@@ -24,6 +34,7 @@ import connect.utils.chatfile.upload.PhotoUpload;
 import connect.utils.chatfile.upload.VideoUpload;
 import connect.utils.chatfile.upload.VoiceUpload;
 import instant.bean.ChatMsgEntity;
+import instant.bean.UserOrderBean;
 import instant.sender.model.GroupChat;
 import protos.Connect;
 
@@ -45,7 +56,9 @@ public abstract class BaseChatSendActivity extends BaseChatReceiveActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public synchronized void onEventMainThread(MsgSend msgSend) {
+        String uid = null;
         String filePath = null;
+        UserOrderBean userOrderBean = null;
         ChatMsgEntity chatMsgEntity = null;
         BaseFileUp upLoad = null;
 
@@ -133,17 +146,32 @@ public abstract class BaseChatSendActivity extends BaseChatReceiveActivity {
                 chatMsgEntity = normalChat.cardMsg((String) objects[0], (String) objects[1], (String) objects[2]);
                 sendNormalMsg(true, chatMsgEntity);
                 break;
-            case Self_destruct_Notice:
-                int time = (int) objects[0];
-                RoomSession.getInstance().setBurntime(time);
-                ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
+            case BURNREAD_SETTING:
+                int settingTime = (int) objects[0];
+                RoomSession.getInstance().setBurntime(settingTime);
+                ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), settingTime);
 
-                chatMsgEntity = normalChat.destructMsg(time);
-                sendNormalMsg(true, chatMsgEntity);
+                String content = "";
+                if (settingTime <= 0) {
+                    content = getString(R.string.Chat_disable_the_self_descruct, getString(R.string.Chat_You));
+                } else {
+                    content = getString(R.string.Chat_set_the_self_destruct_timer_to, getString(R.string.Chat_You), TimeUtil.parseBurnTime(settingTime));
+                }
+                ChatMsgEntity msgEntity = normalChat.noticeMsg(0, content, "");
+                MessageHelper.getInstance().insertMsgExtEntity(msgEntity);
+                sendNormalMsg(false, msgEntity);
+
+                updateBurnState(settingTime);
+                uid = SharedPreferenceUtil.getInstance().getUser().getUid();
+                userOrderBean = new UserOrderBean();
+                userOrderBean.burnReadSetting(uid, talker.getTalkKey(), settingTime);
                 break;
-            case Self_destruct_Receipt:
-                chatMsgEntity = normalChat.receiptMsg((String) objects[0]);
-                normalChat.sendPushMsg(chatMsgEntity);
+            case BURNREAD_RECEIPT:
+                String messageId = (String) objects[0];
+
+                uid = SharedPreferenceUtil.getInstance().getUser().getUid();
+                userOrderBean = new UserOrderBean();
+                userOrderBean.burnReadReceipt(uid, talker.getTalkKey(), messageId);
                 break;
             case Request_Payment:
                 int payType = (int) objects[0];

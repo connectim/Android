@@ -114,7 +114,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
                 ParamManager.getInstance().putLatelyTransfer(new TransferBean(4, contactEntity.getAvatar(),
                         contactEntity.getUsername(), contactEntity.getUid()));
                 if (view.getTransType() == TransferToActivity.TransferType.CHAT) {
-                    MsgSend.sendOuterMsg(LinkMessageRow.Transfer,0,value, amount, view.getTransferNote());
+                    MsgSend.sendOuterMsg(MsgSend.MsgSendType.Transfer,0,value, amount, view.getTransferNote());
                 } else if (view.getTransType() == TransferToActivity.TransferType.ADDRESS) {
                     CFriendChat friendChat = new CFriendChat(contactEntity);
                     ChatMsgEntity msgExtEntity = friendChat.transferMsg(0,value, amount, view.getTransferNote());

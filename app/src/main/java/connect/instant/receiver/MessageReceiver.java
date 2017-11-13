@@ -61,7 +61,7 @@ public class MessageReceiver implements MessageListener {
         if (contents.length < 3) {
             LogManager.getLogger().d(TAG, "decode fail");
 
-           if (contactEntity != null) {
+            if (contactEntity != null) {
                 String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
                 ChatMsgEntity msgExtEntity = friendChat.noticeMsg(0, showTxt, "");
 
@@ -76,24 +76,8 @@ public class MessageReceiver implements MessageListener {
                     chatMessage.getMsgType(), chatMessage.getFrom(),
                     chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
 
-            MessageType msgType = MessageType.toMessageType(chatMessage.getMsgType());
-            switch (msgType) {
-                case Self_destruct_Notice:
-                    MessageHelper.getInstance().insertMsgExtEntity(messageEntity);
-
-                    Connect.DestructMessage destructMessage = Connect.DestructMessage.parseFrom(contents);
-                    ConversionSettingHelper.getInstance().updateBurnTime(friendUid, destructMessage.getTime());
-                    break;
-                case Self_destruct_Receipt:
-                    Connect.ReadReceiptMessage readReceiptMessage = Connect.ReadReceiptMessage.parseFrom(contents);
-                    MessageHelper.getInstance().updateBurnMsg(readReceiptMessage.getMessageId(), TimeUtil.getCurrentTimeInLong());
-                    break;
-                default:
-                    MessageHelper.getInstance().insertMsgExtEntity(messageEntity);
-
-                    friendChat.updateRoomMsg(null, messageEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
-                    break;
-            }
+            MessageHelper.getInstance().insertMsgExtEntity(messageEntity);
+            friendChat.updateRoomMsg(null, messageEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
 
             RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, messageEntity.getMessage_from(), messageEntity);
             NotificationBar.notificationBar.noticeBarMsg(messageEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, messageEntity.showContent());

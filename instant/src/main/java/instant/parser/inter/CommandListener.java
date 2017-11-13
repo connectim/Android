@@ -28,4 +28,8 @@ public interface CommandListener {
     void updateGroupChange( Connect.GroupChange groupChange) throws Exception;
 
     void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo);
+
+    void burnReadingSetting(Connect.EphemeralSetting setting);
+
+    void burnReadingReceipt(Connect.EphemeralAck ack);
 }

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import connect.activity.chat.view.row.MsgBaseRow;
 import connect.activity.chat.view.row.MsgCardRow;
-import connect.activity.chat.view.row.MsgDestructRow;
 import connect.activity.chat.view.row.MsgEmotionRow;
 import connect.activity.chat.view.row.MsgEncryptRow;
 import connect.activity.chat.view.row.MsgGroupReviewRow;
@@ -35,8 +34,6 @@ public enum LinkMessageRow {
     Photo(3, new MsgImgRow()),
     Video(4, new MsgVideoRow()),
     Emotion(5, new MsgEmotionRow()),
-    Self_destruct_Notice(11, new MsgDestructRow()),
-    Self_destruct_Receipt(12, new MsgNoticeRow()),
     Request_Payment(14, new MsgPayRow()),
     Transfer(15, new MsgTransfer()),
     Lucky_Packet(16, new MsgluckRow()),
@@ -68,5 +65,4 @@ public enum LinkMessageRow {
         LinkMessageRow msgType = msgTypeMap.get(type);
         return msgType == null ? LinkMessageRow.Text : msgType;
     }
-
 }

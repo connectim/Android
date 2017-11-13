@@ -155,14 +155,6 @@ public class MigrateVersionFourHelper extends MigrateVerisonHelper {
                                 .setUid(cardExt1Bean.getPub_key())
                                 .setUsername(cardExt1Bean.getUsername()).build();
                         break;
-                    case Self_destruct_Notice:
-                        messageV3 = Connect.DestructMessage.newBuilder()
-                                .setTime((int) Long.parseLong(definBean.getContent())).build();
-                        break;
-                    case Self_destruct_Receipt:
-                        messageV3 = Connect.ReadReceiptMessage.newBuilder()
-                                .setMessageId(definBean.getContent()).build();
-                        break;
                     case Request_Payment:
                         GatherBean gatherBean = new Gson().fromJson(definBean.getExt1(), GatherBean.class);
                         int paymentType = chatType == Connect.ChatType.PRIVATE ? 0 : 1;

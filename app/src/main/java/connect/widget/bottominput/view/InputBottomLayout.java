@@ -181,9 +181,9 @@ public class InputBottomLayout extends LinearLayout {
                             title = getContext().getString(R.string.Wallet_Send_the_payment_connection);
                             sub = getContext().getString(R.string.Wallet_Click_to_transfer_bitcoin);
                         }
-                        MsgSend.sendOuterMsg(LinkMessageRow.OUTER_WEBSITE, string, title, sub, "");
+                        MsgSend.sendOuterMsg(MsgSend.MsgSendType.OUTER_WEBSITE, string, title, sub, "");
                     } else {
-                        MsgSend.sendOuterMsg(LinkMessageRow.Text, inputedit.getText().toString(), inputedit.groupAts());
+                        MsgSend.sendOuterMsg(MsgSend.MsgSendType.Text, inputedit.getText().toString(), inputedit.groupAts());
                     }
                     inputedit.setText("");
                     break;

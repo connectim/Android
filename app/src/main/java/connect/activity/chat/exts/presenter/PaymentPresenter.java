@@ -93,7 +93,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
             @Override
             public void success(Connect.Bill bill) {
                 ToastEUtil.makeText(activity, R.string.Wallet_Sent).show();
-                MsgSend.sendOuterMsg(LinkMessageRow.Request_Payment, 0, bill.getHash(), amount, 1, bill.getTips());
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Request_Payment, 0, bill.getHash(), amount, 1, bill.getTips());
                 ActivityUtil.goBack(activity);
             }
 
@@ -112,7 +112,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
 
             @Override
             public void success(Connect.Crowdfunding crowdfunding) {
-                MsgSend.sendOuterMsg(LinkMessageRow.Request_Payment, 1,crowdfunding.getHashId(),crowdfunding.getTotal(),size,crowdfunding.getTips());
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Request_Payment, 1,crowdfunding.getHashId(),crowdfunding.getTotal(),size,crowdfunding.getTips());
                 ActivityUtil.goBack(activity);
             }
 

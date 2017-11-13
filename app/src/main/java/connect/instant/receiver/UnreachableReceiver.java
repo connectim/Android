@@ -68,34 +68,33 @@ public class UnreachableReceiver implements UnreachableListener {
     }
 
     @Override
-    public void saltNotMatch(String msgid, String publicKey, Connect.ChatCookie cookie) throws Exception {
+    public void saltNotMatch(String msgid, String rejectUid, Connect.ChatCookie cookie) throws Exception {
         Connect.ChatCookieData cookieData = cookie.getData();
 
         LogManager.getLogger().d(TAG, "saltNotMatch :" + msgid);
+        ContactEntity friendEntity= ContactHelper.getInstance().loadFriendEntity(rejectUid);
+        if (friendEntity == null) {
+            return;
+        }
+
         UserCookie userCookie = new UserCookie();
         userCookie.setPubKey(cookieData.getChatPubKey());
         userCookie.setSalt(cookieData.getSalt().toByteArray());
         userCookie.setExpiredTime(cookieData.getExpired());
-        Session.getInstance().setFriendCookie(publicKey, userCookie);
-        SharedUtil.getInstance().insertFriendCookie(publicKey, userCookie);
-
-        ContactEntity friendEntity= ContactHelper.getInstance().loadFriendEntity(publicKey);
-        if (friendEntity == null) {
-            return;
-        }
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, friendEntity.getCa_pub());
+        Session.getInstance().setFriendCookie(rejectUid, userCookie);
+        SharedUtil.getInstance().insertFriendCookie(rejectUid, userCookie);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, rejectUid);
 
         ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity != null) {
             CFriendChat friendChat = new CFriendChat(friendEntity);
-            friendChat.setEncryType(FriendChat.EncryType.NORMAL);
             friendChat.sendPushMsg(messageEntity);
         }
     }
 
     @Override
-    public void halfRandom(String msgid, String publicKey) throws Exception {
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(publicKey);
+    public void halfRandom(String msgid, String rejectUid) throws Exception {
+        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(rejectUid);
         if (friendEntity == null) {
             return;
         }

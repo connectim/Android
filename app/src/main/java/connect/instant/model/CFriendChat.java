@@ -28,13 +28,11 @@ public class CFriendChat extends FriendChat implements ConversationListener{
         super(uid, "");
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(uid);
         this.contactEntity = contactEntity;
-        this.friendCaPublicKey = contactEntity.getCa_pub();
     }
 
     public CFriendChat(ContactEntity contactEntity) {
         super(contactEntity.getUid(), "");
         this.contactEntity = contactEntity;
-        this.friendCaPublicKey = contactEntity.getCa_pub();
     }
 
     @Override

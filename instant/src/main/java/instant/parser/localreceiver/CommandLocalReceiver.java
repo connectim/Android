@@ -80,4 +80,14 @@ public class CommandLocalReceiver implements CommandListener {
     public void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo) {
         getCommandListener().handlerOuterRedPacket(packageInfo);
     }
+
+    @Override
+    public void burnReadingSetting(Connect.EphemeralSetting setting) {
+        getCommandListener().burnReadingSetting(setting);
+    }
+
+    @Override
+    public void burnReadingReceipt(Connect.EphemeralAck ack) {
+        getCommandListener().burnReadingReceipt(ack);
+    }
 }

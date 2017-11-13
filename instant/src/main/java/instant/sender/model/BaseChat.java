@@ -90,20 +90,6 @@ public abstract class BaseChat<T> implements Serializable {
     public abstract T noticeMsg(int noticeType,String content,String ext);
 
     /**
-     * 开启阅后即焚时间
-     * @param time 开始时间
-     * @return
-     */
-    public abstract T destructMsg(int time);
-
-    /**
-     * 阅后即焚消息已读
-     * @param messageid 已读消息id
-     * @return
-     */
-    public abstract T receiptMsg(String messageid);
-
-    /**
      * @param type 0:private  1:group  2:outer
      * @param hashid
      * @param amout

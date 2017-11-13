@@ -152,7 +152,7 @@ public class MorePagerAdapter extends PagerAdapter {
             }
 
             if (!Long.valueOf(time).equals(chatSetEntity.getSnap_time())) {
-                MsgSend.sendOuterMsg(LinkMessageRow.Self_destruct_Notice, time);
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.BURNREAD_SETTING, time);
                 DestructOpenBean.sendDestructMsg(time);
 
                 chatSetEntity.setSnap_time(time);

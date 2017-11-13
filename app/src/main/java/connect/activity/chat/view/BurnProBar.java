@@ -93,7 +93,7 @@ public class BurnProBar extends View {
 
         MsgDirect direct = msgExtEntity.parseDirect();
         if (direct == MsgDirect.From) {
-            MsgSend.sendOuterMsg(LinkMessageRow.Self_destruct_Receipt, msgExtEntity.getMessage_id());
+            MsgSend.sendOuterMsg(MsgSend.MsgSendType.BURNREAD_RECEIPT, msgExtEntity.getMessage_id());
         }
     }
 

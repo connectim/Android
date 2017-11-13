@@ -162,7 +162,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                 ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
 
                 if (!TextUtils.isEmpty(pubGroup)) {
-                    MsgSend.sendOuterMsg(LinkMessageRow.Transfer, 1, value, transferEditView.getCurrentBtcLong(), transferEditView.getNote());
+                    MsgSend.sendOuterMsg(MsgSend.MsgSendType.Transfer, 1, value, transferEditView.getCurrentBtcLong(), transferEditView.getNote());
                 }
                 for (HashMap.Entry<String, Long> entry : outMap.entrySet()) {
                     presenter.sendTransferMessage(value, entry.getKey(), "");

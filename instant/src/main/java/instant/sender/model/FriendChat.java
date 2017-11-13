@@ -28,9 +28,7 @@ public class FriendChat extends NormalChat {
     private UserCookie userCookie = null;
     /** friend Cookie */
     private UserCookie friendCookie = null;
-
     protected String friendUid = null;
-    protected String friendCaPublicKey;
 
     public enum EncryType {
         NORMAL,
@@ -42,7 +40,6 @@ public class FriendChat extends NormalChat {
 
     public FriendChat(String uid, String friendCaPublicKey) {
         this.friendUid = uid;
-        this.friendCaPublicKey = friendCaPublicKey;
 
         UserOrderBean userOrderBean = new UserOrderBean();
         userOrderBean.friendChatCookie(friendUid);
@@ -175,9 +172,9 @@ public class FriendChat extends NormalChat {
     }
 
     public void loadFriendCookie() {
-        friendCookie = Session.getInstance().getFriendCookie(friendCaPublicKey);
+        friendCookie = Session.getInstance().getFriendCookie(friendUid);
         if (friendCookie == null) {
-            friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendCaPublicKey);
+            friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendUid);
         }
 
         if (friendCookie == null) {
