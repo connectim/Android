@@ -33,7 +33,7 @@ public class InstantSdk {
         userCookie.setUid(uid);
         userCookie.setPubKey(publicKey);
         userCookie.setPriKey(privateKey);
-        Session.getInstance().setUserCookie(Session.CONNECT_USER, userCookie);
+        Session.getInstance().setConnectCookie(userCookie);
 
         SenderService.startService(context);
         RemoteServeice.startService(context);

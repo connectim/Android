@@ -32,7 +32,7 @@ public class GroupChat extends NormalChat {
 
     @Override
     public ChatMsgEntity createBaseChat(MessageType type) {
-        String myUid = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
+        String myUid = Session.getInstance().getConnectCookie().getUid();
 
         ChatMsgEntity msgExtEntity = new ChatMsgEntity();
         msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());

@@ -50,7 +50,7 @@ public class FriendChat extends NormalChat {
 
     @Override
     public ChatMsgEntity createBaseChat(MessageType type) {
-        String myUid = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
+        String myUid = Session.getInstance().getConnectCookie().getUid();
 
         ChatMsgEntity msgExtEntity = new ChatMsgEntity();
         msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());
@@ -83,7 +83,7 @@ public class FriendChat extends NormalChat {
 
             switch (encryType) {
                 case NORMAL:
-                    priKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
+                    priKey = Session.getInstance().getConnectCookie().getPriKey();
                     friendKey = chatKey();
                     ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
                     break;
@@ -164,8 +164,7 @@ public class FriendChat extends NormalChat {
     }
 
     private void loadUserCookie() {
-        String caPublicKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-        userCookie = Session.getInstance().getUserCookie(caPublicKey);
+        userCookie = Session.getInstance().getChatCookie();
         if (userCookie == null) {
             userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
         }
@@ -176,7 +175,7 @@ public class FriendChat extends NormalChat {
     }
 
     public void loadFriendCookie() {
-        friendCookie = Session.getInstance().getUserCookie(friendCaPublicKey);
+        friendCookie = Session.getInstance().getFriendCookie(friendCaPublicKey);
         if (friendCookie == null) {
             friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendCaPublicKey);
         }
@@ -200,7 +199,7 @@ public class FriendChat extends NormalChat {
 
     public void createGroupBroadToMember(String groupIdentify, String publicKey, Connect.CreateGroupMessage groupMessage) {
         String msgid = instant.utils.TimeUtil.timestampToMsgid();
-        String privateKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPriKey();
+        String privateKey = Session.getInstance().getConnectCookie().getPriKey();
         byte[] groupecdhkey = SupportKeyUril.getRawECDHKey(privateKey, publicKey);
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(
                 EncryptionUtil.ExtendedECDH.EMPTY,

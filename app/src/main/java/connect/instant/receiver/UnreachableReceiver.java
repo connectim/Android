@@ -76,7 +76,7 @@ public class UnreachableReceiver implements UnreachableListener {
         userCookie.setPubKey(cookieData.getChatPubKey());
         userCookie.setSalt(cookieData.getSalt().toByteArray());
         userCookie.setExpiredTime(cookieData.getExpired());
-        Session.getInstance().setUserCookie(publicKey, userCookie);
+        Session.getInstance().setFriendCookie(publicKey, userCookie);
         SharedUtil.getInstance().insertFriendCookie(publicKey, userCookie);
 
         ContactEntity friendEntity= ContactHelper.getInstance().loadFriendEntity(publicKey);

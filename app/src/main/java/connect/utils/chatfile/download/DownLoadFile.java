@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
@@ -112,17 +111,16 @@ public class DownLoadFile {
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(bytes);
                         Connect.StructData structData = null;
                         if (chatType == Connect.ChatType.PRIVATE) {//private chat
-                            String caPublicKey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getPubKey();
-                            UserCookie userCookie = Session.getInstance().getUserCookie(caPublicKey);
+                            UserCookie userCookie = Session.getInstance().getConnectCookie();
                             String myPrivateKey = userCookie.getPriKey();
 
                             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(identify);
-                            UserCookie friendCookie = Session.getInstance().getUserCookie(friendEntity.getCa_pub());
+                            UserCookie friendCookie = Session.getInstance().getFriendCookie(friendEntity.getCa_pub());
                             String friendPublicKey = friendCookie.getPubKey();
 
                             structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, gcmData);
                         } else if (chatType == Connect.ChatType.GROUPCHAT) {//group chat
-                            GroupEntity groupEntity= ContactHelper.getInstance().loadGroupEntity(identify);
+                            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(identify);
                             structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
                         }
                         byte[] dataFile = structData.getPlainData().toByteArray();
@@ -143,14 +141,4 @@ public class DownLoadFile {
             }
         });
     }
-
-    public interface ResultListener {
-
-        void update(long bytesRead, long contentLength);
-
-        void fail();
-
-        void success(byte[] data);
-    }
-
 }

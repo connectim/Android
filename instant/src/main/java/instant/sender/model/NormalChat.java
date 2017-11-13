@@ -232,7 +232,7 @@ public abstract class NormalChat extends BaseChat {
     }
 
     public Connect.MessagePost normalChatMessage(Connect.MessageData data) {
-        UserCookie connectCookie = Session.getInstance().getUserCookie(Session.CONNECT_USER);
+        UserCookie connectCookie = Session.getInstance().getConnectCookie();
         String publicKey=connectCookie.getPubKey();
         String priKey = connectCookie.getPriKey();
 

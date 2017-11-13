@@ -5,7 +5,6 @@ import android.content.Context;
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
-import instant.parser.inter.ExceptionListener;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.parser.localreceiver.ExceptionLocalReceiver;

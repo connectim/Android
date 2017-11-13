@@ -3,12 +3,14 @@ package connect.utils.chatfile.upload;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.google.protobuf.ByteString;
+
+import connect.utils.FileUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
-import connect.activity.login.bean.UserBean;
-import connect.database.SharedPreferenceUtil;
 import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
+import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
 import protos.Connect;
 
@@ -17,7 +19,7 @@ import protos.Connect;
  */
 public class VoiceUpload extends BaseFileUp {
 
-    private String Tag = "_VoiceUpload";
+    private static String TAG = "_VoiceUpload";
 
     public VoiceUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
         super();
@@ -45,34 +47,10 @@ public class VoiceUpload extends BaseFileUp {
                 try {
                     Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
                     sourceCompressFile = voiceMessage.getUrl();
+
+                    fileEncrypt();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                fileEncrypt();
-            }
-        }.execute();
-    }
-
-    @Override
-    public void fileEncrypt() {
-        super.fileEncrypt();
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                if (baseChat.chatType() != Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-                    Connect.GcmData gcmData = encodeAESGCMStructData(sourceCompressFile);
-                    Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
-                            setEntity(gcmData.toByteString()).build();
-
-                    gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), richMedia.toByteString());
-                    mediaFile = Connect.MediaFile.newBuilder().setPubKey(userBean.getPubKey()).setCipherData(gcmData).build();
                 }
                 return null;
             }
@@ -83,6 +61,32 @@ public class VoiceUpload extends BaseFileUp {
                 fileUpload();
             }
         }.execute();
+    }
+
+    @Override
+    public void fileEncrypt() {
+        super.fileEncrypt();
+        Connect.RichMedia richMedia = null;
+        Connect.GcmData gcmData = null;
+        if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
+            richMedia = Connect.RichMedia.newBuilder().
+                    setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(sourceCompressFile)))
+                    .build();
+        } else {
+            gcmData = encodeAESGCMStructData(sourceCompressFile);
+            richMedia = Connect.RichMedia.newBuilder().
+                    setEntity(gcmData.toByteString())
+                    .build();
+        }
+
+        UserCookie userCookie = loadUserCookie();
+        String myPrivateKey = userCookie.getPriKey();
+        String myPublicKey = userCookie.getPubKey();
+        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, myPrivateKey, richMedia.toByteString());
+        mediaFile = Connect.MediaFile.newBuilder()
+                .setPubKey(myPublicKey)
+                .setCipherData(gcmData)
+                .build();
     }
 
     @Override

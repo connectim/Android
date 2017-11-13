@@ -87,9 +87,10 @@ public class ExBottomLayout extends RelativeLayout {
         if (roomType == Connect.ChatType.CONNECT_SYSTEM) {
 
         } else {
-            actionList.add(new BaseAction(R.mipmap.chat_bar_trasfer, R.string.Wallet_Transfer));
-            actionList.add(new BaseAction(R.mipmap.chat_bar_redbag, R.string.Wallet_Packet));
-            actionList.add(new BaseAction(R.mipmap.message_send_payment2x, R.string.Wallet_Receipt));
+//            actionList.add(new BaseAction(R.mipmap.chat_bar_trasfer, R.string.Wallet_Transfer));
+//            actionList.add(new BaseAction(R.mipmap.chat_bar_redbag, R.string.Wallet_Packet));
+//            actionList.add(new BaseAction(R.mipmap.message_send_payment2x, R.string.Wallet_Receipt));
+
             if (roomType == Connect.ChatType.PRIVATE) {
                 actionList.add(new BaseAction(R.mipmap.message_send_privacy_chat3x, R.string.Chat_Read_Burn));
             }

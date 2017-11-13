@@ -204,7 +204,7 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
     }
 
     public MsgDirect parseDirect() {
-        String mypubkey = Session.getInstance().getUserCookie(Session.CONNECT_USER).getUid();
+        String mypubkey = Session.getInstance().getConnectCookie().getUid();
         return mypubkey.equals(getMessage_from()) ? MsgDirect.To : MsgDirect.From;
     }
 
