@@ -4,11 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -20,6 +21,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.FileUtil;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
@@ -27,7 +29,7 @@ import connect.widget.album.AlbumActivity;
 import connect.widget.album.model.AlbumFile;
 import connect.widget.clip.ClipImageActivity;
 
-public class TakePictureActivity extends BaseActivity implements TakePictureContract.View{
+public class TakePictureActivity extends BaseActivity implements TakePictureContract.View {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
@@ -41,12 +43,17 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
     ImageView switchPhotosImg;
     @Bind(R.id.surfaceView_rela)
     RelativeLayout surfaceViewRela;
+    @Bind(R.id.retake_rela)
+    RelativeLayout retakeRela;
+    @Bind(R.id.send_rela)
+    RelativeLayout sendRela;
 
     private TakePictureActivity mActivity;
     SurfaceView surfaceView;
     private SurfaceHolder viewHolder;
     public static final int REQUEST_CODE = 100;
     private TakePictureContract.Presenter presenter = null;
+    private String pathClip;
 
     public static void startActivity(Activity activity) {
         ActivityUtil.next(activity, TakePictureActivity.class, REQUEST_CODE);
@@ -100,6 +107,20 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
         AlbumActivity.startActivity(mActivity, AlbumActivity.OPEN_ALBUM_CODE, 1);
     }
 
+    @OnClick(R.id.retake_rela)
+    void retake(View view) {
+        FileUtil.deleteDirectory(pathClip);
+        initView();
+        switchBottomView(false);
+    }
+
+    @OnClick(R.id.send_rela)
+    void sendPicture(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString("path", pathClip);
+        ActivityUtil.goBackWithResult(mActivity, RESULT_OK, bundle);
+    }
+
     @OnClick(R.id.switch_photos_img)
     void setChange(View view) {
         presenter.setChangeCamera(viewHolder);
@@ -124,11 +145,10 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ClipImageActivity.REQUEST_CODE:
-                case PreviewPictureActivity.REQUEST_CODE:
                     String photo_path = data.getExtras().getString("path");
                     Bundle bundle = new Bundle();
                     bundle.putString("path", photo_path);
-                    ActivityUtil.goBackWithResult(mActivity,RESULT_OK,bundle);
+                    ActivityUtil.goBackWithResult(mActivity, RESULT_OK, bundle);
                     break;
                 default:
                     break;
@@ -140,10 +160,8 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             takePhotoImg.setEnabled(true);
-            String path = presenter.getPicturePath(data,toolbarTop.getHeight());
-            if(!TextUtils.isEmpty(path)){
-                PreviewPictureActivity.startActivity(mActivity, path);
-            }
+            pathClip = presenter.getPicturePath(data,toolbarTop.getHeight());
+            switchBottomView(true);
         }
     };
 
@@ -170,6 +188,36 @@ public class TakePictureActivity extends BaseActivity implements TakePictureCont
     protected void onPause() {
         super.onPause();
         presenter.releasedCamera();
+    }
+
+    private void switchBottomView(boolean isFinish) {
+        if (isFinish) {
+            selePhotosTv.setVisibility(View.GONE);
+            takePhotoImg.setVisibility(View.INVISIBLE);
+            switchPhotosImg.setVisibility(View.GONE);
+
+            TranslateAnimation transLeftAni = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1.0f,
+                    Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                    0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+            transLeftAni.setDuration(500);
+            TranslateAnimation transRightAni = new TranslateAnimation(Animation.RELATIVE_TO_SELF, -1.0f,
+                    Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                    0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+            transRightAni.setDuration(500);
+
+            retakeRela.setAnimation(transLeftAni);
+            retakeRela.setVisibility(View.VISIBLE);
+            sendRela.setAnimation(transRightAni);
+            sendRela.setVisibility(View.VISIBLE);
+
+        } else {
+            selePhotosTv.setVisibility(View.VISIBLE);
+            takePhotoImg.setVisibility(View.VISIBLE);
+            switchPhotosImg.setVisibility(View.VISIBLE);
+
+            retakeRela.setVisibility(View.GONE);
+            sendRela.setVisibility(View.GONE);
+        }
     }
 
 }

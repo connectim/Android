@@ -6,6 +6,8 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
+import java.util.Locale;
+
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.utils.exception.BaseException;
@@ -102,4 +104,19 @@ public class SharedPreferenceUtil {
         }
         return userBean;
     }
+
+    public String getLanguageCode(){
+        String languageCode = getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
+        if(TextUtils.isEmpty(languageCode)){
+            languageCode = Locale.getDefault().getLanguage();
+        }else if(languageCode.equals("zh")){
+            languageCode = Locale.SIMPLIFIED_CHINESE.getLanguage();
+        }else if(languageCode.equals("ru")){
+            languageCode = new Locale("ru","RU").getLanguage();
+        }else{
+            languageCode = Locale.ENGLISH.getLanguage();
+        }
+        return languageCode;
+    }
+
 }

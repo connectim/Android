@@ -90,7 +90,7 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
     }
 
     @Override
-    public void requestAvater(final String pathLocal) {
+    public void requestAvatar(final String pathLocal) {
         ProgressUtil.getInstance().showProgress(mView.getActivity());
         new AsyncTask<Void, Void, Connect.Avatar>() {
             @Override
@@ -122,7 +122,7 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
                                 userBean.setAvatar(userAvatar.getUrl());
                                 SharedPreferenceUtil.getInstance().putUser(userBean);
 
-                                mView.requestAvaFninish(userAvatar.getUrl());
+                                mView.requestAvaFinish(userAvatar.getUrl());
                             }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();

@@ -100,9 +100,6 @@
             android:name="connect.widget.takepicture.TakePictureActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.widget.takepicture.PreviewPictureActivity"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name="connect.activity.login.RegisterGetRandomActivity"
             android:screenOrientation="portrait"/>
         <activity
@@ -170,6 +167,9 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.set.GeneralLanguageActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.set.UserInfoConnectIdActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.wallet.ScanTransferActivity"
