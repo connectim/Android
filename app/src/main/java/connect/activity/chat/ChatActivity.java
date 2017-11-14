@@ -454,7 +454,7 @@ public class ChatActivity extends BaseChatSendActivity {
                     }
                 } else {
                     ConversionHelper.getInstance().updateRoomEntity(normalChat.chatKey(), draft, showtxt, sendtime);
-                    ConversationAction.conversationAction.sendEvent();
+                    ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
                 }
             }
         }

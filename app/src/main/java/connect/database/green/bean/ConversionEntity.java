@@ -26,14 +26,17 @@ public class ConversionEntity implements Serializable {
     private String content;
     private Integer unread_count;
     private Integer top;
-    private Integer notice;
+    private Integer isAt;
     private Integer stranger;
     private Long last_time;
 
-    @Generated(hash = 562503235)
+    @Generated(hash = 1944361742)
+    public ConversionEntity() {
+    }
+    @Generated(hash = 1307192277)
     public ConversionEntity(Long _id, @NotNull String identifier, Integer type,
             String name, String avatar, String draft, String content,
-            Integer unread_count, Integer top, Integer notice, Integer stranger,
+            Integer unread_count, Integer top, Integer isAt, Integer stranger,
             Long last_time) {
         this._id = _id;
         this.identifier = identifier;
@@ -44,12 +47,9 @@ public class ConversionEntity implements Serializable {
         this.content = content;
         this.unread_count = unread_count;
         this.top = top;
-        this.notice = notice;
+        this.isAt = isAt;
         this.stranger = stranger;
         this.last_time = last_time;
-    }
-    @Generated(hash = 1944361742)
-    public ConversionEntity() {
     }
     public Long get_id() {
         return this._id;
@@ -105,12 +105,6 @@ public class ConversionEntity implements Serializable {
     public void setTop(Integer top) {
         this.top = top;
     }
-    public Integer getNotice() {
-        return this.notice;
-    }
-    public void setNotice(Integer notice) {
-        this.notice = notice;
-    }
     public Integer getStranger() {
         return this.stranger;
     }
@@ -122,5 +116,13 @@ public class ConversionEntity implements Serializable {
     }
     public void setLast_time(Long last_time) {
         this.last_time = last_time;
+    }
+
+    public Integer getIsAt() {
+        return isAt;
+    }
+
+    public void setIsAt(Integer isAt) {
+        this.isAt = isAt;
     }
 }

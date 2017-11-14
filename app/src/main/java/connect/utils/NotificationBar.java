@@ -59,7 +59,7 @@ public class NotificationBar {
             String content = bundle.getString("CONTENT");
             showNotification(identify, type, content);
 
-            ConversationAction.conversationAction.sendEvent();
+            ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
         }
     };
 

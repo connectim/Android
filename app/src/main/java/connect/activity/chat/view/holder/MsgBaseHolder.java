@@ -23,7 +23,7 @@ public abstract class MsgBaseHolder extends RecyclerView.ViewHolder {
     private TextView timeTxt;
 
     /** The message time interval */
-    private static long MSG_TIMESPACE = 5 * 60;
+    private static long MSG_TIMESPACE = 5 * 60 * 1000;
     private ChatMsgEntity msgExtEntity;
 
     public MsgBaseHolder(View itemView) {

@@ -99,7 +99,7 @@ public class GeneralActivity extends BaseActivity {
         ConversionHelper.getInstance().clearRooms();
         MessageHelper.getInstance().clearChatMsgs();
 
-        ConversationAction.conversationAction.sendEvent();
+        ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
         ToastUtil.getInstance().showToast(getResources().getString(R.string.Link_Delete_Successful));
     }
 }

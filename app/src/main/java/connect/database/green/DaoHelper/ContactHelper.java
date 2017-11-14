@@ -484,7 +484,7 @@ public class ContactHelper extends BaseDao {
         MessageHelper.getInstance().deleteRoomMsg(uid);
         FileUtil.deleteContactFile(uid);
 
-        ConversationAction.conversationAction.sendEvent();
+        ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
     }
 
     public void deleteEntity(String uid) {
@@ -515,7 +515,7 @@ public class ContactHelper extends BaseDao {
         quitGroup(groupKey);
 
         ContactNotice.receiverGroup();
-        ConversationAction.conversationAction.sendEvent();
+        ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
     }
 
     /**

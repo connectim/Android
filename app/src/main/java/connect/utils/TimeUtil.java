@@ -67,7 +67,7 @@ public class TimeUtil {
     }
 
     public static String getMsgTime(long timestamp) throws Exception {
-        return getMsgTime(timestamp, getCurrentTimeInLong());
+        return getMsgTime(getCurrentTimeInLong(), timestamp);
     }
 
     /**
@@ -102,17 +102,18 @@ public class TimeUtil {
 
                 int msgDay = msgcalendar.get(Calendar.DAY_OF_MONTH);
                 int curDay = curcalendar.get(Calendar.DAY_OF_MONTH);
-                switch (curDay - msgDay) {
+                int spaceDay = Math.abs(curDay - msgDay);
+                switch (spaceDay) {
                     case 0:
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgTime);
                         break;
-                    case -1:
+                    case 1:
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgTime);
                         showTime = context.getString(R.string.Chat_Yesterday) + " " + showTime;
                         break;
-                    case -2:
+                    case 2:
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgTime);
                         showTime = context.getString(R.string.Chat_the_day_before_yesterday_time, " " + showTime);

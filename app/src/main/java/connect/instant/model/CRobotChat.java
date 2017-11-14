@@ -87,13 +87,10 @@ public class CRobotChat extends RobotChat implements ConversationListener{
         if (draft != null) {
             conversionEntity.setDraft(draft);
         }
-        if (at >= 0) {
-            conversionEntity.setNotice(at);
-        }
 
         ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         if (broad) {
-            ConversationAction.conversationAction.sendEvent();
+            ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
         }
     }
 }

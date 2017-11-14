@@ -93,12 +93,12 @@ public class CGroupChat extends GroupChat implements ConversationListener{
             conversionEntity.setDraft(draft);
         }
         if (at >= 0) {
-            conversionEntity.setNotice(at);
+            conversionEntity.setIsAt(at);
         }
 
         ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         if (broad) {
-            ConversationAction.conversationAction.sendEvent();
+            ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
         }
     }
 }
