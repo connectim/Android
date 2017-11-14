@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -109,20 +111,17 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
 
         @Override
         public void itemClick(int position, FriendRequestEntity entity) {
-            if (TextUtils.isEmpty(entity.getUid())) {
+            if(TextUtils.isEmpty(entity.getUid())){
                 //load more
                 ActivityUtil.next(mActivity, AddFriendRecommendActivity.class);
-            } else if (entity.getStatus() == NewRequestAdapter.RECOMMEND_ADD_FRIEND) {
-                //introduce
-                StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
             } else {
                 ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(entity.getUid());
-                if (entity.getStatus() == NewRequestAdapter.ACCEPTE_ADD_FRIEND) {
-                    AddFriendAcceptActivity.startActivity(mActivity, entity);
-                } else if (friendEntity == null) {
-                    StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.getSourceType(entity.getSource()));
-                } else {
+                if(friendEntity != null){
                     FriendInfoActivity.startActivity(mActivity, entity.getUid());
+                } else if(entity.getStatus() == NewRequestAdapter.ACCEPTE_ADD_FRIEND){
+                    AddFriendAcceptActivity.startActivity(mActivity, entity);
+                } else {
+                    StrangerInfoActivity.startActivity(mActivity,  entity.getUid(), SourceType.getSourceType(entity.getSource()));
                 }
             }
         }

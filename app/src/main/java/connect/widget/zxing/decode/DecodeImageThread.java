@@ -11,9 +11,9 @@ import connect.widget.zxing.utils.QrUtils;
  * Qr code parsing images threads
  */
 public class DecodeImageThread implements Runnable {
-    private final int MAX_PICTURE_WIDTH_PIXEL = 480;
-    private final int MAX_PICTURE_HEIGHT_PIXEL = 800;
-    private static final int MAX_PICTURE_PIXEL = 256;
+    private final int MAX_PICTURE_WIDTH_PIXEL = 400;
+    private final int MAX_PICTURE_HEIGHT_PIXEL = 400;
+    // private static final int MAX_PICTURE_PIXEL = 256;
     private byte[] mData;
     private int mWidth;
     private int mHeight;
@@ -29,7 +29,7 @@ public class DecodeImageThread implements Runnable {
     public void run() {
         if (null == mData) {
             if (!TextUtils.isEmpty(mImgPath)) {
-                Bitmap bitmap = QrUtils.decodeSampledBitmapFromFile(mImgPath, 400, 400);
+                Bitmap bitmap = QrUtils.decodeSampledBitmapFromFile(mImgPath, MAX_PICTURE_WIDTH_PIXEL, MAX_PICTURE_HEIGHT_PIXEL);
                 this.mData = QrUtils.getYUV420sp(bitmap.getWidth(), bitmap.getHeight(), bitmap);
                 this.mWidth = bitmap.getWidth();
                 this.mHeight = bitmap.getHeight();

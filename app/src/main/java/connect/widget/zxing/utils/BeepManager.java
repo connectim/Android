@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import connect.ui.activity.R;
 
-
 /**
  * Manages beeps and vibrations for {@link }.
  */
