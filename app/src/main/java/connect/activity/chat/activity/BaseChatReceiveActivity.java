@@ -1,5 +1,6 @@
 package connect.activity.chat.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -9,6 +10,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
+import connect.activity.base.BaseApplication;
 import connect.activity.base.BaseListener;
 import connect.activity.chat.bean.DestructOpenBean;
 import connect.activity.chat.bean.DestructReadBean;
@@ -24,7 +26,10 @@ import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.home.HomeActivity;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.ConversionSettingEntity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.TimeUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.chatfile.upload.LocationUpload;
@@ -181,60 +186,28 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 }
                 break;
             case UNARRIVE_HALF:
-                if (normalChat.chatKey().equals(objects[0])) {
-                    ((FriendChat) normalChat).setEncryType(FriendChat.EncryType.HALF);
-                }
                 break;
             case GROUPAT_TO:
                 GroupAtActivity.startActivity(activity, normalChat.chatKey());
                 break;
+            case BURNREAD_SET:
+                int time = (int) objects[1];
+                if (objects[0].equals(talker.getTalkKey()) &&
+                        time != RoomSession.getInstance().getBurntime()) {
+                    RoomSession.getInstance().setBurntime(time);
+                    DestructOpenBean.sendDestructMsg(time);
+                }
+                break;
+            case BURNREAD_RECEIPT:
+                if (objects[0].equals(talker.getTalkKey())) {
+                    String readReceiptId = (String) objects[1];
+                    DestructReadBean.getInstance().sendEventDelay(readReceiptId);
+                }
+                break;
             case MESSAGE_RECEIVE:
                 if (objects[0].equals(talker.getTalkKey())) {
                     msgExtEntity = (ChatMsgEntity) objects[1];
-                    int time = 0;
-                    String msgid = null;
-
-                    switch (MessageType.toMessageType(msgExtEntity.getMessageType())) {
-                        case Self_destruct_Notice://open burn message notice
-                            try {
-                                Connect.DestructMessage destructMessage = Connect.DestructMessage.parseFrom(msgExtEntity.getContents());
-                                time = destructMessage.getTime();
-                                if (time != RoomSession.getInstance().getBurntime()) {
-                                    RoomSession.getInstance().setBurntime(time);
-                                    ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
-
-                                    DestructOpenBean.sendDestructMsg(time);
-                                }
-                                adapterInsetItem(msgExtEntity);
-                                ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
-                            } catch (InvalidProtocolBufferException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        case Self_destruct_Receipt://Accept each other has read one after reading
-                            try {
-                                Connect.ReadReceiptMessage readReceiptMessage = Connect.ReadReceiptMessage.parseFrom(msgExtEntity.getContents());
-
-                                msgid = readReceiptMessage.getMessageId();
-                                DestructReadBean.getInstance().sendEventDelay(msgid);
-                            } catch (InvalidProtocolBufferException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        default:
-                            adapterInsetItem(msgExtEntity);
-
-                            time = (int) msgExtEntity.parseDestructTime();
-                            if (time != RoomSession.getInstance().getBurntime()) {
-                                RoomSession.getInstance().setBurntime(time);
-                                DestructOpenBean.sendDestructMsg(time);
-
-                                ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), time);
-                                msgExtEntity = normalChat.destructMsg(time);
-                                sendNormalMsg(true, msgExtEntity);
-                            }
-                            break;
-                    }
+                    adapterInsetItem(msgExtEntity);
                 }
                 break;
         }

@@ -211,7 +211,7 @@ public class GoogleMapActivity extends BaseActivity {
 
                 GeoAddressBean addressBean = new GeoAddressBean(latitude, lontitude, info,
                         file.getAbsolutePath(), bitmap.getWidth(), bitmap.getHeight());
-                MsgSend.sendOuterMsg(LinkMessageRow.Location, addressBean);
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Location, addressBean);
                 ActivityUtil.goBack(activity);
             } catch (Exception e) {
                 e.printStackTrace();

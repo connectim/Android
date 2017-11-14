@@ -27,6 +27,7 @@ import instant.sender.model.BaseChat;
 import instant.sender.model.GroupChat;
 import instant.utils.SharedUtil;
 import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -75,11 +76,13 @@ public abstract class BaseFileUp implements InterFileUp {
             UserCookie userCookie = loadUserCookie();
             String myPrivateKey = userCookie.getPriKey();
 
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(baseChat.chatKey());
-            UserCookie friendCookie = loadFriendCookie(friendEntity.getCa_pub());
+            UserCookie friendCookie = loadFriendCookie(baseChat.chatKey());
             String friendPublicKey = friendCookie.getPubKey();
 
-            gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, fileBytes);
+            EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
+            ecdhExts.setBytes(SupportKeyUril.xor(userCookie.getSalt(), friendCookie.getSalt()));
+
+            gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, fileSie);
         } else if (baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
             gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), fileBytes);
         }
@@ -134,11 +137,11 @@ public abstract class BaseFileUp implements InterFileUp {
     }
 
     protected String getThumbUrl(String url, String token) {
-        return url + "/thumb?pub_key=" + msgExtEntity.getMessage_ower() + "&token=" + token;
+        return url + "/thumb?token=" + token;
     }
 
     protected String getUrl(String url, String token) {
-        return url + "?pub_key=" + msgExtEntity.getMessage_ower() + "&token=" + token;
+        return url + "?token=" + token;
     }
 
 

@@ -33,7 +33,7 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
         public final static Property Content = new Property(6, String.class, "content", false, "CONTENT");
         public final static Property Unread_count = new Property(7, Integer.class, "unread_count", false, "UNREAD_COUNT");
         public final static Property Top = new Property(8, Integer.class, "top", false, "TOP");
-        public final static Property Notice = new Property(9, Integer.class, "notice", false, "NOTICE");
+        public final static Property IsAt = new Property(9, Integer.class, "isAt", false, "IS_AT");
         public final static Property Stranger = new Property(10, Integer.class, "stranger", false, "STRANGER");
         public final static Property Last_time = new Property(11, Long.class, "last_time", false, "LAST_TIME");
     }
@@ -60,7 +60,7 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
                 "\"CONTENT\" TEXT," + // 6: content
                 "\"UNREAD_COUNT\" INTEGER," + // 7: unread_count
                 "\"TOP\" INTEGER," + // 8: top
-                "\"NOTICE\" INTEGER," + // 9: notice
+                "\"IS_AT\" INTEGER," + // 9: isAt
                 "\"STRANGER\" INTEGER," + // 10: stranger
                 "\"LAST_TIME\" INTEGER);"); // 11: last_time
     }
@@ -116,9 +116,9 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
             stmt.bindLong(9, top);
         }
  
-        Integer notice = entity.getNotice();
-        if (notice != null) {
-            stmt.bindLong(10, notice);
+        Integer isAt = entity.getIsAt();
+        if (isAt != null) {
+            stmt.bindLong(10, isAt);
         }
  
         Integer stranger = entity.getStranger();
@@ -177,9 +177,9 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
             stmt.bindLong(9, top);
         }
  
-        Integer notice = entity.getNotice();
-        if (notice != null) {
-            stmt.bindLong(10, notice);
+        Integer isAt = entity.getIsAt();
+        if (isAt != null) {
+            stmt.bindLong(10, isAt);
         }
  
         Integer stranger = entity.getStranger();
@@ -210,7 +210,7 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // content
             cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // unread_count
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // top
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // notice
+            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // isAt
             cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // stranger
             cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11) // last_time
         );
@@ -228,7 +228,7 @@ public class ConversionEntityDao extends AbstractDao<ConversionEntity, Long> {
         entity.setContent(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setUnread_count(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
         entity.setTop(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setNotice(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+        entity.setIsAt(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
         entity.setStranger(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
         entity.setLast_time(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
      }

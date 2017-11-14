@@ -57,7 +57,7 @@ public class FailMsgsManager {
         sendFailMap.put(msgid, valueMap);
     }
 
-    public void insertFailMsg(String address, String msgid) {
+    public void insertFailMsg(String uid, String msgid) {
         if (sendFailMap == null) {
             sendFailMap = new HashMap<>();
         }
@@ -66,7 +66,7 @@ public class FailMsgsManager {
         if (valueMap == null) {
             valueMap = new HashMap<>();
         }
-        valueMap.put("ADDRESS", address);
+        valueMap.put("UID", uid);
         valueMap.put("MSGID", msgid);
         sendFailMap.put(expireUser, valueMap);
     }

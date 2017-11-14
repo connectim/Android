@@ -21,8 +21,10 @@ import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -464,7 +466,7 @@ public class CommandReceiver implements CommandListener {
     public void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo) {
         String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         if (packageInfo.getSystem()) {
-            ChatMsgEntity msgExtEntity = CRobotChat.getInstance().luckPacketMsg(1,packageInfo.getHashId(), 0L,packageInfo.getTips());
+            ChatMsgEntity msgExtEntity = CRobotChat.getInstance().luckPacketMsg(1, packageInfo.getHashId(), 0L, packageInfo.getTips());
             msgExtEntity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));
             msgExtEntity.setMessage_to(mypublickey);
 
@@ -485,14 +487,54 @@ public class CommandReceiver implements CommandListener {
             }
 
             CFriendChat normalChat = new CFriendChat(friendEntity);
-            ChatMsgEntity msgExtEntity = normalChat.luckPacketMsg(1, packageInfo.getHashId(), 0L,packageInfo.getTips());
+            ChatMsgEntity msgExtEntity = normalChat.luckPacketMsg(1, packageInfo.getHashId(), 0L, packageInfo.getTips());
             msgExtEntity.setMessage_from(friendEntity.getCa_pub());
             msgExtEntity.setMessage_to(mypublickey);
             msgExtEntity.setSend_status(1);
 
             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
             normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
-            HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(Connect.ChatType.PRIVATE,friendEntity.getUid()));
+            HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(Connect.ChatType.PRIVATE, friendEntity.getUid()));
         }
+    }
+
+    @Override
+    public void burnReadingSetting(Connect.EphemeralSetting setting) {
+        String friendUid = setting.getUid();
+        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(friendUid);
+        if (friendEntity == null) {
+            return;
+        }
+        ConversionSettingEntity settingEntity = ConversionSettingHelper.getInstance().loadSetEntity(friendUid);
+        if (settingEntity == null) {
+            settingEntity = new ConversionSettingEntity();
+            settingEntity.setIdentifier(friendUid);
+            settingEntity.setSnap_time(0);
+        }
+
+        int settingTime = setting.getDeadline();
+        Context context = BaseApplication.getInstance().getBaseContext();
+        String content = "";
+        if (setting.getDeadline() <= 0) {
+            content = context.getResources().getString(R.string.Chat_disable_the_self_descruct, context.getResources().getString(R.string.Chat_Other_Part));
+        } else {
+            content = context.getResources().getString(R.string.Chat_set_the_self_destruct_timer_to, context.getResources().getString(R.string.Chat_Other_Part), TimeUtil.parseBurnTime(settingTime));
+        }
+        ConversionSettingHelper.getInstance().updateBurnTime(friendUid, settingTime);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNREAD_SET, friendUid, settingTime);
+
+        CFriendChat cFriendChat = new CFriendChat(friendEntity);
+        ChatMsgEntity msgEntity = cFriendChat.noticeMsg(0, content, "");
+        MessageHelper.getInstance().insertMsgExtEntity(msgEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,friendUid,msgEntity);
+    }
+
+    @Override
+    public void burnReadingReceipt(Connect.EphemeralAck ack) {
+        String friendUid = ack.getUid();
+        String messageId = ack.getMsgID();
+
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNREAD_RECEIPT, friendUid, messageId);
+        MessageHelper.getInstance().updateBurnMsg(messageId, TimeUtil.getCurrentTimeInLong());
     }
 }

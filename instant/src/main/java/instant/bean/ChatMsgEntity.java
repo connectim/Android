@@ -37,6 +37,7 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
     private int transStatus;
     private int payCount;
     private int crowdCount;
+    private String ecdh;
     private byte[] contents;
 
     public Long get_id() {
@@ -175,6 +176,14 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
         this.contents = contents;
     }
 
+    public String getEcdh() {
+        return ecdh;
+    }
+
+    public void setEcdh(String ecdh) {
+        this.ecdh = ecdh;
+    }
+
     public Connect.ChatMessage.Builder transToChatMessageBuilder() {
         Connect.ChatMessage.Builder builder = Connect.ChatMessage.newBuilder()
                 .setMsgId(getMessage_id())
@@ -186,7 +195,7 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
         return builder;
     }
 
-    public static ChatMsgEntity transToMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
+    public static ChatMsgEntity transToMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, String ecdh, byte[] contents, long createtime, int sendstate) {
         ChatMsgEntity messageEntity = new ChatMsgEntity();
         messageEntity.setMessage_id(messageid);
         messageEntity.setMessage_ower(messageowner);
@@ -194,6 +203,7 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
         messageEntity.setMessageType(messagetype);
         messageEntity.setMessage_from(from);
         messageEntity.setMessage_to(to);
+        messageEntity.setEcdh(ecdh);
         messageEntity.setContent(StringUtil.bytesToHexString(contents));
         messageEntity.setContents(contents);
         messageEntity.setCreatetime(createtime);

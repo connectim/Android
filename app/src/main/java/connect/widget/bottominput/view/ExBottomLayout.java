@@ -307,7 +307,7 @@ public class ExBottomLayout extends RelativeLayout {
 
         @Override
         public void onEmtClick(String emt) {
-            MsgSend.sendOuterMsg(LinkMessageRow.Emotion, emt);
+            MsgSend.sendOuterMsg(MsgSend.MsgSendType.Emotion, emt);
         }
     }
 }

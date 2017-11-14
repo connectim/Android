@@ -59,6 +59,8 @@ public class RecExtBean extends BaseEvent {
         UNARRIVE_HALF,//half random
         MESSAGE_RECEIVE,//receive push message
         GROUPAT_TO,//to groupat activity
+        BURNREAD_SET,//Burn after reading setting
+        BURNREAD_RECEIPT,//Burning receipt after reading
     }
 
     private ExtType extType;

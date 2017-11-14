@@ -102,7 +102,6 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
         } else {
             ChatMsgEntity lastMsgEntity = msgEntities.get(position - 1);
             lasttime = lastMsgEntity.getCreatetime();
-
         }
 
         long curtime = msgExtEntity.getCreatetime();

@@ -139,7 +139,7 @@ public class MessageParser extends InterParse {
         LogManager.getLogger().d(TAG, "unavailableMsg: " + rejectMessage.getStatus());
 
         String msgid = rejectMessage.getMsgId();
-        String recPublicKey = rejectMessage.getUid();
+        String rejectUid = rejectMessage.getUid();
         switch (rejectMessage.getStatus()) {
             case 1://The user does not exist
             case 2://Is not a friend relationship
@@ -165,13 +165,10 @@ public class MessageParser extends InterParse {
             case 6://Error accessing chat information
             case 7://Chat messages do not match
                 Connect.ChatCookie chatCookie = Connect.ChatCookie.parseFrom(rejectMessage.getData());
-                UnreachableLocalReceiver.localReceiver.saltNotMatch(msgid, recPublicKey, chatCookie);
-                break;
-            case 8://The other cookies expire, single side
-                UnreachableLocalReceiver.localReceiver.halfRandom(msgid, recPublicKey);
+                UnreachableLocalReceiver.localReceiver.saltNotMatch(msgid, rejectUid, chatCookie);
                 break;
             case 9://upload cookie expire
-                reloadUserCookie(msgid, recPublicKey);
+                reloadUserCookie(msgid, rejectUid);
                 break;
         }
         receiptMsg(msgid, 2);
@@ -210,8 +207,8 @@ public class MessageParser extends InterParse {
         parseBean.msgParse();
     }
 
-    private void reloadUserCookie(String msgid, String address) throws Exception {
-        FailMsgsManager.getInstance().insertFailMsg(address, msgid);
+    private void reloadUserCookie(String msgid, String uid) throws Exception {
+        FailMsgsManager.getInstance().insertFailMsg(uid, msgid);
 
         CommandParser commandBean = new CommandParser((byte) 0x00, null);
         commandBean.reloadUserCookie();

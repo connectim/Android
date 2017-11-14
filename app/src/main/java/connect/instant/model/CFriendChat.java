@@ -25,16 +25,14 @@ public class CFriendChat extends FriendChat implements ConversationListener{
     private ContactEntity contactEntity;
 
     public CFriendChat(String uid) {
-        super(uid, "");
+        super(uid);
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(uid);
         this.contactEntity = contactEntity;
-        this.friendCaPublicKey = contactEntity.getCa_pub();
     }
 
     public CFriendChat(ContactEntity contactEntity) {
-        super(contactEntity.getUid(), "");
+        super(contactEntity.getUid());
         this.contactEntity = contactEntity;
-        this.friendCaPublicKey = contactEntity.getCa_pub();
     }
 
     @Override
@@ -109,12 +107,12 @@ public class CFriendChat extends FriendChat implements ConversationListener{
             conversionEntity.setDraft(draft);
         }
         if (at >= 0) {
-            conversionEntity.setNotice(at);
+            conversionEntity.setIsAt(at);
         }
 
         ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         if (broad) {
-            ConversationAction.conversationAction.sendEvent();
+            ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
         }
     }
 }

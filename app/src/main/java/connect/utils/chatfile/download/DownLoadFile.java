@@ -17,6 +17,7 @@ import connect.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.HttpRequest;
 import instant.bean.Session;
 import instant.bean.UserCookie;
+import instant.utils.cryption.SupportKeyUril;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -32,12 +33,14 @@ public class DownLoadFile {
 
     private Connect.ChatType chatType;
     private String identify;
+    private String ecdh;
     private String url;
     private InterFileDown fileDownLoad;
 
-    public DownLoadFile(Connect.ChatType chatType, String identify, String url, final InterFileDown fileDownLoad) {
+    public DownLoadFile(Connect.ChatType chatType, String identify, String ecdh, String url, final InterFileDown fileDownLoad) {
         this.chatType = chatType;
         this.identify = identify;
+        this.ecdh = ecdh;
         this.url = url;
         this.fileDownLoad = fileDownLoad;
     }
@@ -110,20 +113,15 @@ public class DownLoadFile {
                     } else {
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(bytes);
                         Connect.StructData structData = null;
+                        byte[] dataFile = null;
                         if (chatType == Connect.ChatType.PRIVATE) {//private chat
-                            UserCookie userCookie = Session.getInstance().getConnectCookie();
-                            String myPrivateKey = userCookie.getPriKey();
-
-                            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(identify);
-                            UserCookie friendCookie = Session.getInstance().getFriendCookie(friendEntity.getCa_pub());
-                            String friendPublicKey = friendCookie.getPubKey();
-
-                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, gcmData);
+                            byte[] ecdhExts =StringUtil.hexStringToBytes(ecdh);
+                            dataFile = DecryptionUtil.decodeAESGCM(ecdhExts, gcmData);
                         } else if (chatType == Connect.ChatType.GROUPCHAT) {//group chat
                             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(identify);
                             structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
+                            dataFile = structData.getPlainData().toByteArray();
                         }
-                        byte[] dataFile = structData.getPlainData().toByteArray();
                         fileDownLoad.successDown(dataFile);
                     }
                 } catch (Exception e) {

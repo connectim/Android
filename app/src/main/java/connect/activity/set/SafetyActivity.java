@@ -1,8 +1,5 @@
 package connect.activity.set;
 
-import android.app.Activity;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,13 +8,10 @@ import android.widget.TextView;
 
 import com.google.protobuf.ByteString;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
@@ -31,8 +25,6 @@ import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import instant.bean.UserOrderBean;
-import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
 /**
@@ -138,7 +130,7 @@ public class SafetyActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
-                BaseApplication.getInstance().deleteDatabase(DaoManager.getInstance().getDBName());
+                DaoManager.getInstance().deleteDataBase();
                 HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
             }
 

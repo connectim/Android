@@ -40,7 +40,7 @@ public class ConversionHelper extends BaseDao {
 
     /************************  select *****************************************/
     public int countUnReads() {
-        String sql = "SELECT sum(UNREAD_COUNT) AS UNREAD_COUNT FROM CONVERSION_ENTITY WHERE NOTICE == 0 OR NOTICE IS NULL;";
+        String sql = "SELECT SUM(C.UNREAD_COUNT) AS UNREAD_COUNT FROM CONVERSION_ENTITY C LEFT JOIN CONVERSION_SETTING_ENTITY S ON C.IDENTIFIER = S.IDENTIFIER WHERE S.DISTURB == 0 OR S.DISTURB IS NULL;";
 
         int unRead = 0;
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);

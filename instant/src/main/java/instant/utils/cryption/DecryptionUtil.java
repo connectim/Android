@@ -48,15 +48,21 @@ public class DecryptionUtil {
 
     public static synchronized byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
         rawECDHkey = EncryptionUtil.getKeyExtendedECDH(extendedECDH, rawECDHkey);
+        return decodeAESGCM(rawECDHkey,gcmData);
+    }
 
+    public static synchronized byte[] decodeAESGCM(byte[] rawECDHkey, Connect.GcmData gcmData) {
         byte[] iv = gcmData.getIv().toByteArray();
         byte[] add = "ConnectEncrypted".getBytes();
         byte[] cipher = gcmData.getCiphertext().toByteArray();
         byte[] tag = gcmData.getTag().toByteArray();
-
         byte[] rss = rawECDHkey;
-        byte[] dataAESGCM = AllNativeMethod.cdxtalkDecodeAESGCM(cipher, cipher.length,
-                add, add.length, rss, rss.length, iv, iv.length, tag, tag.length);
+        byte[] dataAESGCM = AllNativeMethod.cdxtalkDecodeAESGCM(
+                cipher, cipher.length,
+                add, add.length,
+                rss, rss.length,
+                iv, iv.length,
+                tag, tag.length);
         return dataAESGCM;
     }
 }

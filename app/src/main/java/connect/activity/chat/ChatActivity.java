@@ -305,10 +305,10 @@ public class ChatActivity extends BaseChatSendActivity {
             if (type.equals(CameraTakeActivity.MEDIA_TYPE_PHOTO)) {
                 List<String> paths = new ArrayList<>();
                 paths.add(path);
-                MsgSend.sendOuterMsg(LinkMessageRow.Photo, paths);
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Photo, paths);
             } else if (type.equals(CameraTakeActivity.MEDIA_TYPE_VEDIO)) {
                 int length = data.getIntExtra("length", 10);
-                MsgSend.sendOuterMsg(LinkMessageRow.Video, path, length);
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Video, path, length);
             }
         } else if (requestCode == AlbumActivity.OPEN_ALBUM_CODE && data != null) {
             List<AlbumFile> albumFiles = (List<AlbumFile>) data.getSerializableExtra("list");
@@ -320,10 +320,10 @@ public class ChatActivity extends BaseChatSendActivity {
                         if (albumFile.getMediaType() == AlbumFile.TYPE_IMAGE) {
                             List<String> paths = new ArrayList<>();
                             paths.add(albumFile.getPath());
-                            MsgSend.sendOuterMsg(LinkMessageRow.Photo, paths);
+                            MsgSend.sendOuterMsg(MsgSend.MsgSendType.Photo, paths);
                         } else {
                             int length = (int) (albumFile.getDuration() / 1000);
-                            MsgSend.sendOuterMsg(LinkMessageRow.Video, albumFile.getPath(), length);
+                            MsgSend.sendOuterMsg(MsgSend.MsgSendType.Video, albumFile.getPath(), length);
                         }
                     }
                 }
@@ -454,7 +454,7 @@ public class ChatActivity extends BaseChatSendActivity {
                     }
                 } else {
                     ConversionHelper.getInstance().updateRoomEntity(normalChat.chatKey(), draft, showtxt, sendtime);
-                    ConversationAction.conversationAction.sendEvent();
+                    ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
                 }
             }
         }

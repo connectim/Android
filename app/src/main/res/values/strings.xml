@@ -575,4 +575,5 @@
     <string name="Wallet_transferOutVia_return_Success">Refund successfully</string>
     <string name="app_name">Connect</string>
     <string name="app_name_im">CONNECT.IM</string>
+    <string name="Chat_Other_Part">the other</string>
 </resources>

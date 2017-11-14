@@ -80,6 +80,7 @@ public class TopToolBar extends LinearLayout{
     }
 
     public void setTitle(String title) {
+        titleImg.setVisibility(GONE);
         titleTv.setText(title);
     }
 

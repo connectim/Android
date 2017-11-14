@@ -117,26 +117,6 @@ public abstract class NormalChat extends BaseChat {
     }
 
     @Override
-    public ChatMsgEntity destructMsg(int time) {
-        ChatMsgEntity msgExtEntity = (ChatMsgEntity) createBaseChat(MessageType.Self_destruct_Notice);
-        Connect.DestructMessage.Builder builder = Connect.DestructMessage.newBuilder()
-                .setTime(time);
-
-        msgExtEntity.setContents(builder.build().toByteArray());
-        return msgExtEntity;
-    }
-
-    @Override
-    public ChatMsgEntity receiptMsg(String messageid) {
-        ChatMsgEntity msgExtEntity = (ChatMsgEntity) createBaseChat(MessageType.Self_destruct_Receipt);
-        Connect.ReadReceiptMessage.Builder builder = Connect.ReadReceiptMessage.newBuilder()
-                .setMessageId(messageid);
-
-        msgExtEntity.setContents(builder.build().toByteArray());
-        return msgExtEntity;
-    }
-
-    @Override
     public ChatMsgEntity paymentMsg(int paymenttype, String hashid, long amount, int membersize, String tips) {
         ChatMsgEntity msgExtEntity = (ChatMsgEntity) createBaseChat(MessageType.Request_Payment);
         Connect.PaymentMessage.Builder builder = Connect.PaymentMessage.newBuilder()

@@ -61,7 +61,7 @@ public class DialogView {
                 if (horScrollView.getClickLists().size() == 0) {
                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.OPEN_ALBUM);
                 } else {
-                    MsgSend.sendOuterMsg(LinkMessageRow.Photo,horScrollView.getClickLists());
+                    MsgSend.sendOuterMsg(MsgSend.MsgSendType.Photo,horScrollView.getClickLists());
                 }
                 dialog.cancel();
             }

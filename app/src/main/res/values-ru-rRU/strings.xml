@@ -622,4 +622,5 @@
     </string>
     <string name="app_name">Connect</string>
     <string name="app_name_im">CONNECT.IM</string>
+    <string name="Chat_Other_Part"> друг друга </string>
 </resources>

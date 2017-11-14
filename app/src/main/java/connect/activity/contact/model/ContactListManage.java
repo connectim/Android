@@ -55,7 +55,7 @@ public class ContactListManage {
         for(GroupEntity groupEntity : localGroup){
             ContactBean contactBean = new ContactBean();
             contactBean.setName(groupEntity.getName());
-            contactBean.setPub_key(groupEntity.getIdentifier());
+            contactBean.setUid(groupEntity.getIdentifier());
             contactBean.setAvatar(groupEntity.getAvatar());
             contactBean.setStatus(2);
             groupList.add(contactBean);

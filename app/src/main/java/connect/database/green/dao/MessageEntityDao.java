@@ -31,11 +31,12 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
         public final static Property Message_from = new Property(4, String.class, "message_from", false, "MESSAGE_FROM");
         public final static Property Message_to = new Property(5, String.class, "message_to", false, "MESSAGE_TO");
         public final static Property MessageType = new Property(6, int.class, "messageType", false, "MESSAGE_TYPE");
-        public final static Property Content = new Property(7, String.class, "content", false, "CONTENT");
-        public final static Property Read_time = new Property(8, Long.class, "read_time", false, "READ_TIME");
-        public final static Property Send_status = new Property(9, Integer.class, "send_status", false, "SEND_STATUS");
-        public final static Property Snap_time = new Property(10, Long.class, "snap_time", false, "SNAP_TIME");
-        public final static Property Createtime = new Property(11, Long.class, "createtime", false, "CREATETIME");
+        public final static Property Ecdh = new Property(7, String.class, "ecdh", false, "ECDH");
+        public final static Property Content = new Property(8, String.class, "content", false, "CONTENT");
+        public final static Property Read_time = new Property(9, Long.class, "read_time", false, "READ_TIME");
+        public final static Property Send_status = new Property(10, Integer.class, "send_status", false, "SEND_STATUS");
+        public final static Property Snap_time = new Property(11, Long.class, "snap_time", false, "SNAP_TIME");
+        public final static Property Createtime = new Property(12, Long.class, "createtime", false, "CREATETIME");
     }
 
 
@@ -58,11 +59,12 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
                 "\"MESSAGE_FROM\" TEXT," + // 4: message_from
                 "\"MESSAGE_TO\" TEXT," + // 5: message_to
                 "\"MESSAGE_TYPE\" INTEGER NOT NULL ," + // 6: messageType
-                "\"CONTENT\" TEXT," + // 7: content
-                "\"READ_TIME\" INTEGER," + // 8: read_time
-                "\"SEND_STATUS\" INTEGER," + // 9: send_status
-                "\"SNAP_TIME\" INTEGER," + // 10: snap_time
-                "\"CREATETIME\" INTEGER);"); // 11: createtime
+                "\"ECDH\" TEXT," + // 7: ecdh
+                "\"CONTENT\" TEXT," + // 8: content
+                "\"READ_TIME\" INTEGER," + // 9: read_time
+                "\"SEND_STATUS\" INTEGER," + // 10: send_status
+                "\"SNAP_TIME\" INTEGER," + // 11: snap_time
+                "\"CREATETIME\" INTEGER);"); // 12: createtime
     }
 
     /** Drops the underlying database table. */
@@ -94,29 +96,34 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
         }
         stmt.bindLong(7, entity.getMessageType());
  
+        String ecdh = entity.getEcdh();
+        if (ecdh != null) {
+            stmt.bindString(8, ecdh);
+        }
+ 
         String content = entity.getContent();
         if (content != null) {
-            stmt.bindString(8, content);
+            stmt.bindString(9, content);
         }
  
         Long read_time = entity.getRead_time();
         if (read_time != null) {
-            stmt.bindLong(9, read_time);
+            stmt.bindLong(10, read_time);
         }
  
         Integer send_status = entity.getSend_status();
         if (send_status != null) {
-            stmt.bindLong(10, send_status);
+            stmt.bindLong(11, send_status);
         }
  
         Long snap_time = entity.getSnap_time();
         if (snap_time != null) {
-            stmt.bindLong(11, snap_time);
+            stmt.bindLong(12, snap_time);
         }
  
         Long createtime = entity.getCreatetime();
         if (createtime != null) {
-            stmt.bindLong(12, createtime);
+            stmt.bindLong(13, createtime);
         }
     }
 
@@ -143,29 +150,34 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
         }
         stmt.bindLong(7, entity.getMessageType());
  
+        String ecdh = entity.getEcdh();
+        if (ecdh != null) {
+            stmt.bindString(8, ecdh);
+        }
+ 
         String content = entity.getContent();
         if (content != null) {
-            stmt.bindString(8, content);
+            stmt.bindString(9, content);
         }
  
         Long read_time = entity.getRead_time();
         if (read_time != null) {
-            stmt.bindLong(9, read_time);
+            stmt.bindLong(10, read_time);
         }
  
         Integer send_status = entity.getSend_status();
         if (send_status != null) {
-            stmt.bindLong(10, send_status);
+            stmt.bindLong(11, send_status);
         }
  
         Long snap_time = entity.getSnap_time();
         if (snap_time != null) {
-            stmt.bindLong(11, snap_time);
+            stmt.bindLong(12, snap_time);
         }
  
         Long createtime = entity.getCreatetime();
         if (createtime != null) {
-            stmt.bindLong(12, createtime);
+            stmt.bindLong(13, createtime);
         }
     }
 
@@ -184,11 +196,12 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // message_from
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // message_to
             cursor.getInt(offset + 6), // messageType
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // content
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // read_time
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // send_status
-            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // snap_time
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11) // createtime
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // ecdh
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // content
+            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // read_time
+            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // send_status
+            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // snap_time
+            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12) // createtime
         );
         return entity;
     }
@@ -202,11 +215,12 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
         entity.setMessage_from(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setMessage_to(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setMessageType(cursor.getInt(offset + 6));
-        entity.setContent(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setRead_time(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
-        entity.setSend_status(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
-        entity.setSnap_time(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
-        entity.setCreatetime(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setEcdh(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setContent(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setRead_time(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.setSend_status(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
+        entity.setSnap_time(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setCreatetime(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
      }
     
     @Override

@@ -119,7 +119,7 @@ public class RecordView extends LinearLayout {
             if ((Math.abs(recordX) < SystemDataUtil.getScreenWidth() / 2) || dur < 2) {
                 FileUtil.deleteFile(path);
             } else {
-                MsgSend.sendOuterMsg(LinkMessageRow.Voice, path, dur);
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Voice, path, dur);
             }
         }
     }

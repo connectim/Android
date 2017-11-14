@@ -120,7 +120,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
                 conversionEntity.setTop(top);
                 ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
 
-                ConversationAction.conversationAction.sendEvent();
+                ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
             }
         });
     }
@@ -148,7 +148,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
                 settingEntity.setDisturb(disturb);
                 ConversionSettingHelper.getInstance().insertSetEntity(settingEntity);
 
-                ConversationAction.conversationAction.sendEvent();
+                ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
             }
         });
     }

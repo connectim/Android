@@ -63,7 +63,15 @@ public class ConversationFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ConversationAction action) {
         LogManager.getLogger().d(Tag, "onEventMainThread()");
-        loadRooms();
+        switch (action.getConverType()) {
+            case LOAD_MESSAGE:
+                loadRooms();
+                break;
+            case LOAD_UNREAD:
+                countUnread();
+                break;
+        }
+
     }
 
     /**
@@ -81,11 +89,14 @@ public class ConversationFragment extends BaseFragment {
             protected void onPostExecute(List<RoomAttrBean> entities) {
                 super.onPostExecute(entities);
                 chatFragmentAdapter.setData(entities);
-
-                int unreadCount = ConversionHelper.getInstance().countUnReads();
-                ((HomeActivity) activity).setFragmentDot(0, unreadCount);
+                countUnread();
             }
         }.execute();
+    }
+
+    protected void countUnread() {
+        int unreadCount = ConversionHelper.getInstance().countUnReads();
+        ((HomeActivity) activity).setFragmentDot(0, unreadCount);
     }
 
     /**

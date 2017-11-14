@@ -283,7 +283,7 @@ public class OuterWebsiteActivity extends BaseActivity {
 
             NormalChat baseChat = null;
             if (RoomSession.getInstance().getRoomKey().equals(pubkey)) {
-                MsgSend.sendOuterMsg(LinkMessageRow.OUTER_WEBSITE, inUrl, title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.OUTER_WEBSITE, inUrl, title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
             } else {
                 switch (type) {
                     case 0:

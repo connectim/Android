@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.bean.Talker;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HomeAction;
-import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
 import connect.database.SharedPreferenceUtil;
@@ -53,7 +53,8 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     }
 
     public void setData(List<RoomAttrBean> entities) {
-        this.roomAttrBeanList = entities;
+        this.roomAttrBeanList.clear();
+        this.roomAttrBeanList.addAll(entities);
         notifyDataSetChanged();
     }
 
@@ -135,8 +136,12 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 }
             }
         });
+
         holder.bottomTrash.setTag(holder.itemView);
         holder.bottomTrash.setOnClickListener(new OnClickListener() {
+
+            boolean isDeleteAble = true;
+
             @Override
             public void onClick(View v) {
                 SideScrollView scrollView = (SideScrollView) v.getTag();
@@ -147,8 +152,23 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 MessageHelper.getInstance().deleteRoomMsg(roomid);
                 FileUtil.deleteContactFile(roomid);
 
-                roomAttrBeanList.remove(roomAttr);
-                notifyItemRemoved(position);
+                if (isDeleteAble) {
+                    isDeleteAble = false;
+                    roomAttrBeanList.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, getItemCount());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(500);
+                                isDeleteAble = true;//可点击按钮
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }
             }
         });
         holder.bottomNotify.setTag(holder.itemView);
@@ -170,6 +190,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                     int disturb = select ? 1 : 0;
                     ConversionSettingHelper.getInstance().updateDisturb(roomid, disturb);
 
+                    ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_UNREAD);
                     roomAttr.setDisturb(disturb);
                     if (roomAttrBeanList.get(position).getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE) {
                         GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupNotificaton, roomid, disturb);

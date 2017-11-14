@@ -10,20 +10,40 @@ import java.io.Serializable;
  */
 public class MsgSend implements Serializable {
 
-    private LinkMessageRow msgType;
+    private MsgSendType msgSendType;
     private Object obj;
 
-    public MsgSend(LinkMessageRow type, Object obj) {
-        this.msgType = type;
+    public MsgSend(MsgSendType msgSendType, Object obj) {
+        this.msgSendType = msgSendType;
         this.obj = obj;
     }
 
-    public static void sendOuterMsg(LinkMessageRow type, Object... objs) {
+    public enum MsgSendType {
+        NOTICE,
+        Text,
+        Voice,
+        Photo,
+        Video,
+        Emotion,
+        Request_Payment,
+        Transfer,
+        Lucky_Packet,
+        Location,
+        Name_Card,
+        INVITE_GROUP,
+        OUTER_WEBSITE,
+        GROUP_REVIEW,
+        SYSTEM_AD,
+        BURNREAD_SETTING,
+        BURNREAD_RECEIPT,
+    }
+
+    public static void sendOuterMsg(MsgSendType type, Object... objs) {
         EventBus.getDefault().post(new MsgSend(type, objs));
     }
 
-    public LinkMessageRow getMsgType() {
-        return msgType;
+    public MsgSendType getMsgType() {
+        return msgSendType;
     }
 
     public Object getObj() {

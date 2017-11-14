@@ -23,12 +23,4 @@ public class ProtoBufUtilTest {
             LogManager.getLogger().d(Tag, "checkProtoBufTest: true");
         }
     }
-
-    @Test
-    public void timeLengthTest() {
-        Connect.DestructMessage destructMessage = Connect.DestructMessage.newBuilder()
-                .setTime(0).build();
-        int length = destructMessage.toByteArray().length;
-        LogManager.getLogger().d(Tag, "checkProtoBufTest: " + length);
-    }
 }

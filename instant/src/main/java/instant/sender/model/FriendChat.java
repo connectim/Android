@@ -28,21 +28,10 @@ public class FriendChat extends NormalChat {
     private UserCookie userCookie = null;
     /** friend Cookie */
     private UserCookie friendCookie = null;
-
     protected String friendUid = null;
-    protected String friendCaPublicKey;
 
-    public enum EncryType {
-        NORMAL,
-        HALF,
-        BOTH,
-    }
-
-    private EncryType encryType = EncryType.BOTH;
-
-    public FriendChat(String uid, String friendCaPublicKey) {
+    public FriendChat(String uid) {
         this.friendUid = uid;
-        this.friendCaPublicKey = friendCaPublicKey;
 
         UserOrderBean userOrderBean = new UserOrderBean();
         userOrderBean.friendChatCookie(friendUid);
@@ -81,40 +70,18 @@ public class FriendChat extends NormalChat {
             Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
             Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
 
-            switch (encryType) {
-                case NORMAL:
-                    priKey = Session.getInstance().getConnectCookie().getPriKey();
-                    friendKey = chatKey();
-                    ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
-                    break;
-                case HALF:
-                    priKey = userCookie.getPriKey();
-                    randomSalt = userCookie.getSalt();
-
-                    friendKey = chatKey();
-                    ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-                    ecdhExts.setBytes(randomSalt);
-                    sessionBuilder.setSalt(ByteString.copyFrom(randomSalt))
-                            .setPubKey(userCookie.getPubKey());
-                    break;
-                case BOTH:
-                    priKey = userCookie.getPriKey();
-                    randomSalt = userCookie.getSalt();
-
-                    friendKey = friendCookie.getPubKey();
-                    byte[] friendSalt = friendCookie.getSalt();
-                    if (friendCookie == null || friendSalt == null || friendSalt.length == 0) {
-                        encryType = EncryType.HALF;
-                        sendPushMsg(msgExtEntity);
-                        return;
-                    }
-                    ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-                    ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt));
-                    sessionBuilder.setSalt(ByteString.copyFrom(randomSalt)).
-                            setPubKey(userCookie.getPubKey()).
-                            setVer(ByteString.copyFrom(friendCookie.getSalt()));
-                    break;
+            priKey = userCookie.getPriKey();
+            randomSalt = userCookie.getSalt();
+            friendKey = friendCookie.getPubKey();
+            byte[] friendSalt = friendCookie.getSalt();
+            if (friendCookie == null || friendSalt == null || friendSalt.length == 0) {
+                return;
             }
+            ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
+            ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt));
+            sessionBuilder.setSalt(ByteString.copyFrom(randomSalt)).
+                    setPubKey(userCookie.getPubKey()).
+                    setVer(ByteString.copyFrom(friendCookie.getSalt()));
 
             Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, priKey, friendKey, msgExtEntity.getContents());
             chatMessageBuilder.setCipherData(gcmData);
@@ -155,10 +122,6 @@ public class FriendChat extends NormalChat {
         return 0;
     }
 
-    public void setEncryType(EncryType encryType) {
-        this.encryType = encryType;
-    }
-
     public void setFriendCookie(UserCookie friendCookie) {
         this.friendCookie = friendCookie;
     }
@@ -168,20 +131,12 @@ public class FriendChat extends NormalChat {
         if (userCookie == null) {
             userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
         }
-
-        if (userCookie == null) {
-            encryType = EncryType.NORMAL;
-        }
     }
 
     public void loadFriendCookie() {
-        friendCookie = Session.getInstance().getFriendCookie(friendCaPublicKey);
+        friendCookie = Session.getInstance().getFriendCookie(friendUid);
         if (friendCookie == null) {
-            friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendCaPublicKey);
-        }
-
-        if (friendCookie == null) {
-            encryType = EncryType.NORMAL;
+            friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendUid);
         }
     }
 

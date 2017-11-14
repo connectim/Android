@@ -7,6 +7,7 @@ import com.google.protobuf.ByteString;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -57,6 +58,8 @@ public class CommandParser extends InterParse {
                 case 0x15:
                 case 0x16:
                 case 0x17:
+                case 0x1a:
+                case 0x1b:
                     break;
                 default:
                     backOnLineAck(4, msgid);
@@ -105,6 +108,12 @@ public class CommandParser extends InterParse {
                 case 0x19:
                     reloadUserCookie();
                     break;
+                case 0x1a://burn reading setting
+                    burnReadingSetting(command.getDetail(), msgid);
+                    break;
+                case 0x1b://burn reading receipt
+                    burnReadingReceipt(command.getDetail(), msgid);
+                    break;
             }
         }
     }
@@ -126,12 +135,19 @@ public class CommandParser extends InterParse {
             Connect.OfflineMsgs offlineMsgs = Connect.OfflineMsgs.parseFrom(unGzip);
             List<Connect.OfflineMsg> msgList = offlineMsgs.getOfflineMsgsList();
 
+            List<Connect.Ack> ackList = new ArrayList<>();
             for (Connect.OfflineMsg offlineMsg : msgList) {
                 LogManager.getLogger().d(TAG, "msgList:" + msgList.size());
 
+                String messageId=offlineMsg.getMsgId();
                 Connect.ProducerMsgDetail msgDetail = offlineMsg.getBody();
                 int extension = msgDetail.getExt();
-                backOffLineAck(msgDetail.getType(), offlineMsg.getMsgId());
+
+                Connect.Ack ack = Connect.Ack.newBuilder()
+                        .setType(msgDetail.getType())
+                        .setMsgId(messageId)
+                        .build();
+                ackList.add(ack);
 
                 switch ((byte) msgDetail.getType()) {
                     case 0x04://Offline command processing
@@ -177,6 +193,9 @@ public class CommandParser extends InterParse {
             }
 
             offComplete = offlineMsgs.getCompleted();
+            if (ackList.size() > 0) {
+                backOffLineAcks(ackList);
+            }
         }
 
         if (offComplete) {
@@ -362,6 +381,43 @@ public class CommandParser extends InterParse {
     }
 
     /**
+     * Burn after reading setting
+     * @param buffer
+     * @param objs
+     * @throws Exception
+     */
+    private void burnReadingSetting(ByteString buffer, Object... objs) throws Exception {
+        Connect.EphemeralSetting setting = Connect.EphemeralSetting.parseFrom(buffer);
+
+        String myUid = Session.getInstance().getConnectCookie().getUid();
+        if (myUid.equals(setting.getUid())) {
+            String messgaeId = (String) objs[0];
+            FailMsgsManager.getInstance().removeFailMap(messgaeId);
+        } else {
+            CommandLocalReceiver.receiver.burnReadingSetting(setting);
+        }
+    }
+
+    /**
+     * Burning receipt after reading
+     *
+     * @param buffer
+     * @param objs
+     * @throws Exception
+     */
+    private void burnReadingReceipt(ByteString buffer, Object... objs) throws Exception {
+        Connect.EphemeralAck ack = Connect.EphemeralAck.parseFrom(buffer);
+
+        String myUid = Session.getInstance().getConnectCookie().getUid();
+        if (myUid.equals(ack.getUid())) {
+            String messgaeId = (String) objs[0];
+            FailMsgsManager.getInstance().removeFailMap(messgaeId);
+        } else {
+            CommandLocalReceiver.receiver.burnReadingReceipt(ack);
+        }
+    }
+
+    /**
      * Upload the cookie state
      *
      * @param errNum
@@ -437,16 +493,15 @@ public class CommandParser extends InterParse {
         if (failMap == null) {
             return;
         }
-
-        String friendCaPublickey = chatCookie.getCaPub();
+        String friendUid = (String) failMap.get("EXT");
         UserCookie friendCookie = new UserCookie();
         String caPublicKey = chatCookieData.getChatPubKey();
         friendCookie.setPubKey(caPublicKey);
         friendCookie.setSalt(friendSalt);
         friendCookie.setExpiredTime(chatCookieData.getExpired());
-        Session.getInstance().setFriendCookie(friendCaPublickey, friendCookie);
 
-        SharedUtil.getInstance().insertFriendCookie(friendCaPublickey, friendCookie);
+        Session.getInstance().setFriendCookie(friendUid, friendCookie);
+        SharedUtil.getInstance().insertFriendCookie(friendUid, friendCookie);
     }
 
     /**
@@ -532,10 +587,10 @@ public class CommandParser extends InterParse {
         }
 
         long expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
-        Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder().
-                setChatPubKey(randomPubKey).
-                setSalt(ByteString.copyFrom(randomSalt)).
-                setExpired(expiredTime)
+        Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder()
+                .setChatPubKey(randomPubKey)
+                .setSalt(ByteString.copyFrom(randomSalt))
+                .setExpired(expiredTime)
                 .build();
 
         UserCookie connecCookie = Session.getInstance().getConnectCookie();
