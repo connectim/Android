@@ -9,6 +9,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 
 import connect.activity.contact.bean.ContactNotice;
+import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.AddFriendContract;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
@@ -53,6 +54,7 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
                                     requestEntity.setAvatar(userInfoBase.getAvatar());
                                     requestEntity.setUsername(userInfoBase.getUsername());
                                     requestEntity.setStatus(4);
+                                    requestEntity.setSource(SourceType.RECOMMEND.getType());
                                     listRecommend.add(requestEntity);
                                     if(listRecommend.size() == 4)
                                         break;

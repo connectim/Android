@@ -48,9 +48,7 @@ public class PacketDetailPresenter implements PacketDetailContract.Presenter{
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-
-            }
+            public void onError(Connect.HttpResponse response) {}
         });
     }
 

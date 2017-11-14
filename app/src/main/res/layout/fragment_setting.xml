@@ -229,7 +229,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="@dimen/dp_15"
         android:layout_marginRight="@dimen/dp_15"
-        android:background="@drawable/shape_8px_ffffff"
+        android:background="@drawable/selector_list_item_bg_8px"
         android:gravity="center"
         android:text="@string/Set_Log_Out"
         android:textColor="@color/color_f53333"
