@@ -85,7 +85,7 @@ public class HomeActivity extends BaseFragmentActivity {
     @Bind(R.id.contact_badgetv)
     MaterialBadgeTextView contactBadgetv;
 
-    private String Tag = "Tag_HomeActivity";
+    private static String TAG = "Tag_HomeActivity";
     private HomeActivity activity;
 
     private ConversationFragment chatListFragment;
@@ -128,7 +128,7 @@ public class HomeActivity extends BaseFragmentActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                LogManager.getLogger().d(Tag, "onPostExecute");
+                LogManager.getLogger().d(TAG, "onPostExecute");
                 UpdateInfoService.startService(activity);
                 GroupService.startService(activity);
 

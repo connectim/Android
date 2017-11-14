@@ -54,35 +54,20 @@ public class ChatParser extends InterParse {
         Connect.ChatSession chatSession = messageData.getChatSession();
         Connect.ChatMessage chatMessage = messageData.getChatMsg();
 
-        String friendPubKey = msgpost.getPubKey();
         String priKey = null;
         String pubkey = null;
-
         LogManager.getLogger().d(TAG, "Id: " + chatMessage.getMsgId());
-        EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
-        if (TextUtils.isEmpty(chatSession.getPubKey())) {//old protocol
-            priKey = Session.getInstance().getConnectCookie().getPriKey();
-            pubkey = friendPubKey;
-        } else if (null == chatSession.getVer() || chatSession.getVer().size() == 0) {//half random
-            priKey = Session.getInstance().getConnectCookie().getPriKey();
+        ByteString fromSalt = chatSession.getSalt();
+        ByteString toSalt = chatSession.getVer();
 
-            ByteString fromSalt = chatSession.getSalt();
-            pubkey = chatSession.getPubKey();
-            ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-            ecdhExts.setBytes(fromSalt.toByteArray());
-        } else {//both random
-            ByteString fromSalt = chatSession.getSalt();
-            ByteString toSalt = chatSession.getVer();
-
-            UserCookie toCookie = Session.getInstance().getCookieBySalt(StringUtil.bytesToHexString(toSalt.toByteArray()));
-            if (toCookie == null) {
-                return;
-            }
-            priKey = toCookie.getPriKey();
-            pubkey = chatSession.getPubKey();
-            ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-            ecdhExts.setBytes(SupportKeyUril.xor(fromSalt.toByteArray(), toSalt.toByteArray()));
+        UserCookie toCookie = Session.getInstance().getCookieBySalt(StringUtil.bytesToHexString(toSalt.toByteArray()));
+        if (toCookie == null) {
+            return;
         }
+        priKey = toCookie.getPriKey();
+        pubkey = chatSession.getPubKey();
+        EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
+        ecdhExts.setBytes(SupportKeyUril.xor(fromSalt.toByteArray(), toSalt.toByteArray()));
 
         byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, priKey, pubkey, messageData.getChatMsg().getCipherData());
         MessageLocalReceiver.localReceiver.singleChat(chatMessage, contents);

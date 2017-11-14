@@ -27,7 +27,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.home.bean.WalletMenuBean;
-import connect.activity.set.GeneralActivity;
 import connect.activity.wallet.PacketActivity;
 import connect.activity.wallet.RequestActivity;
 import connect.activity.wallet.SafetySetActivity;

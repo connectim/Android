@@ -17,6 +17,7 @@ import connect.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.HttpRequest;
 import instant.bean.Session;
 import instant.bean.UserCookie;
+import instant.utils.cryption.SupportKeyUril;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -110,20 +111,22 @@ public class DownLoadFile {
                     } else {
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(bytes);
                         Connect.StructData structData = null;
+                        byte[] dataFile = null;
                         if (chatType == Connect.ChatType.PRIVATE) {//private chat
-                            UserCookie userCookie = Session.getInstance().getConnectCookie();
+                            UserCookie userCookie = Session.getInstance().getChatCookie();
                             String myPrivateKey = userCookie.getPriKey();
 
-                            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(identify);
-                            UserCookie friendCookie = Session.getInstance().getFriendCookie(friendEntity.getCa_pub());
+                            UserCookie friendCookie = Session.getInstance().getFriendCookie(identify);
                             String friendPublicKey = friendCookie.getPubKey();
 
-                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, gcmData);
+                            EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
+                            ecdhExts.setBytes(SupportKeyUril.xor(userCookie.getSalt(), friendCookie.getSalt()));
+                            dataFile = DecryptionUtil.decodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, gcmData);
                         } else if (chatType == Connect.ChatType.GROUPCHAT) {//group chat
                             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(identify);
                             structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
+                            dataFile = structData.getPlainData().toByteArray();
                         }
-                        byte[] dataFile = structData.getPlainData().toByteArray();
                         fileDownLoad.successDown(dataFile);
                     }
                 } catch (Exception e) {

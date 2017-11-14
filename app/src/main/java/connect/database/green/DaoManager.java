@@ -1,9 +1,12 @@
 package connect.database.green;
 
+import android.content.Context;
+
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -19,6 +22,7 @@ import connect.database.green.dao.DaoSession;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
 import connect.utils.cryption.TransformUtil;
+import instant.utils.SharedUtil;
 
 /**
  * The management of the database
@@ -45,7 +49,7 @@ public class DaoManager {
      *
      * @return
      */
-    public synchronized DaoMaster getDaoMaster() {
+    public synchronized DaoMaster getDaoMaster(){
         if (null == mDaoMaster) {
             String DB_NAME = null;
             String DB_PWD = null;
@@ -62,8 +66,9 @@ public class DaoManager {
                         StringUtil.hexStringToBytes(uid)));
             }
 
+            Context context = BaseApplication.getInstance().getBaseContext();
             MigrateOpenHelper helper = new MigrateOpenHelper(
-                    BaseApplication.getInstance().getBaseContext(),
+                    context,
                     DB_NAME,
                     null);
 
@@ -71,7 +76,15 @@ public class DaoManager {
             boolean appMode = ConfigUtil.getInstance().appMode();
             if (appMode) {//release version
                 setDebug(false);//log
-                db = helper.getEncryptedWritableDb(DB_PWD);
+                try {
+                    db = helper.getEncryptedWritableDb(DB_PWD);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    context.deleteDatabase(DB_NAME);
+                    SharedUtil.getInstance().deleteUserInfo();
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
+                    return null;
+                }
             } else {//debug version
                 setDebug(true);
                 db = helper.getWritableDb();
@@ -81,17 +94,13 @@ public class DaoManager {
         return mDaoMaster;
     }
 
-    public String getDBName(){
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        String name = "connect_" + StringUtil.bytesToHexString(TransformUtil.digest(TransformUtil.MD5,
-                StringUtil.hexStringToBytes(userBean.getUid())));
-        return name;
-    }
-
     public DaoSession getDaoSession() {
         if (null == mDaoSession) {
             if (null == mDaoMaster) {
                 mDaoMaster = getDaoMaster();
+                if (mDaoMaster == null) {
+                    mDaoMaster = getDaoMaster();
+                }
             }
             mDaoSession = mDaoMaster.newSession();
         }
@@ -123,6 +132,14 @@ public class DaoManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteDataBase() {
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        String dataBaseName = "connect_" + StringUtil.bytesToHexString(TransformUtil.digest(TransformUtil.MD5,
+                StringUtil.hexStringToBytes(userBean.getUid())));
+        Context context = BaseApplication.getInstance().getBaseContext();
+        context.deleteDatabase(dataBaseName);
     }
 
     public void closeHelper() {

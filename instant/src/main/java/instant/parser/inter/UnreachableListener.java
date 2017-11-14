@@ -15,6 +15,4 @@ public interface UnreachableListener {
     void notGroupMemberNotice(String groupKey);
 
     void saltNotMatch(String msgid, String rejectUid, Connect.ChatCookie cookie) throws Exception;
-
-    void halfRandom(String msgid, String rejectUid) throws Exception;
 }

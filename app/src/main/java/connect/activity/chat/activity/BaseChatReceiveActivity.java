@@ -186,9 +186,6 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 }
                 break;
             case UNARRIVE_HALF:
-                if (normalChat.chatKey().equals(objects[0])) {
-                    ((FriendChat) normalChat).setEncryType(FriendChat.EncryType.HALF);
-                }
                 break;
             case GROUPAT_TO:
                 GroupAtActivity.startActivity(activity, normalChat.chatKey());

@@ -14,7 +14,6 @@ import instant.bean.ChatMsgEntity;
 import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.parser.inter.UnreachableListener;
-import instant.sender.model.FriendChat;
 import instant.utils.SharedUtil;
 import protos.Connect;
 
@@ -88,24 +87,6 @@ public class UnreachableReceiver implements UnreachableListener {
         ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity != null) {
             CFriendChat friendChat = new CFriendChat(friendEntity);
-            friendChat.sendPushMsg(messageEntity);
-        }
-    }
-
-    @Override
-    public void halfRandom(String msgid, String rejectUid) throws Exception {
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(rejectUid);
-        if (friendEntity == null) {
-            return;
-        }
-
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_HALF, friendEntity.getCa_pub());
-
-        LogManager.getLogger().d(TAG, "halfRandom :" + msgid);
-        ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
-        if (messageEntity != null) {
-            CFriendChat friendChat = new CFriendChat(friendEntity);
-            friendChat.setEncryType(FriendChat.EncryType.HALF);
             friendChat.sendPushMsg(messageEntity);
         }
     }

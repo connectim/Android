@@ -87,6 +87,12 @@ public class SharedUtil {
         editor.apply();
     }
 
+    public void deleteUserInfo(){
+        sharePre.edit()
+                .clear()
+                .commit();
+    }
+
     /******************************  User Cookie  ********************************************************/
     public void insertChatUserCookie(UserCookie userCookie) {
         if (sharePre.contains(COOKIE_CHATUSER)) {
