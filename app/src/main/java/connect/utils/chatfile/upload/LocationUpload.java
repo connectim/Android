@@ -95,7 +95,7 @@ public class LocationUpload extends BaseFileUp {
         String myPrivateKey = userCookie.getPriKey();
         String myPublicKey = userCookie.getPubKey();
 
-        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, myPrivateKey, richMedia.toByteString());
+        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
         mediaFile = Connect.MediaFile.newBuilder().
                 setPubKey(myPublicKey)
                 .setCipherData(gcmData)

@@ -1417,3 +1417,7 @@ message EphemeralAck {
     string msgID = 3;
 }
 
+message AckBatch {
+    string msg_id = 1;
+    repeated Ack Acks = 2;
+}

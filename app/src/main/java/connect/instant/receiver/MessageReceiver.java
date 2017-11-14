@@ -50,7 +50,7 @@ public class MessageReceiver implements MessageListener {
     }
 
     @Override
-    public void singleChat(Connect.ChatMessage chatMessage, byte[] contents) throws Exception {
+    public void singleChat(Connect.ChatMessage chatMessage, byte[] ecdh, byte[] contents) throws Exception {
         String friendUid = chatMessage.getFrom();
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendUid);
         if (contactEntity == null) {
@@ -72,9 +72,9 @@ public class MessageReceiver implements MessageListener {
             }
         } else {
             ChatMsgEntity messageEntity = ChatMsgEntity.transToMessageEntity(chatMessage.getMsgId(),
-                    chatMessage.getFrom(), chatMessage.getChatType().getNumber(),
-                    chatMessage.getMsgType(), chatMessage.getFrom(),
-                    chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
+                    chatMessage.getFrom(), chatMessage.getChatType().getNumber(), chatMessage.getMsgType(),
+                    chatMessage.getFrom(), chatMessage.getTo(),
+                    StringUtil.bytesToHexString(ecdh), contents, chatMessage.getMsgTime(), 1);
 
             MessageHelper.getInstance().insertMsgExtEntity(messageEntity);
             friendChat.updateRoomMsg(null, messageEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);

@@ -13,7 +13,7 @@ public enum SocketACK {
 
     ACK_BACK_ONLINE(new byte[]{0x03, 0x01}),//Online message receipt
     ACK_BACK_OFFLINE(new byte[]{0x03, 0x02}),//Offline message receipt
-    ACK_BACK_BATCH(new byte[]{0x03, 0x04}),//Batch receipt
+    ACK_BACK_OFFLINEBATCH(new byte[]{0x03, 0x04}),//Batch receipt
 
     CONTACT_SYNC(new byte[]{0x04, 0x01}),//Sync contacts
     PULL_OFFLINE(new byte[]{0x04, 0x04}),//Pull the offline messages

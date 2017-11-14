@@ -68,9 +68,12 @@ public class ChatParser extends InterParse {
         pubkey = chatSession.getPubKey();
         EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
         ecdhExts.setBytes(SupportKeyUril.xor(fromSalt.toByteArray(), toSalt.toByteArray()));
+        byte[] rawECDHkey = SupportKeyUril.getRawECDHKey(priKey, pubkey);
+        rawECDHkey = EncryptionUtil.getKeyExtendedECDH(ecdhExts, rawECDHkey);
 
-        byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, priKey, pubkey, messageData.getChatMsg().getCipherData());
-        MessageLocalReceiver.localReceiver.singleChat(chatMessage, contents);
+        Connect.GcmData gcmData = messageData.getChatMsg().getCipherData();
+        byte[] contents = DecryptionUtil.decodeAESGCM(rawECDHkey, gcmData);
+        MessageLocalReceiver.localReceiver.singleChat(chatMessage, rawECDHkey, contents);
     }
 
     /**

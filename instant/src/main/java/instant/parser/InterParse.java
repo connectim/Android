@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import instant.bean.Session;
@@ -18,6 +20,8 @@ import instant.utils.cryption.DecryptionUtil;
 import instant.utils.cryption.EncryptionUtil;
 import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
+
+import static android.R.attr.type;
 
 /**
  *
@@ -73,11 +77,17 @@ public abstract class InterParse {
     }
 
     protected void backAck(SocketACK socketack, int type, String msgid) {
-        Connect.Ack ack = Connect.Ack.newBuilder().setType(type).setMsgId(msgid).build();
-        String priKey = Session.getInstance().getConnectCookie().getPriKey();
+        Connect.Ack ack = Connect.Ack.newBuilder()
+                .setType(type)
+                .setMsgId(msgid)
+                .build();
 
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE,
-                Session.getInstance().getRandomCookie().getSalt(), ack.toByteString());
+        String priKey = Session.getInstance().getConnectCookie().getPriKey();
+        byte[] randomSalt = Session.getInstance().getRandomCookie().getSalt();
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(
+                EncryptionUtil.ExtendedECDH.NONE,
+                randomSalt,
+                ack.toByteString());
 
         String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
@@ -85,6 +95,29 @@ public abstract class InterParse {
                 .setSign(signHash).build();
 
         SenderManager.getInstance().sendToMsg(socketack, backAck.toByteString());
+    }
+
+    protected void backOffLineAcks(List socketACKs) {
+        String messageId = TimeUtil.timestampToMsgid();
+        Connect.AckBatch ackBatch = Connect.AckBatch.newBuilder()
+                .setMsgId(messageId)
+                .addAllAcks(socketACKs)
+                .build();
+
+        String priKey = Session.getInstance().getConnectCookie().getPriKey();
+        byte[] randomSalt = Session.getInstance().getRandomCookie().getSalt();
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(
+                EncryptionUtil.ExtendedECDH.NONE,
+                randomSalt,
+                ackBatch.toByteString());
+
+        String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
+        Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
+                .setCipherData(gcmData)
+                .setSign(signHash)
+                .build();
+
+        SenderManager.getInstance().sendToMsg(SocketACK.ACK_BACK_OFFLINEBATCH, backAck.toByteString());
     }
 
     /**

@@ -31,7 +31,7 @@ public class MsgLocationHolder extends MsgChatHolder {
         textView.setText(locationMessage.getAddress());
         String url = locationMessage.getScreenShot();
         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
-        imgmsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), url, locationMessage.getImageWidth(), locationMessage.getImageHeight());
+        imgmsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),msgExtEntity.getEcdh(),url, locationMessage.getImageWidth(), locationMessage.getImageHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

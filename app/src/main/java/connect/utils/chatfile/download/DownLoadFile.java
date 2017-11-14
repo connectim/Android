@@ -33,12 +33,14 @@ public class DownLoadFile {
 
     private Connect.ChatType chatType;
     private String identify;
+    private String ecdh;
     private String url;
     private InterFileDown fileDownLoad;
 
-    public DownLoadFile(Connect.ChatType chatType, String identify, String url, final InterFileDown fileDownLoad) {
+    public DownLoadFile(Connect.ChatType chatType, String identify, String ecdh, String url, final InterFileDown fileDownLoad) {
         this.chatType = chatType;
         this.identify = identify;
+        this.ecdh = ecdh;
         this.url = url;
         this.fileDownLoad = fileDownLoad;
     }
@@ -113,15 +115,8 @@ public class DownLoadFile {
                         Connect.StructData structData = null;
                         byte[] dataFile = null;
                         if (chatType == Connect.ChatType.PRIVATE) {//private chat
-                            UserCookie userCookie = Session.getInstance().getChatCookie();
-                            String myPrivateKey = userCookie.getPriKey();
-
-                            UserCookie friendCookie = Session.getInstance().getFriendCookie(identify);
-                            String friendPublicKey = friendCookie.getPubKey();
-
-                            EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-                            ecdhExts.setBytes(SupportKeyUril.xor(userCookie.getSalt(), friendCookie.getSalt()));
-                            dataFile = DecryptionUtil.decodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, gcmData);
+                            byte[] ecdhExts =StringUtil.hexStringToBytes(ecdh);
+                            dataFile = DecryptionUtil.decodeAESGCM(ecdhExts, gcmData);
                         } else if (chatType == Connect.ChatType.GROUPCHAT) {//group chat
                             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(identify);
                             structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);

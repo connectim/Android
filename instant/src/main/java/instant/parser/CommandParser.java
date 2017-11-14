@@ -7,6 +7,7 @@ import com.google.protobuf.ByteString;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -134,12 +135,19 @@ public class CommandParser extends InterParse {
             Connect.OfflineMsgs offlineMsgs = Connect.OfflineMsgs.parseFrom(unGzip);
             List<Connect.OfflineMsg> msgList = offlineMsgs.getOfflineMsgsList();
 
+            List<Connect.Ack> ackList = new ArrayList<>();
             for (Connect.OfflineMsg offlineMsg : msgList) {
                 LogManager.getLogger().d(TAG, "msgList:" + msgList.size());
 
+                String messageId=offlineMsg.getMsgId();
                 Connect.ProducerMsgDetail msgDetail = offlineMsg.getBody();
                 int extension = msgDetail.getExt();
-                backOffLineAck(msgDetail.getType(), offlineMsg.getMsgId());
+
+                Connect.Ack ack = Connect.Ack.newBuilder()
+                        .setType(msgDetail.getType())
+                        .setMsgId(messageId)
+                        .build();
+                ackList.add(ack);
 
                 switch ((byte) msgDetail.getType()) {
                     case 0x04://Offline command processing
@@ -185,6 +193,9 @@ public class CommandParser extends InterParse {
             }
 
             offComplete = offlineMsgs.getCompleted();
+            if (ackList.size() > 0) {
+                backOffLineAcks(ackList);
+            }
         }
 
         if (offComplete) {

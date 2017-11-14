@@ -40,7 +40,6 @@ public class VideoUpload extends BaseFileUp {
         fileCompress();
     }
 
-
     public String videoCompress(String filepath) {
         LoadJNI vk = new LoadJNI();
         try {
@@ -117,7 +116,8 @@ public class VideoUpload extends BaseFileUp {
         UserCookie userCookie = loadUserCookie();
         String myPrivateKey = userCookie.getPriKey();
         String myPublicKey = userCookie.getPubKey();
-        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, myPrivateKey, richMedia.toByteString());
+
+        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
         mediaFile = Connect.MediaFile.newBuilder()
                 .setPubKey(myPublicKey)
                 .setCipherData(gcmData)
