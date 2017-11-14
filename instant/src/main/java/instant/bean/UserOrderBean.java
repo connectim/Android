@@ -56,22 +56,6 @@ public class UserOrderBean extends InterParse {
     }
 
     /**
-     * remove friend
-     *
-     * @param objects
-     */
-    public void removeRelation(Object... objects) {
-        Connect.RemoveRelationship removeRelation = Connect.RemoveRelationship.newBuilder()
-                .setUid((String) objects[0]).build();
-
-        String msgid = TimeUtil.timestampToMsgid();
-        if (objects.length == 2) {
-            FailMsgsManager.getInstance().insertFailMsg("", msgid, null, null, objects[1]);
-        }
-        commandToIMTransfer(msgid, SocketACK.REMOVE_FRIEND, removeRelation.toByteString());
-    }
-
-    /**
      * Modify the friends setting
      *
      * @param category: "ADD":        "add",
