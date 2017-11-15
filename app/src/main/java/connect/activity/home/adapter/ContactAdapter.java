@@ -22,8 +22,6 @@ import connect.activity.home.bean.ContactBean;
 import connect.ui.activity.R;
 import connect.utils.PinyinUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.system.SystemDataUtil;
-import connect.widget.SideScrollView;
 
 /**
  * Contact adapter.
@@ -32,7 +30,11 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private Activity activity;
     private ArrayList<ContactBean> mData = new ArrayList<>();
-    private OnItemChildListener onSideMenuListener;
+    private OnItemChildListener onItemChildListener;
+    private ContactListManage contactManage = new ContactListManage();
+    private List<ContactBean> listRequest;
+    private List<ContactBean> groupList;
+    private HashMap<String, List<ContactBean>> friendMap;
     /** The location of the sideBar started sliding */
     private int startPosition = 0;
     /** Add friend request */
@@ -43,12 +45,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int STATUS_FRIEND_COUNT = 102;
     /** Connect robot */
     private final int STATUS_FRIEND_CONNECT = 103;
-
-    /** Update the data in the contacts list */
-    private ContactListManage contactManage = new ContactListManage();
-    private List<ContactBean> listRequest;
-    private List<ContactBean> groupList;
-    private HashMap<String, List<ContactBean>> friendMap;
     /** Update all contact */
     public final String updateTypeContact = "contact";
     /** Update friend request */
@@ -75,7 +71,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(activity);
-        View view = null;
+        View view;
         RecyclerView.ViewHolder holder = null;
         if (viewType == STATUS_REQUEST) {
             view = inflater.inflate(R.layout.item_contact_list_request, parent, false);
@@ -168,19 +164,12 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             default:
                 break;
         }
-        if (onSideMenuListener != null && holder.itemView.findViewById(R.id.content_layout) != null) {
+
+        if(onItemChildListener != null && holder.itemView.findViewById(R.id.content_layout) != null){
             holder.itemView.findViewById(R.id.content_layout).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onSideMenuListener.itemClick(position, mData.get(position));
-                }
-            });
-        }
-        if (onSideMenuListener != null && holder.itemView.findViewById(R.id.bottom_set_img) != null) {
-            holder.itemView.findViewById(R.id.bottom_set_img) .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onSideMenuListener.setFriend(position, mData.get(position));
+                    onItemChildListener.itemClick(position, mData.get(position));
                 }
             });
         }
@@ -199,6 +188,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return STATUS_FRIEND_COUNT;
         }
     }
+
     class RequestHolder extends RecyclerView.ViewHolder {
 
         TextView name;
@@ -216,29 +206,25 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             count = (TextView) itemView.findViewById(R.id.count_tv);
         }
     }
+
     class FriendHolder extends RecyclerView.ViewHolder {
 
         TextView name;
         ImageView avater;
         TextView topTv;
-        SideScrollView sideView;
         RelativeLayout contentLayout;
-        ImageView bottomSetImg;
         View lineView;
 
         public FriendHolder(View itemView) {
             super(itemView);
             topTv = (TextView) itemView.findViewById(R.id.top_tv);
-            sideView = (SideScrollView) itemView.findViewById(R.id.side_scroll_view);
-            bottomSetImg = (ImageView) itemView.findViewById(R.id.bottom_set_img);
             contentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
             avater = (ImageView) itemView.findViewById(R.id.avatar_rimg);
             name = (TextView) itemView.findViewById(R.id.name_tv);
-            contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
-            sideView.setSideScrollListener(sideScrollListener);
             lineView = itemView.findViewById(R.id.line_view);
         }
     }
+
     class ConnectHolder extends RecyclerView.ViewHolder{
 
         TextView topTv;
@@ -262,37 +248,9 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             bottomCount = (TextView)itemView.findViewById(R.id.friend_count_tv);
         }
     }
-    public void closeMenu() {
-        if (sideScrollView != null) {
-            sideScrollView.closeMenu();
-            sideScrollView = null;
-        }
-    }
-    public Boolean menuIsOpen() {
-        return sideScrollView != null;
-    }
-    private SideScrollView sideScrollView;
-    private SideScrollView.SideScrollListener sideScrollListener = new SideScrollView.SideScrollListener() {
-
-        @Override
-        public void onMenuIsOpen(View view) {
-            sideScrollView = (SideScrollView) view;
-        }
-
-        @Override
-        public void onDownOrMove(SideScrollView slidingButtonView) {
-            if (menuIsOpen()) {
-                if (sideScrollView != slidingButtonView) {
-                    closeMenu();
-                }
-            }
-        }
-    };
 
     /**
      * Update the friends list.
-     *
-     * @param updateType update type
      */
     public void updateContact(final String updateType) {
         new AsyncTask<Void, Void, Void>() {
@@ -343,6 +301,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         }.execute();
     }
+
     public void setDataNotify(List<ContactBean> list, String bottomTxt) {
         mData.clear();
         mData.addAll(list);
@@ -355,8 +314,8 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
-    public void setOnSideMenuListener(OnItemChildListener onSideMenuListener) {
-        this.onSideMenuListener = onSideMenuListener;
+    public void setOnSideMenuListener(OnItemChildListener onItemChildListener) {
+        this.onItemChildListener = onItemChildListener;
     }
 
     public int getPositionForSection(char selectChar) {
@@ -375,7 +334,5 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public interface OnItemChildListener {
         void itemClick(int position, ContactBean entity);
-
-        void setFriend(int position, ContactBean entity);
     }
 }

@@ -90,7 +90,6 @@ public class ContactListManage {
             contactBean.setName(name);
             contactBean.setAvatar(friendEntity.getAvatar());
             contactBean.setUid(friendEntity.getUid());
-            contactBean.setPub_key(friendEntity.getUid());
             if(friendEntity.getSource() != null && friendEntity.getSource() == -1){
                 contactBean.setStatus(6);
                 friendList.add(contactBean);

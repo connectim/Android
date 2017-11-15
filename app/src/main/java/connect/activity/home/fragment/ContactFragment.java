@@ -81,7 +81,6 @@ public class ContactFragment extends BaseFragment {
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new ContactAdapter(mActivity);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(onScrollListener);
         sideBar.setOnTouchingLetterChangedListener(changedListener);
 
         adapter.setOnSideMenuListener(onSideMenuListener);
@@ -97,14 +96,6 @@ public class ContactFragment extends BaseFragment {
     void goAddFriend(View view) {
         ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
     }
-
-    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener(){
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            adapter.closeMenu();
-        }
-    };
 
     SideBar.OnTouchingLetterChangedListener changedListener = new SideBar.OnTouchingLetterChangedListener(){
         @Override
@@ -133,21 +124,6 @@ public class ContactFragment extends BaseFragment {
                 case 3:
                 case 4:
                     FriendInfoActivity.startActivity(mActivity, entity.getUid());
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public void setFriend(int position, ContactBean entity) {
-            switch (entity.getStatus()) {
-                case 2:
-                    GroupSetActivity.startActivity(mActivity, entity.getPub_key());
-                    break;
-                case 3:
-                case 4:
-                    FriendInfoAliasActivity.startActivity(mActivity, entity.getPub_key());
                     break;
                 default:
                     break;

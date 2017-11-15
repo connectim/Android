@@ -148,11 +148,15 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                String errorMessage = response.getMessage();
-                if (TextUtils.isEmpty(errorMessage)) {
-                    errorMessage = activity.getString(R.string.Network_equest_failed_please_try_again_later);
+                if (response.getCode() == 2425) {
+                    ToastEUtil.makeText(activity, R.string.Chat_VerifyCode_has_expired, ToastEUtil.TOAST_STATUS_FAILE).show();
+                } else {
+                    String errorMessage = response.getMessage();
+                    if (TextUtils.isEmpty(errorMessage)) {
+                        errorMessage = activity.getString(R.string.Network_equest_failed_please_try_again_later);
+                    }
+                    ToastEUtil.makeText(activity, errorMessage, ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
-                ToastEUtil.makeText(activity, errorMessage, 2).show();
             }
         });
     }

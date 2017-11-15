@@ -147,7 +147,11 @@ public class LoginPassVerifyActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE);
+                if(response.getCode() == 2405){
+                    ToastEUtil.makeText(mActivity, R.string.Login_Password_incorrect, ToastEUtil.TOAST_STATUS_FAILE);
+                }else {
+                    ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE);
+                }
             }
         });
     }

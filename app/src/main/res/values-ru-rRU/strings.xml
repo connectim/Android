@@ -182,6 +182,7 @@
     <string name="Link_Delete_Successful">Успешное удаление</string>
     <string name="Link_Delete_This_Friend">Удалить друга</string>
     <string name="Link_Delete_and_Leave">Выйти из группы</string>
+    <string name="Link_Already_delete_and_Leave">Ты уже выход из группы</string>
     <string name="Link_Enter_Bitcoin_Address">Ввести адрес биткоина</string>
     <string name="Link_Favorite_Friend">Часто используемое контактное лицо</string>
     <string name="Link_Find_me_by_phone_number">Найти меня по номеру телефона</string>
@@ -213,6 +214,7 @@
     </string>
     <string name="Link_Join_Group">Добавить группу</string>
     <string name="Link_ManageGroup">Управление группой</string>
+    <string name="Link_Group_create_information_error">Создание группы информации ошибку</string>
     <string name="Link_Members">Участник (%d)</string>
     <string name="Link_More">Более подробно</string>
     <string name="Link_My_Alias_in_Group">Мой никнейм</string>

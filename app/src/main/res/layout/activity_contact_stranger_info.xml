@@ -60,6 +60,9 @@
             android:textColor="@color/color_007aff"
             android:layout_marginTop="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_40"
+            android:ellipsize="middle"
+            android:lines="1"
             android:text="" />
     </LinearLayout>
     <View

@@ -234,7 +234,7 @@
                 android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/shape_8px_ffffff"
+                android:background="@drawable/selector_list_item_bg_8px"
                 android:gravity="center"
                 android:text="@string/Link_Delete_This_Friend"
                 android:textColor="@color/color_f53333"

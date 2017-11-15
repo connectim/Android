@@ -167,8 +167,15 @@ public class HttpRequest {
                 LogManager.getLogger().i(LoggerInterceptor.TAG + "result:", "code=" + code + "," + resultCall.getData());
                 if (code == 2000) {
                     resultCall.onResponse(resultCall.getData());
-                } else if (code == 2001) {//salt timeout
+                } else if (code == 2001) {
+                    //salt timeout
                     HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
+                } else if(code == 2401){
+                    // sign error
+                    ToastUtil.getInstance().showToast(R.string.Set_Load_failed_please_try_again_later);
+                } else if(code == 2420){
+                    // uid/pubKey error
+                    ToastUtil.getInstance().showToast(R.string.Set_Load_failed_please_try_again_later);
                 } else {
                     resultCall.onError(resultCall.getData());
                 }
@@ -184,11 +191,10 @@ public class HttpRequest {
         try {
             switch (call.execute().code()){
                 case 404:
-                    ToastUtil.getInstance().showToast(BaseApplication.getInstance().getBaseContext().getString(R.string.Set_Load_failed_please_try_again_later));
+                    ToastUtil.getInstance().showToast(R.string.Set_Load_failed_please_try_again_later);
                     break;
                 default:
-                    String errorNet = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Network_connection_failed_please_check_network);
-                    ToastUtil.getInstance().showToast(errorNet);
+                    ToastUtil.getInstance().showToast(R.string.Chat_Network_connection_failed_please_check_network);
                     break;
             }
         }catch (Exception exception){

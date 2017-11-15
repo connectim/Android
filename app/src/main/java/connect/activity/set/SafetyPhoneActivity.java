@@ -179,7 +179,11 @@ public class SafetyPhoneActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                if(response.getCode() == 2409){
+                    ToastEUtil.makeText(mActivity, R.string.Login_Verification_code_error, ToastEUtil.TOAST_STATUS_FAILE).show();
+                }else {
+                    ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                }
             }
         });
     }

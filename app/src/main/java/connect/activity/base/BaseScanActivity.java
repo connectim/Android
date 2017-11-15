@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -31,6 +32,7 @@ import connect.ui.activity.R;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastUtil;
 import connect.utils.log.LogManager;
+import connect.utils.permission.PermissionUtil;
 import connect.widget.zxing.camera.CameraManager;
 import connect.widget.zxing.decode.DecodeImageCallback;
 import connect.widget.zxing.decode.DecodeImageThread;
@@ -50,16 +52,18 @@ public abstract class BaseScanActivity extends BaseActivity {
     private SurfaceView scanPreview = null;
     private View scanCropView;
     private RelativeLayout scanContainer;
-    private Rect mCropRect = null;
     public final int PARSE_BARCODE_SUC = 601;
+    private BaseScanActivity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        inactivityTimer = new InactivityTimer(this);
-        beepManager = new BeepManager(this);
+        mActivity = this;
+
+        inactivityTimer = new InactivityTimer(mActivity);
+        beepManager = new BeepManager(mActivity);
         CameraManager.init();
     }
 
@@ -67,6 +71,7 @@ public abstract class BaseScanActivity extends BaseActivity {
         this.scanPreview = scanPreview;
         this.scanCropView = scanCropView;
         this.scanContainer = scanContainer;
+        PermissionUtil.getInstance().requestPermission(this, new String[]{PermissionUtil.PERMISSION_CAMERA}, permissionCallBack);
     }
 
     protected void showBackgroupAni(View view){
@@ -116,7 +121,7 @@ public abstract class BaseScanActivity extends BaseActivity {
             throw new IllegalStateException("No SurfaceHolder provided");
         }
         if (CameraManager.get().isOpen()) {
-            displayFrameworkBugMessageAndExit();
+            Toast.makeText(mActivity, "open camera error", Toast.LENGTH_LONG).show();
             return;
         }
         try {
@@ -124,11 +129,10 @@ public abstract class BaseScanActivity extends BaseActivity {
             if (handler == null) {
                 handler = new CaptureActivityHandler(this);
             }
-            initCrop();
         } catch (IOException ioe) {
-            displayFrameworkBugMessageAndExit();
+            Toast.makeText(mActivity, "open camera error", Toast.LENGTH_LONG).show();
         } catch (RuntimeException e) {
-            displayFrameworkBugMessageAndExit();
+            Toast.makeText(mActivity, "open camera error", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -150,32 +154,8 @@ public abstract class BaseScanActivity extends BaseActivity {
         }
 
         @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-        }
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
     };
-
-    private void displayFrameworkBugMessageAndExit() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage("open camera error");
-        builder.setPositiveButton("sure", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                finish();
-            }
-        });
-        builder.show();
-    }
 
     public void handleDecode(Result rawResult, Bundle bundle) {
         inactivityTimer.onActivity();
@@ -200,99 +180,22 @@ public abstract class BaseScanActivity extends BaseActivity {
                 ToastUtil.getInstance().showToast("Scan failed!");
             }
         })).start();
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap scanBitmap = BitmapUtil.getInstance().compress(path, 480, 800);
-                String resultString;
-                if(scanBitmap != null){
-                    resultString = decodeQRImage(scanBitmap);
-                }else{
-                    resultString = null;
-                }
-                if (resultString != null) {
-                    Message m = handler.obtainMessage();
-                    m.what = PARSE_BARCODE_SUC;
-                    m.obj = resultString;
-                    handler.sendMessage(m);
-                } else {
-                    ProgressUtil.getInstance().dismissProgress();
-                    ToastUtil.getInstance().showToast("Scan failed!");
-                }
-            }
-        }).start();*/
     }
 
-    /**
-     * Method for scanning two-dimensional code picture
-     * @param bitmap
-     * @return
-     */
-    public String decodeQRImage(Bitmap bitmap) {
-        String value = null;
-        Hashtable<DecodeHintType, String> hints = new Hashtable<>();
-        // Encoding of two-dimensional code content
-        hints.put(DecodeHintType.CHARACTER_SET, "utf-8");
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        int[] pixels = new int[width * height];
-        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-
-        RGBLuminanceSource source = new RGBLuminanceSource(width,height,pixels);
-        BinaryBitmap bitmap1 = new BinaryBitmap(new HybridBinarizer(source));
-        QRCodeReader reader2 = new QRCodeReader();
-        Result result;
-        try {
-            result = reader2.decode(bitmap1,hints);
-            value = result.getText();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
+        @Override
+        public void granted(String[] permissions) {
+            onStart();
         }
-        return value;
-    }
 
-    /**
-     * Initialize the truncated rectangle
-     */
-    private void initCrop() {
-        int cameraWidth = CameraManager.get().getCameraResolution().height;
-        int cameraHeight = CameraManager.get().getCameraResolution().width;
+        @Override
+        public void deny(String[] permissions) {}
+    };
 
-        /** Gets the location information of the scan frame in the layout */
-        int[] location = new int[2];
-        scanCropView.getLocationInWindow(location);
-
-        int cropLeft = location[0];
-        int cropTop = location[1] - getStatusBarHeight();
-
-        int cropWidth = scanCropView.getWidth();
-        int cropHeight = scanCropView.getHeight();
-
-        /** Gets the width and height of the layout container */
-        int containerWidth = scanContainer.getWidth();
-        int containerHeight = scanContainer.getHeight();
-
-        int x = cropLeft * cameraWidth / containerWidth;
-        int y = cropTop * cameraHeight / containerHeight;
-
-        int width = cropWidth * cameraWidth / containerWidth;
-        int height = cropHeight * cameraHeight / containerHeight;
-
-        mCropRect = new Rect(x, y, width + x, height + y);
-    }
-
-    private int getStatusBarHeight() {
-        try {
-            Class<?> c = Class.forName("com.android.internal.R$dimen");
-            Object obj = c.newInstance();
-            Field field = c.getField("status_bar_height");
-            int x = Integer.parseInt(field.get(obj).toString());
-            return getResources().getDimensionPixelSize(x);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissionCallBack);
     }
 
 }

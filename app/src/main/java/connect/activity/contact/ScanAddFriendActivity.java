@@ -1,18 +1,12 @@
 package connect.activity.contact;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,17 +23,15 @@ import butterknife.OnClick;
 import connect.activity.base.BaseScanActivity;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.set.UserConnectIdActivity;
-import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveScanUtil;
 import connect.utils.scan.ResolveUrlUtil;
-import connect.utils.system.SystemUtil;
 import connect.widget.ScanBgView;
 import connect.widget.album.AlbumActivity;
 import connect.widget.album.model.AlbumFile;
-import connect.widget.zxing.utils.CreateScan;
 
 /**
  * scan it
