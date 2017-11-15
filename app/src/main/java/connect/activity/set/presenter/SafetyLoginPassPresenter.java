@@ -39,7 +39,11 @@ public class SafetyLoginPassPresenter implements SafetyLoginPassContract.Present
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mView.getActivity(), response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                if(response.getCode() == 2409){
+                    ToastEUtil.makeText(mView.getActivity(), R.string.Login_Verification_code_error, ToastEUtil.TOAST_STATUS_FAILE).show();
+                }else{
+                    ToastEUtil.makeText(mView.getActivity(), response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                }
             }
         });
     }

@@ -25,6 +25,7 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
+import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
@@ -264,7 +265,11 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
 
                             @Override
                             public void onError(Connect.HttpResponse response) {
-
+                                if(response.getCode() == 2424){
+                                    ToastEUtil.makeText(activity, R.string.Link_Already_delete_and_Leave, ToastEUtil.TOAST_STATUS_FAILE).show();
+                                } else {
+                                    ToastEUtil.makeText(activity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                                }
                             }
                         });
                     }

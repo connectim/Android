@@ -163,7 +163,6 @@ public class StrangerInfoActivity extends BaseActivity {
 
     private void requestUserInfo(String uid) {
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
-                .setTyp(1)
                 .setCriteria(uid)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
@@ -186,11 +185,7 @@ public class StrangerInfoActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                String message = response.getMessage();
-                if (TextUtils.isEmpty(message)) {
-                    message = mActivity.getResources().getString(R.string.Network_equest_failed_please_try_again_later);
-                }
-                ToastEUtil.makeText(mActivity, message);
+                ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         });
     }

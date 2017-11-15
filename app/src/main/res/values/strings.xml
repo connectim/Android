@@ -174,6 +174,7 @@
     <string name="Link_Delete_Successful">Delete Successful</string>
     <string name="Link_Delete_This_Friend">Delete This Friend</string>
     <string name="Link_Delete_and_Leave">Delete and Leave</string>
+    <string name="Link_Already_delete_and_Leave">You have already quit the group</string>
     <string name="Link_Enter_Bitcoin_Address">Enter Bitcoin Address There</string>
     <string name="Link_Favorite_Friend">Favorite</string>
     <string name="Link_Find_me_by_phone_number">Find me by phone number</string>
@@ -202,6 +203,7 @@
     <string name="Link_Invite_friend_to_join">%s invite friend to start join group chat</string>
     <string name="Link_Join_Group">Join Group</string>
     <string name="Link_ManageGroup">ManageGroup</string>
+    <string name="Link_Group_create_information_error">Error creating group information</string>
     <string name="Link_Members">Members (%d)</string>
     <string name="Link_More">More</string>
     <string name="Link_My_Alias_in_Group">My Alias in Group</string>

@@ -119,11 +119,14 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                String contentTxt = response.getMessage();
-                if (TextUtils.isEmpty(contentTxt)) {
-                    ToastEUtil.makeText(activity, activity.getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                // - 2421 groupinfo error
+                // - 2422 group create failed
+                if(response.getCode() == 2421){
+                    ToastEUtil.makeText(activity, R.string.Link_Group_create_information_error, ToastEUtil.TOAST_STATUS_FAILE).show();
+                } else if(response.getCode() == 2422){
+                    ToastEUtil.makeText(activity, R.string.Network_equest_failed_please_try_again_later, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else {
-                    ToastEUtil.makeText(activity, contentTxt, 2).show();
+                    ToastEUtil.makeText(activity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
             }
         });

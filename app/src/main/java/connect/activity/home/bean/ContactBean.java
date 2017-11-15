@@ -6,7 +6,6 @@ package connect.activity.home.bean;
 
 public class ContactBean {
 
-    private String pub_key;
     private String uid;
     private String name;
     private String avatar;
@@ -23,14 +22,6 @@ public class ContactBean {
     public ContactBean(int status, String name) {
         this.status = status;
         this.name = name;
-    }
-
-    public String getPub_key() {
-        return pub_key;
-    }
-
-    public void setPub_key(String pub_key) {
-        this.pub_key = pub_key;
     }
 
     public String getName() {

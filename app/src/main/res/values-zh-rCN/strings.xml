@@ -149,6 +149,7 @@
     <string name="Link_Delete_Successful">删除成功</string>
     <string name="Link_Delete_This_Friend">删除好友</string>
     <string name="Link_Delete_and_Leave">退出群组</string>
+    <string name="Link_Already_delete_and_Leave">你已经退出群</string>
     <string name="Link_Enter_Bitcoin_Address">输入比特币地址</string>
     <string name="Link_Favorite_Friend">常用联系人</string>
     <string name="Link_Find_me_by_phone_number">允许通过手机号找到我</string>
@@ -177,6 +178,7 @@
     <string name="Link_Invite_friend_to_join">邀请对方加入群聊\n%s</string>
     <string name="Link_Join_Group">加入群聊</string>
     <string name="Link_ManageGroup">群管理</string>
+    <string name="Link_Group_create_information_error">创建群信息错误</string>
     <string name="Link_Members">成员 (%d)</string>
     <string name="Link_More">更多</string>
     <string name="Link_My_Alias_in_Group">我的昵称</string>

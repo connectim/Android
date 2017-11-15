@@ -136,7 +136,11 @@ public class SafetyActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                if(response.getCode() == 2419){
+                    ToastEUtil.makeText(mActivity, R.string.Wallet_No_match_user, ToastEUtil.TOAST_STATUS_FAILE).show();
+                } else {
+                    ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                }
             }
         });
     }

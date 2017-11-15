@@ -124,7 +124,9 @@ public class UserInfoConnectIdActivity extends BaseActivity {
                     public void onError(Connect.HttpNotSignResponse response) {
                         if(response.getCode() == 2418){
                             ToastEUtil.makeText(mActivity, R.string.Set_CONNECT_ID_can_only_be_set_once).show();
-                        } else {
+                        }else if(response.getCode() == 2407){
+                            ToastEUtil.makeText(mActivity, R.string.Set_CONNECT_ID_regular).show();
+                        }else {
                             ToastEUtil.makeText(mActivity, response.getMessage()).show();
                         }
                     }

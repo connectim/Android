@@ -210,7 +210,11 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                ToastEUtil.makeText(activity,R.string.Link_Remove_Member_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
+                if(response.getCode() == 2423){
+                    ToastEUtil.makeText(activity, R.string.Chat_Not_Group_Master, ToastEUtil.TOAST_STATUS_FAILE).show();
+                } else {
+                    ToastEUtil.makeText(activity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                }
             }
         });
     }

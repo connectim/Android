@@ -132,7 +132,12 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
                     @Override
                     public void onError(Connect.HttpResponse response) {
                         ProgressUtil.getInstance().dismissProgress();
-                        ToastEUtil.makeText(mView.getActivity(),R.string.Link_update_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
+                        if(response.getCode() == 2408){
+                            ToastEUtil.makeText(mView.getActivity(),R.string.Login_User_avatar_is_illegal,ToastEUtil.TOAST_STATUS_FAILE).show();
+                        }else{
+                            ToastEUtil.makeText(mView.getActivity(),R.string.Link_update_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
+                        }
+
                     }
                 });
             }
