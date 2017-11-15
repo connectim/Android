@@ -1,6 +1,7 @@
 package connect.activity.chat.exts.presenter;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
@@ -85,14 +86,14 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     }
 
     @Override
-    public void agreeRequest(String pubkey,String code,String applyUid) {
+    public void agreeRequest(String caPublicKey,String code,String applyUid) {
         Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
                 .setIdentifier(groupKey)
                 .setSecretKey(groupEntity.getEcdh_key())
                 .build();
 
         String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
-        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(myCaPrivateKey, pubkey);
+        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(myCaPrivateKey, caPublicKey);
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
         String myCaPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
@@ -132,11 +133,13 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     }
 
     @Override
-    public void rejectRequest(String pubkey,String code,String address) {
+    public void rejectRequest(String code,String applyUid) {
         Connect.GroupReviewed reviewed = Connect.GroupReviewed.newBuilder()
-                .setIdentifier(pubkey)
+                .setIdentifier(groupKey)
                 .setVerificationCode(code)
-                .setUid(address).build();
+                .setUid(applyUid)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REJECT, reviewed, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -145,7 +148,11 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
 
             @Override
             public void onError(Connect.HttpResponse response) {
-
+                String errorMessage = response.getMessage();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    errorMessage = activity.getString(R.string.Network_equest_failed_please_try_again_later);
+                }
+                ToastEUtil.makeText(activity, errorMessage, 2).show();
             }
         });
     }

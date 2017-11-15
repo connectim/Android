@@ -174,9 +174,8 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
                 presenter.agreeRequest(agreeCaPublicKey, reviewed.getVerificationCode(), agreeUid);
                 break;
             case R.id.btn2:
-                String rejectCaPublicKey = reviewed.getUserInfo().getCaPub();
                 String rejectUid = reviewed.getUserInfo().getUid();
-                presenter.rejectRequest(rejectCaPublicKey, reviewed.getVerificationCode(), rejectUid);
+                presenter.rejectRequest(reviewed.getVerificationCode(), rejectUid);
                 break;
             case R.id.btn3:
                 presenter.groupChat();
