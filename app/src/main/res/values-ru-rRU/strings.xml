@@ -14,6 +14,9 @@
     <string name="Chat_Have_refused">Отклонено</string>
     <string name="Chat_Loc">Местоположение</string>
     <string name="Chat_Member_Max">Члены %1$d/%2$d</string>
+    <string name="Chat_Message_Black_Friend_Notice">сообщение было опубликовано, но отклонена другой стороной
+    </string>
+    <string name="Chat_Message_Friend_Cookie_Expired_Notice">друзья не вошли в систему в течение долгого времени логин время истекло</string>
     <string name="Chat_Msg_Undefine">Сообщение не определено</string>
     <string name="Chat_No_Pictures">Нет изображения</string>
     <string name="Chat_Notice_New_Message">[Ты получил одно сообщение]</string>

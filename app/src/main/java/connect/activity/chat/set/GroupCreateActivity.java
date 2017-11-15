@@ -150,7 +150,6 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
             if (list == null || list.size() < 2) {
                 toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_6d6e75);
-                toolbar.setRightListener(null);
             } else {
                 toolbar.setRightTextEnable(true);
                 toolbar.setRightTextColor(R.color.color_green);

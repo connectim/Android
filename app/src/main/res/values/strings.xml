@@ -17,6 +17,7 @@
     <string name="Chat_Message_Black_Friend_Notice">The message has been issued but is rejected by
         the other party
     </string>
+    <string name="Chat_Message_Friend_Cookie_Expired_Notice">Friends are not logged in for a long time, login time has expired</string>
     <string name="Chat_Msg_Undefine">Message is undefined</string>
     <string name="Chat_No_Pictures">No picture</string>
     <string name="Chat_Notice_New_Message">[You got a new message]</string>

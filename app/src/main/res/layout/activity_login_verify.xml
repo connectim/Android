@@ -15,13 +15,15 @@
         android:layout_marginTop="@dimen/dp_40"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@null"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/shape_edittext"
         android:gravity="center"
         android:hint="@string/Login_Code"
         android:inputType="number"
         android:maxLength="6"
         android:textColor="@color/color_161A21"
-        android:textColorHint="@color/color_161A21"
+        android:textColorHint="@color/color_68656f"
         android:textSize="@dimen/sp_36"/>
 
     <TextView

@@ -62,6 +62,15 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
         });
         toolbar.setRightText(R.string.Chat_Complete);
         toolbar.setRightTextEnable(false);
+        toolbar.setRightListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String groupName = edittxt1.getText().toString();
+                if (groupName.length() >= 4) {
+                    presenter.updateGroupName(groupName);
+                }
+            }
+        });
 
         groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
         edittxt1.addTextChangedListener(textWatcher);
@@ -85,19 +94,9 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
             if (s.length() == 0) {
                 toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_68656f);
-                toolbar.setRightListener(null);
             } else {
                 toolbar.setRightTextEnable(true);
                 toolbar.setRightTextColor(R.color.color_green);
-                toolbar.setRightListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String groupName = edittxt1.getText().toString();
-                        if (groupName.length() >= 4) {
-                            presenter.updateGroupName(groupName);
-                        }
-                    }
-                });
             }
         }
     }

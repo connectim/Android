@@ -60,7 +60,12 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
             public void onClick(View v) {
                 if (msgExtEntity.parseDirect() == MsgDirect.From) {
                     if (applyState == 0) {
-                        ApplyJoinGroupActivity.startActivity((Activity) context, ApplyJoinGroupActivity.EApplyGroup.GROUPKEY, joinGroupMessage.getGroupId(), getMsgExtEntity().getMessage_ower(), joinGroupMessage.getToken());
+                        ApplyJoinGroupActivity.EApplyGroup eApplyGroup = ApplyJoinGroupActivity.EApplyGroup.GROUPKEY;
+                        String groupId = joinGroupMessage.getGroupId();
+                        String messageIdentify = getMsgExtEntity().getMessage_ower();
+                        String token = joinGroupMessage.getToken();
+
+                        ApplyJoinGroupActivity.startActivity((Activity) context, eApplyGroup, groupId, messageIdentify, token);
                     }
                 }
             }

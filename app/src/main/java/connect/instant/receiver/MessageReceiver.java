@@ -17,7 +17,6 @@ import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
 import connect.utils.StringUtil;
-import connect.utils.TimeUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.log.LogManager;
@@ -46,7 +45,8 @@ public class MessageReceiver implements MessageListener {
     @Override
     public long chatBurnTime(String publicKey) {
         ConversionSettingEntity settingEntity = ConversionSettingHelper.getInstance().loadSetEntity(publicKey);
-        return settingEntity == null ? 0 : settingEntity.getSnap_time();
+        return settingEntity == null || settingEntity.getSnap_time() == null ?
+                0 : settingEntity.getSnap_time();
     }
 
     @Override

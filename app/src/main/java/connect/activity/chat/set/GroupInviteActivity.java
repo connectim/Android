@@ -163,10 +163,10 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
 
         @Override
         public void seleFriend(List<ContactEntity> list) {
-            if (list == null || list.size() <= oldMemberUids.size()) {
+            int memberSizeExceptMe = oldMemberUids.size() - 1;
+            if (list == null || list.size() <= memberSizeExceptMe) {
                 toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_6d6e75);
-                toolbar.setRightListener(null);
             } else {
                 toolbar.setRightTextEnable(true);
                 toolbar.setRightTextColor(R.color.color_green);

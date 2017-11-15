@@ -67,6 +67,20 @@ public class UnreachableReceiver implements UnreachableListener {
     }
 
     @Override
+    public void friendCookieExpired(String rejectUid) {
+        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(rejectUid);
+        if (friendEntity != null) {
+            CFriendChat friendChat = new CFriendChat(friendEntity);
+
+            String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Message_Friend_Cookie_Expired_Notice);
+            ChatMsgEntity msgExtEntity = friendChat.noticeMsg(0, content, rejectUid);
+
+            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, rejectUid, msgExtEntity);
+        }
+    }
+
+    @Override
     public void saltNotMatch(String msgid, String rejectUid, Connect.ChatCookie cookie) throws Exception {
         Connect.ChatCookieData cookieData = cookie.getData();
 

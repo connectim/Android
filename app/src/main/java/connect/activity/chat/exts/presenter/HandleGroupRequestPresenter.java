@@ -54,7 +54,9 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     @Override
     public void requestGroupInfo() {
         Connect.GroupId groupId = Connect.GroupId.newBuilder()
-                .setIdentifier(groupKey).build();
+                .setIdentifier(groupKey)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PUBLIC_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -83,21 +85,26 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     }
 
     @Override
-    public void agreeRequest(String pubkey,String code,String address) {
+    public void agreeRequest(String pubkey,String code,String applyUid) {
         Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
-                .setSecretKey(groupEntity.getEcdh_key()).build();
-        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), pubkey);
+                .setIdentifier(groupKey)
+                .setSecretKey(groupEntity.getEcdh_key())
+                .build();
+
+        String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
+        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(myCaPrivateKey, pubkey);
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
-        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String myCaPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
-        String backup = String.format("%1$s/%2$s", mypubkey, groupHex);
+        String backup = String.format("%1$s/%2$s", myCaPublicKey, groupHex);
 
         Connect.GroupReviewed reviewed = Connect.GroupReviewed.newBuilder()
                 .setIdentifier(groupKey)
+                .setUid(applyUid)
                 .setVerificationCode(code)
-                .setUid(address)
-                .setBackup(backup).build();
+                .setBackup(backup)
+                .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REVIEWED, reviewed, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {

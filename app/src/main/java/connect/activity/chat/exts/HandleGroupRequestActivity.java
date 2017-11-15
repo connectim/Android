@@ -160,20 +160,23 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.txt6:
-                String invitor = reviewed.getUserInfo().getPubKey();
-                ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(invitor);
+                String invitorUid = reviewed.getUserInfo().getUid();
+                ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(invitorUid);
                 if (friend == null) {
-                    String address = SupportKeyUril.getAddressFromPubKey(invitor);
-                    StrangerInfoActivity.startActivity(activity, address, SourceType.GROUP);
+                    StrangerInfoActivity.startActivity(activity, invitorUid, SourceType.GROUP);
                 } else {
-                    FriendInfoActivity.startActivity(activity, invitor);
+                    FriendInfoActivity.startActivity(activity, invitorUid);
                 }
                 break;
             case R.id.btn1:
-                presenter.agreeRequest(reviewed.getUserInfo().getPubKey(), reviewed.getVerificationCode(), reviewed.getUserInfo().getUid());
+                String agreeCaPublicKey = reviewed.getUserInfo().getCaPub();
+                String agreeUid = reviewed.getUserInfo().getUid();
+                presenter.agreeRequest(agreeCaPublicKey, reviewed.getVerificationCode(), agreeUid);
                 break;
             case R.id.btn2:
-                presenter.rejectRequest(reviewed.getUserInfo().getPubKey(), reviewed.getVerificationCode(), reviewed.getUserInfo().getUid());
+                String rejectCaPublicKey = reviewed.getUserInfo().getCaPub();
+                String rejectUid = reviewed.getUserInfo().getUid();
+                presenter.rejectRequest(rejectCaPublicKey, reviewed.getVerificationCode(), rejectUid);
                 break;
             case R.id.btn3:
                 presenter.groupChat();

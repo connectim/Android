@@ -415,48 +415,48 @@ public class ChatActivity extends BaseChatSendActivity {
 
     @Override
     public void saveRoomInfo() {
+        String showtxt = "";
+        long sendtime = 0;
         String draft = InputBottomLayout.bottomLayout.getDraft();
+
         if (chatAdapter.getMsgEntities().size() != 0) {
             ChatMsgEntity lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
             if (lastExtEntity != null) {
-                String showtxt = "";
-                long sendtime = 0;
-
                 if (lastExtEntity.getMessageType() != -500) {
                     showtxt = lastExtEntity.showContent();
                     sendtime = lastExtEntity.getCreatetime();
                 }
-
-                ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
-                if (conversionEntity == null) {
-                    switch (talker.getTalkType()) {
-                        case CONNECT_SYSTEM:
-                            CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
-                            break;
-                        case PRIVATE:
-                            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(normalChat.chatKey());
-                            if (contactEntity == null) {
-                                contactEntity = new ContactEntity();
-                                contactEntity.setUid(normalChat.chatKey());
-                                contactEntity.setAvatar(talker.getAvatar());
-                                contactEntity.setUsername(talker.getNickName());
-                            }
-                            CFriendChat cFriendChat = new CFriendChat(contactEntity);
-                            cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
-                            break;
-                        case GROUPCHAT:
-                            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(normalChat.chatKey());
-                            if (groupEntity != null) {
-                                CGroupChat cGroupChat = new CGroupChat(groupEntity);
-                                cGroupChat.updateRoomMsg(draft, showtxt, sendtime);
-                            }
-                            break;
-                    }
-                } else {
-                    ConversionHelper.getInstance().updateRoomEntity(normalChat.chatKey(), draft, showtxt, sendtime);
-                    ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
-                }
             }
+        }
+
+        ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
+        if (conversionEntity == null) {
+            switch (talker.getTalkType()) {
+                case CONNECT_SYSTEM:
+                    CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
+                    break;
+                case PRIVATE:
+                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(normalChat.chatKey());
+                    if (contactEntity == null) {
+                        contactEntity = new ContactEntity();
+                        contactEntity.setUid(normalChat.chatKey());
+                        contactEntity.setAvatar(talker.getAvatar());
+                        contactEntity.setUsername(talker.getNickName());
+                    }
+                    CFriendChat cFriendChat = new CFriendChat(contactEntity);
+                    cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
+                    break;
+                case GROUPCHAT:
+                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(normalChat.chatKey());
+                    if (groupEntity != null) {
+                        CGroupChat cGroupChat = new CGroupChat(groupEntity);
+                        cGroupChat.updateRoomMsg(draft, showtxt, sendtime);
+                    }
+                    break;
+            }
+        } else {
+            ConversionHelper.getInstance().updateRoomEntity(normalChat.chatKey(), draft, showtxt, sendtime);
+            ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
         }
     }
 

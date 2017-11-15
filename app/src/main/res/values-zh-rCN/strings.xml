@@ -13,6 +13,7 @@
     <string name="Chat_Loc">位置</string>
     <string name="Chat_Member_Max">%1$d/%2$d 成员</string>
     <string name="Chat_Message_Black_Friend_Notice">消息已发出，但被对方拒收</string>
+    <string name="Chat_Message_Friend_Cookie_Expired_Notice">好友长时间未登录，登录时间已过期</string>
     <string name="Chat_Msg_Undefine">消息未定义</string>
     <string name="Chat_No_Pictures">没有图片</string>
     <string name="Chat_Notice_New_Message">[你收到一条新消息]</string>

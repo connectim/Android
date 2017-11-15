@@ -44,7 +44,6 @@ public class NotificationBar {
             notificationBar = new NotificationBar();
         }
         return notificationBar;
-        //return notificationBar = new NotificationBar();
     }
 
     private Handler mHandler = new Handler(Looper.getMainLooper()) {

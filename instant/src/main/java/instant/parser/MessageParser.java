@@ -167,7 +167,10 @@ public class MessageParser extends InterParse {
                 Connect.ChatCookie chatCookie = Connect.ChatCookie.parseFrom(rejectMessage.getData());
                 UnreachableLocalReceiver.localReceiver.saltNotMatch(msgid, rejectUid, chatCookie);
                 break;
-            case 9://upload cookie expire
+            case 8://upload cookie salt expire
+                UnreachableLocalReceiver.localReceiver.friendCookieExpired(rejectUid);
+                break;
+            case 9://upload cookie salt not match
                 reloadUserCookie(msgid, rejectUid);
                 break;
         }

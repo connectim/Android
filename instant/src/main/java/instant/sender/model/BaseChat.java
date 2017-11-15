@@ -11,7 +11,7 @@ import instant.bean.MessageType;
 
 public abstract class BaseChat<T> implements Serializable {
 
-    private static String Tag = "BaseChat";
+    private static String TAG = "BaseChat";
 
     protected boolean isStranger = false;
 

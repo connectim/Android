@@ -35,8 +35,10 @@ public class MulContactAdapter extends RecyclerView.Adapter<MulContactAdapter.Mu
         this.friendEntities = entities;
 
         if (members != null) {
-            oldMemberList.addAll(members);
-            memberList.addAll(members);
+            for (String string : members) {
+                oldMemberList.add(string);
+                memberList.add(string);
+            }
         }
         if(seledFriend != null){
             memberList.clear();

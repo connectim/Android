@@ -127,8 +127,9 @@ public class DialogUtil {
         TextView rightTv = (TextView) view.findViewById(R.id.right_tv);
         TextView messageTv = (TextView) view.findViewById(R.id.message_tv);
 
-        if(isGone)
+        if (isGone) {
             edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
 
         titleTv.setText(title);
         if (TextUtils.isEmpty(message)) {

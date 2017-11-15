@@ -151,8 +151,9 @@ public class CommandParser extends InterParse {
 
                 switch ((byte) msgDetail.getType()) {
                     case 0x04://Offline command processing
-                        Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(msgDetail.getData());
-                        ByteString transferDataByte = imTransferData.getCipherData().toByteString();
+                        Connect.Command command = Connect.Command.parseFrom(msgDetail.getData());
+                        ByteString transferDataByte = command.getDetail();
+
                         switch (extension) {
                             case 0x01://contact list
                                 syncContacts(transferDataByte);
