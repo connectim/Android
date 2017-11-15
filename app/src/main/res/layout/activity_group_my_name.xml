@@ -19,6 +19,8 @@
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/shape_8px_ffffff"
         android:padding="@dimen/dp_5"
+        android:maxLength="20"
+        android:maxLines="1"
         android:textSize="@dimen/sp_16"/>
 
     <TextView

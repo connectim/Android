@@ -17,7 +17,6 @@ import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.model.ConvertUtil;
 import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HomeAction;
-import connect.activity.home.bean.HttpRecBean;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;

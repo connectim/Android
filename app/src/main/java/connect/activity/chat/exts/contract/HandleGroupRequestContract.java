@@ -22,9 +22,9 @@ public interface HandleGroupRequestContract {
 
         void requestGroupInfo();
 
-        void agreeRequest(String pubkey,String code,String address);
+        void agreeRequest(String caPublicKey,String code,String applyUid);
 
-        void rejectRequest(String pubkey,String code,String address);
+        void rejectRequest(String code,String applyUid);
 
         void groupChat();
     }

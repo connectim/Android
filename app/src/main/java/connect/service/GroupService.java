@@ -199,23 +199,29 @@ public class GroupService extends Service {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.GroupCollaborative groupCollaborative = Connect.GroupCollaborative.parseFrom(structData.getPlainData().toByteArray());
-                    if (!ProtoBufUtil.getInstance().checkProtoBuf(groupCollaborative)) {
-                        return;
-                    }
-                    String[] infos = groupCollaborative.getCollaborative().split("/");
-                    if (infos.length < 2) {
-                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.DownGroupBackUp, pubkey);
-                    } else {
-                        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), infos[0]);
-                        Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
-                        ecdHkey = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, ecdHkey, gcmData);
 
-                        try {
-                            String groupEcdh = new String(ecdHkey, "UTF-8");
-                            downGroupBackUpSuccess(pubkey, groupEcdh);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    boolean isDownLoadSuccessful = false;
+                    if (ProtoBufUtil.getInstance().checkProtoBuf(groupCollaborative)) {
+                        String[] infos = groupCollaborative.getCollaborative().split("/");
+                        if (infos.length < 2) {
+
+                        } else {
+                            byte[] ecdHkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), infos[0]);
+                            Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(infos[1]));
+                            ecdHkey = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, ecdHkey, gcmData);
+
+                            try {
+                                String groupEcdh = new String(ecdHkey, "UTF-8");
+                                downGroupBackUpSuccess(pubkey, groupEcdh);
+                                isDownLoadSuccessful = false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
+                    }
+
+                    if (!isDownLoadSuccessful) {
+                        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.DownGroupBackUp, pubkey);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

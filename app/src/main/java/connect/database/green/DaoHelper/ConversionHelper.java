@@ -149,8 +149,10 @@ public class ConversionHelper extends BaseDao {
     }
 
     public void updateRoomEntity(String identify, String draf, String content, long messagetime) {
-        String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,CONTENT = ? ,UNREAD_COUNT = 0 ,LAST_TIME = ? WHERE IDENTIFIER = ?;";
-        daoSession.getDatabase().execSQL(sql, new Object[]{draf, content, messagetime, identify});
+        String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,CONTENT = ? ,UNREAD_COUNT = 0 " +
+                (messagetime == 0 ? " " : ", LAST_TIME = " + messagetime) +
+                " WHERE IDENTIFIER = ?;";
+        daoSession.getDatabase().execSQL(sql, new Object[]{draf, content, identify});
     }
 
     /************************ delete *****************************************/

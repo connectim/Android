@@ -21,9 +21,7 @@ public enum SocketACK {
     CONTACT_LOGOUT(new byte[]{0x04, 0x07}),//exit
     ADD_FRIEND(new byte[]{0x04, 0x08}),//Add buddy
     AGREE_FRIEND(new byte[]{0x04, 0x09}),//Agree to add buddy
-    REMOVE_FRIEND(new byte[]{0x04, 0x0a}),//Remove buddy
-    SET_FRIEND(new byte[]{0x04, 11}),//Modify the friends remark and common friends
-    NO_INTERESTED(new byte[]{0x04, 0x15}),//Not interested in
+    SET_FRIEND(new byte[]{0x04, 0x0b}),//Modify the friends remark and common friends
     OUTER_TRANSFER(new byte[]{0x04, 0x11}),//External transfer
     OUTER_REDPACKET(new byte[]{0x04, 0x12}),//Outside a red envelope
     UPLOAD_APPINFO(new byte[]{0x04, 0x16}),//Report the device version information

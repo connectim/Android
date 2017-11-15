@@ -46,6 +46,11 @@ public class UnreachableLocalReceiver implements UnreachableListener {
     }
 
     @Override
+    public void friendCookieExpired(String rejectUid) {
+        getUnreachableListener().friendCookieExpired(rejectUid);
+    }
+
+    @Override
     public void saltNotMatch(String msgid, String rejectUid, Connect.ChatCookie cookie) throws Exception {
         getUnreachableListener().saltNotMatch(msgid, rejectUid, cookie);
     }

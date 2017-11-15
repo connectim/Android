@@ -1,6 +1,7 @@
 package connect.activity.chat.exts.presenter;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
@@ -54,7 +55,9 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     @Override
     public void requestGroupInfo() {
         Connect.GroupId groupId = Connect.GroupId.newBuilder()
-                .setIdentifier(groupKey).build();
+                .setIdentifier(groupKey)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PUBLIC_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -83,21 +86,26 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     }
 
     @Override
-    public void agreeRequest(String pubkey,String code,String address) {
+    public void agreeRequest(String caPublicKey,String code,String applyUid) {
         Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
-                .setSecretKey(groupEntity.getEcdh_key()).build();
-        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), pubkey);
+                .setIdentifier(groupKey)
+                .setSecretKey(groupEntity.getEcdh_key())
+                .build();
+
+        String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
+        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(myCaPrivateKey, caPublicKey);
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
-        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String myCaPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
         String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
-        String backup = String.format("%1$s/%2$s", mypubkey, groupHex);
+        String backup = String.format("%1$s/%2$s", myCaPublicKey, groupHex);
 
         Connect.GroupReviewed reviewed = Connect.GroupReviewed.newBuilder()
                 .setIdentifier(groupKey)
+                .setUid(applyUid)
                 .setVerificationCode(code)
-                .setUid(address)
-                .setBackup(backup).build();
+                .setBackup(backup)
+                .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REVIEWED, reviewed, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -125,11 +133,13 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     }
 
     @Override
-    public void rejectRequest(String pubkey,String code,String address) {
+    public void rejectRequest(String code,String applyUid) {
         Connect.GroupReviewed reviewed = Connect.GroupReviewed.newBuilder()
-                .setIdentifier(pubkey)
+                .setIdentifier(groupKey)
                 .setVerificationCode(code)
-                .setUid(address).build();
+                .setUid(applyUid)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REJECT, reviewed, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -138,10 +148,14 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                if(response.getCode() == 2425){
+                if (response.getCode() == 2425) {
                     ToastEUtil.makeText(activity, R.string.Chat_VerifyCode_has_expired, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else {
-                    ToastEUtil.makeText(activity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+                    String errorMessage = response.getMessage();
+                    if (TextUtils.isEmpty(errorMessage)) {
+                        errorMessage = activity.getString(R.string.Network_equest_failed_please_try_again_later);
+                    }
+                    ToastEUtil.makeText(activity, errorMessage, ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
             }
         });
