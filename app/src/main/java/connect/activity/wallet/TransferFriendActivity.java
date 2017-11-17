@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wallet.bean.CurrencyEnum;
+import com.wallet.inter.WalletListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,21 +22,19 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
-import connect.activity.wallet.manager.TransferManager;
-import connect.database.green.bean.ContactEntity;
-import connect.ui.activity.R;
-import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.wallet.adapter.FriendGridAdapter;
 import connect.activity.wallet.bean.FriendSeleBean;
 import connect.activity.wallet.contract.TransferFriendContract;
+import connect.activity.wallet.manager.TransferManager;
 import connect.activity.wallet.presenter.TransferFriendPresenter;
+import connect.activity.wallet.view.TransferEditView;
+import connect.database.green.bean.ContactEntity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import connect.activity.wallet.view.TransferEditView;
-import com.wallet.inter.WalletListener;
 import connect.widget.TopToolBar;
+import connect.widget.selefriend.SelectFriendActivity;
 
 /**
  * Transfer to friend
@@ -119,9 +118,9 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
         ArrayList<ContactEntity> list = new ArrayList<>();
         list.addAll(presenter.getListFriend());
         if(TextUtils.isEmpty(pubGroup)){
-            SeleUsersActivity.startActivity(mActivity, SeleUsersActivity.SOURCE_FRIEND, "",list);
+            SelectFriendActivity.startActivity(mActivity, SelectFriendActivity.SOURCE_FRIEND, "",list);
         }else{
-            SeleUsersActivity.startActivity(mActivity, SeleUsersActivity.SOURCE_GROUP, pubGroup,list);
+            SelectFriendActivity.startActivity(mActivity, SelectFriendActivity.SOURCE_GROUP, pubGroup,list);
         }
     }
 
@@ -195,7 +194,7 @@ public class TransferFriendActivity extends BaseActivity implements TransferFrie
                 friendGridAdapter.setNotifyData(list);
                 numberTv.setText(getString(R.string.Wallet_transfer_man, list.size()));
                 presenter.checkBtnEnable();
-            }else if(requestCode == SeleUsersActivity.CODE_REQUEST){
+            }else if(requestCode == SelectFriendActivity.CODE_REQUEST){
                 ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
                 presenter.setListData(friendList);
                 presenter.horizontal_layout(gridview);

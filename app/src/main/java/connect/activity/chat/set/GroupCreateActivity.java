@@ -18,13 +18,13 @@ import connect.activity.base.BaseActivity;
 import connect.activity.base.compare.FriendCompara;
 import connect.activity.chat.set.contract.GroupCreateContract;
 import connect.activity.chat.set.presenter.GroupCreatePresenter;
-import connect.activity.common.adapter.MulContactAdapter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
+import connect.widget.selefriend.adapter.SelectFriendAdapter;
 
 public class GroupCreateActivity extends BaseActivity implements GroupCreateContract.BView{
 
@@ -46,7 +46,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
     private GroupCreateFriendSelectListener friendSelectListener = new GroupCreateFriendSelectListener();
     private GroupCreateLetterChanged letterChanged = new GroupCreateLetterChanged();
     private LinearLayoutManager linearLayoutManager;
-    private MulContactAdapter adapter;
+    private SelectFriendAdapter adapter;
     private GroupCreateContract.Presenter presenter;
 
     @Override
@@ -80,7 +80,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<ContactEntity> selectEntities = adapter.getSelectEntities();
+                List<ContactEntity> selectEntities = adapter.getSelectList();
                 if (selectEntities == null || selectEntities.size() < 1) {
                     toolbar.setRightTextColor(R.color.color_6d6e75);
                     return;
@@ -101,12 +101,13 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend();
         Collections.sort(friendEntities, new FriendCompara());
 
-        adapter = new MulContactAdapter(activity, oldMembers, friendEntities, null);
+        adapter = new SelectFriendAdapter(activity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(adapter);
         recyclerview.addOnScrollListener(onscrollListener);
-        adapter.setOnSeleFriendListence(friendSelectListener);
+        adapter.setOnSelectFriendListener(friendSelectListener);
         siderbar.setOnTouchingLetterChangedListener(letterChanged);
+        adapter.setDataNotify(friendEntities, null, oldMembers);
         new GroupCreatePresenter(this).start();
     }
 
@@ -143,10 +144,9 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         }
     }
 
-    private class GroupCreateFriendSelectListener implements MulContactAdapter.OnSeleFriendListence {
-
+    private class GroupCreateFriendSelectListener implements SelectFriendAdapter.OnSelectFriendListener {
         @Override
-        public void seleFriend(List<ContactEntity> list) {
+        public void selectFriend(List<String> list) {
             if (list == null || list.size() < 2) {
                 toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_6d6e75);

@@ -19,7 +19,6 @@ import connect.activity.base.BaseActivity;
 import connect.activity.base.compare.FriendCompara;
 import connect.activity.chat.set.contract.GroupInviteContract;
 import connect.activity.chat.set.presenter.GroupInvitePresenter;
-import connect.activity.common.adapter.MulContactAdapter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -27,6 +26,7 @@ import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
+import connect.widget.selefriend.adapter.SelectFriendAdapter;
 
 public class GroupInviteActivity extends BaseActivity implements GroupInviteContract.BView{
 
@@ -50,7 +50,7 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
     private GroupInviteLetterChanged letterChanged = new GroupInviteLetterChanged();
     private LinearLayoutManager linearLayoutManager;
     private GroupInviteContract.Presenter presenter;
-    private MulContactAdapter adapter;
+    private SelectFriendAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,7 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
         toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<ContactEntity> selectEntities = adapter.getSelectEntities();
+                ArrayList<ContactEntity> selectEntities = adapter.getSelectList();
                 if (selectEntities == null || selectEntities.size() < 1) {
                     toolbar.setRightTextEnable(false);
                     return;
@@ -116,13 +116,14 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
         Collections.sort(friendEntities, new FriendCompara());
 
         linearLayoutManager = new LinearLayoutManager(activity);
-        adapter = new MulContactAdapter(activity, oldMemberUids, friendEntities, null);
+        adapter = new SelectFriendAdapter(activity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(adapter);
 
         recyclerview.addOnScrollListener(onscrollListener);
-        adapter.setOnSeleFriendListence(friendSelectListener);
+        adapter.setOnSelectFriendListener(friendSelectListener);
         siderbar.setOnTouchingLetterChangedListener(letterChanged);
+        adapter.setDataNotify(friendEntities, null, oldMemberUids);
         new GroupInvitePresenter(this).start();
     }
 
@@ -159,10 +160,9 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
         }
     }
 
-    private class GroupInviteFriendSelectListener implements MulContactAdapter.OnSeleFriendListence{
-
+    private class GroupInviteFriendSelectListener implements SelectFriendAdapter.OnSelectFriendListener{
         @Override
-        public void seleFriend(List<ContactEntity> list) {
+        public void selectFriend(List<String> list) {
             int memberSizeExceptMe = oldMemberUids.size() - 1;
             if (list == null || list.size() <= memberSizeExceptMe) {
                 toolbar.setRightTextEnable(false);

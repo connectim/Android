@@ -52,20 +52,20 @@ public class EncryptionUtil {
     public static Connect.GcmData encodeAESGCM(ExtendedECDH extendedECDH, byte[] rawECDHKey, byte[] encodes) {
         rawECDHKey = getKeyExtendedECDH(extendedECDH, rawECDHKey);
 
-        String abStr = TimeUtil.getCurrentTimeSecond() + "" + (int)((Math.random()*9+1)*100000);
-        byte[] ab = abStr.getBytes();
+        String aabStr = TimeUtil.getCurrentTimeSecond() + "" + (int)((Math.random()*9+1)*100000);
+        byte[] aab = aabStr.getBytes();
 
         ByteString iv = ByteString.copyFrom(SecureRandom.getSeed(16));
         byte[] ib = iv.toByteArray();
 
         GCMModel gc = AllNativeMethod.cdxtalkEncodeAESGCM(encodes, encodes.length,
-                ab, ab.length, rawECDHKey, rawECDHKey.length, ib, ib.length);
+                aab, aab.length, rawECDHKey, rawECDHKey.length, ib, ib.length);
 
         ByteString enc = ByteString.copyFrom(gc.encrypt);
         ByteString tag = ByteString.copyFrom(gc.tag);
 
         Connect.GcmData gcmData = Connect.GcmData.newBuilder().setIv(iv).
-                setAad(ByteString.copyFrom(ab)).setCiphertext(enc).setTag(tag).build();
+                setAad(ByteString.copyFrom(aab)).setCiphertext(enc).setTag(tag).build();
         return gcmData;
     }
 

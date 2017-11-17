@@ -1,16 +1,12 @@
 package connect.activity.chat.activity;
 
-import android.content.Context;
 import android.os.Bundle;
-
-import com.google.protobuf.InvalidProtocolBufferException;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import connect.activity.base.BaseApplication;
 import connect.activity.base.BaseListener;
 import connect.activity.chat.bean.DestructOpenBean;
 import connect.activity.chat.bean.DestructReadBean;
@@ -22,14 +18,9 @@ import connect.activity.chat.exts.LuckyPacketActivity;
 import connect.activity.chat.exts.PaymentActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.set.ContactCardActivity;
-import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.home.HomeActivity;
-import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ConversionSettingEntity;
-import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.TimeUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.chatfile.upload.LocationUpload;
@@ -41,6 +32,7 @@ import connect.widget.album.AlbumActivity;
 import connect.widget.bottominput.InputPanel;
 import connect.widget.camera.CameraTakeActivity;
 import connect.widget.imagewatcher.ImageViewerActivity;
+import connect.widget.selefriend.SelectFriendActivity;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.sender.model.FriendChat;
@@ -98,7 +90,7 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
                     TransferToActivity.startActivity(activity, normalChat.chatKey());
                 } else if (normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-                    SeleUsersActivity.startActivity(activity, SeleUsersActivity.SOURCE_GROUP, talker.getTalkKey(), null);
+                    SelectFriendActivity.startActivity(activity, SelectFriendActivity.SOURCE_GROUP, talker.getTalkKey(), null);
                 }
                 break;
             case REDPACKET:

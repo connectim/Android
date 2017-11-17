@@ -18,7 +18,7 @@
         android:divider="@color/color_f1f1f1"/>
 
     <connect.widget.SideBar
-        android:id="@id/siderbar"
+        android:id="@+id/side_bar"
         android:layout_width="25dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"

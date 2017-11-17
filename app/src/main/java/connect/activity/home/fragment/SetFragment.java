@@ -31,8 +31,6 @@ import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import instant.bean.UserOrderBean;
-import instant.utils.manager.FailMsgsManager;
 
 /**
  * Set the main interface.

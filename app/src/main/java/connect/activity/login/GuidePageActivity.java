@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.activity.common.adapter.ViewPagerAdapter;
+import connect.widget.ViewPagerAdapter;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.widget.GuidePointView;

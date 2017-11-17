@@ -1,9 +1,5 @@
 package connect.activity.base;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,26 +8,15 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
-import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Hashtable;
 
-import connect.ui.activity.R;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastUtil;
-import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.zxing.camera.CameraManager;
 import connect.widget.zxing.decode.DecodeImageCallback;
@@ -42,7 +27,6 @@ import connect.widget.zxing.utils.InactivityTimer;
 
 public abstract class BaseScanActivity extends BaseActivity {
 
-    private final String TAG = BaseScanActivity.class.getSimpleName();
     private CaptureActivityHandler handler;
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
@@ -50,8 +34,6 @@ public abstract class BaseScanActivity extends BaseActivity {
 
     /** SurfaceView */
     private SurfaceView scanPreview = null;
-    private View scanCropView;
-    private RelativeLayout scanContainer;
     public final int PARSE_BARCODE_SUC = 601;
     private BaseScanActivity mActivity;
 
@@ -65,22 +47,11 @@ public abstract class BaseScanActivity extends BaseActivity {
         inactivityTimer = new InactivityTimer(mActivity);
         beepManager = new BeepManager(mActivity);
         CameraManager.init();
+        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_CAMERA}, permissionCallBack);
     }
 
-    public void setViewFind(SurfaceView scanPreview,View scanCropView,RelativeLayout scanContainer){
+    public void setViewFind(SurfaceView scanPreview){
         this.scanPreview = scanPreview;
-        this.scanCropView = scanCropView;
-        this.scanContainer = scanContainer;
-        PermissionUtil.getInstance().requestPermission(this, new String[]{PermissionUtil.PERMISSION_CAMERA}, permissionCallBack);
-    }
-
-    protected void showBackgroupAni(View view){
-        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-        animation.setDuration(1500);
-        animation.setRepeatCount(-1);
-        animation.setRepeatMode(Animation.RESTART);
-        view.startAnimation(animation);
     }
 
     public abstract void scanCall(String value);
@@ -99,21 +70,6 @@ public abstract class BaseScanActivity extends BaseActivity {
             scanPreview.getHolder().addCallback(callback);
         }
         inactivityTimer.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        if (handler != null) {
-            handler.quitSynchronously();
-            handler = null;
-        }
-        inactivityTimer.onPause();
-        beepManager.close();
-        CameraManager.get().closeDriver();
-        if (!isHasSurface) {
-            scanPreview.getHolder().removeCallback(callback);
-        }
-        super.onPause();
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
@@ -139,9 +95,6 @@ public abstract class BaseScanActivity extends BaseActivity {
     private SurfaceHolder.Callback callback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
-            if (holder == null) {
-                LogManager.getLogger().i(TAG, "*** WARNING *** surfaceCreated() gave us a null surface!");
-            }
             if (!isHasSurface) {
                 isHasSurface = true;
                 initCamera(holder);
@@ -184,10 +137,7 @@ public abstract class BaseScanActivity extends BaseActivity {
 
     private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
         @Override
-        public void granted(String[] permissions) {
-            onStart();
-        }
-
+        public void granted(String[] permissions) {}
         @Override
         public void deny(String[] permissions) {}
     };
@@ -196,6 +146,21 @@ public abstract class BaseScanActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissionCallBack);
+    }
+
+    @Override
+    protected void onPause() {
+        if (handler != null) {
+            handler.quitSynchronously();
+            handler = null;
+        }
+        inactivityTimer.onPause();
+        beepManager.close();
+        CameraManager.get().closeDriver();
+        if (!isHasSurface) {
+            scanPreview.getHolder().removeCallback(callback);
+        }
+        super.onPause();
     }
 
 }

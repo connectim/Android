@@ -25,7 +25,6 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTouch;
 import connect.activity.chat.activity.BaseChatSendActivity;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.LinkMessageRow;
@@ -35,7 +34,6 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
-import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.wallet.TransferFriendActivity;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -70,6 +68,7 @@ import connect.widget.bottominput.InputPanel;
 import connect.widget.bottominput.view.InputBottomLayout;
 import connect.widget.camera.CameraTakeActivity;
 import connect.widget.recordvoice.RecordView;
+import connect.widget.selefriend.SelectFriendActivity;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.NormalChat;
 import protos.Connect;
@@ -330,7 +329,7 @@ public class ChatActivity extends BaseChatSendActivity {
             }
         } else if (requestCode == CODE_REQUEST && resultCode == CODE_REQUEST) {//relay the message
             transpondTo(data);
-        } else if (resultCode == RESULT_OK && requestCode == SeleUsersActivity.CODE_REQUEST) {
+        } else if (resultCode == RESULT_OK && requestCode == SelectFriendActivity.CODE_REQUEST) {
             ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
             TransferFriendActivity.startActivity(activity, friendList, normalChat.chatKey());
         }

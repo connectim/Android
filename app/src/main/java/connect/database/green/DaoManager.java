@@ -21,7 +21,6 @@ import connect.database.green.dao.DaoMaster;
 import connect.database.green.dao.DaoSession;
 import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
-import connect.utils.cryption.TransformUtil;
 import instant.utils.SharedUtil;
 
 /**
@@ -60,9 +59,9 @@ public class DaoManager {
                 DB_PWD = "connect_exception_pwd";
             } else {
                 String uid = userBean.getUid();
-                DB_NAME = "connect_" + StringUtil.bytesToHexString(TransformUtil.digest(TransformUtil.MD5,
+                DB_NAME = "connect_" + StringUtil.bytesToHexString(StringUtil.digest(StringUtil.MD5,
                         StringUtil.hexStringToBytes(uid)));
-                DB_PWD = "connect_" + StringUtil.bytesToHexString(TransformUtil.digest(TransformUtil.SHA_256,
+                DB_PWD = "connect_" + StringUtil.bytesToHexString(StringUtil.digest(StringUtil.SHA_256,
                         StringUtil.hexStringToBytes(uid)));
             }
 
@@ -136,7 +135,7 @@ public class DaoManager {
 
     public void deleteDataBase() {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        String dataBaseName = "connect_" + StringUtil.bytesToHexString(TransformUtil.digest(TransformUtil.MD5,
+        String dataBaseName = "connect_" + StringUtil.bytesToHexString(StringUtil.digest(StringUtil.MD5,
                 StringUtil.hexStringToBytes(userBean.getUid())));
         Context context = BaseApplication.getInstance().getBaseContext();
         context.deleteDatabase(dataBaseName);
