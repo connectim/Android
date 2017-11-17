@@ -105,8 +105,6 @@ public class ConfigUtil {
     private String HTTP_MODE = "HTTP_MODE";
     private String SERVER_PUBKEY = "SERVER_PUBKEY";
     private String SERVER_ADDRESS = "SERVER_ADDRESS";
-    private String SOCKET_ADDRESS = "SOCKET_ADDRESS";
-    private String SOCKET_PORT = "SOCKET_PORT";
     private String SHARE_CARD_ADDRESS = "SHARE_CARD_ADDRESS";
     private String SHARE_PAY_ADDRESS = "SHARE_PAY_ADDRESS";
     private String CRASH_TAGS = "CRASH_TAGS";
@@ -143,25 +141,6 @@ public class ConfigUtil {
      */
     public String serverAddress() {
         return keyMaps.get(SERVER_ADDRESS);
-    }
-
-    /**
-     * Postal address
-     *
-     * @return
-     */
-    public String socketAddress() {
-        return keyMaps.get(SOCKET_ADDRESS);
-    }
-
-    /**
-     * Communication port
-     *
-     * @return
-     */
-    public int socketPort() {
-        String port = keyMaps.get(SOCKET_PORT);
-        return Integer.parseInt(port);
     }
 
     /**

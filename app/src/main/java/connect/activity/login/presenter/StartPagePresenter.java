@@ -88,10 +88,9 @@ public class StartPagePresenter implements StartContract.Presenter {
                     e.printStackTrace();
                 }
 
-                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
                 if (!SharedPreferenceUtil.getInstance().isContains(SharedPreferenceUtil.FIRST_INTO_APP)) {
                     mView.goIntoGuide();
-                } else if (userBean == null) {
+                } else if (!SharedPreferenceUtil.getInstance().containsUser()) {
                     mView.goIntoLoginForPhone();
                 } else {
                     openFromWeb(mActivity);

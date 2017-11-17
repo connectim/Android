@@ -7,7 +7,7 @@ import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.bean.UserCookie;
 import instant.parser.localreceiver.ConnectLocalReceiver;
-import instant.utils.ConfigUtil;
+import instant.utils.XmlParser;
 import instant.utils.StringUtil;
 import instant.utils.cryption.EncryptionUtil;
 import instant.utils.cryption.SupportKeyUril;
@@ -44,7 +44,7 @@ public class ShakeHandSender {
         Session.getInstance().setRandomCookie(tempCookie);
 
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
-                priKey, ConfigUtil.getInstance().serverPubKey(), newConnection.toByteString());
+                priKey, XmlParser.getInstance().serverPubKey(), newConnection.toByteString());
 
         String uid = Session.getInstance().getConnectCookie().getUid();
         String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());

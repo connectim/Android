@@ -11,16 +11,13 @@ import com.google.protobuf.ByteString;
 import java.nio.ByteBuffer;
 
 import connect.wallet.jni.AllNativeMethod;
-import instant.R;
-import instant.bean.ChatMsgEntity;
 import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.bean.UserCookie;
 import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.sender.SenderManager;
-import instant.sender.model.RobotChat;
 import instant.ui.InstantSdk;
-import instant.utils.ConfigUtil;
+import instant.utils.XmlParser;
 import instant.utils.DeviceInfoUtil;
 import instant.utils.SharedUtil;
 import instant.utils.StringUtil;
@@ -66,7 +63,7 @@ public class ShakeHandParser extends InterParse {
         String pubkey = userCookie.getPubKey();
         String priKey = userCookie.getPriKey();
 
-        byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, priKey, ConfigUtil.getInstance().serverPubKey(), response.getCipherData());
+        byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, priKey, XmlParser.getInstance().serverPubKey(), response.getCipherData());
         Connect.StructData structData = Connect.StructData.parseFrom(bytes);
         Connect.NewConnection newConnection = Connect.NewConnection.parser().parseFrom(structData.getPlainData());
 

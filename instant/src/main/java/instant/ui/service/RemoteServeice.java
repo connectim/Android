@@ -19,6 +19,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManager;
+
 import connect.im.IMessage;
 import instant.bean.Session;
 import instant.bean.SocketACK;
@@ -27,8 +31,9 @@ import instant.netty.BufferBean;
 import instant.netty.MessageDecoder;
 import instant.netty.MessageEncoder;
 import instant.netty.NettySession;
+import instant.netty.SslContextFactory;
 import instant.ui.InstantSdk;
-import instant.utils.ConfigUtil;
+import instant.utils.XmlParser;
 import instant.utils.TimeUtil;
 import instant.utils.log.LogManager;
 import io.netty.bootstrap.Bootstrap;
@@ -44,6 +49,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -98,8 +105,8 @@ public class RemoteServeice extends Service {
 
             localBinder = IMessage.Stub.asInterface(service);
 
-            socketAddress = ConfigUtil.getInstance().socketAddress();
-            socketPort = ConfigUtil.getInstance().socketPort();
+            socketAddress = XmlParser.getInstance().socketAddress();
+            socketPort = XmlParser.getInstance().socketPort();
             canReConnect = true;
             connectService();
         }
@@ -270,6 +277,14 @@ public class RemoteServeice extends Service {
 
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
+//                    SSLContext clientContext = SSLContext.getDefault();
+                    SSLContext clientContext = SslContextFactory.getServerContext();
+//                    SSLEngine engine = clientContext.createSSLEngine();
+                    SSLEngine engine = clientContext.createSSLEngine(socketAddress, socketPort);
+                    engine.setUseClientMode(true);
+                    engine.setNeedClientAuth(false);
+                    ch.pipeline().addLast(new SslHandler(engine));
+
                     ch.pipeline().addLast(new IdleStateHandler(READERIDLE_TIME, WRITERIDLE_TIME, 0, TimeUnit.SECONDS));
                     ch.pipeline().addLast(new MessageEncoder());
                     ch.pipeline().addLast(new MessageDecoder());
@@ -302,7 +317,7 @@ public class RemoteServeice extends Service {
                 e.printStackTrace();
                 LogManager.getLogger().d(TAG, "connectService() Exception ==> " + e.getMessage());
                 reconDelay();
-            }finally {
+            } finally {
                 LogManager.getLogger().d(TAG, "connectService() finally ==> ");
                 NettySession.getInstance().shutDown();
                 reconDelay();
@@ -330,7 +345,7 @@ public class RemoteServeice extends Service {
             lastReceiverTime = TimeUtil.getCurrentTimeInLong();
             BufferBean bufferBean = (BufferBean) msg;
             LogManager.getLogger().d(TAG, "channelRead() ==> ack:[" +
-                    bufferBean.getAck()[0] + "][" + bufferBean.getAck()[1]+"]");
+                    bufferBean.getAck()[0] + "][" + bufferBean.getAck()[1] + "]");
 
             localBinder.connectMessage(bufferBean.getAck(), bufferBean.getMessage());
         }

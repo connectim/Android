@@ -17,7 +17,7 @@
  */
 package instant.utils.log;
 
-import instant.utils.ConfigUtil;
+import instant.utils.XmlParser;
 
 /**
  * interface for a logger class to replace the static calls to {@link android.util.Log}
@@ -27,7 +27,7 @@ public interface Logger {
     /**
      *  debug true :print log， false :close log
      */
-    boolean debugEnade = !ConfigUtil.getInstance().appMode();
+    boolean debugEnade = !XmlParser.getInstance().appMode();
 
     /**
      * Send a {@link android.util.Log#VERBOSE} log message.

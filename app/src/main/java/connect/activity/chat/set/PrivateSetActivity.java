@@ -171,7 +171,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
                     @Override
                     public void confirm(int position) {
                         ConversionHelper.getInstance().deleteRoom(roomKey);
-                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY,roomKey);
                     }
                 });
             }

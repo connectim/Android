@@ -105,6 +105,24 @@ public class SharedPreferenceUtil {
         return userBean;
     }
 
+    public boolean containsUser() {
+        boolean isContain = true;
+        isContain = isContains(USER_INFO);
+        if (isContain) {
+            String userStr = getStringValue(USER_INFO);
+            if (TextUtils.isEmpty(userStr)) {
+                isContain = false;
+            } else {
+                UserBean userBean = new Gson().fromJson(userStr, UserBean.class);
+                isContain = userBean != null && !TextUtils.isEmpty(userBean.getUid())
+                        && !TextUtils.isEmpty(userBean.getCaPublicKey())
+                        && !TextUtils.isEmpty(userBean.getPriKey());
+
+            }
+        }
+        return isContain;
+    }
+
     public String getLanguageCode(){
         String languageCode = getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
         if(TextUtils.isEmpty(languageCode)){

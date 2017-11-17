@@ -13,6 +13,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.io.File;
 
 import connect.activity.chat.bean.DestructReadBean;
+import connect.activity.chat.bean.RoomSession;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MsgDirect;
 import connect.activity.chat.bean.RecExtBean;
@@ -46,6 +47,7 @@ public class MsgImgHolder extends MsgChatHolder {
     public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         photoMessage = Connect.PhotoMessage.parseFrom(msgExtEntity.getContents());
+        RoomSession.getInstance().checkBurnTime(photoMessage.getSnapTime());
 
         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
         String url = !TextUtils.isEmpty(photoMessage.getThum()) ? photoMessage.getThum() : photoMessage.getUrl();

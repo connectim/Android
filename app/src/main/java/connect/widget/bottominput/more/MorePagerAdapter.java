@@ -148,14 +148,14 @@ public class MorePagerAdapter extends PagerAdapter {
             if (null == chatSetEntity) {
                 chatSetEntity = new ConversionSettingEntity();
                 chatSetEntity.setIdentifier(roomkey);
-                chatSetEntity.setSnap_time(-1);
+                chatSetEntity.setSnap_time(-1L);
             }
 
             if (!Long.valueOf(time).equals(chatSetEntity.getSnap_time())) {
                 MsgSend.sendOuterMsg(MsgSend.MsgSendType.BURNREAD_SETTING, time);
                 DestructOpenBean.sendDestructMsg(time);
 
-                chatSetEntity.setSnap_time(time);
+                chatSetEntity.setSnap_time((long) time);
                 ConversionSettingHelper.getInstance().insertSetEntity(chatSetEntity);
             }
         }

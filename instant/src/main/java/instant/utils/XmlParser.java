@@ -17,12 +17,12 @@ import instant.ui.InstantSdk;
  * Created by Administrator on 2017/10/18.
  */
 
-public class ConfigUtil {
-    private static ConfigUtil configUtil;
+public class XmlParser {
+    private static XmlParser xmlParser;
 
     private Map<String, String> keyMaps = null;
 
-    public ConfigUtil() {
+    public XmlParser() {
         initConfig(ModeEnum.TEST);
     }
 
@@ -47,7 +47,7 @@ public class ConfigUtil {
      * @throws IOException
      */
     public void xmlParser(String mode) throws XmlPullParserException, IOException {
-        InputStream inputStream = InstantSdk.instantSdk.getBaseContext().getAssets().open("config.xml");
+        InputStream inputStream = InstantSdk.instantSdk.getBaseContext().getAssets().open("connect.xml");
 
         XmlPullParser pullParser = Xml.newPullParser();
         pullParser.setInput(inputStream, "UTF-8");
@@ -88,11 +88,11 @@ public class ConfigUtil {
         }
     }
 
-    public synchronized static ConfigUtil getInstance() {
-        if (configUtil == null) {
-            configUtil = new ConfigUtil();
+    public synchronized static XmlParser getInstance() {
+        if (xmlParser == null) {
+            xmlParser = new XmlParser();
         }
-        return configUtil;
+        return xmlParser;
     }
 
     /**********************************************************************************************
@@ -100,13 +100,10 @@ public class ConfigUtil {
      *********************************************************************************************/
     private String APP_MODE = "APP_MODE";
     private String HTTP_MODE = "HTTP_MODE";
-    private String SERVER_PUBKEY = "SERVER_PUBKEY";
     private String SERVER_ADDRESS = "SERVER_ADDRESS";
+    private String SERVER_PUBKEY = "SERVER_PUBKEY";
     private String SOCKET_ADDRESS = "SOCKET_ADDRESS";
     private String SOCKET_PORT = "SOCKET_PORT";
-    private String SHARE_CARD_ADDRESS = "SHARE_CARD_ADDRESS";
-    private String SHARE_PAY_ADDRESS = "SHARE_PAY_ADDRESS";
-    private String MOBILE_FEEDBACK = "MOBILE_FEEDBACK";
     private String CRASH_TAGS = "CRASH_TAGS";
     private String CRASH_APPID= "CRASH_APPID";
 
@@ -130,10 +127,6 @@ public class ConfigUtil {
         return "true".equals(mode);
     }
 
-    public String serverPubKey() {
-        return keyMaps.get(SERVER_PUBKEY);
-    }
-
     /**
      * Server address
      *
@@ -141,6 +134,10 @@ public class ConfigUtil {
      */
     public String serverAddress() {
         return keyMaps.get(SERVER_ADDRESS);
+    }
+
+    public String serverPubKey() {
+        return keyMaps.get(SERVER_PUBKEY);
     }
 
     /**
@@ -160,28 +157,6 @@ public class ConfigUtil {
     public int socketPort() {
         String port = keyMaps.get(SOCKET_PORT);
         return Integer.parseInt(port);
-    }
-
-    /**
-     * Share card address
-     *
-     * @return
-     */
-    public String shareCardAddress() {
-        return keyMaps.get(SHARE_CARD_ADDRESS);
-    }
-
-    /**
-     * Share pay address
-     *
-     * @return
-     */
-    public String sharePayAddress() {
-        return keyMaps.get(SHARE_PAY_ADDRESS);
-    }
-
-    public String mobileFeedback() {
-        return keyMaps.get(MOBILE_FEEDBACK);
     }
 
     /**

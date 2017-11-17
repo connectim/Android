@@ -508,7 +508,7 @@ public class CommandReceiver implements CommandListener {
         if (settingEntity == null) {
             settingEntity = new ConversionSettingEntity();
             settingEntity.setIdentifier(friendUid);
-            settingEntity.setSnap_time(0);
+            settingEntity.setSnap_time(0L);
         }
 
         int settingTime = setting.getDeadline();

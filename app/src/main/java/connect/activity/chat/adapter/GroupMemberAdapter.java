@@ -96,7 +96,11 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
             }
         }
 
-        if (!canScroll) {
+        if (canScroll) {
+            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+            boolean isMyEntity = myUid.equals(memEntity.getUid());
+            holder.trashLayout.setVisibility(isMyEntity ? View.GONE : View.VISIBLE);
+        } else {
             holder.trashLayout.setVisibility(View.GONE);
         }
         holder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();

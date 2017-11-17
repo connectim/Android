@@ -137,12 +137,12 @@ public class CommandParser extends InterParse {
 
             List<Connect.Ack> ackList = new ArrayList<>();
             for (Connect.OfflineMsg offlineMsg : msgList) {
-                LogManager.getLogger().d(TAG, "msgList:" + msgList.size());
 
-                String messageId=offlineMsg.getMsgId();
+                String messageId = offlineMsg.getMsgId();
                 Connect.ProducerMsgDetail msgDetail = offlineMsg.getBody();
                 int extension = msgDetail.getExt();
 
+                LogManager.getLogger().d(TAG, "messageId:" + messageId);
                 Connect.Ack ack = Connect.Ack.newBuilder()
                         .setType(msgDetail.getType())
                         .setMsgId(messageId)
@@ -437,16 +437,14 @@ public class CommandParser extends InterParse {
                 break;
             case 2:
             case 3:
+            case 4://cookie is overdue ,user old protocal
                 int failTime = Session.getInstance().getUpFailTime(pubKey);
                 if (failTime <= 2) {
                     uploadRandomCookie();
                 } else {
-                    Session.getInstance().removeConnectCookie();
+                    ConnectLocalReceiver.receiver.exceptionConnect();
                 }
                 Session.getInstance().setUpFailTime(pubKey, ++failTime);
-                break;
-            case 4://cookie is overdue ,user old protocal
-                Session.getInstance().removeConnectCookie();
                 break;
         }
     }
@@ -587,7 +585,7 @@ public class CommandParser extends InterParse {
             randomSalt = userCookie.getSalt();
         }
 
-        long expiredTime = TimeUtil.getCurrentTimeSecond() + 24 * 60 * 60;
+        long expiredTime = TimeUtil.getCurrentTimeSecond() + 4 * 24 * 60 * 60;
         Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder()
                 .setChatPubKey(randomPubKey)
                 .setSalt(ByteString.copyFrom(randomSalt))

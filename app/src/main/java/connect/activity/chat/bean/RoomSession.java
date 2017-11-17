@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionSettingHelper;
 import protos.Connect;
 
 /**
@@ -52,6 +53,14 @@ public class RoomSession {
 
     public void setBurntime(long burntime) {
         this.burntime = burntime;
+    }
+
+    public void checkBurnTime(long time) {
+        if (burntime != time) {
+            this.burntime = time;
+            ConversionSettingHelper.getInstance().updateBurnTime(chatKey, time);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNREAD_SET, chatKey, time);
+        }
     }
 
     public String getChatAvatar() {

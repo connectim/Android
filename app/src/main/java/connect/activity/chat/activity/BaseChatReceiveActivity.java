@@ -91,8 +91,10 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 CameraTakeActivity.startActivity(activity, CODE_TAKEPHOTO);
                 break;
             case CLEAR_HISTORY:
-                chatAdapter.clearHistory();
-                MessageHelper.getInstance().deleteRoomMsg(talker.getTalkKey());
+                if (talker.getTalkKey().equals(objects[0])) {
+                    chatAdapter.clearHistory();
+                    MessageHelper.getInstance().deleteRoomMsg(talker.getTalkKey());
+                }
                 break;
             case TRANSFER:
                 if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
@@ -191,7 +193,7 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 GroupAtActivity.startActivity(activity, normalChat.chatKey());
                 break;
             case BURNREAD_SET:
-                int time = (int) objects[1];
+                long time = (Long) objects[1];
                 if (objects[0].equals(talker.getTalkKey()) &&
                         time != RoomSession.getInstance().getBurntime()) {
                     RoomSession.getInstance().setBurntime(time);

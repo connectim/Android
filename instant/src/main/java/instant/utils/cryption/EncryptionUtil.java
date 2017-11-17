@@ -5,7 +5,7 @@ import com.google.protobuf.ByteString;
 import java.security.SecureRandom;
 import connect.wallet.jni.AllNativeMethod;
 import connect.wallet.jni.GCMModel;
-import instant.utils.ConfigUtil;
+import instant.utils.XmlParser;
 import instant.utils.StringUtil;
 import protos.Connect;
 
@@ -26,7 +26,7 @@ public class EncryptionUtil {
      * Take struct encryption
      */
     public static Connect.GcmData encodeAESGCMStructData(ExtendedECDH extendedECDH, String priKey, ByteString bytes) {
-        return encodeAESGCMStructData(extendedECDH, priKey, ConfigUtil.getInstance().serverPubKey(), bytes);
+        return encodeAESGCMStructData(extendedECDH, priKey, XmlParser.getInstance().serverPubKey(), bytes);
     }
 
     public static Connect.GcmData encodeAESGCMStructData(ExtendedECDH extendedECDH, String priKey, String serverPubKey, ByteString bytes) {

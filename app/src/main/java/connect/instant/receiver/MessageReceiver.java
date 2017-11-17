@@ -71,16 +71,16 @@ public class MessageReceiver implements MessageListener {
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, friendChat.chatKey(), msgExtEntity);
             }
         } else {
-            ChatMsgEntity messageEntity = ChatMsgEntity.transToMessageEntity(chatMessage.getMsgId(),
+            ChatMsgEntity chatMsgEntity = ChatMsgEntity.transToMessageEntity(chatMessage.getMsgId(),
                     chatMessage.getFrom(), chatMessage.getChatType().getNumber(), chatMessage.getMsgType(),
                     chatMessage.getFrom(), chatMessage.getTo(),
                     StringUtil.bytesToHexString(ecdh), contents, chatMessage.getMsgTime(), 1);
 
-            MessageHelper.getInstance().insertMsgExtEntity(messageEntity);
-            friendChat.updateRoomMsg(null, messageEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
+            MessageHelper.getInstance().insertMsgExtEntity(chatMsgEntity);
+            friendChat.updateRoomMsg(null, chatMsgEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
 
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, messageEntity.getMessage_from(), messageEntity);
-            NotificationBar.notificationBar.noticeBarMsg(messageEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, messageEntity.showContent());
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, chatMsgEntity.getMessage_from(), chatMsgEntity);
+            NotificationBar.notificationBar.noticeBarMsg(chatMsgEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, chatMsgEntity.showContent());
         }
     }
 
@@ -130,7 +130,6 @@ public class MessageReceiver implements MessageListener {
 
     @Override
     public void inviteJoinGroup(Connect.CreateGroupMessage groupMessage) {
-        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.UpLoadBackUp, groupMessage.getIdentifier(),groupMessage.getSecretKey());
         GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo,groupMessage.getIdentifier());
     }
 }
