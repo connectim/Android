@@ -28,6 +28,7 @@ import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.bean.UserCookie;
 import instant.netty.BufferBean;
+import instant.netty.CSslHandler;
 import instant.netty.MessageDecoder;
 import instant.netty.MessageEncoder;
 import instant.netty.NettySession;
@@ -277,13 +278,12 @@ public class RemoteServeice extends Service {
 
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
-//                    SSLContext clientContext = SSLContext.getDefault();
-                    SSLContext clientContext = SslContextFactory.getServerContext();
-//                    SSLEngine engine = clientContext.createSSLEngine();
-                    SSLEngine engine = clientContext.createSSLEngine(socketAddress, socketPort);
+                    SSLContext clientContext = SSLContext.getDefault();
+//                    io.netty.handler.ssl.SslContext clientContext = SslContextFactory.getServerContext();
+                    SSLEngine engine = clientContext.createSSLEngine();
                     engine.setUseClientMode(true);
                     engine.setNeedClientAuth(false);
-                    ch.pipeline().addLast(new SslHandler(engine));
+                    ch.pipeline().addLast(new CSslHandler(engine));
 
                     ch.pipeline().addLast(new IdleStateHandler(READERIDLE_TIME, WRITERIDLE_TIME, 0, TimeUnit.SECONDS));
                     ch.pipeline().addLast(new MessageEncoder());
