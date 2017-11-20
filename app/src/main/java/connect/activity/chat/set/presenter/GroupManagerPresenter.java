@@ -48,13 +48,15 @@ public class GroupManagerPresenter implements GroupManagerContract.Presenter {
     public void requestGroupVerify(final boolean verify) {
         Connect.GroupSetting setting = Connect.GroupSetting.newBuilder()
                 .setIdentifier(roomKey)
-                .setPublic(verify).build();
+                //qwert
+//                .setPublic(verify)
+                .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_SETTING, setting, new ResultCall<Connect.HttpResponse>() {
 
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomKey);
-                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
+                if (!(groupEntity == null)) {
                     groupEntity.setVerify(verify ? 1 : 0);
 
                     String groupName = groupEntity.getName();

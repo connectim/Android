@@ -89,7 +89,8 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
     public void agreeRequest(String caPublicKey,String code,String applyUid) {
         Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
                 .setIdentifier(groupKey)
-                .setSecretKey(groupEntity.getEcdh_key())
+                //qwert
+                //.setSecretKey(groupEntity.getEcdh_key())
                 .build();
 
         String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();

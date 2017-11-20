@@ -93,11 +93,12 @@ public class MessageReceiver implements MessageListener {
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupIdentify);
         Connect.GcmData gcmData = chatMessage.getCipherData();
 
-        if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {//group backup
+        if (groupEntity == null) {//group backup
             FailMsgsManager.getInstance().insertReceiveMsg(groupIdentify, chatMessage.getMsgId(), messagePost);
             GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
         } else {
-            byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
+            byte[] contents = new byte[]{};
+            //byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
             if (contents.length < 3) {
                 GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
             } else {

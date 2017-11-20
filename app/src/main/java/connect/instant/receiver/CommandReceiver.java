@@ -112,13 +112,10 @@ public class CommandReceiver implements CommandListener {
             contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
             contactEntity.setSource(friendInfo.getSource());
             contactEntity.setRemark(friendInfo.getRemark());
-
             contactEntityMap.put(friendUid,contactEntity);
         }
         Collection<ContactEntity> contactEntityCollection = contactEntityMap.values();
         List<ContactEntity> friendInfoEntities=new ArrayList<ContactEntity>(contactEntityCollection);
-
-
         //To add a system message contact
         String connect = BaseApplication.getInstance().getString(R.string.app_name);
         ContactEntity connectEntity = ContactHelper.getInstance().loadFriendEntity(connect);
@@ -135,56 +132,44 @@ public class CommandReceiver implements CommandListener {
         ContactHelper.getInstance().insertContacts(friendInfoEntities);
 
         //Synchronous common group
+        Map<String, GroupEntity> groupEntityMap = new HashMap<>();
+        Map<String, GroupMemberEntity> memberEntityMap = new HashMap<>();
         Connect.UserCommonGroups commonGroups = userRelationship.getUserCommonGroups();
         List<Connect.GroupInfo> groupInfos = commonGroups.getGroupsList();
         for (Connect.GroupInfo groupInfo : groupInfos) {
             Connect.Group group = groupInfo.getGroup();
 
-            String groupKey = group.getIdentifier();
-            String[] collaboratives = groupInfo.getEcdh().split("/");
-            if (collaboratives.length < 2) {//Download failed
-                GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
-            } else {// Download successful
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                if (groupEntity == null) {
-                    String randPubkey = collaboratives[0];
-                    byte[] ecdhkey = SupportKeyUril.getRawECDHKey(SharedPreferenceUtil.getInstance().getUser().getPriKey(), randPubkey);
-                    Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(collaboratives[1]));
-                    byte[] ecdhbytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, ecdhkey, gcmData);
-                    String groupEcdh = StringUtil.bytesToHexString(ecdhbytes);
+            String groupIdentifier = group.getIdentifier();
+            GroupEntity groupEntity = new GroupEntity();
+            groupEntity.setIdentifier(groupIdentifier);
+            groupEntity.setAvatar(RegularUtil.groupAvatar(groupIdentifier));
+            groupEntity.setName(group.getName());
+            groupEntity.setCategory(group.getCategory());
+            groupEntity.setSummary(group.getSummary());
+            groupEntityMap.put(groupIdentifier, groupEntity);
 
-                    groupEntity = new GroupEntity();
-                    groupEntity.setIdentifier(groupKey);
-                    groupEntity.setVerify(group.getPublic() ? 1 : 0);
-                    String groupname = group.getName();
-                    if (TextUtils.isEmpty(groupname)) {
-                        groupname = "groupname1";
-                    }
-                    groupEntity.setName(groupname);
-                    groupEntity.setCommon(1);
-                    groupEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
-                    groupEntity.setEcdh_key(groupEcdh);
-                    ContactHelper.getInstance().inserGroupEntity(groupEntity);
-                }
-            }
-
-            Map<String, GroupMemberEntity> memberEntityMap = new HashMap<>();
             List<Connect.GroupMember> members = groupInfo.getMembersList();
             for (Connect.GroupMember member : members) {
                 GroupMemberEntity memberEntity = new GroupMemberEntity();
-                memberEntity.setIdentifier(groupKey);
+                memberEntity.setIdentifier(groupIdentifier);
                 memberEntity.setUid(member.getUid());
                 memberEntity.setAvatar(member.getAvatar());
                 memberEntity.setUsername(member.getUsername());
                 memberEntity.setNick(member.getNick());
                 memberEntity.setRole(member.getRole());
                 memberEntity.setUsername(member.getUsername());
-                memberEntityMap.put(member.getUid(), memberEntity);
+                String memberIdentifyKey = groupIdentifier + member.getUid();
+                memberEntityMap.put(memberIdentifyKey, memberEntity);
             }
-            Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
-            List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
-            ContactHelper.getInstance().inserGroupMemEntity(memEntities);
         }
+
+        Collection<GroupEntity> groupEntityCollection = groupEntityMap.values();
+        List<GroupEntity> groupEntities = new ArrayList<GroupEntity>(groupEntityCollection);
+        ContactHelper.getInstance().inserGroupEntity(groupEntities);
+
+        Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
+        List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
+        ContactHelper.getInstance().inserGroupMemEntity(memEntities);
     }
 
     @Override
@@ -323,7 +308,7 @@ public class CommandReceiver implements CommandListener {
                 Connect.Group group = Connect.Group.parseFrom(groupChange.getDetail());
                 groupKey = group.getIdentifier();
                 groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                if (groupEntity == null || TextUtils.isEmpty(group.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
+                if (groupEntity == null || TextUtils.isEmpty(group.getName())) {
                     GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
 
                     FailMsgsManager.getInstance().insertReceiveMsg(group.getIdentifier(), TimeUtil.timestampToMsgid(), context.getString(R.string.Link_Join_Group));
@@ -449,12 +434,10 @@ public class CommandReceiver implements CommandListener {
 
                 groupKey = groupSetting.getIdentifier();
                 groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                if (groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
+                if (groupEntity == null || TextUtils.isEmpty(groupEntity.getName())) {
                     GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
                 } else {
                     groupEntity.setSummary(groupSetting.getSummary());
-                    groupEntity.setVerify(groupSetting.getPublic() ? 1 : 0);
-
                     String groupname = groupEntity.getName();
                     if (TextUtils.isEmpty(groupname)) {
                         groupname = "groupname3";

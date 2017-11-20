@@ -40,7 +40,12 @@ public class Session {
      * @return
      */
     public UserCookie getConnectCookie() {
-        return getUserCookie(CONNECT_USER);
+        UserCookie userCookie = getUserCookie(CONNECT_USER);
+        if (userCookie == null) {
+            userCookie = SharedUtil.getInstance().loadConnectCookie();
+            setConnectCookie(userCookie);
+        }
+        return userCookie;
     }
 
     /**
@@ -49,7 +54,12 @@ public class Session {
      * @return
      */
     public UserCookie getChatCookie() {
-        return getUserCookie(COOKIE_USER);
+        UserCookie userCookie = getUserCookie(COOKIE_USER);
+        if (userCookie == null) {
+            userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
+            setChatCookie(userCookie);
+        }
+        return userCookie;
     }
 
     /**
@@ -58,7 +68,12 @@ public class Session {
      * @return
      */
     public UserCookie getRandomCookie() {
-        return getUserCookie(COOKIE_SHAKEHAND);
+        UserCookie userCookie = getUserCookie(COOKIE_SHAKEHAND);
+        if (userCookie == null) {
+            userCookie = SharedUtil.getInstance().loadRandomCookie();
+            setRandomCookie(userCookie);
+        }
+        return userCookie;
     }
 
     /**
@@ -68,24 +83,48 @@ public class Session {
      * @return
      */
     public UserCookie getFriendCookie(String caPublicKey) {
-        return getUserCookie(caPublicKey);
+        UserCookie userCookie = getUserCookie(caPublicKey);
+        if (userCookie == null) {
+            userCookie = SharedUtil.getInstance().loadFriendCookie(caPublicKey);
+            setFriendCookie(caPublicKey, userCookie);
+        }
+        return userCookie;
+    }
+
+    public UserCookie getGroupMemberCookie(String groupIdentify, String memberUid) {
+        String groupMemberKey = groupIdentify + memberUid;
+        UserCookie userCookie = getUserCookie(groupMemberKey);
+        if (userCookie == null) {
+            userCookie = SharedUtil.getInstance().loadGroupMemberCookie(groupIdentify, memberUid);
+            setGroupMemberCookie(groupIdentify, memberUid, userCookie);
+        }
+        return userCookie;
     }
 
     public void setConnectCookie(UserCookie cookie) {
         setUserCookie(CONNECT_USER, cookie);
+        SharedUtil.getInstance().insertConnectCookie(cookie);
     }
 
     public void setChatCookie(UserCookie cookie) {
         setUserCookie(COOKIE_USER, cookie);
+        SharedUtil.getInstance().insertChatUserCookie(cookie);
     }
 
     public void setRandomCookie(UserCookie cookie) {
         setUserCookie(COOKIE_SHAKEHAND, cookie);
+        SharedUtil.getInstance().insertRandomCookie(cookie);
     }
 
 
     public void setFriendCookie(String friendCaPublic, UserCookie cookie) {
         setUserCookie(friendCaPublic, cookie);
+        SharedUtil.getInstance().insertFriendCookie(friendCaPublic, cookie);
+    }
+
+    public void setGroupMemberCookie(String groupIdentify, String memberUid, UserCookie cookie) {
+        setUserCookie(groupIdentify + memberUid, cookie);
+        SharedUtil.getInstance().insertGroupMemberCookie(groupIdentify, memberUid, cookie);
     }
 
     public UserCookie getCookieBySalt(String saltHex) {
@@ -120,14 +159,14 @@ public class Session {
         return userCookieMap.get(pbk);
     }
 
-    public void removeCookie(String publicKey){
+    public void removeCookie(String publicKey) {
         if (userCookieMap == null) {
             userCookieMap = new HashMap<>();
         }
         userCookieMap.remove(publicKey);
     }
 
-    public void removeConnectCookie(){
+    public void removeConnectCookie() {
         removeCookie(CONNECT_USER);
     }
 

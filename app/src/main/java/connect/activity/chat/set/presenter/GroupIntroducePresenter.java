@@ -52,12 +52,13 @@ public class GroupIntroducePresenter implements GroupIntroduceContract.Presenter
         Connect.GroupSetting setting = Connect.GroupSetting.newBuilder()
                 .setIdentifier(roomKey)
                 .setSummary(introduce)
-                .setPublic(true).build();
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_SETTING, setting, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomKey);
-                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
+                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getName()))) {
                     groupEntity.setSummary(introduce);
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                 }

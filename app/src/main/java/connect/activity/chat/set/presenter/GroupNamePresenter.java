@@ -56,7 +56,7 @@ public class GroupNamePresenter implements GroupNameContract.Presenter{
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                if (!(groupEntity == null || TextUtils.isEmpty(groupName) || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
+                if (!(groupEntity == null || TextUtils.isEmpty(groupName))) {
                     groupEntity.setName(groupName);
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
 

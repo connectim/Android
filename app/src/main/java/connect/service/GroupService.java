@@ -102,7 +102,8 @@ public class GroupService extends Service {
                                 groupname = "groupname9";
                             }
                             groupEntity.setName(groupname);
-                            groupEntity.setVerify(groupInfo.getGroup().getReviewed() ? 1 : 0);
+                            //qwert
+//                            groupEntity.setVerify(groupInfo.getGroup().getReviewed() ? 1 : 0);
                             groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
                             ContactHelper.getInstance().inserGroupEntity(groupEntity);
                         }

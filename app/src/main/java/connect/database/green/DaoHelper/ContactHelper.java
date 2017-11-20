@@ -496,6 +496,10 @@ public class ContactHelper extends BaseDao {
         groupEntityDao.insertOrReplace(entity);
     }
 
+    public void inserGroupEntity(List<GroupEntity> entities) {
+        groupEntityDao.insertOrReplaceInTx(entities);
+    }
+
     /**
      * add group member list
      *

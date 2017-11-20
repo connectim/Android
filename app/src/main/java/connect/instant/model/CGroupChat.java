@@ -14,7 +14,6 @@ import instant.sender.model.GroupChat;
 /**
  * Created by Administrator on 2017/10/19.
  */
-
 public class CGroupChat extends GroupChat implements ConversationListener{
 
     private GroupEntity groupEntity;
@@ -26,7 +25,6 @@ public class CGroupChat extends GroupChat implements ConversationListener{
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
         this.groupEntity = groupEntity;
         this.groupKey = groupEntity.getIdentifier();
-        this.groupEcdh = groupEntity.getEcdh_key();
         this.groupName = groupEntity.getName();
     }
 
@@ -34,7 +32,6 @@ public class CGroupChat extends GroupChat implements ConversationListener{
         super(groupEntity.getIdentifier());
         this.groupEntity = groupEntity;
         this.groupKey = groupEntity.getIdentifier();
-        this.groupEcdh = groupEntity.getEcdh_key();
         this.groupName = groupEntity.getName();
     }
 

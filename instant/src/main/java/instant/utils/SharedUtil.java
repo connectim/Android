@@ -32,8 +32,11 @@ public class SharedUtil {
     public static String CONTACTS_VERSION = "CONTACTS_VERSION";
     public static String WELCOME_VERSION = "WELCOME_VERSION";
     public static String UPLOAD_APPINFO_VERSION = "UPLOAD_APPINFO_VERSION";
+    public static String COOKIE_CONNECT_USER = "COOKIE_CONNECT_USER";
     public static String COOKIE_CHATUSER = "COOKIE_CHATUSER";
+    public static String COOKIE_RANDOM = "COOKIE_RANDOM";
     public static String COOKIE_CHATFRIEND = "COOKIE_CHATFRIEND:";
+    public static String COOKIE_CHATGROUP_MEMBER = "COOKIE_CHATGROUP_MEMBER";
 
     public static SharedUtil getInstance() {
         return getInstance(InstantSdk.instantSdk.getBaseContext());
@@ -57,7 +60,7 @@ public class SharedUtil {
         }
     }
 
-    public void putValue(String key,String value) {
+    public void putValue(String key, String value) {
         SharedPreferences.Editor editor = sharePre.edit();
         editor.putString(key, value);
         editor.apply();
@@ -87,13 +90,31 @@ public class SharedUtil {
         editor.apply();
     }
 
-    public void deleteUserInfo(){
+    public void deleteUserInfo() {
         sharePre.edit()
                 .clear()
                 .commit();
     }
 
-    /******************************  User Cookie  ********************************************************/
+    /******************************  Connect Cookie  ********************************************************/
+    public void insertConnectCookie(UserCookie userCookie) {
+        String connectCookieKey = COOKIE_CONNECT_USER;
+        putValue(connectCookieKey, new Gson().toJson(userCookie));
+    }
+
+    public UserCookie loadConnectCookie() {
+        String connectCookieKey = COOKIE_CONNECT_USER;
+        UserCookie userCookie = null;
+        if (sharePre.contains(connectCookieKey)) {
+            String gsonCookie = sharePre.getString(connectCookieKey, "");
+            if (!TextUtils.isEmpty(gsonCookie)) {
+                userCookie = new Gson().fromJson(gsonCookie, UserCookie.class);
+            }
+        }
+        return userCookie;
+    }
+
+    /******************************  Chat Cookie  ********************************************************/
     public void insertChatUserCookie(UserCookie userCookie) {
         if (sharePre.contains(COOKIE_CHATUSER)) {
             String gsonCookies = sharePre.getString(COOKIE_CHATUSER, "");
@@ -152,6 +173,23 @@ public class SharedUtil {
         return userCookie;
     }
 
+    /******************************  Random Cookie  ********************************************************/
+    public void insertRandomCookie(UserCookie userCookie) {
+        String randomCookieKey = COOKIE_RANDOM;
+        putValue(randomCookieKey, new Gson().toJson(userCookie));
+    }
+
+    public UserCookie loadRandomCookie() {
+        String randomCookieKey = COOKIE_RANDOM;
+        UserCookie userCookie = null;
+        if (sharePre.contains(randomCookieKey)) {
+            String gsonCookie = sharePre.getString(randomCookieKey, "");
+            if (!TextUtils.isEmpty(gsonCookie)) {
+                userCookie = new Gson().fromJson(gsonCookie, UserCookie.class);
+            }
+        }
+        return userCookie;
+    }
 
     /******************************  Friend Cookie  ********************************************************/
     public void insertFriendCookie(String friendCaPublicKey, UserCookie userCookie) {
@@ -188,7 +226,48 @@ public class SharedUtil {
                 }.getType());
 
                 int cookiesLength = userCookieList.size();
-                userCookie = userCookieList.get(cookiesLength-1);
+                userCookie = userCookieList.get(cookiesLength - 1);
+            }
+        }
+        return userCookie;
+    }
+
+
+    /******************************  Group Member Cookie  ********************************************************/
+    public void insertGroupMemberCookie(String groupIdentify, String groupMemberUid, UserCookie userCookie) {
+        String groupMemberCookieKey = COOKIE_CHATGROUP_MEMBER + groupIdentify + groupMemberUid;
+        if (sharePre.contains(groupMemberCookieKey)) {
+            String gsonCookies = sharePre.getString(groupMemberCookieKey, "");
+            if (TextUtils.isEmpty(gsonCookies)) {
+                remove(groupMemberCookieKey);
+                insertGroupMemberCookie(groupIdentify, groupMemberUid, userCookie);
+            } else {
+                List<UserCookie> userCookieList = new Gson().fromJson(gsonCookies, new TypeToken<List<UserCookie>>() {
+                }.getType());
+                if (userCookieList.size() >= 3) {
+                    int cookiesLength = userCookieList.size();
+                    userCookieList = userCookieList.subList(cookiesLength - 2, cookiesLength);
+                }
+                userCookieList.add(userCookie);
+                putValue(groupMemberCookieKey, new Gson().toJson(userCookieList));
+            }
+        } else {
+            List<UserCookie> userCookieList = new ArrayList<>();
+            userCookieList.add(userCookie);
+            putValue(groupMemberCookieKey, new Gson().toJson(userCookieList));
+        }
+    }
+
+    public UserCookie loadGroupMemberCookie(String groupIdentify, String groupMemberUid) {
+        String groupMemberCookieKey = COOKIE_CHATGROUP_MEMBER + groupIdentify + groupMemberUid;
+        UserCookie userCookie = null;
+        if (sharePre.contains(groupMemberCookieKey)) {
+            String gsonCookies = sharePre.getString(groupMemberCookieKey, "");
+            if (!TextUtils.isEmpty(gsonCookies)) {
+                List<UserCookie> userCookieList = new Gson().fromJson(gsonCookies, new TypeToken<List<UserCookie>>() {
+                }.getType());
+                int cookiesLength = userCookieList.size();
+                userCookie = userCookieList.get(cookiesLength - 1);
             }
         }
         return userCookie;

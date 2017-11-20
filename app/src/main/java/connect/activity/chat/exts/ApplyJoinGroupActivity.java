@@ -195,7 +195,7 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
                 case 120:
                     String gKey = groupKey[0];
                     GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(gKey);
-                    if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
+                    if (groupEntity == null) {
                         GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, gKey);
                     } else {
                         Talker talker = new Talker(Connect.ChatType.GROUPCHAT, gKey);
