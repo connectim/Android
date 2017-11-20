@@ -628,4 +628,6 @@
     <string name="app_name">Connect</string>
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_Other_Part"> друг друга </string>
+    <string name="Chat_set_Create_New_Group">создать группу</string>
+    <string name="Chat_set_Group_Chat_Encrypt_Open"> после открытия  ,  группы  по двухточечной  шифрования передачи  сообщений </string>
 </resources>

@@ -7,6 +7,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.Serializable;
 
 import instant.R;
+import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.ui.InstantSdk;
 import instant.utils.StringUtil;
 import protos.Connect;
@@ -214,7 +215,10 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
     }
 
     public MsgDirect parseDirect() {
-        String mypubkey = Session.getInstance().getConnectCookie().getUid();
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
+        String mypubkey = userCookie == null ? "" : userCookie.getUid();
+
+        ConnectLocalReceiver.receiver.exceptionConnect();
         return mypubkey.equals(getMessage_from()) ? MsgDirect.To : MsgDirect.From;
     }
 

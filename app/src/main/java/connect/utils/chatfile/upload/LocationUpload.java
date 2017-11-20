@@ -26,6 +26,7 @@ public class LocationUpload extends BaseFileUp {
     private static String TAG = "_LocationUpload";
 
     public LocationUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
+        super();
         this.context = context;
         this.baseChat = baseChat;
         this.msgExtEntity = entity;
@@ -113,7 +114,9 @@ public class LocationUpload extends BaseFileUp {
 
                 try {
                     Connect.LocationMessage locationMessage = Connect.LocationMessage.parseFrom(msgExtEntity.getContents());
-                    locationMessage = locationMessage.toBuilder().setScreenShot(thumb).build();
+                    locationMessage = locationMessage.toBuilder()
+                            .setFileKey(ByteString.copyFrom(getRandomNumber()))
+                            .setScreenShot(thumb).build();
 
                     msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(locationMessage.toByteArray());

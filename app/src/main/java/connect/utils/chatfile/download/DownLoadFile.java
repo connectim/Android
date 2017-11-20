@@ -8,16 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.utils.StringUtil;
 import connect.utils.chatfile.inter.InterFileDown;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.HttpRequest;
-import instant.bean.Session;
-import instant.bean.UserCookie;
-import instant.utils.cryption.SupportKeyUril;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -108,20 +104,13 @@ public class DownLoadFile {
             @Override
             public void run() {
                 try {
-                    if (chatType == Connect.ChatType.CONNECT_SYSTEM) {
+                    if (chatType == Connect.ChatType.CONNECT_SYSTEM||chatType== Connect.ChatType.GROUP_DISCUSSION) {
                         fileDownLoad.successDown(bytes);
                     } else {
                         Connect.GcmData gcmData = Connect.GcmData.parseFrom(bytes);
-                        Connect.StructData structData = null;
                         byte[] dataFile = null;
-                        if (chatType == Connect.ChatType.PRIVATE) {//private chat
-                            byte[] ecdhExts =StringUtil.hexStringToBytes(ecdh);
-                            dataFile = DecryptionUtil.decodeAESGCM(ecdhExts, gcmData);
-                        } else if (chatType == Connect.ChatType.GROUPCHAT) {//group chat
-                            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(identify);
-                            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
-                            dataFile = structData.getPlainData().toByteArray();
-                        }
+                        byte[] ecdhExts =StringUtil.hexStringToBytes(ecdh);
+                        dataFile = DecryptionUtil.decodeAESGCM(ecdhExts, gcmData);
                         fileDownLoad.successDown(dataFile);
                     }
                 } catch (Exception e) {

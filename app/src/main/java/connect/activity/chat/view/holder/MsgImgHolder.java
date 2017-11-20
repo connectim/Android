@@ -22,6 +22,7 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
+import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.widget.selefriend.SelectRecentlyChatActivity;
@@ -53,7 +54,8 @@ public class MsgImgHolder extends MsgChatHolder {
         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
         String url = !TextUtils.isEmpty(photoMessage.getThum()) ? photoMessage.getThum() : photoMessage.getUrl();
         imgmsg.setOpenBurn(photoMessage.getSnapTime() > 0);
-        imgmsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), msgExtEntity.getEcdh(),url, photoMessage.getImageWidth(), photoMessage.getImageHeight());
+        String hexString = StringUtil.bytesToHexString(photoMessage.getFileKey().toByteArray());
+        imgmsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), hexString,url, photoMessage.getImageWidth(), photoMessage.getImageHeight());
 
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

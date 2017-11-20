@@ -319,14 +319,15 @@ string hash = 2;
 message GroupToken {
 string token = 1;
 }
+
 message Group {
 string identifier = 1;
 string name=2;
-string summary=3;
-bool public =4;
-bool reviewed = 5;
-string avatar = 6;
+string summary = 3;
+string avatar = 4;
+int32 category = 5;
 }
+
 message GroupMember {
 string username=1;
 string avatar=2;
@@ -347,8 +348,6 @@ repeated string tips_history = 4;
 message GroupSetting {
 string identifier = 1;
 string summary = 2;
-bool public = 3;
-bool reviewed = 4;
 }
 
 
@@ -393,11 +392,10 @@ string username = 7;
 string identifier = 8;
 bool   joined=9;
 }
+
 message GroupInfo {
 Group group=1;
 repeated GroupMember members=2;
-string backup=3;
-string ecdh=4;
 }
 
 message GroupHash {
@@ -407,11 +405,9 @@ int64 expired = 2;
 
 
 message GroupSettingInfo {
-bool public = 1;
-bool reviewed = 2;
-string avatar=3;
-string summary=4;
-bool  mute = 5;
+string avatar=1;
+string summary=2;
+bool  mute = 3;
 }
 
 
@@ -421,6 +417,7 @@ string summary=2;
 bool public =3;
 repeated AddGroupUserInfo users = 4;
 bool reviewed = 5;
+int32 category = 6;
 }
 
 message AddUserToGroup {
@@ -430,7 +427,7 @@ repeated AddGroupUserInfo users = 2;
 
 message AddGroupUserInfo {
 string uid=1;
-string backup=2;
+int32 source=2;
 }
 
 message DelOrQuitGroupMember {
@@ -1290,6 +1287,7 @@ message LocationMessage{
 	string screen_shot=4;
 	int32 image_width=5;
 	int32 image_height=6;
+	bytes file_key = 7;
 }
 
 //提示消息
@@ -1424,4 +1422,23 @@ message EphemeralAck {
 message AckBatch {
     string msg_id = 1;
     repeated Ack Acks = 2;
+}
+
+
+message BroadcastMemberKey {
+string group_id = 1;
+repeated GroupMemberKey member_key = 2;
+}
+
+message GroupMemberKey {
+string receiver_uid = 1;
+string sign = 2;
+string ca_pub_key = 3;
+GroupMemberKeyData group_key_data = 4;
+}
+
+message GroupMemberKeyData {
+string group_id = 1;
+string uid = 2;
+GcmData cipher_data = 3;
 }

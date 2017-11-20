@@ -25,6 +25,7 @@
     <item name="txt6" type="id"/>
     <item name="txt7" type="id"/>
     <item name="txt8" type="id"/>
+    <item name="edittxt" type="id"/>
     <item name="edittxt1" type="id"/>
     <item name="edittxt2" type="id"/>
     <item name="img1" type="id"/>
@@ -187,6 +188,8 @@
     <item name="groupset_sureinvite" type="id"/>
     <item name="groupset_introdue" type="id"/>
     <item name="groupset_transferto" type="id"/>
+    <item name="groupset_category" type="id"/>
+    <item name="groupset_category_explain" type="id"/>
 
     <!-- The wallet -->
     <item name="btc" type="id"/>

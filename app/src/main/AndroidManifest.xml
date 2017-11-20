@@ -384,7 +384,7 @@
             android:name="connect.activity.home.DBUpdateActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.chat.set.GroupCreateActivity"
+            android:name="connect.activity.chat.set.GroupCreateSelecrActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.chat.set.GroupInviteActivity"
@@ -392,10 +392,16 @@
         <activity
             android:name="connect.activity.chat.exts.TransferMutiDetailActivity"
             android:screenOrientation="portrait"/>
+
         <service
             android:name="connect.service.GroupService"
             android:exported="false">
         </service>
+
+        <activity
+            android:name="connect.activity.chat.set.GroupCreateActivity"
+            android:label="@string/title_activity_group_create">
+        </activity>
     </application>
 
 </manifest>
