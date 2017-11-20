@@ -108,7 +108,7 @@ public class ContactHelper extends BaseDao {
         return friendEntities;
     }
 
-    /*********************************  select ***********************************/
+    /********************************* select ***********************************/
     public Connect.ChatType loadChatType(String uid) {
         if (TextUtils.isEmpty(uid)) {
             uid = "";
@@ -427,9 +427,9 @@ public class ContactHelper extends BaseDao {
      * @param uid
      */
     public void updataFriendBlack(String uid, boolean black) {
-        String sql = "UPDATE CONTACT_ENTITY SET BLOCKED = '" +
-                (black ? 1 : 0) +
-                "' WHERE UID = ? ;";
+        String sql = "UPDATE CONTACT_ENTITY SET BLOCKED = " +
+                "\"" + (black ? 1 : 0) + "\"" +
+                " WHERE UID = ? ;";
         daoSession.getDatabase().execSQL(sql, new Object[]{uid});
     }
 
@@ -439,7 +439,9 @@ public class ContactHelper extends BaseDao {
      * @param uid
      */
     public void updataFriendCommon(String uid, int common) {
-        String sql = "UPDATE CONTACT_ENTITY SET COMMON = '" + common + "' WHERE UID = ? ;";
+        String sql = "UPDATE CONTACT_ENTITY SET COMMON = " +
+                "\"" + common + "\"" +
+                " WHERE UID = ? ;";
         daoSession.getDatabase().execSQL(sql, new Object[]{uid});
     }
 
@@ -450,22 +452,22 @@ public class ContactHelper extends BaseDao {
      */
     public void updataFriendRemark(String uid, String remark) {
         String sql = "UPDATE CONTACT_ENTITY SET REMARK =  " +
-                (TextUtils.isEmpty(remark) ? " " : remark) +
-                "WHERE UID = ? ;";
+                (TextUtils.isEmpty(remark) ? "''" : "\"" + remark + "\"") +
+                " WHERE UID = ? ;";
         daoSession.getDatabase().execSQL(sql, new Object[]{uid});
     }
 
     public void updateGroupMemberRole(String identify, String uid, Integer role) {
         String sql = "UPDATE GROUP_MEMBER_ENTITY SET ROLE = " +
-                (role == null ? 0 : role) +
+                (role == null ? 0 : "\"" + role + "\"") +
                 " WHERE IDENTIFIER = ? AND (UID = ? OR CONNECT_ID = ?);";
         daoSession.getDatabase().execSQL(sql, new Object[]{identify, uid, uid});
     }
 
     public void updateGroupMemberNickName(String identify, String uid, String nickname) {
-        String sql = "UPDATE GROUP_MEMBER_ENTITY SET NICK = '" +
-                (TextUtils.isEmpty(nickname) ? " " : nickname) +
-                "' WHERE IDENTIFIER = ? AND (UID = ? OR CONNECT_ID = ?);";
+        String sql = "UPDATE GROUP_MEMBER_ENTITY SET NICK = " +
+                (TextUtils.isEmpty(nickname) ? "''" : "\"" + nickname + "\"") +
+                " WHERE IDENTIFIER = ? AND (UID = ? OR CONNECT_ID = ?);";
         daoSession.getDatabase().execSQL(sql, new Object[]{identify, uid, uid});
     }
 

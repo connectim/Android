@@ -92,16 +92,16 @@ public class ChatParser extends InterParse {
      * @throws Exception
      */
     protected void inviteJoinGroup(Connect.MessagePost msgpost) throws Exception {
-        String publicKey = msgpost.getPubKey();
-        String privateKey = Session.getInstance().getConnectCookie().getPriKey();
-
-        Connect.MessageData messageData = msgpost.getMsgData();
-        Connect.ChatMessage chatMessage = messageData.getChatMsg();
-        Connect.GcmData gcmData = chatMessage.getCipherData();
-
-        byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, privateKey, publicKey, gcmData);
-
-        Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(contents);
-        MessageLocalReceiver.localReceiver.inviteJoinGroup(groupMessage);
+//        String publicKey = msgpost.getPubKey();
+//        String privateKey = Session.getInstance().getConnectCookie().getPriKey();
+//
+//        Connect.MessageData messageData = msgpost.getMsgData();
+//        Connect.ChatMessage chatMessage = messageData.getChatMsg();
+//        Connect.GcmData gcmData = chatMessage.getCipherData();
+//
+//        byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, privateKey, publicKey, gcmData);
+//
+//        Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.parseFrom(contents);
+//        MessageLocalReceiver.localReceiver.inviteJoinGroup(groupMessage);
     }
 }

@@ -9,6 +9,7 @@ import java.io.File;
 
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
+import connect.utils.StringUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.cryption.EncryptionUtil;
@@ -120,6 +121,7 @@ public class PhotoUpload extends BaseFileUp {
                     photoMessage = photoMessage.toBuilder()
                             .setThum(thumb)
                             .setUrl(url)
+                            .setFileKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey)))
                             .build();
 
                     msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();

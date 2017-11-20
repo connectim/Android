@@ -19,12 +19,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.CountryBean;
-import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneContract;
 import connect.activity.login.presenter.LoginPhonePresenter;
-import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.StringUtil;
@@ -75,17 +72,7 @@ public class LoginPhoneActivity extends BaseActivity implements LoginPhoneContra
 
     @OnClick(R.id.next_btn)
     public void nextBtn(View view) {
-        //presenter.request(StringUtil.filterNumber(countryTv.getText().toString()) + "-" + phoneEt.getText().toString());
-
-        //test
-        UserBean userBean = new UserBean();
-        userBean.setPubKey("3343434");
-        userBean.setPriKey("ewewewe");
-        userBean.setAvatar("ere");
-        userBean.setCaPublicKey("sdsdsd");
-        userBean.setUid("12321231231");
-        SharedPreferenceUtil.getInstance().putUser(userBean);
-        BaseApplication.getInstance().initRegisterAccount();
+        presenter.request(StringUtil.filterNumber(countryTv.getText().toString()) + "-" + phoneEt.getText().toString());
     }
 
     /**

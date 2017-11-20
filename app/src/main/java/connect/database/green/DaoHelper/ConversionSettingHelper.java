@@ -20,13 +20,9 @@ public class ConversionSettingHelper extends BaseDao {
         conversionSettingEntityDao = daoSession.getConversionSettingEntityDao();
     }
 
-    public static ConversionSettingHelper getInstance() {
+    public synchronized static ConversionSettingHelper getInstance() {
         if (conversionSettingHelper == null) {
-            synchronized (ConversionSettingHelper.class) {
-                if (conversionSettingHelper == null) {
-                    conversionSettingHelper = new ConversionSettingHelper();
-                }
-            }
+            conversionSettingHelper = new ConversionSettingHelper();
         }
         return conversionSettingHelper;
     }

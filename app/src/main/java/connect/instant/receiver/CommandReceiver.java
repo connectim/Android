@@ -407,6 +407,11 @@ public class CommandReceiver implements CommandListener {
                 break;
             case 4://Group change
                 groupKey = groupChange.getIdentifier();
+                groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                if (groupEntity == null) {
+                    break;
+                }
+
                 Connect.GroupAttorn groupAttorn = Connect.GroupAttorn.parseFrom(groupChange.getDetail());
                 groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
                 if (groupMemEntities == null) {
