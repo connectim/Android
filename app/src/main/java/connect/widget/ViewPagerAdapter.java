@@ -1,4 +1,4 @@
-package connect.activity.common.adapter;
+package connect.widget;
 
 import android.support.v4.view.PagerAdapter;
 import android.view.View;

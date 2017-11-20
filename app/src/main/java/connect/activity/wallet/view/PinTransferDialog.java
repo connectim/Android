@@ -21,12 +21,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.common.adapter.ViewPagerAdapter;
-import connect.activity.set.bean.PaySetBean;
+import connect.widget.ViewPagerAdapter;
 import connect.activity.wallet.manager.WalletManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
-import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;

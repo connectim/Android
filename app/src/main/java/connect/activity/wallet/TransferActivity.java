@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.exts.LuckyPacketActivity;
 import connect.activity.chat.exts.TransferToActivity;
-import connect.activity.common.selefriend.SeleUsersActivity;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.wallet.adapter.LatelyTransferAdapter;
 import connect.activity.wallet.bean.TransferBean;
@@ -28,6 +26,7 @@ import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
+import connect.widget.selefriend.SelectFriendActivity;
 
 public class TransferActivity extends BaseActivity {
 
@@ -82,7 +81,7 @@ public class TransferActivity extends BaseActivity {
 
     @OnClick(R.id.transfer_friend_tv)
     void goFriend(View view) {
-        SeleUsersActivity.startActivity(mActivity, SeleUsersActivity.SOURCE_FRIEND, "", null);
+        SelectFriendActivity.startActivity(mActivity, SelectFriendActivity.SOURCE_FRIEND, "", null);
     }
 
     @OnClick(R.id.transfer_address_tv)
@@ -123,7 +122,7 @@ public class TransferActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SeleUsersActivity.CODE_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == SelectFriendActivity.CODE_REQUEST && resultCode == RESULT_OK) {
             ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
             TransferFriendActivity.startActivity(mActivity, friendList, "");
         }

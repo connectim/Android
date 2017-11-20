@@ -25,8 +25,6 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.exts.TransferToActivity;
-import connect.activity.common.bean.ConverType;
-import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.bean.SourceType;
@@ -42,6 +40,7 @@ import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
+import connect.widget.selefriend.SelectRecentlyChatActivity;
 import instant.bean.UserOrderBean;
 import protos.Connect;
 
@@ -173,7 +172,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @OnClick(R.id.share_img)
     void goSendShare(View view) {
-        ConversationActivity.startActivity(mActivity, ConverType.CAED, friendEntity);
+        SelectRecentlyChatActivity.startActivity(mActivity, SelectRecentlyChatActivity.SHARE_CARD, friendEntity);
     }
 
     @OnClick(R.id.set_alias_rela)
@@ -239,7 +238,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ConversationActivity.CODE_REQUEST && requestCode == ConversationActivity.CODE_REQUEST) {
+        if (requestCode == SelectRecentlyChatActivity.CODE_REQUEST && requestCode == RESULT_OK) {
             presenter.shareFriendCard(mActivity, data, friendEntity);
         }
     }

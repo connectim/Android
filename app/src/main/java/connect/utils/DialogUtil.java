@@ -12,9 +12,9 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -25,7 +25,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import connect.activity.home.view.LineDecoration;
-import connect.activity.common.adapter.DialogBottomAdapter;
 import connect.ui.activity.R;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
@@ -252,7 +251,7 @@ public class DialogUtil {
         recyclerView.addItemDecoration(new LineDecoration(mContext));
         DialogBottomAdapter dialogBottomAdapter = new DialogBottomAdapter(list);
         recyclerView.setAdapter(dialogBottomAdapter);
-        dialogBottomAdapter.setItemClickListener(new DialogBottomAdapter.OnItemClickListener() {
+        dialogBottomAdapter.setItemClickListener(new OnDialogItemClickListener() {
             @Override
             public void itemClick(int position, String string) {
                 itemClickListener.confirm(position);
@@ -329,6 +328,66 @@ public class DialogUtil {
 
         dialog.show();
         return dialog;
+    }
+
+    /**
+     * Bottom dialog adapter
+     */
+    public static class DialogBottomAdapter extends RecyclerView.Adapter<DialogBottomAdapter.ViewHolder>{
+
+        private ArrayList<String> list;
+        private OnDialogItemClickListener itemClickListener;
+
+        public DialogBottomAdapter(ArrayList<String> list) {
+            this.list = list;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View view = inflater.inflate(R.layout.dialog_bottom_item, parent, false);
+            ViewHolder holder = new ViewHolder(view);
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+            viewHolder.titleTv.setText(list.get(position));
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(list!=null&&list.size()>=position){
+                        itemClickListener.itemClick(position,list.get(position));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemCount() {
+            return list.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView titleTv;
+            ViewHolder(View itemview) {
+                super(itemview);
+                titleTv = (TextView) itemview.findViewById(R.id.title_tv);
+            }
+        }
+
+        public void setItemClickListener(OnDialogItemClickListener itemClickListener) {
+            this.itemClickListener = itemClickListener;
+        }
+    }
+
+    public interface OnDialogItemClickListener{
+        void itemClick(int position,String string);
     }
 
     public interface DialogListItemClickListener {

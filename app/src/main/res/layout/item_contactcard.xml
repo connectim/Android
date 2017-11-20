@@ -16,9 +16,10 @@
         android:textSize="@dimen/sp_12"/>
 
     <LinearLayout
+        android:id="@+id/content_lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_white"
+        android:background="@drawable/selector_list_item_bg"
         android:orientation="horizontal">
 
         <ImageView

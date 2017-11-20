@@ -68,7 +68,7 @@ public class ScanAddFriendActivity extends BaseScanActivity {
     @Override
     public void initView() {
         mActivity = this;
-        setViewFind(capturePreview, captureCropView, captureContainer);
+        setViewFind(capturePreview);
         resolveScanUtil = new ResolveScanUtil(mActivity);
     }
 

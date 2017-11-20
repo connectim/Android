@@ -8,9 +8,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.EmoTextView;
-import connect.activity.common.bean.ConverType;
-import connect.activity.common.selefriend.ConversationActivity;
 import connect.ui.activity.R;
+import connect.widget.selefriend.SelectRecentlyChatActivity;
 import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
@@ -52,7 +51,7 @@ public class MsgTxtHolder extends MsgChatHolder {
         ChatMsgEntity msgExtEntity = getMsgExtEntity();
         try {
             Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(msgExtEntity.getContents());
-            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), textMessage.getContent());
+            SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), textMessage.getContent());
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }

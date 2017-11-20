@@ -12,6 +12,9 @@ import java.util.List;
  */
 public class StringUtil {
 
+    public static String SHA_256 = "SHA-256";
+    public static String MD5 = "MD5";
+
     /** message header ext */
     public static final byte[] MSG_HEADER_EXI = new byte[]{(byte) 0xc0, (byte) 0x2E, (byte) 0xC7};
 
@@ -153,4 +156,20 @@ public class StringUtil {
 
         return value_index;
     }
+
+    public static byte[] digest(String encName, byte[] strSrc) {
+        byte[] strDes = null;
+        try {
+            if (encName == null || encName.equals("")) {
+                throw new RuntimeException("encName is Null");
+            }
+            MessageDigest md = MessageDigest.getInstance(encName);
+            md.update(strSrc);
+            strDes = md.digest();
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+        return strDes;
+    }
+
 }

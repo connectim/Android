@@ -4,11 +4,9 @@ import android.text.TextUtils;
 
 import org.junit.Test;
 
-import connect.utils.cryption.TransformUtil;
 import connect.utils.log.LogManager;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**

@@ -26,12 +26,8 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.bean.LinkMessageRow;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.common.bean.ConverType;
-import connect.activity.common.selefriend.ConversationActivity;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -45,9 +41,8 @@ import connect.utils.DialogUtil;
 import connect.utils.RegularUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.TopToolBar;
+import connect.widget.selefriend.SelectRecentlyChatActivity;
 import instant.bean.ChatMsgEntity;
-import instant.sender.model.FriendChat;
-import instant.sender.model.GroupChat;
 import instant.sender.model.NormalChat;
 
 public class OuterWebsiteActivity extends BaseActivity {
@@ -128,7 +123,7 @@ public class OuterWebsiteActivity extends BaseActivity {
                     @Override
                     public void confirm(int position) {
                         if (activity.getResources().getString(R.string.Link_Share_to_Friend).equals(listArr.get(position))) {
-                            ConversationActivity.startActivity(activity, ConverType.URL);
+                            SelectRecentlyChatActivity.startActivity(activity, SelectRecentlyChatActivity.SHARE_CARD);
                         } else if (getString(R.string.Link_Open_in_Browser).equals(listArr.get(position))) {//open browser
                             openUrlBrowser(inUrl);
                         }
@@ -277,7 +272,7 @@ public class OuterWebsiteActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ConversationActivity.CODE_REQUEST && resultCode == ConversationActivity.CODE_REQUEST) {
+        if (requestCode == SelectRecentlyChatActivity.CODE_REQUEST && resultCode == RESULT_OK) {
             int type = data.getIntExtra("type", 0);
             String pubkey = data.getStringExtra("object");
 

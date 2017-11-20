@@ -7,25 +7,26 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+
 import java.io.File;
 
 import connect.activity.chat.bean.DestructReadBean;
-import connect.activity.chat.bean.RoomSession;
-import instant.bean.ChatMsgEntity;
-import instant.bean.MsgDirect;
 import connect.activity.chat.bean.RecExtBean;
+import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.BubbleImg;
-import connect.activity.common.bean.ConverType;
-import connect.activity.common.selefriend.ConversationActivity;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
+import connect.widget.selefriend.SelectRecentlyChatActivity;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import protos.Connect;
 
 /**
@@ -127,7 +128,7 @@ public class MsgImgHolder extends MsgChatHolder {
 
         if (FileUtil.isLocalFile(url) || FileUtil.isExistFilePath(localPath)) {
             String local = FileUtil.isLocalFile(url) ? url : localPath;
-            ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(getMsgExtEntity().getMessageType()), local);
+            SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(getMsgExtEntity().getMessageType()), local);
         }
     }
 }

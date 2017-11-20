@@ -55,7 +55,7 @@ public class ScanAddressActivity extends BaseScanActivity {
     @Override
     public void initView() {
         mActivity = this;
-        setViewFind(capturePreview, captureCropView, captureContainer);
+        setViewFind(capturePreview);
     }
 
     @Override

@@ -292,10 +292,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="connect.activity.common.selefriend.SeleUsersActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
             android:name="connect.activity.chat.exts.LuckyPacketActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
@@ -366,11 +362,15 @@
             android:name="connect.activity.chat.exts.OuterWebsiteActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.common.selefriend.ConversationActivity"
+            android:name="connect.widget.selefriend.SelectRecentlyChatActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.common.selefriend.NewConversationActivity"
+            android:name="connect.widget.selefriend.SelectContactActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.widget.selefriend.SelectFriendActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name="connect.activity.chat.exts.GroupAtActivity"
             android:screenOrientation="portrait"/>
@@ -392,7 +392,6 @@
         <activity
             android:name="connect.activity.chat.exts.TransferMutiDetailActivity"
             android:screenOrientation="portrait"/>
-
         <service
             android:name="connect.service.GroupService"
             android:exported="false">

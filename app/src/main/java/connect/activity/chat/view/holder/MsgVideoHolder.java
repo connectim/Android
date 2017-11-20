@@ -8,14 +8,13 @@ import java.util.Locale;
 
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.exts.VideoPlayerActivity;
-import connect.utils.chatfile.download.DownLoadFile;
 import connect.activity.chat.view.BubbleImg;
 import connect.activity.chat.view.DVideoProView;
-import connect.activity.common.bean.ConverType;
-import connect.activity.common.selefriend.ConversationActivity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
+import connect.utils.chatfile.download.DownLoadFile;
 import connect.utils.chatfile.inter.InterFileDown;
+import connect.widget.selefriend.SelectRecentlyChatActivity;
 import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
@@ -155,9 +154,9 @@ public class MsgVideoHolder extends MsgChatHolder {
             final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
 
             if (FileUtil.isLocalFile(url)) {
-                ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), url, videoMessage.getTimeLength());
+                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), url, videoMessage.getTimeLength());
             } else if (FileUtil.isExistFilePath(localPath)) {
-                ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
+                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
             } else {
                 Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
                 DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getEcdh(),url, new InterFileDown() {
@@ -165,7 +164,7 @@ public class MsgVideoHolder extends MsgChatHolder {
                     public void successDown(byte[] bytes) {
                         videoProView.loadState(true, 0);
                         FileUtil.byteArrToFilePath(bytes, localPath);
-                        ConversationActivity.startActivity((Activity) context, ConverType.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
+                        SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
                     }
 
                     @Override
