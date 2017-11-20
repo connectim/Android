@@ -328,7 +328,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
                     @Override
                     public void confirm(int position) {
                         ConversionHelper.getInstance().deleteRoom(groupKey);
-                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY,groupKey);
                     }
                 });
             }

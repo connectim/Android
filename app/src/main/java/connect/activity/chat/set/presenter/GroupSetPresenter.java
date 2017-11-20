@@ -110,7 +110,9 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
         GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myUid);
         String myAlias = "";
-        if (myMember != null) {
+        if (myMember == null) {
+
+        }else{
             myAlias = TextUtils.isEmpty(myMember.getNick()) ? myMember.getUsername() : myMember.getNick();
         }
         view.groupMyAlias(myAlias);
@@ -256,7 +258,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
                         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_QUIT, groupId, new ResultCall<Connect.HttpResponse>() {
                             @Override
                             public void onResponse(Connect.HttpResponse response) {
-                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY);
+                                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY,roomKey);
 
                                 ContactHelper.getInstance().removeGroupInfos(roomKey);
                                 //FileUtil.deleteDirectory();

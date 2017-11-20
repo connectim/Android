@@ -70,6 +70,7 @@ public class MessageHelper extends BaseDao {
             msgEntity.setMessage_from(cursorGetString(cursor, "MESSAGE_FROM"));
             msgEntity.setMessage_to(cursorGetString(cursor, "MESSAGE_TO"));
             msgEntity.setMessageType(cursorGetInt(cursor, "MESSAGE_TYPE"));
+            msgEntity.setEcdh(cursorGetString(cursor,"ECDH"));
             msgEntity.setContent(cursorGetString(cursor, "CONTENT"));
             msgEntity.setSnap_time(cursorGetLong(cursor, "SNAP_TIME"));
             msgEntity.setSend_status(cursorGetInt(cursor, "SEND_STATUS"));

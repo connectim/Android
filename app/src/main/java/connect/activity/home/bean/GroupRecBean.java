@@ -10,9 +10,6 @@ public class GroupRecBean {
 
     public enum GroupRecType {
         GroupInfo,//group information
-        UpLoadBackUp,//upload backup
-        DownBackUp,//get backup by myself
-        DownGroupBackUp,//get backup by group
         GroupNotificaton,//Mute Notification
     }
 

@@ -1184,9 +1184,10 @@ message MessageUserInfo{
 //聊天类型
 enum ChatType {
 	PRIVATE= 0; // 个人聊天
-	GROUPCHAT  = 1;  //群组聊天
+	GROUPCHAT  = 1;  //群组聊天(加密)
 	CONNECT_SYSTEM = 2; // Connect
-	UNKNOW = 3; //未知，陌生人/群
+	GROUP_DISCUSSION= 3;//讨论组
+        UNKNOW = 4; //未知，陌生人/群
 }
 //临时协同密钥
 message ChatSession {
@@ -1229,12 +1230,14 @@ message PhotoMessage{
 	int32 image_width=4;
 	int32 image_height=5;
 	int64 snap_time = 6;
+	bytes file_key = 7;
 }
 //音频消息
 message VoiceMessage{
 	string url=1;
 	int32 time_length=2;
 	int64 snap_time = 3;
+	bytes file_key = 4;
 }
 //视频消息
 message VideoMessage{
@@ -1245,6 +1248,7 @@ message VideoMessage{
 	int32 image_width=5;
 	int32 image_height=6;
 	int64 snap_time = 7;
+	bytes file_key = 8;
 }
 //名片消息
 message CardMessage{

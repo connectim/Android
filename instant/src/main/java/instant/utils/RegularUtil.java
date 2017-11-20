@@ -60,6 +60,6 @@ public class RegularUtil {
     }
 
     public static String groupAvatar(String groupkey) {
-        return String.format(RegularUtil.GROUP_AVATAR, ConfigUtil.getInstance().serverAddress(), groupkey);
+        return String.format(RegularUtil.GROUP_AVATAR, XmlParser.getInstance().serverAddress(), groupkey);
     }
 }

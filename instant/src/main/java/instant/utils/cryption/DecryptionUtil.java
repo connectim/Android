@@ -3,7 +3,7 @@ package instant.utils.cryption;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.wallet.jni.AllNativeMethod;
-import instant.utils.ConfigUtil;
+import instant.utils.XmlParser;
 import protos.Connect;
 
 /**
@@ -27,7 +27,7 @@ public class DecryptionUtil {
     }
 
     public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(extendedECDH, priKey, ConfigUtil.getInstance().serverPubKey(), gcmData);
+        return decodeAESGCMStructData(extendedECDH, priKey, XmlParser.getInstance().serverPubKey(), gcmData);
     }
 
     public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {

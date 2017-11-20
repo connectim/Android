@@ -6,6 +6,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import connect.activity.chat.bean.DestructReadBean;
+import connect.activity.chat.bean.RoomSession;
 import connect.utils.chatfile.download.DownLoadFile;
 import connect.utils.chatfile.inter.InterFileDown;
 import instant.bean.ChatMsgEntity;
@@ -42,6 +43,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
     public void buildRowData(final MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
+        RoomSession.getInstance().checkBurnTime(voiceMessage.getSnapTime());
 
         boolean visiable = false;
         if (msgExtEntity.parseDirect() == MsgDirect.From) {

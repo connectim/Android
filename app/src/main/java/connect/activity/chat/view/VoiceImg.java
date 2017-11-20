@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -41,7 +42,7 @@ public class VoiceImg extends ImageView {
     private String msgid;
     private MsgDirect msgDirect;
 
-    private ExCountDownTimer countDownTimer;
+    private CountDownTimer countDownTimer;
 
     public VoiceImg(Context context) {
         super(context);
@@ -214,19 +215,14 @@ public class VoiceImg extends ImageView {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-        countDownTimer = new ExCountDownTimer(voiceLength * 1000, VOICE_FREQUENCY) {
+        countDownTimer = new CountDownTimer(voiceLength * 1000, VOICE_FREQUENCY) {
 
             @Override
-            public void onTick(long millisUntilFinished, int percent) {
+            public void onTick(long millisUntilFinished) {
                 Message msg = new Message();
                 msg.what = 100;
                 msg.arg1 = (int) millisUntilFinished;
                 mHandler.sendMessage(msg);
-            }
-
-            @Override
-            public void onPause() {
-
             }
 
             @Override

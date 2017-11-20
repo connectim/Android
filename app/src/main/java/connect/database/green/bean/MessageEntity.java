@@ -91,8 +91,8 @@ public class MessageEntity implements Serializable {
         messageEntity.setMessageType(chatMsgEntity.getMessageType());
         messageEntity.setMessage_from(chatMsgEntity.getMessage_from());
         messageEntity.setMessage_to(chatMsgEntity.getMessage_to());
-        messageEntity.setContent(content);
         messageEntity.setEcdh(chatMsgEntity.getEcdh());
+        messageEntity.setContent(content);
         messageEntity.setCreatetime(chatMsgEntity.getCreatetime());
         messageEntity.setRead_time(chatMsgEntity.getRead_time());
         messageEntity.setSend_status(chatMsgEntity.getSend_status());

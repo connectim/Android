@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.EmoTextView;
 import connect.ui.activity.R;
 import connect.widget.selefriend.SelectRecentlyChatActivity;
@@ -29,6 +30,7 @@ public class MsgTxtHolder extends MsgChatHolder {
     public void buildRowData(MsgBaseHolder msgBaseHolder, ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(msgExtEntity.getContents());
+        RoomSession.getInstance().checkBurnTime(textMessage.getSnapTime());
 
         String content = textMessage.getContent();
         txtmsg.setText(content);

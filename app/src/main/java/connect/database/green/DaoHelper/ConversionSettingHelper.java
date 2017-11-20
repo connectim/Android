@@ -20,13 +20,9 @@ public class ConversionSettingHelper extends BaseDao {
         conversionSettingEntityDao = daoSession.getConversionSettingEntityDao();
     }
 
-    public static ConversionSettingHelper getInstance() {
+    public synchronized static ConversionSettingHelper getInstance() {
         if (conversionSettingHelper == null) {
-            synchronized (ConversionSettingHelper.class) {
-                if (conversionSettingHelper == null) {
-                    conversionSettingHelper = new ConversionSettingHelper();
-                }
-            }
+            conversionSettingHelper = new ConversionSettingHelper();
         }
         return conversionSettingHelper;
     }
@@ -57,7 +53,7 @@ public class ConversionSettingHelper extends BaseDao {
         conversionSettingEntityDao.insertOrReplace(setEntity);
     }
 
-    public void updateBurnTime(String roomkey, int time) {
+    public void updateBurnTime(String roomkey, long time) {
         ConversionSettingEntity setEntity = loadSetEntity(roomkey);
         if (setEntity == null) {
             setEntity = new ConversionSettingEntity();

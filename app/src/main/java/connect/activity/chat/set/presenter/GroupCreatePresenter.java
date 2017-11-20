@@ -151,7 +151,6 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         groupEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
         ContactHelper.getInstance().inserGroupEntity(groupEntity);
 
-        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.UpLoadBackUp, groupKey, groupEcdh);
         String stringMems = "";
         List<GroupMemberEntity> memEntities = new ArrayList<>();
         for (ContactEntity contact : contactEntities) {

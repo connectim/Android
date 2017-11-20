@@ -4,6 +4,7 @@ import android.view.View;
 
 import java.io.File;
 
+import connect.activity.chat.bean.RoomSession;
 import connect.widget.bottominput.EmoManager;
 import connect.ui.activity.R;
 import connect.widget.GifView;
@@ -25,6 +26,7 @@ public class MsgEmotionHolder extends MsgChatHolder {
     public void buildRowData(MsgBaseHolder msgBaseHolder, ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         Connect.EmotionMessage emotionMessage = Connect.EmotionMessage.parseFrom(msgExtEntity.getContents());
+        RoomSession.getInstance().checkBurnTime(emotionMessage.getSnapTime());
 
         String filepath = emotionMessage.getContent();
         filepath = EmoManager.GIF_PATH + File.separator + filepath + ".gif";

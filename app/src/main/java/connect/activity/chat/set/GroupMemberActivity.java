@@ -11,16 +11,16 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.base.BaseActivity;
+import connect.activity.base.compare.GroupComPara;
+import connect.activity.chat.adapter.GroupMemberAdapter;
 import connect.activity.chat.set.contract.GroupMemberContract;
 import connect.activity.chat.set.presenter.GroupMemberPresenter;
+import connect.activity.home.view.LineDecoration;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.activity.base.compare.GroupComPara;
-import connect.activity.home.view.LineDecoration;
-import connect.activity.chat.adapter.GroupMemberAdapter;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
@@ -83,18 +83,20 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         });
 
         groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey,
-                SharedPreferenceUtil.getInstance().getUser().getUid());
+        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, myUid);
 
         layoutManager = new LinearLayoutManager(activity);
         recordview.setLayoutManager(layoutManager);
         memberAdapter = new GroupMemberAdapter(activity, recordview);
-        memberAdapter.setCanScroll(myMember.getRole() == 1);
+
+        boolean canScroll = myMember != null && myMember.getRole() == 1;
+        memberAdapter.setCanScroll(canScroll);
         recordview.setAdapter(memberAdapter);
         recordview.addItemDecoration(new LineDecoration(activity));
         recordview.addOnScrollListener(onscrollListener);
 
-        final List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
+        final List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemberEntitiesExcept(groupKey, myUid);
         Collections.sort(memEntities, new GroupComPara());
         toolbarTop.setTitle(getString(R.string.Chat_Group_Members, memEntities.size()));
 

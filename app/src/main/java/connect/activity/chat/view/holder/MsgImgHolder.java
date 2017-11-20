@@ -16,6 +16,7 @@ import java.io.File;
 
 import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.RecExtBean;
+import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.BubbleImg;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
@@ -47,6 +48,7 @@ public class MsgImgHolder extends MsgChatHolder {
     public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         photoMessage = Connect.PhotoMessage.parseFrom(msgExtEntity.getContents());
+        RoomSession.getInstance().checkBurnTime(photoMessage.getSnapTime());
 
         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
         String url = !TextUtils.isEmpty(photoMessage.getThum()) ? photoMessage.getThum() : photoMessage.getUrl();

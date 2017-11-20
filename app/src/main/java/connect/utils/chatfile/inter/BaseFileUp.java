@@ -20,6 +20,7 @@ import connect.utils.cryption.DecryptionUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.jni.AllNativeMethod;
 import instant.bean.ChatMsgEntity;
 import instant.bean.Session;
 import instant.bean.UserCookie;
@@ -42,6 +43,10 @@ public abstract class BaseFileUp implements InterFileUp {
     protected BaseChat baseChat;
     protected Connect.MediaFile mediaFile;
     public FileUploadListener fileUpListener;
+
+    protected String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+    protected String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+    protected byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
 
     public UserCookie loadUserCookie() {
         UserCookie userCookie = Session.getInstance().getChatCookie();
@@ -76,13 +81,14 @@ public abstract class BaseFileUp implements InterFileUp {
             UserCookie userCookie = loadUserCookie();
             String myPrivateKey = userCookie.getPriKey();
 
-            UserCookie friendCookie = loadFriendCookie(baseChat.chatKey());
+            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(baseChat.chatKey());
+            UserCookie friendCookie = loadFriendCookie(friendEntity.getCa_pub());
             String friendPublicKey = friendCookie.getPubKey();
 
             EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
             ecdhExts.setBytes(SupportKeyUril.xor(userCookie.getSalt(), friendCookie.getSalt()));
 
-            gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, fileSie);
+            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, fileSie);
         } else if (baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
             gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), fileBytes);
         }
