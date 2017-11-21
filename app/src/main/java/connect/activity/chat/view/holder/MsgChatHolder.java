@@ -147,6 +147,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 }
                 break;
             case GROUPCHAT:
+            case GROUP_DISCUSSION:
                 headImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

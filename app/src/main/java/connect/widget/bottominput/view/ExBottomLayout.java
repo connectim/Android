@@ -96,7 +96,7 @@ public class ExBottomLayout extends RelativeLayout {
             }
             actionList.add(new BaseAction(R.mipmap.chat_bar_contract, R.string.Chat_Name_Card));
         }
-        actionList.add(new BaseAction(R.mipmap.message_send_location3x, R.string.Chat_Loc));
+        //actionList.add(new BaseAction(R.mipmap.message_send_location3x, R.string.Chat_Loc));
         MorePagerAdapter moreAdapter = new MorePagerAdapter(morePagerview, actionList);
         morePagerview.setAdapter(moreAdapter);
         int count = moreAdapter.getCount();

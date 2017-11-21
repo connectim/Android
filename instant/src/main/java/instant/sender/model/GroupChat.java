@@ -109,7 +109,7 @@ public class GroupChat extends NormalChat {
 
     @Override
     public int chatType() {
-        return 1;
+        return Connect.ChatType.GROUPCHAT_VALUE;
     }
 
     @Override

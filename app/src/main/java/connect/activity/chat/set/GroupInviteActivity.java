@@ -163,8 +163,7 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
     private class GroupInviteFriendSelectListener implements SelectFriendAdapter.OnSelectFriendListener{
         @Override
         public void selectFriend(List<String> list) {
-            int memberSizeExceptMe = oldMemberUids.size() - 1;
-            if (list == null || list.size() <= memberSizeExceptMe) {
+            if (list == null || list.size() <= 0) {
                 toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_6d6e75);
             } else {

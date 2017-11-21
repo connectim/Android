@@ -23,7 +23,7 @@ public class SelectFriendAdapter extends RecyclerView.Adapter<SelectFriendAdapte
 
     private Activity activity;
     /** Have chosen */
-    private List<String> selectList;
+    private List<String> selectList=new ArrayList<>();
     /** Already exists */
     private List<String> existList;
     private ArrayList<ContactEntity> dataList = new ArrayList<>();
@@ -132,8 +132,12 @@ public class SelectFriendAdapter extends RecyclerView.Adapter<SelectFriendAdapte
     }
 
     public void setDataNotify(List<ContactEntity> list, List<String> selectList, List<String> existList) {
-        this.selectList = selectList;
-        this.existList = existList;
+        if (selectList != null) {
+            this.selectList = selectList;
+        }
+        if (existList != null) {
+            this.existList = existList;
+        }
 
         dataList.clear();
         dataList.addAll(list);

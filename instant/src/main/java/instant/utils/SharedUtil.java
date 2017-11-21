@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import instant.bean.Session;
 import instant.bean.UserCookie;
+import instant.parser.localreceiver.ExceptionLocalReceiver;
 import instant.ui.InstantSdk;
 
 /**
@@ -45,7 +47,12 @@ public class SharedUtil {
     private synchronized static SharedUtil getInstance(Context context) {
         if (null == sharePreUtil || null == sharePre) {
             sharePreUtil = new SharedUtil();
-            String myUid = Session.getInstance().getConnectCookie().getUid();
+            UserCookie userCookie = Session.getInstance().getConnectCookie();
+            if (null == userCookie || TextUtils.isEmpty(userCookie.getUid())) {
+                ExceptionLocalReceiver.localReceiver.exitAccount();
+                throw new RuntimeException();
+            }
+            String myUid = userCookie.getUid();
             sharePre = context.getSharedPreferences(SHAREPREFERENCES_NAME + ":" + myUid, Context.MODE_PRIVATE);
         }
         return sharePreUtil;

@@ -1202,6 +1202,7 @@ message ChatMessage {
 	ChatType chat_type=6;
 	int32 msg_type = 7;
 	string ext= 8;
+	bytes origin_msg = 9;
 }
 //传输层模型
 message MessageData {

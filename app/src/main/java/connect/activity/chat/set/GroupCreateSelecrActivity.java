@@ -37,7 +37,7 @@ public class GroupCreateSelecrActivity extends BaseActivity implements GroupCrea
 
     private GroupCreateSelecrActivity activity;
     private static String TAG = "_GroupCreateActivity";
-    private static String UID = "UID";
+    private static String FRIEND_UID = "FRIEND_UID";
     private String pubKey;
     private int topPosi;
     private boolean move;
@@ -59,7 +59,7 @@ public class GroupCreateSelecrActivity extends BaseActivity implements GroupCrea
 
     public static void startActivity(Activity activity, String pubkey) {
         Bundle bundle = new Bundle();
-        bundle.putString(UID, pubkey);
+        bundle.putString(FRIEND_UID, pubkey);
         ActivityUtil.next(activity, GroupCreateSelecrActivity.class, bundle);
     }
 
@@ -80,21 +80,23 @@ public class GroupCreateSelecrActivity extends BaseActivity implements GroupCrea
         toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                toolbar.setRightTextEnable(false);
                 ArrayList<ContactEntity> selectEntities = adapter.getSelectList();
                 if (selectEntities == null || selectEntities.size() < 1) {
                     toolbar.setRightTextColor(R.color.color_6d6e75);
                     return;
                 }
+                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubKey);
+                selectEntities.add(friendEntity);
                 presenter.requestGroupCreate(selectEntities);
 
-                toolbar.setRightListener(null);
                 Message message = new Message();
                 message.what = 100;
                 handler.sendMessageDelayed(message, 3000);
             }
         });
 
-        pubKey = getIntent().getStringExtra(UID);
+        pubKey = getIntent().getStringExtra(FRIEND_UID);
         linearLayoutManager = new LinearLayoutManager(activity);
         List<String> oldMembers = new ArrayList<>();
         oldMembers.add(pubKey);
@@ -147,7 +149,7 @@ public class GroupCreateSelecrActivity extends BaseActivity implements GroupCrea
     private class GroupCreateFriendSelectListener implements SelectFriendAdapter.OnSelectFriendListener {
         @Override
         public void selectFriend(List<String> list) {
-            if (list == null || list.size() < 2) {
+            if (list == null || list.size() < 1) {
                 toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_6d6e75);
             } else {

@@ -20,7 +20,6 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.chat.exts.contract.JoinGroupContract;
 import connect.activity.chat.exts.presenter.JoinGroupPresenter;
 import connect.activity.home.bean.GroupRecBean;
-import connect.activity.home.bean.HttpRecBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.GroupEntity;
@@ -141,14 +140,9 @@ public class ApplyJoinGroupActivity extends BaseActivity implements JoinGroupCon
             txt3.setText(profile);
         }
 
-        if (infoBase.getPublic()) {
-            boolean isJoin = infoBase.getJoined();
-            if (isJoin) {
-                handler.sendEmptyMessageDelayed(120, 500);
-            }
-        } else {
-            txt4.setVisibility(View.VISIBLE);
-            btn.setEnabled(false);
+        boolean isJoin = infoBase.getJoined();
+        if (isJoin) {
+            handler.sendEmptyMessageDelayed(120, 500);
         }
     }
 

@@ -19,7 +19,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.instant.model.CFriendChat;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
@@ -60,6 +59,12 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
         contactEntities = view.groupMemberList();
     }
 
+    /**
+     *
+     * @param groupName
+     * @param groupCategory   “LOW”:1,
+     *                        “HIGH”:2
+     */
     @Override
     public void createGroup(String groupName, int groupCategory) {
         List<Connect.AddGroupUserInfo> groupUserInfos = new ArrayList<>();
@@ -88,7 +93,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
                         insertLocalData(groupInfo);
-                        groupCreateBroadcast(groupInfo);
+                        //groupCreateBroadcast(groupInfo);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -115,7 +120,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
         String groupName = groupInfo.getGroup().getName();
 
         ConversionEntity roomEntity = new ConversionEntity();
-        roomEntity.setType(1);
+        roomEntity.setType(Connect.ChatType.GROUP_DISCUSSION_VALUE);
         roomEntity.setIdentifier(groupKey);
         roomEntity.setName(groupName);
         roomEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
@@ -161,7 +166,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
         ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
             @Override
             public void animFinish() {
-                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUPCHAT, groupKey));
+                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupKey));
             }
         }).show();
     }

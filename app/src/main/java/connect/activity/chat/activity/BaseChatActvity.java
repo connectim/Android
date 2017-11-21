@@ -20,6 +20,7 @@ import connect.activity.chat.bean.Talker;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ConversionEntity;
+import connect.instant.model.CDiscussChat;
 import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.instant.model.CRobotChat;
@@ -82,6 +83,9 @@ public abstract class BaseChatActvity extends BaseActivity {
                 break;
             case GROUPCHAT:
                 normalChat = new CGroupChat(talker.getTalkKey());
+                break;
+            case GROUP_DISCUSSION:
+                normalChat = new CDiscussChat(talker.getTalkKey());
                 break;
             case CONNECT_SYSTEM:
                 normalChat = CRobotChat.getInstance();

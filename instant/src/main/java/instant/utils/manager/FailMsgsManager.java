@@ -11,9 +11,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 import instant.bean.SocketACK;
+import instant.parser.localreceiver.CommandLocalReceiver;
+import instant.parser.localreceiver.MessageLocalReceiver;
 import instant.sender.SenderManager;
 import instant.ui.InstantSdk;
 import instant.utils.TimeUtil;
+import protos.Connect;
 
 /**
  * Failure message handling
@@ -154,7 +157,7 @@ public class FailMsgsManager {
             String msgid = (String) msg.obj;
             Map failMap = FailMsgsManager.getInstance().getFailMap(msgid);
             if (failMap != null) {
-                //ChatMsgUtil.updateMsgSendState((String) failMap.get(PUBKEY), msgid, 2);
+                CommandLocalReceiver.receiver.updateMsgSendState((String) failMap.get(PUBKEY),msgid,2);
             }
         }
     };
@@ -184,5 +187,18 @@ public class FailMsgsManager {
 
         Map<String, Object> objectMap = receiveFailMap.get(pubkey);
         return objectMap;
+    }
+
+    public void dealReceiveFailMsgs(String groupIdentify) {
+        Map<String, Object> groupFailMsgs = receiveFailMsgs(groupIdentify);
+        if (groupFailMsgs == null || groupFailMsgs.isEmpty()) {
+            return;
+        }
+
+        for (Map.Entry<String, Object> entry : groupFailMsgs.entrySet()) {
+            if (entry.getValue() instanceof Connect.MessagePost) {
+                MessageLocalReceiver.localReceiver.groupChat((Connect.MessagePost) entry.getValue());
+            }
+        }
     }
 }

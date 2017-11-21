@@ -5,19 +5,11 @@
               android:background="@color/color_white"
               android:orientation="horizontal">
 
-    <View
-        android:id="@id/select"
-        android:layout_width="@dimen/dp_27"
-        android:layout_height="@dimen/dp_27"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
-        android:background="@drawable/sec_pickstate"/>
-
     <ImageView
         android:id="@id/roundimg"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"
+        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginBottom="@dimen/dp_9"
         android:layout_marginTop="@dimen/dp_9"
         android:scaleType="centerCrop"

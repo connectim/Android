@@ -7,6 +7,7 @@
                 android:paddingRight="@dimen/dp_16">
 
     <TextView
+        android:id="@id/txt"
         style="@style/BaseTextStyle.16"
         android:layout_centerVertical="true"
         android:textColor="@color/color_black"/>

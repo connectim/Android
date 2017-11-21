@@ -1,8 +1,13 @@
 package instant.sender.model;
 
+import com.google.protobuf.ByteString;
+
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.bean.Session;
+import instant.bean.SocketACK;
+import instant.sender.SenderManager;
+import instant.utils.RegularUtil;
 import instant.utils.TimeUtil;
 import protos.Connect;
 
@@ -11,6 +16,16 @@ import protos.Connect;
  * Created by puin on 17-11-21.
  */
 public class DiscussChat extends NormalChat {
+
+    private static String TAG = "_GroupChat";
+
+    protected String groupIdentify;
+    protected String groupName = "";
+    protected String myGroupName = "";
+
+    public DiscussChat(String groupIdentify) {
+        this.groupIdentify = groupIdentify;
+    }
 
     @Override
     public ChatMsgEntity createBaseChat(MessageType type) {
@@ -32,27 +47,40 @@ public class DiscussChat extends NormalChat {
 
     @Override
     public void sendPushMsg(ChatMsgEntity chatMsgEntity) {
+        try {
+            Connect.ChatMessage.Builder chatMessageBuilder = chatMsgEntity.transToChatMessageBuilder();
+            chatMessageBuilder.setOriginMsg(ByteString.copyFrom(chatMsgEntity.getContents()));
 
+            Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
+            Connect.MessageData messageData = Connect.MessageData.newBuilder()
+                    .setChatMsg(chatMessageBuilder)
+                    .setChatSession(sessionBuilder)
+                    .build();
+            Connect.MessagePost messagePost = normalChatMessage(messageData);
+            SenderManager.getInstance().sendAckMsg(SocketACK.GROUP_CHAT, chatKey(), messageData.getChatMsg().getMsgId(), messagePost.toByteString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public String chatKey() {
-        return null;
+        return groupIdentify;
     }
 
     @Override
     public int chatType() {
-        return 0;
+        return Connect.ChatType.GROUP_DISCUSSION_VALUE;
     }
 
     @Override
     public String headImg() {
-        return null;
+        return RegularUtil.groupAvatar(groupIdentify);
     }
 
     @Override
     public String nickName() {
-        return null;
+        return "";
     }
 
     @Override

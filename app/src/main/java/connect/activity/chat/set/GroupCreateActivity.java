@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +19,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.GroupCreateAdapter;
 import connect.activity.chat.set.contract.GroupCreateContract;
 import connect.activity.chat.set.presenter.GroupCreatePresenter;
+import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.ContactEntity;
@@ -33,10 +33,6 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
     TopToolBar toolbar;
     @Bind(R.id.edittxt1)
     EditText edittxt1;
-    @Bind(R.id.toggle)
-    View toggle;
-    @Bind(R.id.groupset_category_explain)
-    TextView groupsetCategoryExplain;
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
 
@@ -50,12 +46,13 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_create);
         ButterKnife.bind(this);
+        initView();
     }
 
     public static void startActivity(Activity activity, ArrayList<ContactEntity> contactEntities) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CONTACT_LIST, contactEntities);
-        ActivityUtil.next(activity, GroupCreateSelecrActivity.class, bundle);
+        ActivityUtil.next(activity, GroupCreateActivity.class, bundle);
     }
 
     @Override
@@ -65,7 +62,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(getResources().getString(R.string.Chat_set_Create_New_Group));
         toolbar.setRightText(R.string.Chat_Complete);
-        toolbar.setRightTextEnable(false);
+        toolbar.setRightTextEnable(true);
         toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +78,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
                 if (TextUtils.isEmpty(groupName)) {
                     groupName = edittxt1.getHint().toString();
                 }
-                int groupCategory = toggle.isSelected() ? 2 : 1;
+                int groupCategory = 1;
                 presenter.createGroup(groupName, groupCategory);
 
                 Message message = new Message();
@@ -92,11 +89,11 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         edittxt1.setHint(String.format(activity.getString(R.string.Link_user_friends), userBean.getName()));
-        groupsetCategoryExplain.setText(activity.getString(R.string.Chat_set_Group_Chat_Encrypt_Open));
 
         contactEntities = (List<ContactEntity>) getIntent().getSerializableExtra(CONTACT_LIST);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.addItemDecoration(new LineDecoration(activity));
         GroupCreateAdapter adapter = new GroupCreateAdapter();
         adapter.setData(contactEntities);
         recyclerview.setAdapter(adapter);
@@ -115,7 +112,6 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
             }
         }
     };
-
 
     @Override
     public List<ContactEntity> groupMemberList() {

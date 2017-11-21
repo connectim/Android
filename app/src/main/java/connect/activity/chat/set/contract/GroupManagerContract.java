@@ -13,16 +13,12 @@ public interface GroupManagerContract {
 
         String getRoomKey();
 
-        void inviteSwitch(boolean avaliable);
-
         void groupIntroduce();
 
         void groupNewOwner();
     }
 
     interface Presenter extends BasePresenter {
-
-        void requestGroupVerify(boolean verify);
 
     }
 }

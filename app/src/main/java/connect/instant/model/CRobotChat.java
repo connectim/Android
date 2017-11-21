@@ -3,8 +3,11 @@ package connect.instant.model;
 import android.content.Context;
 import android.text.TextUtils;
 
+import java.util.List;
+
 import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.ConversationAction;
+import connect.activity.home.bean.RoomAttrBean;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ConversionEntity;
 import connect.instant.inter.ConversationListener;
@@ -60,35 +63,33 @@ public class CRobotChat extends RobotChat implements ConversationListener{
             return;
         }
 
-        ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(chatKey());
-        if (conversionEntity == null) {
-            conversionEntity = new ConversionEntity();
-            conversionEntity.setIdentifier(chatKey());
+        Context context= BaseApplication.getInstance().getBaseContext();
+        List<RoomAttrBean> roomEntities = ConversionHelper.getInstance().loadRoomEntities(chatKey());
+        if (roomEntities == null || roomEntities.size() == 0) {
+            ConversionEntity conversionEntity = new ConversionEntity();
+            conversionEntity.setIdentifier(context.getString(R.string.app_name));
+            conversionEntity.setName(nickName());
+            conversionEntity.setAvatar(headImg());
+            conversionEntity.setType(chatType());
+            conversionEntity.setContent(TextUtils.isEmpty(showText) ? "" : showText);
+            conversionEntity.setStranger(isStranger ? 1 : 0);
+            conversionEntity.setUnread_count(newmsg == 0 ? 0 : 1);
+            conversionEntity.setDraft(TextUtils.isEmpty(draft) ? "" : draft);
+            conversionEntity.setIsAt(at);
+            ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
+        } else {
+            for (RoomAttrBean attrBean : roomEntities) {
+                ConversionHelper.getInstance().updateRoomEntity(
+                        context.getString(R.string.app_name),
+                        TextUtils.isEmpty(draft) ? "" : draft,
+                        TextUtils.isEmpty(showText) ? "" : showText,
+                        (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
+                        at,
+                        (isStranger ? 1 : 0),
+                        (msgtime > 0 ? 0 : msgtime)
+                );
+            }
         }
-
-        conversionEntity.setName(nickName());
-        conversionEntity.setAvatar(headImg());
-        conversionEntity.setType(chatType());
-        if (!TextUtils.isEmpty(showText)) {
-            conversionEntity.setContent(showText);
-        }
-        if (msgtime > 0) {
-            conversionEntity.setLast_time(msgtime);
-        }
-        conversionEntity.setStranger(isStranger ? 1 : 0);
-
-        if (newmsg == 0) {
-            conversionEntity.setUnread_count(0);
-        } else if (newmsg > 0) {
-            int unread = (null == conversionEntity.getUnread_count()) ? 1 : 1 + conversionEntity.getUnread_count();
-            conversionEntity.setUnread_count(unread);
-        }
-
-        if (draft != null) {
-            conversionEntity.setDraft(draft);
-        }
-
-        ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         if (broad) {
             ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
         }
