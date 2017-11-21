@@ -11,6 +11,7 @@ import instant.utils.XmlParser;
 import instant.utils.StringUtil;
 import instant.utils.cryption.EncryptionUtil;
 import instant.utils.cryption.SupportKeyUril;
+import instant.utils.log.LogManager;
 import protos.Connect;
 
 /**
@@ -19,12 +20,19 @@ import protos.Connect;
 
 public class ShakeHandSender {
 
+    private static String TAG = "ShakeHandSender";
+
     /**
      * A shake hands for the first time
      * @return
      */
     public void firstLoginShake() {
-        ConnectLocalReceiver.receiver.requestLogin();
+        try {
+            ConnectLocalReceiver.receiver.requestLogin();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogManager.getLogger().d(TAG, e.getMessage());
+        }
 
         UserCookie userCookie = Session.getInstance().getConnectCookie();
         String priKey = userCookie.getPriKey();

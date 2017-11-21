@@ -152,7 +152,7 @@ public class Session {
         userCookieMap.put(pbk, cookie);
     }
 
-    private UserCookie getUserCookie(String pbk) {
+    public UserCookie getUserCookie(String pbk) {
         if (userCookieMap == null) {
             userCookieMap = new HashMap<>();
         }

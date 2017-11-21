@@ -1443,3 +1443,25 @@ string group_id = 1;
 string uid = 2;
 GcmData cipher_data = 3;
 }
+
+// RSS
+message RSSList {
+repeated RSS rss_list=1;
+}
+
+message RSS {
+string rss_id = 1;
+string icon = 2;
+string title = 3;
+string desc = 4;
+bool sub_rss = 5; // 订阅状态 0 未订阅 1：已订阅
+repeated RSSMessage rss_his_msgs=6;
+}
+
+message RSSMessage {
+string title = 1;
+string detail = 2;
+string source = 3;
+string source_url = 4;
+int64 time = 5;
+}

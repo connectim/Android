@@ -7,6 +7,7 @@ import instant.bean.UserCookie;
 import instant.sender.SenderManager;
 import instant.ui.service.RemoteServeice;
 import instant.ui.service.SenderService;
+import instant.utils.log.LogManager;
 
 /**
  * Created by Administrator on 2017/9/22.
@@ -15,6 +16,7 @@ public class InstantSdk {
 
     public static InstantSdk instantSdk = getInstance();
 
+    private static final String TAG = "_InstantSdk";
     private Context context;
 
     private synchronized static InstantSdk getInstance() {
@@ -30,6 +32,7 @@ public class InstantSdk {
 
     public void registerUserInfo(Context context, String uid,String publicKey, String privateKey) {
         UserCookie userCookie = new UserCookie();
+        LogManager.getLogger().d(TAG, "uid :" + uid + "   publicKey=" + publicKey + "  privateKey=" + privateKey);
         userCookie.setUid(uid);
         userCookie.setPubKey(publicKey);
         userCookie.setPriKey(privateKey);

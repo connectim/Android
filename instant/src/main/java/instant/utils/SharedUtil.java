@@ -7,15 +7,11 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import instant.bean.Session;
 import instant.bean.UserCookie;
-import instant.parser.localreceiver.ExceptionLocalReceiver;
 import instant.ui.InstantSdk;
 
 /**
@@ -25,6 +21,7 @@ import instant.ui.InstantSdk;
 public class SharedUtil {
 
     /** user SharedPreference name */
+    private static final String SHAREPREFERENCES_DEFAULT = "SHAREPREFERENCES_DEFAULT";
     private static final String SHAREPREFERENCES_NAME = "SHARE_INSTANT";
     private static SharedUtil sharePreUtil;
     private static SharedPreferences sharePre;
@@ -47,15 +44,37 @@ public class SharedUtil {
     private synchronized static SharedUtil getInstance(Context context) {
         if (null == sharePreUtil || null == sharePre) {
             sharePreUtil = new SharedUtil();
-            UserCookie userCookie = Session.getInstance().getConnectCookie();
+            UserCookie userCookie = Session.getInstance().getUserCookie(Session.CONNECT_USER);
             if (null == userCookie || TextUtils.isEmpty(userCookie.getUid())) {
-                ExceptionLocalReceiver.localReceiver.exitAccount();
-                throw new RuntimeException();
+                userCookie = sharePreUtil.loadDefaultConnectCookie();
             }
             String myUid = userCookie.getUid();
             sharePre = context.getSharedPreferences(SHAREPREFERENCES_NAME + ":" + myUid, Context.MODE_PRIVATE);
         }
         return sharePreUtil;
+    }
+
+    /****************************** Default Cookie ********************************************************/
+    public void insertDefaultConnectCookie(UserCookie userCookie) {
+        Context context = InstantSdk.instantSdk.getBaseContext();
+        SharedPreferences defaultSharePre = context.getSharedPreferences(SHAREPREFERENCES_DEFAULT, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = defaultSharePre.edit();
+        editor.putString(COOKIE_CONNECT_USER, new Gson().toJson(userCookie));
+        editor.apply();
+    }
+
+    public UserCookie loadDefaultConnectCookie() {
+        Context context = InstantSdk.instantSdk.getBaseContext();
+        SharedPreferences defaultSharePre = context.getSharedPreferences(SHAREPREFERENCES_DEFAULT, Context.MODE_PRIVATE);
+        String connectCookieKey = COOKIE_CONNECT_USER;
+        UserCookie userCookie = null;
+        if (defaultSharePre.contains(connectCookieKey)) {
+            String gsonCookie = defaultSharePre.getString(connectCookieKey, "");
+            if (!TextUtils.isEmpty(gsonCookie)) {
+                userCookie = new Gson().fromJson(gsonCookie, UserCookie.class);
+            }
+        }
+        return userCookie;
     }
 
     public void closeShare() {
@@ -68,36 +87,58 @@ public class SharedUtil {
     }
 
     public void putValue(String key, String value) {
+        if (sharePre == null) {
+            getInstance();
+        }
         SharedPreferences.Editor editor = sharePre.edit();
         editor.putString(key, value);
         editor.apply();
     }
 
     public void putValue(String key, int value) {
+        if (sharePre == null) {
+            getInstance();
+        }
         SharedPreferences.Editor editor = sharePre.edit();
         editor.putInt(key, value);
         editor.apply();
     }
 
     public String getStringValue(String key) {
+        if (sharePre == null) {
+            getInstance();
+        }
         return sharePre.getString(key, "");
     }
 
     public int getIntValue(String key) {
+        if (sharePre == null) {
+            getInstance();
+        }
         return sharePre.getInt(key, 0);
     }
 
     public boolean isContains(String key) {
+        if (sharePre == null) {
+            getInstance();
+        }
         return sharePre.contains(key);
     }
 
     public void remove(String key) {
+        if (sharePre == null) {
+            getInstance();
+        }
         SharedPreferences.Editor editor = sharePre.edit();
         editor.remove(key);
         editor.apply();
     }
 
     public void deleteUserInfo() {
+        if (sharePre == null) {
+            getInstance();
+        }
+
         sharePre.edit()
                 .clear()
                 .commit();
@@ -106,12 +147,17 @@ public class SharedUtil {
     /******************************  Connect Cookie  ********************************************************/
     public void insertConnectCookie(UserCookie userCookie) {
         String connectCookieKey = COOKIE_CONNECT_USER;
+
         putValue(connectCookieKey, new Gson().toJson(userCookie));
+        insertDefaultConnectCookie(userCookie);
     }
 
     public UserCookie loadConnectCookie() {
         String connectCookieKey = COOKIE_CONNECT_USER;
         UserCookie userCookie = null;
+        if (sharePre == null) {
+            getInstance();
+        }
         if (sharePre.contains(connectCookieKey)) {
             String gsonCookie = sharePre.getString(connectCookieKey, "");
             if (!TextUtils.isEmpty(gsonCookie)) {
@@ -123,6 +169,9 @@ public class SharedUtil {
 
     /******************************  Chat Cookie  ********************************************************/
     public void insertChatUserCookie(UserCookie userCookie) {
+        if (sharePre == null) {
+            getInstance();
+        }
         if (sharePre.contains(COOKIE_CHATUSER)) {
             String gsonCookies = sharePre.getString(COOKIE_CHATUSER, "");
             if (TextUtils.isEmpty(gsonCookies)) {
@@ -147,6 +196,9 @@ public class SharedUtil {
 
     public UserCookie loadLastChatUserCookie() {
         UserCookie userCookie = null;
+        if (sharePre == null) {
+            getInstance();
+        }
         if (sharePre.contains(COOKIE_CHATUSER)) {
             String gsonCookies = sharePre.getString(COOKIE_CHATUSER, "");
             if (!TextUtils.isEmpty(gsonCookies)) {
@@ -162,6 +214,9 @@ public class SharedUtil {
 
     public UserCookie loadChatUserCookieBySalt(String saltHex) {
         UserCookie userCookie = null;
+        if (sharePre == null) {
+            getInstance();
+        }
         if (sharePre.contains(COOKIE_CHATUSER)) {
             String gsonCookies = sharePre.getString(COOKIE_CHATUSER, "");
             if (!TextUtils.isEmpty(gsonCookies)) {
@@ -189,6 +244,9 @@ public class SharedUtil {
     public UserCookie loadRandomCookie() {
         String randomCookieKey = COOKIE_RANDOM;
         UserCookie userCookie = null;
+        if (sharePre == null) {
+            getInstance();
+        }
         if (sharePre.contains(randomCookieKey)) {
             String gsonCookie = sharePre.getString(randomCookieKey, "");
             if (!TextUtils.isEmpty(gsonCookie)) {
@@ -201,6 +259,9 @@ public class SharedUtil {
     /******************************  Friend Cookie  ********************************************************/
     public void insertFriendCookie(String friendCaPublicKey, UserCookie userCookie) {
         String friendCookieKey = COOKIE_CHATFRIEND + friendCaPublicKey;
+        if (sharePre == null) {
+            getInstance();
+        }
         if (sharePre.contains(friendCookieKey)) {
             String gsonCookies = sharePre.getString(friendCookieKey, "");
             if (TextUtils.isEmpty(gsonCookies)) {
@@ -226,6 +287,9 @@ public class SharedUtil {
     public UserCookie loadFriendCookie(String friendCaPublicKey) {
         String friendCookieKey = COOKIE_CHATFRIEND + friendCaPublicKey;
         UserCookie userCookie = null;
+        if (sharePre == null) {
+            getInstance();
+        }
         if (sharePre.contains(friendCookieKey)) {
             String gsonCookies = sharePre.getString(friendCookieKey, "");
             if (!TextUtils.isEmpty(gsonCookies)) {
@@ -243,6 +307,9 @@ public class SharedUtil {
     /******************************  Group Member Cookie  ********************************************************/
     public void insertGroupMemberCookie(String groupIdentify, String groupMemberUid, UserCookie userCookie) {
         String groupMemberCookieKey = COOKIE_CHATGROUP_MEMBER + groupIdentify + groupMemberUid;
+        if (sharePre == null) {
+            getInstance();
+        }
         if (sharePre.contains(groupMemberCookieKey)) {
             String gsonCookies = sharePre.getString(groupMemberCookieKey, "");
             if (TextUtils.isEmpty(gsonCookies)) {
@@ -268,6 +335,9 @@ public class SharedUtil {
     public UserCookie loadGroupMemberCookie(String groupIdentify, String groupMemberUid) {
         String groupMemberCookieKey = COOKIE_CHATGROUP_MEMBER + groupIdentify + groupMemberUid;
         UserCookie userCookie = null;
+        if (sharePre == null) {
+            getInstance();
+        }
         if (sharePre.contains(groupMemberCookieKey)) {
             String gsonCookies = sharePre.getString(groupMemberCookieKey, "");
             if (!TextUtils.isEmpty(gsonCookies)) {
