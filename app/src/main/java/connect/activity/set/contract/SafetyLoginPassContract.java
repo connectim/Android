@@ -14,6 +14,8 @@ public interface SafetyLoginPassContract {
         void changeBtnTiming(long time);
 
         void changeBtnFinish();
+
+        void setSendCodeStatus(boolean status);
     }
 
     interface Presenter extends BasePresenter {

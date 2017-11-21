@@ -18,7 +18,7 @@ public interface LoginPhoneVerifyContract {
 
         void launchHome(UserBean userBean);
 
-        void launchPassVerify(String mobile, String token);
+        void launchPassVerify(String mobile, String token, boolean isUpdate);
 
         void launchRandomSend(String phone,String token);
 

@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.login.bean.CaPubBean;
 import connect.activity.set.bean.SystemSetBean;
 import connect.activity.wallet.bean.AddressBean;
 import connect.activity.wallet.bean.WalletBean;
@@ -103,7 +104,6 @@ public class ParamManager {
     /********************************************************************************************************
      *                               KEY-VALUE
      *******************************************************************************************************/
-
     /**
      * Save the wallet set
      * @param walletSetBean

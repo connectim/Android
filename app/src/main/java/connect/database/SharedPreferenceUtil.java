@@ -115,7 +115,7 @@ public class SharedPreferenceUtil {
             } else {
                 UserBean userBean = new Gson().fromJson(userStr, UserBean.class);
                 isContain = userBean != null && !TextUtils.isEmpty(userBean.getUid())
-                        && !TextUtils.isEmpty(userBean.getCaPublicKey())
+                        && !TextUtils.isEmpty(userBean.getPubKey())
                         && !TextUtils.isEmpty(userBean.getPriKey());
 
             }

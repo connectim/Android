@@ -60,9 +60,9 @@ public class UserInfoNameActivity extends BaseActivity{
         toolbarTop.setRightTextEnable(false);
         toolbarTop.setTitle(null, R.string.Set_Name);
 
-        nameEt.addTextChangedListener(textWatcher);
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         nameEt.setText(userBean.getName());
+        nameEt.addTextChangedListener(textWatcher);
     }
 
     @OnClick(R.id.left_img)
@@ -106,13 +106,13 @@ public class UserInfoNameActivity extends BaseActivity{
 
     public void requestName(final String value) {
         Connect.SettingUserInfo avatar = Connect.SettingUserInfo.newBuilder()
-                .setUsername(value)
+                .setUsername(value.trim())
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_SETTING_USERINFO, avatar, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                userBean.setName(value);
+                userBean.setName(value.trim());
                 SharedPreferenceUtil.getInstance().putUser(userBean);
 
                 ToastEUtil.makeText(mActivity, R.string.Set_Set_success).show();

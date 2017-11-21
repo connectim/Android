@@ -24,6 +24,8 @@ import java.util.List;
 
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.HttpRecBean;
+import connect.activity.login.bean.CaPubBean;
+import connect.activity.login.bean.UserBean;
 import connect.activity.set.bean.PaySetBean;
 import connect.activity.set.bean.PrivateSetBean;
 import connect.activity.set.bean.SystemSetBean;

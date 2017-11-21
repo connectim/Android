@@ -29,7 +29,6 @@
             android:layout_marginTop="@dimen/dp_36"/>
 
         <TextView
-            android:id="@+id/address_tv"
             style="@style/BaseTextStyle"
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/dp_30"
@@ -38,7 +37,7 @@
             android:layout_marginBottom="@dimen/dp_14"
             android:gravity="center_horizontal"
             android:layout_gravity="center_horizontal"
-            android:text=""/>
+            android:text="@string/Set_Scanned_the_qr_code_to_add_friends"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -38,7 +38,7 @@ import connect.activity.home.fragment.ContactFragment;
 import connect.activity.home.fragment.ConversationFragment;
 import connect.activity.home.fragment.SetFragment;
 import connect.activity.home.fragment.WalletFragment;
-import connect.activity.home.view.CheckUpdata;
+import connect.activity.home.view.CheckUpdate;
 import connect.activity.login.LoginPhoneActivity;
 import connect.activity.wallet.manager.WalletManager;
 import connect.database.SharedPreferenceUtil;
@@ -93,7 +93,7 @@ public class HomeActivity extends BaseFragmentActivity {
     private SetFragment setFragment;
     private WalletFragment walletFragment;
     private ResolveUrlUtil resolveUrlUtil;
-    private CheckUpdata checkUpdata;
+    private CheckUpdate checkUpdata;
 
     public static void startActivity(Activity activity) {
         ActivityUtil.next(activity, HomeActivity.class);
@@ -337,7 +337,7 @@ public class HomeActivity extends BaseFragmentActivity {
     }
 
     private void requestAppUpdata() {
-        checkUpdata = new CheckUpdata(activity);
+        checkUpdata = new CheckUpdate(activity);
         checkUpdata.check();
     }
 

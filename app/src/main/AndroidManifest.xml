@@ -103,6 +103,12 @@
             android:name="connect.activity.login.RegisterGetRandomActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name="connect.activity.contact.SubscribeActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.contact.SubscribeDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name="connect.widget.clip.ClipImageActivity"
             android:screenOrientation="portrait"/>
         <activity

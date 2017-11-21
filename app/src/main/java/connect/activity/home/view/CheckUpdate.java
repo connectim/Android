@@ -19,16 +19,12 @@ import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/3/30 0030.
- */
-
-public class CheckUpdata {
+public class CheckUpdate {
 
     private Activity activity;
     private String downLoadpath;
 
-    public CheckUpdata(Activity activity) {
+    public CheckUpdate(Activity activity) {
         this.activity = activity;
     }
 

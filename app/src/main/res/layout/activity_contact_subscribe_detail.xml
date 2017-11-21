@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f1f1f1">
+
+    <connect.widget.TopToolBar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_15">
+        <ImageView
+            android:id="@+id/subscribe_image"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:src="@mipmap/connect_logo" />
+        <TextView
+            android:id="@+id/subscribe_name_tv"
+            style="@style/BaseTextStyle.18"
+            android:layout_gravity="center_vertical"
+            android:text="行情"
+            android:layout_marginLeft="@dimen/dp_22"
+            android:layout_centerVertical="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_15"
+        android:background="@color/color_ffffff">
+        <TextView
+            style="@style/BaseTextStyle.18"
+            android:layout_gravity="center_vertical"
+            android:text="功能介绍"
+            android:layout_marginLeft="@dimen/dp_22"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/subscribe_describe_tv"
+            style="@style/BaseTextStyle.16"
+            android:layout_gravity="center_vertical"
+            android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            android:layout_marginLeft="@dimen/dp_22"
+            android:layout_centerVertical="true"/>
+    </LinearLayout>
+
+    <Button
+        style="@style/ButtonLongStyle"
+        android:id="@+id/button"
+        android:layout_marginTop="@dimen/dp_30"
+        android:enabled="false"
+        android:text="@string/Common_OK"/>
+
+</LinearLayout>

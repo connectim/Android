@@ -386,10 +386,8 @@
     <string name="Set_Log_Out">Log Out</string>
     <string name="Set_Delete_account">Delete the account</string>
     <string name="Set_Logging_out">Logging out...</string>
-    <string name="Set_Logout_delete_login_data_still_log">Logout will delete your login data and
-        pattern. You can still log in with this account
-    </string>
-    <string name="Set_delete_account_hinit">Please make sure the wallet is a backup before delete account, sure to delete the current account?</string>
+    <string name="Set_Logout_delete_login_data_still_log">Log out will delete your login information, you still want to exit the current account?</string>
+    <string name="Set_delete_account_hinit">Will not resume after the delete account, make sure to delete the current account?</string>
     <string name="Set_Miner_fee">Transaction fee</string>
     <string name="Set_My_Profile">My Profile</string>
     <string name="Set_My_QR_code">My QR code</string>
@@ -399,6 +397,7 @@
     <string name="Set_Off">Disabled</string>
     <string name="Set_On">On</string>
     <string name="Set_Open_Source">Open Source</string>
+    <string name="Set_Scanned_the_qr_code_to_add_friends">Scanned the qr code to add friends</string>
     <string name="Set_Password_incorrect_you_have_chance">Password incorrect, you have %d chance
     </string>
     <string name="Set_Patten_can_prevent_access_data_required_when_entering">Patten Password can
