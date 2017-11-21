@@ -197,4 +197,14 @@ public class UserOrderBean extends InterParse {
         String msgid = TimeUtil.timestampToMsgid();
         commandToIMTransfer(msgid, SocketACK.BURNREAD_RECEIPT, setting.toByteString());
     }
+
+    /**
+     * 向群成员广播自己的加密公私钥
+     *
+     * @param memberKey
+     */
+    public void broadGroupMemberKey(Connect.BroadcastMemberKey memberKey) {
+        String msgid = TimeUtil.timestampToMsgid();
+        commandToIMTransfer(msgid, SocketACK.BROAD_GROUP_MEMBERPKEY, memberKey.toByteString());
+    }
 }

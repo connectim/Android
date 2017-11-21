@@ -97,9 +97,6 @@ public class DaoManager {
         if (null == mDaoSession) {
             if (null == mDaoMaster) {
                 mDaoMaster = getDaoMaster();
-                if (mDaoMaster == null) {
-                    mDaoMaster = getDaoMaster();
-                }
             }
             mDaoSession = mDaoMaster.newSession();
         }

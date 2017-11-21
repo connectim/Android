@@ -1,16 +1,19 @@
 package instant.sender.model;
 
+import com.google.protobuf.ByteString;
+
 import java.util.List;
 
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.bean.Session;
 import instant.bean.SocketACK;
+import instant.bean.UserCookie;
 import instant.sender.SenderManager;
 import instant.utils.RegularUtil;
-import instant.utils.StringUtil;
 import instant.utils.TimeUtil;
 import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -23,17 +26,21 @@ public class GroupChat extends NormalChat {
 
     protected String groupKey;
     protected String groupName = "";
-    protected String groupEcdh = "";
     protected String myGroupName = "";
+
+    private String myUid;
+    /** user Cookie */
+    private UserCookie userCookie = null;
+    /** friend Cookie */
+    private UserCookie groupMemberCookie = null;
 
     public GroupChat(String groupKey) {
         this.groupKey = groupKey;
+        myUid = Session.getInstance().getConnectCookie().getUid();
     }
 
     @Override
     public ChatMsgEntity createBaseChat(MessageType type) {
-        String myUid = Session.getInstance().getConnectCookie().getUid();
-
         ChatMsgEntity msgExtEntity = new ChatMsgEntity();
         msgExtEntity.setMessage_id(TimeUtil.timestampToMsgid());
         msgExtEntity.setChatType(Connect.ChatType.GROUPCHAT.getNumber());
@@ -52,17 +59,36 @@ public class GroupChat extends NormalChat {
     public void sendPushMsg(ChatMsgEntity msgExtEntity) {
         Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
 
-        byte[] groupecdh = StringUtil.hexStringToBytes(groupEcdh);
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, groupecdh, msgExtEntity.getContents());
-        chatMessageBuilder.setCipherData(gcmData);
+        String priKey = null;
+        byte[] randomSalt = null;
+        String friendKey = null;
 
-        //messageData
+        loadUserCookie();
+        loadFriendCookie();
+        EncryptionUtil.ExtendedECDH ecdhExts = null;
+        Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
         Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
-        builder.setChatMsg(chatMessageBuilder);
+
+        priKey = userCookie.getPriKey();
+        randomSalt = userCookie.getSalt();
+        friendKey = groupMemberCookie.getPubKey();
+        byte[] friendSalt = groupMemberCookie.getSalt();
+        if (groupMemberCookie == null || friendSalt == null || friendSalt.length == 0) {
+            return;
+        }
+        ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
+        ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt));
+        sessionBuilder.setSalt(ByteString.copyFrom(randomSalt))
+                .setPubKey(userCookie.getPubKey())
+                .setVer(ByteString.copyFrom(groupMemberCookie.getSalt()));
+
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, priKey, friendKey, msgExtEntity.getContents());
+        chatMessageBuilder.setCipherData(gcmData);
+        builder.setChatMsg(chatMessageBuilder)
+                .setChatSession(sessionBuilder);
 
         Connect.MessageData messageData = builder.build();
         Connect.MessagePost messagePost = normalChatMessage(messageData);
-
         SenderManager.getInstance().sendAckMsg(SocketACK.GROUP_CHAT, groupKey, messageData.getChatMsg().getMsgId(), messagePost.toByteString());
     }
 
@@ -83,16 +109,12 @@ public class GroupChat extends NormalChat {
 
     @Override
     public int chatType() {
-        return 1;
+        return Connect.ChatType.GROUPCHAT_VALUE;
     }
 
     @Override
     public long destructReceipt() {
         return 0L;
-    }
-
-    public String groupEcdh() {
-        return groupEcdh;
     }
 
     public void updateMyNickName(){
@@ -112,5 +134,17 @@ public class GroupChat extends NormalChat {
         }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
+    }
+
+    private void loadUserCookie() {
+        userCookie = Session.getInstance().getChatCookie();
+        if (userCookie == null) {
+        }
+    }
+
+    public void loadFriendCookie() {
+        groupMemberCookie = Session.getInstance().getGroupMemberCookie(groupKey, myUid);
+        if (groupMemberCookie == null) {//reload Group Member Cookie
+        }
     }
 }

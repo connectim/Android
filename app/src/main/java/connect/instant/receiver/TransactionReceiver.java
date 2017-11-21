@@ -168,7 +168,7 @@ public class TransactionReceiver implements TransactionListener {
         String content = context.getResources().getString(R.string.Chat_paid_the_bill_to,
                 receiverName, senderName);
         TransactionEntity transEntity = TransactionHelper.getInstance().loadTransEntity(hashId);
-        if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {
+        if (groupEntity == null) {
             GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupid);
 
             FailMsgsManager.getInstance().insertReceiveMsg(groupid, TimeUtil.timestampToMsgid(), content);

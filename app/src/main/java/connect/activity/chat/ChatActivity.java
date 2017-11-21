@@ -135,6 +135,7 @@ public class ChatActivity extends BaseChatSendActivity {
                             PrivateSetActivity.startActivity(activity, talkey);
                             break;
                         case GROUPCHAT:
+                        case GROUP_DISCUSSION:
                             GroupSetActivity.startActivity(activity, talkey);
                             break;
                     }
@@ -446,6 +447,7 @@ public class ChatActivity extends BaseChatSendActivity {
                     cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
                     break;
                 case GROUPCHAT:
+                case GROUP_DISCUSSION:
                     GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(normalChat.chatKey());
                     if (groupEntity != null) {
                         CGroupChat cGroupChat = new CGroupChat(groupEntity);

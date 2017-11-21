@@ -27,6 +27,7 @@ public class VideoUpload extends BaseFileUp {
     private static String TAG = "_VideoUpload";
 
     public VideoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
+        super();
         this.context = context;
         this.context = context;
         this.baseChat = baseChat;
@@ -135,8 +136,11 @@ public class VideoUpload extends BaseFileUp {
 
                 try {
                     Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
-                    videoMessage = videoMessage.toBuilder().setCover(thumb)
-                            .setUrl(url).build();
+                    videoMessage = videoMessage.toBuilder()
+                            .setCover(thumb)
+                            .setUrl(url)
+                            .setFileKey(ByteString.copyFrom(getRandomNumber()))
+                            .build();
 
                     msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(videoMessage.toByteArray());

@@ -1,7 +1,5 @@
 package connect.instant.receiver;
 
-import android.text.TextUtils;
-
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.home.bean.GroupRecBean;
@@ -12,13 +10,13 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
+import connect.instant.inter.ConversationListener;
+import connect.instant.model.CDiscussChat;
 import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
 import connect.utils.StringUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
 import connect.utils.log.LogManager;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
@@ -91,13 +89,21 @@ public class MessageReceiver implements MessageListener {
 
         String groupIdentify = chatMessage.getTo();
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupIdentify);
-        Connect.GcmData gcmData = chatMessage.getCipherData();
-
-        if (groupEntity == null || TextUtils.isEmpty(groupEntity.getEcdh_key())) {//group backup
+        if (groupEntity == null) {//group backup
             FailMsgsManager.getInstance().insertReceiveMsg(groupIdentify, chatMessage.getMsgId(), messagePost);
             GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
         } else {
-            byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
+            byte[] contents = new byte[]{};
+            ConversationListener conversationListener = null;
+            if (chatMessage.getChatType() == Connect.ChatType.GROUPCHAT) {
+                conversationListener = new CGroupChat(groupEntity);
+                Connect.GcmData gcmData = chatMessage.getCipherData();
+                //byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
+            } else if (chatMessage.getChatType() == Connect.ChatType.GROUP_DISCUSSION) {
+                conversationListener = new CDiscussChat(groupEntity);
+                contents = chatMessage.getOriginMsg().toByteArray();
+            }
+
             if (contents.length < 3) {
                 GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
             } else {
@@ -106,8 +112,7 @@ public class MessageReceiver implements MessageListener {
                         chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
-                CGroupChat groupChat = new CGroupChat(groupEntity);
-                groupChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
+                conversationListener.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
 
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
 
@@ -130,6 +135,5 @@ public class MessageReceiver implements MessageListener {
 
     @Override
     public void inviteJoinGroup(Connect.CreateGroupMessage groupMessage) {
-        GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo,groupMessage.getIdentifier());
     }
 }

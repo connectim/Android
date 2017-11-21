@@ -7,19 +7,16 @@ import connect.activity.base.contract.BaseView;
 import connect.database.green.bean.ContactEntity;
 
 /**
- * Created by Administrator on 2017/8/9.
+ * Created by Administrator on 2017/11/20.
  */
 
 public interface GroupCreateContract {
 
     interface BView extends BaseView<GroupCreateContract.Presenter> {
-
-        String getRoomKey();
+        List<ContactEntity> groupMemberList();
     }
 
     interface Presenter extends BasePresenter {
-
-        void requestGroupCreate(List<ContactEntity> contactEntities);
-
+        void createGroup(String groupName,int groupCategory);
     }
 }

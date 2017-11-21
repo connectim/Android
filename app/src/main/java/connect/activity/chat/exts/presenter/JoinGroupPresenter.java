@@ -3,9 +3,11 @@ package connect.activity.chat.exts.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import connect.activity.chat.ChatActivity;
+import connect.activity.chat.bean.Talker;
 import connect.activity.chat.exts.contract.JoinGroupContract;
+import connect.activity.home.bean.GroupRecBean;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -36,7 +38,9 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
     @Override
     public void requestByToken(String token) {
         Connect.GroupToken groupToken = Connect.GroupToken.newBuilder()
-                .setToken(token).build();
+                .setToken(token)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_GROUP_INFOTOKEN, groupToken, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -78,7 +82,9 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
     @Override
     public void requestByGroupkey(String groupkey) {
         Connect.GroupId groupId = Connect.GroupId.newBuilder()
-                .setIdentifier(groupkey).build();
+                .setIdentifier(groupkey)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PUBLIC_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -111,7 +117,9 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
     public void requestByLink(String groupkey, String hash) {
         Connect.GroupScan groupId = Connect.GroupScan.newBuilder()
                 .setIdentifier(groupkey)
-                .setHash(hash).build();
+                .setHash(hash)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PUBLIC_INFO, groupId, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -141,16 +149,24 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
     }
 
     @Override
-    public void requestJoinByInvite(String groupkey, String inviteby, String tips, String token) {
+    public void requestJoinByInvite(final String groupkey, String inviteby, String tips, String token) {
         Connect.GroupInvite invite = Connect.GroupInvite.newBuilder()
                 .setIdentifier(groupkey)
                 .setInviteBy(inviteby)
                 .setTips(tips)
-                .setToken(token).build();
+                .setToken(token)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_INVITE, invite, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                ActivityUtil.goBack(activity);
+                GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupkey);
+                ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
+                    @Override
+                    public void animFinish() {
+                        ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupkey));
+                    }
+                }).show();
             }
 
             @Override
@@ -170,16 +186,25 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
     }
 
     @Override
-    public void requestJoinByLink(String groupkey, String hash, String tips, int source) {
+    public void requestJoinByLink(final String groupkey, String hash, String tips, int source) {
         Connect.GroupApply apply = Connect.GroupApply.newBuilder()
                 .setIdentifier(groupkey)
                 .setHash(hash)
                 .setTips(tips)
-                .setSource(source).build();
+                .setSource(source)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_APPLY, apply, new ResultCall<Connect.HttpResponse>() {
+
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                ActivityUtil.goBack(activity);
+                GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupkey);
+                ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
+                    @Override
+                    public void animFinish() {
+                        ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupkey));
+                    }
+                }).show();
             }
 
             @Override

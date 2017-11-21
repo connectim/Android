@@ -27,6 +27,7 @@ public class PhotoUpload extends BaseFileUp {
     private static String TAG = "_PhotoUpload";
 
     public PhotoUpload(Context context, BaseChat baseChat, ChatMsgEntity entity, FileUploadListener listener) {
+        super();
         this.context = context;
         this.baseChat = baseChat;
         this.msgExtEntity = entity;
@@ -121,7 +122,7 @@ public class PhotoUpload extends BaseFileUp {
                     photoMessage = photoMessage.toBuilder()
                             .setThum(thumb)
                             .setUrl(url)
-                            .setFileKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey)))
+                            .setFileKey(ByteString.copyFrom(getRandomNumber()))
                             .build();
 
                     msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();

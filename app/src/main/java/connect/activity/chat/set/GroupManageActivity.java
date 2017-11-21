@@ -73,24 +73,6 @@ public class GroupManageActivity extends BaseActivity implements GroupManagerCon
     }
 
     @Override
-    public void inviteSwitch(boolean avaliable) {
-        View view = findViewById(R.id.groupset_sureinvite);
-        TextView txt = (TextView) view.findViewById(R.id.txt);
-        txt.setText(getString(R.string.Link_Whether_Public));
-
-        View topToggle = view.findViewById(R.id.toggle);
-        topToggle.setSelected(avaliable);
-        topToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setSelected(!v.isSelected());
-                boolean verify = v.isSelected();
-                presenter.requestGroupVerify(verify);
-            }
-        });
-    }
-
-    @Override
     public void groupIntroduce() {
         View view = findViewById(R.id.groupset_introdue);
         TextView txt1 = (TextView) view.findViewById(R.id.txt1);

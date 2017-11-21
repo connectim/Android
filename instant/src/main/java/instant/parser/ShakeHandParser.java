@@ -118,7 +118,11 @@ public class ShakeHandParser extends InterParse {
      * connect success
      */
     private void connectSuccess() {
-        ConnectLocalReceiver.receiver.loginSuccess();
+        try {
+            ConnectLocalReceiver.receiver.loginSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         String version = SharedUtil.getInstance().getStringValue(SharedUtil.CONTACTS_VERSION);
         if (TextUtils.isEmpty(version)) {
