@@ -221,7 +221,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
                         msgSendBean.setType(MsgSendBean.SendType.TypeDeleteFriend);
 
                         UserOrderBean userOrderBean = new UserOrderBean();
-                        userOrderBean.settingFriend(friendEntity.getUid(), "del", false, "", msgSendBean);
+                        userOrderBean.removeRelation(friendEntity.getUid(), msgSendBean);
                         break;
                     default:
                         break;

@@ -413,10 +413,8 @@
     <string name="Set_Log_Out">Выйти из учетной записи</string>
     <string name="Set_Delete_account">Удалить счета</string>
     <string name="Set_Logging_out">Выход...</string>
-    <string name="Set_Logout_delete_login_data_still_log">При выходе будут удалены данные
-        регистрации и пароль-рисунок, Вы по-прежнему хотите выйти с этой учетной записи?
-    </string>
-    <string name="Set_delete_account_hinit">Удалить счета назад убедитесь, что сумочка уже резервного копирования, уверен, удаление текущего счета?</string>
+    <string name="Set_Logout_delete_login_data_still_log">Выход для входа в систему будет удалить тебя информация о входе в систему, ты по-прежнему уйти ли текущего счета?</string>
+    <string name="Set_delete_account_hinit">После удаления счета не будет восстановлен, уверен, удаление текущего счета?</string>
     <string name="Set_Miner_fee">Комиссионный сбор</string>
     <string name="Set_My_Profile">Мой профайл</string>
     <string name="Set_My_QR_code">Мой QR-код</string>
@@ -426,6 +424,7 @@
     <string name="Set_Off">Закрыто</string>
     <string name="Set_On">Активирован</string>
     <string name="Set_Open_Source">Открыть исходный код</string>
+    <string name="Set_Scanned_the_qr_code_to_add_friends">Чистить поверхность ErWeiMa добавлять друзей</string>
     <string name="Set_Password_incorrect_you_have_chance">Ошибка пароля, у вас еще есть %d попыток
     </string>
     <string name="Set_Patten_can_prevent_access_data_required_when_entering">Пароль-рисунок может

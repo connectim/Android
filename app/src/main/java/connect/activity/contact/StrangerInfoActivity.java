@@ -144,7 +144,7 @@ public class StrangerInfoActivity extends BaseActivity {
                     FriendRequestEntity requestEntity = new FriendRequestEntity();
                     requestEntity.setAvatar(sendUserInfo.getAvatar());
                     requestEntity.setUsername(sendUserInfo.getUsername());
-                    requestEntity.setUid(sendUserInfo.getPubKey());
+                    requestEntity.setUid(sendUserInfo.getUid());
                     requestEntity.setSource(sourceType.getType());
                     requestEntity.setTips(msgSendBean.getTips());
                     requestEntity.setStatus(3);
@@ -164,6 +164,7 @@ public class StrangerInfoActivity extends BaseActivity {
     private void requestUserInfo(String uid) {
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(uid)
+                .setTyp(1)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
             @Override

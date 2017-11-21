@@ -110,7 +110,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
                     UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), userBeanOut.getPriKey(), userBeanOut.getPubKey(),
-                            userInfo.getCaPub(), userBeanOut.getPhone(), userInfo.getConnectId(), userInfo.getUid(), false);
+                            userBeanOut.getPhone(), userInfo.getConnectId(), userInfo.getUid(), false);
                     SharedPreferenceUtil.getInstance().putUser(userBean);
 
                     mView.launchHome();

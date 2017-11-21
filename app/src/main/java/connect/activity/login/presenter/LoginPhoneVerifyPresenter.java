@@ -1,10 +1,14 @@
 package connect.activity.login.presenter;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
+import connect.activity.login.bean.CaPubBean;
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneVerifyContract;
+import connect.database.SharedPreferenceUser;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ExCountDownTimer;
 import connect.utils.ProgressUtil;
@@ -61,6 +65,8 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                 try {
                     ProgressUtil.getInstance().dismissProgress();
                     Connect.SmsValidateResp smsValidateResp = Connect.SmsValidateResp.parseFrom(response.getBody());
+                    Connect.UserInfo userInfo = smsValidateResp.getUserInfo();
+                    CaPubBean caPubBean = SharedPreferenceUser.getInstance(userInfo.getUid()).getCaPubBean();
                     switch (smsValidateResp.getStatus()){
                         case 1:
                             Bundle bundle = new Bundle();
@@ -69,10 +75,25 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                             mView.launchRandomSend(countryCode + "-" + phone,smsValidateResp.getToken());
                             break;
                         case 2:
-                            reSignInCa(smsValidateResp, countryCode + "-" + phone);
+                            if(TextUtils.isEmpty(caPubBean.getPubKey())
+                                    || TextUtils.isEmpty(userInfo.getPubKey())
+                                    || !userInfo.getPubKey().equals(caPubBean.getPubKey())){
+                                reSignInCa(smsValidateResp, countryCode + "-" + phone);
+                            }else{
+                                UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), caPubBean.getPriKey(), caPubBean.getPubKey(),
+                                        countryCode + "-" + phone, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
+                                SharedPreferenceUtil.getInstance().putUser(userBean);
+                                mView.launchHome(userBean);
+                            }
                             break;
                         case 3:
-                            mView.launchPassVerify(countryCode + "-" + phone, smsValidateResp.getToken());
+                            if(TextUtils.isEmpty(caPubBean.getPubKey())
+                                    || TextUtils.isEmpty(userInfo.getPubKey())
+                                    || !userInfo.getPubKey().equals(caPubBean.getPubKey())){
+                                mView.launchPassVerify(countryCode + "-" + phone, smsValidateResp.getToken(), true);
+                            }else{
+                                mView.launchPassVerify(countryCode + "-" + phone, smsValidateResp.getToken(), false);
+                            }
                             break;
                         default:
                             break;
@@ -113,8 +134,9 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                             priKey, imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), priKey, pubKey,
-                            userInfo.getCaPub(),mobile, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
+                            mobile, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
 
+                    SharedPreferenceUser.getInstance(userInfo.getUid()).putCaPubBean(new CaPubBean(priKey, pubKey));
                     SharedPreferenceUtil.getInstance().putUser(userBean);
                     mView.launchHome(userBean);
                 } catch (Exception e) {

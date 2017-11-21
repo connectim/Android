@@ -1,5 +1,7 @@
 package connect.activity.set.presenter;
 
+import android.text.TextUtils;
+
 import connect.activity.set.contract.SafetyLoginPassContract;
 import connect.ui.activity.R;
 import connect.utils.ExCountDownTimer;
@@ -25,6 +27,8 @@ public class SafetyLoginPassPresenter implements SafetyLoginPassContract.Present
 
     @Override
     public void requestPassword(String password, String code, final int type) {
+        if(TextUtils.isEmpty(token))
+            return;
         Connect.Mfa mfa = Connect.Mfa.newBuilder()
                 .setTyp(type)
                 .setToken(token)
@@ -63,6 +67,7 @@ public class SafetyLoginPassPresenter implements SafetyLoginPassContract.Present
                     Connect.SecurityToken securityToken = Connect.SecurityToken .parseFrom(structData.getPlainData());
                     token = securityToken.getToken();
                     countdownTime();
+                    mView.setSendCodeStatus(true);
                 } catch (Exception e){
                     e.printStackTrace();
                 }

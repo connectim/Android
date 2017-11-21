@@ -287,7 +287,6 @@ public class CommandReceiver implements CommandListener {
         ContactHelper.getInstance().insertContact(contactEntity);
 
         ContactNotice.receiverFriend();
-
         if (newFriend) {
             CFriendChat normalChat = new CFriendChat(contactEntity);
             normalChat.createWelcomeMessage();

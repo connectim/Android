@@ -43,8 +43,8 @@ public class AddFriendAcceptActivity extends BaseActivity {
     ImageView avaterRimg;
     @Bind(R.id.name_tv)
     TextView nameTv;
-    @Bind(R.id.tips_tv)
-    TextView tipsTv;
+    @Bind(R.id.tips_text)
+    TextView tipsText;
     @Bind(R.id.address_tv)
     TextView addressTv;
     @Bind(R.id.addFriend_btn)
@@ -85,7 +85,7 @@ public class AddFriendAcceptActivity extends BaseActivity {
         if (!TextUtils.isEmpty(requestEntity.getTips())) {
             tipsRela.setVisibility(View.VISIBLE);
             tipsRela.setBackgroundResource(R.mipmap.message_box_white2x);
-            tipsTv.setText(requestEntity.getTips());
+            tipsText.setText(requestEntity.getTips());
         }
     }
 

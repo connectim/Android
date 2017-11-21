@@ -28,8 +28,6 @@ public class UserConnectIdActivity extends BaseActivity {
     TopToolBar toolbarTop;
     @Bind(R.id.scan_img)
     ImageView scanImg;
-    @Bind(R.id.address_tv)
-    TextView addressTv;
 
     private UserConnectIdActivity mActivity;
 
@@ -49,11 +47,10 @@ public class UserConnectIdActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_My_QR_code);
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
 
-        String connectIdStr = ResolveScanUtil.CONNECT_HEAD + userBean.getConnectId();
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(connectIdStr, mActivity.getResources().getColor(R.color.color_00ffbf));
+        Bitmap bitmap = createScan.generateQRCode(ResolveScanUtil.CONNECT_HEAD + userBean.getConnectId(),
+                mActivity.getResources().getColor(R.color.color_00ffbf));
         scanImg.setImageBitmap(bitmap);
-        addressTv.setText(connectIdStr);
     }
 
     @OnClick(R.id.left_img)

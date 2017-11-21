@@ -91,7 +91,7 @@ public class SafetyActivity extends BaseActivity {
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -113,7 +113,7 @@ public class SafetyActivity extends BaseActivity {
                 "", "", false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
-                        ProgressUtil.getInstance().showProgress(mActivity);
+                        ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
                         deleteAccount();
                     }
 
@@ -129,13 +129,13 @@ public class SafetyActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.V2_SETTING_DELETE_USER, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
-                ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
                 DaoManager.getInstance().deleteDataBase();
                 HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
             }
 
             @Override
             public void onError(Connect.HttpResponse response) {
+                ProgressUtil.getInstance().dismissProgress();
                 if(response.getCode() == 2419){
                     ToastEUtil.makeText(mActivity, R.string.Wallet_No_match_user, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else {

@@ -17,7 +17,9 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.activity.home.HomeActivity;
+import connect.activity.login.bean.CaPubBean;
 import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUser;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -48,10 +50,11 @@ public class LoginPassVerifyActivity extends BaseActivity {
 
     private LoginPassVerifyActivity mActivity;
 
-    public static void startActivity(Activity activity, String mobile, String token) {
+    public static void startActivity(Activity activity, String mobile, String token, boolean isUpdate) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("mobile", mobile);
         bundle.putString("token", token);
+        bundle.putBoolean("isUpdate", isUpdate);
         ActivityUtil.next(activity, LoginPassVerifyActivity.class, bundle);
     }
 
@@ -104,8 +107,14 @@ public class LoginPassVerifyActivity extends BaseActivity {
     };
 
     private void verifyPassword(){
-        final String priKey = SupportKeyUril.getNewPriKey();
-        final String pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
+        final boolean isUpdate = getIntent().getExtras().getBoolean("isUpdate");
+        String priKey = "";
+        String pubKey = "";
+        if(isUpdate){
+            priKey = SupportKeyUril.getNewPriKey();
+            pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
+        }
+
         Bundle bundle = getIntent().getExtras();
         final String mobile = bundle.getString("mobile");
         String token = bundle.getString("token");
@@ -118,18 +127,29 @@ public class LoginPassVerifyActivity extends BaseActivity {
                 .setPassword(password)
                 .build();
         Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, priKey, pubKey, passwordCheck.toByteString());
+        final String finalPriKey = priKey;
+        final String finalPubKey = pubKey;
         HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_UP_PASSWORD, imRequest, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
-                            priKey, imResponse.getCipherData());
+                            finalPriKey, imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
-                    UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), priKey, pubKey,
-                            userInfo.getCaPub(),mobile, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
-                    userBean.setOpenPassword(true);
+                    UserBean userBean;
+                    if(isUpdate){
+                        userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), finalPriKey, finalPubKey,
+                                mobile, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
+                        userBean.setOpenPassword(true);
+                        SharedPreferenceUser.getInstance(userInfo.getUid()).putCaPubBean(new CaPubBean(finalPriKey, finalPubKey));
+                    }else{
+                        CaPubBean caPubBean = SharedPreferenceUser.getInstance(userInfo.getUid()).getCaPubBean();
+                        userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), caPubBean.getPriKey(), caPubBean.getPubKey(),
+                                mobile, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
+                        userBean.setOpenPassword(true);
+                    }
                     SharedPreferenceUtil.getInstance().putUser(userBean);
 
                     List<Activity> list = BaseApplication.getInstance().getActivityList();

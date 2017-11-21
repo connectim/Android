@@ -180,8 +180,8 @@ public class LoginPhoneVerifyActivity extends BaseActivity implements LoginPhone
     }
 
     @Override
-    public void launchPassVerify(String mobile, String token) {
-        LoginPassVerifyActivity.startActivity(mActivity, mobile, token);
+    public void launchPassVerify(String mobile, String token, boolean isUpdate) {
+        LoginPassVerifyActivity.startActivity(mActivity, mobile, token, isUpdate);
         mActivity.finish();
     }
 }

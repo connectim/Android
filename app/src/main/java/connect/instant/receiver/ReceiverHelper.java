@@ -26,7 +26,7 @@ public class ReceiverHelper {
         Context context = BaseApplication.getInstance().getBaseContext();
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        InstantSdk.instantSdk.registerUserInfo(context, userBean.getUid(), userBean.getCaPublicKey(), userBean.getPriKey());
+        InstantSdk.instantSdk.registerUserInfo(context, userBean.getUid(), userBean.getPubKey(), userBean.getPriKey());
 
         ConnectLocalReceiver.receiver.registerConnect(ConnectReceiver.receiver);
         CommandLocalReceiver.receiver.registerCommand(CommandReceiver.receiver);

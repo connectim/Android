@@ -24,6 +24,7 @@ import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.FriendInfoAliasActivity;
 import connect.activity.contact.ScanAddFriendActivity;
 import connect.activity.contact.SearchFriendActivity;
+import connect.activity.contact.SubscribeActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ContactAdapter;
@@ -124,6 +125,9 @@ public class ContactFragment extends BaseFragment {
                 case 3:
                 case 4:
                     FriendInfoActivity.startActivity(mActivity, entity.getUid());
+                    break;
+                case 7:
+                    ActivityUtil.next(mActivity, SubscribeActivity.class);
                     break;
                 default:
                     break;

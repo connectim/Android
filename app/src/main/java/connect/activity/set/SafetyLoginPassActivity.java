@@ -54,6 +54,7 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
     private SafetyLoginPassActivity mActivity;
     private SafetyLoginPassContract.Presenter presenter;
     private UserBean userBean;
+    private boolean isClickSendCode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,13 +134,13 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
             String passwordConfirm = passwordConfirmEdit.getText().toString();
             String code = codeVerifyEdit.getText().toString();
             if (userBean.isOpenPassword()) {
-                if (!TextUtils.isEmpty(code)) {
+                if (!TextUtils.isEmpty(code) && isClickSendCode) {
                     nextBtn.setEnabled(true);
                 } else {
                     nextBtn.setEnabled(false);
                 }
             }else {
-                if (!TextUtils.isEmpty(password) && !TextUtils.isEmpty(passwordConfirm) && !TextUtils.isEmpty(code)) {
+                if (!TextUtils.isEmpty(password) && !TextUtils.isEmpty(passwordConfirm) && !TextUtils.isEmpty(code) && isClickSendCode) {
                     nextBtn.setEnabled(true);
                 } else {
                     nextBtn.setEnabled(false);
@@ -174,5 +175,10 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
     public void changeBtnFinish() {
         sendTv.setText(R.string.Login_Resend);
         sendTv.setEnabled(true);
+    }
+
+    @Override
+    public void setSendCodeStatus(boolean status) {
+        isClickSendCode = true;
     }
 }
