@@ -581,4 +581,5 @@
     <string name="title_activity_group_create">GroupCreateActivity</string>
     <string name="Chat_set_Create_New_Group">create group</string>
     <string name="Chat_set_Group_Chat_Encrypt_Open">After opening, the group message is encrypted through point to point encryption</string>
+    <string name="Chat_Subscriber">Subscribe</string>
 </resources>

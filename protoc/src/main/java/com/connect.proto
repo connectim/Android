@@ -1184,7 +1184,8 @@ enum ChatType {
 	GROUPCHAT  = 1;  //群组聊天(加密)
 	CONNECT_SYSTEM = 2; // Connect
 	GROUP_DISCUSSION= 3;//讨论组
-        UNKNOW = 4; //未知，陌生人/群
+	SUBSCRIBER = 4; //订阅号
+        UNKNOW = 5; //未知，陌生人/群
 }
 //临时协同密钥
 message ChatSession {
@@ -1446,22 +1447,47 @@ GcmData cipher_data = 3;
 
 // RSS
 message RSSList {
-repeated RSS rss_list=1;
+    repeated RSS rss_list = 1;
 }
 
 message RSS {
-string rss_id = 1;
-string icon = 2;
-string title = 3;
-string desc = 4;
-bool sub_rss = 5; // 订阅状态 0 未订阅 1：已订阅
-repeated RSSMessage rss_his_msgs=6;
+    int64 rss_id = 1;
+    string icon = 2;
+    string title = 3;
+    string desc = 4;
+    bool sub_rss = 5; // 订阅状态 0 未订阅 1：已订阅
 }
 
 message RSSMessage {
-string title = 1;
-string detail = 2;
-string source = 3;
-string source_url = 4;
-int64 time = 5;
+    string title = 1;
+    string detail = 2;
+    string source = 3;
+    string source_url = 4;
+    int64 time = 5;
+}
+
+
+message Article {
+    string title = 1;
+    string image = 2;
+    string article_url = 3;
+    int32 article_type = 4;
+    int64 time = 5;
+}
+
+message ArticleList {
+    repeated Article messages = 1;
+    int64 time = 2;
+}
+
+
+message RSSMessageList {
+    repeated RSSMessage messages = 1;
+    int64 time = 2;
+}
+
+
+message RSSPush {
+    int32 category =  1; //1:rss 2:article
+    bytes data = 2;
 }

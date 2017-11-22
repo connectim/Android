@@ -2,10 +2,12 @@ package connect.instant.receiver;
 
 import connect.activity.home.bean.HomeAction;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.instant.model.CRobotChat;
-import connect.utils.NotificationBar;
-import instant.bean.ChatMsgEntity;
 import connect.instant.bean.ConnectState;
+import connect.instant.model.CRobotChat;
+import connect.instant.model.CSubscriberChat;
+import connect.utils.NotificationBar;
+import connect.utils.TimeUtil;
+import instant.bean.ChatMsgEntity;
 import instant.bean.Session;
 import instant.parser.inter.ConnectListener;
 import instant.sender.model.RobotChat;
@@ -62,11 +64,14 @@ public class ConnectReceiver implements ConnectListener {
 
         MessageHelper.getInstance().insertMsgExtEntity(msgEntity);
         CRobotChat.getInstance().updateRoomMsg(null, msgEntity.showContent(), msgEntity.getCreatetime(), -1, 1);
+
+        // subscriber
+        CSubscriberChat.cSubscriberChat.updateRoomMsg("", "cece", TimeUtil.getCurrentTimeInLong());
     }
 
     @Override
     public void notifyBarNotice(String pubkey, int type, String content) {
-        NotificationBar.notificationBar.noticeBarMsg(pubkey,type,content);
+        NotificationBar.notificationBar.noticeBarMsg(pubkey, type, content);
     }
 
     @Override

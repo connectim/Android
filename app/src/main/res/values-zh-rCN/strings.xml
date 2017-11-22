@@ -498,4 +498,5 @@
     <string name="app_name">Connect</string>
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_Other_Part">对方</string>
+    <string name="Chat_Subscriber">订阅号</string>
 </resources>

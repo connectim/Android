@@ -85,6 +85,10 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             holder.nameTxt.setText(inflater.getContext().getString(R.string.app_name));
             GlideUtil.loadAvatarRound(holder.headImg, R.mipmap.connect_logo);
             holder.bottomNotify.setVisibility(View.GONE);
+        } else if (roomAttr.getRoomtype() == Connect.ChatType.SUBSCRIBER_VALUE) {
+            holder.nameTxt.setText(inflater.getContext().getString(R.string.Chat_Subscriber));
+            GlideUtil.loadAvatarRound(holder.headImg, R.mipmap.chat_rss_subscribe);
+            holder.bottomNotify.setVisibility(View.GONE);
         } else if (roomAttr.getRoomtype() == Connect.ChatType.PRIVATE_VALUE ||
                 roomAttr.getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE ||
                 roomAttr.getRoomtype() == Connect.ChatType.GROUP_DISCUSSION_VALUE) {
