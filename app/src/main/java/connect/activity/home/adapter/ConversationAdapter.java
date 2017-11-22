@@ -81,10 +81,24 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             e.printStackTrace();
         }
 
+        if (Integer.valueOf(1).equals(roomAttr.getDisturb())) {
+            holder.conNotify.setVisibility(View.VISIBLE);
+            holder.bottomNotify.setSelected(true);
+        } else {
+            holder.conNotify.setVisibility(View.GONE);
+            holder.bottomNotify.setSelected(false);
+        }
         if (roomAttr.getRoomtype() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
             holder.nameTxt.setText(inflater.getContext().getString(R.string.app_name));
             GlideUtil.loadAvatarRound(holder.headImg, R.mipmap.connect_logo);
             holder.bottomNotify.setVisibility(View.GONE);
+            holder.badgeTxt.setBadgeCount(roomAttr.getDisturb(), roomAttr.getUnread());
+        } else if (roomAttr.getRoomtype() == Connect.ChatType.SUBSCRIBER_VALUE) {
+            holder.nameTxt.setText(inflater.getContext().getString(R.string.Chat_Subscriber));
+            GlideUtil.loadAvatarRound(holder.headImg, R.mipmap.chat_rss_subscribe);
+            holder.bottomNotify.setVisibility(View.GONE);
+            holder.conNotify.setVisibility(View.VISIBLE);
+            holder.badgeTxt.setBadgeCount(1, roomAttr.getUnread());
         } else if (roomAttr.getRoomtype() == Connect.ChatType.PRIVATE_VALUE ||
                 roomAttr.getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE ||
                 roomAttr.getRoomtype() == Connect.ChatType.GROUP_DISCUSSION_VALUE) {
@@ -94,6 +108,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             holder.nameTxt.setText(showName);
             GlideUtil.loadAvatarRound(holder.headImg, showAvatar);
             holder.bottomNotify.setVisibility(View.VISIBLE);
+            holder.badgeTxt.setBadgeCount(roomAttr.getDisturb(), roomAttr.getUnread());
         }
 
         if (0 == roomAttr.getStranger() || SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
@@ -110,16 +125,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             holder.conTop.setVisibility(View.GONE);
             holder.contentLayout.setBackgroundResource(R.color.color_white);
         }
-
-        if (Integer.valueOf(1).equals(roomAttr.getDisturb())) {
-            holder.conNotify.setVisibility(View.VISIBLE);
-            holder.bottomNotify.setSelected(true);
-        } else {
-            holder.conNotify.setVisibility(View.GONE);
-            holder.bottomNotify.setSelected(false);
-        }
-
-        holder.badgeTxt.setBadgeCount(roomAttr.getDisturb(), roomAttr.getUnread());
 
         holder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
         holder.contentLayout.setTag(holder.itemView);

@@ -23,13 +23,9 @@ public class RobotChat extends NormalChat {
     public RobotChat() {
     }
 
-    public static RobotChat getInstance() {
+    public synchronized static RobotChat getInstance() {
         if (robotChat == null) {
-            synchronized (RobotChat.class) {
-                if (robotChat == null) {
-                    robotChat = new RobotChat();
-                }
-            }
+            robotChat = new RobotChat();
         }
         return robotChat;
     }
@@ -69,7 +65,7 @@ public class RobotChat extends NormalChat {
 
     @Override
     public int chatType() {
-        return 2;
+        return Connect.ChatType.CONNECT_SYSTEM_VALUE;
     }
 
     @Override

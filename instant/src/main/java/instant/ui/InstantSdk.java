@@ -38,6 +38,7 @@ public class InstantSdk {
         userCookie.setPriKey(privateKey);
         Session.getInstance().setConnectCookie(userCookie);
 
+
         SenderService.startService(context);
         RemoteServeice.startService(context);
     }

@@ -30,6 +30,7 @@ import connect.activity.base.BaseApplication;
 import connect.activity.base.BaseFragmentActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
+import connect.activity.chat.subscribe.SubscribeListActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.HomeAction;
@@ -56,6 +57,7 @@ import connect.widget.random.RandomVoiceActivity;
 import connect.instant.bean.ConnectState;
 import instant.bean.UserOrderBean;
 import instant.utils.manager.FailMsgsManager;
+import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/19.
@@ -179,7 +181,12 @@ public class HomeActivity extends BaseFragmentActivity {
                 finish();
                 break;
             case TOCHAT:
-                ChatActivity.startActivity(activity, (Talker) (objects[0]));
+                Talker talker = (Talker) (objects[0]);
+                if (talker.getTalkType() == Connect.ChatType.SUBSCRIBER) {
+                    SubscribeListActivity.startActivity(activity);
+                } else {
+                    ChatActivity.startActivity(activity, (Talker) (objects[0]));
+                }
                 break;
             case SWITCHFRAGMENT:
                 int fragmentCode = (Integer) objects[0];

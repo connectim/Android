@@ -1,8 +1,11 @@
 package instant.parser;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import instant.bean.ChatMsgEntity;
 import instant.utils.log.LogManager;
 import instant.utils.manager.FailMsgsManager;
 import instant.parser.localreceiver.RobotLocalReceiver;
@@ -47,6 +50,9 @@ public class MessageParser extends InterParse {
                 break;
             case 0x05://unavailable message
                 unavailableMsg();
+                break;
+            case 0x06://subscribe messgae
+                subscribePull();
                 break;
             case 0x09://notice message
                 noticeMsg();
@@ -208,6 +214,17 @@ public class MessageParser extends InterParse {
 
         ChatParser parseBean = new ChatParser(ackByte, messagePost);
         parseBean.msgParse();
+    }
+
+    protected void subscribePull() throws Exception {
+        Connect.RSSPush rssPush = Connect.RSSPush.parseFrom(byteBuffer.array());
+        if (ext == 0) {
+            backOffLineAck(5, rssPush.getMsgId());
+        } else {
+            backOnLineAck(5, rssPush.getMsgId());
+        }
+
+        RobotLocalReceiver.localReceiver.subscribePull(rssPush);
     }
 
     private void reloadUserCookie(String msgid, String uid) throws Exception {

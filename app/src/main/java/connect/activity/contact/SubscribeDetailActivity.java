@@ -14,9 +14,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.bean.RssBean;
+import connect.database.green.DaoHelper.SubscribeConversationHelper;
+import connect.database.green.DaoHelper.SubscribeHelper;
+import connect.database.green.bean.SubscribeConversationEntity;
+import connect.database.green.bean.SubscribeEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
@@ -63,9 +68,9 @@ public class SubscribeDetailActivity extends BaseActivity {
         toolbar.setTitle(null, R.string.Wallet_Detail);
         toolbar.setRightTextEnable(false);
 
-        rssBean = (RssBean)getIntent().getExtras().getSerializable("rss");
+        rssBean = (RssBean) getIntent().getExtras().getSerializable("rss");
 
-        if(rssBean.isSubRss()){
+        if (rssBean.isSubRss()) {
             button.setText(R.string.Link_To_view_the_message);
             toolbar.setRightImg(R.mipmap.menu_white);
             toolbar.setRightTextEnable(true);
@@ -102,21 +107,32 @@ public class SubscribeDetailActivity extends BaseActivity {
 
     @OnClick(R.id.button)
     void goButton(View view) {
-        if(rssBean.isSubRss()){
+        if (rssBean.isSubRss()) {
             // 进去聊天消息界面
-        }else{
+        } else {
             setUnSubscribe(true);
         }
     }
 
-    private void setUnSubscribe(boolean isSubscribe){
-        Connect.RSS rss = Connect.RSS.newBuilder()
+    private void setUnSubscribe(final boolean isSubscribe) {
+        final Connect.RSS rss = Connect.RSS.newBuilder()
                 .setSubRss(isSubscribe)
                 .setRssId(rssBean.getRssId())
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V2_RSS_FOLLOW, rss, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
+                if (isSubscribe) {
+                    SubscribeConversationEntity conversationEntity = new SubscribeConversationEntity();
+                    conversationEntity.setRssId(rssBean.getRssId());
+                    conversationEntity.setTitle(rssBean.getTitle());
+                    conversationEntity.setIcon(rssBean.getIcon());
+                    conversationEntity.setContent(getString(R.string.Chat_Subscribe_Success));
+                    conversationEntity.setTime(TimeUtil.getCurrentTimeInLong());
+                    SubscribeConversationHelper.subscribeConversationHelper.insertConversationEntity(conversationEntity);
+                } else {
+                    SubscribeConversationHelper.subscribeConversationHelper.removeConversationEntity(rssBean.getRssId());
+                }
                 ActivityUtil.goBack(mActivity);
             }
 

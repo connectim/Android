@@ -116,6 +116,7 @@ public class CommandReceiver implements CommandListener {
         }
         Collection<ContactEntity> contactEntityCollection = contactEntityMap.values();
         List<ContactEntity> friendInfoEntities=new ArrayList<ContactEntity>(contactEntityCollection);
+
         //To add a system message contact
         String connect = BaseApplication.getInstance().getString(R.string.app_name);
         ContactEntity connectEntity = ContactHelper.getInstance().loadFriendEntity(connect);
