@@ -578,4 +578,7 @@
     <string name="app_name">Connect</string>
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_Other_Part">the other</string>
+    <string name="title_activity_group_create">GroupCreateActivity</string>
+    <string name="Chat_set_Create_New_Group">create group</string>
+    <string name="Chat_set_Group_Chat_Encrypt_Open">After opening, the group message is encrypted through point to point encryption</string>
 </resources>

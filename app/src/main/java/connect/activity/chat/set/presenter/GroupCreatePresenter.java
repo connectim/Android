@@ -1,7 +1,8 @@
 package connect.activity.chat.set.presenter;
 
 import android.app.Activity;
-import android.text.TextUtils;
+
+import com.google.protobuf.ByteString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,6 @@ import java.util.List;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.contract.GroupCreateContract;
-import connect.activity.home.bean.GroupRecBean;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -19,11 +19,9 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.instant.model.CFriendChat;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
-import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -32,71 +30,56 @@ import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.jni.AllNativeMethod;
 import instant.bean.ChatMsgEntity;
+import instant.bean.Session;
+import instant.bean.UserCookie;
+import instant.bean.UserOrderBean;
 import instant.sender.model.GroupChat;
 import protos.Connect;
 
 /**
- * Created by Administrator on 2017/8/9.
+ * Created by Administrator on 2017/11/20.
  */
 
-public class GroupCreatePresenter implements GroupCreateContract.Presenter{
+public class GroupCreatePresenter implements GroupCreateContract.Presenter {
 
     private GroupCreateContract.BView view;
-    private String pubKey;
     private Activity activity;
+    private List<ContactEntity> contactEntities = new ArrayList<>();
 
-
-    public GroupCreatePresenter(GroupCreateContract.BView view){
-        this.view=view;
+    public GroupCreatePresenter(GroupCreateContract.BView view) {
+        this.view = view;
         view.setPresenter(this);
     }
 
     @Override
     public void start() {
-        pubKey = view.getRoomKey();
         activity = view.getActivity();
+        contactEntities = view.groupMemberList();
     }
 
-    private String groupKey;
-    private List<ContactEntity> contactEntities;
-    private String groupName;
-    private String groupEcdh;
-
+    /**
+     *
+     * @param groupName
+     * @param groupCategory   “LOW”:1,
+     *                        “HIGH”:2
+     */
     @Override
-    public void requestGroupCreate(List<ContactEntity> entities) {
-        this.contactEntities = entities;
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-
-        this.groupName = String.format(activity.getString(R.string.Link_user_friends), userBean.getName());
-
-        String ranprikey = SupportKeyUril.getNewPriKey();
-        String randpubkey = SupportKeyUril.getPubKeyFromPriKey(ranprikey);
-
-        byte[] groupecdhkey = SupportKeyUril.getRawECDHKey(ranprikey, randpubkey);
-        this.groupEcdh = StringUtil.bytesToHexString(groupecdhkey);
-        Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
-                .setSecretKey(groupEcdh).build();
-
+    public void createGroup(String groupName, int groupCategory) {
         List<Connect.AddGroupUserInfo> groupUserInfos = new ArrayList<>();
         for (ContactEntity entity : contactEntities) {
-            String prikey = userBean.getPriKey();
-            byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(prikey, entity.getCa_pub());
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
-
-            String pubkey = userBean.getPubKey();
-            String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
-            String backup = String.format("%1$s/%2$s", pubkey, groupHex);
-
-            Connect.AddGroupUserInfo groupUserInfo = Connect.AddGroupUserInfo.newBuilder()
+            Connect.AddGroupUserInfo userInfo = Connect.AddGroupUserInfo.newBuilder()
                     .setUid(entity.getUid())
-                    .setBackup(backup).build();
-            groupUserInfos.add(groupUserInfo);
+                    .build();
+            groupUserInfos.add(userInfo);
         }
 
         Connect.CreateGroup createGroup = Connect.CreateGroup.newBuilder()
                 .setName(groupName)
-                .addAllUsers(groupUserInfos).build();
+                .addAllUsers(groupUserInfos)
+                .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CREATE_GROUP, createGroup, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -110,7 +93,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
                         insertLocalData(groupInfo);
-                        groupCreateBroadcast();
+                        //groupCreateBroadcast(groupInfo);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -121,9 +104,9 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
             public void onError(Connect.HttpResponse response) {
                 // - 2421 groupinfo error
                 // - 2422 group create failed
-                if(response.getCode() == 2421){
+                if (response.getCode() == 2421) {
                     ToastEUtil.makeText(activity, R.string.Link_Group_create_information_error, ToastEUtil.TOAST_STATUS_FAILE).show();
-                } else if(response.getCode() == 2422){
+                } else if (response.getCode() == 2422) {
                     ToastEUtil.makeText(activity, R.string.Network_equest_failed_please_try_again_later, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else {
                     ToastEUtil.makeText(activity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
@@ -133,10 +116,11 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
     }
 
     public void insertLocalData(Connect.GroupInfo groupInfo) {
-        this.groupKey = groupInfo.getGroup().getIdentifier();
+        final String groupKey = groupInfo.getGroup().getIdentifier();
+        String groupName = groupInfo.getGroup().getName();
 
         ConversionEntity roomEntity = new ConversionEntity();
-        roomEntity.setType(1);
+        roomEntity.setType(Connect.ChatType.GROUP_DISCUSSION_VALUE);
         roomEntity.setIdentifier(groupKey);
         roomEntity.setName(groupName);
         roomEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
@@ -147,7 +131,6 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         GroupEntity groupEntity = new GroupEntity();
         groupEntity.setName(groupName);
         groupEntity.setIdentifier(groupKey);
-        groupEntity.setEcdh_key(groupEcdh);
         groupEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
         ContactHelper.getInstance().inserGroupEntity(groupEntity);
 
@@ -183,20 +166,66 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter{
         ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
             @Override
             public void animFinish() {
-                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUPCHAT, groupKey));
+                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupKey));
             }
         }).show();
     }
 
-    public void groupCreateBroadcast() {
-        Connect.CreateGroupMessage groupMessage = Connect.CreateGroupMessage.newBuilder()
-                .setIdentifier(groupKey)
-                .setSecretKey(groupEcdh)
+    /**
+     * 向群成员广播自己的加密Key
+     *
+     * @param groupInfo
+     */
+    public void groupCreateBroadcast(Connect.GroupInfo groupInfo) {
+        String groupIdentify = groupInfo.getGroup().getIdentifier();
+
+        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+        byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
+
+        long expiredTime = instant.utils.TimeUtil.getCurrentTimeSecond() + 4 * 24 * 60 * 60;
+        Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder()
+                .setChatPubKey(randomPubKey)
+                .setSalt(ByteString.copyFrom(randomSalt))
+                .setExpired(expiredTime)
                 .build();
 
-        for (ContactEntity member : contactEntities) {
-            CFriendChat cFriendChat = new CFriendChat(member);
-            cFriendChat.createGroupBroadToMember(groupKey, member.getCa_pub(), groupMessage);
+        UserCookie connecCookie = Session.getInstance().getConnectCookie();
+        String uid = connecCookie.getUid();
+        String caPublicKey = connecCookie.getPubKey();
+        String caPrivateKey = connecCookie.getPriKey();
+        String signInfo = SupportKeyUril.signHash(caPrivateKey, chatInfo.toByteArray());
+        Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder()
+                .setCaPub(caPublicKey)
+                .setSign(signInfo)
+                .setData(chatInfo)
+                .build();
+
+        Connect.BroadcastMemberKey.Builder memberKeyBuilder = Connect.BroadcastMemberKey.newBuilder();
+
+        List<Connect.GroupMember> groupMembers = groupInfo.getMembersList();
+        for (Connect.GroupMember member : groupMembers) {
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(
+                    EncryptionUtil.ExtendedECDH.EMPTY,
+                    caPrivateKey,
+                    member.getPubKey(),
+                    cookie.toByteArray());
+
+            Connect.GroupMemberKeyData memberKeyData = Connect.GroupMemberKeyData.newBuilder()
+                    .setGroupId(groupIdentify)
+                    .setUid(uid)
+                    .setCipherData(gcmData)
+                    .build();
+
+            Connect.GroupMemberKey groupMemberKey = Connect.GroupMemberKey.newBuilder()
+                    .setReceiverUid(member.getUid())
+                    .setSign(signInfo)
+                    .setCaPubKey(caPublicKey)
+                    .setGroupKeyData(memberKeyData)
+                    .build();
+            memberKeyBuilder.addMemberKey(groupMemberKey);
         }
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.broadGroupMemberKey(memberKeyBuilder.build());
     }
 }

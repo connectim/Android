@@ -6,47 +6,39 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
-import connect.activity.base.compare.FriendCompara;
+import connect.activity.chat.adapter.GroupCreateAdapter;
 import connect.activity.chat.set.contract.GroupCreateContract;
 import connect.activity.chat.set.presenter.GroupCreatePresenter;
-import connect.database.green.DaoHelper.ContactHelper;
+import connect.activity.home.view.LineDecoration;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.widget.SideBar;
 import connect.widget.TopToolBar;
-import connect.widget.selefriend.adapter.SelectFriendAdapter;
 
-public class GroupCreateActivity extends BaseActivity implements GroupCreateContract.BView{
+public class GroupCreateActivity extends BaseActivity implements GroupCreateContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
+    @Bind(R.id.edittxt1)
+    EditText edittxt1;
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
-    @Bind(R.id.siderbar)
-    SideBar siderbar;
 
+    private static String CONTACT_LIST = "CONTACT_LIST";
     private GroupCreateActivity activity;
-    private static String TAG = "_GroupCreateActivity";
-    private static String UID = "UID";
-    private String pubKey;
-    private int topPosi;
-    private boolean move;
-
-    private GroupCreateOnscrollListener onscrollListener = new GroupCreateOnscrollListener();
-    private GroupCreateFriendSelectListener friendSelectListener = new GroupCreateFriendSelectListener();
-    private GroupCreateLetterChanged letterChanged = new GroupCreateLetterChanged();
-    private LinearLayoutManager linearLayoutManager;
-    private SelectFriendAdapter adapter;
+    private List<ContactEntity> contactEntities;
     private GroupCreateContract.Presenter presenter;
 
     @Override
@@ -57,9 +49,9 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         initView();
     }
 
-    public static void startActivity(Activity activity, String pubkey) {
+    public static void startActivity(Activity activity, ArrayList<ContactEntity> contactEntities) {
         Bundle bundle = new Bundle();
-        bundle.putString(UID, pubkey);
+        bundle.putSerializable(CONTACT_LIST, contactEntities);
         ActivityUtil.next(activity, GroupCreateActivity.class, bundle);
     }
 
@@ -68,9 +60,9 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setTitle(getResources().getString(R.string.Chat_Choose_contact));
+        toolbar.setTitle(getResources().getString(R.string.Chat_set_Create_New_Group));
         toolbar.setRightText(R.string.Chat_Complete);
-        toolbar.setRightTextEnable(false);
+        toolbar.setRightTextEnable(true);
         toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,34 +72,32 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<ContactEntity> selectEntities = adapter.getSelectList();
-                if (selectEntities == null || selectEntities.size() < 1) {
-                    toolbar.setRightTextColor(R.color.color_6d6e75);
-                    return;
-                }
-                presenter.requestGroupCreate(selectEntities);
+                toolbar.setRightTextEnable(false);
 
-                toolbar.setRightListener(null);
+                String groupName = edittxt1.getText().toString();
+                if (TextUtils.isEmpty(groupName)) {
+                    groupName = edittxt1.getHint().toString();
+                }
+                int groupCategory = 1;
+                presenter.createGroup(groupName, groupCategory);
+
                 Message message = new Message();
                 message.what = 100;
                 handler.sendMessageDelayed(message, 3000);
             }
         });
 
-        pubKey = getIntent().getStringExtra(UID);
-        linearLayoutManager = new LinearLayoutManager(activity);
-        List<String> oldMembers = new ArrayList<>();
-        oldMembers.add(pubKey);
-        List<ContactEntity> friendEntities = ContactHelper.getInstance().loadFriend();
-        Collections.sort(friendEntities, new FriendCompara());
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        edittxt1.setHint(String.format(activity.getString(R.string.Link_user_friends), userBean.getName()));
 
-        adapter = new SelectFriendAdapter(activity);
+        contactEntities = (List<ContactEntity>) getIntent().getSerializableExtra(CONTACT_LIST);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.addItemDecoration(new LineDecoration(activity));
+        GroupCreateAdapter adapter = new GroupCreateAdapter();
+        adapter.setData(contactEntities);
         recyclerview.setAdapter(adapter);
-        recyclerview.addOnScrollListener(onscrollListener);
-        adapter.setOnSelectFriendListener(friendSelectListener);
-        siderbar.setOnTouchingLetterChangedListener(letterChanged);
-        adapter.setDataNotify(friendEntities, null, oldMembers);
+
         new GroupCreatePresenter(this).start();
     }
 
@@ -123,64 +113,9 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         }
     };
 
-    private class GroupCreateOnscrollListener extends RecyclerView.OnScrollListener {
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            if (move) {
-                move = false;
-                int n = topPosi - linearLayoutManager.findFirstVisibleItemPosition();
-                if (0 <= n && n < recyclerview.getChildCount()) {
-                    int top = recyclerview.getChildAt(n).getTop();
-                    recyclerview.scrollBy(0, top);
-                }
-            }
-        }
-    }
-
-    private class GroupCreateFriendSelectListener implements SelectFriendAdapter.OnSelectFriendListener {
-        @Override
-        public void selectFriend(List<String> list) {
-            if (list == null || list.size() < 2) {
-                toolbar.setRightTextEnable(false);
-                toolbar.setRightTextColor(R.color.color_6d6e75);
-            } else {
-                toolbar.setRightTextEnable(true);
-                toolbar.setRightTextColor(R.color.color_green);
-            }
-        }
-    }
-
-    private class GroupCreateLetterChanged implements SideBar.OnTouchingLetterChangedListener{
-
-        @Override
-        public void onTouchingLetterChanged(String s) {
-            int position = adapter.getPositionForSection(s.charAt(0));
-
-            topPosi = position;
-            int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
-            int lastItem = linearLayoutManager.findLastVisibleItemPosition();
-            if (position <= firstItem) {
-                recyclerview.scrollToPosition(position);
-            } else if (position <= lastItem) {
-                int top = recyclerview.getChildAt(position - firstItem).getTop();
-                recyclerview.scrollBy(0, top);
-            } else {
-                recyclerview.scrollToPosition(position);
-                move = true;
-            }
-        }
-    }
-
     @Override
-    public String getRoomKey() {
-        return pubKey;
+    public List<ContactEntity> groupMemberList() {
+        return contactEntities;
     }
 
     @Override

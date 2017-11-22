@@ -47,9 +47,4 @@ public class ContactHelperTest {
         LogManager.getLogger().d(Tag, "loadGroupMemEntities: length" + memberEntities.size());
         return memberEntities;
     }
-
-    @Test
-    public void updateGroupMember(String identify, String uid, String username, String avatar, Integer role, String nickname) {
-        ContactHelper.getInstance().updateGroupMember(identify, uid, username, avatar, role, nickname);
-    }
 }

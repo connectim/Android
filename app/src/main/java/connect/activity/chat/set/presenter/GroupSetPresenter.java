@@ -164,17 +164,18 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
                     if(ProtoBufUtil.getInstance().checkProtoBuf(settingInfo)){
                         view.noticeSwitch(settingInfo.getMute());
 
-                        if (settingInfo.getPublic()) {
-                            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
-                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myUid);
-                            if (myMember == null || myMember.getRole() == 0) {
-                                view.groupNameClickable(false);
-                            } else {
-                                view.groupNameClickable(true);
-                            }
-                        } else {
-                            view.groupNameClickable(true);
-                        }
+                        // qwerty
+//                        if (settingInfo.getPublic()) {
+//                            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+//                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myUid);
+//                            if (myMember == null || myMember.getRole() == 0) {
+//                                view.groupNameClickable(false);
+//                            } else {
+//                                view.groupNameClickable(true);
+//                            }
+//                        } else {
+//                            view.groupNameClickable(true);
+//                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -224,7 +225,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 int common = state ? 1 : 0;
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomKey);
-                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getName()) || TextUtils.isEmpty(groupEntity.getEcdh_key()))) {
+                if (!(groupEntity == null || TextUtils.isEmpty(groupEntity.getName()))) {
                     groupEntity.setCommon(common);
 
                     String groupName = groupEntity.getName();

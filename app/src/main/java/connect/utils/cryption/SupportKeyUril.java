@@ -76,6 +76,25 @@ public class SupportKeyUril {
         return byteRandom;
     }
 
+    public static byte[] createSecureRandom(int num) {
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[num];
+        random.nextBytes(bytes);
+        return bytes;
+    }
+
+    public static byte[] sha512(byte[] content) {
+        MessageDigest md;
+        byte[] shaBytes = null;
+        try {
+            md = MessageDigest.getInstance("SHA-512");
+            shaBytes = md.digest(content);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return shaBytes;
+    }
+
     /**
      * def whether the private key
      */

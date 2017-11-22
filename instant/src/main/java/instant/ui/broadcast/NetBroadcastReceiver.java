@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import instant.bean.Session;
-import instant.bean.UserCookie;
+
 import instant.parser.localreceiver.ConnectLocalReceiver;
-import instant.sender.ShakeHandSender;
 import instant.ui.InstantSdk;
 import instant.utils.TimeUtil;
 import instant.utils.log.LogManager;
@@ -39,7 +37,7 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
                     (mobileState != null && NetworkInfo.State.CONNECTED == mobileState)) {//Network connection is successful
                 LogManager.getLogger().d(TAG, "NetBroadcastReceiver onReceive()...Switch to the network environment");
 
-                if (isCanConnect() && TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART) {
+                if (TimeUtil.getCurrentTimeInLong() - lastReceiveTime > TIME_REPEART) {
                     lastReceiveTime = TimeUtil.getCurrentTimeInLong();
                 }
             } else {
@@ -49,10 +47,5 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public boolean isCanConnect() {
-        UserCookie userCookie = Session.getInstance().getConnectCookie();
-        return userCookie != null;
     }
 }

@@ -132,69 +132,73 @@ public class CommandParser extends InterParse {
         if (unGzip.length == 0 || unGzip.length < 20) {
             offComplete = true;
         } else {
-            Connect.OfflineMsgs offlineMsgs = Connect.OfflineMsgs.parseFrom(unGzip);
-            List<Connect.OfflineMsg> msgList = offlineMsgs.getOfflineMsgsList();
-
             List<Connect.Ack> ackList = new ArrayList<>();
-            for (Connect.OfflineMsg offlineMsg : msgList) {
+            try {
+                Connect.OfflineMsgs offlineMsgs = Connect.OfflineMsgs.parseFrom(unGzip);
+                List<Connect.OfflineMsg> msgList = offlineMsgs.getOfflineMsgsList();
 
-                String messageId = offlineMsg.getMsgId();
-                Connect.ProducerMsgDetail msgDetail = offlineMsg.getBody();
-                int extension = msgDetail.getExt();
+                for (Connect.OfflineMsg offlineMsg : msgList) {
 
-                LogManager.getLogger().d(TAG, "messageId:" + messageId);
-                Connect.Ack ack = Connect.Ack.newBuilder()
-                        .setType(msgDetail.getType())
-                        .setMsgId(messageId)
-                        .build();
-                ackList.add(ack);
+                    String messageId = offlineMsg.getMsgId();
+                    Connect.ProducerMsgDetail msgDetail = offlineMsg.getBody();
+                    int extension = msgDetail.getExt();
 
-                switch ((byte) msgDetail.getType()) {
-                    case 0x04://Offline command processing
-                        Connect.Command command = Connect.Command.parseFrom(msgDetail.getData());
-                        ByteString transferDataByte = command.getDetail();
+                    LogManager.getLogger().d(TAG, "messageId:" + messageId);
+                    Connect.Ack ack = Connect.Ack.newBuilder()
+                            .setType(msgDetail.getType())
+                            .setMsgId(messageId)
+                            .build();
+                    ackList.add(ack);
 
-                        switch (extension) {
-                            case 0x01://contact list
-                                syncContacts(transferDataByte);
-                                break;
-                            case 0x06://bind servicetoken
-                                break;
-                            case 0x07://login out success
-                                //HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
-                                break;
-                            case 0x08://receive add friend request
-                                receiverAddFriendRequest(transferDataByte);
-                                break;
-                            case 0x09://Accept agreed to be a friend request
-                                receiverAcceptAddFriend(transferDataByte);
-                                break;
-                            case 0x0a://delete friend
-                                receiverAcceptDelFriend(transferDataByte);
-                                break;
-                            case 0x0b://Modify the friends remark and common friends
-                                receiverSetUserInfo(transferDataByte);
-                                break;
-                            case 0x0d://modify group information
-                                updateGroupInfo(transferDataByte);
-                                break;
-                            case 0x11://outer translate
-                                handlerOuterTransfer(transferDataByte);
-                                break;
-                            case 0x12://outer red packet
-                                handlerOuterRedPacket(transferDataByte);
-                                break;
-                        }
-                        break;
-                    case 0x05://Offline notification
-                        InterParse interParse = new MessageParser((byte) extension, ByteBuffer.wrap(msgDetail.getData().toByteArray()), 0);
-                        interParse.msgParse();
-                        break;
+                    switch ((byte) msgDetail.getType()) {
+                        case 0x04://Offline command processing
+                            Connect.Command command = Connect.Command.parseFrom(msgDetail.getData());
+                            ByteString transferDataByte = command.getDetail();
+
+                            switch (extension) {
+                                case 0x01://contact list
+                                    syncContacts(transferDataByte);
+                                    break;
+                                case 0x06://bind servicetoken
+                                    break;
+                                case 0x07://login out success
+                                    //HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
+                                    break;
+                                case 0x08://receive add friend request
+                                    receiverAddFriendRequest(transferDataByte);
+                                    break;
+                                case 0x09://Accept agreed to be a friend request
+                                    receiverAcceptAddFriend(transferDataByte);
+                                    break;
+                                case 0x0a://delete friend
+                                    receiverAcceptDelFriend(transferDataByte);
+                                    break;
+                                case 0x0b://Modify the friends remark and common friends
+                                    receiverSetUserInfo(transferDataByte);
+                                    break;
+                                case 0x0d://modify group information
+                                    updateGroupInfo(transferDataByte);
+                                    break;
+                                case 0x11://outer translate
+                                    handlerOuterTransfer(transferDataByte);
+                                    break;
+                                case 0x12://outer red packet
+                                    handlerOuterRedPacket(transferDataByte);
+                                    break;
+                            }
+                            break;
+                        case 0x05://Offline notification
+                            InterParse interParse = new MessageParser((byte) extension, ByteBuffer.wrap(msgDetail.getData().toByteArray()), 0);
+                            interParse.msgParse();
+                            break;
+                    }
                 }
-            }
 
-            offComplete = offlineMsgs.getCompleted();
-            if (ackList.size() > 0) {
+                offComplete = offlineMsgs.getCompleted();
+            } catch (Exception e) {
+                e.printStackTrace();
+                offComplete = true;
+            } finally {
                 backOffLineAcks(ackList);
             }
         }
@@ -383,6 +387,7 @@ public class CommandParser extends InterParse {
 
     /**
      * Burn after reading setting
+     *
      * @param buffer
      * @param objs
      * @throws Exception

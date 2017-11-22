@@ -81,11 +81,13 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             e.printStackTrace();
         }
 
-        if (roomAttr.getRoomtype() == 2) {
+        if (roomAttr.getRoomtype() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
             holder.nameTxt.setText(inflater.getContext().getString(R.string.app_name));
             GlideUtil.loadAvatarRound(holder.headImg, R.mipmap.connect_logo);
             holder.bottomNotify.setVisibility(View.GONE);
-        } else if (roomAttr.getRoomtype() == Connect.ChatType.PRIVATE_VALUE || roomAttr.getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE) {
+        } else if (roomAttr.getRoomtype() == Connect.ChatType.PRIVATE_VALUE ||
+                roomAttr.getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE ||
+                roomAttr.getRoomtype() == Connect.ChatType.GROUP_DISCUSSION_VALUE) {
             String showName = TextUtils.isEmpty(roomAttr.getName()) ? "" : roomAttr.getName();
             String showAvatar = TextUtils.isEmpty(roomAttr.getAvatar()) ? "" : roomAttr.getAvatar();
 

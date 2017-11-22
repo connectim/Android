@@ -119,7 +119,7 @@ public class FriendChat extends NormalChat {
 
     @Override
     public int chatType() {
-        return 0;
+        return Connect.ChatType.PRIVATE_VALUE;
     }
 
     public void setFriendCookie(UserCookie friendCookie) {

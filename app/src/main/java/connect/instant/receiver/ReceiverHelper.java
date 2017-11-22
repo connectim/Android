@@ -13,6 +13,7 @@ import instant.parser.localreceiver.RobotLocalReceiver;
 import instant.parser.localreceiver.TransactionLocalReceiver;
 import instant.parser.localreceiver.UnreachableLocalReceiver;
 import instant.ui.InstantSdk;
+import instant.utils.log.LogManager;
 
 /**
  * Created by Administrator on 2017/10/25.
@@ -28,12 +29,17 @@ public class ReceiverHelper {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         InstantSdk.instantSdk.registerUserInfo(context, userBean.getUid(), userBean.getPubKey(), userBean.getPriKey());
 
-        ConnectLocalReceiver.receiver.registerConnect(ConnectReceiver.receiver);
-        CommandLocalReceiver.receiver.registerCommand(CommandReceiver.receiver);
-        TransactionLocalReceiver.localReceiver.registerTransactionListener(TransactionReceiver.receiver);
-        RobotLocalReceiver.localReceiver.registerRobotListener(RobotReceiver.receiver);
-        UnreachableLocalReceiver.localReceiver.registerUnreachableListener(UnreachableReceiver.receiver);
-        MessageLocalReceiver.localReceiver.registerMessageListener(MessageReceiver.receiver);
-        ExceptionLocalReceiver.localReceiver.registerConnect(ExceptionReceiver.receiver);
+        try {
+            ConnectLocalReceiver.receiver.registerConnect(ConnectReceiver.receiver);
+            CommandLocalReceiver.receiver.registerCommand(CommandReceiver.receiver);
+            TransactionLocalReceiver.localReceiver.registerTransactionListener(TransactionReceiver.receiver);
+            RobotLocalReceiver.localReceiver.registerRobotListener(RobotReceiver.receiver);
+            UnreachableLocalReceiver.localReceiver.registerUnreachableListener(UnreachableReceiver.receiver);
+            MessageLocalReceiver.localReceiver.registerMessageListener(MessageReceiver.receiver);
+            ExceptionLocalReceiver.localReceiver.registerConnect(ExceptionReceiver.receiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogManager.getLogger().d(TAG, e.getMessage());
+        }
     }
 }

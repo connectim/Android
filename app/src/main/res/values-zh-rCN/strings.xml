@@ -117,6 +117,8 @@
     <string name="Chat_paid_the_bill_to">%1$s支付了%2$s的账单</string>
     <string name="Chat_paid_the_crowd_founding_to">%1$s支付了%2$s的众筹账单</string>
     <string name="Chat_set_the_self_destruct_timer_to">%1$s开启阅后即焚%2$s后删除消息</string>
+    <string name="Chat_set_Create_New_Group">创建群组</string>
+    <string name="Chat_set_Group_Chat_Encrypt_Open">开启后,群组消息通过点对点加密传输</string>
     <string name="Common_Cancel">取消</string>
     <string name="Common_Completed">已完成</string>
     <string name="Common_Download_App">正在下载%s</string>

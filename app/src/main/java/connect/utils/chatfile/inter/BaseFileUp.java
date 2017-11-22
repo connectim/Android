@@ -44,9 +44,11 @@ public abstract class BaseFileUp implements InterFileUp {
     protected Connect.MediaFile mediaFile;
     public FileUploadListener fileUpListener;
 
-    protected String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
-    protected String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
-    protected byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
+    private byte[] randomNumber = new byte[]{};
+
+    public BaseFileUp() {
+        randomNumber = SupportKeyUril.createSecureRandom(32);
+    }
 
     public UserCookie loadUserCookie() {
         UserCookie userCookie = Session.getInstance().getChatCookie();
@@ -77,20 +79,8 @@ public abstract class BaseFileUp implements InterFileUp {
         LogManager.getLogger().d(TAG, "ByteString size:" + fileBytes.size());
 
         Connect.GcmData gcmData = null;
-        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
-            UserCookie userCookie = loadUserCookie();
-            String myPrivateKey = userCookie.getPriKey();
-
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(baseChat.chatKey());
-            UserCookie friendCookie = loadFriendCookie(friendEntity.getCa_pub());
-            String friendPublicKey = friendCookie.getPubKey();
-
-            EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-            ecdhExts.setBytes(SupportKeyUril.xor(userCookie.getSalt(), friendCookie.getSalt()));
-
-            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, fileSie);
-        } else if (baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-            gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, StringUtil.hexStringToBytes(((GroupChat) baseChat).groupEcdh()), fileBytes);
+        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE || baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
+            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, randomNumber, fileSie);
         }
         return gcmData;
     }
@@ -172,5 +162,9 @@ public abstract class BaseFileUp implements InterFileUp {
     @Override
     public void fileUpload() {
 
+    }
+
+    public byte[] getRandomNumber() {
+        return randomNumber;
     }
 }

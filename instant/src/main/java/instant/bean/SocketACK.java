@@ -31,6 +31,7 @@ public enum SocketACK {
     DIFFERENT_DEVICE(new byte[]{0x04, 0x19}),//different devive login in
     BURNREAD_SETTING(new byte[]{0x04, 0x1a}),//Burn after reading setting
     BURNREAD_RECEIPT(new byte[]{0x04, 0x1b}),//Burning receipt after reading
+    BROAD_GROUP_MEMBERPKEY(new byte[]{0x04, 0x1c}),//broad my group key
 
     ROBOT_CHAT(new byte[]{0x05, 0x00}),//Robot news
     SINGLE_CHAT(new byte[]{0x05, 0x01}),//The private chat

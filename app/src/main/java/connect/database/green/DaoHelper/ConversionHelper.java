@@ -27,7 +27,7 @@ public class ConversionHelper extends BaseDao {
         conversionEntityDao = daoSession.getConversionEntityDao();
     }
 
-    public static ConversionHelper getInstance() {
+    public synchronized static ConversionHelper getInstance() {
         if (conversionHelper == null) {
             conversionHelper = new ConversionHelper();
         }
@@ -69,7 +69,7 @@ public class ConversionHelper extends BaseDao {
 
         String sql = "SELECT R.*, S.DISTURB FROM CONVERSION_ENTITY R " +
                 " LEFT OUTER JOIN CONVERSION_SETTING_ENTITY S ON R.IDENTIFIER = S.IDENTIFIER " +
-                (TextUtils.isEmpty(identifier) ? "" : " WHERE R.IDENTIFIER = " + identifier) +
+                (TextUtils.isEmpty(identifier) ? "" : " WHERE R.IDENTIFIER = " + "\"" + identifier + "\"") +
                 " GROUP BY R.IDENTIFIER ORDER BY IFNULL(R.TOP, 0) DESC,IFNULL(R.LAST_TIME, 0) DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
 
@@ -149,10 +149,14 @@ public class ConversionHelper extends BaseDao {
     }
 
     public void updateRoomEntity(String identify, String draf, String content, long messagetime) {
-        String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,CONTENT = ? ,UNREAD_COUNT = 0 " +
+        updateRoomEntity(identify, draf, content, 0, 0, 0, messagetime);
+    }
+
+    public void updateRoomEntity(String identify, String draf, String content, int unRead, int isAt, int stranger, long messagetime) {
+        String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,CONTENT = ? ,UNREAD_COUNT = ? ,IS_AT = ? ,STRANGER = ? " +
                 (messagetime == 0 ? " " : ", LAST_TIME = " + messagetime) +
                 " WHERE IDENTIFIER = ?;";
-        daoSession.getDatabase().execSQL(sql, new Object[]{draf, content, identify});
+        daoSession.getDatabase().execSQL(sql, new Object[]{draf, content, unRead, isAt, stranger, identify});
     }
 
     /************************ delete *****************************************/

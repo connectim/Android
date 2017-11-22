@@ -30,6 +30,7 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
 public class GroupService extends Service {
@@ -101,8 +102,8 @@ public class GroupService extends Service {
                             if (TextUtils.isEmpty(groupname)) {
                                 groupname = "groupname9";
                             }
+                            groupEntity.setCategory(group.getCategory());
                             groupEntity.setName(groupname);
-                            groupEntity.setVerify(groupInfo.getGroup().getReviewed() ? 1 : 0);
                             groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
                             ContactHelper.getInstance().inserGroupEntity(groupEntity);
                         }
@@ -121,9 +122,9 @@ public class GroupService extends Service {
                         Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
                         List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
                         ContactHelper.getInstance().inserGroupMemEntity(memEntities);
-
-                        ContactHelper.getInstance().inserGroupMemEntity(memEntities);
                         ContactNotice.receiverGroup();
+
+                        FailMsgsManager.getInstance().dealReceiveFailMsgs(groupIdentifier);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
