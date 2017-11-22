@@ -9,7 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/color_d1d5da"
+        android:dividerHeight="@dimen/px_1"
+        android:listSelector="@android:color/transparent">
+    </android.support.v7.widget.RecyclerView>
+
+    <!--<LinearLayout
         android:id="@+id/the_market_lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,6 +62,6 @@
             android:text="资讯"
             android:layout_marginLeft="@dimen/dp_22"
             android:layout_centerVertical="true"/>
-    </LinearLayout>
+    </LinearLayout>-->
 
 </LinearLayout>

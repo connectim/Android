@@ -158,6 +158,15 @@
     <string name="Link_Find_me_by_phone_number">允许通过手机号找到我</string>
     <string name="Link_Friend_Recommendation">好友推荐</string>
     <string name="Link_From_Contact_Match">来自通讯录匹配</string>
+
+    <string name="Link_Subscribe_to_the_center">订阅中心</string>
+    <string name="Link_Subscribe">订阅</string>
+    <string name="Link_Unsubscribe">取消订阅</string>
+    <string name="Link_Have_subscribed_to">已订阅</string>
+    <string name="Link_Not_to_subscribe_to">未订阅</string>
+    <string name="Link_To_view_the_message">查看消息</string>
+    <string name="Link_Function_is_introduced">功能介绍</string>
+
     <string name="Link_From_Group">来自于群组</string>
     <string name="Link_From_May_Know">来自可能认识的人</string>
     <string name="Link_From_QR_Code">来自二维码</string>
@@ -497,6 +506,7 @@
     <string name="Wallet_transferOutVia_return_Success">退回转账成功</string>
     <string name="app_name">Connect</string>
     <string name="app_name_im">CONNECT.IM</string>
+    <string name="title_activity_group_create">GroupCreateActivity</string>
     <string name="Chat_Other_Part">对方</string>
     <string name="Chat_Subscriber">订阅号</string>
     <string name="Chat_Subscribe">订阅</string>

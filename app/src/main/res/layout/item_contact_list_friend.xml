@@ -39,11 +39,7 @@
         <ImageView
             android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"
-            android:scaleType="fitXY"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_height="@dimen/dp_38"/>
     </RelativeLayout>
 
 </LinearLayout>

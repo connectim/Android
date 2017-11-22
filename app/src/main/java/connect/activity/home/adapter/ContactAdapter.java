@@ -165,9 +165,10 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 break;
             case SUBSCRIBE_NUMBER:
                 ((FriendHolder) holder).topTv.setVisibility(View.VISIBLE);
-                ((FriendHolder) holder).topTv.setText("资讯");
-                ((FriendHolder) holder).name.setText("订阅号");
-                GlideUtil.loadAvatarRound(((FriendHolder) holder).avater, R.mipmap.connect_logo);
+                ((FriendHolder) holder).topTv.setText(R.string.Link_Subscribe);
+                ((FriendHolder) holder).name.setText(R.string.Link_Subscribe_to_the_center);
+                ((FriendHolder) holder).lineView.setVisibility(View.GONE);
+                GlideUtil.loadAvatarRound(((FriendHolder) holder).avater, R.mipmap.subscribe);
                 break;
             case STATUS_FRIEND_COUNT:
                 ((CountHolder) holder).bottomCount.setText(currBean.getName());
