@@ -630,4 +630,7 @@
     <string name="Chat_set_Create_New_Group">создать группу</string>
     <string name="Chat_set_Group_Chat_Encrypt_Open"> после открытия  ,  группы  по двухточечной  шифрования передачи  сообщений </string>
     <string name="Chat_Subscriber">абонент</string>
+    <string name="Chat_Subscribe">подписаться</string>
+    <string name="Chat_View_Full_Text">просмотреть  полный текст</string>
+    <string name="Chat_Enter_Subscribe"> счета  в  подписки</string>
 </resources>

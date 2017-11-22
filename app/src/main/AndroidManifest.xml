@@ -408,6 +408,12 @@
             android:name="connect.activity.chat.set.GroupCreateActivity"
             android:label="@string/title_activity_group_create">
         </activity>
+        <activity android:name="connect.activity.chat.subscribe.UserSubscribeActivity">
+        </activity>
+        <activity
+            android:name="connect.activity.chat.subscribe.SubscribeDetailActivity"
+            android:label="@string/title_activity_subscribe_detail">
+        </activity>
     </application>
 
 </manifest>

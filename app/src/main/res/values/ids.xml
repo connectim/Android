@@ -140,6 +140,8 @@
     <item name="gif" type="id"/>
     <item name="roundimg" type="id"/>
     <item name="linearlayout" type="id"/>
+    <item name="linearlayout_1" type="id"/>
+    <item name="linearlayout_2" type="id"/>
     <item name="scrollview" type="id"/>
     <item name="state" type="id"/>
     <item name="imgs" type="id"/>
@@ -171,6 +173,10 @@
     <item name="take_photo_video" type="id"/>
     <item name="include_more" type="id"/>
     <item name="include_emoji" type="id"/>
+    <item name="include_1" type="id"/>
+    <item name="include_2" type="id"/>
+    <item name="include_3" type="id"/>
+    <item name="include_4" type="id"/>
 
     <item name="toggle" type="id"/>
     <item name="top" type="id"/>
