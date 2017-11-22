@@ -31,4 +31,6 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.google.code.gson:gson:2.7'
     compile 'io.netty:netty-all:5.0.0.Alpha2'
+
+    compile 'org.whispersystems:signal-service-android:2.6.12'
 }

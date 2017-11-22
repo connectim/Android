@@ -1486,8 +1486,268 @@ message RSSMessageList {
     int64 time = 2;
 }
 
-
 message RSSPush {
     int32 category =  1; //1:rss 2:article
     bytes data = 2;
 }
+
+
+// Signal
+message ProvisionEnvelope {
+  bytes publicKey = 1;
+  bytes body      = 2; // Encrypted ProvisionMessage
+}
+
+message ProvisionMessage {
+  bytes  identityKeyPublic  = 1;
+  bytes  identityKeyPrivate = 2;
+  string number             = 3;
+  string provisioningCode   = 4;
+  string userAgent          = 5;
+  bytes  profileKey         = 6;
+  bool   readReceipts       = 7;
+}
+
+message Envelope {
+  enum Type {
+    UNKNOWN       = 0;
+    CIPHERTEXT    = 1;
+    KEY_EXCHANGE  = 2;
+    PREKEY_BUNDLE = 3;
+    RECEIPT       = 5;
+  }
+
+  Type   type          = 1;
+  string source        = 2;
+  uint32 sourceDevice  = 7;
+  string relay         = 3;
+  uint64 timestamp     = 5;
+  bytes  legacyMessage = 6; // Contains an encrypted DataMessage
+  bytes  content       = 8; // Contains an encrypted Content
+}
+
+message Content {
+  DataMessage    dataMessage    = 1;
+  SyncMessage    syncMessage    = 2;
+  CallMessage    callMessage    = 3;
+  NullMessage    nullMessage    = 4;
+  ReceiptMessage receiptMessage = 5;
+}
+
+message CallMessage {
+  message Offer {
+    uint64 id          = 1;
+    string description = 2;
+  }
+
+  message Answer {
+    uint64 id          = 1;
+    string description = 2;
+  }
+
+  message IceUpdate {
+    uint64 id            = 1;
+    string sdpMid        = 2;
+    uint32 sdpMLineIndex = 3;
+    string sdp           = 4;
+  }
+
+  message Busy {
+    uint64 id = 1;
+  }
+
+  message Hangup {
+    uint64 id = 1;
+  }
+
+
+  Offer     offer     = 1;
+  Answer    answer    = 2;
+  repeated IceUpdate iceUpdate = 3;
+  Hangup    hangup    = 4;
+  Busy      busy      = 5;
+}
+
+message DataMessage {
+  enum Flags {
+    END_SESSION             = 0;
+    EXPIRATION_TIMER_UPDATE = 1;
+    PROFILE_KEY_UPDATE      = 2;
+  }
+
+  string             body        = 1;
+  repeated AttachmentPointer  attachments = 2;
+  GroupContext       group       = 3;
+  uint32             flags       = 4;
+  uint32             expireTimer = 5;
+  bytes              profileKey  = 6;
+  uint64             timestamp   = 7;
+}
+
+message NullMessage {
+  bytes padding = 1;
+}
+
+message ReceiptMessage {
+  enum Type {
+    DELIVERY = 0;
+    READ     = 1;
+  }
+
+  Type   type      = 1;
+  repeated uint64 timestamp = 2;
+}
+
+message Verified {
+  enum State {
+    DEFAULT    = 0;
+    VERIFIED   = 1;
+    UNVERIFIED = 2;
+  }
+
+  string destination = 1;
+  bytes  identityKey = 2;
+  State  state       = 3;
+  bytes  nullMessage = 4;
+}
+
+message SyncMessage {
+  message Sent {
+    string      destination              = 1;
+    uint64      timestamp                = 2;
+    DataMessage message                  = 3;
+    uint64      expirationStartTimestamp = 4;
+  }
+
+  message Contacts {
+    AttachmentPointer blob     = 1;
+    bool              complete = 2;
+  }
+
+  message Groups {
+    AttachmentPointer blob = 1;
+  }
+
+  message Blocked {
+    repeated string numbers = 1;
+  }
+
+  message Request {
+    enum Type {
+      UNKNOWN       = 0;
+      CONTACTS      = 1;
+      GROUPS        = 2;
+      BLOCKED       = 3;
+      CONFIGURATION = 4;
+    }
+
+    Type type = 1;
+  }
+
+  message Read {
+    string sender    = 1;
+    uint64 timestamp = 2;
+  }
+
+  message Configuration {
+    bool readReceipts = 1;
+  }
+
+  Sent          sent          = 1;
+  Contacts      contacts      = 2;
+  Groups        groups        = 3;
+  Request       request       = 4;
+  repeated Read          read          = 5;
+  Blocked       blocked       = 6;
+  Verified      verified      = 7;
+  Configuration configuration = 9;
+  bytes         padding       = 8;
+}
+
+message AttachmentPointer {
+  enum Flags {
+    VOICE_MESSAGE = 0;
+  }
+
+  fixed64 id          = 1;
+  string  contentType = 2;
+  bytes   key         = 3;
+  uint32  size        = 4;
+  bytes   thumbnail   = 5;
+  bytes   digest      = 6;
+  string  fileName    = 7;
+  uint32  flags       = 8;
+}
+
+message GroupContext {
+  enum Type {
+    UNKNOWN      = 0;
+    UPDATE       = 1;
+    DELIVER      = 2;
+    QUIT         = 3;
+    REQUEST_INFO = 4;
+  }
+  bytes             id      = 1;
+  Type              type    = 2;
+  string            name    = 3;
+  repeated string            members = 4;
+  AttachmentPointer avatar  = 5;
+}
+
+message ContactDetails {
+  message Avatar {
+    string contentType = 1;
+    uint32 length      = 2;
+  }
+
+  string   number     = 1;
+  string   name       = 2;
+  Avatar   avatar     = 3;
+  string   color      = 4;
+  Verified verified   = 5;
+  bytes    profileKey = 6;
+}
+
+message GroupDetails {
+  message Avatar {
+    string contentType = 1;
+    uint32 length      = 2;
+  }
+
+  bytes  id       = 1;
+  string name     = 2;
+  repeated string members  = 3;
+  Avatar avatar   = 4;
+  bool   active   = 5;
+}
+
+
+message WebSocketRequestMessage {
+    string verb    = 1;
+    string path    = 2;
+    bytes  body    = 3;
+    repeated string headers = 5;
+    uint64 id      = 4;
+}
+
+message WebSocketResponseMessage {
+    uint64 id      = 1;
+    uint32 status  = 2;
+    string message = 3;
+    repeated string headers = 5;
+    bytes  body    = 4;
+}
+
+message WebSocketMessage {
+    enum Type {
+        UNKNOWN  = 0;
+        REQUEST  = 1;
+        RESPONSE = 2;
+    }
+
+    Type                     type     = 1;
+    WebSocketRequestMessage  request  = 2;
+    WebSocketResponseMessage response = 3;
+}
+
+
