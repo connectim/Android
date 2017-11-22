@@ -50,8 +50,7 @@
     <Button
         style="@style/ButtonLongStyle"
         android:id="@+id/button"
-        android:layout_marginTop="@dimen/dp_30"
-        android:enabled="false"
+        android:layout_marginTop="@dimen/dp_50"
         android:text="@string/Common_OK"/>
 
 </LinearLayout>

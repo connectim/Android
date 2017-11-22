@@ -51,12 +51,12 @@ public class SubscribeActivity extends BaseActivity {
 
     @OnClick(R.id.the_market_lin)
     void goTheMarket(View view) {
-        SubscribeDetailActivity.startActivity(mActivity);
+        SubscribeDetailActivity.startActivity(mActivity, SubscribeDetailActivity.subscribed);
     }
 
     @OnClick(R.id.information_lin)
     void goImage(View view) {
-
+        SubscribeDetailActivity.startActivity(mActivity, SubscribeDetailActivity.unSubscribe);
     }
 
 }
