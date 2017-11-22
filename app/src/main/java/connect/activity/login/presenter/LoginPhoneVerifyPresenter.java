@@ -8,7 +8,6 @@ import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.LoginPhoneVerifyContract;
 import connect.database.SharedPreferenceUser;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ExCountDownTimer;
 import connect.utils.ProgressUtil;
@@ -107,7 +106,11 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
             public void onError(Connect.HttpNotSignResponse response) {
                 ProgressUtil.getInstance().dismissProgress();
                 if(response.getCode() == 2416) {
-                    ToastEUtil.makeText(mView.getActivity(), R.string.Login_Verification_code_error,ToastEUtil.TOAST_STATUS_FAILE).show();
+                    ToastEUtil.makeText(mView.getActivity(), R.string.Login_Verification_code_error, ToastEUtil.TOAST_STATUS_FAILE).show();
+                }else if(response.getCode() == 2404){
+                    ToastEUtil.makeText(mView.getActivity(), R.string.Wallet_No_match_user, ToastEUtil.TOAST_STATUS_FAILE).show();
+                }else{
+                    ToastEUtil.makeText(mView.getActivity(), response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
                 }
             }
         });

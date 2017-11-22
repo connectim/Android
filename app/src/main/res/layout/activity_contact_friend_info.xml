@@ -83,8 +83,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <View style="@style/BaseViewLine.d1d5da"/>
-
             <LinearLayout
                 android:id="@+id/id_lin"
                 android:layout_width="match_parent"
@@ -134,7 +132,6 @@
                     android:layout_marginLeft="@dimen/dp_7"
                     android:layout_marginRight="@dimen/dp_7"
                     android:layout_toLeftOf="@+id/number_right"
-                    android:layout_toRightOf="@+id/number_left"
                     android:ellipsize="end"
                     android:gravity="right"
                     android:lines="1"

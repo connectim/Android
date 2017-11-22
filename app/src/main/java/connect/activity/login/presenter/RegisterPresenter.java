@@ -121,6 +121,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
 
             @Override
             public void onError(Connect.HttpResponse response) {
+                ProgressUtil.getInstance().dismissProgress();
                 if (response.getCode() == 2101) {
                     Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
                 } else if(response.getCode() == 2102){
@@ -128,7 +129,6 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                 } else {
                     Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
                 }
-                ProgressUtil.getInstance().dismissProgress();
             }
         });
     }

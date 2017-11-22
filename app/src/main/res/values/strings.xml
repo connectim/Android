@@ -181,6 +181,15 @@
     <string name="Link_Find_me_by_phone_number">Find me by phone number</string>
     <string name="Link_Friend_Recommendation">Friend Recommendation</string>
     <string name="Link_From_Contact_Match">From Contact Match</string>
+
+    <string name="Link_Subscribe_to_the_center">Subscribe to the center</string>
+    <string name="Link_Subscribe">Subscribe</string>
+    <string name="Link_Unsubscribe">Unsubscribe</string>
+    <string name="Link_Have_subscribed_to">Have subscribed to</string>
+    <string name="Link_Not_to_subscribe_to">Not to subscribe to</string>
+    <string name="Link_To_view_the_message">To view the message</string>
+    <string name="Link_Function_is_introduced">Function is introduced</string>
+
     <string name="Link_From_Group">From Group</string>
     <string name="Link_From_May_Know">From people you may know</string>
     <string name="Link_From_QR_Code">From QR Code</string>

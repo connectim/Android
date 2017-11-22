@@ -188,6 +188,15 @@
     <string name="Link_Find_me_by_phone_number">Найти меня по номеру телефона</string>
     <string name="Link_Friend_Recommendation">Рекомендация друга</string>
     <string name="Link_From_Contact_Match">Через совпадения записей контактов</string>
+
+    <string name="Link_Subscribe_to_the_center">Центр подписки</string>
+    <string name="Link_Subscribe">подписка</string>
+    <string name="Link_Unsubscribe">Удали из списка</string>
+    <string name="Link_Have_subscribed_to">Уже подписки</string>
+    <string name="Link_Not_to_subscribe_to">Не подписки</string>
+    <string name="Link_To_view_the_message">Просмотр сообщений</string>
+    <string name="Link_Function_is_introduced">О возможности</string>
+
     <string name="Link_From_Group">От группы</string>
     <string name="Link_From_May_Know">От людей, которых возможно знаете</string>
     <string name="Link_From_QR_Code">Через QR-код</string>
@@ -626,6 +635,7 @@
     </string>
     <string name="app_name">Connect</string>
     <string name="app_name_im">CONNECT.IM</string>
+    <string name="title_activity_group_create">GroupCreateActivity</string>
     <string name="Chat_Other_Part"> друг друга </string>
     <string name="Chat_set_Create_New_Group">создать группу</string>
     <string name="Chat_set_Group_Chat_Encrypt_Open"> после открытия  ,  группы  по двухточечной  шифрования передачи  сообщений </string>

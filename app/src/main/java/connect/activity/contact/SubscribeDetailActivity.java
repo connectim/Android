@@ -13,10 +13,17 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.contact.bean.RssBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
+import connect.utils.ToastEUtil;
+import connect.utils.UriUtil;
+import connect.utils.glide.GlideUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
 public class SubscribeDetailActivity extends BaseActivity {
 
@@ -32,12 +39,11 @@ public class SubscribeDetailActivity extends BaseActivity {
     Button button;
 
     private SubscribeDetailActivity mActivity;
-    public static final int unSubscribe = 1;
-    public static final int subscribed = 2;
+    private RssBean rssBean;
 
-    public static void startActivity(Activity activity, int status) {
+    public static void startActivity(Activity activity, RssBean rssBean) {
         Bundle bundle = new Bundle();
-        bundle.putInt("status", status);
+        bundle.putSerializable("rss", rssBean);
         ActivityUtil.next(activity, SubscribeDetailActivity.class, bundle);
     }
 
@@ -54,18 +60,21 @@ public class SubscribeDetailActivity extends BaseActivity {
         mActivity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setTitle(null, R.string.Link_Profile);
+        toolbar.setTitle(null, R.string.Wallet_Detail);
         toolbar.setRightTextEnable(false);
 
-        Bundle bundle = getIntent().getExtras();
-        int status = bundle.getInt("status");
-        if(status == unSubscribe){
-            button.setText("订阅");
-        }else if(status == subscribed){
-            button.setText("进入消息");
+        rssBean = (RssBean)getIntent().getExtras().getSerializable("rss");
+
+        if(rssBean.isSubRss()){
+            button.setText(R.string.Link_To_view_the_message);
             toolbar.setRightImg(R.mipmap.menu_white);
             toolbar.setRightTextEnable(true);
+        } else {
+            button.setText(R.string.Link_Subscribe);
         }
+        subscribeDescribeTv.setText(rssBean.getDesc());
+        subscribeNameTv.setText(rssBean.getTitle());
+        GlideUtil.loadAvatarRound(subscribeImage, rssBean.getIcon());
     }
 
     @OnClick(R.id.left_img)
@@ -76,13 +85,13 @@ public class SubscribeDetailActivity extends BaseActivity {
     @OnClick(R.id.right_lin)
     void otherLoginClick(View view) {
         ArrayList<String> list = new ArrayList<>();
-        list.add("取消订阅");
+        list.add(mActivity.getString(R.string.Link_Unsubscribe));
         DialogUtil.showBottomView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
             @Override
             public void confirm(int position) {
                 switch (position) {
                     case 0:
-
+                        setUnSubscribe(false);
                         break;
                     default:
                         break;
@@ -93,7 +102,29 @@ public class SubscribeDetailActivity extends BaseActivity {
 
     @OnClick(R.id.button)
     void goButton(View view) {
+        if(rssBean.isSubRss()){
+            // 进去聊天消息界面
+        }else{
+            setUnSubscribe(true);
+        }
+    }
 
+    private void setUnSubscribe(boolean isSubscribe){
+        Connect.RSS rss = Connect.RSS.newBuilder()
+                .setSubRss(isSubscribe)
+                .setRssId(rssBean.getRssId())
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V2_RSS_FOLLOW, rss, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                ActivityUtil.goBack(mActivity);
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
+            }
+        });
     }
 
 }
