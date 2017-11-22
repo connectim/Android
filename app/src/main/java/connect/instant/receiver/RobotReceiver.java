@@ -1,16 +1,25 @@
 package connect.instant.receiver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.ApplyGroupBean;
 import connect.activity.chat.bean.RecExtBean;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamManager;
+import connect.database.green.DaoHelper.SubscribeConversationHelper;
+import connect.database.green.DaoHelper.SubscribeDetailHelper;
+import connect.database.green.bean.SubscribeDetailEntity;
 import connect.instant.model.CRobotChat;
+import connect.instant.model.CSubscriberChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
+import connect.utils.StringUtil;
 import instant.bean.ChatMsgEntity;
 import instant.parser.inter.RobotListener;
 import instant.sender.model.RobotChat;
@@ -154,5 +163,75 @@ public class RobotReceiver implements RobotListener {
         String content = chatMsgEntity.showContent();
         CRobotChat.getInstance().updateRoomMsg(null, content, chatMsgEntity.getCreatetime(), -1, 1);
         NotificationBar.notificationBar.noticeBarMsg(robotname, 2, content);
+    }
+
+    @Override
+    public void subscribePull(Connect.RSSPush rssPush) throws Exception {
+        List<SubscribeDetailEntity> chatMsgEntities = new ArrayList<>();
+        switch (rssPush.getCategory()) {
+            case 1://rss
+                Connect.RSSMessage lastRssMessage = null;
+                Connect.RSSMessageList rssMessageList = Connect.RSSMessageList.parseFrom(rssPush.getData());
+                for (Connect.RSSMessage rssMessage : rssMessageList.getMessagesList()) {
+                    SubscribeDetailEntity detailEntity = new SubscribeDetailEntity();
+                    detailEntity.setMessageId(rssMessage.getId());
+                    detailEntity.setRssId(rssPush.getRssId());
+                    detailEntity.setCategory(1);
+                    detailEntity.setContent(StringUtil.bytesToHexString(rssMessage.toByteArray()));
+                    chatMsgEntities.add(detailEntity);
+
+                    lastRssMessage = rssMessage;
+                }
+                if (lastRssMessage != null) {
+                    SubscribeConversationHelper.subscribeConversationHelper.updataConversationEntity(
+                            rssPush.getRssId(),
+                            lastRssMessage.getTitle(),
+                            lastRssMessage.getTime(),
+                            1);
+
+                    CSubscriberChat.cSubscriberChat.updateConversationListEntity(
+                            rssPush.getRssId(),
+                            "",
+                            "",
+                            lastRssMessage.getTitle(),
+                            lastRssMessage.getTime(),
+                            1);
+                    CSubscriberChat.cSubscriberChat.updateRoomMsg("", lastRssMessage.getTitle(), lastRssMessage.getTime(), -1, 1);
+                }
+                break;
+            case 2://article
+                Connect.Article lastArtcle = null;
+                Connect.ArticleList articleList = Connect.ArticleList.parseFrom(rssPush.getData());
+                for (Connect.Article article : articleList.getMessagesList()) {
+                    SubscribeDetailEntity detailEntity = new SubscribeDetailEntity();
+                    detailEntity.setMessageId(article.getId());
+                    detailEntity.setRssId(rssPush.getRssId());
+                    detailEntity.setCategory(2);
+                    detailEntity.setContent(StringUtil.bytesToHexString(article.toByteArray()));
+                    chatMsgEntities.add(detailEntity);
+
+                    lastArtcle = article;
+                }
+                if (lastArtcle != null) {
+                    SubscribeConversationHelper.subscribeConversationHelper.updataConversationEntity(
+                            rssPush.getRssId(),
+                            lastArtcle.getTitle(),
+                            lastArtcle.getTime(),
+                            1);
+
+                    CSubscriberChat.cSubscriberChat.updateConversationListEntity(
+                            rssPush.getRssId(),
+                            "",
+                            "",
+                            lastArtcle.getTitle(),
+                            lastArtcle.getTime(),
+                            1);
+                    CSubscriberChat.cSubscriberChat.updateRoomMsg("", lastArtcle.getTitle(), lastArtcle.getTime(), -1, 1);
+                }
+                break;
+        }
+
+        SubscribeDetailHelper.subscribeDetailHelper.insertSubscribeEntities(chatMsgEntities);
+        ConversationAction.conversationAction.sendEventDelay(ConversationAction.ConverType.LOAD_UNREAD);
     }
 }

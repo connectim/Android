@@ -1,17 +1,16 @@
 package connect.instant.model;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import java.util.List;
 
-import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.database.green.DaoHelper.ConversionHelper;
+import connect.database.green.DaoHelper.SubscribeConversationHelper;
 import connect.database.green.bean.ConversionEntity;
+import connect.database.green.bean.SubscribeConversationEntity;
 import connect.instant.inter.ConversationListener;
-import connect.ui.activity.R;
 import instant.sender.model.SubscriberChat;
 
 /**
@@ -46,11 +45,10 @@ public class CSubscriberChat extends SubscriberChat implements ConversationListe
             return;
         }
 
-        Context context = BaseApplication.getInstance().getBaseContext();
         List<RoomAttrBean> roomEntities = ConversionHelper.getInstance().loadRoomEntities(chatKey());
         if (roomEntities == null || roomEntities.size() == 0) {
             ConversionEntity conversionEntity = new ConversionEntity();
-            conversionEntity.setIdentifier(context.getString(R.string.app_name));
+            conversionEntity.setIdentifier(chatKey());
             conversionEntity.setName(nickName());
             conversionEntity.setAvatar(headImg());
             conversionEntity.setType(chatType());
@@ -63,7 +61,7 @@ public class CSubscriberChat extends SubscriberChat implements ConversationListe
         } else {
             for (RoomAttrBean attrBean : roomEntities) {
                 ConversionHelper.getInstance().updateRoomEntity(
-                        context.getString(R.string.app_name),
+                        chatKey(),
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
@@ -75,6 +73,28 @@ public class CSubscriberChat extends SubscriberChat implements ConversationListe
         }
         if (broad) {
             ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
+        }
+    }
+
+    public void updateConversationListEntity(long rssId, String icon, String title, String showText, long msgtime, int newmsg) {
+        updateRoomMsg("", "", msgtime, -1);
+
+        List<SubscribeConversationEntity> conversationEntities = SubscribeConversationHelper.subscribeConversationHelper.loadSubscribeConversationEntities(rssId);
+        if (conversationEntities == null || conversationEntities.size() == 0) {
+            SubscribeConversationEntity conversationEntity = new SubscribeConversationEntity();
+            conversationEntity.setRssId(rssId);
+            if (!TextUtils.isEmpty(title)) {
+                conversationEntity.setTitle(title);
+            }
+            if (!TextUtils.isEmpty(icon)) {
+                conversationEntity.setIcon(icon);
+            }
+            conversationEntity.setContent(showText);
+            conversationEntity.setTime(msgtime);
+            conversationEntity.setUnRead(1);
+            SubscribeConversationHelper.subscribeConversationHelper.insertConversationEntity(conversationEntity);
+        } else {
+            SubscribeConversationHelper.subscribeConversationHelper.updataConversationEntity(rssId, showText, msgtime, 1);
         }
     }
 }

@@ -595,4 +595,5 @@
     <string name="Chat_View_Full_Text">View full text</string>
     <string name="title_activity_subscribe_detail">SubscribeDetailActivity</string>
     <string name="Chat_Enter_Subscribe">Enter subscriber Account</string>
+    <string name="Chat_Subscribe_Success">[Subscribe Success]</string>
 </resources>

@@ -14,8 +14,12 @@ import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.SubscribeAdapter;
 import connect.activity.contact.bean.RssBean;
 import connect.activity.home.view.LineDecoration;
+import connect.database.green.DaoHelper.SubscribeConversationHelper;
+import connect.database.green.bean.SubscribeConversationEntity;
+import connect.instant.model.CSubscriberChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.TimeUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -89,6 +93,21 @@ public class SubscribeActivity extends BaseActivity {
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.RSSList rssList = Connect.RSSList.parseFrom(structData.getPlainData());
                     adapter.setNotify(rssList.getRssListList());
+
+                    // 更新订阅会话列表
+                    for (Connect.RSS rss : rssList.getRssListList()) {
+                        if (rss.getSubRss()) {
+                            CSubscriberChat.cSubscriberChat.updateConversationListEntity(
+                                    rss.getRssId(),
+                                    rss.getIcon(),
+                                    rss.getTitle(),
+                                    getString(R.string.Chat_Subscribe_Success),
+                                    TimeUtil.getCurrentTimeInLong(),
+                                    1);
+                        } else {
+                            SubscribeConversationHelper.subscribeConversationHelper.removeConversationEntity(rss.getRssId());
+                        }
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }

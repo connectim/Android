@@ -38,6 +38,7 @@ public enum SocketACK {
     GROUP_INVITE(new byte[]{0x05, 0x03}),//Invited into the group of
     GROUP_CHAT(new byte[]{0x05, 0x04}),//Group chat
     MSG_UNTOUCH(new byte[]{0x05, 0x05}),//Message inaccessible
+    CHAT_SUBSCRIBE(new byte[]{0x05, 0x06}),//notice
     CHAT_NOTICE(new byte[]{0x05, 0x09});//notice
 
     byte[] order;

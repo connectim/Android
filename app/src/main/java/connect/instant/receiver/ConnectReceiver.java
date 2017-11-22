@@ -66,7 +66,7 @@ public class ConnectReceiver implements ConnectListener {
         CRobotChat.getInstance().updateRoomMsg(null, msgEntity.showContent(), msgEntity.getCreatetime(), -1, 1);
 
         // subscriber
-        CSubscriberChat.cSubscriberChat.updateRoomMsg("", "cece", TimeUtil.getCurrentTimeInLong());
+        CSubscriberChat.cSubscriberChat.updateRoomMsg("", "cece", TimeUtil.getCurrentTimeInLong(), -1, 1);
     }
 
     @Override
