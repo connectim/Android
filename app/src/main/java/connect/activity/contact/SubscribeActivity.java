@@ -7,6 +7,9 @@ import android.view.View;
 
 import com.google.protobuf.ByteString;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -92,8 +95,9 @@ public class SubscribeActivity extends BaseActivity {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
                     Connect.RSSList rssList = Connect.RSSList.parseFrom(structData.getPlainData());
-                    adapter.setNotify(rssList.getRssListList());
 
+                    ArrayList<Connect.RSS> subscribeList = new ArrayList<>();
+                    ArrayList<Connect.RSS> unSubscribeList = new ArrayList<>();
                     // 更新订阅会话列表
                     for (Connect.RSS rss : rssList.getRssListList()) {
                         if (rss.getSubRss()) {
@@ -104,10 +108,16 @@ public class SubscribeActivity extends BaseActivity {
                                     getString(R.string.Chat_Subscribe_Success),
                                     TimeUtil.getCurrentTimeInLong(),
                                     1);
+                            subscribeList.add(rss);
                         } else {
                             SubscribeConversationHelper.subscribeConversationHelper.removeConversationEntity(rss.getRssId());
+                            unSubscribeList.add(rss);
                         }
                     }
+                    ArrayList<Connect.RSS> list = new ArrayList<>();
+                    list.addAll(subscribeList);
+                    list.addAll(unSubscribeList);
+                    adapter.setNotify(list);
                 }catch (Exception e){
                     e.printStackTrace();
                 }

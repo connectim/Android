@@ -1,5 +1,6 @@
 package connect.activity.home.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -15,6 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
+import connect.activity.contact.SubscribeMarketActivity;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.AboutActivity;
@@ -129,7 +131,8 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.llAbout)
     void intoAbout(View view) {
-        AboutActivity.startActivity(mActivity);
+        // AboutActivity.startActivity(mActivity);
+        ActivityUtil.next(mActivity, SubscribeMarketActivity.class);
     }
 
     @OnClick(R.id.address_scan_img)

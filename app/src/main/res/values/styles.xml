@@ -157,4 +157,21 @@
         <item name="android:textSize">@dimen/sp_12</item>
     </style>
 
+    <style name="TabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabMaxWidth">@dimen/dp_264</item>
+        <item name="tabIndicatorColor">@color/color_00c400</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">?attr/selectableItemBackground</item>
+        <item name="tabTextAppearance">@style/TabTextAppearance</item>
+        <item name="tabSelectedTextColor">@color/color_00c400</item>
+    </style>
+
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/color_a5a7ae</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
 </resources>

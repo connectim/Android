@@ -87,6 +87,7 @@
     <dimen name="dp_300">300dp</dimen>
     <dimen name="dp_350">350dp</dimen>
     <dimen name="dp_400">400dp</dimen>
+    <dimen name="dp_264">264dp</dimen>
     <!-- sp -->
     <dimen name="sp_6">6sp</dimen>
     <dimen name="sp_8">8sp</dimen>

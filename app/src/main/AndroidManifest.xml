@@ -106,6 +106,9 @@
             android:name="connect.activity.contact.SubscribeActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name="connect.activity.contact.SubscribeMarketActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name="connect.activity.contact.SubscribeDetailActivity"
             android:screenOrientation="portrait"/>
         <activity

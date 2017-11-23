@@ -87,10 +87,9 @@ public class SubscribeMessageAdapter extends RecyclerView.Adapter<SubscribeMessa
                     Connect.RSSMessage rssMessage = Connect.RSSMessage.parseFrom(content);
 
                     SubscribeRssHolder rssHolder = (SubscribeRssHolder) holder;
-                    rssHolder.showTimeTv.setText(TimeUtil.getTime(rssMessage.getTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR));
-                    rssHolder.titleTv.setText(rssMessage.getTitle());
-                    rssHolder.titleTv.setVisibility(TextUtils.isEmpty(rssMessage.getTitle()) ? View.GONE : View.VISIBLE);
-
+                    rssHolder.showTimeTv.setText(activity.getString(R.string.Chat_Time) + ":" +
+                            TimeUtil.getTime(rssMessage.getTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR));
+                    rssHolder.timeTv.setText(TimeUtil.getTime(rssMessage.getTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR));
                     SpannableStringBuilder builder = new SpannableStringBuilder();
                     String contentTxt =TextUtils.isEmpty(rssMessage.getDetail())?"":rssMessage.getDetail();
                     SpannableStringBuilder stringBuilder = new SpannableStringBuilder(contentTxt);
@@ -160,13 +159,13 @@ public class SubscribeMessageAdapter extends RecyclerView.Adapter<SubscribeMessa
     static class SubscribeRssHolder extends SubscribeHolder {
 
         TextView showTimeTv;
-        TextView titleTv;
+        TextView timeTv;
         TextView contentTv;
 
         SubscribeRssHolder(View view) {
             super(view);
-            showTimeTv = (TextView) view.findViewById(R.id.showtime);
-            titleTv = (TextView) view.findViewById(R.id.txt1);
+            timeTv = (TextView) view.findViewById(R.id.showtime);
+            showTimeTv = (TextView) view.findViewById(R.id.txt3);
             contentTv = (TextView) view.findViewById(R.id.txt2);
         }
     }

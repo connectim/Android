@@ -64,7 +64,7 @@ public class SubscribeConversationHelper  extends BaseDao {
     /********************************* Delete ***********************************/
     public void removeConversationEntity(long rssId) {
         QueryBuilder<SubscribeConversationEntity> qb = subscribeConversationEntityDao.queryBuilder();
-        DeleteQuery<SubscribeConversationEntity> bd = qb.where(SubscribeEntityDao.Properties.RssId.eq(rssId))
+        DeleteQuery<SubscribeConversationEntity> bd = qb.where(SubscribeConversationEntityDao.Properties.RssId.eq(rssId))
                 .buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }

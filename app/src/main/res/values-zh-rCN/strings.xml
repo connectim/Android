@@ -32,6 +32,8 @@
     <string name="Chat_system_luckypackage_have_been_frozen">该红包被系统暂停</string>
     <string name="Chat_the_day_before_yesterday_time">前天 %s</string>
     <string name="Chat_Address_already_exists">地址已经存在</string>
+    <string name="Chat_The_main_content">主要内容</string>
+    <string name="Chat_Time">时间</string>
     <string name="Chat_Album">相册</string>
     <string name="Chat_Audio">[语音]</string>
     <string name="Chat_Best_luck">手气最佳</string>

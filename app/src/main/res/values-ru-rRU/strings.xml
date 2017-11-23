@@ -41,6 +41,8 @@
     </string>
     <string name="Chat_the_day_before_yesterday_time">позавчера %s</string>
     <string name="Chat_Address_already_exists">Адрес уже существует</string>
+    <string name="Chat_The_main_content">Основное содержание</string>
+    <string name="Chat_Time">время</string>
     <string name="Chat_Album">Фотоальбом</string>
     <string name="Chat_Audio">[Аудио]</string>
     <string name="Chat_Best_luck">Хорошее везение</string>
