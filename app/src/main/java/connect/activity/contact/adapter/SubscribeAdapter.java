@@ -36,9 +36,9 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.View
     @Override
     public void onBindViewHolder(SubscribeAdapter.ViewHolder holder, final int position) {
         final Connect.RSS rss = listData.get(position);
+
         if(position == 0 || (listData.get(position-1).getSubRss()^rss.getSubRss())){
             holder.topTv.setVisibility(View.VISIBLE);
-            holder.lineView.setVisibility(View.GONE);
             if(rss.getSubRss()){
                 holder.topTv.setText(R.string.Link_Have_subscribed_to);
             }else{
@@ -46,8 +46,8 @@ public class SubscribeAdapter extends RecyclerView.Adapter<SubscribeAdapter.View
             }
         }else{
             holder.topTv.setVisibility(View.GONE);
-            holder.lineView.setVisibility(View.VISIBLE);
         }
+        holder.lineView.setVisibility(View.GONE);
         GlideUtil.loadAvatarRound(holder.avatar, rss.getIcon());
         holder.name.setText(rss.getTitle());
         holder.contentLayout.setOnClickListener(new View.OnClickListener() {

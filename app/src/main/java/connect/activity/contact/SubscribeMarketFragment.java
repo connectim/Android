@@ -13,15 +13,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.protobuf.ByteString;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.contact.adapter.RecommendAdapter;
+import connect.activity.contact.adapter.SubscribeMarketCapAdapter;
 import connect.activity.contact.adapter.SubscribeMarketItemAdapter;
 import connect.activity.home.view.LineDecoration;
 import connect.ui.activity.R;
+import connect.utils.UriUtil;
+import connect.utils.cryption.DecryptionUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
+import protos.Connect;
 
 /**
  * Created by Administrator on 2017/11/23 0023.
@@ -36,17 +44,17 @@ public class SubscribeMarketFragment extends Fragment {
     SwipeRefreshLayout refreshview;
 
     private Activity mActivity;
-    private String name;
     private SubscribeMarketItemAdapter adapter;
+    private Connect.Exchange exchange;
+    private SubscribeMarketCapAdapter adapterCap;
 
-    public static SubscribeMarketFragment newInstance(String name) {
+    public static SubscribeMarketFragment newInstance(Connect.Exchange data) {
         SubscribeMarketFragment fragment = new SubscribeMarketFragment();
         Bundle args = new Bundle();
-        args.putSerializable("data", name);
+        args.putSerializable("data", data);
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Nullable
     @Override
@@ -60,7 +68,7 @@ public class SubscribeMarketFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getArguments() != null) {
-            name = (String) getArguments().getSerializable("data");
+            exchange = (Connect.Exchange) getArguments().getSerializable("data");
         }
         this.mActivity = getActivity();
         initListView();
@@ -73,24 +81,72 @@ public class SubscribeMarketFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.addItemDecoration(new LineDecoration(mActivity));
-        adapter = new SubscribeMarketItemAdapter(mActivity);
-        recyclerview.setAdapter(adapter);
+        if(exchange.getName().equals("0")){
+            adapterCap = new SubscribeMarketCapAdapter(mActivity);
+            recyclerview.setAdapter(adapterCap);
+            getCapitalizations();
+        }else{
+            adapter = new SubscribeMarketItemAdapter(mActivity);
+            recyclerview.setAdapter(adapter);
+            getMarketTicker(exchange.getIdentifier());
+        }
 
-        ArrayList<String> list = new ArrayList<>();
-        list.add(name + "1");
-        list.add(name + "2");
-        list.add(name + "3");
-        list.add(name + "4");
-        list.add(name + "5");
-        adapter.setNotify(list);
     }
 
     SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
         @Override
         public void onRefresh() {
-
+            getMarketTicker(exchange.getIdentifier());
         }
     };
+
+    private void getCapitalizations(){
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V2_MARKET_CAPITALIZATIONS, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                refreshview.setRefreshing(false);
+                try{
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.Capitalizations  capitalizations = Connect.Capitalizations.parseFrom(structData.getPlainData());
+                    List<Connect.Capitalization> list = capitalizations.getListList();
+                    adapterCap.setNotify(list);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                refreshview.setRefreshing(false);
+            }
+        });
+    }
+
+    private void getMarketTicker(String id){
+        String url = String.format(UriUtil.CONNECT_V2_MARKET_ID, id);
+        OkHttpUtil.getInstance().postEncrySelf(url, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                if(refreshview != null)
+                    refreshview.setRefreshing(false);
+                try{
+                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.Tickers tickers = Connect.Tickers.parseFrom(structData.getPlainData());
+                    List<Connect.Ticker> list = tickers.getListList();
+                    adapter.setNotify(list);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                refreshview.setRefreshing(false);
+            }
+        });
+    }
 
     @Override
     public void onDestroyView() {

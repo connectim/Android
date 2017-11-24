@@ -29,13 +29,15 @@
     <TextView
         android:id="@+id/gains_tv"
         style="@style/BaseTextStyle.16"
+        android:layout_width="@dimen/dp_80"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:gravity="center"
         android:textColor="@color/color_ffffff"
         android:paddingBottom="@dimen/dp_5"
         android:paddingTop="@dimen/dp_5"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
         android:text="+ 20%"
         android:background="@drawable/shape_stroke_green"/>
 

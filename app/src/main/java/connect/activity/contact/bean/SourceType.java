@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Created by Administrator on 2016/12/28.
  */
 public enum SourceType implements Serializable {
-    UNKOWN(0, R.string.Link_From_Unknow),
+    UNKOWN(0, R.string.Link_From_Contact_Match),
     CONTACT(1,R.string.Link_From_Contact_Match),
     QECODE(2,R.string.Link_From_QR_Code),
     TRANSACTION(3,R.string.Link_From_Transaction),

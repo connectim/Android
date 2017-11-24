@@ -152,6 +152,7 @@
     <string name="Common_OK">Решено</string>
     <string name="ErrorCode_Request_Error">Ошибка запроса</string>
     <string name="Link_Friend">друзья</string>
+    <string name="Link_Market_value">рыночная стоимость</string>
     <string name="Link_From">От</string>
     <string name="Link_Open_in_Browser">Открыть в браузере</string>
     <string name="Link_Unable_to_access_permissom">Нет разрешения на доступ. Пожалуйста, включите
@@ -198,6 +199,7 @@
     <string name="Link_Not_to_subscribe_to">Не подписки</string>
     <string name="Link_To_view_the_message">Просмотр сообщений</string>
     <string name="Link_Function_is_introduced">О возможности</string>
+    <string name="Link_Digital_currency_quotes">цифровой валютный рынок</string>
 
     <string name="Link_From_Group">От группы</string>
     <string name="Link_From_May_Know">От людей, которых возможно знаете</string>
@@ -257,7 +259,7 @@
     <string name="Link_Send_friend_request">Отправить запрос о дружбе</string>
     <string name="Link_Send_successful">Успешно отправлено</string>
     <string name="Link_Send_to">Отправить %s</string>
-    <string name="Link_Set_Remark_and_Tag">Создать резервную копию и тег</string>
+    <string name="Link_Set_Remark_and_Tag">Настройки примечание</string>
     <string name="Link_Set_Tag">Создать тег</string>
     <string name="Link_Set_group_nicknames_only_be_in_this_group">Создать название для группы.
         Название группы можно будет увидеть только членам этой группы

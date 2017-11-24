@@ -117,12 +117,18 @@ public class SubscribeMessageAdapter extends RecyclerView.Adapter<SubscribeMessa
             case 2://Article
                 try {
                     byte[] content = StringUtil.hexStringToBytes(detailEntity.getContent());
-                    Connect.Article article = Connect.Article.parseFrom(content);
+                    final Connect.Article article = Connect.Article.parseFrom(content);
 
                     SubscribeArtcleHolder artcleHolder = (SubscribeArtcleHolder) holder;
                     artcleHolder.showTimeTv.setText(TimeUtil.getTime(article.getTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR));
                     artcleHolder.titleTv.setText(article.getTitle());
                     GlideUtil.loadImage(artcleHolder.roundimg, article.getImage());
+                    artcleHolder.moreTv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            OuterWebsiteActivity.startActivity(activity, article.getArticleUrl());
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -144,6 +150,7 @@ public class SubscribeMessageAdapter extends RecyclerView.Adapter<SubscribeMessa
 
     static class SubscribeArtcleHolder extends SubscribeHolder {
 
+        TextView moreTv;
         TextView showTimeTv;
         TextView titleTv;
         ImageView roundimg;
@@ -152,7 +159,8 @@ public class SubscribeMessageAdapter extends RecyclerView.Adapter<SubscribeMessa
             super(view);
             showTimeTv = (TextView) view.findViewById(R.id.showtime);
             titleTv = (TextView) view.findViewById(R.id.txt1);
-            roundimg = (ImageView) view.findViewById(R.id.roundimg);
+            roundimg = (ImageView) view.findViewById(R.id.roundimg1);
+            moreTv = (TextView) view.findViewById(R.id.txt4);
         }
     }
 

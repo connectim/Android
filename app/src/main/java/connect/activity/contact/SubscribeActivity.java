@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.protobuf.ByteString;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -18,7 +18,6 @@ import connect.activity.contact.adapter.SubscribeAdapter;
 import connect.activity.contact.bean.RssBean;
 import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.SubscribeConversationHelper;
-import connect.database.green.bean.SubscribeConversationEntity;
 import connect.instant.model.CSubscriberChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -40,6 +39,8 @@ public class SubscribeActivity extends BaseActivity {
     TopToolBar toolbar;
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
+    @Bind(R.id.quotes_layout)
+    LinearLayout quotesLayout;
 
     private SubscribeActivity mActivity;
     private SubscribeAdapter adapter;
@@ -79,7 +80,12 @@ public class SubscribeActivity extends BaseActivity {
         ActivityUtil.goBack(mActivity);
     }
 
-    SubscribeAdapter.OnItemListener onItemListener = new SubscribeAdapter.OnItemListener(){
+    @OnClick(R.id.quotes_layout)
+    void goQuotesLayout(View view) {
+        ActivityUtil.next(mActivity, SubscribeMarketActivity.class);
+    }
+
+    SubscribeAdapter.OnItemListener onItemListener = new SubscribeAdapter.OnItemListener() {
         @Override
         public void itemClick(int position, Connect.RSS entity) {
             RssBean rssBean = new RssBean(entity.getRssId(), entity.getIcon(), entity.getTitle(), entity.getDesc(), entity.getSubRss());
@@ -87,7 +93,7 @@ public class SubscribeActivity extends BaseActivity {
         }
     };
 
-    private void getSubscribeList(){
+    private void getSubscribeList() {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V2_RSS, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -98,7 +104,6 @@ public class SubscribeActivity extends BaseActivity {
 
                     ArrayList<Connect.RSS> subscribeList = new ArrayList<>();
                     ArrayList<Connect.RSS> unSubscribeList = new ArrayList<>();
-                    // 更新订阅会话列表
                     for (Connect.RSS rss : rssList.getRssListList()) {
                         if (rss.getSubRss()) {
                             CSubscriberChat.cSubscriberChat.updateConversationListEntity(
@@ -118,13 +123,14 @@ public class SubscribeActivity extends BaseActivity {
                     list.addAll(subscribeList);
                     list.addAll(unSubscribeList);
                     adapter.setNotify(list);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {}
+            public void onError(Connect.HttpResponse response) {
+            }
         });
     }
 

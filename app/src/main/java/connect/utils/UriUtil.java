@@ -187,6 +187,9 @@ public class UriUtil {
     public static String CONNEXT_V1_USERS_DISINCLINE = "/connect/v1/users/disincline";
     public static String CONNECT_V2_RSS = "/connect/v2/rss";
     public static String CONNECT_V2_RSS_FOLLOW = "/connect/v2/rss/follow";
+    public static String CONNECT_V2_MARKET_EXCHANGE = "/connect/v2/market/exchange";
+    public static String CONNECT_V2_MARKET_ID= "/connect/v2/market/exchange/%s";
+    public static String CONNECT_V2_MARKET_CAPITALIZATIONS = "/connect/v2/market/capitalizations";
 
     /**======================================================================================
      *                                      setting group

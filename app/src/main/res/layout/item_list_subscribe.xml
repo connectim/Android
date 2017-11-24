@@ -7,11 +7,10 @@
 
     <ImageView
         android:id="@id/roundimg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:scaleType="fitXY"/>
+        android:layout_marginLeft="@dimen/dp_12"/>
 
     <LinearLayout
         android:layout_width="match_parent"

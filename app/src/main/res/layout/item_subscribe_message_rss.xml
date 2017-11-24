@@ -14,10 +14,7 @@
         android:background="@drawable/shape_stroke_20_ffffff"
         android:clickable="true"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/dp_5"
-        android:paddingLeft="@dimen/dp_6"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_5">
+        android:padding="@dimen/dp_10">
 
         <TextView
             android:id="@id/txt1"

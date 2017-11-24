@@ -26,14 +26,16 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/color_black"
-            android:textSize="@dimen/sp_14"/>
+            android:textSize="@dimen/sp_14"
+            android:text="dasdasdas"/>
 
         <ImageView
             android:id="@id/roundimg1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_150"
             android:layout_marginTop="@dimen/dp_5"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@mipmap/connect_logo"/>
 
         <TextView
             android:id="@id/txt4"
@@ -42,6 +44,6 @@
             android:layout_marginTop="@dimen/dp_5"
             android:text="@string/Chat_View_Full_Text"
             android:textColor="@color/color_858998"
-            android:textSize="@dimen/sp_12"/>
+            android:textSize="@dimen/sp_12" />
     </LinearLayout>
 </RelativeLayout>

@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.List;
+
 import connect.ui.activity.R;
+import protos.Connect;
 
 public class SubscribeMarketItemAdapter extends RecyclerView.Adapter<SubscribeMarketItemAdapter.ViewHolder> {
 
     private Activity activity;
-    private ArrayList<String> listData = new ArrayList<>();
+    private ArrayList<Connect.Ticker> listData = new ArrayList<>();
 
     public SubscribeMarketItemAdapter(Activity activity) {
         this.activity = activity;
@@ -27,14 +30,15 @@ public class SubscribeMarketItemAdapter extends RecyclerView.Adapter<SubscribeMa
 
     @Override
     public void onBindViewHolder(SubscribeMarketItemAdapter.ViewHolder holder, int position) {
-        String name = listData.get(position);
-        holder.priceTv.setText(name);
-
-        if(position == 2 || position == 4){
-            holder.gainsTv.setText("+ 20%" );
+        Connect.Ticker ticker = listData.get(position);
+        holder.nameTv.setText(ticker.getSymbol());
+        holder.volumeTv.setText(ticker.getVolume() + "(24h)");
+        holder.priceTv.setText(ticker.getLast());
+        if(ticker.getChangePercentage().contains("-")){
+            holder.gainsTv.setText(ticker.getChangePercentage());
             holder.gainsTv.setBackground(activity.getResources().getDrawable((R.drawable.shape_stroke_red)));
         }else{
-            holder.gainsTv.setText("- 20%" );
+            holder.gainsTv.setText(ticker.getChangePercentage());
             holder.gainsTv.setBackground(activity.getResources().getDrawable(R.drawable.shape_stroke_green));
         }
 
@@ -61,7 +65,7 @@ public class SubscribeMarketItemAdapter extends RecyclerView.Adapter<SubscribeMa
         }
     }
 
-    public void setNotify(ArrayList<String> list){
+    public void setNotify(List<Connect.Ticker> list){
         listData.clear();
         listData.addAll(list);
         notifyDataSetChanged();

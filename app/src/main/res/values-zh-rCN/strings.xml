@@ -129,6 +129,7 @@
     <string name="Common_OK">确定</string>
     <string name="ErrorCode_Request_Error">请求错误</string>
     <string name="Link_Friend">好友</string>
+    <string name="Link_Market_value">市值</string>
     <string name="Link_From">来自</string>
     <string name="Link_Open_in_Browser">在浏览器中打开</string>
     <string name="Link_Unable_to_access_permissom">无法获取权限,请在手机应用权限管理中打开权限</string>
@@ -168,6 +169,7 @@
     <string name="Link_Not_to_subscribe_to">未订阅</string>
     <string name="Link_To_view_the_message">查看消息</string>
     <string name="Link_Function_is_introduced">功能介绍</string>
+    <string name="Link_Digital_currency_quotes">数字货币行情</string>
 
     <string name="Link_From_Group">来自于群组</string>
     <string name="Link_From_May_Know">来自可能认识的人</string>
@@ -220,7 +222,7 @@
     <string name="Link_Send_friend_request">发送好友请求</string>
     <string name="Link_Send_successful">发送成功</string>
     <string name="Link_Send_to">发送给%s</string>
-    <string name="Link_Set_Remark_and_Tag">设置备注和标签</string>
+    <string name="Link_Set_Remark_and_Tag">设置备注</string>
     <string name="Link_Set_Tag">设置标签</string>
     <string name="Link_Set_group_nicknames_only_be_in_this_group">设置一个群昵称，这个昵称只会在当前群组可见</string>
     <string name="Link_Share">分享</string>

@@ -131,8 +131,7 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.llAbout)
     void intoAbout(View view) {
-        // AboutActivity.startActivity(mActivity);
-        ActivityUtil.next(mActivity, SubscribeMarketActivity.class);
+        AboutActivity.startActivity(mActivity);
     }
 
     @OnClick(R.id.address_scan_img)
