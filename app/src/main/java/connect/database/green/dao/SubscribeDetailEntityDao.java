@@ -29,6 +29,7 @@ public class SubscribeDetailEntityDao extends AbstractDao<SubscribeDetailEntity,
         public final static Property RssId = new Property(2, long.class, "rssId", false, "RSS_ID");
         public final static Property Category = new Property(3, Integer.class, "category", false, "CATEGORY");
         public final static Property Content = new Property(4, String.class, "content", false, "CONTENT");
+        public final static Property Unread = new Property(5, int.class, "unread", false, "UNREAD");
     }
 
 
@@ -48,7 +49,8 @@ public class SubscribeDetailEntityDao extends AbstractDao<SubscribeDetailEntity,
                 "\"MESSAGE_ID\" INTEGER NOT NULL UNIQUE ," + // 1: messageId
                 "\"RSS_ID\" INTEGER NOT NULL ," + // 2: rssId
                 "\"CATEGORY\" INTEGER," + // 3: category
-                "\"CONTENT\" TEXT);"); // 4: content
+                "\"CONTENT\" TEXT," + // 4: content
+                "\"UNREAD\" INTEGER NOT NULL );"); // 5: unread
     }
 
     /** Drops the underlying database table. */
@@ -77,6 +79,7 @@ public class SubscribeDetailEntityDao extends AbstractDao<SubscribeDetailEntity,
         if (content != null) {
             stmt.bindString(5, content);
         }
+        stmt.bindLong(6, entity.getUnread());
     }
 
     @Override
@@ -99,6 +102,7 @@ public class SubscribeDetailEntityDao extends AbstractDao<SubscribeDetailEntity,
         if (content != null) {
             stmt.bindString(5, content);
         }
+        stmt.bindLong(6, entity.getUnread());
     }
 
     @Override
@@ -113,7 +117,8 @@ public class SubscribeDetailEntityDao extends AbstractDao<SubscribeDetailEntity,
             cursor.getLong(offset + 1), // messageId
             cursor.getLong(offset + 2), // rssId
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // category
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // content
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // content
+            cursor.getInt(offset + 5) // unread
         );
         return entity;
     }
@@ -125,6 +130,7 @@ public class SubscribeDetailEntityDao extends AbstractDao<SubscribeDetailEntity,
         entity.setRssId(cursor.getLong(offset + 2));
         entity.setCategory(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setContent(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setUnread(cursor.getInt(offset + 5));
      }
     
     @Override

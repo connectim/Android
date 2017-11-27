@@ -13,15 +13,13 @@ import java.util.List;
 
 import connect.activity.chat.subscribe.SubscribeListActivity;
 import connect.activity.chat.subscribe.SubscribeMessageActivity;
+import connect.database.green.DaoHelper.SubscribeDetailHelper;
 import connect.database.green.bean.SubscribeConversationEntity;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.MaterialBadgeTextView;
 
-/**
- * Created by puin on 17-11-21.
- */
 public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdapter.SubscribeHolder> {
 
     private List<SubscribeConversationEntity> subscribeEntities;
@@ -66,6 +64,12 @@ public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdap
                 SubscribeMessageActivity.startActivity(activity, rssId);
             }
         });
+        if(SubscribeDetailHelper.subscribeDetailHelper.selectLastSubscribeDetailEntityUnRead(conversationEntity.getRssId())){
+            holder.badgetv.setVisibility(View.VISIBLE);
+            holder.badgetv.setBadgeCount(1, 1);
+        }else{
+            holder.badgetv.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -75,6 +79,7 @@ public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdap
 
     static class SubscribeHolder extends RecyclerView.ViewHolder {
 
+        MaterialBadgeTextView badgetv;
         ImageView roundimg;
         MaterialBadgeTextView badgeTextView;
         TextView titleTv;
@@ -88,6 +93,7 @@ public class SubscribeListAdapter extends RecyclerView.Adapter<SubscribeListAdap
             titleTv = (TextView) view.findViewById(R.id.tv_title);
             contentTv = (TextView) view.findViewById(R.id.textView);
             timeTv = (TextView) view.findViewById(R.id.time_tv);
+            badgetv = (MaterialBadgeTextView) view.findViewById(R.id.badgetv);
         }
     }
 }

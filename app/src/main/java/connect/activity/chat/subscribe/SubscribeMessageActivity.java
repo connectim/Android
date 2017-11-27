@@ -2,6 +2,7 @@ package connect.activity.chat.subscribe;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -86,6 +87,7 @@ public class SubscribeMessageActivity extends BaseActivity implements SubscribeM
     public void loadMessageEntities() {
         List<SubscribeDetailEntity> subscribeDetailEntities = SubscribeDetailHelper.subscribeDetailHelper.selectLastSubscribeDetailEntity(rssId);
         adapter.setData(subscribeDetailEntities);
+        updateRead();
     }
 
     public void loadMoreMessageEntities() {
@@ -126,4 +128,15 @@ public class SubscribeMessageActivity extends BaseActivity implements SubscribeM
 
         }
     }
+
+    private void updateRead(){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                SubscribeDetailHelper.subscribeDetailHelper.updateSubscribeMessageRead(rssId);
+                return null;
+            }
+        }.execute();
+    }
+
 }

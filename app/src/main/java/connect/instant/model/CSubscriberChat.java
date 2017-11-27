@@ -63,11 +63,11 @@ public class CSubscriberChat extends SubscriberChat implements ConversationListe
                 ConversionHelper.getInstance().updateRoomEntity(
                         chatKey(),
                         TextUtils.isEmpty(draft) ? "" : draft,
-                        TextUtils.isEmpty(showText) ? "" : showText,
-                        (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
+                        TextUtils.isEmpty(showText) ? attrBean.getContent() : showText,
+                        (newmsg <= 0 ? 0 : 1 + attrBean.getUnread()),
                         at,
                         (isStranger ? 1 : 0),
-                        (msgtime > 0 ? 0 : msgtime)
+                        (msgtime <= 0 ? attrBean.getTimestamp() : msgtime)
                 );
             }
         }

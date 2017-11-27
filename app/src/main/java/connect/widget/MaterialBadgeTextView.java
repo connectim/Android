@@ -23,6 +23,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import connect.ui.activity.R;
+import connect.utils.system.SystemDataUtil;
+import connect.utils.system.SystemUtil;
 
 public class MaterialBadgeTextView extends TextView {
 
@@ -219,7 +221,8 @@ e.printStackTrace();
     public void setHighLightMode(boolean isDisplayInToolbarMenu){
         isHighLightMode = true;
         ViewGroup.LayoutParams params = getLayoutParams();
-        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        int width = SystemUtil.dipToPx(18);
+        params.width = width;
         params.height = params.width;
         if(isDisplayInToolbarMenu && params instanceof FrameLayout.LayoutParams){
             ((FrameLayout.LayoutParams)params).topMargin=dp2px(getContext(), 10);
@@ -227,7 +230,7 @@ e.printStackTrace();
         }
         setLayoutParams(params);
 
-        final int diameter = getWidth() - (int) (2.5 * (float) mShadowRadius);
+        final int diameter = Math.abs(width - (int) (2.5 * (float) mShadowRadius));
         OvalShadow oval = new OvalShadow(mShadowRadius, diameter);
         ShapeDrawable drawable = new ShapeDrawable(oval);
         ViewCompat.setLayerType(this, ViewCompat.LAYER_TYPE_SOFTWARE, drawable.getPaint());

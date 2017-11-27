@@ -15,9 +15,11 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.SubscribeListAdapter;
 import connect.activity.chat.subscribe.contract.SubscribeListContract;
 import connect.activity.chat.subscribe.presenter.SubscribeListPresenter;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.SubscribeConversationHelper;
 import connect.database.green.bean.SubscribeConversationEntity;
+import connect.instant.model.CSubscriberChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
@@ -38,6 +40,11 @@ public class SubscribeListActivity extends BaseActivity implements SubscribeList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         initView();
     }
 
@@ -83,5 +90,7 @@ public class SubscribeListActivity extends BaseActivity implements SubscribeList
     @Override
     protected void onStop() {
         super.onStop();
+        CSubscriberChat.cSubscriberChat.updateRoomMsg("", "", 0, -1, 0);
+        ConversationAction.conversationAction.sendEventDelay(ConversationAction.ConverType.LOAD_UNREAD);
     }
 }

@@ -6,11 +6,12 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +23,10 @@ import connect.activity.chat.view.BaseContainer;
 import connect.database.green.bean.SubscribeDetailEntity;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.glide.GlideUtil;
 import instant.utils.StringUtil;
 import protos.Connect;
 
-/**
- * Created by Administrator on 2017/11/22.
- */
 public class SubscribeMessageAdapter extends RecyclerView.Adapter<SubscribeMessageAdapter.SubscribeHolder> {
 
     private List<SubscribeDetailEntity> detailEntities = new ArrayList<>();
@@ -66,10 +63,10 @@ public class SubscribeMessageAdapter extends RecyclerView.Adapter<SubscribeMessa
     @Override
     public SubscribeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         SubscribeHolder subscribeHolder = null;
-        if (viewType == 1) {//Rss
+        if (viewType == 1) {
             BaseContainer container = new BaseContainer(activity, R.layout.item_subscribe_message_rss);
             subscribeHolder = new SubscribeRssHolder(container);
-        } else {//Article
+        } else {
             BaseContainer container = new BaseContainer(activity, R.layout.item_subscribe_message_article);
             subscribeHolder = new SubscribeArtcleHolder(container);
         }
@@ -79,13 +76,17 @@ public class SubscribeMessageAdapter extends RecyclerView.Adapter<SubscribeMessa
     @Override
     public void onBindViewHolder(SubscribeHolder holder, int position) {
         SubscribeDetailEntity detailEntity = detailEntities.get(position);
+        byte[] content = StringUtil.hexStringToBytes(detailEntity.getContent());
+        Connect.RSSMessage rssMessage = null;
+        try {
+            rssMessage = Connect.RSSMessage.parseFrom(content);
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
 
         switch (detailEntity.getCategory()) {
             case 1://Rss
                 try {
-                    byte[] content = StringUtil.hexStringToBytes(detailEntity.getContent());
-                    Connect.RSSMessage rssMessage = Connect.RSSMessage.parseFrom(content);
-
                     SubscribeRssHolder rssHolder = (SubscribeRssHolder) holder;
                     rssHolder.showTimeTv.setText(activity.getString(R.string.Chat_Time) + ":" +
                             TimeUtil.getTime(rssMessage.getTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR));
@@ -115,23 +116,17 @@ public class SubscribeMessageAdapter extends RecyclerView.Adapter<SubscribeMessa
                 }
                 break;
             case 2://Article
-                try {
-                    byte[] content = StringUtil.hexStringToBytes(detailEntity.getContent());
-                    final Connect.Article article = Connect.Article.parseFrom(content);
-
-                    SubscribeArtcleHolder artcleHolder = (SubscribeArtcleHolder) holder;
-                    artcleHolder.showTimeTv.setText(TimeUtil.getTime(article.getTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR));
-                    artcleHolder.titleTv.setText(article.getTitle());
-                    GlideUtil.loadImage(artcleHolder.roundimg, article.getImage());
-                    artcleHolder.moreTv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            OuterWebsiteActivity.startActivity(activity, article.getArticleUrl());
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                SubscribeArtcleHolder artcleHolder = (SubscribeArtcleHolder) holder;
+                artcleHolder.showTimeTv.setText(TimeUtil.getTime(rssMessage.getTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR));
+                artcleHolder.titleTv.setText(rssMessage.getDetail());
+                GlideUtil.loadImage(artcleHolder.roundimg, rssMessage.getCover());
+                final Connect.RSSMessage finalRssMessage = rssMessage;
+                artcleHolder.moreTv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        OuterWebsiteActivity.startActivity(activity, finalRssMessage.getSourceUrl());
+                    }
+                });
                 break;
         }
     }

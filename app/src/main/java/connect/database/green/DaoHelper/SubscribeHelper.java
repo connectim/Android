@@ -1,5 +1,7 @@
 package connect.database.green.DaoHelper;
 
+import android.database.Cursor;
+
 import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;
 

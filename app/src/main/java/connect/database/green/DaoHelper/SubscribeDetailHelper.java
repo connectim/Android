@@ -1,5 +1,7 @@
 package connect.database.green.DaoHelper;
 
+import android.database.Cursor;
+
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
@@ -34,12 +36,38 @@ public class SubscribeDetailHelper extends BaseDao {
     }
 
     /********************************* select ***********************************/
+    public int countUnReads() {
+        String sql = "SELECT SUM(S.UNREAD) AS UNREAD FROM SubscribeDetailEntityDao S;";
+
+        int unRead = 0;
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            unRead += cursorGetInt(cursor, "UNREAD");
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return unRead;
+    }
+
     public List<SubscribeDetailEntity> selectAllEntity() {
         List<SubscribeDetailEntity> subscribeDetailEntities = subscribeDetailEntityDao.loadAll();
         if (subscribeDetailEntities == null) {
             subscribeDetailEntities = new ArrayList<>();
         }
         return subscribeDetailEntities;
+    }
+
+    public boolean selectLastSubscribeDetailEntityUnRead(Long rssId) {
+        QueryBuilder<SubscribeDetailEntity> queryBuilder = subscribeDetailEntityDao.queryBuilder();
+        queryBuilder.where(SubscribeDetailEntityDao.Properties.RssId.eq(rssId),
+                SubscribeDetailEntityDao.Properties.Unread.eq(1)).build();
+        List<SubscribeDetailEntity> subscribeDetailEntities = queryBuilder.list();
+        if(subscribeDetailEntities != null && subscribeDetailEntities.size() > 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public List<SubscribeDetailEntity> selectLastSubscribeDetailEntity(Long rssId) {
@@ -73,4 +101,17 @@ public class SubscribeDetailHelper extends BaseDao {
     }
 
     /********************************* Delete ***********************************/
+
+    public void updateSubscribeMessageRead(Long rssId){
+        QueryBuilder<SubscribeDetailEntity> queryBuilder = subscribeDetailEntityDao.queryBuilder();
+        queryBuilder.where(SubscribeDetailEntityDao.Properties.RssId.eq(rssId), SubscribeDetailEntityDao.Properties.Unread.eq(1))
+                .orderDesc(SubscribeDetailEntityDao.Properties._id)
+                .build();
+        List<SubscribeDetailEntity> list = queryBuilder.list();
+        for(SubscribeDetailEntity entity : list){
+            entity.setUnread(0);
+            subscribeDetailEntityDao.update(entity);
+        }
+    }
+
 }

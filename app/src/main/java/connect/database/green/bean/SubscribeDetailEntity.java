@@ -26,20 +26,24 @@ public class SubscribeDetailEntity {
 
     private Integer category;
     private String content;
+    private int unread;
 
     @Generated(hash = 304240773)
     public SubscribeDetailEntity() {
     }
 
-    @Generated(hash = 496004816)
+
+    @Generated(hash = 1676252620)
     public SubscribeDetailEntity(Long _id, long messageId, long rssId,
-            Integer category, String content) {
+            Integer category, String content, int unread) {
         this._id = _id;
         this.messageId = messageId;
         this.rssId = rssId;
         this.category = category;
         this.content = content;
+        this.unread = unread;
     }
+
 
     public String getContent() {
         return content;
@@ -79,5 +83,13 @@ public class SubscribeDetailEntity {
 
     public void setMessageId(long messageId) {
         this.messageId = messageId;
+    }
+
+    public int getUnread() {
+        return unread;
+    }
+
+    public void setUnread(int unread) {
+        this.unread = unread;
     }
 }

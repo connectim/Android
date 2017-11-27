@@ -42,7 +42,6 @@ public class RobotReceiver implements RobotListener {
         return receiver;
     }
 
-
     @Override
     public void textMessage(Connect.TextMessage textMessage) {
         ChatMsgEntity chatMsgEntity = RobotChat.getInstance().txtMsg(textMessage.getContent());
@@ -168,67 +167,33 @@ public class RobotReceiver implements RobotListener {
     @Override
     public void subscribePull(Connect.RSSPush rssPush) throws Exception {
         List<SubscribeDetailEntity> chatMsgEntities = new ArrayList<>();
-        switch (rssPush.getCategory()) {
-            case 1://rss
-                Connect.RSSMessage lastRssMessage = null;
-                Connect.RSSMessageList rssMessageList = Connect.RSSMessageList.parseFrom(rssPush.getData());
-                for (Connect.RSSMessage rssMessage : rssMessageList.getMessagesList()) {
-                    SubscribeDetailEntity detailEntity = new SubscribeDetailEntity();
-                    detailEntity.setMessageId(rssMessage.getId());
-                    detailEntity.setRssId(rssPush.getRssId());
-                    detailEntity.setCategory(1);
-                    detailEntity.setContent(StringUtil.bytesToHexString(rssMessage.toByteArray()));
-                    chatMsgEntities.add(detailEntity);
+        Connect.RSSMessage lastRssMessage = null;
+        Connect.RSSMessageList rssMessageList = Connect.RSSMessageList.parseFrom(rssPush.getData());
+        for (Connect.RSSMessage rssMessage : rssMessageList.getMessagesList()) {
+            SubscribeDetailEntity detailEntity = new SubscribeDetailEntity();
+            detailEntity.setMessageId(rssMessage.getId());
+            detailEntity.setRssId(rssMessage.getRssId());
+            detailEntity.setUnread(1);
+            detailEntity.setCategory(rssMessage.getCategory());
+            detailEntity.setContent(StringUtil.bytesToHexString(rssMessage.toByteArray()));
+            chatMsgEntities.add(detailEntity);
+            lastRssMessage = rssMessage;
+        }
+        if (lastRssMessage != null) {
+            SubscribeConversationHelper.subscribeConversationHelper.updataConversationEntity(
+                    lastRssMessage.getRssId(),
+                    lastRssMessage.getTitle(),
+                    lastRssMessage.getTime(),
+                    1);
 
-                    lastRssMessage = rssMessage;
-                }
-                if (lastRssMessage != null) {
-                    SubscribeConversationHelper.subscribeConversationHelper.updataConversationEntity(
-                            rssPush.getRssId(),
-                            lastRssMessage.getTitle(),
-                            lastRssMessage.getTime(),
-                            1);
-
-                    CSubscriberChat.cSubscriberChat.updateConversationListEntity(
-                            rssPush.getRssId(),
-                            "",
-                            "",
-                            lastRssMessage.getTitle(),
-                            lastRssMessage.getTime(),
-                            1);
-                    CSubscriberChat.cSubscriberChat.updateRoomMsg("", lastRssMessage.getTitle(), lastRssMessage.getTime(), -1, 1);
-                }
-                break;
-            case 2://article
-                Connect.Article lastArtcle = null;
-                Connect.ArticleList articleList = Connect.ArticleList.parseFrom(rssPush.getData());
-                for (Connect.Article article : articleList.getMessagesList()) {
-                    SubscribeDetailEntity detailEntity = new SubscribeDetailEntity();
-                    detailEntity.setMessageId(article.getId());
-                    detailEntity.setRssId(rssPush.getRssId());
-                    detailEntity.setCategory(2);
-                    detailEntity.setContent(StringUtil.bytesToHexString(article.toByteArray()));
-                    chatMsgEntities.add(detailEntity);
-
-                    lastArtcle = article;
-                }
-                if (lastArtcle != null) {
-                    SubscribeConversationHelper.subscribeConversationHelper.updataConversationEntity(
-                            rssPush.getRssId(),
-                            lastArtcle.getTitle(),
-                            lastArtcle.getTime(),
-                            1);
-
-                    CSubscriberChat.cSubscriberChat.updateConversationListEntity(
-                            rssPush.getRssId(),
-                            "",
-                            "",
-                            lastArtcle.getTitle(),
-                            lastArtcle.getTime(),
-                            1);
-                    CSubscriberChat.cSubscriberChat.updateRoomMsg("", lastArtcle.getTitle(), lastArtcle.getTime(), -1, 1);
-                }
-                break;
+            CSubscriberChat.cSubscriberChat.updateConversationListEntity(
+                    lastRssMessage.getRssId(),
+                    "",
+                    "",
+                    lastRssMessage.getTitle(),
+                    lastRssMessage.getTime(),
+                    1);
+            CSubscriberChat.cSubscriberChat.updateRoomMsg("", lastRssMessage.getTitle(), lastRssMessage.getTime(), -1, 1);
         }
 
         SubscribeDetailHelper.subscribeDetailHelper.insertSubscribeEntities(chatMsgEntities);

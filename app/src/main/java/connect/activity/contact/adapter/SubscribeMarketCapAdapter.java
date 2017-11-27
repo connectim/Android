@@ -7,15 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import connect.ui.activity.R;
 import protos.Connect;
-
-/**
- * Created by Administrator on 2017/11/24 0024.
- */
 
 public class SubscribeMarketCapAdapter extends RecyclerView.Adapter<SubscribeMarketCapAdapter.ViewHolder> {
 
@@ -37,7 +35,9 @@ public class SubscribeMarketCapAdapter extends RecyclerView.Adapter<SubscribeMar
     public void onBindViewHolder(SubscribeMarketCapAdapter.ViewHolder holder, int position) {
         Connect.Capitalization capitalization = listData.get(position);
         holder.nameTv.setText(capitalization.getName());
-        holder.volumeTv.setText(capitalization.getMarketCapUsd() + "$");
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+        String cap = numberFormat.format(Double.valueOf(capitalization.getMarketCapUsd()));
+        holder.volumeTv.setText(cap + "$");
         holder.priceTv.setText(capitalization.getPriceUsd() + "$");
         holder.rankingTv.setText(capitalization.getRank());
     }
