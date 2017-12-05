@@ -23,7 +23,9 @@ import connect.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.system.SystemDataUtil;
 import protos.Connect;
+import retrofit2.Retrofit;
 
 public class RegisterPresenter implements RegisterContract.Presenter {
 
@@ -91,14 +93,31 @@ public class RegisterPresenter implements RegisterContract.Presenter {
      */
     @Override
     public void registerUser(final String nicName, final String token, final UserBean userBeanOut) {
-        Connect.RegisterUser registerUser = Connect.RegisterUser.newBuilder()
+        /*message RegisterUser {
+            string username = 1 [(validator.field) = {string_not_empty:true}];
+            string avatar = 2 [(validator.field) = {string_not_empty:true}];
+            string mobile = 3;
+            string token = 4;
+            string device_id = 5;
+            string identity_key = 6;
+            string signed_per_key = 7;
+            repeated string one_time_pre_keys = 8;
+        }*/
+
+        Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder()
                 .setToken(token)
                 .setMobile(userBeanOut.getPhone())
                 .setAvatar(headPath)
                 .setUsername(nicName)
-                .setCaPub(userBeanOut.getPubKey())
-                .build();
-        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBeanOut.getPriKey(), userBeanOut.getPubKey(), registerUser.toByteString());
+                .setDeviceId(SystemDataUtil.getDeviceId())
+                .setIdentityKey("aaaaaaaaaaaaaaa")
+                .setSignedPerKey(userBeanOut.getPubKey());
+        for(int i = 0; i<100; i++){
+            builder.addOneTimePreKeys("aaaaaaaaaaaaa"+i);
+        }
+
+        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBeanOut.getPriKey(),
+                userBeanOut.getPubKey(), builder.build().toByteString());
         HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_UP, imRequest, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {

@@ -15,6 +15,7 @@ import connect.activity.base.BaseApplication;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
+import connect.utils.system.SystemDataUtil;
 import protos.Connect;
 
 /**
@@ -56,7 +57,8 @@ public class OkHttpUtil {
             HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
             Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_Request_Error,Toast.LENGTH_LONG).show();
         } else {
-            Connect.HttpRequest httpRequest = getHttpRequest(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), userBean.getUid(), bytes);
+            Connect.HttpRequest httpRequest = getHttpRequest(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), userBean.getPubKey(),
+                    userBean.getUid(), bytes);
             HttpRequest.getInstance().post(url, httpRequest, resultCall);
         }
     }
@@ -71,13 +73,13 @@ public class OkHttpUtil {
     public void postEncrySelf(String url, GeneratedMessageV3 body, EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
-        Connect.HttpRequest httpRequest = getHttpRequest(exts, userBean.getPriKey(), userBean.getUid(), bytes);
+        Connect.HttpRequest httpRequest = getHttpRequest(exts, userBean.getPriKey(),userBean.getPubKey(), userBean.getUid(), bytes);
         if(null == httpRequest)
             return;
         HttpRequest.getInstance().post(url,httpRequest,resultCall);
     }
 
-    private Connect.HttpRequest getHttpRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String uid, ByteString bytes){
+    private Connect.HttpRequest getHttpRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey,String uid, ByteString bytes){
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
         if(null == gcmData){
             return null;
@@ -85,6 +87,8 @@ public class OkHttpUtil {
         Connect.HttpRequest httpRequest = Connect.HttpRequest.newBuilder()
                 .setUid(uid)
                 .setCipherData(gcmData)
+                .setDeviceId(SystemDataUtil.getDeviceId())
+                .setSignedPerKey(pubKey)
                 .setSign(SupportKeyUril.signHash(priKey, gcmData.toByteArray())).build();
         return httpRequest;
     }
