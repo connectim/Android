@@ -71,7 +71,6 @@
         <meta-data
             android:name="connect.utils.glide.GlideModelConfig"
             android:value="GlideModule"/>
-
         <activity
             android:name="connect.activity.login.GuidePageActivity"
             android:screenOrientation="portrait"/>
