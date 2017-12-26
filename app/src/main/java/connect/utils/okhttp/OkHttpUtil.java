@@ -3,6 +3,8 @@ package connect.utils.okhttp;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.utils.cryption.EncryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
@@ -36,13 +38,36 @@ public class OkHttpUtil {
     }
 
     /**
+     * post(receive ProtoBuff)
+     * @param url
+     * @param body
+     * @param exts
+     * @param resultCall
+     */
+    public void postEncrySelf(String url, GeneratedMessageV3 body, EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
+        ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
+        postEncrySelf(url, bytes, resultCall);
+        /*UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
+        Connect.HttpRequest httpRequest = getHttpRequest(exts, userBean.getPriKey(),userBean.getPubKey(), userBean.getUid(), bytes);
+        if(null == httpRequest)
+            return;
+        HttpRequest.getInstance().post(url,httpRequest,resultCall);*/
+    }
+
+    /**
      * post(receive ByteString)
      * @param url
      * @param bytes
      * @param resultCall
      */
     public void postEncrySelf(String url, ByteString bytes, final ResultCall resultCall){
-        HttpRequest.getInstance().post(url, bytes, resultCall);
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        Connect.HttpRequest httpRequest = Connect.HttpRequest.newBuilder()
+                .setUid(userBean.getUid())
+                .setBody(bytes)
+                .setToken("").build();
+        HttpRequest.getInstance().post(url, httpRequest, resultCall);
         /*UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
         if (TextUtils.isEmpty(index)) {
@@ -55,23 +80,6 @@ public class OkHttpUtil {
         }*/
     }
 
-    /**
-     * post(receive ProtoBuff)
-     * @param url
-     * @param body
-     * @param exts
-     * @param resultCall
-     */
-    public void postEncrySelf(String url, GeneratedMessageV3 body, EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
-        HttpRequest.getInstance().post(url, body, resultCall);
-        /*UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
-        Connect.HttpRequest httpRequest = getHttpRequest(exts, userBean.getPriKey(),userBean.getPubKey(), userBean.getUid(), bytes);
-        if(null == httpRequest)
-            return;
-        HttpRequest.getInstance().post(url,httpRequest,resultCall);*/
-    }
-
     private Connect.HttpRequest getHttpRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey,String uid, ByteString bytes){
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
         if(null == gcmData){
@@ -79,10 +87,8 @@ public class OkHttpUtil {
         }
         Connect.HttpRequest httpRequest = Connect.HttpRequest.newBuilder()
                 .setUid(uid)
-                .setCipherData(gcmData)
-                .setDeviceId(SystemDataUtil.getDeviceId())
-                .setSignedPerKey(pubKey)
-                .setSign(SupportKeyUril.signHash(priKey, gcmData.toByteArray())).build();
+                .setBody(bytes)
+                .setToken("").build();
         return httpRequest;
     }
 
