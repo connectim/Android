@@ -242,6 +242,7 @@
     <string name="Link_Search_Result">Search Result</string>
     <string name="Link_Search_friends">Search</string>
     <string name="Link_Select_new_owner">Select new owner</string>
+    <string name="Login_username_can_not_empty">The username can not be empty</string>
     <string name="Link_Selecting__new_owner__release_your_ownership">Selecting %s as new owner will
         release your ownership
     </string>
@@ -313,6 +314,7 @@
     </string>
     <string name="Login_Next">Next</string>
     <string name="Login_Password">Password</string>
+    <string name="Login_username">username</string>
     <string name="Login_Confirm_password">Confirm password</string>
     <string name="Login_Password_incorrect">Password incorrect</string>
     <string name="Login_Resend">Resend</string>

@@ -61,7 +61,7 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
 
     @Override
     public void goIntoLoginForPhone() {
-        ActivityUtil.next(mActivity, LoginPhoneActivity.class);
+        LoginUserActivity.startActivity(mActivity);
     }
 
     @Override

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@color/color_ffffff">
+
+    <connect.widget.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        style="@style/BaseTextStyle.18"
+        android:layout_marginTop="@dimen/dp_40"
+        android:text="@string/Login_Welcome"/>
+
+    <EditText
+        android:id="@+id/name_et"
+        style="@style/EditStyle.16"
+        android:layout_height="@dimen/dp_40"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_10"
+        android:hint="@string/Login_username" />
+    <View
+        style="@style/BaseViewLine.d1d5da"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"/>
+    <EditText
+        android:id="@id/password_et"
+        style="@style/EditStyle.16"
+        android:layout_height="@dimen/dp_40"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_10"
+        android:inputType="textPassword"
+        android:hint="@string/Login_Password"/>
+    <View
+        style="@style/BaseViewLine.d1d5da"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"/>
+
+    <Button
+        style="@style/ButtonLongStyle"
+        android:id="@id/next_btn"
+        android:layout_marginTop="@dimen/dp_15"
+        android:enabled="false"
+        android:text="@string/Common_OK"/>
+
+</LinearLayout>

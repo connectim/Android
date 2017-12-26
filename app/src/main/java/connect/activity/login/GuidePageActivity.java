@@ -72,7 +72,7 @@ public class GuidePageActivity extends BaseActivity {
     @OnClick(R.id.start_message_tv)
     void startChat(){
         SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.FIRST_INTO_APP, 1);
-        ActivityUtil.next(mActivity, LoginPhoneActivity.class);
+        LoginUserActivity.startActivity(mActivity);
         finish();
     }
 }

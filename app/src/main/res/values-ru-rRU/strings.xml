@@ -206,6 +206,7 @@
     <string name="Link_From_QR_Code">Через QR-код</string>
     <string name="Link_From_Recommend">Рекомендация от друзей</string>
     <string name="Link_From_Search">Через поиск</string>
+    <string name="Login_username_can_not_empty">Имя пользователя не может быть пустым</string>
     <string name="Link_From_Transaction">Приглашение от операционной сделки через денежный перевод
     </string>
     <string name="Link_From_Unknow">Приглашение от неизвестного</string>
@@ -334,6 +335,7 @@
     </string>
     <string name="Login_Next">Следующий шаг</string>
     <string name="Login_Password">Пароль</string>
+    <string name="Login_username">Имя пользователя</string>
     <string name="Login_Confirm_password">Подтверждение пароля</string>
     <string name="Login_Password_incorrect">Неправильный пароль</string>
     <string name="Login_Resend">Отправить заново</string>

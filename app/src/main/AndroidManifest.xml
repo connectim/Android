@@ -102,6 +102,9 @@
             android:name="connect.activity.login.RegisterGetRandomActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name="connect.activity.login.LoginUserActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name="connect.activity.contact.SubscribeActivity"
             android:screenOrientation="portrait"/>
         <activity

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import connect.activity.login.bean.StartImagesBean;
-import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.StartContract;
 import connect.database.SharedPreferenceUtil;
 import connect.utils.RegularUtil;
@@ -51,7 +50,9 @@ public class StartPagePresenter implements StartContract.Presenter {
         String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
         SystemDataUtil.setAppLanguage(mView.getActivity(),languageCode);
 
-        String path = getImagePath();
+        mView.setImage(null);
+
+        /*String path = getImagePath();
         mView.setImage(path);
 
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
@@ -59,23 +60,8 @@ public class StartPagePresenter implements StartContract.Presenter {
         } else if (ContextCompat.checkSelfPermission(mView.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             requestImages();
-        }
+        }*/
         goInActivity(mView.getActivity());
-    }
-
-    private String getImagePath() {
-        String addressStr = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.START_IMAGES_ADDRESS);
-        if(TextUtils.isEmpty(addressStr)){
-            return null;
-        } else {
-            String[] addressArray = addressStr.split(",");
-            int index = 0;
-            if(addressArray.length > 0){
-                Random rand = new Random();
-                index = rand.nextInt(addressArray.length);
-            }
-            return addressArray[index];
-        }
     }
 
     private void goInActivity(final Activity mActivity) {
@@ -99,6 +85,21 @@ public class StartPagePresenter implements StartContract.Presenter {
                 mActivity.finish();
             }
         }).start();
+    }
+
+    private String getImagePath() {
+        String addressStr = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.START_IMAGES_ADDRESS);
+        if(TextUtils.isEmpty(addressStr)){
+            return null;
+        } else {
+            String[] addressArray = addressStr.split(",");
+            int index = 0;
+            if(addressArray.length > 0){
+                Random rand = new Random();
+                index = rand.nextInt(addressArray.length);
+            }
+            return addressArray[index];
+        }
     }
 
     private void requestImages() {
