@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.google.android.gms.common.server.response.FastJsonResponse;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 
 import java.io.IOException;
@@ -125,6 +126,10 @@ public class HttpRequest {
      */
     public void post(String url, GeneratedMessageV3 body, final ResultCall resultCall) {
         post(url, body.toByteArray(), resultCall);
+    }
+
+    public void post(String url, ByteString bytes, final ResultCall resultCall) {
+        post(url, bytes.toByteArray(), resultCall);
     }
 
     /**

@@ -9,18 +9,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.wallet.bean.CurrencyEnum;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.exts.contract.LuckyPacketContract;
 import connect.activity.chat.exts.presenter.LuckyPacketPresenter;
-import connect.activity.wallet.PacketHistoryActivity;
-import connect.activity.wallet.SafetyPayFeeActivity;
-import connect.activity.wallet.manager.TransferManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.RegularUtil;
@@ -58,7 +52,6 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
     /** packet type 1:private 2:group */
     private int redType;
     private String redKey;
-    private TransferManager transferManager;
 
     private LuckyPacketContract.Presenter presenter;
 
@@ -93,7 +86,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
         toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PacketHistoryActivity.startActivity(activity);
+                //PacketHistoryActivity.startActivity(activity);
             }
         });
 
@@ -107,7 +100,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
             layoutFirst.setVisibility(View.GONE);
             layoutSecond.setVisibility(View.VISIBLE);
         }
-        transferManager = new TransferManager(activity, CurrencyEnum.BTC);
+        //transferManager = new TransferManager(activity, CurrencyEnum.BTC);
 
         new LuckyPacketPresenter(this).start();
         presenter.requestRoomEntity(redType);
@@ -129,7 +122,7 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
 
             @Override
             public void setFee() {
-                SafetyPayFeeActivity.startActivity(activity);
+                //SafetyPayFeeActivity.startActivity(activity);
             }
         });
     }
@@ -181,8 +174,4 @@ public class LuckyPacketActivity extends BaseActivity implements LuckyPacketCont
         edit.setText(String.valueOf(count));
     }
 
-    @Override
-    public TransferManager getBusiness() {
-        return transferManager;
-    }
 }

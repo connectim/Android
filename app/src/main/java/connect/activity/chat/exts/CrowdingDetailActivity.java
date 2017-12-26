@@ -11,8 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.wallet.bean.CurrencyEnum;
-
 import java.util.List;
 
 import butterknife.Bind;
@@ -23,7 +21,6 @@ import connect.activity.base.BaseApplication;
 import connect.activity.chat.adapter.CrowdingDetailAdapter;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
 import connect.activity.chat.exts.presenter.CrowdingDetailPresenter;
-import connect.activity.wallet.BlockchainActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -115,7 +112,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
             @Override
             public void itemClick(Connect.CrowdfundingRecord record) {
                 if (record != null) {
-                    BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, record.getTxid());
+                    //BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, record.getTxid());
                 }
             }
         });

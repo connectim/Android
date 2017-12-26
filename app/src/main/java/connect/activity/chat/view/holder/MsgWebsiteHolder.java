@@ -11,7 +11,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.chat.exts.TransferToActivity;
-import connect.activity.wallet.PacketDetailActivity;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
@@ -128,7 +127,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                                 if (redPackage.getRemainSize() == 0) {//lucky packet is brought out
                                     String hashid = redPackage.getHashId();
                                     int type = redPackage.getSystem() ? 1 : 0;
-                                    PacketDetailActivity.startActivity((Activity) context, hashid, type);
+                                    //PacketDetailActivity.startActivity((Activity) context, hashid, type);
                                 } else {
                                     UserOrderBean userOrderBean = new UserOrderBean();
                                     userOrderBean.outerRedPacket(token);

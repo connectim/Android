@@ -2,23 +2,20 @@ package connect.utils.scan;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.net.URL;
+
 import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.activity.chat.exts.OuterWebsiteActivity;
-import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
-import connect.activity.wallet.TransferAddressActivity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
@@ -109,7 +106,7 @@ public class ResolveScanUtil {
             valueBitCoin = data[0].replace(TRANSFER_SCAN_HEAD,"");
         }
         if(SupportKeyUril.checkAddress(valueBitCoin)){
-            TransferAddressActivity.startActivity(activity,valueBitCoin,amount);
+            //TransferAddressActivity.startActivity(activity,valueBitCoin,amount);
             return;
         }
     }

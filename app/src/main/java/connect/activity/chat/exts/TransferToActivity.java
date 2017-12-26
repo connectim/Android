@@ -15,13 +15,11 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.exts.contract.TransferToContract;
 import connect.activity.chat.exts.presenter.TransferToPresenter;
-import connect.activity.wallet.SafetyPayFeeActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
-import connect.activity.wallet.view.TransferEditView;
 
 /**
  * transaction
@@ -39,8 +37,6 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
     RelativeLayout layoutFirst;
     @Bind(R.id.layout_second)
     LinearLayout layoutSecond;
-    @Bind(R.id.transfer_edit_view)
-    TransferEditView transferEditView;
     @Bind(R.id.btn)
     Button btn;
 
@@ -106,7 +102,7 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
         layoutFirst.setVisibility(View.VISIBLE);
         layoutSecond.setVisibility(View.GONE);
         if(getIntent().getExtras().containsKey(TRANSFER_AMOUNT)){
-            transferEditView.setInputAmount(getIntent().getExtras().getDouble(TRANSFER_AMOUNT));
+            //transferEditView.setInputAmount(getIntent().getExtras().getDouble(TRANSFER_AMOUNT));
         }
         new TransferToPresenter(this).start();
     }
@@ -114,30 +110,14 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
     @Override
     protected void onStart() {
         super.onStart();
-
-        transferEditView.setEditListener(new TransferEditView.OnEditListener() {
-            @Override
-            public void onEdit(String value) {
-                if (TextUtils.isEmpty(value) || Double.valueOf(transferEditView.getCurrentBtc()) < 0.0001) {
-                    btn.setEnabled(false);
-                } else {
-                    btn.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void setFee() {
-                SafetyPayFeeActivity.startActivity(activity);
-            }
-        });
     }
 
     @OnClick({R.id.btn})
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.btn:
-                Long currentlong = transferEditView.getCurrentBtcLong();
-                presenter.requestSingleTransfer(currentlong);
+                //Long currentlong = transferEditView.getCurrentBtcLong();
+                //presenter.requestSingleTransfer(currentlong);
                 break;
         }
     }
@@ -170,12 +150,14 @@ public class TransferToActivity extends BaseActivity implements TransferToContra
 
     @Override
     public long getCurrentAmount() {
-        return RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
+        return 0;
+        //return RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
     }
 
     @Override
     public String getTransferNote() {
-        return transferEditView.getNote();
+        return "";
+        //return transferEditView.getNote();
     }
 
     @Override

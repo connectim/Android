@@ -15,7 +15,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.FriendRecordAdapter;
-import connect.activity.wallet.BlockchainActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -25,7 +24,6 @@ import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import com.wallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
@@ -110,7 +108,6 @@ public class FriendInfoRecordActivity extends BaseActivity {
     FriendRecordAdapter.OnItemClickListener onItemClickListener = new FriendRecordAdapter.OnItemClickListener() {
         @Override
         public void itemClick(Connect.FriendBill friendBill) {
-            BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, friendBill.getTxId());
         }
     };
 

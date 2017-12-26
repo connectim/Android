@@ -35,7 +35,6 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.activity.home.bean.ConversationAction;
-import connect.activity.wallet.TransferFriendActivity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -330,9 +329,6 @@ public class ChatActivity extends BaseChatSendActivity {
             }
         } else if (requestCode == CODE_REQUEST && resultCode == CODE_REQUEST) {//relay the message
             transpondTo(data);
-        } else if (resultCode == RESULT_OK && requestCode == SelectFriendActivity.CODE_REQUEST) {
-            ArrayList<ContactEntity> friendList = (ArrayList<ContactEntity>) data.getExtras().getSerializable("list");
-            TransferFriendActivity.startActivity(activity, friendList, normalChat.chatKey());
         }
     }
 

@@ -2,36 +2,22 @@ package connect.activity.chat.exts.presenter;
 
 import android.app.Activity;
 
-import com.wallet.bean.CurrencyEnum;
-import com.wallet.inter.WalletListener;
-
 import java.util.List;
 
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.CrowdingDetailContract;
-import connect.activity.wallet.manager.TransferManager;
-import connect.activity.wallet.manager.TransferType;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
-import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.CurrencyEntity;
-import connect.database.green.bean.GroupEntity;
-import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.cryption.DecryptionUtil;
 import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import instant.bean.ChatMsgEntity;
-import instant.sender.model.NormalChat;
 import protos.Connect;
 
 /**
@@ -122,41 +108,5 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
 
     @Override
     public void requestCrowdingPay(final String hashid) {
-        TransferManager transferManager = new TransferManager(activity, CurrencyEnum.BTC);
-        transferManager.typePayment(hashid, TransferType.TransactionTypePayment.getType(), new WalletListener<String>() {
-            @Override
-            public void success(String hashId) {
-                String contactName = crowdfunding.getSender().getUsername();
-                String noticeContent = activity.getString(R.string.Chat_paid_the_crowd_founding_to, activity.getString(R.string.Chat_You), contactName);
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NOTICE, noticeContent);
-
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(crowdfunding.getGroupHash());
-                if (groupEntity != null) {
-                    NormalChat normalChat = new CGroupChat(groupEntity);
-                    ChatMsgEntity msgExtEntity = normalChat.noticeMsg(2, noticeContent, hashid);
-                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                }
-
-                String hashid = crowdfunding.getHashId();
-                int paycount = (int) (crowdfunding.getSize() - crowdfunding.getRemainSize());
-                int crowdcount = (int) crowdfunding.getSize();
-
-                String messageid = view.getMessageId();
-                TransactionHelper.getInstance().updateTransEntity(hashid, messageid, paycount, crowdcount);
-
-                ContainerBean.sendRecExtMsg(ContainerBean.ContainerType.GATHER_DETAIL, messageid, 1, paycount, crowdcount);
-                ToastEUtil.makeText(activity, activity.getString(R.string.Wallet_Payment_Successful), 1, new ToastEUtil.OnToastListener() {
-                    @Override
-                    public void animFinish() {
-                        ActivityUtil.goBack(activity);
-                    }
-                }).show();
-            }
-
-            @Override
-            public void fail(WalletError error) {
-
-            }
-        });
     }
 }

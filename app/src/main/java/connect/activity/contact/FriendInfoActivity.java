@@ -31,7 +31,6 @@ import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.FriendInfoContract;
 import connect.activity.contact.presenter.FriendInfoPresenter;
 import connect.activity.home.bean.MsgNoticeBean;
-import connect.activity.wallet.manager.WalletManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -57,8 +56,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     TextView nameTv;
     @Bind(R.id.message_img)
     ImageView messageImg;
-    @Bind(R.id.transfer_imgs)
-    ImageView transferImgs;
     @Bind(R.id.share_img)
     ImageView shareImg;
     @Bind(R.id.address_tv)
@@ -77,10 +74,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     TextView aliasTv;
     @Bind(R.id.id_lin)
     LinearLayout idLin;
-    @Bind(R.id.transfer_record_rela)
-    RelativeLayout transferRecordRela;
-    @Bind(R.id.transfer_line_view)
-    View transferLineView;
 
     private FriendInfoActivity mActivity;
     private FriendInfoContract.Presenter presenter;
@@ -124,11 +117,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
         new FriendInfoPresenter(this).start();
         presenter.requestUserInfo(friendEntity.getUid(), friendEntity);
-        if (!WalletManager.isShowWallet()) {
-            transferImgs.setVisibility(View.GONE);
-            transferRecordRela.setVisibility(View.GONE);
-            transferLineView.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -165,11 +153,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.PRIVATE, friendEntity.getUid()));
     }
 
-    @OnClick(R.id.transfer_imgs)
-    void goSendTransfer(View view) {
-        TransferToActivity.startActivity(mActivity, friendEntity.getUid(), null);
-    }
-
     @OnClick(R.id.share_img)
     void goSendShare(View view) {
         SelectRecentlyChatActivity.startActivity(mActivity, SelectRecentlyChatActivity.SHARE_CARD, friendEntity);
@@ -178,11 +161,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @OnClick(R.id.set_alias_rela)
     void goSetAlias(View view) {
         FriendInfoAliasActivity.startActivity(mActivity, friendEntity.getUid());
-    }
-
-    @OnClick(R.id.transfer_record_rela)
-    void goFriendTransferRecord(View view) {
-        FriendInfoRecordActivity.startActivity(mActivity, friendEntity);
     }
 
     @OnClick(R.id.add_favorites_tb)

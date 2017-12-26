@@ -16,20 +16,14 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.wallet.bean.CurrencyEnum;
-import com.wallet.inter.WalletListener;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 
 import connect.activity.base.BaseApplication;
-import connect.activity.set.bean.PaySetBean;
 import connect.activity.wallet.bean.RateBean;
 import connect.activity.wallet.bean.WalletSetBean;
-import connect.activity.wallet.manager.WalletManager;
-import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
 import connect.utils.RegularUtil;
@@ -74,7 +68,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
     private long editDefault = 10000;
     /** The current number of COINS */
     private OnEditListener onEditListener;
-    private CurrencyEnum currencyEnum = CurrencyEnum.BTC;
     private String currentBtc = "";
     private String note = "";
 
@@ -123,7 +116,7 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
         }
 
         showBalance();
-        WalletManager.getInstance().syncWallet(new WalletListener<Integer>() {
+       /* WalletManager.getInstance().syncWallet(new WalletListener<Integer>() {
             @Override
             public void success(Integer status) {
                 if(status == 0){
@@ -133,19 +126,19 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
 
             @Override
             public void fail(WalletError error) {}
-        });
+        });*/
         requestRate();
     }
 
     private void showBalance(){
-        CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
+       /* CurrencyEntity currencyEntity = CurrencyHelper.getInstance().loadCurrency(currencyEnum.getCode());
         if (currencyEntity != null) {
             balanceTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
                     RateFormatUtil.longToDoubleBtc(currencyEntity.getAmount())));
         } else {
             balanceTv.setText(BaseApplication.getInstance().getString(R.string.Wallet_Balance_Credit,
                     RateFormatUtil.longToDoubleBtc(0L)));
-        }
+        }*/
     }
 
     @Override
@@ -390,10 +383,6 @@ public class TransferEditView extends LinearLayout implements View.OnClickListen
      */
     public void setFeeVisibility(int visibility){
         feeLin.setVisibility(visibility);
-    }
-
-    public CurrencyEnum getCurrencyType() {
-        return currencyEnum;
     }
 
     public interface OnEditListener {

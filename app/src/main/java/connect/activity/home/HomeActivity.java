@@ -38,13 +38,12 @@ import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.home.fragment.ContactFragment;
 import connect.activity.home.fragment.ConversationFragment;
 import connect.activity.home.fragment.SetFragment;
-import connect.activity.home.fragment.WalletFragment;
 import connect.activity.home.view.CheckUpdate;
 import connect.activity.login.LoginPhoneActivity;
-import connect.activity.wallet.manager.WalletManager;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
+import connect.instant.bean.ConnectState;
 import connect.service.GroupService;
 import connect.service.UpdateInfoService;
 import connect.ui.activity.R;
@@ -53,8 +52,6 @@ import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.MaterialBadgeTextView;
-import connect.widget.random.RandomVoiceActivity;
-import connect.instant.bean.ConnectState;
 import instant.bean.UserOrderBean;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
@@ -68,8 +65,6 @@ public class HomeActivity extends BaseFragmentActivity {
     ImageView msg;
     @Bind(R.id.contact)
     ImageView contact;
-    @Bind(R.id.wallet)
-    ImageView wallet;
     @Bind(R.id.set)
     ImageView set;
     @Bind(R.id.home_content)
@@ -78,8 +73,6 @@ public class HomeActivity extends BaseFragmentActivity {
     RelativeLayout msgRela;
     @Bind(R.id.contact_rela)
     RelativeLayout contactRela;
-    @Bind(R.id.wallet_rela)
-    RelativeLayout walletRela;
     @Bind(R.id.set_rela)
     RelativeLayout setRela;
     @Bind(R.id.badgetv)
@@ -93,7 +86,6 @@ public class HomeActivity extends BaseFragmentActivity {
     private ConversationFragment chatListFragment;
     private ContactFragment contactFragment;
     private SetFragment setFragment;
-    private WalletFragment walletFragment;
     private ResolveUrlUtil resolveUrlUtil;
     private CheckUpdate checkUpdata;
 
@@ -114,11 +106,6 @@ public class HomeActivity extends BaseFragmentActivity {
     public void initView() {
         activity = this;
         setDefaultFragment();
-        if(WalletManager.isShowWallet()){
-            walletRela.setVisibility(View.VISIBLE);
-        }else{
-            walletRela.setVisibility(View.GONE);
-        }
 
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -232,7 +219,7 @@ public class HomeActivity extends BaseFragmentActivity {
         }.execute();
     }
 
-    @OnClick({R.id.msg_rela, R.id.contact_rela, R.id.wallet_rela, R.id.set_rela})
+    @OnClick({R.id.msg_rela, R.id.contact_rela, R.id.set_rela})
     public void OnClickListener(View view) {
         initBottomTab();
         switch (view.getId()) {
@@ -244,12 +231,8 @@ public class HomeActivity extends BaseFragmentActivity {
                 switchFragment(1);
                 contact.setSelected(true);
                 break;
-            case R.id.wallet_rela:
-                switchFragment(2);
-                wallet.setSelected(true);
-                break;
             case R.id.set_rela:
-                switchFragment(3);
+                switchFragment(2);
                 set.setSelected(true);
                 break;
         }
@@ -258,14 +241,12 @@ public class HomeActivity extends BaseFragmentActivity {
     private void initBottomTab() {
         msg.setSelected(false);
         contact.setSelected(false);
-        wallet.setSelected(false);
         set.setSelected(false);
     }
 
     public void setDefaultFragment() {
         chatListFragment = ConversationFragment.startFragment();
         contactFragment = ContactFragment.startFragment();
-        walletFragment = WalletFragment.startFragment();
         setFragment = SetFragment.startFragment();
 
         switchFragment(0);
@@ -301,13 +282,6 @@ public class HomeActivity extends BaseFragmentActivity {
                 }
                 break;
             case 2:
-                if (!walletFragment.isAdded()) {
-                    fragmentTransaction.add(R.id.home_content, walletFragment);
-                } else {
-                    fragmentTransaction.show(walletFragment);
-                }
-                break;
-            case 3:
                 if (!setFragment.isAdded()) {
                     fragmentTransaction.add(R.id.home_content, setFragment);
                 } else {
@@ -352,20 +326,6 @@ public class HomeActivity extends BaseFragmentActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
         PermissionUtil.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,checkUpdata.permissomCallBack);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-                switch (requestCode){
-                    case RandomVoiceActivity.REQUEST_CODE:
-                        walletFragment.callBaseSeed(data.getExtras());
-                        break;
-                    default:
-                        break;
-                }
-        }
     }
 
     @Override

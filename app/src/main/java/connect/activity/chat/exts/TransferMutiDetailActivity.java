@@ -17,13 +17,11 @@ import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.exts.contract.TransferMutiDetailContract;
 import connect.activity.chat.exts.presenter.TransferMutiDetailPresenter;
 import connect.activity.home.view.LineDecoration;
-import connect.activity.wallet.BlockchainActivity;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import com.wallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 
 public class TransferMutiDetailActivity extends BaseActivity implements TransferMutiDetailContract.BView{
@@ -93,7 +91,7 @@ public class TransferMutiDetailActivity extends BaseActivity implements Transfer
         mutiDetailAdapter.setItemClickListener(new TransferMutiDetailAdapter.OnItemClickListener() {
             @Override
             public void onClick(View v) {
-                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, presenter.getTransferTxtid());
+
             }
         });
     }

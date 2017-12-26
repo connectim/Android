@@ -9,27 +9,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.wallet.bean.CurrencyEnum;
-import com.wallet.inter.WalletListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.ContainerBean;
-import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.exts.contract.PaymentDetailContract;
 import connect.activity.chat.exts.presenter.PaymentDetailPresenter;
-import connect.activity.wallet.manager.TransferManager;
-import connect.activity.wallet.manager.TransferType;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.instant.model.CFriendChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
@@ -183,32 +175,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
     }
 
     protected void requestPayment(final String hashid) {
-        TransferManager transferManager = new TransferManager(activity, CurrencyEnum.BTC);
-        transferManager.typePayment(hashid, TransferType.TransactionTypePayCrowding.getType(), new WalletListener<String>() {
-            @Override
-            public void success(String hashId) {
-                ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_ower());
-                if (entity != null) {
-                    String contactName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
-                    String noticeContent = getString(R.string.Chat_paid_the_bill_to, activity.getString(R.string.Chat_You), contactName);
-                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.NOTICE, noticeContent);
 
-                    CFriendChat normalChat = new CFriendChat(entity);
-                    ChatMsgEntity msgExtEntity = normalChat.noticeMsg(1, noticeContent, hashId);
-                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                }
-
-                String msgId=msgExtEntity.getMessage_id();
-                TransactionHelper.getInstance().updateTransEntity(billDetail.getHash(), msgId, 1);
-                ToastEUtil.makeText(activity, R.string.Wallet_Payment_Successful).show();
-                ActivityUtil.goBack(activity);
-            }
-
-            @Override
-            public void fail(WalletError error) {
-
-            }
-        });
     }
 
     @Override

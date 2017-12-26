@@ -16,7 +16,6 @@ import connect.database.green.bean.GroupEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
-import com.wallet.inter.WalletListener;
 
 /**
  * Created by Administrator on 2017/8/11.
@@ -77,23 +76,5 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
 
     @Override
     public void sendLuckyPacket(final int roomtype, int packetcount, final long amount, final String tips) {
-        view.getBusiness().luckyPacket(null, roomKey, 0, roomtype, packetcount, amount, tips, new WalletListener<String>() {
-            @Override
-            public void success(String hashId) {
-                if (roomtype == 0) {
-                    ParamManager.getInstance().putLatelyTransfer(new TransferBean(5, friendEntity.getAvatar(),
-                            friendEntity.getUsername(), friendEntity.getUid()));
-                }
-
-                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Lucky_Packet, 0, hashId, tips, amount);
-                ToastEUtil.makeText(activity, R.string.Link_Send_successful).show();
-                ActivityUtil.goBack(activity);
-            }
-
-            @Override
-            public void fail(WalletError error) {
-                ToastEUtil.makeText(activity, R.string.Login_Send_failed).show();
-            }
-        });
     }
 }

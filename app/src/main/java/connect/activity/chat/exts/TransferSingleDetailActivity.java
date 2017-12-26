@@ -15,14 +15,12 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.exts.contract.TransferSingleDetailContract;
 import connect.activity.chat.exts.presenter.TransferSingleDetailPresenter;
-import connect.activity.wallet.BlockchainActivity;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.TimeUtil;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
-import com.wallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 
 /**
@@ -110,7 +108,6 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.linearlayout:
-                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, hashId);
                 break;
         }
     }
@@ -145,7 +142,7 @@ public class TransferSingleDetailActivity extends BaseActivity implements Transf
         linearlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BlockchainActivity.startActivity(activity, CurrencyEnum.BTC, txtid);
+
             }
         });
     }

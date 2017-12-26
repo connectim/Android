@@ -12,7 +12,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.wallet.manager.PinManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
@@ -143,7 +142,7 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
 
     @Override
     public void successCollect(final String random) {
-        PinManager.getInstance().showSetNewPin(mActivity, new com.wallet.inter.WalletListener<String>() {
+        /*PinManager.getInstance().showSetNewPin(mActivity, new com.wallet.inter.WalletListener<String>() {
             @Override
             public void success(String pin) {
                 Bundle bundle = mActivity.getIntent().getExtras();
@@ -154,7 +153,7 @@ public class RandomVoiceActivity extends BaseActivity implements RandomVoiceCont
 
             @Override
             public void fail(WalletError error) {}
-        });
+        });*/
     }
 
     @Override

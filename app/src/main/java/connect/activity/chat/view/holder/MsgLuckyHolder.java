@@ -7,7 +7,6 @@ import android.os.Message;
 import android.view.View;
 
 import connect.activity.home.bean.HomeAction;
-import connect.activity.wallet.PacketDetailActivity;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -170,6 +169,6 @@ public class MsgLuckyHolder extends MsgChatHolder {
     }
 
     protected void startPacketDetail(String hashid, int code) {
-        PacketDetailActivity.startActivity((Activity) context, hashid, code);
+        //PacketDetailActivity.startActivity((Activity) context, hashid, code);
     }
 }

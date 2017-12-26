@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.text.TextUtils;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.wallet.bean.CurrencyEnum;
 
 import java.util.HashMap;
 
@@ -13,7 +12,6 @@ import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.exts.contract.TransferToContract;
 import connect.activity.wallet.bean.TransferBean;
-import connect.activity.wallet.manager.TransferManager;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -30,7 +28,6 @@ import connect.utils.cryption.DecryptionUtil;
 import instant.bean.ChatMsgEntity;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import com.wallet.inter.WalletListener;
 import protos.Connect;
 
 /**
@@ -42,7 +39,6 @@ public class TransferToPresenter implements TransferToContract.Presenter{
     private TransferToContract.BView view;
     private Activity activity;
     private ContactEntity contactEntity;
-    private TransferManager transferManager;
 
     public TransferToPresenter(TransferToContract.BView view) {
         this.view = view;
@@ -64,7 +60,6 @@ public class TransferToPresenter implements TransferToContract.Presenter{
             view.showTransferInfo(avatar, transferinfo);
         }
 
-        transferManager = new TransferManager(activity, CurrencyEnum.BTC);
     }
 
     public void requestContactInfo(String address) {
@@ -107,29 +102,5 @@ public class TransferToPresenter implements TransferToContract.Presenter{
     public void requestSingleTransfer(Long currentlong) {
         HashMap<String,Long> outMap = new HashMap();
         outMap.put(contactEntity.getUid(),currentlong);
-        transferManager.transferConnectUser(null, outMap, new WalletListener<String>() {
-            @Override
-            public void success(String value) {
-                long amount = view.getCurrentAmount();
-                ParamManager.getInstance().putLatelyTransfer(new TransferBean(4, contactEntity.getAvatar(),
-                        contactEntity.getUsername(), contactEntity.getUid()));
-                if (view.getTransType() == TransferToActivity.TransferType.CHAT) {
-                    MsgSend.sendOuterMsg(MsgSend.MsgSendType.Transfer,0,value, amount, view.getTransferNote());
-                } else if (view.getTransType() == TransferToActivity.TransferType.ADDRESS) {
-                    CFriendChat friendChat = new CFriendChat(contactEntity);
-                    ChatMsgEntity msgExtEntity = friendChat.transferMsg(0,value, amount, view.getTransferNote());
-                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                    friendChat.updateRoomMsg(null, msgExtEntity.showContent(), TimeUtil.getCurrentTimeInLong());
-                    TransactionHelper.getInstance().updateTransEntity(value, msgExtEntity.getMessage_id(), 1);
-                }
-
-                ActivityUtil.goBack(activity);
-            }
-
-            @Override
-            public void fail(WalletError error) {
-                ToastEUtil.makeText(activity,R.string.Login_Send_failed).show();
-            }
-        });
     }
 }

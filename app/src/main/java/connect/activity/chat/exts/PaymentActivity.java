@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.wallet.bean.CurrencyEnum;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -145,19 +143,6 @@ public class PaymentActivity extends BaseActivity implements PaymentContract.BVi
     public void OnClickListener(View view) {
         switch (view.getId()) {
             case R.id.btn:
-                CurrencyEnum currencyEnum = transferEditView.getCurrencyType();
-                long amount = RateFormatUtil.doubleToLongBtc(Double.valueOf(transferEditView.getCurrentBtc()));
-                String tips = transferEditView.getNote();
-
-                if (gatherType == 0) {
-                    presenter.requestPayment(currencyEnum, amount, tips);
-                } else if (gatherType == 1 && !TextUtils.isEmpty(edit.getText())) {
-                    String memberstring = edit.getText().toString();
-                    if (RegularUtil.matches(memberstring, RegularUtil.ALL_NUMBER)) {
-                        int members = Integer.parseInt(memberstring);
-                        presenter.requestCrowding(currencyEnum, amount, members, tips);
-                    }
-                }
                 break;
         }
     }

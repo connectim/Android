@@ -1,6 +1,5 @@
 package connect.activity.chat.exts.contract;
 
-import com.wallet.bean.CurrencyEnum;
 
 import connect.activity.base.contract.BasePresenter;
 import connect.activity.base.contract.BaseView;
@@ -26,10 +25,6 @@ public interface PaymentContract {
         void loadPayment(String pubkey);
 
         void loadCrowding(String pubkey);
-
-        void requestPayment(CurrencyEnum currencyEnum, long amount, String tips);
-
-        void requestCrowding(CurrencyEnum currencyEnum,long amount,int size,String tips);
     }
 
 }

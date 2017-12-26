@@ -128,7 +128,6 @@ greendao {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(path: ':ffmpeg4android_lib')
-    compile project(path: ':wallet')
     compile project(':instant')
     compile project(':encrypt')
     compile 'com.android.support:multidex:1.0.1'

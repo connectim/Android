@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import connect.activity.chat.exts.CrowdingDetailActivity;
 import connect.activity.chat.exts.TransferSingleDetailActivity;
-import connect.activity.wallet.PacketDetailActivity;
 import connect.ui.activity.R;
 import connect.utils.cryption.SupportKeyUril;
 import instant.bean.ChatMsgEntity;
@@ -94,7 +93,7 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                     noticeLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            PacketDetailActivity.startActivity((Activity) context, notifyMessage.getExtion());
+                            //PacketDetailActivity.startActivity((Activity) context, notifyMessage.getExtion());
                         }
                     });
                     break;
