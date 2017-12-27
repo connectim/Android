@@ -113,7 +113,7 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
         public void itemClick(int position, FriendRequestEntity entity) {
             if(TextUtils.isEmpty(entity.getUid())){
                 //load more
-                ActivityUtil.next(mActivity, AddFriendRecommendActivity.class);
+                //ActivityUtil.next(mActivity, AddFriendRecommendActivity.class);
             } else {
                 ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(entity.getUid());
                 if(friendEntity != null){

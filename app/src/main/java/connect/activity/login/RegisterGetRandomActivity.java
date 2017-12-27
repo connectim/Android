@@ -187,7 +187,6 @@ public class RegisterGetRandomActivity extends BaseActivity implements RegisterG
         String phone = bundle.getString("phone", "");
         String token = bundle.getString("token", "");
 
-        userBean.setPhone(phone);
         RegisterActivity.startActivity(mActivity, userBean, token);
         finish();
     }

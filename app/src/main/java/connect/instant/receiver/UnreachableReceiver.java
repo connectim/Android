@@ -90,18 +90,18 @@ public class UnreachableReceiver implements UnreachableListener {
             return;
         }
 
-        UserCookie userCookie = new UserCookie();
-        userCookie.setPubKey(cookieData.getChatPubKey());
-        userCookie.setSalt(cookieData.getSalt().toByteArray());
-        userCookie.setExpiredTime(cookieData.getExpired());
-        Session.getInstance().setFriendCookie(rejectUid, userCookie);
-        SharedUtil.getInstance().insertFriendCookie(rejectUid, userCookie);
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, rejectUid);
-
-        ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
-        if (messageEntity != null) {
-            CFriendChat friendChat = new CFriendChat(friendEntity);
-            friendChat.sendPushMsg(messageEntity);
-        }
+//        UserCookie userCookie = new UserCookie();
+//        userCookie.setPubKey(cookieData.getChatPubKey());
+//        userCookie.setSalt(cookieData.getSalt().toByteArray());
+//        userCookie.setExpiredTime(cookieData.getExpired());
+//        Session.getInstance().setFriendCookie(rejectUid, userCookie);
+//        SharedUtil.getInstance().insertFriendCookie(rejectUid, userCookie);
+//        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, rejectUid);
+//
+//        ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
+//        if (messageEntity != null) {
+//            CFriendChat friendChat = new CFriendChat(friendEntity);
+//            friendChat.sendPushMsg(messageEntity);
+//        }
     }
 }

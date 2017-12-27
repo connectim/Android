@@ -46,7 +46,7 @@ public class TransferMutiDetailPresenter implements TransferMutiDetailContract.P
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                             Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                             if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
                                 String avatar = userInfo.getAvatar();
@@ -73,10 +73,7 @@ public class TransferMutiDetailPresenter implements TransferMutiDetailContract.P
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
-                    }
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
                         String sender = bill.getSender();

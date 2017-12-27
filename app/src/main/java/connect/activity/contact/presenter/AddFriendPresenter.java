@@ -37,7 +37,8 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
      */
     @Override
     public void requestRecommendUser() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_RECOMMEND, ByteString.copyFrom(new byte[]{}),
+        queryFriend();
+        /*OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_RECOMMEND, ByteString.copyFrom(new byte[]{}),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
@@ -68,7 +69,7 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
 
                     @Override
                     public void onError(Connect.HttpResponse response) {}
-                });
+                });*/
     }
 
     /**
@@ -80,7 +81,6 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
             @Override
             protected ArrayList<FriendRequestEntity> doInBackground(Void... params) {
                 ArrayList<FriendRequestEntity> listFinal = new ArrayList<>();
-                listFinal.addAll(listRecommend);
                 listFinal.addAll(ContactHelper.getInstance().loadFriendRequest());
                 return listFinal;
             }
@@ -88,14 +88,14 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
             @Override
             protected void onPostExecute(ArrayList<FriendRequestEntity> list) {
                 super.onPostExecute(list);
-                mView.notifyData(listRecommend.size() >= 4 ? true : false, list);
+                mView.notifyData(false, list);
             }
         }.execute();
     }
 
     @Override
     public void requestNoInterest(final String uid) {
-        Connect.NOInterest noInterest = Connect.NOInterest.newBuilder()
+        /*Connect.NOInterest noInterest = Connect.NOInterest.newBuilder()
                 .setUid(uid)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_DISINCLINE, noInterest, new ResultCall<Connect.HttpResponse>() {
@@ -112,7 +112,7 @@ public class AddFriendPresenter implements AddFriendContract.Presenter{
 
             @Override
             public void onError(Connect.HttpResponse response) {}
-        });
+        });*/
     }
 
     /**

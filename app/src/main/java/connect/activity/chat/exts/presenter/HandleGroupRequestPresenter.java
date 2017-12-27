@@ -63,7 +63,7 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)) {
                         String avatar = groupInfoBase.getAvatar();
@@ -93,11 +93,11 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
                 //.setSecretKey(groupEntity.getEcdh_key())
                 .build();
 
-        String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
+        String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getUid();
         byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(myCaPrivateKey, caPublicKey);
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
-        String myCaPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String myCaPublicKey = SharedPreferenceUtil.getInstance().getUser().getUid();
         String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
         String backup = String.format("%1$s/%2$s", myCaPublicKey, groupHex);
 

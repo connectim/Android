@@ -33,7 +33,8 @@
                     android:layout_width="match_parent"
                     android:layout_marginRight="@dimen/dp_10"
                     android:gravity="right"
-                    android:textColor="@color/color_858998"/>
+                    android:textColor="@color/color_858998"
+                    android:visibility="gone"/>
 
                 <ImageView
                     android:id="@+id/avatar_rimg"
@@ -147,7 +148,8 @@
                 android:layout_height="@dimen/dp_50"
                 android:background="@color/color_ffffff"
                 android:paddingLeft="@dimen/dp_15"
-                android:paddingRight="@dimen/dp_15">
+                android:paddingRight="@dimen/dp_15"
+                android:visibility="gone">
 
                 <TextView
                     style="@style/BaseTextStyle.16"

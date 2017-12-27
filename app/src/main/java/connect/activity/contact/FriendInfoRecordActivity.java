@@ -118,12 +118,11 @@ public class FriendInfoRecordActivity extends BaseActivity {
                 .setPageSize(MAX_RECOMMEND_COUNT)
                 .setPageIndex(page)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_FRIEND_RECORDS, friendRecords, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_FRIEND_RECORDS, friendRecords, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.FriendBillsMessage friendBillsMessage = Connect.FriendBillsMessage.parseFrom(structData.getPlainData());
                     if (friendBillsMessage.getFriendBillsList().size() == 0 && page == 1) {
                         noDataLin.setVisibility(View.VISIBLE);
@@ -147,7 +146,7 @@ public class FriendInfoRecordActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {}
+            public void onError(Connect.HttpNotSignResponse response) {}
         });
     }
 

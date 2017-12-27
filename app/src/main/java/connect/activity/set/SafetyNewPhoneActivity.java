@@ -178,7 +178,7 @@ public class SafetyNewPhoneActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try{
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.SecurityToken securityToken = Connect.SecurityToken .parseFrom(structData.getPlainData());
                     token = securityToken.getToken();
                     countdownTime();
@@ -211,7 +211,7 @@ public class SafetyNewPhoneActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                userBean.setPhone(phone);
+                //userBean.setPhone(phone);
                 SharedPreferenceUtil.getInstance().putUser(userBean);
                 mActivity.finish();
             }

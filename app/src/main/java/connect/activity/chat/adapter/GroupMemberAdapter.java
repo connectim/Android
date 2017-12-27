@@ -115,7 +115,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
                 } else {
                     closeMenu();
                     GroupMemberEntity indexEntity = groupMemEntities.get(position);
-                    if (indexEntity.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getPubKey())) {
+                    if (indexEntity.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
                         UserInfoActivity.startActivity(activity);
                     } else {
                         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(indexEntity.getUid());
@@ -176,7 +176,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
     public void removeData(int position) {
         closeMenu();
         GroupMemberEntity entity = groupMemEntities.get(position);
-        if (!SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(entity.getUid())) {
+        if (!SharedPreferenceUtil.getInstance().getUser().getUid().equals(entity.getUid())) {
             removeGroupMember(position ,entity);
         }
     }

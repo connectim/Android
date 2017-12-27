@@ -111,7 +111,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             holder.badgeTxt.setBadgeCount(roomAttr.getDisturb(), roomAttr.getUnread());
         }
 
-        if (0 == roomAttr.getStranger() || SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
+        if (0 == roomAttr.getStranger() || SharedPreferenceUtil.getInstance().getUser().getUid().equals(roomAttr.getRoomid())) {//not stranger
             holder.stangerTxt.setVisibility(View.GONE);
         } else {
             holder.stangerTxt.setVisibility(View.VISIBLE);

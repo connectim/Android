@@ -92,27 +92,16 @@ public class UpdateInfoService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogManager.getLogger().d(Tag, "***  onStartCommand start  ***");
         initSoundPool();
-        String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
-        if (TextUtils.isEmpty(index)) {
-            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
-        } else {
-            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALT_VERIFY);
-        }
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    public void updatePreferencesInfo() {
-        //get private set
-        if (ParamManager.getInstance().getPrivateSet() == null) {
-            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PrivateSet, "");
-        }
-        if(ParamManager.getInstance().getWalletSet() == null){
-            WalletSetBean.initWalletSet();
-        }
         if(ParamManager.getInstance().getSystemSet() == null){
             SystemSetBean.initSystemSet();
         }
         HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.BlackList, "");
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    public void initSoundPool() {
+        soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
+        soundPool.load(service, R.raw.instant_message, 1);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -122,20 +111,17 @@ public class UpdateInfoService extends Service {
             objects = (Object[]) httpRec.obj;
         }
         switch (httpRec.httpRecType) {
-            case SALTEXPIRE://get salt
-                connectSalt();
-                break;
-            case SALT_VERIFY://salt verify
-                verifySalt();
-                break;
-            case PrivateSet://private set
-                requestPrivateInfo();
-                break;
             case BlackList://black list
                 requestBlackList();
                 break;
             case SOUNDPOOL:
-                playSystemVoice((Integer) objects[0]);
+                if ((Integer) objects[0] == 0) {
+                    SystemUtil.noticeVoice(service);
+                } else {
+                    if (soundPool != null) {
+                        soundPool.play(1, 7, 7, 0, 0, 1);
+                    }
+                }
                 break;
             case SYSTEM_VIBRATION:
                 SystemUtil.noticeVibrate(service);
@@ -143,128 +129,13 @@ public class UpdateInfoService extends Service {
         }
     }
 
-    public void initSoundPool() {
-        soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
-        soundPool.load(service, R.raw.instant_message, 1);
-    }
-
-    public void playSystemVoice(int state) {
-        if (state == 0) {
-            SystemUtil.noticeVoice(service);
-        } else {
-            if (soundPool != null) {
-                soundPool.play(1, 7, 7, 0, 0, 1);
-            }
-        }
-    }
-
-    public void verifySalt() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_USERS_EXPIRE_SALT, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT,
-                            SharedPreferenceUtil.getInstance().getUser().getPriKey(), imResponse.getCipherData());
-                    Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
-                        if (tokenResponse.getExpired() <= 400) {
-                            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
-                        } else {
-                            serviceHandler.removeMessages(SALT_TIMEOUT);
-                            serviceHandler.sendEmptyMessageDelayed(SALT_TIMEOUT, tokenResponse.getExpired());
-                            updatePreferencesInfo();
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                LogManager.getLogger().d(Tag, response.getMessage());
-            }
-        });
-    }
-
-    /** salt timeout */
-    private static final int SALT_TIMEOUT = 100;
-    private Handler serviceHandler = new Handler() {
-        @Override
-        public void handleMessage(android.os.Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 100:
-                    HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
-                    break;
-            }
-        }
-    };
-
-    public void connectSalt() {
-        final byte[] bytes = SecureRandom.getSeed(64);
-        Connect.GenerateToken generateToken = Connect.GenerateToken.newBuilder().setSalt(ByteString.copyFrom(bytes)).build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_USER_SALT, generateToken, EncryptionUtil.ExtendedECDH.EMPTY,
-                new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
-                            SharedPreferenceUtil.getInstance().getUser().getPriKey(), imResponse.getCipherData());
-                    Connect.GenerateTokenResponse tokenResponse = Connect.GenerateTokenResponse.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(tokenResponse)){
-                        byte[] salts = SupportKeyUril.xor(bytes, tokenResponse.getSalt().toByteArray());
-                        ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_SALT, StringUtil.bytesToHexString(salts));
-                        ParamManager.getInstance().putValue(ParamManager.GENERATE_TOKEN_EXPIRED, String.valueOf(tokenResponse.getExpired()));
-                        updatePreferencesInfo();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                LogManager.getLogger().d(Tag, response.getMessage());
-            }
-        });
-    }
-
-    public void requestPrivateInfo() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PRIVACY_INFO, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            if (structData != null) {
-                                Connect.Preferences preferences = Connect.Preferences.parseFrom(structData.getPlainData());
-                                PrivateSetBean privateSetBean = new PrivateSetBean();
-                                privateSetBean.setPhoneFind(preferences.getPhoneNum());
-                                privateSetBean.setRecommend(preferences.getRecommend());
-                                ParamManager.getInstance().putPrivateSet(privateSetBean);
-                            }
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {}
-                });
-    }
-
     private void requestBlackList() {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_LIST, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
+                new ResultCall<Connect.HttpNotSignResponse>() {
                     @Override
-                    public void onResponse(Connect.HttpResponse response) {
+                    public void onResponse(Connect.HttpNotSignResponse response) {
                         try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                             if(structData == null || structData.getPlainData() == null){
                                 return;
                             }
@@ -279,7 +150,7 @@ public class UpdateInfoService extends Service {
                     }
 
                     @Override
-                    public void onError(Connect.HttpResponse response) {}
+                    public void onError(Connect.HttpNotSignResponse response) {}
                 });
     }
 

@@ -112,8 +112,8 @@ public class UserInfoConnectIdActivity extends BaseActivity {
                     @Override
                     public void onResponse(Connect.HttpNotSignResponse response) {
                         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                        userBean.setConnectId(value);
-                        userBean.setUpdateConnectId(true);
+                        /*userBean.setConnectId(value);
+                        userBean.setUpdateConnectId(true);*/
                         SharedPreferenceUtil.getInstance().putUser(userBean);
 
                         ToastEUtil.makeText(mActivity, R.string.Set_Set_success).show();

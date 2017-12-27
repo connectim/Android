@@ -25,9 +25,6 @@ import connect.activity.wallet.bean.TransferBean;
 public class ParamManager {
 
     private static ParamManager paramManager;
-
-    /** User privacy Settings */
-    public static final String USER_PRIVATE_SET = "user_private_set";
     /** wallet set */
     public static final String WALLET_SET = "wallet_set";
     /** system set */
@@ -181,25 +178,6 @@ public class ParamManager {
             return new WalletBean();
         }
         return new Gson().fromJson(paramEntity.getValue(), WalletBean.class);
-    }
-
-    /**
-     * User preferences set
-     * @param privateSetBean
-     */
-    public void putPrivateSet(PrivateSetBean privateSetBean) {
-        ParamEntity paramEntity = new ParamEntity();
-        paramEntity.setKey(USER_PRIVATE_SET);
-        paramEntity.setValue(new Gson().toJson(privateSetBean));
-        ParamHelper.getInstance().insertParamEntity(paramEntity);
-    }
-
-    public PrivateSetBean getPrivateSet() {
-        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(USER_PRIVATE_SET);
-        if(paramEntity == null){
-            return null;
-        }
-        return new Gson().fromJson(paramEntity.getValue(), PrivateSetBean.class);
     }
 
     /**

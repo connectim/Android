@@ -68,9 +68,9 @@ public class SafetyPhoneActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_Verify_Phone);
 
         userBean = SharedPreferenceUtil.getInstance().getUser();
-        if (!TextUtils.isEmpty(userBean.getPhone())) {
+        /*if (!TextUtils.isEmpty(userBean.getPhone())) {
             phoneTv.setText(userBean.getPhone());
-        }
+        }*/
         codeVerifyEdit.addTextChangedListener(textWatcher);
     }
 
@@ -97,11 +97,11 @@ public class SafetyPhoneActivity extends BaseActivity {
         @Override
         public void afterTextChanged(Editable s) {
             String code = codeVerifyEdit.getText().toString();
-            if (!TextUtils.isEmpty(userBean.getPhone()) && !TextUtils.isEmpty(code)) {
+            /*if (!TextUtils.isEmpty(userBean.getPhone()) && !TextUtils.isEmpty(code)) {
                 nextBtn.setEnabled(true);
             } else {
                 nextBtn.setEnabled(false);
-            }
+            }*/
         }
     };
 
@@ -128,7 +128,6 @@ public class SafetyPhoneActivity extends BaseActivity {
 
     private void sendCode(){
         Connect.SendMobileCode sendMobileCode = Connect.SendMobileCode.newBuilder()
-                .setMobile(userBean.getPhone())
                 .setCategory(11)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.V2_SMS_SEND, sendMobileCode, new ResultCall<Connect.HttpResponse>() {
@@ -136,7 +135,7 @@ public class SafetyPhoneActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try{
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.SecurityToken securityToken = Connect.SecurityToken .parseFrom(structData.getPlainData());
                     token = securityToken.getToken();
                     countdownTime();
@@ -158,7 +157,6 @@ public class SafetyPhoneActivity extends BaseActivity {
 
     private void verifyCode(){
         Connect.ChangeMobileVerify changeMobileVerify = Connect.ChangeMobileVerify.newBuilder()
-                .setMobile(userBean.getPhone())
                 .setToken(token)
                 .setCode(codeVerifyEdit.getText().toString())
                 .setCategory(11)
@@ -168,7 +166,7 @@ public class SafetyPhoneActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try{
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.SecurityToken securityToken = Connect.SecurityToken .parseFrom(structData.getPlainData());
                     SafetyNewPhoneActivity.startActivity(mActivity, securityToken.getToken());
                     mActivity.finish();

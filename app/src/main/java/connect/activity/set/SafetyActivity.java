@@ -69,10 +69,10 @@ public class SafetyActivity extends BaseActivity {
         toolbarTop.setTitle(null, R.string.Set_Account_security);
 
         userBean = SharedPreferenceUtil.getInstance().getUser();
-        if (userBean != null && TextUtils.isEmpty(userBean.getPhone())) {
+        if (userBean != null && TextUtils.isEmpty("")) {
             phoneTv.setText(R.string.Set_Phone_unbinded);
         } else {
-            phoneTv.setText(userBean.getPhone());
+            //phoneTv.setText(userBean.getPhone());
             /*try {
                 String phoneNum = userBean.getPhone();
                 String[] splitArr = phoneNum.split("-");
@@ -83,11 +83,11 @@ public class SafetyActivity extends BaseActivity {
             }*/
         }
 
-        if (userBean.isOpenPassword()) {
+        /*if (userBean.isOpenPassword()) {
             passwordTv.setText(R.string.Set_On);
         } else {
             passwordTv.setText(R.string.Set_Off);
-        }
+        }*/
     }
 
     @OnClick(R.id.left_img)

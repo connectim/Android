@@ -105,15 +105,6 @@
             android:name="connect.activity.login.LoginUserActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.contact.SubscribeActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.contact.SubscribeMarketActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.contact.SubscribeDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name="connect.widget.clip.ClipImageActivity"
             android:screenOrientation="portrait"/>
         <activity
@@ -412,12 +403,6 @@
         <activity
             android:name="connect.activity.chat.set.GroupCreateActivity"
             android:label="@string/title_activity_group_create">
-        </activity>
-        <activity android:name="connect.activity.chat.subscribe.SubscribeListActivity">
-        </activity>
-        <activity
-            android:name="connect.activity.chat.subscribe.SubscribeMessageActivity"
-            android:label="@string/title_activity_subscribe_detail">
         </activity>
     </application>
 

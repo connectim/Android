@@ -73,13 +73,13 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
         new SafetyLoginPassPresenter(this).start();
         userBean = SharedPreferenceUtil.getInstance().getUser();
 
-        if (userBean.isOpenPassword()) {
+        /*if (userBean.isOpenPassword()) {
             passwordEditLl.setVisibility(View.GONE);
             toolbarTop.setTitle(null, R.string.Set_Close_password);
         } else {
             passwordEditLl.setVisibility(View.VISIBLE);
             toolbarTop.setTitle(null, R.string.Set_Open_password);
-        }
+        }*/
 
         passwordEdit.addTextChangedListener(textWatcher);
         passwordConfirmEdit.addTextChangedListener(textWatcher);
@@ -98,7 +98,7 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
 
     @OnClick(R.id.send_tv)
     void sendCode(View view) {
-        presenter.requestSendCode(userBean.getPhone());
+        //presenter.requestSendCode(userBean.getPhone());
     }
 
     @OnClick(R.id.next_btn)
@@ -106,7 +106,7 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
         String password = passwordEdit.getText().toString();
         String passwordConfirm = passwordConfirmEdit.getText().toString();
         String code = codeVerifyEdit.getText().toString();
-        if (userBean.isOpenPassword()) {
+        /*if (userBean.isOpenPassword()) {
             presenter.requestPassword("", code, 2);
         }else{
             if (!RegularUtil.matches(password, RegularUtil.PASSWORD)) {
@@ -116,7 +116,7 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
             } else {
                 presenter.requestPassword(password, code, 1);
             }
-        }
+        }*/
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
@@ -133,7 +133,7 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
             String password = passwordEdit.getText().toString();
             String passwordConfirm = passwordConfirmEdit.getText().toString();
             String code = codeVerifyEdit.getText().toString();
-            if (userBean.isOpenPassword()) {
+            /*if (userBean.isOpenPassword()) {
                 if (!TextUtils.isEmpty(code) && isClickSendCode) {
                     nextBtn.setEnabled(true);
                 } else {
@@ -145,7 +145,7 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
                 } else {
                     nextBtn.setEnabled(false);
                 }
-            }
+            }*/
         }
     };
 
@@ -156,11 +156,11 @@ public class SafetyLoginPassActivity extends BaseActivity implements SafetyLogin
 
     @Override
     public void modifySuccess(int type) {
-        if (type == 1) {
+        /*if (type == 1) {
             userBean.setOpenPassword(true);
         }else{
             userBean.setOpenPassword(false);
-        }
+        }*/
         SharedPreferenceUtil.getInstance().putUser(userBean);
         ActivityUtil.goBack(mActivity);
     }

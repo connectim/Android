@@ -59,14 +59,6 @@ public abstract class BaseFileUp implements InterFileUp {
         return userCookie;
     }
 
-    public UserCookie loadFriendCookie(String caPublicKey) {
-        UserCookie friendCookie = Session.getInstance().getFriendCookie(caPublicKey);
-        if (friendCookie == null) {
-            friendCookie = SharedUtil.getInstance().loadFriendCookie(caPublicKey);
-        }
-        return friendCookie;
-    }
-
     /**
      * File encryption
      *
@@ -90,13 +82,8 @@ public abstract class BaseFileUp implements InterFileUp {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    UserCookie userCookie = loadUserCookie();
-                    String myPrivateKey = userCookie.getPriKey();
-
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(connect.utils.cryption.EncryptionUtil.ExtendedECDH.EMPTY,
-                            myPrivateKey,
-                            imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
 
                     Connect.FileData fileData = Connect.FileData.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(fileData)) {

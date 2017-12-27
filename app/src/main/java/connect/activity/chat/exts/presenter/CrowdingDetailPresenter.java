@@ -49,11 +49,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
-                    }
-
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     crowdfunding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
                     if (!ProtoBufUtil.getInstance().checkProtoBuf(crowdfunding)) {
                         return;

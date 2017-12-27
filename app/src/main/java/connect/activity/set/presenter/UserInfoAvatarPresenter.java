@@ -109,13 +109,12 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
             @Override
             protected void onPostExecute(Connect.Avatar avatar) {
                 super.onPostExecute(avatar);
-                OkHttpUtil.getInstance().postEncrySelf(UriUtil.AVATAR_V1_SET, avatar, new ResultCall<Connect.HttpResponse>() {
+                OkHttpUtil.getInstance().postEncrySelf(UriUtil.AVATAR_V1_SET, avatar, new ResultCall<Connect.HttpNotSignResponse>() {
                     @Override
-                    public void onResponse(Connect.HttpResponse response) {
+                    public void onResponse(Connect.HttpNotSignResponse response) {
                         ProgressUtil.getInstance().dismissProgress();
                         try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                             Connect.AvatarInfo userAvatar = Connect.AvatarInfo.parseFrom(structData.getPlainData());
                             if (ProtoBufUtil.getInstance().checkProtoBuf(userAvatar)) {
                                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
@@ -130,7 +129,7 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
                     }
 
                     @Override
-                    public void onError(Connect.HttpResponse response) {
+                    public void onError(Connect.HttpNotSignResponse response) {
                         ProgressUtil.getInstance().dismissProgress();
                         if(response.getCode() == 2408){
                             ToastEUtil.makeText(mView.getActivity(),R.string.Login_User_avatar_is_illegal,ToastEUtil.TOAST_STATUS_FAILE).show();

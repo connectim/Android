@@ -32,6 +32,8 @@ public class UriUtil {
     public static String CONNECT_V2_SIGN_UP = "/connect/v2/sign_up";
     /** The private key is registered */
     public static String CONNECT_V2_SIGN_UP_PASSWORD = "/connect/v2/sign_in/password";
+    /** The private key is registered */
+    public static String CONNECT_V3_LOGIN = "/connect/v3/login";
 
     /**======================================================================================
      *                                Login successfully initialized

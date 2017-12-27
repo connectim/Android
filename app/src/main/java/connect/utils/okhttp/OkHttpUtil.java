@@ -66,7 +66,7 @@ public class OkHttpUtil {
         Connect.HttpRequest httpRequest = Connect.HttpRequest.newBuilder()
                 .setUid(userBean.getUid())
                 .setBody(bytes)
-                .setToken("").build();
+                .setToken(userBean.getToken()).build();
         HttpRequest.getInstance().post(url, httpRequest, resultCall);
         /*UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);

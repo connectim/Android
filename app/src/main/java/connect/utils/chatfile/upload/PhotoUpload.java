@@ -92,16 +92,16 @@ public class PhotoUpload extends BaseFileUp {
         }
 
         UserCookie userCookie = loadUserCookie();
-        String myPrivateKey = userCookie.getPriKey();
-        String myPublicKey = userCookie.getPubKey();
+//        String myPrivateKey = userCookie.getPriKey();
+//        String myPublicKey = userCookie.getPubKey();
 
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
-        String signHash = SupportKeyUril.signHash(myPrivateKey, gcmData.toByteArray());
-        mediaFile = Connect.MediaFile.newBuilder()
-                .setPubKey(myPublicKey)
-                .setSign(signHash)
-                .setCipherData(gcmData)
-                .build();
+//        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
+//        String signHash = SupportKeyUril.signHash(myPrivateKey, gcmData.toByteArray());
+//        mediaFile = Connect.MediaFile.newBuilder()
+//                .setPubKey(myPublicKey)
+//                .setSign(signHash)
+//                .setCipherData(gcmData)
+//                .build();
 
 //                FileUtil.deleteFile(thumbCompressFile);
 //                FileUtil.deleteFile(sourceCompressFile);

@@ -104,52 +104,51 @@ public class RegisterPresenter implements RegisterContract.Presenter {
             repeated string one_time_pre_keys = 8;
         }*/
 
-        Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder()
-                .setToken(token)
-                .setMobile(userBeanOut.getPhone())
-                .setAvatar(headPath)
-                .setUsername(nicName)
-                .setDeviceId(SystemDataUtil.getDeviceId())
-                .setIdentityKey("aaaaaaaaaaaaaaa")
-                .setSignedPerKey(userBeanOut.getPubKey());
-        for(int i = 0; i<100; i++){
-            builder.addOneTimePreKeys("aaaaaaaaaaaaa"+i);
-        }
-
-        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBeanOut.getPriKey(),
-                userBeanOut.getPubKey(), builder.build().toByteString());
-        HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_UP, imRequest, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                try {
-                    ProgressUtil.getInstance().dismissProgress();
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
-                            userBeanOut.getPriKey(), imResponse.getCipherData());
-                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-
-                    UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), userBeanOut.getPriKey(), userBeanOut.getPubKey(),
-                            userBeanOut.getPhone(), userInfo.getConnectId(), userInfo.getUid(), false);
-                    SharedPreferenceUtil.getInstance().putUser(userBean);
-
-                    mView.launchHome();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                ProgressUtil.getInstance().dismissProgress();
-                if (response.getCode() == 2101) {
-                    Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
-                } else if(response.getCode() == 2102){
-                    Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+//        Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder()
+//                .setToken(token)
+//                .setAvatar(headPath)
+//                .setUsername(nicName)
+//                .setDeviceId(SystemDataUtil.getDeviceId())
+//                .setIdentityKey("aaaaaaaaaaaaaaa")
+//                .setSignedPerKey(userBeanOut.getUid());
+//        for(int i = 0; i<100; i++){
+//            builder.addOneTimePreKeys("aaaaaaaaaaaaa"+i);
+//        }
+//
+//        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBeanOut.getUid(),
+//                userBeanOut.getUid(), builder.build().toByteString());
+//        HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_UP, imRequest, new ResultCall<Connect.HttpResponse>() {
+//            @Override
+//            public void onResponse(Connect.HttpResponse response) {
+//                try {
+//                    ProgressUtil.getInstance().dismissProgress();
+//                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+//                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
+//                            userBeanOut.getUid(), imResponse.getCipherData());
+//                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+//
+//                    /*UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(),userBeanOut.getPhone(),
+//                            userInfo.getConnectId(), userInfo.getUid(), false);
+//                    SharedPreferenceUtil.getInstance().putUser(userBean);
+//
+//                    mView.launchHome();*/
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Connect.HttpResponse response) {
+//                ProgressUtil.getInstance().dismissProgress();
+//                if (response.getCode() == 2101) {
+//                    Toast.makeText(mView.getActivity(), R.string.Login_User_avatar_is_illegal, Toast.LENGTH_LONG).show();
+//                } else if(response.getCode() == 2102){
+//                    Toast.makeText(mView.getActivity(), R.string.Login_username_already_exists, Toast.LENGTH_LONG).show();
+//                } else {
+//                    Toast.makeText(mView.getActivity(), response.getMessage(), Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
     }
 
 }

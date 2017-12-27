@@ -1332,12 +1332,6 @@ message RelationshipChange {
     string category=3;
 }
 
-message HttpRequest {
-    string uid = 1;
-    string sign = 2;
-    GcmData cipher_data = 3;
-}
-
 message Mfa {
     int32 typ = 1;
     string val = 2;
@@ -1749,4 +1743,21 @@ message WebSocketMessage {
     WebSocketResponseMessage response = 3;
 }
 
+message LoginReq {
+string username =1;
+string password = 2;
+}
 
+message UserLoginInfo {
+string token = 1;
+bool logined =2;
+string name =3;
+string o_u =4;
+string uid =5;
+}
+
+message HttpRequest {
+  string uid = 1;
+  bytes body = 2;
+  string token = 3;
+}

@@ -451,7 +451,7 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo) {
-        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getUid();
         if (packageInfo.getSystem()) {
             ChatMsgEntity msgExtEntity = CRobotChat.getInstance().luckPacketMsg(1, packageInfo.getHashId(), 0L, packageInfo.getTips());
             msgExtEntity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));

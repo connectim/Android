@@ -49,7 +49,7 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
             friendEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);
             if (friendEntity == null) {
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                if (userBean.getPubKey().equals(roomKey)) {
+                if (userBean.getUid().equals(roomKey)) {
                     friendEntity = new ContactEntity();
                     friendEntity.setAvatar(userBean.getAvatar());
                     friendEntity.setUsername(userBean.getName());
