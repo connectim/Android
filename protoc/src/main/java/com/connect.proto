@@ -521,6 +521,8 @@ GcmData cipher_data = 3;
 
 message IMTransferData {
 bytes body = 1;
+ string token = 2;
+  string uid = 3;
 }
 
 message Ack {

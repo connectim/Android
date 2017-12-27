@@ -28,6 +28,8 @@ import protos.Connect;
 
 public class ShakeHandParser extends InterParse {
 
+    private static String TAG = "_ShakeHandParser";
+
     public ShakeHandParser(byte ackByte, ByteBuffer byteBuffer) {
         super(ackByte, byteBuffer);
     }
@@ -51,25 +53,24 @@ public class ShakeHandParser extends InterParse {
 
         String token = newConnection.getToken();
         UserCookie chatCookie = Session.getInstance().getChatCookie();
+        if (chatCookie == null) {
+            chatCookie = new UserCookie();
+        }
         chatCookie.setToken(token);
         Session.getInstance().setChatCookie(chatCookie);
 
-        //Data encryption devices
-        String deviceName = Build.DEVICE;
-        String deviceId = DeviceInfoUtil.getDeviceId();
-        String local = DeviceInfoUtil.getDeviceLanguage();
-        String uuid = DeviceInfoUtil.getLocalUid();
-
-        Connect.DeviceInfo deviceInfo = Connect.DeviceInfo.newBuilder()
-                .setDeviceId(deviceId)
-                .setDeviceName(deviceName)
-                .setLocale(local)
-                .setCv(0)
-                .setUuid(uuid)
+        Connect.NewConnection connectionNew = Connect.NewConnection.newBuilder()
+                .setToken(token)
+                .build();
+        Connect.StructData dataStruct = Connect.StructData.newBuilder()
+                .setPlainData(connectionNew.toByteString())
                 .build();
 
+        String uid = Session.getInstance().getConnectCookie().getUid();
         Connect.IMTransferData imTransferData = Connect.IMTransferData.newBuilder()
-                .setBody(deviceInfo.toByteString())
+                .setBody(dataStruct.toByteString())
+                .setUid(uid)
+                .setToken(token)
                 .build();
 
         SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_SECOND, imTransferData.toByteString());

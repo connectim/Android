@@ -35,13 +35,16 @@ public class ShakeHandSender {
         Connect.NewConnection newConnection = Connect.NewConnection.newBuilder()
                 .setToken(token)
                 .build();
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setPlainData(newConnection.toByteString())
+                .build();
 
         String deviceId = DeviceInfoUtil.getDeviceId();
         Connect.TcpRequest imRequest = Connect.TcpRequest.newBuilder()
                 .setUid(uid)
                 .setToken(token)
                 .setDeviceId(deviceId)
-                .setBody(newConnection.toByteString())
+                .setBody(structData.toByteString())
                 .build();
 
         SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, imRequest.toByteString());

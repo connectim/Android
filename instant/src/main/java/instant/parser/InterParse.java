@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
+import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.sender.SenderManager;
@@ -66,7 +67,9 @@ public abstract class InterParse {
                 .setMsgId(msgid)
                 .build();
 
+        String token = Session.getInstance().getChatCookie().getToken();
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
+                .setToken(token)
                 .setBody(ack.toByteString())
                 .build();
 
@@ -80,8 +83,10 @@ public abstract class InterParse {
                 .addAllAcks(socketACKs)
                 .build();
 
+        String token = Session.getInstance().getChatCookie().getToken();
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
                 .setBody(ackBatch.toByteString())
+                .setToken(token)
                 .build();
 
         SenderManager.getInstance().sendToMsg(SocketACK.ACK_BACK_OFFLINEBATCH, backAck.toByteString());
@@ -158,7 +163,19 @@ public abstract class InterParse {
     protected void commandToIMTransfer(String msgid, SocketACK ack, ByteString byteString) {
         Connect.Command command = Connect.Command.newBuilder().setMsgId(msgid).
                 setDetail(byteString).build();
-        SenderManager.getInstance().sendAckMsg(ack, null, msgid, command.toByteString());
+
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setPlainData(command.toByteString())
+                .build();
+
+        String uid = Session.getInstance().getConnectCookie().getUid();
+        String token = Session.getInstance().getChatCookie().getToken();
+        Connect.IMTransferData imTransferData = Connect.IMTransferData.newBuilder()
+                .setBody(structData.toByteString())
+                .setUid(uid)
+                .setToken(token)
+                .build();
+        SenderManager.getInstance().sendAckMsg(ack, null, msgid, imTransferData.toByteString());
     }
 
     /**
