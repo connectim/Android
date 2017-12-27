@@ -1,9 +1,7 @@
 package connect.activity.login;
 
 import android.app.Activity;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.ImageView;
 
 import butterknife.Bind;
@@ -37,21 +35,13 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
     @Override
     public void initView() {
         mActivity = this;
+        startImg.setImageResource(R.mipmap.bg_start_man);
         new StartPagePresenter(this).start();
     }
 
     @Override
     public void setPresenter(StartContract.Presenter presenter) {
         this.presenter = presenter;
-    }
-
-    @Override
-    public void setImage(String path) {
-        if (TextUtils.isEmpty(path)) {
-            startImg.setImageResource(R.mipmap.bg_start_man);
-        } else {
-            startImg.setImageBitmap(BitmapFactory.decodeFile(path));
-        }
     }
 
     @Override

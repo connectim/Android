@@ -39,8 +39,6 @@ public class AboutActivity extends BaseActivity {
     TextView appVersion;
     @Bind(R.id.llRate)
     LinearLayout llRate;
-    @Bind(R.id.llOpenSource)
-    LinearLayout llOpenSource;
     @Bind(R.id.tvNewVersion)
     TextView tvNewVersion;
     @Bind(R.id.llUpdate)
@@ -76,11 +74,6 @@ public class AboutActivity extends BaseActivity {
     @OnClick(R.id.left_img)
     void goback(View view){
         ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.llOpenSource)
-    void goOpenSource(View view){
-        ActivityUtil.next(mActivity,AboutDeveloperActivity.class);
     }
 
     @OnClick(R.id.llUpdate)

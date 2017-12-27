@@ -62,10 +62,16 @@ public class OkHttpUtil {
      * @param resultCall
      */
     public void postEncrySelf(String url, ByteString bytes, final ResultCall resultCall){
+        ByteString random = ByteString.copyFrom(SupportKeyUril.createBinaryRandom());
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setRandom(random)
+                .setPlainData(bytes)
+                .build();
+
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         Connect.HttpRequest httpRequest = Connect.HttpRequest.newBuilder()
                 .setUid(userBean.getUid())
-                .setBody(bytes)
+                .setBody(structData.toByteString())
                 .setToken(userBean.getToken()).build();
         HttpRequest.getInstance().post(url, httpRequest, resultCall);
         /*UserBean userBean = SharedPreferenceUtil.getInstance().getUser();

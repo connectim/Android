@@ -16,6 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.home.HomeActivity;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
@@ -76,10 +77,11 @@ public class LoginUserActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.UserLoginInfo userLoginInfo = Connect.UserLoginInfo.parseFrom(response.getBody());
-                    userLoginInfo.getToken();
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
+                    Connect.UserLoginInfo userLoginInfo = Connect.UserLoginInfo.parseFrom(structData.getPlainData());
                     UserBean userBean = new UserBean(userLoginInfo.getName(), "", userLoginInfo.getUid(), userLoginInfo.getOU(), userLoginInfo.getToken());
                     SharedPreferenceUtil.getInstance().putUser(userBean);
+                    HomeActivity.startActivity(mActivity);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
