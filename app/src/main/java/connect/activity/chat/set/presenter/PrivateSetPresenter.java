@@ -69,7 +69,6 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);
         if (contactEntity == null) {
             contactEntity = new ContactEntity();
-            contactEntity.setCa_pub(roomKey);
         }
 
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);

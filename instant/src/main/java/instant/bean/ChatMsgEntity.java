@@ -2,6 +2,7 @@ package instant.bean;
 
 import android.content.Context;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.Serializable;
@@ -182,7 +183,8 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
                 .setMsgType(getMessageType())
                 .setFrom(getMessage_from())
                 .setTo(getMessage_to())
-                .setMsgTime(getCreatetime());
+                .setMsgTime(getCreatetime())
+                .setBody(ByteString.copyFrom(getContents()));
         return builder;
     }
 
@@ -252,7 +254,7 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
     public String showContent() {
         String content = "";
 
-        Context context= InstantSdk.instantSdk.getBaseContext();
+        Context context = InstantSdk.instantSdk.getBaseContext();
         MessageType msgType = MessageType.toMessageType(getMessageType());
         switch (msgType) {
             case Text://text

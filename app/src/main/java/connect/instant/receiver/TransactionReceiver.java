@@ -56,7 +56,6 @@ public class TransactionReceiver implements TransactionListener {
             stranger.setUsername(senderInfo.getUsername());
             stranger.setAvatar(senderInfo.getAvatar());
             stranger.setUid(senderInfo.getUid());
-            stranger.setCa_pub(senderInfo.getCaPub());
         }
 
         CFriendChat normalChat = new CFriendChat(stranger);
@@ -206,7 +205,6 @@ public class TransactionReceiver implements TransactionListener {
         if (friendEntity == null) {
             friendEntity = new ContactEntity();
             friendEntity.setUid(friendInfo.getUid());
-            friendEntity.setCa_pub(friendInfo.getCaPub());
             friendEntity.setAvatar(friendInfo.getAvatar());
             friendEntity.setUsername(friendInfo.getUsername());
         }
@@ -216,7 +214,6 @@ public class TransactionReceiver implements TransactionListener {
         if (isMySendTo) {
             msgExtEntity.setSend_status(1);
         } else {
-            msgExtEntity.setMessage_from(friendEntity.getCa_pub());
             msgExtEntity.setMessage_to(mypublickey);
         }
 

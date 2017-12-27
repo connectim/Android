@@ -67,8 +67,10 @@ public abstract class InterParse {
                 .setMsgId(msgid)
                 .build();
 
+        String uid = Session.getInstance().getConnectCookie().getUid();
         String token = Session.getInstance().getChatCookie().getToken();
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
+                .setUid(uid)
                 .setToken(token)
                 .setBody(ack.toByteString())
                 .build();
@@ -162,20 +164,10 @@ public abstract class InterParse {
 
     protected void commandToIMTransfer(String msgid, SocketACK ack, ByteString byteString) {
         Connect.Command command = Connect.Command.newBuilder().setMsgId(msgid).
-                setDetail(byteString).build();
-
-        Connect.StructData structData = Connect.StructData.newBuilder()
-                .setPlainData(command.toByteString())
+                setDetail(byteString)
                 .build();
 
-        String uid = Session.getInstance().getConnectCookie().getUid();
-        String token = Session.getInstance().getChatCookie().getToken();
-        Connect.IMTransferData imTransferData = Connect.IMTransferData.newBuilder()
-                .setBody(structData.toByteString())
-                .setUid(uid)
-                .setToken(token)
-                .build();
-        SenderManager.getInstance().sendAckMsg(ack, null, msgid, imTransferData.toByteString());
+        SenderManager.getInstance().sendAckMsg(ack, null, msgid, command.toByteString());
     }
 
     /**

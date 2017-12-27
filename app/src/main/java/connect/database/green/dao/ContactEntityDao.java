@@ -25,15 +25,14 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
      */
     public static class Properties {
         public final static Property _id = new Property(0, Long.class, "_id", true, "_id");
-        public final static Property Ca_pub = new Property(1, String.class, "ca_pub", false, "CA_PUB");
-        public final static Property Uid = new Property(2, String.class, "uid", false, "UID");
-        public final static Property ConnectId = new Property(3, String.class, "connectId", false, "CONNECT_ID");
-        public final static Property Username = new Property(4, String.class, "username", false, "USERNAME");
-        public final static Property Avatar = new Property(5, String.class, "avatar", false, "AVATAR");
-        public final static Property Remark = new Property(6, String.class, "remark", false, "REMARK");
-        public final static Property Common = new Property(7, Integer.class, "common", false, "COMMON");
-        public final static Property Source = new Property(8, Integer.class, "source", false, "SOURCE");
-        public final static Property Blocked = new Property(9, Boolean.class, "blocked", false, "BLOCKED");
+        public final static Property Uid = new Property(1, String.class, "uid", false, "UID");
+        public final static Property ConnectId = new Property(2, String.class, "connectId", false, "CONNECT_ID");
+        public final static Property Username = new Property(3, String.class, "username", false, "USERNAME");
+        public final static Property Avatar = new Property(4, String.class, "avatar", false, "AVATAR");
+        public final static Property Remark = new Property(5, String.class, "remark", false, "REMARK");
+        public final static Property Common = new Property(6, Integer.class, "common", false, "COMMON");
+        public final static Property Source = new Property(7, Integer.class, "source", false, "SOURCE");
+        public final static Property Blocked = new Property(8, Boolean.class, "blocked", false, "BLOCKED");
     }
 
 
@@ -50,15 +49,14 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CONTACT_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
-                "\"CA_PUB\" TEXT NOT NULL UNIQUE ," + // 1: ca_pub
-                "\"UID\" TEXT NOT NULL UNIQUE ," + // 2: uid
-                "\"CONNECT_ID\" TEXT," + // 3: connectId
-                "\"USERNAME\" TEXT," + // 4: username
-                "\"AVATAR\" TEXT," + // 5: avatar
-                "\"REMARK\" TEXT," + // 6: remark
-                "\"COMMON\" INTEGER," + // 7: common
-                "\"SOURCE\" INTEGER," + // 8: source
-                "\"BLOCKED\" INTEGER);"); // 9: blocked
+                "\"UID\" TEXT NOT NULL UNIQUE ," + // 1: uid
+                "\"CONNECT_ID\" TEXT," + // 2: connectId
+                "\"USERNAME\" TEXT," + // 3: username
+                "\"AVATAR\" TEXT," + // 4: avatar
+                "\"REMARK\" TEXT," + // 5: remark
+                "\"COMMON\" INTEGER," + // 6: common
+                "\"SOURCE\" INTEGER," + // 7: source
+                "\"BLOCKED\" INTEGER);"); // 8: blocked
     }
 
     /** Drops the underlying database table. */
@@ -75,42 +73,41 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getCa_pub());
-        stmt.bindString(3, entity.getUid());
+        stmt.bindString(2, entity.getUid());
  
         String connectId = entity.getConnectId();
         if (connectId != null) {
-            stmt.bindString(4, connectId);
+            stmt.bindString(3, connectId);
         }
  
         String username = entity.getUsername();
         if (username != null) {
-            stmt.bindString(5, username);
+            stmt.bindString(4, username);
         }
  
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(6, avatar);
+            stmt.bindString(5, avatar);
         }
  
         String remark = entity.getRemark();
         if (remark != null) {
-            stmt.bindString(7, remark);
+            stmt.bindString(6, remark);
         }
  
         Integer common = entity.getCommon();
         if (common != null) {
-            stmt.bindLong(8, common);
+            stmt.bindLong(7, common);
         }
  
         Integer source = entity.getSource();
         if (source != null) {
-            stmt.bindLong(9, source);
+            stmt.bindLong(8, source);
         }
  
         Boolean blocked = entity.getBlocked();
         if (blocked != null) {
-            stmt.bindLong(10, blocked ? 1L: 0L);
+            stmt.bindLong(9, blocked ? 1L: 0L);
         }
     }
 
@@ -122,42 +119,41 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         if (_id != null) {
             stmt.bindLong(1, _id);
         }
-        stmt.bindString(2, entity.getCa_pub());
-        stmt.bindString(3, entity.getUid());
+        stmt.bindString(2, entity.getUid());
  
         String connectId = entity.getConnectId();
         if (connectId != null) {
-            stmt.bindString(4, connectId);
+            stmt.bindString(3, connectId);
         }
  
         String username = entity.getUsername();
         if (username != null) {
-            stmt.bindString(5, username);
+            stmt.bindString(4, username);
         }
  
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(6, avatar);
+            stmt.bindString(5, avatar);
         }
  
         String remark = entity.getRemark();
         if (remark != null) {
-            stmt.bindString(7, remark);
+            stmt.bindString(6, remark);
         }
  
         Integer common = entity.getCommon();
         if (common != null) {
-            stmt.bindLong(8, common);
+            stmt.bindLong(7, common);
         }
  
         Integer source = entity.getSource();
         if (source != null) {
-            stmt.bindLong(9, source);
+            stmt.bindLong(8, source);
         }
  
         Boolean blocked = entity.getBlocked();
         if (blocked != null) {
-            stmt.bindLong(10, blocked ? 1L: 0L);
+            stmt.bindLong(9, blocked ? 1L: 0L);
         }
     }
 
@@ -170,15 +166,14 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
     public ContactEntity readEntity(Cursor cursor, int offset) {
         ContactEntity entity = new ContactEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
-            cursor.getString(offset + 1), // ca_pub
-            cursor.getString(offset + 2), // uid
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // connectId
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // username
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // avatar
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // remark
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // common
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // source
-            cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0 // blocked
+            cursor.getString(offset + 1), // uid
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // connectId
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // username
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // avatar
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // remark
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // common
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // source
+            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0 // blocked
         );
         return entity;
     }
@@ -186,15 +181,14 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
     @Override
     public void readEntity(Cursor cursor, ContactEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setCa_pub(cursor.getString(offset + 1));
-        entity.setUid(cursor.getString(offset + 2));
-        entity.setConnectId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setUsername(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setAvatar(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setRemark(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setCommon(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setSource(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setBlocked(cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0);
+        entity.setUid(cursor.getString(offset + 1));
+        entity.setConnectId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setUsername(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setAvatar(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setRemark(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setCommon(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setSource(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setBlocked(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
      }
     
     @Override

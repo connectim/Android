@@ -60,7 +60,6 @@ public class MessageHelper extends BaseDao {
         ChatMsgEntity msgEntity = null;
         List<ChatMsgEntity> msgEntities = new ArrayList();
 
-        byte[] localHashKeys = SupportKeyUril.localHashKey().getBytes();
         while (cursor.moveToNext()) {
             msgEntity = new ChatMsgEntity();
             msgEntity.set_id(cursorGetLong(cursor, "_id"));
@@ -83,13 +82,7 @@ public class MessageHelper extends BaseDao {
 
             String content = msgEntity.getContent();
             if (!TextUtils.isEmpty(content)) {
-                try {
-                    Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(content));
-                    byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
-                    msgEntity.setContents(contents);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                msgEntity.setContents(StringUtil.hexStringToBytes(content));
             }
             msgEntities.add(msgEntity);
         }
@@ -110,9 +103,7 @@ public class MessageHelper extends BaseDao {
         ChatMsgEntity chatMsgEntity = null;
         try {
             MessageEntity messageEntity = detailEntities.get(0);
-            byte[] localHashKeys = connect.utils.cryption.SupportKeyUril.localHashKey().getBytes();
-            Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(messageEntity.getContent()));
-            byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
+            byte[] contents = StringUtil.hexStringToBytes(messageEntity.getContent());
 
             chatMsgEntity = messageEntity.messageToChatEntity();
             chatMsgEntity.setContents(contents);

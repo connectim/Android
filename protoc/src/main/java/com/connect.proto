@@ -685,7 +685,7 @@ string username = 1;
 }
 message MessagePost {
 string uid = 1;
-MessageData msg_data = 3;
+MessageData msg_data = 2;
 }
 
 message MSMessage {

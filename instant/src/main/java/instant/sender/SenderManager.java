@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.sender.inter.LocalServiceListener;
 import instant.utils.log.LogManager;
@@ -98,6 +99,7 @@ public class SenderManager implements LocalServiceListener {
         private ByteString bytes;
 
         SendChatRun(SocketACK ack, ByteString bytes) {
+            this.transfer=true;
             this.ack = ack;
             this.bytes = bytes;
         }
@@ -118,7 +120,16 @@ public class SenderManager implements LocalServiceListener {
                     Connect.StructData structData = Connect.StructData.newBuilder()
                             .setPlainData(bytes)
                             .build();
-                    byteBuffer = ByteBuffer.wrap(structData.toByteArray());
+
+                    String uid = Session.getInstance().getConnectCookie().getUid();
+                    String token = Session.getInstance().getChatCookie().getToken();
+                    Connect.IMTransferData imTransferData = Connect.IMTransferData.newBuilder()
+                            .setBody(structData.toByteString())
+                            .setUid(uid)
+                            .setToken(token)
+                            .build();
+
+                    byteBuffer = ByteBuffer.wrap(imTransferData.toByteArray());
                     serviceListener.messageSend(ack.getOrder(), byteBuffer);
                 } else {
                     byteBuffer = ByteBuffer.wrap(bytes.toByteArray());

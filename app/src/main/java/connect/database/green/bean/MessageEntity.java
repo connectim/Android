@@ -77,8 +77,7 @@ public class MessageEntity implements Serializable {
     }
 
     public static MessageEntity chatMsgToMessageEntity(ChatMsgEntity chatMsgEntity) {
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SupportKeyUril.localHashKey().getBytes(), chatMsgEntity.getContents());
-        String content = StringUtil.bytesToHexString(gcmData.toByteArray());
+        String content = StringUtil.bytesToHexString(chatMsgEntity.getContents());
 
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.set_id(chatMsgEntity.get_id());

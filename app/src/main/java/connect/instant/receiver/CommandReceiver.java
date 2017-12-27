@@ -98,14 +98,13 @@ public class CommandReceiver implements CommandListener {
         Map<String, ContactEntity> contactEntityMap = new HashMap<>();
         for (Connect.FriendInfo friendInfo : friendInfoList) {
             String friendUid = friendInfo.getUid();
-            String friendCapPublicKey = friendInfo.getCaPub();
-            if (TextUtils.isEmpty(friendUid) || TextUtils.isEmpty(friendCapPublicKey)) {
+
+            if (TextUtils.isEmpty(friendUid)) {
                 continue;
             }
 
             ContactEntity contactEntity = new ContactEntity();
             contactEntity.setUid(friendUid);
-            contactEntity.setCa_pub(friendCapPublicKey);
             contactEntity.setConnectId(friendInfo.getConnectId());
             contactEntity.setUsername(friendInfo.getUsername());
             contactEntity.setAvatar(friendInfo.getAvatar());
@@ -123,7 +122,6 @@ public class CommandReceiver implements CommandListener {
         if (connectEntity == null) {
             connectEntity = new ContactEntity();
             connectEntity.setUid(connect);
-            connectEntity.setCa_pub(connect);
             connectEntity.setUsername(connect);
             connectEntity.setUid(connect);
             connectEntity.setSource(-1);
@@ -193,7 +191,6 @@ public class CommandReceiver implements CommandListener {
                     }
 
                     entity.setUid(uid);
-                    entity.setCa_pub(friendInfo.getCaPub());
                     entity.setConnectId(friendInfo.getConnectId());
                     entity.setUsername(friendInfo.getUsername());
                     entity.setAvatar(friendInfo.getAvatar());
@@ -264,7 +261,6 @@ public class CommandReceiver implements CommandListener {
         contactEntity.setUid(friendInfo.getUid());
         contactEntity.setUsername(friendInfo.getUsername());
         contactEntity.setAvatar(friendInfo.getAvatar());
-        contactEntity.setCa_pub(friendInfo.getCaPub());
         contactEntity.setConnectId(friendInfo.getConnectId());
         contactEntity.setRemark(friendInfo.getRemark());
         contactEntity.setBlocked(friendInfo.getBlackList());
@@ -467,7 +463,6 @@ public class CommandReceiver implements CommandListener {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
             if (friendEntity == null) {
                 friendEntity = new ContactEntity();
-                friendEntity.setCa_pub(userInfo.getCaPub());
                 friendEntity.setAvatar(userInfo.getAvatar());
                 friendEntity.setUsername(userInfo.getUsername());
                 friendEntity.setUid(userInfo.getUid());
@@ -475,7 +470,6 @@ public class CommandReceiver implements CommandListener {
 
             CFriendChat normalChat = new CFriendChat(friendEntity);
             ChatMsgEntity msgExtEntity = normalChat.luckPacketMsg(1, packageInfo.getHashId(), 0L, packageInfo.getTips());
-            msgExtEntity.setMessage_from(friendEntity.getCa_pub());
             msgExtEntity.setMessage_to(mypublickey);
             msgExtEntity.setSend_status(1);
 

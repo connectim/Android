@@ -76,7 +76,6 @@ public class TransferToPresenter implements TransferToContract.Presenter{
 
                     if (ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)) {
                         contactEntity = new ContactEntity();
-                        contactEntity.setCa_pub(sendUserInfo.getCaPub());
                         contactEntity.setUsername(sendUserInfo.getUsername());
                         contactEntity.setUid(sendUserInfo.getUid());
                         contactEntity.setAvatar(sendUserInfo.getAvatar());

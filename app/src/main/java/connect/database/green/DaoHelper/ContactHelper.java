@@ -19,7 +19,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-
 import connect.database.green.dao.ContactEntityDao;
 import connect.database.green.dao.FriendRequestEntityDao;
 import connect.database.green.dao.GroupEntityDao;
@@ -200,8 +199,7 @@ public class ContactHelper extends BaseDao {
             value = "";
         }
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.whereOr(ContactEntityDao.Properties.Ca_pub.eq(value),
-                ContactEntityDao.Properties.ConnectId.eq(value),
+        queryBuilder.whereOr(ContactEntityDao.Properties.ConnectId.eq(value),
                 ContactEntityDao.Properties.Uid.eq(value))
                 .limit(1).build();
         List<ContactEntity> friendEntities = queryBuilder.listLazy();
