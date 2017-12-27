@@ -106,18 +106,17 @@ public class RegisterPresenter implements RegisterContract.Presenter {
 
         Connect.RegisterUser.Builder builder = Connect.RegisterUser.newBuilder()
                 .setToken(token)
-                .setMobile(userBeanOut.getPhone())
                 .setAvatar(headPath)
                 .setUsername(nicName)
                 .setDeviceId(SystemDataUtil.getDeviceId())
                 .setIdentityKey("aaaaaaaaaaaaaaa")
-                .setSignedPerKey(userBeanOut.getPubKey());
+                .setSignedPerKey(userBeanOut.getUid());
         for(int i = 0; i<100; i++){
             builder.addOneTimePreKeys("aaaaaaaaaaaaa"+i);
         }
 
-        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBeanOut.getPriKey(),
-                userBeanOut.getPubKey(), builder.build().toByteString());
+        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, userBeanOut.getUid(),
+                userBeanOut.getUid(), builder.build().toByteString());
         HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_UP, imRequest, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
@@ -125,14 +124,14 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                     ProgressUtil.getInstance().dismissProgress();
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
-                            userBeanOut.getPriKey(), imResponse.getCipherData());
+                            userBeanOut.getUid(), imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
-                    UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), userBeanOut.getPriKey(), userBeanOut.getPubKey(),
-                            userBeanOut.getPhone(), userInfo.getConnectId(), userInfo.getUid(), false);
+                    /*UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(),userBeanOut.getPhone(),
+                            userInfo.getConnectId(), userInfo.getUid(), false);
                     SharedPreferenceUtil.getInstance().putUser(userBean);
 
-                    mView.launchHome();
+                    mView.launchHome();*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

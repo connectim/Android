@@ -103,7 +103,7 @@ public class HttpUtil {
      */
     public static Connect.IMRequest getIMRequest(ByteString bytes) {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        return getIMRequest(userBean.getPriKey(), userBean.getPubKey(), bytes);
+        return getIMRequest(userBean.getUid(), userBean.getUid(), bytes);
     }
 
     public static Connect.IMRequest getIMRequest(String priKey, String pubKey, ByteString bytes) {

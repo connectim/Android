@@ -45,8 +45,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int STATUS_FRIEND_COUNT = 102;
     /** Connect robot */
     private final int STATUS_FRIEND_CONNECT = 103;
-    /** Subscribe number */
-    private final int SUBSCRIBE_NUMBER = 104;
     /** Update all contact */
     public final String updateTypeContact = "contact";
     /** Update friend request */
@@ -87,9 +85,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (viewType == STATUS_FRIEND_COUNT) {
             view = inflater.inflate(R.layout.item_contact_list_count, parent, false);
             holder = new CountHolder(view);
-        } else if (viewType == SUBSCRIBE_NUMBER) {
-            view = inflater.inflate(R.layout.item_contact_list_friend, parent, false);
-            holder = new FriendHolder(view);
         }
         return holder;
     }
@@ -163,13 +158,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     ((ConnectHolder) holder).topTv.setText(connectLetter);
                 }
                 break;
-            case SUBSCRIBE_NUMBER:
-                ((FriendHolder) holder).topTv.setVisibility(View.VISIBLE);
-                ((FriendHolder) holder).topTv.setText(R.string.Link_Subscribe);
-                ((FriendHolder) holder).name.setText(R.string.Link_Subscribe_to_the_center);
-                ((FriendHolder) holder).lineView.setVisibility(View.GONE);
-                GlideUtil.loadAvatarRound(((FriendHolder) holder).avater, R.mipmap.subscribe);
-                break;
             case STATUS_FRIEND_COUNT:
                 ((CountHolder) holder).bottomCount.setText(currBean.getName());
                 break;
@@ -196,8 +184,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return STATUS_FRIEND;
         } else if(status == 6){
             return STATUS_FRIEND_CONNECT;
-        } else if(status == 7){
-            return SUBSCRIBE_NUMBER;
         } else {
             return STATUS_FRIEND_COUNT;
         }
@@ -298,7 +284,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 final int friendSize = friendMap.get("friend").size() + friendMap.get("favorite").size();
                 final int groupSize = groupList.size();
                 finalList.addAll(listRequest);
-                finalList.add(new ContactBean(7, ""));
                 finalList.addAll(friendMap.get("favorite"));
                 finalList.addAll(groupList);
                 finalList.addAll(friendMap.get("friend"));

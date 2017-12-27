@@ -123,7 +123,7 @@ public class TransferSingleDetailPresenter implements TransferSingleDetailContra
         String avatar = "";
         String name = "";
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        if (userBean.getPubKey().equals(pubkey)) {
+        if (userBean.getUid().equals(pubkey)) {
             avatar = userBean.getAvatar();
             name = userBean.getName();
         } else {

@@ -64,7 +64,7 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
 
 
     public MsgDirect parseDirect() {
-        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getUid();
         return mypubkey.equals(getMessage_from()) ? MsgDirect.To : MsgDirect.From;
     }
 

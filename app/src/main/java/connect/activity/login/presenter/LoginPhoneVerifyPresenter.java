@@ -79,10 +79,10 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                                     || !userInfo.getPubKey().equals(caPubBean.getPubKey())){
                                 reSignInCa(smsValidateResp, countryCode + "-" + phone);
                             }else{
-                                UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), caPubBean.getPriKey(), caPubBean.getPubKey(),
-                                        countryCode + "-" + phone, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
+                                /*UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), countryCode + "-" + phone,
+                                        userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
                                 SharedPreferenceUtil.getInstance().putUser(userBean);
-                                mView.launchHome(userBean);
+                                mView.launchHome(userBean);*/
                             }
                             break;
                         case 3:
@@ -136,12 +136,12 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
                     Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                             priKey, imResponse.getCipherData());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), priKey, pubKey,
-                            mobile, userInfo.getConnectId(), userInfo.getUid(), userInfo.getUpdateConnectId());
+                    /*UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), mobile, userInfo.getConnectId(),
+                            userInfo.getUid(), userInfo.getUpdateConnectId());
 
                     SharedPreferenceUser.getInstance(userInfo.getUid()).putCaPubBean(new CaPubBean(priKey, pubKey));
                     SharedPreferenceUtil.getInstance().putUser(userBean);
-                    mView.launchHome(userBean);
+                    mView.launchHome(userBean);*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

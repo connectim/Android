@@ -195,7 +195,7 @@ public class TransactionReceiver implements TransactionListener {
 
     @Override
     public void outerTransfer(Connect.TransferNotice notice) {
-        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getUid();
         Connect.UserInfo sender = notice.getSender();
         Connect.UserInfo receiver = notice.getReceiver();
 

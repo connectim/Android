@@ -141,8 +141,6 @@ public class RegisterGetRandomPresenter implements RegisterGetRandomContract.Pre
                 @Override
                 public void handleMessage(Message msg) {
                     UserBean userBean = new UserBean();
-                    userBean.setPriKey(hashMap.get("priKey"));
-                    userBean.setPubKey(hashMap.get("pubKey"));
                     mView.goinRegister(userBean);
                 }
             };

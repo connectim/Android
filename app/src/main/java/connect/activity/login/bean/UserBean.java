@@ -6,25 +6,18 @@ public class UserBean implements Serializable{
 
     private String name;
     private String avatar;
-    private String priKey;
-    private String pubKey;
-    private String phone;
-    private String connectId;
     private String uid;
-    private boolean isOpenPassword = false;
-    private boolean updateConnectId;
+    private String token;
+    private String o_u;
 
     public UserBean() {}
 
-    public UserBean(String name, String avatar, String priKey, String pubKey, String phone, String connectId, String uid, boolean updateConnectId) {
+    public UserBean(String name, String avatar, String uid, String o_u, String token) {
         this.name = name;
         this.avatar = avatar;
-        this.priKey = priKey;
-        this.pubKey = pubKey;
-        this.phone = phone;
-        this.connectId = connectId;
         this.uid = uid;
-        this.updateConnectId = updateConnectId;
+        this.o_u = o_u;
+        this.token = token;
     }
 
     public String getName() {
@@ -43,38 +36,6 @@ public class UserBean implements Serializable{
         this.avatar = avatar;
     }
 
-    public String getPriKey() {
-        return priKey;
-    }
-
-    public void setPriKey(String priKey) {
-        this.priKey = priKey;
-    }
-
-    public String getPubKey() {
-        return pubKey;
-    }
-
-    public void setPubKey(String pubKey) {
-        this.pubKey = pubKey;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getConnectId() {
-        return connectId;
-    }
-
-    public void setConnectId(String connectId) {
-        this.connectId = connectId;
-    }
-
     public String getUid() {
         return uid;
     }
@@ -83,19 +44,19 @@ public class UserBean implements Serializable{
         this.uid = uid;
     }
 
-    public boolean isOpenPassword() {
-        return isOpenPassword;
+    public String getToken() {
+        return token;
     }
 
-    public void setOpenPassword(boolean openPassword) {
-        isOpenPassword = openPassword;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public boolean isUpdateConnectId() {
-        return updateConnectId;
+    public String getO_u() {
+        return o_u;
     }
 
-    public void setUpdateConnectId(boolean updateConnectId) {
-        this.updateConnectId = updateConnectId;
+    public void setO_u(String o_u) {
+        this.o_u = o_u;
     }
 }

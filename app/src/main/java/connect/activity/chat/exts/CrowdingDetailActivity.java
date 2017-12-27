@@ -168,7 +168,7 @@ public class CrowdingDetailActivity extends BaseActivity implements CrowdingDeta
         if (state == 0) {
             layoutFirst.setVisibility(View.GONE);
             txt6.setVisibility(View.VISIBLE);
-            if (SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(uid)) {//You initiate the raise
+            if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(uid)) {//You initiate the raise
                 btn.setVisibility(View.GONE);
             } else {
                 btn.setVisibility(View.VISIBLE);

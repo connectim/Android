@@ -95,7 +95,8 @@
         android:background="@drawable/selector_list_item_bg"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_15"
-        android:paddingRight="@dimen/dp_15">
+        android:paddingRight="@dimen/dp_15"
+        android:visibility="gone">
         <TextView
             android:id="@+id/id_left"
             style="@style/BaseTextStyle.16"

@@ -25,7 +25,7 @@ public class DecryptionUtil {
      * Decryption GcmData returned to StructData
      */
     public static Connect.StructData decodeAESGCMStructData(Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, SharedPreferenceUtil.getInstance().getUser().getPriKey(), gcmData);
+        return decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, SharedPreferenceUtil.getInstance().getUser().getUid(), gcmData);
     }
 
     public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, Connect.GcmData gcmData) {

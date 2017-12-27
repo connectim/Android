@@ -97,7 +97,7 @@ public class SetFragment extends BaseFragment {
         GlideUtil.loadAvatarRound(ivAvatar, userBean.getAvatar());
 
         tvName.setText(userBean.getName());
-        tvId.setText(userBean.getConnectId());
+        tvId.setText(userBean.getUid());
     }
 
     @OnClick(R.id.llUserMsg)

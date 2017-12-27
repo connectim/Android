@@ -93,11 +93,11 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
                 //.setSecretKey(groupEntity.getEcdh_key())
                 .build();
 
-        String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getPriKey();
+        String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getUid();
         byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(myCaPrivateKey, caPublicKey);
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
 
-        String myCaPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String myCaPublicKey = SharedPreferenceUtil.getInstance().getUser().getUid();
         String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
         String backup = String.format("%1$s/%2$s", myCaPublicKey, groupHex);
 

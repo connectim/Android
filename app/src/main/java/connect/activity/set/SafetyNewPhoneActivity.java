@@ -211,7 +211,7 @@ public class SafetyNewPhoneActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                userBean.setPhone(phone);
+                //userBean.setPhone(phone);
                 SharedPreferenceUtil.getInstance().putUser(userBean);
                 mActivity.finish();
             }

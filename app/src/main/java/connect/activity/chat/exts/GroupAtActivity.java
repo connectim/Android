@@ -80,7 +80,7 @@ public class GroupAtActivity extends BaseActivity implements GroupAtContract.BVi
 
         groupKey = getIntent().getStringExtra(GROUP_IDENTIFY);
 
-        String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String myPublicKey = SharedPreferenceUtil.getInstance().getUser().getUid();
         List<GroupMemberEntity> groupMemEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
         Iterator<GroupMemberEntity> iterator = groupMemEntities.iterator();
         while (iterator.hasNext()) {

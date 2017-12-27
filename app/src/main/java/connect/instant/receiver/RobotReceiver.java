@@ -97,7 +97,7 @@ public class RobotReceiver implements RobotListener {
 
     @Override
     public void systemRedpackgeNoticeMessage(Connect.SystemRedpackgeNotice packgeNotice) {
-        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getUid();
         Connect.UserInfo userInfo = packgeNotice.getReceiver();
         String receiverName = userInfo.getPubKey().equals(mypubkey) ?
                 BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_You) : userInfo.getUsername();
@@ -129,7 +129,6 @@ public class RobotReceiver implements RobotListener {
         ChatMsgEntity chatMsgEntity = RobotChat.getInstance().txtMsg(content);
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        userBean.setPhone("");
         SharedPreferenceUtil.getInstance().putUser(userBean);
         dealRobotMessage(chatMsgEntity);
     }
@@ -152,7 +151,7 @@ public class RobotReceiver implements RobotListener {
 
     public void dealRobotMessage(ChatMsgEntity chatMsgEntity) {
         chatMsgEntity.setSend_status(1);
-        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getUid();
         chatMsgEntity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));
         chatMsgEntity.setMessage_to(mypublickey);
 

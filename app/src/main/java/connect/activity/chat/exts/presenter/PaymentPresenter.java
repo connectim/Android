@@ -40,7 +40,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
         if (friendEntity == null) {
             UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-            String mypubkey = userBean.getPubKey();
+            String mypubkey = userBean.getUid();
             if (mypubkey.equals(pubkey)) {
                 friendEntity = new ContactEntity();
                 friendEntity.setAvatar(userBean.getAvatar());

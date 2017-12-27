@@ -127,7 +127,7 @@ public class ContactFragment extends BaseFragment {
                     FriendInfoActivity.startActivity(mActivity, entity.getUid());
                     break;
                 case 7:
-                    ActivityUtil.next(mActivity, SubscribeActivity.class);
+                    //ActivityUtil.next(mActivity, SubscribeActivity.class);
                     break;
                 default:
                     break;

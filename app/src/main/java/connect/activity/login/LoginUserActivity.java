@@ -10,13 +10,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.ToastUtil;
+import connect.utils.UriUtil;
+import connect.utils.okhttp.HttpRequest;
+import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
 /**
  * Login
@@ -58,7 +67,29 @@ public class LoginUserActivity extends BaseActivity {
 
     @OnClick(R.id.next_btn)
     void nextBtn(View view){
+        String name = nameEt.getText().toString();
+        String password = passwordEt.getText().toString();
+        Connect.LoginReq loginReq = Connect.LoginReq.newBuilder()
+                .setUsername(name)
+                .setPassword(password).build();
+        HttpRequest.getInstance().post(UriUtil.CONNECT_V3_LOGIN, loginReq, new ResultCall<Connect.HttpNotSignResponse>() {
+            @Override
+            public void onResponse(Connect.HttpNotSignResponse response) {
+                try {
+                    Connect.UserLoginInfo userLoginInfo = Connect.UserLoginInfo.parseFrom(response.getBody());
+                    userLoginInfo.getToken();
+                    UserBean userBean = new UserBean(userLoginInfo.getName(), "", userLoginInfo.getUid(), userLoginInfo.getOU(), userLoginInfo.getToken());
+                    SharedPreferenceUtil.getInstance().putUser(userBean);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
+            @Override
+            public void onError(Connect.HttpNotSignResponse response) {
+                ToastUtil.getInstance().showToast(response.getMessage());
+            }
+        });
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
