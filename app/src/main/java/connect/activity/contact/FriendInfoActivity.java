@@ -124,7 +124,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         this.friendEntity = friendEntity;
         GlideUtil.loadAvatarRound(avatarRimg, (null == friendEntity || null == friendEntity.getAvatar()) ? "" : friendEntity.getAvatar());
         nameTv.setText(friendEntity.getUsername());
-        addressTv.setText(friendEntity.getConnectId());
+        addressTv.setText(friendEntity.getUid());
         aliasTv.setText(TextUtils.isEmpty(friendEntity.getRemark()) ? "" : friendEntity.getRemark());
         addFavoritesTb.setSelected(friendEntity.getCommon() != null && friendEntity.getCommon() == 1);
         addBlockTb.setSelected(friendEntity.getBlocked() == null ? false : friendEntity.getBlocked());

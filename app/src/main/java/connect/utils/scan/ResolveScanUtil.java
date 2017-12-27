@@ -131,7 +131,7 @@ public class ResolveScanUtil {
                     default:
                         break;
                 }
-                ActivityUtil.goBack(activity);
+                //ActivityUtil.goBack(activity);
             }
         });
     }
