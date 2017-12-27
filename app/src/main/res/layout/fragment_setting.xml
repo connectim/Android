@@ -124,7 +124,8 @@
             android:background="@drawable/selector_list_item_bg"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_15">
+            android:paddingRight="@dimen/dp_15"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_52"

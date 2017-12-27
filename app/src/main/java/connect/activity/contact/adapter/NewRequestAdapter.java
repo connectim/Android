@@ -56,9 +56,9 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
         viewHolder.txt.setVisibility(View.VISIBLE);
         viewHolder.sideScrollView.setVisibility(View.VISIBLE);
 
-        if(position == 0 || (friendRequestEntity.getStatus() != RECOMMEND_ADD_FRIEND &&
-                mList.get(position - 1).getStatus() == RECOMMEND_ADD_FRIEND)){
-            showTopView(friendRequestEntity, position, viewHolder);
+        if(position == 0){
+            viewHolder.txt.setText(R.string.Link_Your_invitation);
+            viewHolder.moreTv.setVisibility(View.GONE);
         }else {
             viewHolder.topRela.setVisibility(View.GONE);
         }
@@ -116,27 +116,6 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
             }
         }
     };
-
-    private void showTopView(FriendRequestEntity entity, final int position, ViewHolder viewHolder){
-        viewHolder.topRela.setVisibility(View.VISIBLE);
-        if(entity.getStatus() == RECOMMEND_ADD_FRIEND){
-            viewHolder.txt.setText(R.string.Link_People_you_may_know);
-            if(isShowMoreRecommend){
-                viewHolder.moreTv.setVisibility(View.VISIBLE);
-                viewHolder.moreTv.setTag(position);
-
-                viewHolder.moreTv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onAcceptListener.itemClick(position, new FriendRequestEntity());
-                    }
-                });
-            }
-        }else{
-            viewHolder.txt.setText(R.string.Link_Your_invitation);
-            viewHolder.moreTv.setVisibility(View.GONE);
-        }
-    }
 
     private void showRequestBtn(Button btn, final FriendRequestEntity requestEntity, final int position) {
         switch (requestEntity.getStatus()) {//1：To be accepted  2：Have been added 3：In the validation 4：Recommend friends

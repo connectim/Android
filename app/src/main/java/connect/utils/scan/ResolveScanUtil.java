@@ -158,12 +158,11 @@ public class ResolveScanUtil {
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(value)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     if(sendUserInfo != null){
                         onResultBack.call(2, sendUserInfo.getUid());
@@ -176,7 +175,7 @@ public class ResolveScanUtil {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 if(response.getCode() == 2404){
                     onResultBack.call(3, "");
                 }

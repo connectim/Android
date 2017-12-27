@@ -166,12 +166,11 @@ public class StrangerInfoActivity extends BaseActivity {
                 .setCriteria(uid)
                 .setTyp(1)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     if(structData == null || structData.getPlainData() == null){
                         return;
                     }
@@ -185,7 +184,7 @@ public class StrangerInfoActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
             }
         });

@@ -87,18 +87,14 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
      * Synchronize the encrypted phone number
      */
     private void syncPhone(Connect.PhoneBook phoneBook){
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PHONE_SYNC, phoneBook, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PHONE_SYNC, phoneBook, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
-                PrivateSetBean privateSetBean = ParamManager.getInstance().getPrivateSet();
-                if(null != privateSetBean){
-                    ParamManager.getInstance().putPrivateSet(privateSetBean);
-                }
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 getServeFriend();
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 ProgressUtil.getInstance().dismissProgress();
             }
         });
@@ -109,12 +105,11 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
      */
     private void getServeFriend() {
         Connect.RequestNotEncrypt notEncrypt = Connect.RequestNotEncrypt.newBuilder().build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_PHONEBOOK, notEncrypt, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_PHONEBOOK, notEncrypt, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     usersInfo = Connect.PhoneBookUsersInfo.parseFrom(structData.getPlainData());
                     ArrayList<Connect.PhoneBookUserInfo> listCheck = new ArrayList<>();
                     for(Connect.PhoneBookUserInfo userInfo : usersInfo.getUsersList()){
@@ -130,7 +125,7 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 handler.sendEmptyMessage(UPDATE_CODE);
             }
         });

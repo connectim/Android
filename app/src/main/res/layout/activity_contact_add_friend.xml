@@ -8,12 +8,7 @@
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <!--<android.support.v7.widget.RecyclerView
-        android:id="@+id/wallet_menu_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_30"
-        android:layout_marginBottom="@dimen/dp_20"/>-->
+
     <RelativeLayout
         android:id="@+id/contact_rela"
         android:layout_width="match_parent"
@@ -32,16 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/image"
             android:layout_marginLeft="@dimen/dp_10"
+            android:layout_centerVertical="true"
             android:textSize="@dimen/sp_14"
             android:text="@string/Link_Contacts"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/image"
-            android:layout_alignBottom="@+id/image"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:textSize="@dimen/sp_12"
-            android:text="添加或邀请通信录中的朋友"/>
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

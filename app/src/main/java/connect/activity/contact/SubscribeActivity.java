@@ -94,12 +94,11 @@ public class SubscribeActivity extends BaseActivity {
     };
 
     private void getSubscribeList() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V2_RSS, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V2_RSS, ByteString.copyFrom(new byte[]{}), new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.RSSList rssList = Connect.RSSList.parseFrom(structData.getPlainData());
 
                     ArrayList<Connect.RSS> subscribeList = new ArrayList<>();
@@ -129,7 +128,7 @@ public class SubscribeActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
             }
         });
     }

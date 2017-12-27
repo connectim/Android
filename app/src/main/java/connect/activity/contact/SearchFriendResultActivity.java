@@ -192,12 +192,11 @@ public class SearchFriendResultActivity extends BaseActivity {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(searchContext)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
                         updateView(userInfo);
@@ -208,7 +207,7 @@ public class SearchFriendResultActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 updateView(null);
 
                 String errorMessage = response.getMessage();

@@ -92,24 +92,16 @@ public class UpdateInfoService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogManager.getLogger().d(Tag, "***  onStartCommand start  ***");
         initSoundPool();
-        updatePreferencesInfo();
+        if(ParamManager.getInstance().getSystemSet() == null){
+            SystemSetBean.initSystemSet();
+        }
+        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.BlackList, "");
         return super.onStartCommand(intent, flags, startId);
     }
 
     public void initSoundPool() {
         soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);
         soundPool.load(service, R.raw.instant_message, 1);
-    }
-
-    public void updatePreferencesInfo() {
-        //get private set
-        if (ParamManager.getInstance().getPrivateSet() == null) {
-            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.PrivateSet, "");
-        }
-        if(ParamManager.getInstance().getSystemSet() == null){
-            SystemSetBean.initSystemSet();
-        }
-        HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.BlackList, "");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -119,9 +111,6 @@ public class UpdateInfoService extends Service {
             objects = (Object[]) httpRec.obj;
         }
         switch (httpRec.httpRecType) {
-            case PrivateSet://private set
-                requestPrivateInfo();
-                break;
             case BlackList://black list
                 requestBlackList();
                 break;
@@ -140,39 +129,13 @@ public class UpdateInfoService extends Service {
         }
     }
 
-    public void requestPrivateInfo() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PRIVACY_INFO, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
-                    @Override
-                    public void onResponse(Connect.HttpResponse response) {
-                        try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                            if (structData != null) {
-                                Connect.Preferences preferences = Connect.Preferences.parseFrom(structData.getPlainData());
-                                PrivateSetBean privateSetBean = new PrivateSetBean();
-                                privateSetBean.setPhoneFind(preferences.getPhoneNum());
-                                privateSetBean.setRecommend(preferences.getRecommend());
-                                ParamManager.getInstance().putPrivateSet(privateSetBean);
-                            }
-                        } catch (InvalidProtocolBufferException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Connect.HttpResponse response) {}
-                });
-    }
-
     private void requestBlackList() {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_BLACKLIST_LIST, ByteString.copyFrom(new byte[]{}),
-                new ResultCall<Connect.HttpResponse>() {
+                new ResultCall<Connect.HttpNotSignResponse>() {
                     @Override
-                    public void onResponse(Connect.HttpResponse response) {
+                    public void onResponse(Connect.HttpNotSignResponse response) {
                         try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                             if(structData == null || structData.getPlainData() == null){
                                 return;
                             }
@@ -187,7 +150,7 @@ public class UpdateInfoService extends Service {
                     }
 
                     @Override
-                    public void onError(Connect.HttpResponse response) {}
+                    public void onError(Connect.HttpNotSignResponse response) {}
                 });
     }
 
