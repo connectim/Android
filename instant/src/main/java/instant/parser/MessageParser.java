@@ -52,7 +52,7 @@ public class MessageParser extends InterParse {
                 unavailableMsg();
                 break;
             case 0x06://subscribe messgae
-                subscribePull();
+                //subscribePull();
                 break;
             case 0x09://notice message
                 noticeMsg();
@@ -216,21 +216,10 @@ public class MessageParser extends InterParse {
         parseBean.msgParse();
     }
 
-    protected void subscribePull() throws Exception {
-        Connect.RSSPush rssPush = Connect.RSSPush.parseFrom(byteBuffer.array());
-        if (ext == 0) {
-            backOffLineAck(5, rssPush.getMsgId());
-        } else {
-            backOnLineAck(5, rssPush.getMsgId());
-        }
-
-        RobotLocalReceiver.localReceiver.subscribePull(rssPush);
-    }
-
     private void reloadUserCookie(String msgid, String uid) throws Exception {
         FailMsgsManager.getInstance().insertFailMsg(uid, msgid);
 
         CommandParser commandBean = new CommandParser((byte) 0x00, null);
-        commandBean.reloadUserCookie();
+        //commandBean.reloadUserCookie();
     }
 }

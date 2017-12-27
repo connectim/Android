@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import instant.utils.SharedUtil;
-import instant.utils.StringUtil;
 
 /**
  * Session
@@ -25,7 +24,6 @@ public class Session {
     /** Connected user related information */
     public static String CONNECT_USER = "CONNECT_USER";
     public static String COOKIE_USER = "COOKIE_USER";
-    public static String COOKIE_SHAKEHAND = "COOKIE_SHAKEHAND";
 
     /** Cookie upload fail number */
     private Map<String, Integer> cookieUpTimer = new HashMap<>();
@@ -62,44 +60,6 @@ public class Session {
         return userCookie;
     }
 
-    /**
-     * 握手时Cookie 加密StructData
-     *
-     * @return
-     */
-    public UserCookie getRandomCookie() {
-        UserCookie userCookie = getUserCookie(COOKIE_SHAKEHAND);
-        if (userCookie == null) {
-            userCookie = SharedUtil.getInstance().loadRandomCookie();
-            setRandomCookie(userCookie);
-        }
-        return userCookie;
-    }
-
-    /**
-     * 缓存好友Cookie 下发的好友pulicKey
-     *
-     * @param caPublicKey
-     * @return
-     */
-    public UserCookie getFriendCookie(String caPublicKey) {
-        UserCookie userCookie = getUserCookie(caPublicKey);
-        if (userCookie == null) {
-            userCookie = SharedUtil.getInstance().loadFriendCookie(caPublicKey);
-            setFriendCookie(caPublicKey, userCookie);
-        }
-        return userCookie;
-    }
-
-    public UserCookie getGroupMemberCookie(String groupIdentify, String memberUid) {
-        String groupMemberKey = groupIdentify + memberUid;
-        UserCookie userCookie = getUserCookie(groupMemberKey);
-        if (userCookie == null) {
-            userCookie = SharedUtil.getInstance().loadGroupMemberCookie(groupIdentify, memberUid);
-            setGroupMemberCookie(groupIdentify, memberUid, userCookie);
-        }
-        return userCookie;
-    }
 
     public void setConnectCookie(UserCookie cookie) {
         setUserCookie(CONNECT_USER, cookie);
@@ -109,40 +69,6 @@ public class Session {
     public void setChatCookie(UserCookie cookie) {
         setUserCookie(COOKIE_USER, cookie);
         SharedUtil.getInstance().insertChatUserCookie(cookie);
-    }
-
-    public void setRandomCookie(UserCookie cookie) {
-        setUserCookie(COOKIE_SHAKEHAND, cookie);
-        SharedUtil.getInstance().insertRandomCookie(cookie);
-    }
-
-
-    public void setFriendCookie(String friendCaPublic, UserCookie cookie) {
-        setUserCookie(friendCaPublic, cookie);
-        SharedUtil.getInstance().insertFriendCookie(friendCaPublic, cookie);
-    }
-
-    public void setGroupMemberCookie(String groupIdentify, String memberUid, UserCookie cookie) {
-        setUserCookie(groupIdentify + memberUid, cookie);
-        SharedUtil.getInstance().insertGroupMemberCookie(groupIdentify, memberUid, cookie);
-    }
-
-    public UserCookie getCookieBySalt(String saltHex) {
-        String pubkey = getUserCookie(Session.CONNECT_USER).getPubKey();
-        UserCookie userCookie = getUserCookie(pubkey);
-        if (userCookie != null) {
-            String userHex = StringUtil.bytesToHexString(userCookie.getSalt());
-            if (userHex.equals(saltHex)) {
-
-            } else {
-                userCookie = null;
-            }
-        }
-
-        if (userCookie == null) {
-            userCookie = SharedUtil.getInstance().loadChatUserCookieBySalt(saltHex);
-        }
-        return userCookie;
     }
 
     private void setUserCookie(String pbk, UserCookie cookie) {
@@ -164,10 +90,6 @@ public class Session {
             userCookieMap = new HashMap<>();
         }
         userCookieMap.remove(publicKey);
-    }
-
-    public void removeConnectCookie() {
-        removeCookie(CONNECT_USER);
     }
 
     /****************************************  CONNECT FAIL TIME    ***************************************/

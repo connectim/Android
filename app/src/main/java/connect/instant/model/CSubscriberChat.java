@@ -11,7 +11,6 @@ import connect.database.green.DaoHelper.SubscribeConversationHelper;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.SubscribeConversationEntity;
 import connect.instant.inter.ConversationListener;
-import instant.sender.model.SubscriberChat;
 
 /**
  * Created by Administrator on 2017/11/22.

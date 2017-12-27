@@ -32,7 +32,6 @@ public class MessageEntity implements Serializable {
     private String message_to;
     private int messageType;
 
-    private String ecdh;
     private String content;
     private Long read_time;
     private Integer send_status;
@@ -43,9 +42,9 @@ public class MessageEntity implements Serializable {
     public MessageEntity() {
     }
 
-    @Generated(hash = 1286671445)
+    @Generated(hash = 814481234)
     public MessageEntity(Long _id, @NotNull String message_ower, @NotNull String message_id, int chatType, String message_from, String message_to, int messageType,
-            String ecdh, String content, Long read_time, Integer send_status, Long snap_time, Long createtime) {
+            String content, Long read_time, Integer send_status, Long snap_time, Long createtime) {
         this._id = _id;
         this.message_ower = message_ower;
         this.message_id = message_id;
@@ -53,7 +52,6 @@ public class MessageEntity implements Serializable {
         this.message_from = message_from;
         this.message_to = message_to;
         this.messageType = messageType;
-        this.ecdh = ecdh;
         this.content = content;
         this.read_time = read_time;
         this.send_status = send_status;
@@ -70,7 +68,6 @@ public class MessageEntity implements Serializable {
         extEntity.setMessageType(getMessageType());
         extEntity.setMessage_from(getMessage_from());
         extEntity.setMessage_to(getMessage_to());
-        extEntity.setEcdh(getEcdh());
         extEntity.setContent(getContent());
         extEntity.setCreatetime(getCreatetime());
         extEntity.setRead_time(getRead_time());
@@ -91,7 +88,6 @@ public class MessageEntity implements Serializable {
         messageEntity.setMessageType(chatMsgEntity.getMessageType());
         messageEntity.setMessage_from(chatMsgEntity.getMessage_from());
         messageEntity.setMessage_to(chatMsgEntity.getMessage_to());
-        messageEntity.setEcdh(chatMsgEntity.getEcdh());
         messageEntity.setContent(content);
         messageEntity.setCreatetime(chatMsgEntity.getCreatetime());
         messageEntity.setRead_time(chatMsgEntity.getRead_time());
@@ -194,13 +190,5 @@ public class MessageEntity implements Serializable {
 
     public void setCreatetime(Long createtime) {
         this.createtime = createtime;
-    }
-
-    public String getEcdh() {
-        return ecdh;
-    }
-
-    public void setEcdh(String ecdh) {
-        this.ecdh = ecdh;
     }
 }

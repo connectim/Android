@@ -51,11 +51,10 @@ public class DiscussChat extends NormalChat {
             Connect.ChatMessage.Builder chatMessageBuilder = chatMsgEntity.transToChatMessageBuilder();
             chatMessageBuilder.setOriginMsg(ByteString.copyFrom(chatMsgEntity.getContents()));
 
-            Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
             Connect.MessageData messageData = Connect.MessageData.newBuilder()
                     .setChatMsg(chatMessageBuilder)
-                    .setChatSession(sessionBuilder)
                     .build();
+
             Connect.MessagePost messagePost = normalChatMessage(messageData);
             SenderManager.getInstance().sendAckMsg(SocketACK.GROUP_CHAT, chatKey(), messageData.getChatMsg().getMsgId(), messagePost.toByteString());
         } catch (Exception e) {

@@ -30,14 +30,12 @@ public class InstantSdk {
         this.context = context;
     }
 
-    public void registerUserInfo(Context context, String uid,String publicKey, String privateKey) {
+    public void registerUserInfo(Context context, String uid,String token) {
         UserCookie userCookie = new UserCookie();
-        LogManager.getLogger().d(TAG, "uid :" + uid + "   publicKey=" + publicKey + "  privateKey=" + privateKey);
+        LogManager.getLogger().d(TAG, "uid :" + uid + "   token : " + token);
         userCookie.setUid(uid);
-        userCookie.setPubKey(publicKey);
-        userCookie.setPriKey(privateKey);
+        userCookie.setToken(token);
         Session.getInstance().setConnectCookie(userCookie);
-
 
         SenderService.startService(context);
         RemoteServeice.startService(context);

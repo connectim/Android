@@ -59,13 +59,7 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
-                    }
-
-                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupInviteResponseList responseList = Connect.GroupInviteResponseList.parseFrom(structData.getPlainData());
                     for (Connect.GroupInviteResponse res : responseList.getListList()) {
                         if (ProtoBufUtil.getInstance().checkProtoBuf(res)) {
@@ -74,6 +68,7 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
 
                             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(uid);
                             if (friendEntity != null) {
+                                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
                                 CFriendChat friendChat = new CFriendChat(friendEntity);
                                 ChatMsgEntity msgExtEntity = friendChat.inviteJoinGroupMsg(groupEntity.getAvatar(), groupEntity.getName(),
                                         groupEntity.getIdentifier(), token);

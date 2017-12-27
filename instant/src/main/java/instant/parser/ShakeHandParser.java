@@ -10,21 +10,15 @@ import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
 
-import connect.wallet.jni.AllNativeMethod;
 import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.bean.UserCookie;
 import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.sender.SenderManager;
 import instant.ui.InstantSdk;
-import instant.utils.XmlParser;
 import instant.utils.DeviceInfoUtil;
 import instant.utils.SharedUtil;
-import instant.utils.StringUtil;
 import instant.utils.TimeUtil;
-import instant.utils.cryption.DecryptionUtil;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -51,33 +45,14 @@ public class ShakeHandParser extends InterParse {
     }
 
     private void shakeMsgSend(ByteBuffer buffer) throws Exception {
-        Connect.IMResponse response = null;
-        response = Connect.IMResponse.parser().parseFrom(buffer.array());
-
-        String publicKey = Session.getInstance().getRandomCookie().getPubKey();
-        if (!SupportKeyUril.verifySign(publicKey, response.getSign(), response.getCipherData().toByteArray())) {
-            throw new Exception("verifySign ");
-        }
-
-        UserCookie userCookie = Session.getInstance().getConnectCookie();
-        String pubkey = userCookie.getPubKey();
-        String priKey = userCookie.getPriKey();
-
-        byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, priKey, XmlParser.getInstance().serverPubKey(), response.getCipherData());
-        Connect.StructData structData = Connect.StructData.parseFrom(bytes);
+        Connect.IMResponse response = Connect.IMResponse.parser().parseFrom(buffer.array());
+        Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
         Connect.NewConnection newConnection = Connect.NewConnection.parser().parseFrom(structData.getPlainData());
 
-        ByteString pubKey = newConnection.getPubKey();
-        ByteString salt = newConnection.getSalt();
-        UserCookie tempCookie = Session.getInstance().getRandomCookie();
-        byte[] saltXor = SupportKeyUril.xor(tempCookie.getSalt(),
-                salt.toByteArray());
-        byte[] ecdHkey = SupportKeyUril.getRawECDHKey(tempCookie.getPriKey(),
-                StringUtil.bytesToHexString(pubKey.toByteArray()));
-        byte[] saltByte = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(ecdHkey,
-                ecdHkey.length, saltXor, saltXor.length, 12, 32);
-        tempCookie.setSalt(saltByte);
-        Session.getInstance().setRandomCookie(tempCookie);
+        String token = newConnection.getToken();
+        UserCookie chatCookie = Session.getInstance().getChatCookie();
+        chatCookie.setToken(token);
+        Session.getInstance().setChatCookie(chatCookie);
 
         //Data encryption devices
         String deviceName = Build.DEVICE;
@@ -85,31 +60,17 @@ public class ShakeHandParser extends InterParse {
         String local = DeviceInfoUtil.getDeviceLanguage();
         String uuid = DeviceInfoUtil.getLocalUid();
 
-        Connect.DeviceInfo.Builder deviceBuilder = Connect.DeviceInfo.newBuilder()
+        Connect.DeviceInfo deviceInfo = Connect.DeviceInfo.newBuilder()
                 .setDeviceId(deviceId)
                 .setDeviceName(deviceName)
                 .setLocale(local)
                 .setCv(0)
-                .setUuid(uuid);
+                .setUuid(uuid)
+                .build();
 
-
-        UserCookie oldChatCookie = SharedUtil.getInstance().loadLastChatUserCookie();
-        if (oldChatCookie != null) {
-            Connect.ChatCookieData cookieData = Connect.ChatCookieData.newBuilder().
-                    setChatPubKey(oldChatCookie.getPubKey()).
-                    setSalt(ByteString.copyFrom(oldChatCookie.getSalt())).
-                    setExpired(oldChatCookie.getExpiredTime()).build();
-            deviceBuilder.setChatCookieData(cookieData);
-        }
-
-        Connect.DeviceInfo deviceInfo = deviceBuilder.build();
-        Connect.GcmData gcmDataTemp = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE, saltByte, deviceInfo.toByteString());
-
-        //imTransferData
-        String signHash = SupportKeyUril.signHash(priKey, gcmDataTemp.toByteArray());
-        Connect.IMTransferData imTransferData = Connect.IMTransferData.newBuilder().
-                setCipherData(gcmDataTemp).
-                setSign(signHash).build();
+        Connect.IMTransferData imTransferData = Connect.IMTransferData.newBuilder()
+                .setBody(deviceInfo.toByteString())
+                .build();
 
         SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_SECOND, imTransferData.toByteString());
     }

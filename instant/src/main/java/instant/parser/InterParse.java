@@ -5,31 +5,23 @@ import android.text.TextUtils;
 import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import instant.bean.Session;
 import instant.bean.SocketACK;
-import instant.sender.SenderManager;
 import instant.parser.localreceiver.CommandLocalReceiver;
+import instant.sender.SenderManager;
 import instant.utils.SharedUtil;
 import instant.utils.TimeUtil;
 import instant.utils.manager.FailMsgsManager;
-import instant.utils.cryption.DecryptionUtil;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
-import static android.R.attr.type;
-
 /**
- *
  * Created by gtq on 2016/12/14.
  */
 public abstract class InterParse {
 
-    private String Tag = "InterParse";
+    private String TAG = "InterParse";
 
     protected byte ackByte;
     protected ByteBuffer byteBuffer;
@@ -53,15 +45,7 @@ public abstract class InterParse {
      */
     protected synchronized Connect.StructData imTransferToStructData(ByteBuffer buffer) throws Exception {
         Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(buffer.array());
-
-        String publicKey=Session.getInstance().getRandomCookie().getPubKey();
-        if (!SupportKeyUril.verifySign(publicKey,imTransferData.getSign(), imTransferData.getCipherData().toByteArray())) {
-            throw new Exception("Validation fails");
-        }
-
-        byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE,
-                Session.getInstance().getRandomCookie().getSalt(), imTransferData.getCipherData());
-        return Connect.StructData.parseFrom(bytes);
+        return Connect.StructData.parseFrom(imTransferData.getBody());
     }
 
     /**
@@ -82,17 +66,9 @@ public abstract class InterParse {
                 .setMsgId(msgid)
                 .build();
 
-        String priKey = Session.getInstance().getConnectCookie().getPriKey();
-        byte[] randomSalt = Session.getInstance().getRandomCookie().getSalt();
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(
-                EncryptionUtil.ExtendedECDH.NONE,
-                randomSalt,
-                ack.toByteString());
-
-        String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
-                .setCipherData(gcmData)
-                .setSign(signHash).build();
+                .setBody(ack.toByteString())
+                .build();
 
         SenderManager.getInstance().sendToMsg(socketack, backAck.toByteString());
     }
@@ -104,17 +80,8 @@ public abstract class InterParse {
                 .addAllAcks(socketACKs)
                 .build();
 
-        String priKey = Session.getInstance().getConnectCookie().getPriKey();
-        byte[] randomSalt = Session.getInstance().getRandomCookie().getSalt();
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(
-                EncryptionUtil.ExtendedECDH.NONE,
-                randomSalt,
-                ackBatch.toByteString());
-
-        String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
-                .setCipherData(gcmData)
-                .setSign(signHash)
+                .setBody(ackBatch.toByteString())
                 .build();
 
         SenderManager.getInstance().sendToMsg(SocketACK.ACK_BACK_OFFLINEBATCH, backAck.toByteString());
@@ -184,14 +151,14 @@ public abstract class InterParse {
             pubkey = (String) failMap.get("PUBKEY");
         }
 
-        CommandLocalReceiver.receiver.updateMsgSendState(pubkey,msgid,state);
+        CommandLocalReceiver.receiver.updateMsgSendState(pubkey, msgid, state);
         FailMsgsManager.getInstance().removeFailMap(msgid);
     }
 
     protected void commandToIMTransfer(String msgid, SocketACK ack, ByteString byteString) {
         Connect.Command command = Connect.Command.newBuilder().setMsgId(msgid).
                 setDetail(byteString).build();
-        SenderManager.getInstance().sendAckMsg(ack, null,msgid, command.toByteString());
+        SenderManager.getInstance().sendAckMsg(ack, null, msgid, command.toByteString());
     }
 
     /**

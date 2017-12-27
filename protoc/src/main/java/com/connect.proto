@@ -504,8 +504,7 @@ bytes tag = 3;
 bytes ciphertext = 4;
 }
 message IMResponse {
-string sign = 1;
-GcmData cipher_data = 2;
+bytes body = 1;
 }
 
 message RequestNotEncrypt {
@@ -521,8 +520,7 @@ GcmData cipher_data = 3;
 }
 
 message IMTransferData {
-string sign = 1;
-GcmData cipher_data = 2;
+bytes body = 1;
 }
 
 message Ack {
@@ -531,8 +529,7 @@ int32 type = 2;
 }
 // connect Socket ,Return the data after connection
 message NewConnection {
-bytes salt = 1;
-bytes pub_key=2;
+string token=1;
 }
 
 message Connection {
@@ -685,8 +682,7 @@ message UpdateMobileBind {
 string username = 1;
 }
 message MessagePost {
-string pub_key = 1;
-string sign = 2;
+string uid = 1;
 MessageData msg_data = 3;
 }
 
@@ -1189,9 +1185,7 @@ enum ChatType {
 }
 //临时协同密钥
 message ChatSession {
-	bytes salt = 1;
-	bytes ver = 2;
-	string pubKey = 3;
+	string uid = 1;
 }
 //消息体
 message ChatMessage {
@@ -1199,7 +1193,7 @@ message ChatMessage {
 	int64 msg_time = 2;
 	string from = 3;
 	string to= 4;
-	GcmData cipher_data = 5;
+	bytes body = 5;
 	ChatType chat_type=6;
 	int32 msg_type = 7;
 	string ext= 8;
@@ -1208,7 +1202,6 @@ message ChatMessage {
 //传输层模型
 message MessageData {
 	ChatMessage chat_msg = 1;
-	ChatSession chat_session = 2;
 }
 //文本消息
 message TextMessage{
@@ -1354,8 +1347,10 @@ message Mfa {
 
 message TcpRequest {
     string uid = 1;
-    string sign = 2;
-    GcmData cipher_data = 3;
+    string token = 2;
+    bytes body = 3;
+    string device_id = 4;
+    string signed_per_key = 100;
 }
 
 message ChangeMobileVerify {

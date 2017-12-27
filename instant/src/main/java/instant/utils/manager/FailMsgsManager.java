@@ -188,17 +188,4 @@ public class FailMsgsManager {
         Map<String, Object> objectMap = receiveFailMap.get(pubkey);
         return objectMap;
     }
-
-    public void dealReceiveFailMsgs(String groupIdentify) {
-        Map<String, Object> groupFailMsgs = receiveFailMsgs(groupIdentify);
-        if (groupFailMsgs == null || groupFailMsgs.isEmpty()) {
-            return;
-        }
-
-        for (Map.Entry<String, Object> entry : groupFailMsgs.entrySet()) {
-            if (entry.getValue() instanceof Connect.MessagePost) {
-                MessageLocalReceiver.localReceiver.groupChat((Connect.MessagePost) entry.getValue());
-            }
-        }
-    }
 }
