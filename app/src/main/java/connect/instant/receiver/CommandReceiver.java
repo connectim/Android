@@ -190,7 +190,7 @@ public class CommandReceiver implements CommandListener {
 
                     entity.setUid(uid);
                     entity.setConnectId(friendInfo.getConnectId());
-                    entity.setUsername(friendInfo.getUsername());
+                    entity.setUsername(friendInfo.getName());
                     entity.setAvatar(friendInfo.getAvatar());
                     entity.setCommon(friendInfo.getCommon() ? 1 : 0);
                     entity.setBlocked(friendInfo.getBlackList());

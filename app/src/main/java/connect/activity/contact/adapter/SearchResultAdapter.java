@@ -45,7 +45,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     public void onBindViewHolder(SearchResultAdapter.ViewHolder holder, final int position) {
         final Connect.UserInfo userInfo = mDataList.get(position);
         GlideUtil.loadAvatarRound(holder.avatarRimg, userInfo.getAvatar());
-        holder.nicknameTv.setText(userInfo.getUsername());
+        holder.nicknameTv.setText(userInfo.getName());
         holder.statusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

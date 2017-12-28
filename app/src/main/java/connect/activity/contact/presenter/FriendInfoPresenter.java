@@ -12,6 +12,7 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.contract.FriendInfoContract;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -143,6 +144,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     }
                     // Update the database information
                     friendEntity.setAvatar(userInfo.getUsers(0).getAvatar());
+                    friendEntity.setUsername(userInfo.getUsers(0).getName());
                     mView.updateView(friendEntity);
                     ContactHelper.getInstance().insertContact(friendEntity);
                     // Update the message list user information
@@ -152,6 +154,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                         friendChat.updateRoomMsg(null, "", -1, -1, -1);
                     }
                     ContactNotice.receiverFriend();
+                    ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

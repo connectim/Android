@@ -13,6 +13,7 @@ public class ContactNotice {
         RecAddFriend,
         RecGroup,
         RecFriend,
+        RecAddFriendHome,
     }
 
     private ConNotice notice;
@@ -30,6 +31,7 @@ public class ContactNotice {
     
     public static void receiverAddFriend() {
         EventBus.getDefault().post(new ContactNotice(ConNotice.RecAddFriend));
+        EventBus.getDefault().post(new ContactNotice(ConNotice.RecAddFriendHome));
     }
 
     public static void receiverGroup() {
