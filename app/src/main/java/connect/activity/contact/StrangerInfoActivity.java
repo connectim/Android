@@ -100,7 +100,7 @@ public class StrangerInfoActivity extends BaseActivity {
         if (sendUserInfo == null)
             return;
         GlideUtil.loadAvatarRound(avatarRimg, sendUserInfo.getAvatar());
-        nameTv.setText(sendUserInfo.getUsername());
+        nameTv.setText(sendUserInfo.getName());
     }
 
     @OnClick(R.id.left_img)
@@ -143,7 +143,7 @@ public class StrangerInfoActivity extends BaseActivity {
                 if (msgSendBean.getType() == MsgSendBean.SendType.TypeSendFriendQuest) {
                     FriendRequestEntity requestEntity = new FriendRequestEntity();
                     requestEntity.setAvatar(sendUserInfo.getAvatar());
-                    requestEntity.setUsername(sendUserInfo.getUsername());
+                    requestEntity.setUsername(sendUserInfo.getName());
                     requestEntity.setUid(sendUserInfo.getUid());
                     requestEntity.setSource(sourceType.getType());
                     requestEntity.setTips(msgSendBean.getTips());
@@ -174,8 +174,9 @@ public class StrangerInfoActivity extends BaseActivity {
                     if(structData == null || structData.getPlainData() == null){
                         return;
                     }
-                    sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(!TextUtils.isEmpty(sendUserInfo.getUid())){
+                    Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
+                    sendUserInfo = usersInfo.getUsers(0);
+                    if(sendUserInfo != null && !TextUtils.isEmpty(sendUserInfo.getUid())){
                         updataView();
                     }
                 } catch (InvalidProtocolBufferException e) {

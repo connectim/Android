@@ -166,9 +166,9 @@ public class ResolveScanUtil {
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
-                    Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(sendUserInfo != null && !TextUtils.isEmpty(sendUserInfo.getUid())){
-                        onResultBack.call(2, sendUserInfo.getUid());
+                    Connect.UsersInfo sendUserInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
+                    if(sendUserInfo != null && sendUserInfo.getUsersList().size() > 0){
+                        onResultBack.call(2, sendUserInfo.getUsers(0).getUid());
                     }else{
                         onResultBack.call(3, "");
                     }

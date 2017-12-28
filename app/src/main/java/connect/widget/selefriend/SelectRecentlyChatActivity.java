@@ -96,7 +96,7 @@ public class SelectRecentlyChatActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == SelectContactActivity.CODE_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == SelectContactActivity.CODE_REQUEST && resultCode == RESULT_OK) {
             backActivity(data.getIntExtra("type", 0), data.getStringExtra("object"));
         }
     }

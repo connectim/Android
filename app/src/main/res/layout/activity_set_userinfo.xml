@@ -71,12 +71,6 @@
             android:textColor="@color/color_a5a7ae"
             android:textSize="@dimen/sp_16"
             android:text=""/>
-        <ImageView
-            android:contentDescription="@string/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@mipmap/group_item_arrow"
-            android:layout_marginLeft="@dimen/dp_10"/>
     </LinearLayout>
 
     <LinearLayout

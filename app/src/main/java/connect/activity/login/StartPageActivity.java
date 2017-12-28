@@ -46,7 +46,7 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
 
     @Override
     public void goIntoGuide() {
-        ActivityUtil.next(mActivity, GuidePageActivity.class);
+        //ActivityUtil.next(mActivity, GuidePageActivity.class);
     }
 
     @Override

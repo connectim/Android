@@ -166,15 +166,13 @@
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
 
-            <View style="@style/BaseViewLine.d1d5da"/>
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_50"
                 android:background="@color/color_ffffff"
                 android:paddingLeft="@dimen/dp_15"
-                android:paddingRight="@dimen/dp_15">
-
+                android:paddingRight="@dimen/dp_15"
+                android:visibility="gone">
                 <View
                     android:id="@+id/add_block_tb"
                     style="@style/BtnSwitchStyle"

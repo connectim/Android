@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -64,6 +65,8 @@ public class SearchFriendActivity extends BaseActivity {
         recyclerview.setAdapter(adapter);
         adapter.setOnItemClickListener(itemClickListener);
         SystemUtil.showKeyBoard(mActivity, searchEdit);
+
+        searchEdit.setOnKeyListener(keyListener);
     }
 
     @OnClick(R.id.cancel_tv)
@@ -114,6 +117,19 @@ public class SearchFriendActivity extends BaseActivity {
                 default:
                     break;
             }
+        }
+    };
+
+    private View.OnKeyListener keyListener = new View.OnKeyListener(){
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                        .hideSoftInputFromWindow(SearchFriendActivity.this.getCurrentFocus()
+                                .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                SearchFriendResultActivity.startActivity(mActivity, searchEdit.getText().toString().trim());
+            }
+            return false;
         }
     };
 

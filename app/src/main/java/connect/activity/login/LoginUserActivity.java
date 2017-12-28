@@ -90,7 +90,7 @@ public class LoginUserActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
-                ToastUtil.getInstance().showToast(response.getMessage());
+                ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
             }
         });
     }

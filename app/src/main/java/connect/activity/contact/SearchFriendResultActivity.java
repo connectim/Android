@@ -2,6 +2,8 @@ package connect.activity.contact;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -12,7 +14,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -20,17 +21,18 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.contact.adapter.SearchResultAdapter;
+import connect.activity.contact.bean.SourceType;
+import connect.activity.home.view.LineDecoration;
+import connect.activity.set.adapter.BlackListAdapter;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.activity.contact.bean.SourceType;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -50,11 +52,11 @@ public class SearchFriendResultActivity extends BaseActivity {
     ImageView delTv;
     @Bind(R.id.no_result_tv)
     TextView noResultTv;
-    @Bind(R.id.result_lin)
-    LinearLayout resultLin;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
 
     private SearchFriendResultActivity mActivity;
-    private Connect.UserInfo userInfoBase;
+    private SearchResultAdapter adapter;
 
     public static void startActivity(Activity activity, String text) {
         Bundle bundle = new Bundle();
@@ -82,6 +84,14 @@ public class SearchFriendResultActivity extends BaseActivity {
         searchEdit.addTextChangedListener(textWatcher);
         String text = getIntent().getExtras().getString("text");
         searchEdit.setText(text);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        adapter = new SearchResultAdapter(mActivity);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
+        adapter.setOnItemChildListence(onItemChildClickListener);
+        recyclerview.setAdapter(adapter);
+
         requestSearch();
     }
 
@@ -100,48 +110,7 @@ public class SearchFriendResultActivity extends BaseActivity {
         searchEdit.setText("");
     }
 
-    private void updateView(Connect.UserInfo userInfo){
-        resultLin.removeAllViews();
-        if(userInfo == null){
-            resultLin.removeAllViews();
-            noResultTv.setVisibility(View.VISIBLE);
-            return;
-        }else{
-            userInfoBase = userInfo;
-            noResultTv.setVisibility(View.GONE);
-        }
-
-        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_contact_search_result,null);
-        ImageView avatar = (ImageView)view.findViewById(R.id.avatar_rimg);
-        TextView nickname = (TextView)view.findViewById(R.id.nickname_tv);
-        Button statusBtn = (Button)view.findViewById(R.id.status_btn);
-        statusBtn.setText(R.string.Link_Add);
-        GlideUtil.loadAvatarRound(avatar,userInfo.getAvatar());
-        nickname.setText(userInfo.getUsername());
-
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
-        if(userInfo.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getUid())){
-            // Query the user themselves
-            resultLin.removeAllViews();
-            noResultTv.setVisibility(View.VISIBLE);
-        }else if(friendEntity != null){
-            // Query the user is already a good friend relationship
-            statusBtn.setVisibility(View.GONE);
-            view.setOnClickListener(onClickListener);
-            view.setTag(1);
-            resultLin.addView(view);
-        }else{
-            // Query the user is a stranger
-            statusBtn.setVisibility(View.VISIBLE);
-            view.setOnClickListener(onClickListener);
-            statusBtn.setOnClickListener(onClickListener);
-            view.setTag(2);
-            statusBtn.setTag(2);
-            resultLin.addView(view);
-        }
-    }
-
-    private View.OnKeyListener keyListener = new View.OnKeyListener(){
+    private View.OnKeyListener keyListener = new View.OnKeyListener() {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -156,35 +125,39 @@ public class SearchFriendResultActivity extends BaseActivity {
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
         @Override
         public void afterTextChanged(Editable s) {
-            if(TextUtils.isEmpty(s.toString())){
+            if (TextUtils.isEmpty(s.toString())) {
                 delTv.setVisibility(View.GONE);
-            }else{
+            } else {
                 delTv.setVisibility(View.VISIBLE);
             }
         }
     };
 
-    View.OnClickListener onClickListener = new View.OnClickListener(){
+    SearchResultAdapter.OnItemChildClickListener onItemChildClickListener = new SearchResultAdapter.OnItemChildClickListener(){
         @Override
-        public void onClick(View v) {
-            int tag = (int)v.getTag();
-            if(tag == 1){
-                FriendInfoActivity.startActivity(mActivity, userInfoBase.getUid());
-            }else if(tag == 2){
-                StrangerInfoActivity.startActivity(mActivity, userInfoBase.getUid(), SourceType.SEARCH);
+        public void itemClick(int position, Connect.UserInfo userInfo) {
+            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
+            if (friendEntity != null) {
+                FriendInfoActivity.startActivity(mActivity, userInfo.getUid());
+            } else {
+                StrangerInfoActivity.startActivity(mActivity, userInfo.getUid(), SourceType.SEARCH);
             }
         }
     };
 
-    private void requestSearch(){
+    private void requestSearch() {
         String searchContext = searchEdit.getText().toString().trim();
         if (TextUtils.isEmpty(searchContext)) {
-            resultLin.removeAllViews();
+            recyclerview.setVisibility(View.GONE);
             noResultTv.setVisibility(View.VISIBLE);
             return;
         }
@@ -197,9 +170,14 @@ public class SearchFriendResultActivity extends BaseActivity {
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
-                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(!TextUtils.isEmpty(userInfo.getUid())){
-                        updateView(userInfo);
+                    Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
+                    if(usersInfo.getUsersList().size() > 0){
+                        noResultTv.setVisibility(View.GONE);
+                        recyclerview.setVisibility(View.VISIBLE);
+                        adapter.setDataNotify(usersInfo.getUsersList());
+                    }else{
+                        noResultTv.setVisibility(View.VISIBLE);
+                        recyclerview.setVisibility(View.GONE);
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -208,7 +186,8 @@ public class SearchFriendResultActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
-                updateView(null);
+                noResultTv.setVisibility(View.VISIBLE);
+                recyclerview.setVisibility(View.GONE);
 
                 String errorMessage = response.getMessage();
                 if (TextUtils.isEmpty(errorMessage)) {
