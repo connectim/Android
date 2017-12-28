@@ -148,7 +148,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
         ChatMsgEntity invite = groupChat.noticeMsg(0, stringMems, "");
         MessageHelper.getInstance().insertMsgExtEntity(invite);
 
-        ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
+        ToastEUtil.makeText(activity, activity.getString(R.string.Chat_Create_Group_Success), 1, new ToastEUtil.OnToastListener() {
             @Override
             public void animFinish() {
                 ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupKey));

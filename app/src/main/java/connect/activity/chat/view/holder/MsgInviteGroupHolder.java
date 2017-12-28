@@ -104,12 +104,7 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
                 if (response.getCode() == 2430) {
                     ToastEUtil.makeText((Activity) context, R.string.Link_Qr_code_is_invalid, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else if (response.getCode() == 2403) {
-                    ToastEUtil.makeText((Activity) context, ((Activity) context).getString(R.string.Link_Join_Group_Success), 1, new ToastEUtil.OnToastListener() {
-                        @Override
-                        public void animFinish() {
-                            ChatActivity.startActivity((Activity) context, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupkey));
-                        }
-                    }).show();
+                    ChatActivity.startActivity((Activity) context, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupkey));
                 } else {
                     String contentTxt = response.getMessage();
                     if (TextUtils.isEmpty(contentTxt)) {

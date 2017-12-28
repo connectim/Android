@@ -25,7 +25,6 @@ import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
@@ -74,7 +73,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubKey);
             baseChat = new CFriendChat(acceptFriend);
             talker = new Talker(Connect.ChatType.PRIVATE,pubKey);
-        } else if (type == 1) {
+        } else if (type == 1||type == 3) {
             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubKey);
             baseChat = new CGroupChat(groupEntity);
             talker = new Talker(Connect.ChatType.GROUPCHAT,pubKey);
@@ -151,6 +150,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getUid());
                     if (conversionEntity != null) {
                         CFriendChat friendChat = new CFriendChat(friendEntity);
+                        ConversionHelper.getInstance().updateRoomEntityAvatar(friendEntity.getUid(), userInfo.getUsers(0).getAvatar());
                         friendChat.updateRoomMsg(null, "", -1, -1, -1);
                     }
                     ContactNotice.receiverFriend();

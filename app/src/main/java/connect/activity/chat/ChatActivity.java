@@ -67,7 +67,6 @@ import connect.widget.bottominput.InputPanel;
 import connect.widget.bottominput.view.InputBottomLayout;
 import connect.widget.camera.CameraTakeActivity;
 import connect.widget.recordvoice.RecordView;
-import connect.widget.selefriend.SelectFriendActivity;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.NormalChat;
 import protos.Connect;
@@ -395,6 +394,9 @@ public class ChatActivity extends BaseChatSendActivity {
                 });
                 baseFileUp.startUpload();
                 break;
+        }
+        if (getNormalChat().chatKey().equals(roomkey)) {
+            adapterInsetItem(msgExtEntity);
         }
     }
 

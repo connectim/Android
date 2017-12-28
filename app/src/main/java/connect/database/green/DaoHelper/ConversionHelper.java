@@ -169,6 +169,11 @@ public class ConversionHelper extends BaseDao {
         daoSession.getDatabase().execSQL(sql, new Object[]{name, identify});
     }
 
+    public void updateRoomEntityAvatar(String identify, String avatar) {
+        String sql = "UPDATE CONVERSION_ENTITY SET AVATAR = ?  WHERE IDENTIFIER = ?;";
+        daoSession.getDatabase().execSQL(sql, new Object[]{avatar, identify});
+    }
+
     /************************ delete *****************************************/
     /**
      * remove room
