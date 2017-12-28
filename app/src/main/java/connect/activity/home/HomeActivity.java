@@ -196,7 +196,7 @@ public class HomeActivity extends BaseFragmentActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ContactNotice notice) {
-        if (notice.getNotice() == ContactNotice.ConNotice.RecAddFriend) {
+        if (notice.getNotice() == ContactNotice.ConNotice.RecAddFriendHome) {
             updataRequest();
         }
     }

@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,8 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
     TopToolBar toolbar;
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
+    @Bind(R.id.no_data_lin)
+    LinearLayout noDataLin;
 
     private AddFriendActivity mActivity;
     private AddFriendContract.Presenter presenter;
@@ -101,17 +104,17 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
 
         @Override
         public void itemClick(int position, FriendRequestEntity entity) {
-            if(TextUtils.isEmpty(entity.getUid())){
+            if (TextUtils.isEmpty(entity.getUid())) {
                 //load more
                 //ActivityUtil.next(mActivity, AddFriendRecommendActivity.class);
             } else {
                 ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(entity.getUid());
-                if(friendEntity != null){
+                if (friendEntity != null) {
                     FriendInfoActivity.startActivity(mActivity, entity.getUid());
-                } else if(entity.getStatus() == NewRequestAdapter.ACCEPTE_ADD_FRIEND){
+                } else if (entity.getStatus() == NewRequestAdapter.ACCEPTE_ADD_FRIEND) {
                     AddFriendAcceptActivity.startActivity(mActivity, entity);
                 } else {
-                    StrangerInfoActivity.startActivity(mActivity,  entity.getUid(), SourceType.getSourceType(entity.getSource()));
+                    StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.getSourceType(entity.getSource()));
                 }
             }
         }
@@ -143,7 +146,14 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
      */
     @Override
     public void notifyData(boolean isShowMoreRecommend, ArrayList<FriendRequestEntity> listFina) {
-        requestAdapter.setDataNotify(isShowMoreRecommend, listFina);
+        if(listFina.size() > 0){
+            noDataLin.setVisibility(View.GONE);
+            recyclerview.setVisibility(View.VISIBLE);
+            requestAdapter.setDataNotify(isShowMoreRecommend, listFina);
+        }else{
+            noDataLin.setVisibility(View.VISIBLE);
+            recyclerview.setVisibility(View.GONE);
+        }
     }
 
 }

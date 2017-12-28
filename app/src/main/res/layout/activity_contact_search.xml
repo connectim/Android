@@ -39,9 +39,10 @@
                 android:layout_toRightOf="@+id/left_img"
                 android:layout_toLeftOf="@+id/del_tv"
                 android:hint="@string/Link_Search"
+                android:imeOptions="actionSearch"
                 android:textColorHint="@color/color_b3b5bc"
                 android:gravity="center_vertical"
-                android:maxLines="1"/>
+                android:singleLine="true"/>
             <ImageView
                 android:contentDescription="@string/app_name"
                 android:id="@+id/del_tv"
