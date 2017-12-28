@@ -135,7 +135,12 @@ public class StrangerInfoActivity extends BaseActivity {
                     requestEntity.setUid(sendUserInfo.getUid());
                     requestEntity.setSource(sourceType.getType());
                     requestEntity.setTips(msgSendBean.getTips());
-                    requestEntity.setStatus(3);
+
+                    if(ContactHelper.getInstance().loadFriend(sendUserInfo.getUid()) == null){
+                        requestEntity.setStatus(3);
+                    }else{
+                        requestEntity.setStatus(2);
+                    }
                     requestEntity.setRead(1);
                     ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
 

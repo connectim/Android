@@ -95,7 +95,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ContactBean currBean = mData.get(position);
         switch (type) {
             case STATUS_REQUEST:
-                if (TextUtils.isEmpty(currBean.getAvatar())) {
+                if (TextUtils.isEmpty(currBean.getName())) {
                     // No friend requests
                     ((RequestHolder) holder).contentLayout.setBackground(BaseApplication.getInstance()
                             .getResources().getDrawable(R.drawable.selector_list_item_bg));
