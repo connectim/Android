@@ -79,7 +79,7 @@ public class LoginUserActivity extends BaseActivity {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                     Connect.UserLoginInfo userLoginInfo = Connect.UserLoginInfo.parseFrom(structData.getPlainData());
-                    UserBean userBean = new UserBean(userLoginInfo.getName(), "", userLoginInfo.getUid(), userLoginInfo.getOU(), userLoginInfo.getToken());
+                    UserBean userBean = new UserBean(userLoginInfo.getName(), userLoginInfo.getAvatar(), userLoginInfo.getUid(), userLoginInfo.getOU(), userLoginInfo.getToken());
                     SharedPreferenceUtil.getInstance().putUser(userBean);
                     HomeActivity.startActivity(mActivity);
                     mActivity.finish();

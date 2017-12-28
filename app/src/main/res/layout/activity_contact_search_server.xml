@@ -26,7 +26,7 @@
             android:paddingLeft="@dimen/dp_15"
             android:imeOptions="actionSearch"
             android:singleLine="true"
-            android:hint="@string/Link_search_someThing"
+            android:hint="@string/Login_username"
             android:gravity="center_vertical"/>
         <ImageView
             android:contentDescription="@string/app_name"

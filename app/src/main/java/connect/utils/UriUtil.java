@@ -49,7 +49,7 @@ public class UriUtil {
     /**======================================================================================
      *                                setting
      * ====================================================================================== */
-    /** Query the user information 1: uid   2:connectid */
+    /** Query the user information 1: uid   2:connectid  "":username*/
     public static String CONNECT_V1_USER_SEARCH = "/connect/v1/users/search";
     /** Set user basic information */
     public static String CONNECT_V1_SETTING_USERINFO = "/connect/v1/setting/userinfo";
