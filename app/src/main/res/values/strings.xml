@@ -604,4 +604,5 @@
 
     <string name="Chat_Refreshing">Refreshing...</string>
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>
+    <string name="Chat_No_Data">No Data...</string>
 </resources>

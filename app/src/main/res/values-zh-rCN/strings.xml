@@ -521,4 +521,5 @@
 
     <string name="Chat_Refreshing">正在更新...</string>
     <string name="Link_Join_Group_Success">成功加入群聊</string>
+    <string name="Chat_No_Data">没有数据...</string>
 </resources>

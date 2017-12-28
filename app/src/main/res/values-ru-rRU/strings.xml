@@ -653,4 +653,5 @@
 
     <string name="Chat_Refreshing">обновление ...</string>
     <string name="Link_Join_Group_Success">успех  к  групповой чат </string>
+    <string name="Chat_No_Data">Нет данных...</string>
 </resources>

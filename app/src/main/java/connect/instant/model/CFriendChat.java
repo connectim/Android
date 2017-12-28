@@ -100,6 +100,7 @@ public class CFriendChat extends FriendChat implements ConversationListener{
             for (RoomAttrBean attrBean : roomEntities) {
                 ConversionHelper.getInstance().updateRoomEntity(
                         friendUid,
+                        nickName(),
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),

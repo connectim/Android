@@ -82,6 +82,7 @@ public class CDiscussChat extends DiscussChat implements ConversationListener {
             for (RoomAttrBean attrBean : roomEntities) {
                 ConversionHelper.getInstance().updateRoomEntity(
                         groupIdentify,
+                        nickName(),
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),

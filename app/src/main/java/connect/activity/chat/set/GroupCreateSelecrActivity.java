@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +27,7 @@ import connect.widget.SideBar;
 import connect.widget.TopToolBar;
 import connect.widget.selefriend.adapter.SelectFriendAdapter;
 
-public class GroupCreateSelecrActivity extends BaseActivity implements GroupCreateSelectContract.BView{
+public class GroupCreateSelecrActivity extends BaseActivity implements GroupCreateSelectContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -34,6 +35,8 @@ public class GroupCreateSelecrActivity extends BaseActivity implements GroupCrea
     RecyclerView recyclerview;
     @Bind(R.id.siderbar)
     SideBar siderbar;
+    @Bind(R.id.text_view)
+    TextView textView;
 
     private GroupCreateSelecrActivity activity;
     private static String TAG = "_GroupCreateActivity";
@@ -110,6 +113,8 @@ public class GroupCreateSelecrActivity extends BaseActivity implements GroupCrea
         adapter.setOnSelectFriendListener(friendSelectListener);
         siderbar.setOnTouchingLetterChangedListener(letterChanged);
         adapter.setDataNotify(friendEntities, null, oldMembers);
+        textView.setVisibility(friendEntities.size() == 0 ? View.VISIBLE : View.GONE);
+
         new GroupCreateSelectPresenter(this).start();
     }
 
@@ -159,7 +164,7 @@ public class GroupCreateSelecrActivity extends BaseActivity implements GroupCrea
         }
     }
 
-    private class GroupCreateLetterChanged implements SideBar.OnTouchingLetterChangedListener{
+    private class GroupCreateLetterChanged implements SideBar.OnTouchingLetterChangedListener {
 
         @Override
         public void onTouchingLetterChanged(String s) {
