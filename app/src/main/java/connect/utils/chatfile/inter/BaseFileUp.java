@@ -78,7 +78,7 @@ public abstract class BaseFileUp implements InterFileUp {
     }
 
     public void resultUpFile(Connect.MediaFile mediaFile, final FileResult fileResult) {
-        HttpRequest.getInstance().post(UriUtil.UPLOAD_FILE, mediaFile, new ResultCall<Connect.HttpResponse>() {
+        HttpRequest.getInstance().postUploadFile(UriUtil.UPLOAD_FILE, mediaFile.toByteArray(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {

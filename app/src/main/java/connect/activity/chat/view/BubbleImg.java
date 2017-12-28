@@ -101,7 +101,7 @@ public class BubbleImg extends RelativeLayout {
                     .bitmapTransform(new CenterCrop(context), new BlurMaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x, (openBurn && msgDirect == MsgDirect.From) ? 16 : 0))
                     .into(imageView);
         } else {
-            DownLoadFile loadFile = new DownLoadFile(chatType, pukkey, ecdh,url, new InterFileDown() {
+            DownLoadFile loadFile = new DownLoadFile(url, new InterFileDown() {
 
                 @Override
                 public void successDown(byte[] bytes) {
