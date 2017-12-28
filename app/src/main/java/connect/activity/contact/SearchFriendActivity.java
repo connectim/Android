@@ -110,6 +110,7 @@ public class SearchFriendActivity extends BaseActivity {
             switch (type) {
                 case 1:
                     SearchFriendResultActivity.startActivity(mActivity, list.getUid());
+                    mActivity.finish();
                     break;
                 case 2:
                     FriendInfoActivity.startActivity(mActivity, list.getUid());
@@ -128,6 +129,7 @@ public class SearchFriendActivity extends BaseActivity {
                         .hideSoftInputFromWindow(SearchFriendActivity.this.getCurrentFocus()
                                 .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 SearchFriendResultActivity.startActivity(mActivity, searchEdit.getText().toString().trim());
+                mActivity.finish();
             }
             return false;
         }
