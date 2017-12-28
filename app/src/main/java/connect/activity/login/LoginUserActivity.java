@@ -82,6 +82,7 @@ public class LoginUserActivity extends BaseActivity {
                     UserBean userBean = new UserBean(userLoginInfo.getName(), "", userLoginInfo.getUid(), userLoginInfo.getOU(), userLoginInfo.getToken());
                     SharedPreferenceUtil.getInstance().putUser(userBean);
                     HomeActivity.startActivity(mActivity);
+                    mActivity.finish();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

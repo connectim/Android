@@ -55,13 +55,13 @@ public class NewRequestAdapter extends RecyclerView.Adapter<NewRequestAdapter.Vi
         final FriendRequestEntity friendRequestEntity = mList.get(position);
         viewHolder.txt.setVisibility(View.VISIBLE);
         viewHolder.sideScrollView.setVisibility(View.VISIBLE);
-
-        if(position == 0){
+        viewHolder.topRela.setVisibility(View.GONE);
+        /*if(position == 0){
             viewHolder.txt.setText(R.string.Link_Your_invitation);
             viewHolder.moreTv.setVisibility(View.GONE);
         }else {
             viewHolder.topRela.setVisibility(View.GONE);
-        }
+        }*/
 
         GlideUtil.loadAvatarRound(viewHolder.avatarRimg, friendRequestEntity.getAvatar() + "?size=80");
         viewHolder.nicknameTv.setText(friendRequestEntity.getUsername());

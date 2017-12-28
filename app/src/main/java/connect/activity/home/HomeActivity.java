@@ -39,6 +39,7 @@ import connect.activity.home.fragment.ConversationFragment;
 import connect.activity.home.fragment.SetFragment;
 import connect.activity.home.view.CheckUpdate;
 import connect.activity.login.LoginPhoneActivity;
+import connect.activity.login.LoginUserActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
@@ -162,7 +163,7 @@ public class HomeActivity extends BaseFragmentActivity {
 
                 mHandler.removeMessages(TIMEOUT_DELAYEXIT);
                 BaseApplication.getInstance().exitRegisterAccount();
-                Intent intent = new Intent(activity, LoginPhoneActivity.class);
+                Intent intent = new Intent(activity, LoginUserActivity.class);
                 activity.startActivity(intent);
                 finish();
                 break;

@@ -71,7 +71,6 @@ public class ConversationFragment extends BaseFragment {
                 countUnread();
                 break;
         }
-
     }
 
     /**
