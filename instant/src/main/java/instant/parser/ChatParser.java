@@ -51,29 +51,8 @@ public class ChatParser extends InterParse {
 
     public synchronized void singleChat(Connect.MessagePost msgpost) throws Exception {
         Connect.MessageData messageData = msgpost.getMsgData();
-        Connect.ChatSession chatSession = messageData.getChatSession();
         Connect.ChatMessage chatMessage = messageData.getChatMsg();
-
-        String priKey = null;
-        String pubkey = null;
-        LogManager.getLogger().d(TAG, "Id: " + chatMessage.getMsgId());
-        ByteString fromSalt = chatSession.getSalt();
-        ByteString toSalt = chatSession.getVer();
-
-        UserCookie toCookie = Session.getInstance().getCookieBySalt(StringUtil.bytesToHexString(toSalt.toByteArray()));
-        if (toCookie == null) {
-            return;
-        }
-        priKey = toCookie.getPriKey();
-        pubkey = chatSession.getPubKey();
-        EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-        ecdhExts.setBytes(SupportKeyUril.xor(fromSalt.toByteArray(), toSalt.toByteArray()));
-        byte[] rawECDHkey = SupportKeyUril.getRawECDHKey(priKey, pubkey);
-        rawECDHkey = EncryptionUtil.getKeyExtendedECDH(ecdhExts, rawECDHkey);
-
-        Connect.GcmData gcmData = messageData.getChatMsg().getCipherData();
-        byte[] contents = DecryptionUtil.decodeAESGCM(rawECDHkey, gcmData);
-        MessageLocalReceiver.localReceiver.singleChat(chatMessage, rawECDHkey, contents);
+        MessageLocalReceiver.localReceiver.singleChat(chatMessage);
     }
 
     /**
@@ -82,7 +61,9 @@ public class ChatParser extends InterParse {
      * @param msgpost
      */
     protected synchronized void groupChat(Connect.MessagePost msgpost) {
-        MessageLocalReceiver.localReceiver.groupChat(msgpost);
+        Connect.MessageData messageData = msgpost.getMsgData();
+        Connect.ChatMessage chatMessage = messageData.getChatMsg();
+        MessageLocalReceiver.localReceiver.groupChat(chatMessage);
     }
 
     /**

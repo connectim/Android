@@ -79,15 +79,15 @@ public class VoiceUpload extends BaseFileUp {
                     .build();
         }
 
-        UserCookie userCookie = loadUserCookie();
-        String myPrivateKey = userCookie.getPriKey();
-        String myPublicKey = userCookie.getPubKey();
-
-        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
-        mediaFile = Connect.MediaFile.newBuilder()
-                .setPubKey(myPublicKey)
-                .setCipherData(gcmData)
-                .build();
+//        UserCookie userCookie = loadUserCookie();
+//        String myPrivateKey = userCookie.getPriKey();
+//        String myPublicKey = userCookie.getPubKey();
+//
+//        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
+//        mediaFile = Connect.MediaFile.newBuilder()
+//                .setPubKey(myPublicKey)
+//                .setCipherData(gcmData)
+//                .build();
     }
 
     @Override

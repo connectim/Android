@@ -178,7 +178,7 @@ public class SafetyNewPhoneActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try{
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.SecurityToken securityToken = Connect.SecurityToken .parseFrom(structData.getPlainData());
                     token = securityToken.getToken();
                     countdownTime();

@@ -12,10 +12,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.adapter.ContactCardAdapter;
-import connect.activity.chat.bean.LinkMessageRow;
-import connect.activity.chat.bean.MsgSend;
 import connect.activity.base.compare.FriendCompara;
+import connect.activity.chat.adapter.ContactCardAdapter;
+import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.set.contract.ContactCardContract;
 import connect.activity.chat.set.presenter.ContactCardPresenter;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -44,8 +43,8 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
     private boolean move;
     private int topPosi;
 
-    private ContactCardScrollListener scrollListener=new ContactCardScrollListener();
-    private ContactCardTouchingLetterChanged letterChanged=new ContactCardTouchingLetterChanged();
+    private ContactCardScrollListener scrollListener = new ContactCardScrollListener();
+    private ContactCardTouchingLetterChanged letterChanged = new ContactCardTouchingLetterChanged();
     private LinearLayoutManager linearLayoutManager;
     private ContactCardContract.Presenter presenter;
     private ContactCardAdapter contactCardAdapter;
@@ -58,7 +57,7 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
         initView();
     }
 
-    public static void startActivity(Activity activity,String uid) {
+    public static void startActivity(Activity activity, String uid) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(UID, uid);
         ActivityUtil.next(activity, ContactCardActivity.class, bundle);
@@ -89,7 +88,7 @@ public class ContactCardActivity extends BaseActivity implements ContactCardCont
             @Override
             public void onClick(View v) {
                 ContactEntity entity = (ContactEntity) v.getTag();
-                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Name_Card,entity.getUid(),entity.getUsername(),entity.getAvatar());
+                MsgSend.sendOuterMsg(MsgSend.MsgSendType.Name_Card, entity.getUid(), entity.getUsername(), entity.getAvatar());
                 ActivityUtil.goBack(activity);
             }
         });

@@ -11,17 +11,13 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.instant.inter.ConversationListener;
-import connect.instant.model.CDiscussChat;
 import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
-import connect.utils.StringUtil;
-import connect.utils.log.LogManager;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.parser.inter.MessageListener;
-import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
 /**
@@ -48,7 +44,7 @@ public class MessageReceiver implements MessageListener {
     }
 
     @Override
-    public void singleChat(Connect.ChatMessage chatMessage, byte[] ecdh, byte[] contents) throws Exception {
+    public void singleChat(Connect.ChatMessage chatMessage) throws Exception {
         String friendUid = chatMessage.getFrom();
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendUid);
         if (contactEntity == null) {
@@ -56,80 +52,49 @@ public class MessageReceiver implements MessageListener {
         }
 
         CFriendChat friendChat = new CFriendChat(contactEntity);
-        if (contents.length < 3) {
-            LogManager.getLogger().d(TAG, "decode fail");
+        ChatMsgEntity chatMsgEntity = ChatMsgEntity.transToMessageEntity(chatMessage.getMsgId(),
+                chatMessage.getFrom(), chatMessage.getChatType().getNumber(), chatMessage.getMsgType(),
+                chatMessage.getFrom(), chatMessage.getTo(),
+                chatMessage.getBody().toByteArray(), chatMessage.getMsgTime(), 1);
 
-            if (contactEntity != null) {
-                String showTxt = BaseApplication.getInstance().getString(R.string.Chat_Notice_New_Message);
-                ChatMsgEntity msgExtEntity = friendChat.noticeMsg(0, showTxt, "");
+        MessageHelper.getInstance().insertMsgExtEntity(chatMsgEntity);
+        friendChat.updateRoomMsg(null, chatMsgEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
 
-                friendChat.updateRoomMsg(null, showTxt, chatMessage.getMsgTime(), -1, 1, false);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, chatMsgEntity.getMessage_from(), chatMsgEntity);
+        NotificationBar.notificationBar.noticeBarMsg(chatMsgEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, chatMsgEntity.showContent());
 
-                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, friendChat.chatKey(), msgExtEntity);
-            }
-        } else {
-            ChatMsgEntity chatMsgEntity = ChatMsgEntity.transToMessageEntity(chatMessage.getMsgId(),
-                    chatMessage.getFrom(), chatMessage.getChatType().getNumber(), chatMessage.getMsgType(),
-                    chatMessage.getFrom(), chatMessage.getTo(),
-                    StringUtil.bytesToHexString(ecdh), contents, chatMessage.getMsgTime(), 1);
-
-            MessageHelper.getInstance().insertMsgExtEntity(chatMsgEntity);
-            friendChat.updateRoomMsg(null, chatMsgEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
-
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, chatMsgEntity.getMessage_from(), chatMsgEntity);
-            NotificationBar.notificationBar.noticeBarMsg(chatMsgEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, chatMsgEntity.showContent());
-        }
     }
 
     @Override
-    public void groupChat(Connect.MessagePost messagePost) {
-        Connect.MessageData messageData = messagePost.getMsgData();
-        Connect.ChatMessage chatMessage = messageData.getChatMsg();
-
+    public void groupChat(Connect.ChatMessage chatMessage) {
         String groupIdentify = chatMessage.getTo();
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupIdentify);
+
+        ChatMsgEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), groupIdentify,
+                chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
+                chatMessage.getTo(), chatMessage.getBody().toByteArray(), chatMessage.getMsgTime(), 1);
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+
         if (groupEntity == null) {//group backup
-            FailMsgsManager.getInstance().insertReceiveMsg(groupIdentify, chatMessage.getMsgId(), messagePost);
             GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
         } else {
-            byte[] contents = new byte[]{};
-            ConversationListener conversationListener = null;
-            if (chatMessage.getChatType() == Connect.ChatType.GROUPCHAT) {
-                conversationListener = new CGroupChat(groupEntity);
-                Connect.GcmData gcmData = chatMessage.getCipherData();
-                //byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, StringUtil.hexStringToBytes(groupEntity.getEcdh_key()), gcmData);
-            } else if (chatMessage.getChatType() == Connect.ChatType.GROUP_DISCUSSION) {
-                conversationListener = new CDiscussChat(groupEntity);
-                contents = chatMessage.getOriginMsg().toByteArray();
-            }
+            ConversationListener conversationListener = new CGroupChat(groupEntity);
+            conversationListener.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
 
-            if (contents.length < 3) {
-                GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
-            } else {
-                ChatMsgEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), groupIdentify,
-                        chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
-                        chatMessage.getTo(), contents, chatMessage.getMsgTime(), 1);
-                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-
-                conversationListener.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
-
-                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
-
-                String content = msgExtEntity.showContent();
-                String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
-                if (chatMessage.getMsgType() == MessageType.Text.type) {
-                    try {
-                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);
-                        if (textMessage.getAtUidsList().lastIndexOf(myUid) != -1) {
-                            content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            String content = msgExtEntity.showContent();
+            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+            if (chatMessage.getMsgType() == MessageType.Text.type) {
+                try {
+                    Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(chatMessage.getBody());
+                    if (textMessage.getAtUidsList().lastIndexOf(myUid) != -1) {
+                        content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
             }
+            NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
         }
     }
 

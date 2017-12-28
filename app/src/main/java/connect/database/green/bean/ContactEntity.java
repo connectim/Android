@@ -15,9 +15,6 @@ public class ContactEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-    @NotNull
-    @Unique
-    private String ca_pub;
 
     @NotNull
     @Unique
@@ -30,12 +27,14 @@ public class ContactEntity implements Serializable {
     private Integer source;
     private Boolean blocked;
 
-    @Generated(hash = 255488888)
-    public ContactEntity(Long _id, @NotNull String ca_pub, @NotNull String uid,
-            String connectId, String username, String avatar, String remark,
-            Integer common, Integer source, Boolean blocked) {
+    @Generated(hash = 393979869)
+    public ContactEntity() {
+    }
+    @Generated(hash = 176866406)
+    public ContactEntity(Long _id, @NotNull String uid, String connectId,
+            String username, String avatar, String remark, Integer common,
+            Integer source, Boolean blocked) {
         this._id = _id;
-        this.ca_pub = ca_pub;
         this.uid = uid;
         this.connectId = connectId;
         this.username = username;
@@ -45,20 +44,11 @@ public class ContactEntity implements Serializable {
         this.source = source;
         this.blocked = blocked;
     }
-    @Generated(hash = 393979869)
-    public ContactEntity() {
-    }
     public Long get_id() {
         return this._id;
     }
     public void set_id(Long _id) {
         this._id = _id;
-    }
-    public String getCa_pub() {
-        return this.ca_pub;
-    }
-    public void setCa_pub(String ca_pub) {
-        this.ca_pub = ca_pub;
     }
     public String getUid() {
         return this.uid;

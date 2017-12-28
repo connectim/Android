@@ -27,10 +27,8 @@ import connect.database.green.bean.GroupMemberEntity;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
 public class GroupService extends Service {
@@ -88,7 +86,7 @@ public class GroupService extends Service {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
                         Connect.Group group = groupInfo.getGroup();
@@ -123,8 +121,6 @@ public class GroupService extends Service {
                         List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
                         ContactHelper.getInstance().inserGroupMemEntity(memEntities);
                         ContactNotice.receiverGroup();
-
-                        FailMsgsManager.getInstance().dealReceiveFailMsgs(groupIdentifier);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

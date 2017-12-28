@@ -30,6 +30,4 @@ public interface RobotListener {
     void removeGroupMessage(Connect.RemoveGroup removeGroup);
 
     void addressNotifyMessage(Connect.AddressNotify addressNotify);
-
-    void subscribePull(Connect.RSSPush rssPush) throws Exception;
 }

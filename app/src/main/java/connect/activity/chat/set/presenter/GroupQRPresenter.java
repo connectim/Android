@@ -59,7 +59,7 @@ public class GroupQRPresenter implements GroupQRContract.Presenter {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupHash groupHash = Connect.GroupHash.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(groupHash)){
                         String hash = groupHash.getHash();
@@ -90,7 +90,7 @@ public class GroupQRPresenter implements GroupQRContract.Presenter {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupUrl groupUrl = Connect.GroupUrl.parseFrom(structData.getPlainData());
                     if(!ProtoBufUtil.getInstance().checkProtoBuf(groupUrl)){
                         ToastEUtil.makeText(activity,R.string.Link_Share_failed,ToastEUtil.TOAST_STATUS_FAILE).show();

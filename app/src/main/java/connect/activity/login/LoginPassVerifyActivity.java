@@ -134,8 +134,7 @@ public class LoginPassVerifyActivity extends BaseActivity {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
-                            finalPriKey, imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
 
                     UserBean userBean;

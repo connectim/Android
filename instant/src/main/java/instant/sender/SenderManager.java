@@ -15,8 +15,6 @@ import instant.bean.SocketACK;
 import instant.sender.inter.LocalServiceListener;
 import instant.utils.log.LogManager;
 import instant.utils.manager.FailMsgsManager;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -24,7 +22,7 @@ import protos.Connect;
  * Assembly chat interface to send message
  * Created by gtq on 2016/12/3.
  */
-public class SenderManager implements LocalServiceListener{
+public class SenderManager implements LocalServiceListener {
 
     private static String Tag = "_SenderManager";
     public static SenderManager senderManager = getInstance();
@@ -59,8 +57,8 @@ public class SenderManager implements LocalServiceListener{
     }
 
     @Override
-    public void exitAccount(){
-        if(serviceListener!=null){
+    public void exitAccount() {
+        if (serviceListener != null) {
             serviceListener.exitAccount();
         }
     }
@@ -101,7 +99,7 @@ public class SenderManager implements LocalServiceListener{
         private ByteString bytes;
 
         SendChatRun(SocketACK ack, ByteString bytes) {
-            this.transfer = true;
+            this.transfer=true;
             this.ack = ack;
             this.bytes = bytes;
         }
@@ -119,18 +117,23 @@ public class SenderManager implements LocalServiceListener{
 
                 ByteBuffer byteBuffer = null;
                 if (transfer) { // transferData,Encapsulating server checksum data
-                    String priKey = Session.getInstance().getConnectCookie().getPriKey();
-                    Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE,
-                            Session.getInstance().getRandomCookie().getSalt(), bytes);
-                    String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
-                    Connect.IMTransferData transferData = Connect.IMTransferData.newBuilder().
-                            setSign(signHash).setCipherData(gcmData).build();
+                    Connect.StructData structData = Connect.StructData.newBuilder()
+                            .setPlainData(bytes)
+                            .build();
 
-                    byteBuffer = ByteBuffer.wrap(transferData.toByteArray());
-                    serviceListener.messageSend(ack.getOrder(),byteBuffer);
+                    String uid = Session.getInstance().getConnectCookie().getUid();
+                    String token = Session.getInstance().getChatCookie().getToken();
+                    Connect.IMTransferData imTransferData = Connect.IMTransferData.newBuilder()
+                            .setBody(structData.toByteString())
+                            .setUid(uid)
+                            .setToken(token)
+                            .build();
+
+                    byteBuffer = ByteBuffer.wrap(imTransferData.toByteArray());
+                    serviceListener.messageSend(ack.getOrder(), byteBuffer);
                 } else {
                     byteBuffer = ByteBuffer.wrap(bytes.toByteArray());
-                    serviceListener.messageSend(ack.getOrder(),byteBuffer);
+                    serviceListener.messageSend(ack.getOrder(), byteBuffer);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

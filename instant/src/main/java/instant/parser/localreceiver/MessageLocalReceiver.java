@@ -37,13 +37,13 @@ public class MessageLocalReceiver implements MessageListener {
     }
 
     @Override
-    public void singleChat(Connect.ChatMessage chatMessage,byte[] ecdh,  byte[] contents) throws Exception {
-        getMessageListener().singleChat(chatMessage,ecdh, contents);
+    public void singleChat(Connect.ChatMessage chatMessage) throws Exception {
+        getMessageListener().singleChat(chatMessage);
     }
 
     @Override
-    public void groupChat(Connect.MessagePost messagePost) {
-        getMessageListener().groupChat(messagePost);
+    public void groupChat(Connect.ChatMessage chatMessage) {
+        getMessageListener().groupChat(chatMessage);
     }
 
     @Override

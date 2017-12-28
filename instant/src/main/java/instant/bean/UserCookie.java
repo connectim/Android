@@ -9,45 +9,11 @@ import java.io.Serializable;
 public class UserCookie implements Serializable {
 
     private String uid;
-    private String priKey;
-    private String pubKey;
-    private byte[] salt;
-    private long expiredTime;
+    private String token;
 
     public UserCookie() {
     }
 
-    public String getPriKey() {
-        return priKey;
-    }
-
-    public void setPriKey(String priKey) {
-        this.priKey = priKey;
-    }
-
-    public byte[] getSalt() {
-        return salt;
-    }
-
-    public void setSalt(byte[] salt) {
-        this.salt = salt;
-    }
-
-    public long getExpiredTime() {
-        return expiredTime;
-    }
-
-    public void setExpiredTime(long expiredTime) {
-        this.expiredTime = expiredTime;
-    }
-
-    public String getPubKey() {
-        return pubKey;
-    }
-
-    public void setPubKey(String pubKey) {
-        this.pubKey = pubKey;
-    }
 
     public String getUid() {
         return uid;
@@ -55,5 +21,13 @@ public class UserCookie implements Serializable {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

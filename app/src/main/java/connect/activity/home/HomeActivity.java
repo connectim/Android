@@ -30,7 +30,6 @@ import connect.activity.base.BaseApplication;
 import connect.activity.base.BaseFragmentActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.subscribe.SubscribeListActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.HomeAction;
@@ -171,7 +170,7 @@ public class HomeActivity extends BaseFragmentActivity {
             case TOCHAT:
                 Talker talker = (Talker) (objects[0]);
                 if (talker.getTalkType() == Connect.ChatType.SUBSCRIBER) {
-                    SubscribeListActivity.startActivity(activity);
+
                 } else {
                     ChatActivity.startActivity(activity, (Talker) (objects[0]));
                 }

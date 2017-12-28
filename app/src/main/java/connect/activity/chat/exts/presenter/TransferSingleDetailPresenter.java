@@ -44,10 +44,7 @@ public class TransferSingleDetailPresenter implements TransferSingleDetailContra
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
-                    }
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     final Connect.Bill bill = Connect.Bill.parseFrom(structData.getPlainData().toByteArray());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(bill)) {
                         view.showTips(bill.getTips());
@@ -85,10 +82,7 @@ public class TransferSingleDetailPresenter implements TransferSingleDetailContra
                     public void onResponse(Connect.HttpResponse response) {
                         try {
                             Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                                throw new Exception("Validation fails");
-                            }
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                             final Connect.ExternalBillingInfo billingInfo = Connect.ExternalBillingInfo.parseFrom(structData.getPlainData().toByteArray());
                             if (ProtoBufUtil.getInstance().checkProtoBuf(billingInfo)) {
                                 String tips = billingInfo.getTips();
@@ -142,7 +136,7 @@ public class TransferSingleDetailPresenter implements TransferSingleDetailContra
                             public void onResponse(Connect.HttpResponse response) {
                                 try {
                                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                                     if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
                                         String avatar = userInfo.getAvatar();

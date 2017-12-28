@@ -1,11 +1,11 @@
 package instant.sender.model;
+
 import instant.R;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.ui.InstantSdk;
-import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -213,15 +213,13 @@ public abstract class NormalChat extends BaseChat {
 
     public Connect.MessagePost normalChatMessage(Connect.MessageData data) {
         UserCookie connectCookie = Session.getInstance().getConnectCookie();
-        String publicKey=connectCookie.getPubKey();
-        String priKey = connectCookie.getPriKey();
+        String uid = connectCookie.getUid();
 
-        //messagePost
-        String postsign = SupportKeyUril.signHash(priKey, data.toByteArray());
-        return Connect.MessagePost.newBuilder().
-                setMsgData(data).setSign(postsign).
-                setPubKey(publicKey).
-                build();
+        Connect.MessagePost messagePost = Connect.MessagePost.newBuilder()
+                .setUid(uid)
+                .setMsgData(data)
+                .build();
+        return messagePost;
     }
 
     public abstract long destructReceipt();

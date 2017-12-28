@@ -79,7 +79,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                         voiceImg.downLoading();
 
                         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
-                        DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getEcdh(),url, new InterFileDown() {
+                        DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), "",url, new InterFileDown() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 if (null != loadImg) {

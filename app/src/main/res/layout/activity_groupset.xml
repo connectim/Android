@@ -91,12 +91,14 @@
 
                 <View
                     style="@style/BaseViewLine.d1d5da"
+                    android:visibility="gone"
                     android:layout_marginLeft="@dimen/dp_15"/>
 
                 <include
                     android:id="@id/groupset_qrcode"
                     layout="@layout/include_img_txt_right_txtimg"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="@dimen/dp_56"/>
 
                 <View

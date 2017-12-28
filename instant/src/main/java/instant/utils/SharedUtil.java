@@ -20,7 +20,9 @@ import instant.ui.InstantSdk;
 
 public class SharedUtil {
 
-    /** user SharedPreference name */
+    /**
+     * user SharedPreference name
+     */
     private static final String SHAREPREFERENCES_DEFAULT = "SHAREPREFERENCES_DEFAULT";
     private static final String SHAREPREFERENCES_NAME = "SHARE_INSTANT";
     private static SharedUtil sharePreUtil;
@@ -205,144 +207,6 @@ public class SharedUtil {
                 List<UserCookie> userCookieList = new Gson().fromJson(gsonCookies, new TypeToken<List<UserCookie>>() {
                 }.getType());
 
-                int cookiesLength = userCookieList.size();
-                userCookie = userCookieList.get(cookiesLength - 1);
-            }
-        }
-        return userCookie;
-    }
-
-    public UserCookie loadChatUserCookieBySalt(String saltHex) {
-        UserCookie userCookie = null;
-        if (sharePre == null) {
-            getInstance();
-        }
-        if (sharePre.contains(COOKIE_CHATUSER)) {
-            String gsonCookies = sharePre.getString(COOKIE_CHATUSER, "");
-            if (!TextUtils.isEmpty(gsonCookies)) {
-                List<UserCookie> userCookieList = new Gson().fromJson(gsonCookies, new TypeToken<List<UserCookie>>() {
-                }.getType());
-
-                for (UserCookie tempCookie : userCookieList) {
-                    String tempHex = StringUtil.bytesToHexString(tempCookie.getSalt());
-                    if (tempHex.equals(saltHex)) {
-                        userCookie = tempCookie;
-                        break;
-                    }
-                }
-            }
-        }
-        return userCookie;
-    }
-
-    /******************************  Random Cookie  ********************************************************/
-    public void insertRandomCookie(UserCookie userCookie) {
-        String randomCookieKey = COOKIE_RANDOM;
-        putValue(randomCookieKey, new Gson().toJson(userCookie));
-    }
-
-    public UserCookie loadRandomCookie() {
-        String randomCookieKey = COOKIE_RANDOM;
-        UserCookie userCookie = null;
-        if (sharePre == null) {
-            getInstance();
-        }
-        if (sharePre.contains(randomCookieKey)) {
-            String gsonCookie = sharePre.getString(randomCookieKey, "");
-            if (!TextUtils.isEmpty(gsonCookie)) {
-                userCookie = new Gson().fromJson(gsonCookie, UserCookie.class);
-            }
-        }
-        return userCookie;
-    }
-
-    /******************************  Friend Cookie  ********************************************************/
-    public void insertFriendCookie(String friendCaPublicKey, UserCookie userCookie) {
-        String friendCookieKey = COOKIE_CHATFRIEND + friendCaPublicKey;
-        if (sharePre == null) {
-            getInstance();
-        }
-        if (sharePre.contains(friendCookieKey)) {
-            String gsonCookies = sharePre.getString(friendCookieKey, "");
-            if (TextUtils.isEmpty(gsonCookies)) {
-                remove(friendCookieKey);
-                insertFriendCookie(friendCaPublicKey, userCookie);
-            } else {
-                List<UserCookie> friendCookieList = new Gson().fromJson(gsonCookies, new TypeToken<List<UserCookie>>() {
-                }.getType());
-                if (friendCookieList.size() >= 3) {
-                    int cookiesLength = friendCookieList.size();
-                    friendCookieList = friendCookieList.subList(cookiesLength - 2, cookiesLength);
-                }
-                friendCookieList.add(userCookie);
-                putValue(friendCookieKey, new Gson().toJson(friendCookieList));
-            }
-        } else {
-            List<UserCookie> userCookieList = new ArrayList<>();
-            userCookieList.add(userCookie);
-            putValue(friendCookieKey, new Gson().toJson(userCookieList));
-        }
-    }
-
-    public UserCookie loadFriendCookie(String friendCaPublicKey) {
-        String friendCookieKey = COOKIE_CHATFRIEND + friendCaPublicKey;
-        UserCookie userCookie = null;
-        if (sharePre == null) {
-            getInstance();
-        }
-        if (sharePre.contains(friendCookieKey)) {
-            String gsonCookies = sharePre.getString(friendCookieKey, "");
-            if (!TextUtils.isEmpty(gsonCookies)) {
-                List<UserCookie> userCookieList = new Gson().fromJson(gsonCookies, new TypeToken<List<UserCookie>>() {
-                }.getType());
-
-                int cookiesLength = userCookieList.size();
-                userCookie = userCookieList.get(cookiesLength - 1);
-            }
-        }
-        return userCookie;
-    }
-
-
-    /******************************  Group Member Cookie  ********************************************************/
-    public void insertGroupMemberCookie(String groupIdentify, String groupMemberUid, UserCookie userCookie) {
-        String groupMemberCookieKey = COOKIE_CHATGROUP_MEMBER + groupIdentify + groupMemberUid;
-        if (sharePre == null) {
-            getInstance();
-        }
-        if (sharePre.contains(groupMemberCookieKey)) {
-            String gsonCookies = sharePre.getString(groupMemberCookieKey, "");
-            if (TextUtils.isEmpty(gsonCookies)) {
-                remove(groupMemberCookieKey);
-                insertGroupMemberCookie(groupIdentify, groupMemberUid, userCookie);
-            } else {
-                List<UserCookie> userCookieList = new Gson().fromJson(gsonCookies, new TypeToken<List<UserCookie>>() {
-                }.getType());
-                if (userCookieList.size() >= 3) {
-                    int cookiesLength = userCookieList.size();
-                    userCookieList = userCookieList.subList(cookiesLength - 2, cookiesLength);
-                }
-                userCookieList.add(userCookie);
-                putValue(groupMemberCookieKey, new Gson().toJson(userCookieList));
-            }
-        } else {
-            List<UserCookie> userCookieList = new ArrayList<>();
-            userCookieList.add(userCookie);
-            putValue(groupMemberCookieKey, new Gson().toJson(userCookieList));
-        }
-    }
-
-    public UserCookie loadGroupMemberCookie(String groupIdentify, String groupMemberUid) {
-        String groupMemberCookieKey = COOKIE_CHATGROUP_MEMBER + groupIdentify + groupMemberUid;
-        UserCookie userCookie = null;
-        if (sharePre == null) {
-            getInstance();
-        }
-        if (sharePre.contains(groupMemberCookieKey)) {
-            String gsonCookies = sharePre.getString(groupMemberCookieKey, "");
-            if (!TextUtils.isEmpty(gsonCookies)) {
-                List<UserCookie> userCookieList = new Gson().fromJson(gsonCookies, new TypeToken<List<UserCookie>>() {
-                }.getType());
                 int cookiesLength = userCookieList.size();
                 userCookie = userCookieList.get(cookiesLength - 1);
             }

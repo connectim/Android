@@ -159,7 +159,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupSettingInfo settingInfo = Connect.GroupSettingInfo.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(settingInfo)){
                         view.noticeSwitch(settingInfo.getMute());

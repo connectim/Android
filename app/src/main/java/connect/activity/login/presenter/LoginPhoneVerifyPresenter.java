@@ -133,8 +133,7 @@ public class LoginPhoneVerifyPresenter implements LoginPhoneVerifyContract.Prese
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
-                            priKey, imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     /*UserBean userBean = new UserBean(userInfo.getUsername(), userInfo.getAvatar(), mobile, userInfo.getConnectId(),
                             userInfo.getUid(), userInfo.getUpdateConnectId());

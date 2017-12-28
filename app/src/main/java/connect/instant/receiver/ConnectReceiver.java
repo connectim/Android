@@ -4,7 +4,6 @@ import connect.activity.home.bean.HomeAction;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.instant.bean.ConnectState;
 import connect.instant.model.CRobotChat;
-import connect.instant.model.CSubscriberChat;
 import connect.utils.NotificationBar;
 import connect.utils.TimeUtil;
 import instant.bean.ChatMsgEntity;
@@ -57,16 +56,13 @@ public class ConnectReceiver implements ConnectListener {
 
     @Override
     public void welcome() {
-        String mypublickey = Session.getInstance().getConnectCookie().getPubKey();
+        String mypublickey = Session.getInstance().getConnectCookie().getUid();
         ChatMsgEntity msgEntity = RobotChat.getInstance().txtMsg(InstantSdk.instantSdk.getBaseContext().getString(instant.R.string.Login_Welcome));
         msgEntity.setMessage_from(RobotChat.getInstance().nickName());
         msgEntity.setMessage_to(mypublickey);
 
         MessageHelper.getInstance().insertMsgExtEntity(msgEntity);
         CRobotChat.getInstance().updateRoomMsg(null, msgEntity.showContent(), msgEntity.getCreatetime(), -1, 1);
-
-        // subscriber
-        CSubscriberChat.cSubscriberChat.updateRoomMsg("", "cece", TimeUtil.getCurrentTimeInLong(), -1, 1);
     }
 
     @Override

@@ -100,11 +100,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    if (!SupportKeyUril.verifySign(imResponse.getSign(), imResponse.getCipherData().toByteArray())) {
-                        throw new Exception("Validation fails");
-                    }
-
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GrabRedPackageResp packageResp = Connect.GrabRedPackageResp.parseFrom(structData.getPlainData());
                     if (!ProtoBufUtil.getInstance().checkProtoBuf(packageResp)) {//state default 0
                         packageResp = Connect.GrabRedPackageResp.newBuilder().setStatus(0).build();

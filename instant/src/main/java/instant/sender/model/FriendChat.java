@@ -60,35 +60,10 @@ public class FriendChat extends NormalChat {
         try {
             Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
 
-            String priKey = null;
-            byte[] randomSalt = null;
-            String friendKey = null;
+            Connect.MessageData messageData = Connect.MessageData.newBuilder()
+                    .setChatMsg(chatMessageBuilder)
+                    .build();
 
-            loadUserCookie();
-            loadFriendCookie();
-            EncryptionUtil.ExtendedECDH ecdhExts = null;
-            Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
-            Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
-
-            priKey = userCookie.getPriKey();
-            randomSalt = userCookie.getSalt();
-            friendKey = friendCookie.getPubKey();
-            byte[] friendSalt = friendCookie.getSalt();
-            if (friendCookie == null || friendSalt == null || friendSalt.length == 0) {
-                return;
-            }
-            ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-            ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt));
-            sessionBuilder.setSalt(ByteString.copyFrom(randomSalt)).
-                    setPubKey(userCookie.getPubKey()).
-                    setVer(ByteString.copyFrom(friendCookie.getSalt()));
-
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, priKey, friendKey, msgExtEntity.getContents());
-            chatMessageBuilder.setCipherData(gcmData);
-            builder.setChatMsg(chatMessageBuilder)
-                    .setChatSession(sessionBuilder);
-
-            Connect.MessageData messageData = builder.build();
             Connect.MessagePost messagePost = normalChatMessage(messageData);
 
             SenderManager.getInstance().sendAckMsg(SocketACK.SINGLE_CHAT, chatKey(), messageData.getChatMsg().getMsgId(), messagePost.toByteString());
@@ -126,20 +101,6 @@ public class FriendChat extends NormalChat {
         this.friendCookie = friendCookie;
     }
 
-    private void loadUserCookie() {
-        userCookie = Session.getInstance().getChatCookie();
-        if (userCookie == null) {
-            userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
-        }
-    }
-
-    public void loadFriendCookie() {
-        friendCookie = Session.getInstance().getFriendCookie(friendUid);
-        if (friendCookie == null) {
-            friendCookie =  SharedUtil.getInstance().loadFriendCookie(friendUid);
-        }
-    }
-
     public ChatMsgEntity inviteJoinGroupMsg(String avatar, String name, String id, String token) {
         ChatMsgEntity msgExtEntity = createBaseChat(MessageType.INVITE_GROUP);
         Connect.JoinGroupMessage.Builder builder = Connect.JoinGroupMessage.newBuilder()
@@ -150,32 +111,5 @@ public class FriendChat extends NormalChat {
 
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
-    }
-
-    public void createGroupBroadToMember(String groupIdentify, String publicKey, Connect.CreateGroupMessage groupMessage) {
-        String msgid = instant.utils.TimeUtil.timestampToMsgid();
-        String privateKey = Session.getInstance().getConnectCookie().getPriKey();
-        byte[] groupecdhkey = SupportKeyUril.getRawECDHKey(privateKey, publicKey);
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(
-                EncryptionUtil.ExtendedECDH.EMPTY,
-                groupecdhkey,
-                groupMessage.toByteArray());
-
-        Connect.ChatMessage chatMessage = Connect.ChatMessage.newBuilder()
-                .setMsgId(msgid)
-                .setTo(friendUid)
-                .setCipherData(gcmData)
-                .build();
-
-        Connect.MessageData messageData = Connect.MessageData.newBuilder()
-                .setChatMsg(chatMessage)
-                .build();
-
-        Connect.MessagePost messagePost = normalChatMessage(messageData);
-        SenderManager.senderManager.sendAckMsg(
-                SocketACK.GROUP_INVITE,
-                groupIdentify,
-                msgid,
-                messagePost.toByteString());
     }
 }
