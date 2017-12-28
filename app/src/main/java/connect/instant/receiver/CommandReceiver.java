@@ -104,7 +104,7 @@ public class CommandReceiver implements CommandListener {
             ContactEntity contactEntity = new ContactEntity();
             contactEntity.setUid(friendUid);
             contactEntity.setConnectId(friendInfo.getConnectId());
-            contactEntity.setUsername(friendInfo.getUsername());
+            contactEntity.setUsername(friendInfo.getName());
             contactEntity.setAvatar(friendInfo.getAvatar());
             contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
             contactEntity.setSource(friendInfo.getSource());
@@ -151,7 +151,7 @@ public class CommandReceiver implements CommandListener {
                 memberEntity.setIdentifier(groupIdentifier);
                 memberEntity.setUid(member.getUid());
                 memberEntity.setAvatar(member.getAvatar());
-                memberEntity.setUsername(member.getUsername());
+                memberEntity.setUsername(member.getName());
                 memberEntity.setNick(member.getNick());
                 memberEntity.setRole(member.getRole());
                 memberEntity.setUsername(member.getUsername());
