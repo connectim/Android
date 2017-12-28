@@ -91,7 +91,7 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupkey);
-                ToastEUtil.makeText((Activity) context, ((Activity) context).getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
+                ToastEUtil.makeText((Activity) context, ((Activity) context).getString(R.string.Link_Join_Group_Success), 1, new ToastEUtil.OnToastListener() {
                     @Override
                     public void animFinish() {
                         ChatActivity.startActivity((Activity) context, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupkey));
@@ -103,6 +103,13 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
             public void onError(Connect.HttpResponse response) {
                 if (response.getCode() == 2430) {
                     ToastEUtil.makeText((Activity) context, R.string.Link_Qr_code_is_invalid, ToastEUtil.TOAST_STATUS_FAILE).show();
+                } else if (response.getCode() == 2403) {
+                    ToastEUtil.makeText((Activity) context, ((Activity) context).getString(R.string.Link_Join_Group_Success), 1, new ToastEUtil.OnToastListener() {
+                        @Override
+                        public void animFinish() {
+                            ChatActivity.startActivity((Activity) context, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupkey));
+                        }
+                    }).show();
                 } else {
                     String contentTxt = response.getMessage();
                     if (TextUtils.isEmpty(contentTxt)) {

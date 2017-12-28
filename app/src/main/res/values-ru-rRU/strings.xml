@@ -652,4 +652,5 @@
     <string name="Chat_Subscribe_Success">[подписка на успех]</string>
 
     <string name="Chat_Refreshing">обновление ...</string>
+    <string name="Link_Join_Group_Success">успех  к  групповой чат </string>
 </resources>

@@ -11,10 +11,7 @@ import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.log.LogManager;
 import instant.bean.ChatMsgEntity;
-import instant.bean.Session;
-import instant.bean.UserCookie;
 import instant.parser.inter.UnreachableListener;
-import instant.utils.SharedUtil;
 import protos.Connect;
 
 /**

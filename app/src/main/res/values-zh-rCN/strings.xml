@@ -520,4 +520,5 @@
     <string name="Chat_Subscribe_Success">[订阅成功]</string>
 
     <string name="Chat_Refreshing">正在更新...</string>
+    <string name="Link_Join_Group_Success">成功加入群聊</string>
 </resources>

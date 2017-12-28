@@ -130,7 +130,7 @@ public class MsgImgHolder extends MsgChatHolder {
 
         if (FileUtil.isLocalFile(url) || FileUtil.isExistFilePath(localPath)) {
             String local = FileUtil.isLocalFile(url) ? url : localPath;
-            SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(getMsgExtEntity().getMessageType()), local);
+            SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(getMsgExtEntity().getMessageType()), local,photoMessage.getImageWidth(),photoMessage.getImageHeight());
         }
     }
 }

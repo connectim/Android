@@ -245,7 +245,7 @@ public class InputBottomLayout extends LinearLayout {
 
     public void checkSendState() {
         String textMessage = inputedit.getText().toString();
-        if (TextUtils.isEmpty(textMessage)) {
+        if (TextUtils.isEmpty(textMessage)||TextUtils.isEmpty(textMessage.trim())) {
             inputvoice.setVisibility(View.VISIBLE);
             inputtxt.setVisibility(View.GONE);
         } else {

@@ -197,17 +197,6 @@ public class ChatActivity extends BaseChatSendActivity {
             @Override
             protected void onPostExecute(List<ChatMsgEntity> entities) {
                 super.onPostExecute(entities);
-
-                if (entities.size() == 0) {
-                    long timestamp = TimeUtil.getCurrentTimeInLong();
-                    if (Connect.ChatType.forNumber(normalChat.chatType()) != Connect.ChatType.CONNECT_SYSTEM) {
-                        ChatMsgEntity encryEntity = normalChat.encryptChatMsg();
-                        encryEntity.setCreatetime(timestamp);
-                        entities.add(0, encryEntity);
-
-                        MessageHelper.getInstance().insertMsgExtEntity(encryEntity);
-                    }
-                }
                 chatAdapter.insertItems(entities);
             }
         }.execute();
@@ -370,7 +359,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 normalChat.sendPushMsg(msgExtEntity);
                 break;
             case Photo:
-                msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), 200, 200);
+                msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content),  (int)objects[2],  (int)objects[3]);
                 baseFileUp = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {

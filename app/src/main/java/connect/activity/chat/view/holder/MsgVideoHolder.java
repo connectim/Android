@@ -154,9 +154,9 @@ public class MsgVideoHolder extends MsgChatHolder {
             final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
 
             if (FileUtil.isLocalFile(url)) {
-                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), url, videoMessage.getTimeLength());
+                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), url, videoMessage.getTimeLength(),videoMessage.getImageWidth(),videoMessage.getImageHeight());
             } else if (FileUtil.isExistFilePath(localPath)) {
-                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
+                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength(),videoMessage.getImageWidth(),videoMessage.getImageHeight());
             } else {
                 DownLoadFile loadFile = new DownLoadFile(url, new InterFileDown() {
                     @Override
