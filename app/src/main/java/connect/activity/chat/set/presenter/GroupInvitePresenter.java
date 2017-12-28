@@ -16,8 +16,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
@@ -58,8 +56,7 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.GroupInviteResponseList responseList = Connect.GroupInviteResponseList.parseFrom(structData.getPlainData());
                     for (Connect.GroupInviteResponse res : responseList.getListList()) {
                         if (ProtoBufUtil.getInstance().checkProtoBuf(res)) {

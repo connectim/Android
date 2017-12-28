@@ -77,17 +77,19 @@ public class CGroupChat extends GroupChat implements ConversationListener{
             conversionEntity.setUnread_count(newmsg == 0 ? 0 : 1);
             conversionEntity.setDraft(TextUtils.isEmpty(draft) ? "" : draft);
             conversionEntity.setIsAt(at);
+            conversionEntity.setLast_time(msgtime);
             ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         } else {
             for (RoomAttrBean attrBean : roomEntities) {
                 ConversionHelper.getInstance().updateRoomEntity(
                         groupKey,
+                        nickName(),
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
                         at,
                         (isStranger ? 1 : 0),
-                        (msgtime > 0 ? 0 : msgtime)
+                        (msgtime < 0 ? 0 : msgtime)
                 );
             }
         }

@@ -84,12 +84,10 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
                         insertLocalData(groupInfo);
-                        groupCreateBroadcast(groupInfo);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -165,63 +163,5 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
                 ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupKey));
             }
         }).show();
-    }
-
-    /**
-     * 向群成员广播自己的加密Key
-     *
-     * @param groupInfo
-     */
-    public void groupCreateBroadcast(Connect.GroupInfo groupInfo) {
-//        String groupIdentify = groupInfo.getGroup().getIdentifier();
-//
-//        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
-//        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
-//        byte[] randomSalt = AllNativeMethod.cdCreateSeed(16, 4).getBytes();
-//
-//        long expiredTime = instant.utils.TimeUtil.getCurrentTimeSecond() + 4 * 24 * 60 * 60;
-//        Connect.ChatCookieData chatInfo = Connect.ChatCookieData.newBuilder()
-//                .setChatPubKey(randomPubKey)
-//                .setSalt(ByteString.copyFrom(randomSalt))
-//                .setExpired(expiredTime)
-//                .build();
-//
-//        UserCookie connecCookie = Session.getInstance().getConnectCookie();
-//        String uid = connecCookie.getUid();
-//        String caPublicKey = connecCookie.getPubKey();
-//        String caPrivateKey = connecCookie.getPriKey();
-//        String signInfo = SupportKeyUril.signHash(caPrivateKey, chatInfo.toByteArray());
-//        Connect.ChatCookie cookie = Connect.ChatCookie.newBuilder()
-//                .setCaPub(caPublicKey)
-//                .setSign(signInfo)
-//                .setData(chatInfo)
-//                .build();
-//
-//        Connect.BroadcastMemberKey.Builder memberKeyBuilder = Connect.BroadcastMemberKey.newBuilder();
-//
-//        List<Connect.GroupMember> groupMembers = groupInfo.getMembersList();
-//        for (Connect.GroupMember member : groupMembers) {
-//            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(
-//                    EncryptionUtil.ExtendedECDH.EMPTY,
-//                    caPrivateKey,
-//                    member.getPubKey(),
-//                    cookie.toByteArray());
-//
-//            Connect.GroupMemberKeyData memberKeyData = Connect.GroupMemberKeyData.newBuilder()
-//                    .setGroupId(groupIdentify)
-//                    .setUid(uid)
-//                    .setCipherData(gcmData)
-//                    .build();
-//
-//            Connect.GroupMemberKey groupMemberKey = Connect.GroupMemberKey.newBuilder()
-//                    .setReceiverUid(member.getUid())
-//                    .setSign(signInfo)
-//                    .setCaPubKey(caPublicKey)
-//                    .setGroupKeyData(memberKeyData)
-//                    .build();
-//            memberKeyBuilder.addMemberKey(groupMemberKey);
-//        }
-//        UserOrderBean userOrderBean = new UserOrderBean();
-//        userOrderBean.broadGroupMemberKey(memberKeyBuilder.build());
     }
 }

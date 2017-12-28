@@ -103,9 +103,9 @@ string message=2;
 bytes body=3;
 }
 message HttpResponse {
-int32 code = 1;
-string message=2;
-IMResponse body=3;
+ int32 code = 1;
+   string message = 2;
+   bytes body = 3;
 }
 message HttpNotSignResponse {
 int32 code=1;
@@ -700,10 +700,9 @@ string token = 2;
 }
 
 message MediaFile {
-string pub_key = 1;
-GcmData cipher_data = 2;
-string uid = 3;
-string sign = 4;
+ string token = 1;
+   bytes body = 2;
+   string uid = 3;
 }
 
 message RichMedia {
@@ -1756,6 +1755,7 @@ bool logined =2;
 string name =3;
 string o_u =4;
 string uid =5;
+string avatar = 6;
 }
 
 message HttpRequest {

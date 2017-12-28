@@ -85,10 +85,16 @@ public abstract class InterParse {
                 .addAllAcks(socketACKs)
                 .build();
 
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setPlainData(ackBatch.toByteString())
+                .build();
+
+        String uid = Session.getInstance().getConnectCookie().getUid();
         String token = Session.getInstance().getChatCookie().getToken();
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
-                .setBody(ackBatch.toByteString())
+                .setBody(structData.toByteString())
                 .setToken(token)
+                .setUid(uid)
                 .build();
 
         SenderManager.getInstance().sendToMsg(SocketACK.ACK_BACK_OFFLINEBATCH, backAck.toByteString());

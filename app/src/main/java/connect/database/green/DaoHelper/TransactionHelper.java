@@ -48,13 +48,14 @@ public class TransactionHelper extends BaseDao {
 
     /**
      * The query in recent 10 transfer record
+     *
      * @return
      */
     public List<TransactionEntity> loadLatelyTrans() {
         QueryBuilder<TransactionEntity> queryBuilder = transactionEntityDao.queryBuilder();
         queryBuilder.limit(10);
         List<TransactionEntity> transEntities = queryBuilder.list();
-        if(transEntities != null)
+        if (transEntities != null)
             Collections.reverse(transEntities);
         return transEntities;
     }
@@ -86,9 +87,10 @@ public class TransactionHelper extends BaseDao {
 
     /**
      * update state
+     *
      * @param hashid
-     * @param messageid "":do not update messageid
-     * @param paycount -1:The current pay toll increased 1
+     * @param messageid  "":do not update messageid
+     * @param paycount   -1:The current pay toll increased 1
      * @param crowdcount 0:Don't modify the current the raise
      */
     public void updateTransEntity(String hashid, String messageid, int paycount, int crowdcount) {

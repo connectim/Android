@@ -27,16 +27,10 @@ public class DownLoadFile {
 
     private Handler mDelivery = new Handler(Looper.getMainLooper());
 
-    private Connect.ChatType chatType;
-    private String identify;
-    private String ecdh;
     private String url;
     private InterFileDown fileDownLoad;
 
-    public DownLoadFile(Connect.ChatType chatType, String identify, String ecdh, String url, final InterFileDown fileDownLoad) {
-        this.chatType = chatType;
-        this.identify = identify;
-        this.ecdh = ecdh;
+    public DownLoadFile(String url, final InterFileDown fileDownLoad) {
         this.url = url;
         this.fileDownLoad = fileDownLoad;
     }
@@ -104,15 +98,7 @@ public class DownLoadFile {
             @Override
             public void run() {
                 try {
-                    if (chatType == Connect.ChatType.CONNECT_SYSTEM||chatType== Connect.ChatType.GROUP_DISCUSSION) {
-                        fileDownLoad.successDown(bytes);
-                    } else {
-                        Connect.GcmData gcmData = Connect.GcmData.parseFrom(bytes);
-                        byte[] dataFile = null;
-                        byte[] ecdhExts =StringUtil.hexStringToBytes(ecdh);
-                        dataFile = DecryptionUtil.decodeAESGCM(ecdhExts, gcmData);
-                        fileDownLoad.successDown(dataFile);
-                    }
+                    fileDownLoad.successDown(bytes);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

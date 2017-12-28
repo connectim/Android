@@ -158,6 +158,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 ConversionHelper.getInstance().deleteRoom(roomid);
                 MessageHelper.getInstance().deleteRoomMsg(roomid);
                 FileUtil.deleteContactFile(roomid);
+                ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_UNREAD);
 
                 if (isDeleteAble) {
                     isDeleteAble = false;

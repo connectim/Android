@@ -150,6 +150,7 @@ public class CommandParser extends InterParse {
                             Connect.Command command = Connect.Command.parseFrom(msgDetail.getData());
                             ByteString transferDataByte = command.getDetail();
 
+                            int errorNumber = command.getErrNo();
                             switch (extension) {
                                 case 0x01://contact list
                                     syncContacts(transferDataByte);
@@ -160,25 +161,25 @@ public class CommandParser extends InterParse {
                                     //HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
                                     break;
                                 case 0x08://receive add friend request
-                                    receiverAddFriendRequest(transferDataByte);
+                                    receiverAddFriendRequest(transferDataByte, errorNumber);
                                     break;
                                 case 0x09://Accept agreed to be a friend request
-                                    receiverAcceptAddFriend(transferDataByte);
+                                    receiverAcceptAddFriend(transferDataByte, messageId, errorNumber);
                                     break;
                                 case 0x0a://delete friend
-                                    receiverAcceptDelFriend(transferDataByte);
+                                    receiverAcceptDelFriend(transferDataByte, messageId, errorNumber);
                                     break;
                                 case 0x0b://Modify the friends remark and common friends
-                                    receiverSetUserInfo(transferDataByte);
+                                    receiverSetUserInfo(transferDataByte, messageId, errorNumber);
                                     break;
                                 case 0x0d://modify group information
-                                    updateGroupInfo(transferDataByte);
+                                    updateGroupInfo(transferDataByte, messageId, errorNumber);
                                     break;
                                 case 0x11://outer translate
-                                    handlerOuterTransfer(transferDataByte);
+                                    handlerOuterTransfer(transferDataByte, messageId, errorNumber);
                                     break;
                                 case 0x12://outer red packet
-                                    handlerOuterRedPacket(transferDataByte);
+                                    handlerOuterRedPacket(transferDataByte, messageId, errorNumber);
                                     break;
                             }
                             break;

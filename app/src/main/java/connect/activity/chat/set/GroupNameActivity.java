@@ -15,6 +15,7 @@ import connect.activity.chat.set.contract.GroupNameContract;
 import connect.activity.chat.set.presenter.GroupNamePresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.ToastEUtil;
 import connect.widget.TopToolBar;
 
 public class GroupNameActivity extends BaseActivity implements GroupNameContract.BView{
@@ -66,7 +67,9 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
             @Override
             public void onClick(View v) {
                 String groupName = edittxt1.getText().toString();
-                if (groupName.length() >= 4) {
+                if (groupName.length() < 4) {
+                    ToastEUtil.makeText(activity, "群名称长度不小于4");
+                } else {
                     presenter.updateGroupName(groupName);
                 }
             }

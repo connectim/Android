@@ -7,15 +7,15 @@ import android.widget.ImageView;
 
 import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.utils.chatfile.download.DownLoadFile;
-import connect.utils.chatfile.inter.InterFileDown;
-import instant.bean.ChatMsgEntity;
-import instant.bean.MsgDirect;
 import connect.activity.chat.view.VoiceImg;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
+import connect.utils.chatfile.download.DownLoadFile;
+import connect.utils.chatfile.inter.InterFileDown;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import protos.Connect;
 
 /**
@@ -78,8 +78,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                     } else {
                         voiceImg.downLoading();
 
-                        Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
-                        DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), "",url, new InterFileDown() {
+                        DownLoadFile loadFile = new DownLoadFile(url, new InterFileDown() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 if (null != loadImg) {

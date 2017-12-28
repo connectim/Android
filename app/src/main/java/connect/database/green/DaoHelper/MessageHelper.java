@@ -13,11 +13,7 @@ import connect.database.green.BaseDao;
 import connect.database.green.bean.MessageEntity;
 import connect.database.green.dao.MessageEntityDao;
 import connect.utils.StringUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import instant.bean.ChatMsgEntity;
-import protos.Connect;
 
 /**
  * message detail
@@ -124,6 +120,18 @@ public class MessageHelper extends BaseDao {
         return detailEntities.get(0);
     }
 
+    public MessageEntity loadMsgLastOne(String owner) {
+        QueryBuilder<MessageEntity> queryBuilder = messageEntityDao.queryBuilder();
+        queryBuilder.where(MessageEntityDao.Properties.Message_ower.eq(owner))
+                .orderDesc(MessageEntityDao.Properties.Message_id)
+                .limit(1).build();
+        List<MessageEntity> detailEntities = queryBuilder.list();
+        if (detailEntities.size() == 0) {
+            return null;
+        }
+        return detailEntities.get(0);
+    }
+
     /********************************* add ***********************************/
     public void insertMessageEntity(MessageEntity msgEntity) {
         messageEntityDao.insertOrReplaceInTx(msgEntity);
@@ -139,8 +147,6 @@ public class MessageHelper extends BaseDao {
     }
 
     public ChatMsgEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SupportKeyUril.localHashKey().getBytes(), contents);
-
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.setMessage_id(messageid);
         messageEntity.setMessage_ower(messageowner);
@@ -148,7 +154,7 @@ public class MessageHelper extends BaseDao {
         messageEntity.setMessageType(messagetype);
         messageEntity.setMessage_from(from);
         messageEntity.setMessage_to(to);
-        messageEntity.setContent(StringUtil.bytesToHexString(gcmData.toByteArray()));
+        messageEntity.setContent(StringUtil.bytesToHexString(contents));
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
         messageEntity.setRead_time(0L);

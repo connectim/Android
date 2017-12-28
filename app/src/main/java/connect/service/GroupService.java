@@ -21,11 +21,16 @@ import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.GroupRecBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
+import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
+import connect.database.green.bean.MessageEntity;
+import connect.instant.model.CGroupChat;
+import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
+import connect.utils.TimeUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -85,8 +90,7 @@ public class GroupService extends Service {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
                         Connect.Group group = groupInfo.getGroup();
@@ -120,6 +124,16 @@ public class GroupService extends Service {
                         Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
                         List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
                         ContactHelper.getInstance().inserGroupMemEntity(memEntities);
+
+                        String content = service.getResources().getString(R.string.Chat_Notice_New_Message);
+                        long messageTime = TimeUtil.getCurrentTimeInLong();
+                        CGroupChat cGroupChat = new CGroupChat(groupEntity);
+                        MessageEntity messageEntity = MessageHelper.getInstance().loadMsgLastOne(groupIdentifier);
+                        if (messageEntity != null) {
+                            content = messageEntity.messageToChatEntity().getContent();
+                            messageTime = messageEntity.getCreatetime();
+                        }
+                        cGroupChat.updateRoomMsg("", content, messageTime);
                         ContactNotice.receiverGroup();
                     }
                 } catch (Exception e) {
