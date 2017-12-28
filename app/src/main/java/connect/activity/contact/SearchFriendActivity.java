@@ -114,6 +114,7 @@ public class SearchFriendActivity extends BaseActivity {
                     break;
                 case 2:
                     FriendInfoActivity.startActivity(mActivity, list.getUid());
+                    mActivity.finish();
                     break;
                 default:
                     break;
