@@ -2,6 +2,7 @@ package connect.utils.scan;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -121,9 +122,11 @@ public class ResolveScanUtil {
                 switch (status){
                     case 1:
                         FriendInfoActivity.startActivity(activity, uid);
+                        ActivityUtil.goBack(activity);
                         break;
                     case 2:
                         StrangerInfoActivity.startActivity(activity, uid, SourceType.QECODE);
+                        ActivityUtil.goBack(activity);
                         break;
                     case 3:
                         ToastEUtil.makeText(activity, R.string.Login_scan_string_error, ToastEUtil.TOAST_STATUS_FAILE).show();
@@ -131,7 +134,6 @@ public class ResolveScanUtil {
                     default:
                         break;
                 }
-                //ActivityUtil.goBack(activity);
             }
         });
     }
@@ -157,6 +159,7 @@ public class ResolveScanUtil {
 
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(value)
+                .setTyp(1)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
@@ -164,7 +167,7 @@ public class ResolveScanUtil {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(sendUserInfo != null){
+                    if(sendUserInfo != null && !TextUtils.isEmpty(sendUserInfo.getUid())){
                         onResultBack.call(2, sendUserInfo.getUid());
                     }else{
                         onResultBack.call(3, "");

@@ -175,7 +175,7 @@ public class StrangerInfoActivity extends BaseActivity {
                         return;
                     }
                     sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)){
+                    if(!TextUtils.isEmpty(sendUserInfo.getUid())){
                         updataView();
                     }
                 } catch (InvalidProtocolBufferException e) {

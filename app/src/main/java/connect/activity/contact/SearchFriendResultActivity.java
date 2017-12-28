@@ -198,7 +198,7 @@ public class SearchFriendResultActivity extends BaseActivity {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
+                    if(!TextUtils.isEmpty(userInfo.getUid())){
                         updateView(userInfo);
                     }
                 } catch (InvalidProtocolBufferException e) {
