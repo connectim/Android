@@ -110,22 +110,13 @@ public class StrangerInfoActivity extends BaseActivity {
         if (sendUserInfo == null) {
             return;
         }
-        DialogUtil.showEditView(mActivity, mActivity.getResources().getString(R.string.Link_Send_friend_request),
-                "", mActivity.getResources().getString(R.string.Link_Send), "", "", getString(R.string.Link_Hello_I_am, SharedPreferenceUtil.getInstance().getUser().getName()),
-                false,-1,new DialogUtil.OnItemClickListener() {
-                    @Override
-                    public void confirm(String value) {
-                        MsgSendBean msgSendBean = new MsgSendBean();
-                        msgSendBean.setType(MsgSendBean.SendType.TypeSendFriendQuest);
-                        msgSendBean.setTips(value);
+        String tips = getString(R.string.Link_Hello_I_am, SharedPreferenceUtil.getInstance().getUser().getName());
+        MsgSendBean msgSendBean = new MsgSendBean();
+        msgSendBean.setType(MsgSendBean.SendType.TypeSendFriendQuest);
+        msgSendBean.setTips(tips);
 
-                        UserOrderBean userOrderBean = new UserOrderBean();
-                        userOrderBean.requestAddFriend(sendUserInfo.getUid(),sendUserInfo.getPubKey(),value,sourceType.getType(),msgSendBean);
-                    }
-
-                    @Override
-                    public void cancel() {}
-                });
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.requestAddFriend(sendUserInfo.getUid(),sendUserInfo.getPubKey(),tips,sourceType.getType(),msgSendBean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -157,9 +157,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                             String memberKey = msgExtEntity.getMessage_from();
                             ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(memberKey);
                             if (friend == null) {
-//                                String address = SupportKeyUril.getAddressFromPubKey(memberKey);
-                                String address = "";
-                                StrangerInfoActivity.startActivity((Activity) context, address, SourceType.GROUP);
+                                StrangerInfoActivity.startActivity((Activity) context, memberKey, SourceType.GROUP);
                             } else {
                                 FriendInfoActivity.startActivity((Activity) context, memberKey);
                             }

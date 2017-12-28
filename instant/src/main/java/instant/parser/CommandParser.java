@@ -16,6 +16,7 @@ import instant.bean.Session;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.utils.SharedUtil;
+import instant.utils.StringUtil;
 import instant.utils.log.LogManager;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;

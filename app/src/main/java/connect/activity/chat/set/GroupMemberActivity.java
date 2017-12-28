@@ -96,7 +96,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         recordview.addItemDecoration(new LineDecoration(activity));
         recordview.addOnScrollListener(onscrollListener);
 
-        final List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemberEntitiesExcept(groupKey, myUid);
+        final List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemberEntities(groupKey);
         Collections.sort(memEntities, new GroupComPara());
         toolbarTop.setTitle(getString(R.string.Chat_Group_Members, memEntities.size()));
 

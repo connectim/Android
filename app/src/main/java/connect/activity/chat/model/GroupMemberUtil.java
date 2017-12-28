@@ -44,7 +44,7 @@ public class GroupMemberUtil {
     }
 
     public void loadGroupMember(String groupKey, String memberkey, BaseListener<GroupMemberEntity> baseListener) {
-        if (memEntityMap == null) {
+        if (memEntityMap == null || memEntityMap.isEmpty()) {
             loadGroupMembersMap(groupKey);
         }
 
@@ -58,19 +58,20 @@ public class GroupMemberUtil {
 
     public void requestGroupMemberDetailInfo(String publickey, final BaseListener<GroupMemberEntity> baseListener) {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
+                .setTyp(1)
                 .setCriteria(publickey)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_SEARCHBYPUBKEY, searchUser, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
-                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
+                    Connect.UsersInfo userInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
                         GroupMemberEntity memberEntity = new GroupMemberEntity();
-                        memberEntity.setAvatar(userInfo.getAvatar());
-                        memberEntity.setUsername(userInfo.getUsername());
-                        memEntityMap.put(userInfo.getPubKey(), memberEntity);
+                        memberEntity.setAvatar(userInfo.getUsers(0).getAvatar());
+                        memberEntity.setUsername(userInfo.getUsers(0).getName());
+                        memEntityMap.put(userInfo.getUsers(0).getUid(), memberEntity);
                         baseListener.Success(memberEntity);
                     }
                 } catch (InvalidProtocolBufferException e) {

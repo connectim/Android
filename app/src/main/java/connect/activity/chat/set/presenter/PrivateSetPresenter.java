@@ -90,7 +90,7 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
                 name.setText(nametxt);
             }
 
-            if (TextUtils.isEmpty(entity.getAvatar())) {
+            if (TextUtils.isEmpty(entity.getAvatar()) && TextUtils.isEmpty(entity.getUid())) {
                 GlideUtil.loadAvatarRound(headimg, R.mipmap.message_add_friends2x);
             } else {
                 GlideUtil.loadAvatarRound(headimg, entity.getAvatar());

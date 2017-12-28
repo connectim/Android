@@ -364,13 +364,12 @@ public class ContactHelper extends BaseDao {
      * group member entity
      *
      * @param identify
-     * @param memberkey
      * @return
      */
-    public List<GroupMemberEntity> loadGroupMemberEntitiesExcept(String identify, String memberkey) {
+    public List<GroupMemberEntity> loadGroupMemberEntities(String identify) {
         String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
-                "WHERE M.IDENTIFIER = ? AND M.UID !=? GROUP BY M.UID ORDER BY M.ROLE DESC;";
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{identify, memberkey});
+                "WHERE M.IDENTIFIER = ? GROUP BY M.UID ORDER BY M.ROLE DESC;";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{identify});
 
         GroupMemberEntity groupMemEntity = null;
         List<GroupMemberEntity> groupMemEntities = new ArrayList<>();
