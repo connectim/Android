@@ -10,6 +10,7 @@ import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
 import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
+import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
 import protos.Connect;
@@ -67,27 +68,30 @@ public class VoiceUpload extends BaseFileUp {
     public void fileEncrypt() {
         super.fileEncrypt();
         Connect.RichMedia richMedia = null;
-        Connect.GcmData gcmData = null;
         if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
             richMedia = Connect.RichMedia.newBuilder().
                     setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(sourceCompressFile)))
                     .build();
         } else {
-            gcmData = encodeAESGCMStructData(sourceCompressFile);
+            byte[] sourceFileByte = FileUtil.filePathToByteArray(sourceCompressFile);
+            ByteString sourceFileBytes = ByteString.copyFrom(sourceFileByte);
+
             richMedia = Connect.RichMedia.newBuilder().
-                    setEntity(gcmData.toByteString())
+                    setEntity(sourceFileBytes)
                     .build();
         }
 
-//        UserCookie userCookie = loadUserCookie();
-//        String myPrivateKey = userCookie.getPriKey();
-//        String myPublicKey = userCookie.getPubKey();
-//
-//        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
-//        mediaFile = Connect.MediaFile.newBuilder()
-//                .setPubKey(myPublicKey)
-//                .setCipherData(gcmData)
-//                .build();
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setPlainData(richMedia.toByteString())
+                .build();
+
+        String uid = Session.getInstance().getConnectCookie().getUid();
+        String token = Session.getInstance().getChatCookie().getToken();
+        mediaFile = Connect.MediaFile.newBuilder()
+                .setUid(uid)
+                .setToken(token)
+                .setBody(structData.toByteString())
+                .build();
     }
 
     @Override

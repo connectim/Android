@@ -103,9 +103,9 @@ string message=2;
 bytes body=3;
 }
 message HttpResponse {
-int32 code = 1;
-string message=2;
-IMResponse body=3;
+ int32 code = 1;
+   string message = 2;
+   bytes body = 3;
 }
 message HttpNotSignResponse {
 int32 code=1;

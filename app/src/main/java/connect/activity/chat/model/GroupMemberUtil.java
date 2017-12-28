@@ -65,8 +65,7 @@ public class GroupMemberUtil {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {
                         GroupMemberEntity memberEntity = new GroupMemberEntity();

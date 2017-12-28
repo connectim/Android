@@ -74,16 +74,6 @@ public class OkHttpUtil {
                 .setBody(structData.toByteString())
                 .setToken(userBean.getToken()).build();
         HttpRequest.getInstance().post(url, httpRequest, resultCall);
-        /*UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        String index = ParamManager.getInstance().getString(ParamManager.GENERATE_TOKEN_SALT);
-        if (TextUtils.isEmpty(index)) {
-            HttpRecBean.sendHttpRecMsg(HttpRecBean.HttpRecType.SALTEXPIRE);
-            Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_Request_Error,Toast.LENGTH_LONG).show();
-        } else {
-            Connect.HttpRequest httpRequest = getHttpRequest(EncryptionUtil.ExtendedECDH.SALT, userBean.getPriKey(), userBean.getPubKey(),
-                    userBean.getUid(), bytes);
-            HttpRequest.getInstance().post(url, httpRequest, resultCall);
-        }*/
     }
 
     private Connect.HttpRequest getHttpRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey,String uid, ByteString bytes){

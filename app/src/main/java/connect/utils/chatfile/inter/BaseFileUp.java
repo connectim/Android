@@ -82,8 +82,7 @@ public abstract class BaseFileUp implements InterFileUp {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
 
                     Connect.FileData fileData = Connect.FileData.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(fileData)) {

@@ -9,10 +9,9 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.chat.bean.Talker;
+import connect.activity.home.bean.RoomAttrBean;
 import connect.database.green.BaseDao;
 import connect.database.green.bean.ConversionEntity;
-import connect.activity.home.bean.RoomAttrBean;
 import connect.database.green.dao.ConversionEntityDao;
 
 /**
@@ -153,10 +152,21 @@ public class ConversionHelper extends BaseDao {
     }
 
     public void updateRoomEntity(String identify, String draf, String content, int unRead, int isAt, int stranger, long messagetime) {
-        String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,CONTENT = ? ,UNREAD_COUNT = ? ,IS_AT = ? ,STRANGER = ? " +
+        updateRoomEntity(identify, "", draf, content, unRead, isAt, stranger, messagetime);
+    }
+
+    public void updateRoomEntity(String identify, String roomName, String draf, String content, int unRead, int isAt, int stranger, long messagetime) {
+        String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,UNREAD_COUNT = ? ,IS_AT = ? ,STRANGER = ? " +
+                (TextUtils.isEmpty(content) ? " " : ", CONTENT = '" + content + "'") +
                 (messagetime == 0 ? " " : ", LAST_TIME = " + messagetime) +
+                (TextUtils.isEmpty(roomName) ? "" : ", NAME = '" + roomName + "' ") +
                 " WHERE IDENTIFIER = ?;";
-        daoSession.getDatabase().execSQL(sql, new Object[]{draf, content, unRead, isAt, stranger, identify});
+        daoSession.getDatabase().execSQL(sql, new Object[]{draf, unRead, isAt, stranger, identify});
+    }
+
+    public void updateRoomEntityName(String identify, String name) {
+        String sql = "UPDATE CONVERSION_ENTITY SET NAME = ?  WHERE IDENTIFIER = ?;";
+        daoSession.getDatabase().execSQL(sql, new Object[]{name, identify});
     }
 
     /************************ delete *****************************************/

@@ -15,11 +15,13 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.model.ConvertUtil;
+import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
@@ -34,11 +36,7 @@ import connect.instant.model.CGroupChat;
 import connect.instant.model.CRobotChat;
 import connect.ui.activity.R;
 import connect.utils.RegularUtil;
-import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import instant.bean.ChatMsgEntity;
 import instant.parser.inter.CommandListener;
 import instant.sender.model.NormalChat;
@@ -111,10 +109,10 @@ public class CommandReceiver implements CommandListener {
             contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
             contactEntity.setSource(friendInfo.getSource());
             contactEntity.setRemark(friendInfo.getRemark());
-            contactEntityMap.put(friendUid,contactEntity);
+            contactEntityMap.put(friendUid, contactEntity);
         }
         Collection<ContactEntity> contactEntityCollection = contactEntityMap.values();
-        List<ContactEntity> friendInfoEntities=new ArrayList<ContactEntity>(contactEntityCollection);
+        List<ContactEntity> friendInfoEntities = new ArrayList<ContactEntity>(contactEntityCollection);
 
         //To add a system message contact
         String connect = BaseApplication.getInstance().getString(R.string.app_name);
@@ -264,7 +262,7 @@ public class CommandReceiver implements CommandListener {
         contactEntity.setConnectId(friendInfo.getConnectId());
         contactEntity.setRemark(friendInfo.getRemark());
         contactEntity.setBlocked(friendInfo.getBlackList());
-        contactEntity.setCommon(friendInfo.getCommon()?1:0);
+        contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
         contactEntity.setSource(friendInfo.getSource());
         ContactHelper.getInstance().insertContact(contactEntity);
 
@@ -293,7 +291,7 @@ public class CommandReceiver implements CommandListener {
     public void updateGroupChange(Connect.GroupChange groupChange) throws Exception {
         Context context = BaseApplication.getInstance().getBaseContext();
         String groupKey = "";
-        String memberUid ="";
+        String memberUid = "";
         String noticeStr = "";
 
         GroupEntity groupEntity = null;
@@ -312,8 +310,9 @@ public class CommandReceiver implements CommandListener {
                     String groupname = group.getName();
                     groupEntity.setName(groupname);
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
-                    CGroupChat groupChat = new CGroupChat(groupEntity);
-                    groupChat.updateRoomMsg(null, "", -1, -1, -1);
+
+                    ConversionHelper.getInstance().updateRoomEntityName(groupKey, groupname);
+                    ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
 
                     RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATENAME, groupKey, groupname);
                     ContactNotice.receiverGroup();
@@ -363,11 +362,11 @@ public class CommandReceiver implements CommandListener {
                         if (normalChat == null) {
                             FailMsgsManager.getInstance().insertReceiveMsg(groupKey, TimeUtil.timestampToMsgid(), noticeStr);
                         } else {
-                            ChatMsgEntity msgExtEntity = normalChat.noticeMsg(0,noticeStr,"");
+                            ChatMsgEntity msgExtEntity = normalChat.noticeMsg(0, noticeStr, "");
                             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
                             RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgExtEntity);
-                            ((ConversationListener)normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
+                            ((ConversationListener) normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
                         }
                     }
                 }
@@ -417,11 +416,11 @@ public class CommandReceiver implements CommandListener {
                         noticeStr = context.getString(R.string.Link_become_new_group_owner, showName);
 
                         normalChat = new CGroupChat(groupEntity);
-                        ChatMsgEntity msgExtEntity = normalChat.noticeMsg(0,noticeStr,"");
+                        ChatMsgEntity msgExtEntity = normalChat.noticeMsg(0, noticeStr, "");
                         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
                         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgExtEntity);
-                        ((ConversationListener)normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
+                        ((ConversationListener) normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
                     }
                 }
                 break;
@@ -507,7 +506,7 @@ public class CommandReceiver implements CommandListener {
         CFriendChat cFriendChat = new CFriendChat(friendEntity);
         ChatMsgEntity msgEntity = cFriendChat.noticeMsg(0, content, "");
         MessageHelper.getInstance().insertMsgExtEntity(msgEntity);
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE,friendUid,msgEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, friendUid, msgEntity);
     }
 
     @Override
