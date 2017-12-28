@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,6 +38,8 @@ public class PrivateBlackActivity extends BaseActivity {
     TopToolBar toolbarTop;
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
+    @Bind(R.id.no_data_lin)
+    LinearLayout noDataLin;
 
     private PrivateBlackActivity mActivity;
     private BlackListAdapter adapter;
@@ -65,7 +68,14 @@ public class PrivateBlackActivity extends BaseActivity {
         recyclerview.setAdapter(adapter);
 
         List<ContactEntity> list = ContactHelper.getInstance().loadFriendBlack();
-        adapter.setDataNotify(list);
+        if (list == null || list.size() == 0) {
+            noDataLin.setVisibility(View.VISIBLE);
+            recyclerview.setVisibility(View.GONE);
+        }else{
+            noDataLin.setVisibility(View.GONE);
+            recyclerview.setVisibility(View.VISIBLE);
+            adapter.setDataNotify(list);
+        }
     }
 
     @OnClick(R.id.left_img)
@@ -95,7 +105,7 @@ public class PrivateBlackActivity extends BaseActivity {
         switch (notice.ntEnum) {
             case MSG_SEND_SUCCESS:
                 MsgSendBean sendBean = (MsgSendBean) objs[0];
-                if(sendBean.getType() == MsgSendBean.SendType.TypeFriendBlock){
+                if (sendBean.getType() == MsgSendBean.SendType.TypeFriendBlock) {
                     ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(sendBean.getUid());
                     if (null != friendEntity) {
                         friendEntity.setBlocked(false);

@@ -349,18 +349,17 @@
     <string name="Set_Miner_fee">手续费</string>
     <string name="Set_My_Profile">个人资料</string>
     <string name="Set_My_QR_code">我的二维码</string>
-    <string name="Set_Name">昵称</string>
+    <string name="Set_Name">姓名</string>
     <string name="Set_Not_synchronized">未同步</string>
     <string name="Set_Now_update_app">立即更新</string>
     <string name="Set_Off">已关闭</string>
     <string name="Set_On">已开启</string>
     <string name="Set_Open_Source">开源项目</string>
-    <string name="Set_Scanned_the_qr_code_to_add_friends">扫面二维码添加好友</string>
+    <string name="Set_Scanned_the_qr_code_to_add_friends">扫描二维码添加好友</string>
     <string name="Set_Password_incorrect_you_have_chance">密码错误,您还有%d次机会</string>
     <string name="Set_Patten_can_prevent_access_data_required_when_entering">
         手势密码可以阻止未经授权的访问沙盒数据\n开启后,进入应用前需要验证手势
     </string>
-
     <string name="Set_Pattern_Password">手势密码</string>
     <string name="Set_Pattern_Setting_Success">手势设置成功</string>
     <string name="Set_Payment">支付</string>

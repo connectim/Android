@@ -675,7 +675,7 @@ repeated ChangeRecord changeRecords = 2;
 
 message ChangeRecord {
 string category = 1;
-FriendInfo friend_info = 2;
+FriendInfo friendInfo = 2;
 }
 
 message SyncUserRelationship {

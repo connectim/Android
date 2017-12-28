@@ -137,16 +137,12 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
-                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(!ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
-                        return;
-                    }
-                    if (friendEntity.getAvatar().equals(userInfo.getAvatar()) && friendEntity.getUsername().equals(userInfo.getUsername())) {
+                    Connect.UsersInfo userInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
+                    if (friendEntity.getAvatar().equals(userInfo.getUsers(0).getAvatar())) {
                         return;
                     }
                     // Update the database information
-                    friendEntity.setUsername(userInfo.getUsername());
-                    friendEntity.setAvatar(userInfo.getAvatar());
+                    friendEntity.setAvatar(userInfo.getUsers(0).getAvatar());
                     mView.updateView(friendEntity);
                     ContactHelper.getInstance().insertContact(friendEntity);
                     // Update the message list user information
@@ -155,6 +151,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                         CFriendChat friendChat = new CFriendChat(friendEntity);
                         friendChat.updateRoomMsg(null, "", -1, -1, -1);
                     }
+                    ContactNotice.receiverFriend();
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

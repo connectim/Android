@@ -32,6 +32,6 @@
         style="@style/ButtonShortStyle"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:text="@string/Link_Delete"/>
+        android:text="@string/Link_Add"/>
 
 </RelativeLayout>

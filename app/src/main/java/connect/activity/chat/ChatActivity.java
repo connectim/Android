@@ -327,7 +327,7 @@ public class ChatActivity extends BaseChatSendActivity {
                     }
                 }
             }
-        } else if (requestCode == CODE_REQUEST && resultCode == CODE_REQUEST) {//relay the message
+        } else if (requestCode == CODE_REQUEST && resultCode == RESULT_OK) {//relay the message
             transpondTo(data);
         }
     }

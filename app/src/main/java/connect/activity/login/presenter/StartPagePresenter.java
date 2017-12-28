@@ -37,14 +37,21 @@ public class StartPagePresenter implements StartContract.Presenter {
                     e.printStackTrace();
                 }
 
-                if (!SharedPreferenceUtil.getInstance().isContains(SharedPreferenceUtil.FIRST_INTO_APP)) {
-                    mView.goIntoGuide();
-                } else if (!SharedPreferenceUtil.getInstance().containsUser()) {
+                if (!SharedPreferenceUtil.getInstance().containsUser()) {
                     mView.goIntoLoginForPhone();
                 } else {
                     openFromWeb(mActivity);
                     mView.goIntoHome();
                 }
+
+                /*if (!SharedPreferenceUtil.getInstance().isContains(SharedPreferenceUtil.FIRST_INTO_APP)) {
+                    mView.goIntoLoginForPhone();
+                } else if (!SharedPreferenceUtil.getInstance().containsUser()) {
+                    mView.goIntoLoginForPhone();
+                } else {
+                    openFromWeb(mActivity);
+                    mView.goIntoHome();
+                }*/
                 mActivity.finish();
             }
         }).start();

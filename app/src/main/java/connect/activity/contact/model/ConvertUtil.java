@@ -28,7 +28,7 @@ public class ConvertUtil {
         requestEntity.setSource(receiver.getSource());
         requestEntity.setUid(receiver.getSender().getUid());
         requestEntity.setAvatar(receiver.getSender().getAvatar());
-        requestEntity.setUsername(receiver.getSender().getUsername());
+        requestEntity.setUsername(receiver.getSender().getName());
         requestEntity.setStatus(1);
         requestEntity.setRead(0);
         requestEntity.setTips(receiver.getTips());

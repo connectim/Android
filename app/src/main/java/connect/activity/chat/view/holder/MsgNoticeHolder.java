@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import connect.activity.chat.exts.CrowdingDetailActivity;
 import connect.activity.chat.exts.TransferSingleDetailActivity;
+import connect.activity.contact.StrangerInfoActivity;
+import connect.activity.contact.bean.SourceType;
 import connect.ui.activity.R;
 import instant.bean.ChatMsgEntity;
 import protos.Connect;
@@ -109,8 +111,8 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                         @Override
                         public void onClick(View v) {
                             try {
-                                //String stangerAddress = SupportKeyUril.getAddressFromPubKey(notifyMessage.getExtion());
-                                // StrangerInfoActivity.startActivity((Activity) context, stangerAddress, SourceType.SEARCH);
+                                String friendUid = notifyMessage.getExtion();
+                                 StrangerInfoActivity.startActivity((Activity) context, friendUid, SourceType.SEARCH);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

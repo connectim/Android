@@ -126,7 +126,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         nameTv.setText(friendEntity.getUsername());
         addressTv.setText(friendEntity.getUid());
         aliasTv.setText(TextUtils.isEmpty(friendEntity.getRemark()) ? "" : friendEntity.getRemark());
-        addFavoritesTb.setSelected(friendEntity.getCommon() != null && friendEntity.getCommon() == 1);
         addBlockTb.setSelected(friendEntity.getBlocked() == null ? false : friendEntity.getBlocked());
     }
 
@@ -215,7 +214,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SelectRecentlyChatActivity.CODE_REQUEST && requestCode == RESULT_OK) {
+        if (requestCode == SelectRecentlyChatActivity.CODE_REQUEST && resultCode == RESULT_OK) {
             presenter.shareFriendCard(mActivity, data, friendEntity);
         }
     }

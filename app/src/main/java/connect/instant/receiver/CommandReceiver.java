@@ -261,7 +261,7 @@ public class CommandReceiver implements CommandListener {
             newFriend = true;
         }
         contactEntity.setUid(friendInfo.getUid());
-        contactEntity.setUsername(friendInfo.getUsername());
+        contactEntity.setUsername(friendInfo.getName());
         contactEntity.setAvatar(friendInfo.getAvatar());
         contactEntity.setConnectId(friendInfo.getConnectId());
         contactEntity.setRemark(friendInfo.getRemark());
