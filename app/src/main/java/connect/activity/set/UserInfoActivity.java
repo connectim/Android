@@ -86,7 +86,7 @@ public class UserInfoActivity extends BaseActivity {
 
     @OnClick(R.id.name_ll)
     void goName(View view) {
-        UserInfoNameActivity.startActivity(mActivity);
+        //UserInfoNameActivity.startActivity(mActivity);
     }
 
     @OnClick(R.id.id_ll)

@@ -6,9 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.RelativeLayout;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -37,8 +34,6 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
     TopToolBar toolbar;
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
-    @Bind(R.id.contact_rela)
-    RelativeLayout contactRela;
 
     private AddFriendActivity mActivity;
     private AddFriendContract.Presenter presenter;
@@ -84,11 +79,6 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
     @OnClick(R.id.left_img)
     void goBack(View view) {
         ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.contact_rela)
-    void goContact(View view) {
-        ActivityUtil.next(mActivity, AddFriendPhoneActivity.class);
     }
 
     RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {

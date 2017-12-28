@@ -28,13 +28,12 @@ import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import instant.bean.ChatMsgEntity;
-import instant.sender.model.NormalChat;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.imagewatcher.ImageWatcher;
 import connect.widget.imagewatcher.ImageWatcherUtil;
+import instant.bean.ChatMsgEntity;
+import instant.sender.model.NormalChat;
 import protos.Connect;
 
 public class FriendInfoPresenter implements FriendInfoContract.Presenter {
