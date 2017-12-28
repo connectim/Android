@@ -15,12 +15,11 @@ import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import instant.bean.ChatMsgEntity;
-import instant.bean.UserOrderBean;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import instant.bean.ChatMsgEntity;
+import instant.bean.UserOrderBean;
 import protos.Connect;
 
 /**

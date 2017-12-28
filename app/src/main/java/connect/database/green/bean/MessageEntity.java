@@ -9,10 +9,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import java.io.Serializable;
 
 import connect.utils.StringUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import instant.bean.ChatMsgEntity;
-import protos.Connect;
 
 @Entity
 public class MessageEntity implements Serializable {

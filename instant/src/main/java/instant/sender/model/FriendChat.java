@@ -1,7 +1,5 @@
 package instant.sender.model;
 
-import com.google.protobuf.ByteString;
-
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.bean.Session;
@@ -10,10 +8,7 @@ import instant.bean.UserCookie;
 import instant.bean.UserOrderBean;
 import instant.parser.localreceiver.MessageLocalReceiver;
 import instant.sender.SenderManager;
-import instant.utils.SharedUtil;
 import instant.utils.TimeUtil;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -24,10 +19,6 @@ public class FriendChat extends NormalChat {
 
     private static String TAG = "_FriendChat";
 
-    /** user Cookie */
-    private UserCookie userCookie = null;
-    /** friend Cookie */
-    private UserCookie friendCookie = null;
     protected String friendUid = null;
 
     public FriendChat(String uid) {
@@ -98,7 +89,6 @@ public class FriendChat extends NormalChat {
     }
 
     public void setFriendCookie(UserCookie friendCookie) {
-        this.friendCookie = friendCookie;
     }
 
     public ChatMsgEntity inviteJoinGroupMsg(String avatar, String name, String id, String token) {

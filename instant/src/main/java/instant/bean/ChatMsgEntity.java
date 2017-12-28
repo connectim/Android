@@ -1,6 +1,7 @@
 package instant.bean;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -261,6 +262,13 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
                 if (contents != null) {
                     try {
                         Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(contents);
+                        content = textMessage.getContent();
+                    } catch (InvalidProtocolBufferException e) {
+                        e.printStackTrace();
+                    }
+                }else if(!TextUtils.isEmpty(this.content)){
+                    try {
+                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(StringUtil.hexStringToBytes(this.content));
                         content = textMessage.getContent();
                     } catch (InvalidProtocolBufferException e) {
                         e.printStackTrace();

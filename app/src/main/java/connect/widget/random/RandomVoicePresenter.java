@@ -11,10 +11,9 @@ import java.util.ArrayList;
 
 import connect.utils.FileUtil;
 import connect.utils.StringUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.permission.PermissionUtil;
 
-public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
+public class RandomVoicePresenter implements RandomVoiceContract.Presenter {
 
     private RandomVoiceContract.View mView;
     private final int MAX_LENGTH = 3500;
@@ -34,8 +33,8 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
 
     @Override
     public void start() {
-        PermissionUtil.getInstance().requestPermission(mView.getActivity(),new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO,
-                PermissionUtil.PERMISSION_STORAGE},permissionCallBack);
+        PermissionUtil.getInstance().requestPermission(mView.getActivity(), new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO,
+                PermissionUtil.PERMISSION_STORAGE}, permissionCallBack);
     }
 
     @Override
@@ -43,7 +42,7 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
         return permissionCallBack;
     }
 
-    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack(){
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
         @Override
         public void granted(String[] permissions) {
             try {
@@ -99,14 +98,15 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
                     if (!checkVoice()) {
                         mView.changeViewStatus(2);
                         return;
-                    }else{
-                        if(iMediaRecorder != null){
+                    } else {
+                        if (iMediaRecorder != null) {
                             iMediaRecorder.stop();
                             iMediaRecorder.release();
                             iMediaRecorder = null;
                         }
 
-                        byte[] valueByte = SupportKeyUril.byteSHA512(FileUtil.filePathToByteArray(file.getPath()));
+//                        byte[] valueByte = SupportKeyUril.byteSHA512(FileUtil.filePathToByteArray(file.getPath()));
+                        byte[] valueByte=null;
                         String strForBmp = StringUtil.bytesToHexString(valueByte);
                         random = strForBmp;
                     }
@@ -155,7 +155,7 @@ public class RandomVoicePresenter implements RandomVoiceContract.Presenter{
     }
 
     @Override
-    public void releaseResource(){
+    public void releaseResource() {
         try {
             if (handler != null && runnable != null) {
                 handler.removeCallbacks(runnable);

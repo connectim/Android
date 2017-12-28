@@ -7,13 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.google.protobuf.InvalidProtocolBufferException;
+
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -58,7 +58,8 @@ public class TransferMutiDetailAdapter extends RecyclerView.Adapter<TransferMuti
 
     @Override
     public void onBindViewHolder(final MutiDetailHolder holder, int position) {
-        String address = SupportKeyUril.getAddressFromPubKey(receivers[position]);
+//        String address = SupportKeyUril.getAddressFromPubKey(receivers[position]);
+        String address="";
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(address)
                 .build();

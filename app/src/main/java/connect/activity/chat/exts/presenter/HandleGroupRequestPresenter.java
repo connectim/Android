@@ -15,9 +15,6 @@ import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
@@ -87,50 +84,50 @@ public class HandleGroupRequestPresenter implements HandleGroupRequestContract.P
 
     @Override
     public void agreeRequest(String caPublicKey,String code,String applyUid) {
-        Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
-                .setIdentifier(groupKey)
-                //qwert
-                //.setSecretKey(groupEntity.getEcdh_key())
-                .build();
-
-        String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getUid();
-        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(myCaPrivateKey, caPublicKey);
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
-
-        String myCaPublicKey = SharedPreferenceUtil.getInstance().getUser().getUid();
-        String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
-        String backup = String.format("%1$s/%2$s", myCaPublicKey, groupHex);
-
-        Connect.GroupReviewed reviewed = Connect.GroupReviewed.newBuilder()
-                .setIdentifier(groupKey)
-                .setUid(applyUid)
-                .setVerificationCode(code)
-                .setBackup(backup)
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REVIEWED, reviewed, new ResultCall<Connect.HttpResponse>() {
-            @Override
-            public void onResponse(Connect.HttpResponse response) {
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                if (groupEntity != null) {
-                    view.updateGroupRequest(1);
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpResponse response) {
-                switch (response.getCode()) {
-                    case 2432://not group manager
-                        ToastEUtil.makeText(activity, activity.getString(R.string.Chat_Not_Group_Master), 2).show();
-                        break;
-                    case 2433://be in group
-                        ToastEUtil.makeText(activity, activity.getString(R.string.Chat_User_already_in_group), 2).show();
-                        break;
-                    case 3434://Verification code error
-                        ToastEUtil.makeText(activity, activity.getString(R.string.Chat_VerifyCode_has_expired), 2).show();
-                        break;
-                }
-            }
-        });
+//        Connect.CreateGroupMessage createGroupMessage = Connect.CreateGroupMessage.newBuilder()
+//                .setIdentifier(groupKey)
+//                //qwert
+//                //.setSecretKey(groupEntity.getEcdh_key())
+//                .build();
+//
+//        String myCaPrivateKey = SharedPreferenceUtil.getInstance().getUser().getUid();
+//        byte[] memberecdhkey = SupportKeyUril.getRawECDHKey(myCaPrivateKey, caPublicKey);
+//        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, memberecdhkey, createGroupMessage.toByteString());
+//
+//        String myCaPublicKey = SharedPreferenceUtil.getInstance().getUser().getUid();
+//        String groupHex = StringUtil.bytesToHexString(gcmData.toByteArray());
+//        String backup = String.format("%1$s/%2$s", myCaPublicKey, groupHex);
+//
+//        Connect.GroupReviewed reviewed = Connect.GroupReviewed.newBuilder()
+//                .setIdentifier(groupKey)
+//                .setUid(applyUid)
+//                .setVerificationCode(code)
+//                .setBackup(backup)
+//                .build();
+//        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_REVIEWED, reviewed, new ResultCall<Connect.HttpResponse>() {
+//            @Override
+//            public void onResponse(Connect.HttpResponse response) {
+//                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+//                if (groupEntity != null) {
+//                    view.updateGroupRequest(1);
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Connect.HttpResponse response) {
+//                switch (response.getCode()) {
+//                    case 2432://not group manager
+//                        ToastEUtil.makeText(activity, activity.getString(R.string.Chat_Not_Group_Master), 2).show();
+//                        break;
+//                    case 2433://be in group
+//                        ToastEUtil.makeText(activity, activity.getString(R.string.Chat_User_already_in_group), 2).show();
+//                        break;
+//                    case 3434://Verification code error
+//                        ToastEUtil.makeText(activity, activity.getString(R.string.Chat_VerifyCode_has_expired), 2).show();
+//                        break;
+//                }
+//            }
+//        });
     }
 
     @Override

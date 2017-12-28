@@ -2,7 +2,6 @@ package connect.activity.login.presenter;
 
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -10,7 +9,6 @@ import java.io.File;
 
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RegisterContract;
-import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
@@ -18,14 +16,9 @@ import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.HttpRequest;
-import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.utils.system.SystemDataUtil;
 import protos.Connect;
-import retrofit2.Retrofit;
 
 public class RegisterPresenter implements RegisterContract.Presenter {
 

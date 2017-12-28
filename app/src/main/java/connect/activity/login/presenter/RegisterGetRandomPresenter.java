@@ -10,13 +10,12 @@ import java.io.File;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.RegisterGetRandomContract;
 import connect.utils.FileUtil;
 import connect.utils.StringUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.permission.PermissionUtil;
-import connect.wallet.jni.AllNativeMethod;
 
 /**
  * Registered mobile phone number presenter.
@@ -24,17 +23,25 @@ import connect.wallet.jni.AllNativeMethod;
 public class RegisterGetRandomPresenter implements RegisterGetRandomContract.Presenter {
 
     private RegisterGetRandomContract.View mView;
-    /** The longest collection time */
+    /**
+     * The longest collection time
+     */
     private final int MAX_LENGTH = 5000;
     private Runnable runnable;
     private Handler handler = new Handler();
-    /** Collection time clock */
+    /**
+     * Collection time clock
+     */
     private int videoLength;
-    /** Update frequency interface */
+    /**
+     * Update frequency interface
+     */
     private final int RATE_TIME = 10;
     private MediaRecorder iMediaRecorder;
     private File file;
-    /** Sound amplitude */
+    /**
+     * Sound amplitude
+     */
     private ArrayList<Double> dbArray;
     private HashMap<String, String> hashMap;
 
@@ -50,7 +57,7 @@ public class RegisterGetRandomPresenter implements RegisterGetRandomContract.Pre
 
     private void chechPeission() {
         PermissionUtil.getInstance().requestPermission(mView.getActivity(),
-                new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO, PermissionUtil.PERMISSION_STORAGE},permissionCallBack);
+                new String[]{PermissionUtil.PERMISSION_RECORD_AUDIO, PermissionUtil.PERMISSION_STORAGE}, permissionCallBack);
     }
 
     @Override
@@ -168,11 +175,11 @@ public class RegisterGetRandomPresenter implements RegisterGetRandomContract.Pre
                     iMediaRecorder = null;
                 }
                 ArrayList arrayList = new ArrayList<String>();
-                byte[] valueByte = SupportKeyUril.byteSHA512(FileUtil.filePathToByteArray(file.getPath()));
-                String random = StringUtil.bytesToHexString(SupportKeyUril.xor(valueByte, SecureRandom.getSeed(64)));
-                String prikey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(random, 44, 0, 0, 0, 0);
+//                byte[] valueByte = SupportKeyUril.byteSHA512(FileUtil.filePathToByteArray(file.getPath()));
+//                String random = StringUtil.bytesToHexString(SupportKeyUril.xor(valueByte, SecureRandom.getSeed(64)));
+                String prikey = "";
                 arrayList.add(prikey);
-                String pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
+                String pubKey = "";
                 arrayList.add(pubKey);
                 return arrayList;
             }

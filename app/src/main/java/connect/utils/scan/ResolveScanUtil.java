@@ -20,8 +20,6 @@ import connect.utils.ActivityUtil;
 import connect.utils.RegularUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
@@ -106,10 +104,10 @@ public class ResolveScanUtil {
             String[] data = value.split("\\?" + "amount=");
             valueBitCoin = data[0].replace(TRANSFER_SCAN_HEAD,"");
         }
-        if(SupportKeyUril.checkAddress(valueBitCoin)){
-            //TransferAddressActivity.startActivity(activity,valueBitCoin,amount);
-            return;
-        }
+//        if(SupportKeyUril.checkAddress(valueBitCoin)){
+//            //TransferAddressActivity.startActivity(activity,valueBitCoin,amount);
+//            return;
+//        }
     }
 
     /**

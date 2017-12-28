@@ -21,7 +21,6 @@ import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.system.SystemDataUtil;
@@ -57,7 +56,8 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
                 Connect.PhoneBook.Builder builder = Connect.PhoneBook.newBuilder();
                 for (int i = 0; i < localList.size(); i++) {
                     String phone = StringUtil.filterNumber(localList.get(i).getPhone());
-                    String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.SaltHMAC);
+                   // String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.SaltHMAC);
+                    String phoneHmac = "";
                     Connect.PhoneInfo phoneInfo = Connect.PhoneInfo.newBuilder()
                             .setMobile(phoneHmac)
                             .build();

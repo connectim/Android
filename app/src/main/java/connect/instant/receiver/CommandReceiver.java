@@ -255,7 +255,11 @@ public class CommandReceiver implements CommandListener {
             ContactHelper.getInstance().inserFriendQuestEntity(friendRequestEntity);
         }
 
-        ContactEntity contactEntity = new ContactEntity();
+        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendInfo.getUid());
+        if (contactEntity == null) {
+            contactEntity = new ContactEntity();
+            newFriend = true;
+        }
         contactEntity.setUid(friendInfo.getUid());
         contactEntity.setUsername(friendInfo.getUsername());
         contactEntity.setAvatar(friendInfo.getAvatar());

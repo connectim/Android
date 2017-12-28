@@ -1,16 +1,23 @@
 package connect.activity.chat.view.holder;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import instant.bean.ChatMsgEntity;
-import instant.bean.MsgDirect;
-import connect.activity.chat.exts.ApplyJoinGroupActivity;
+import connect.activity.chat.ChatActivity;
+import connect.activity.chat.bean.Talker;
+import connect.activity.home.bean.GroupRecBean;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
+import connect.utils.ToastEUtil;
+import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import protos.Connect;
 
 /**
@@ -60,12 +67,48 @@ public class MsgInviteGroupHolder extends MsgChatHolder {
             public void onClick(View v) {
                 if (msgExtEntity.parseDirect() == MsgDirect.From) {
                     if (applyState == 0) {
-                        ApplyJoinGroupActivity.EApplyGroup eApplyGroup = ApplyJoinGroupActivity.EApplyGroup.GROUPKEY;
                         String groupId = joinGroupMessage.getGroupId();
                         String messageIdentify = getMsgExtEntity().getMessage_ower();
                         String token = joinGroupMessage.getToken();
 
-                        ApplyJoinGroupActivity.startActivity((Activity) context, eApplyGroup, groupId, messageIdentify, token);
+                        requestJoinByInvite(groupId, messageIdentify, "", token);
+                    }
+                }
+            }
+        });
+    }
+
+
+    public void requestJoinByInvite(final String groupkey, String inviteby, String tips, String token) {
+        Connect.GroupInvite invite = Connect.GroupInvite.newBuilder()
+                .setIdentifier(groupkey)
+                .setInviteBy(inviteby)
+                .setTips(tips)
+                .setToken(token)
+                .build();
+
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_INVITE, invite, new ResultCall<Connect.HttpResponse>() {
+            @Override
+            public void onResponse(Connect.HttpResponse response) {
+                GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupkey);
+                ToastEUtil.makeText((Activity) context, ((Activity) context).getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
+                    @Override
+                    public void animFinish() {
+                        ChatActivity.startActivity((Activity) context, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupkey));
+                    }
+                }).show();
+            }
+
+            @Override
+            public void onError(Connect.HttpResponse response) {
+                if (response.getCode() == 2430) {
+                    ToastEUtil.makeText((Activity) context, R.string.Link_Qr_code_is_invalid, ToastEUtil.TOAST_STATUS_FAILE).show();
+                } else {
+                    String contentTxt = response.getMessage();
+                    if (TextUtils.isEmpty(contentTxt)) {
+                        ToastEUtil.makeText((Activity) context, ((Activity) context).getString(R.string.Network_equest_failed_please_try_again_later), 2).show();
+                    } else {
+                        ToastEUtil.makeText((Activity) context, contentTxt, 2).show();
                     }
                 }
             }

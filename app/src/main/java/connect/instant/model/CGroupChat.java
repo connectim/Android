@@ -40,7 +40,11 @@ public class CGroupChat extends GroupChat implements ConversationListener{
 
     @Override
     public String headImg() {
-        return RegularUtil.groupAvatar(groupKey);
+        String groupAvatar = groupEntity.getAvatar();
+        if (TextUtils.isEmpty(groupAvatar)) {
+            groupAvatar = RegularUtil.groupAvatar(groupKey);
+        }
+        return groupAvatar;
     }
 
     @Override

@@ -7,18 +7,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.GroupEntity;
-import connect.utils.StringUtil;
 import connect.utils.chatfile.inter.InterFileDown;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
 import connect.utils.okhttp.HttpRequest;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
-import protos.Connect;
 
 /**
  * File download tool

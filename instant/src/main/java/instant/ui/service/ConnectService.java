@@ -21,6 +21,7 @@ import instant.parser.InterParse;
 import instant.parser.MessageParser;
 import instant.parser.ReceiptParser;
 import instant.parser.ShakeHandParser;
+import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.sender.HeartBeatSender;
 import instant.sender.ShakeHandSender;
 import instant.utils.SharedUtil;
@@ -184,6 +185,9 @@ public class ConnectService extends Service {
                 switch (type) {
                     case 0x01://shake hand order
                         interParse = new ShakeHandParser(ext, body);
+                        break;
+                    case 0x02://hearBeat
+                        ConnectLocalReceiver.receiver.connectSuccess();
                         break;
                     case 0x03://receive message id
                         interParse = new ReceiptParser(ext, body);

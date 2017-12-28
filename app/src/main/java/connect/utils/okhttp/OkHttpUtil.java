@@ -5,10 +5,8 @@ import com.google.protobuf.GeneratedMessageV3;
 
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
+import connect.utils.StringUtil;
 import connect.utils.log.LogManager;
-import connect.utils.system.SystemDataUtil;
 import protos.Connect;
 
 /**
@@ -44,16 +42,16 @@ public class OkHttpUtil {
      * @param exts
      * @param resultCall
      */
-    public void postEncrySelf(String url, GeneratedMessageV3 body, EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
-        ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
-        postEncrySelf(url, bytes, resultCall);
-        /*UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
-        Connect.HttpRequest httpRequest = getHttpRequest(exts, userBean.getPriKey(),userBean.getPubKey(), userBean.getUid(), bytes);
-        if(null == httpRequest)
-            return;
-        HttpRequest.getInstance().post(url,httpRequest,resultCall);*/
-    }
+//    public void postEncrySelf(String url, GeneratedMessageV3 body, EncryptionUtil.ExtendedECDH exts, final ResultCall resultCall){
+//        ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
+//        postEncrySelf(url, bytes, resultCall);
+//        /*UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+//        ByteString bytes = body == null ? ByteString.copyFrom(new byte[]{}) : body.toByteString();
+//        Connect.HttpRequest httpRequest = getHttpRequest(exts, userBean.getPriKey(),userBean.getPubKey(), userBean.getUid(), bytes);
+//        if(null == httpRequest)
+//            return;
+//        HttpRequest.getInstance().post(url,httpRequest,resultCall);*/
+//    }
 
     /**
      * post(receive ByteString)
@@ -62,7 +60,7 @@ public class OkHttpUtil {
      * @param resultCall
      */
     public void postEncrySelf(String url, ByteString bytes, final ResultCall resultCall){
-        ByteString random = ByteString.copyFrom(SupportKeyUril.createBinaryRandom());
+        ByteString random = ByteString.copyFrom(StringUtil.getSecureRandom(16));
         Connect.StructData structData = Connect.StructData.newBuilder()
                 .setRandom(random)
                 .setPlainData(bytes)
@@ -76,28 +74,28 @@ public class OkHttpUtil {
         HttpRequest.getInstance().post(url, httpRequest, resultCall);
     }
 
-    private Connect.HttpRequest getHttpRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey,String uid, ByteString bytes){
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
-        if(null == gcmData){
-            return null;
-        }
-        Connect.HttpRequest httpRequest = Connect.HttpRequest.newBuilder()
-                .setUid(uid)
-                .setBody(bytes)
-                .setToken("").build();
-        return httpRequest;
-    }
-
-    public Connect.IMRequest getIMRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey, ByteString bytes) {
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
-        if(null == gcmData){
-            return null;
-        }
-        Connect.IMRequest imRequest = Connect.IMRequest.newBuilder()
-                .setPubKey(pubKey)
-                .setCipherData(gcmData)
-                .setSign(SupportKeyUril.signHash(priKey, gcmData.toByteArray())).build();
-        return imRequest;
-    }
+//    private Connect.HttpRequest getHttpRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey,String uid, ByteString bytes){
+//        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
+//        if(null == gcmData){
+//            return null;
+//        }
+//        Connect.HttpRequest httpRequest = Connect.HttpRequest.newBuilder()
+//                .setUid(uid)
+//                .setBody(bytes)
+//                .setToken("").build();
+//        return httpRequest;
+//    }
+//
+//    public Connect.IMRequest getIMRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey, ByteString bytes) {
+//        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
+//        if(null == gcmData){
+//            return null;
+//        }
+//        Connect.IMRequest imRequest = Connect.IMRequest.newBuilder()
+//                .setPubKey(pubKey)
+//                .setCipherData(gcmData)
+//                .setSign(SupportKeyUril.signHash(priKey, gcmData.toByteArray())).build();
+//        return imRequest;
+//    }
 
 }

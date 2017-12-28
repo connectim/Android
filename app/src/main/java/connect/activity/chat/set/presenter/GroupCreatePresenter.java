@@ -2,8 +2,6 @@ package connect.activity.chat.set.presenter;
 
 import android.app.Activity;
 
-import com.google.protobuf.ByteString;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,16 +23,9 @@ import connect.utils.RegularUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.jni.AllNativeMethod;
 import instant.bean.ChatMsgEntity;
-import instant.bean.Session;
-import instant.bean.UserCookie;
-import instant.bean.UserOrderBean;
 import instant.sender.model.GroupChat;
 import protos.Connect;
 
@@ -117,7 +108,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
         roomEntity.setType(Connect.ChatType.GROUP_DISCUSSION_VALUE);
         roomEntity.setIdentifier(groupKey);
         roomEntity.setName(groupName);
-        roomEntity.setAvatar(RegularUtil.groupAvatar(groupKey));
+        roomEntity.setAvatar(groupInfo.getGroup().getAvatar());
         roomEntity.setLast_time(TimeUtil.getCurrentTimeInLong());
         roomEntity.setContent(activity.getString(R.string.Chat_Tips));
         ConversionHelper.getInstance().insertRoomEntity(roomEntity);

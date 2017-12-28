@@ -4,9 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.utils.cryption.SupportKeyUril;
 
 /**
  * Verify login password
@@ -71,11 +69,11 @@ public class LoginPassCheckUtil {
             protected void onPostExecute(String priKey) {
                 super.onPostExecute(priKey);
                 ProgressUtil.getInstance().dismissProgress();
-                if(priKey != null && SupportKeyUril.checkPriKey(priKey)){
-                    onResultListener.success(priKey);
-                } else {
-                    ToastEUtil.makeText(mContext,R.string.Login_Password_incorrect,ToastEUtil.TOAST_STATUS_FAILE).show();
-                }
+//                if(priKey != null && SupportKeyUril.checkPriKey(priKey)){
+//                    onResultListener.success(priKey);
+//                } else {
+//                    ToastEUtil.makeText(mContext,R.string.Login_Password_incorrect,ToastEUtil.TOAST_STATUS_FAILE).show();
+//                }
             }
         }.execute();
     }

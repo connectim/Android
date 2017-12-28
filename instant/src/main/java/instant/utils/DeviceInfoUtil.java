@@ -7,7 +7,6 @@ import android.provider.Settings;
 import java.util.Locale;
 import java.util.UUID;
 
-import connect.wallet.jni.AllNativeMethod;
 import instant.ui.InstantSdk;
 
 /**

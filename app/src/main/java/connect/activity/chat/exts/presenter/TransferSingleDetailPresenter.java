@@ -12,8 +12,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
@@ -126,7 +124,7 @@ public class TransferSingleDetailPresenter implements TransferSingleDetailContra
                 avatar = friendEntity.getAvatar();
                 name = friendEntity.getUsername();
             } else {
-                String address = SupportKeyUril.getAddressFromPubKey(pubkey);
+                String address = "";
                 Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                         .setCriteria(address)
                         .build();

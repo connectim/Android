@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -18,42 +16,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.HttpRecBean;
-import connect.activity.login.bean.CaPubBean;
-import connect.activity.login.bean.UserBean;
-import connect.activity.set.bean.PaySetBean;
-import connect.activity.set.bean.PrivateSetBean;
 import connect.activity.set.bean.SystemSetBean;
-import connect.activity.wallet.bean.RateBean;
-import connect.activity.wallet.bean.WalletSetBean;
-import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ConversionSettingHelper;
-import connect.database.green.DaoHelper.ParamHelper;
 import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.ConversionSettingEntity;
-import connect.database.green.bean.GroupEntity;
-import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.utils.ProtoBufUtil;
-import connect.utils.RegularUtil;
-import connect.utils.StringUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
-import connect.utils.data.RateDataUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
-import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
 /**

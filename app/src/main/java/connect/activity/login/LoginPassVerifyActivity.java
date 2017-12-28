@@ -17,21 +17,14 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.activity.home.HomeActivity;
-import connect.activity.login.bean.CaPubBean;
 import connect.activity.login.bean.UserBean;
-import connect.database.SharedPreferenceUser;
-import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -111,8 +104,8 @@ public class LoginPassVerifyActivity extends BaseActivity {
         String priKey = "";
         String pubKey = "";
         if(isUpdate){
-            priKey = SupportKeyUril.getNewPriKey();
-            pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
+            priKey = "";
+            pubKey = "";
         }
 
         Bundle bundle = getIntent().getExtras();
@@ -126,7 +119,8 @@ public class LoginPassVerifyActivity extends BaseActivity {
                 .setCaPub(pubKey)
                 .setPassword(password)
                 .build();
-        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest(EncryptionUtil.ExtendedECDH.EMPTY, priKey, pubKey, passwordCheck.toByteString());
+//        Connect.IMRequest imRequest = OkHttpUtil.getInstance().getIMRequest("", priKey, pubKey, passwordCheck.toByteString());
+        Connect.IMRequest imRequest =null;
         final String finalPriKey = priKey;
         final String finalPubKey = pubKey;
         HttpRequest.getInstance().post(UriUtil.CONNECT_V2_SIGN_UP_PASSWORD, imRequest, new ResultCall<Connect.HttpResponse>() {

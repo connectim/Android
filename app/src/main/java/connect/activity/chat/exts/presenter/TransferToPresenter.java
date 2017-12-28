@@ -7,25 +7,12 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.HashMap;
 
-import connect.activity.chat.bean.LinkMessageRow;
-import connect.activity.chat.bean.MsgSend;
-import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.exts.contract.TransferToContract;
-import connect.activity.wallet.bean.TransferBean;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.instant.model.CFriendChat;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
-import connect.utils.TimeUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import instant.bean.ChatMsgEntity;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;

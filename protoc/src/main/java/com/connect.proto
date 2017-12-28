@@ -116,16 +116,18 @@ bytes body=3;
 //user ===============
 message UserInfo {
     string username = 1;
-    string avatar = 2;
-    string pub_key = 3;
-    string uid = 4;
-    bool recommend = 5;
-    string connectId = 6;
-    int32 source = 7;
-    int64 created_at = 8;
-    bool update_connect_id = 9;
-    bool password_check = 10;
-    string ca_pub = 11;
+  string avatar = 2;
+  string pub_key = 3;
+  string uid = 4;
+  bool recommend = 5;
+  string connectId = 6;
+  int32 source = 7;
+  int64 created_at = 8;
+  bool update_connect_id = 9;
+  bool password_check = 10;
+  string ca_pub = 11;
+  string name = 13;
+  int64 id = 100;
 }
 
 message UsersInfo {
@@ -330,11 +332,13 @@ int32 category = 5;
 
 message GroupMember {
 string username=1;
-string avatar=2;
-string uid=3;
-int32 role=4;
-string nick=5;
-string pub_key=6;
+ string avatar=2;
+ string uid=3;
+ int32 role=4;
+ string nick=5;
+ string pub_key=6;
+ string salt=7;
+ string name = 8;
 }
 
 message GroupApplyChange {
@@ -1365,14 +1369,15 @@ message PasswordCheck {
 
 message FriendInfo {
     string username = 1;
-    string avatar = 2;
-    string ca_pub = 3;
-    string uid = 4;
-    bool common = 5;
-    int32 source = 6;
-    string remark = 7;
-    string connect_id = 8;
-    bool blackList = 9;
+  string avatar = 2;
+  string signed_per_key = 3;
+  string uid = 4;
+  bool common = 5;
+  int32 source = 6;
+  string remark = 7;
+  string connect_id = 8;
+  bool blackList = 9;
+  string name = 10;
 }
 
 message Preferences {
@@ -1388,8 +1393,9 @@ string version = 2;
 
 message UserInfoBase {
     string username = 1;
-    string avatar = 2;
-    string uid = 3;
+  string avatar = 2;
+  string uid = 3;
+  string name =4;
 }
 
 

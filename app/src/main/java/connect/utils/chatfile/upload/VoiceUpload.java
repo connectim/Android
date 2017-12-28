@@ -8,10 +8,8 @@ import com.google.protobuf.ByteString;
 import connect.utils.FileUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
-import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
 import instant.bean.Session;
-import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
 import protos.Connect;
 

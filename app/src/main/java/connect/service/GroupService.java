@@ -116,8 +116,8 @@ public class GroupService extends Service {
                             memEntity.setIdentifier(groupIdentifier);
                             memEntity.setUid(member.getUid());
                             memEntity.setAvatar(member.getAvatar());
-                            memEntity.setNick(member.getUsername());
-                            memEntity.setUsername(member.getUsername());
+                            memEntity.setNick(member.getNick());
+                            memEntity.setUsername(member.getName());
                             memEntity.setRole(member.getRole());
                             memberEntityMap.put(member.getUid(), memEntity);
                         }
@@ -130,7 +130,7 @@ public class GroupService extends Service {
                         CGroupChat cGroupChat = new CGroupChat(groupEntity);
                         MessageEntity messageEntity = MessageHelper.getInstance().loadMsgLastOne(groupIdentifier);
                         if (messageEntity != null) {
-                            content = messageEntity.messageToChatEntity().getContent();
+                            content = messageEntity.messageToChatEntity().showContent();
                             messageTime = messageEntity.getCreatetime();
                         }
                         cGroupChat.updateRoomMsg("", content, messageTime);

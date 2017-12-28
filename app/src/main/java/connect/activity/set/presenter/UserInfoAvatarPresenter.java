@@ -15,18 +15,17 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.File;
 
-import connect.database.SharedPreferenceUtil;
-import connect.ui.activity.R;
+import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.contract.UserInfoAvatarContract;
-import connect.activity.base.BaseApplication;
+import connect.database.SharedPreferenceUtil;
+import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;

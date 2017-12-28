@@ -15,7 +15,6 @@ import android.widget.TextView;
 import connect.activity.chat.exts.CrowdingDetailActivity;
 import connect.activity.chat.exts.TransferSingleDetailActivity;
 import connect.ui.activity.R;
-import connect.utils.cryption.SupportKeyUril;
 import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
@@ -110,7 +109,7 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                         @Override
                         public void onClick(View v) {
                             try {
-                                String stangerAddress = SupportKeyUril.getAddressFromPubKey(notifyMessage.getExtion());
+                                //String stangerAddress = SupportKeyUril.getAddressFromPubKey(notifyMessage.getExtion());
                                 // StrangerInfoActivity.startActivity((Activity) context, stangerAddress, SourceType.SEARCH);
                             } catch (Exception e) {
                                 e.printStackTrace();

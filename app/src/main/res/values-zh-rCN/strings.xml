@@ -519,4 +519,6 @@
     <string name="Chat_View_Full_Text">查看全文</string>
     <string name="Chat_Enter_Subscribe">进入订阅号</string>
     <string name="Chat_Subscribe_Success">[订阅成功]</string>
+
+    <string name="Chat_Refreshing">正在更新...</string>
 </resources>

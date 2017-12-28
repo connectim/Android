@@ -6,29 +6,21 @@ import android.text.TextUtils;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.instant.inter.ConversationListener;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.ProtoBufUtil;
-import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.jni.AllNativeMethod;
 import instant.bean.ChatMsgEntity;
 import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
-import instant.sender.model.GroupChat;
 import instant.utils.SharedUtil;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -47,7 +39,7 @@ public abstract class BaseFileUp implements InterFileUp {
     private byte[] randomNumber = new byte[]{};
 
     public BaseFileUp() {
-        randomNumber = SupportKeyUril.createSecureRandom(32);
+
     }
 
     public UserCookie loadUserCookie() {
@@ -71,9 +63,9 @@ public abstract class BaseFileUp implements InterFileUp {
         LogManager.getLogger().d(TAG, "ByteString size:" + fileBytes.size());
 
         Connect.GcmData gcmData = null;
-        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE || baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, randomNumber, fileSie);
-        }
+//        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE || baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
+//            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, randomNumber, fileSie);
+//        }
         return gcmData;
     }
 

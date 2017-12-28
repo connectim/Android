@@ -94,6 +94,7 @@ public class CFriendChat extends FriendChat implements ConversationListener{
             conversionEntity.setUnread_count(newmsg == 0 ? 0 : 1);
             conversionEntity.setDraft(TextUtils.isEmpty(draft) ? "" : draft);
             conversionEntity.setIsAt(at);
+            conversionEntity.setLast_time((msgtime > 0 ? 0 : msgtime));
             ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         } else {
             for (RoomAttrBean attrBean : roomEntities) {

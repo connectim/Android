@@ -1,23 +1,13 @@
 package connect.activity.contact.presenter;
 
 import android.os.AsyncTask;
-import android.text.TextUtils;
-
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.ArrayList;
 
 import connect.activity.contact.bean.ContactNotice;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.AddFriendContract;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
-import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
-import protos.Connect;
 
 public class AddFriendPresenter implements AddFriendContract.Presenter{
 

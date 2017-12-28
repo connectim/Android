@@ -90,9 +90,6 @@
             android:name="connect.activity.login.LoginPassVerifyActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.wallet.SafetyPatterVerifyActivity"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name="connect.widget.camera.CameraTakeActivity"
             android:screenOrientation="portrait"/>
         <activity
@@ -141,19 +138,7 @@
             android:name="connect.activity.set.SafetyLoginPassActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="connect.activity.wallet.SafetyPayFeeActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.SafetyPatternActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.SafetyPatterDrawActivity"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name="connect.activity.set.UserInfoAvatarActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.SafetyPayActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.set.PrivateBlackActivity"
@@ -172,54 +157,6 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.activity.set.UserInfoConnectIdActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.ScanTransferActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.RequestActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.PacketActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransactionActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.BlockchainActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.PacketSendActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.PacketHistoryActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.PacketDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferOutViaActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferOutViaHistoryActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferAddressActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferAddressBookActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.ScanAddressActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferFriendActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferFriendDelActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name="connect.widget.random.RandomVoiceActivity"
@@ -402,7 +339,7 @@
 
         <activity
             android:name="connect.activity.chat.set.GroupCreateActivity"
-            android:label="@string/title_activity_group_create">
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

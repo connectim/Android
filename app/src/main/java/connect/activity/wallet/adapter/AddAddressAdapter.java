@@ -15,12 +15,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.ui.activity.R;
 import connect.activity.wallet.bean.AddressBean;
-import connect.utils.cryption.SupportKeyUril;
+import connect.ui.activity.R;
+import connect.utils.ToastEUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
-import connect.utils.ToastEUtil;
 import connect.widget.SideScrollView;
 
 public class AddAddressAdapter extends RecyclerView.Adapter<AddAddressAdapter.AddressHolder> {
@@ -78,11 +77,11 @@ public class AddAddressAdapter extends RecyclerView.Adapter<AddAddressAdapter.Ad
                     if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
                         SystemUtil.hideKeyBoard(context,holder.addEt);
                         String address = holder.addEt.getText().toString().trim();
-                        if(SupportKeyUril.checkAddress(address)){
-                            onSideMenuListener.addAddress(address);
-                        }else{
-                            ToastEUtil.makeText(mContext,R.string.Wallet_Result_is_not_a_bitcoin_address,ToastEUtil.TOAST_STATUS_FAILE).show();
-                        }
+//                        if(SupportKeyUril.checkAddress(address)){
+//                            onSideMenuListener.addAddress(address);
+//                        }else{
+//                            ToastEUtil.makeText(mContext,R.string.Wallet_Result_is_not_a_bitcoin_address,ToastEUtil.TOAST_STATUS_FAILE).show();
+//                        }
                     }
                     return false;
                 }

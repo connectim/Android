@@ -650,4 +650,6 @@
     <string name="Chat_View_Full_Text">просмотреть  полный текст</string>
     <string name="Chat_Enter_Subscribe"> счета  в  подписки</string>
     <string name="Chat_Subscribe_Success">[подписка на успех]</string>
+
+    <string name="Chat_Refreshing">обновление ...</string>
 </resources>

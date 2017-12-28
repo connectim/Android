@@ -1,19 +1,8 @@
 package instant.parser;
 
-import android.text.TextUtils;
-
-import com.google.protobuf.ByteString;
-
 import java.nio.ByteBuffer;
 
-import instant.bean.Session;
-import instant.bean.UserCookie;
 import instant.parser.localreceiver.MessageLocalReceiver;
-import instant.utils.StringUtil;
-import instant.utils.cryption.DecryptionUtil;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
-import instant.utils.log.LogManager;
 import protos.Connect;
 
 /**

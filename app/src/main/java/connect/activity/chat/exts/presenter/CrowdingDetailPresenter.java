@@ -13,8 +13,6 @@ import connect.database.green.bean.CurrencyEntity;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.data.RateFormatUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;

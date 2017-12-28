@@ -3,12 +3,9 @@ package connect.utils;
 import org.junit.Test;
 
 import java.io.File;
-import java.security.SecureRandom;
 
 import connect.utils.log.LogManager;
-import connect.wallet.jni.AllNativeMethod;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
