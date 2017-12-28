@@ -146,6 +146,7 @@ public class SearchFriendResultActivity extends BaseActivity {
             } else {
                 StrangerInfoActivity.startActivity(mActivity, userInfo.getUid(), SourceType.SEARCH);
             }
+            mActivity.finish();
         }
     };
 
