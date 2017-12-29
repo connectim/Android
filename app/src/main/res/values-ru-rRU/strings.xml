@@ -323,6 +323,7 @@
         видео
     </string>
     <string name="Login_Code">Код подтверждения</string>
+    <string name="Login_Login_Account">Логин</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">Собирание голосов как случайных чисел
     </string>
     <string name="Login_Generated_Failure">Сбой при создании, пожалуйста убедитесь, что вы настроили
@@ -639,7 +640,7 @@
     <string name="Wallet_transferOutVia_return_Success">Успешный возврат перечисленных денежных
         средств
     </string>
-    <string name="app_name">Connect</string>
+    <string name="app_name">iWork</string>
     <string name="app_name_im">CONNECT.IM</string>
     <string name="title_activity_group_create">GroupCreateActivity</string>
     <string name="Chat_Other_Part"> друг друга </string>

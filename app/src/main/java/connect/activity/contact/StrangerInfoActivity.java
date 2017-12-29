@@ -18,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.model.GroupMemberUtil;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.home.bean.MsgNoticeBean;
@@ -104,6 +105,19 @@ public class StrangerInfoActivity extends BaseActivity {
         }else{
             isHaveFriend = true;
         }
+
+        String friendUid =  sendUserInfo.getUid();
+        String userName =  sendUserInfo.getName();
+        String userAvatar = sendUserInfo.getAvatar();
+        ContactHelper.getInstance().updateGroupMemberNameAndAvatar(
+                friendUid,
+                userName,
+                userAvatar);
+
+        GroupMemberUtil.groupMemberUtil.updateGroupMemberEntity(
+                friendUid,
+                userName,
+                userAvatar);
     }
 
     @OnClick(R.id.left_img)

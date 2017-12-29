@@ -23,6 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_5"
-            android:src="@mipmap/logo_white2x"/>
+            android:src="@mipmap/logo_white2x"
+            android:visibility="gone"/>
     </LinearLayout>
 </RelativeLayout>

@@ -303,6 +303,7 @@
     <string name="Login_Avatar_upload_failed">Avatar upload failed</string>
     <string name="Login_Camera_guide_tip">Tap to take photo and hold to record vedio</string>
     <string name="Login_Code">Code</string>
+    <string name="Login_Login_Account">Login</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">Collecting Sounds as Random Seed...
     </string>
     <string name="Login_Generated_Failure">Create failed, please make sure you\'ve made sound/voice
@@ -590,7 +591,7 @@
     <string name="Wallet_transfer_man">Transfer (%d)</string>
     <string name="Wallet_transferOutVia_return">Refund the transfer</string>
     <string name="Wallet_transferOutVia_return_Success">Refund successfully</string>
-    <string name="app_name">Connect</string>
+    <string name="app_name">iWork</string>
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_Other_Part">the other</string>
     <string name="title_activity_group_create">GroupCreateActivity</string>

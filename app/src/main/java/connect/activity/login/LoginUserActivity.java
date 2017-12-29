@@ -33,8 +33,6 @@ import protos.Connect;
  */
 public class LoginUserActivity extends BaseActivity {
 
-    @Bind(R.id.toolbar_top)
-    TopToolBar toolbarTop;
     @Bind(R.id.name_et)
     EditText nameEt;
     @Bind(R.id.password_et)
@@ -59,7 +57,6 @@ public class LoginUserActivity extends BaseActivity {
     @Override
     public void initView() {
         mActivity = this;
-        toolbarTop.setTitle(R.mipmap.logo_black_middle, null);
 
         nextBtn.setEnabled(false);
         nameEt.addTextChangedListener(textWatcher);

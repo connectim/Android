@@ -13,9 +13,9 @@
 
     <ImageView
         android:contentDescription="@string/app_name"
-        android:layout_width="@dimen/dp_150"
-        android:layout_height="@dimen/dp_36"
-        android:src="@mipmap/logo_black_middle"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:src="@mipmap/connect_logo"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_68"/>
 
@@ -85,12 +85,12 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/app_name_im"
         android:layout_marginTop="@dimen/dp_100"
-        android:textSize="@dimen/sp_14"
-        android:textColor="@color/color_161A21"
         android:gravity="center"
-        android:id="@+id/textView2" />
+        android:text="@string/app_name"
+        android:textColor="@color/color_161A21"
+        android:textSize="@dimen/sp_14" />
 </LinearLayout>

@@ -262,6 +262,7 @@
     <string name="Login_Avatar_upload_failed">头像上传失败</string>
     <string name="Login_Camera_guide_tip">点击拍照,按住摄像</string>
     <string name="Login_Code">验证码</string>
+    <string name="Login_Login_Account">登录</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">正在收集声音作为随机数...</string>
     <string name="Login_Generated_Failure">创建失败，周围环境嘈杂系数不够</string>
     <string name="Login_Generated_Successful">创建成功</string>
@@ -509,7 +510,7 @@
     <string name="Wallet_transfer_man">转账(%d)</string>
     <string name="Wallet_transferOutVia_return">退回转账</string>
     <string name="Wallet_transferOutVia_return_Success">退回转账成功</string>
-    <string name="app_name">Connect</string>
+    <string name="app_name">iWork</string>
     <string name="app_name_im">CONNECT.IM</string>
     <string name="title_activity_group_create">GroupCreateActivity</string>
     <string name="Chat_Other_Part">对方</string>
