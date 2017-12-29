@@ -58,6 +58,7 @@ public class StrangerInfoActivity extends BaseActivity {
     private Connect.UserInfo sendUserInfo;
     private SourceType sourceType;
     private String uid;
+    private boolean isHaveFriend;
 
     public static void startActivity(Activity activity, String uid, SourceType sourceType) {
         Bundle bundle = new Bundle();
@@ -98,6 +99,11 @@ public class StrangerInfoActivity extends BaseActivity {
             return;
         GlideUtil.loadAvatarRound(avatarRimg, sendUserInfo.getAvatar());
         nameTv.setText(sendUserInfo.getName());
+        if(ContactHelper.getInstance().loadFriend(uid) == null){
+            isHaveFriend = false;
+        }else{
+            isHaveFriend = true;
+        }
     }
 
     @OnClick(R.id.left_img)
@@ -135,11 +141,14 @@ public class StrangerInfoActivity extends BaseActivity {
                     requestEntity.setUid(sendUserInfo.getUid());
                     requestEntity.setSource(sourceType.getType());
                     requestEntity.setTips(msgSendBean.getTips());
-
-                    if(ContactHelper.getInstance().loadFriend(sendUserInfo.getUid()) == null){
-                        requestEntity.setStatus(3);
-                    }else{
+                    if(isHaveFriend){
                         requestEntity.setStatus(2);
+                    } else {
+                        if(ContactHelper.getInstance().loadFriend(sendUserInfo.getUid()) == null){
+                            requestEntity.setStatus(3);
+                        }else{
+                            requestEntity.setStatus(2);
+                        }
                     }
                     requestEntity.setRead(1);
                     ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
