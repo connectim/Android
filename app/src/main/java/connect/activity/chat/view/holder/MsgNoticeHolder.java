@@ -14,8 +14,11 @@ import android.widget.TextView;
 
 import connect.activity.chat.exts.CrowdingDetailActivity;
 import connect.activity.chat.exts.TransferSingleDetailActivity;
+import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import instant.bean.ChatMsgEntity;
 import protos.Connect;
@@ -112,7 +115,7 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                         public void onClick(View v) {
                             try {
                                 String friendUid = notifyMessage.getExtion();
-                                 StrangerInfoActivity.startActivity((Activity) context, friendUid, SourceType.SEARCH);
+                                StrangerInfoActivity.startActivity((Activity) context, friendUid, SourceType.SEARCH);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

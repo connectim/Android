@@ -105,6 +105,9 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 GlideUtil.loadAvatarRound(headImg, direct == MsgDirect.From ?
                         RoomSession.getInstance().getChatAvatar() :
                         SharedPreferenceUtil.getInstance().getUser().getAvatar());
+                headImg.setUserUid(direct == MsgDirect.From ?
+                        RoomSession.getInstance().getRoomKey() :
+                        SharedPreferenceUtil.getInstance().getUser().getUid());
 
                 headImg.setVisibility(RoomSession.getInstance().getBurntime() <= 0 ? View.VISIBLE :
                         View.GONE);
@@ -170,15 +173,17 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     if (memberTxt != null) {
                         memberTxt.setVisibility(View.GONE);
                     }
+                    headImg.setUserUid(SharedPreferenceUtil.getInstance().getUser().getUid());
                 } else if (direct == MsgDirect.From) {
                     memberTxt.setVisibility(View.VISIBLE);
                     String groupKey = msgExtEntity.getMessage_ower();
-                    String memberKey = msgExtEntity.getMessage_from();
+                    final String memberKey = msgExtEntity.getMessage_from();
 
                     GroupMemberUtil.groupMemberUtil.loadGroupMember(groupKey, memberKey, new BaseListener<GroupMemberEntity>() {
                         @Override
                         public void Success(GroupMemberEntity ts) {
                             GlideUtil.loadAvatarRound(headImg, ts.getAvatar());
+                            headImg.setUserUid(memberKey);
 
                             String memberName = "";
                             if (ts != null) {

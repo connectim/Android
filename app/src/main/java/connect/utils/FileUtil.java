@@ -12,9 +12,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import connect.ui.activity.R;
-import connect.activity.chat.bean.RoomSession;
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.RoomSession;
+import connect.ui.activity.R;
 
 public class FileUtil {
 
@@ -305,6 +305,9 @@ public class FileUtil {
         }
         flag = true;
         File[] files = dirFile.listFiles();
+        if (files == null || files.length == 0) {
+            return true;
+        }
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
                 flag = deleteFile(files[i].getAbsolutePath());

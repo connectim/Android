@@ -56,6 +56,17 @@ public class GroupMemberUtil {
         }
     }
 
+    public void updateGroupMemberEntity(String uid, String nickname, String avatar) {
+        if (memEntityMap == null || memEntityMap.isEmpty()) {
+            return;
+        }
+        GroupMemberEntity memberEntity = memEntityMap.get(uid);
+        if (memberEntity != null) {
+            memberEntity.setUsername(nickname);
+            memberEntity.setAvatar(avatar);
+        }
+    }
+
     public void requestGroupMemberDetailInfo(String publickey, final BaseListener<GroupMemberEntity> baseListener) {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setTyp(1)

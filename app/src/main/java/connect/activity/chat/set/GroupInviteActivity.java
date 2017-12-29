@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +37,8 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
     RecyclerView recyclerview;
     @Bind(R.id.siderbar)
     SideBar siderbar;
+    @Bind(R.id.text_view)
+    TextView textView;
 
     private GroupInviteActivity activity;
     private static String TAG = "_GroupInviteActivity";
@@ -124,6 +127,8 @@ public class GroupInviteActivity extends BaseActivity implements GroupInviteCont
         adapter.setOnSelectFriendListener(friendSelectListener);
         siderbar.setOnTouchingLetterChangedListener(letterChanged);
         adapter.setDataNotify(friendEntities, null, oldMemberUids);
+        textView.setVisibility(friendEntities.size() == 0 ? View.VISIBLE : View.GONE);
+
         new GroupInvitePresenter(this).start();
     }
 

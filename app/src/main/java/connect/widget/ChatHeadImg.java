@@ -1,6 +1,7 @@
 package connect.widget;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -8,9 +9,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import connect.activity.chat.bean.ContactUpdateBean;
 import connect.activity.chat.bean.DestructOpenBean;
+import connect.utils.glide.GlideUtil;
 
 public class ChatHeadImg extends ImageView {
+
+    private String userUid = "";
 
     public ChatHeadImg(Context context) {
         super(context);
@@ -22,6 +27,10 @@ public class ChatHeadImg extends ImageView {
 
     public ChatHeadImg(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    public void setUserUid(String uid) {
+        this.userUid = uid;
     }
 
     @Override
@@ -37,6 +46,13 @@ public class ChatHeadImg extends ImageView {
             setVisibility(VISIBLE);
         } else {
             setVisibility(GONE);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(ContactUpdateBean updateBean) {
+        if (updateBean.getContactUid().equals(userUid) && !TextUtils.isEmpty(updateBean.getContactAvatar())) {
+            GlideUtil.loadImage(this, updateBean.getContactAvatar());
         }
     }
 

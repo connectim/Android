@@ -6,9 +6,13 @@ import android.text.TextUtils;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import org.greenrobot.eventbus.EventBus;
+
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
+import connect.activity.chat.bean.ContactUpdateBean;
 import connect.activity.chat.bean.Talker;
+import connect.activity.chat.model.GroupMemberUtil;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.contract.FriendInfoContract;
@@ -153,6 +157,23 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                         ConversionHelper.getInstance().updateRoomEntityAvatar(friendEntity.getUid(), userInfo.getUsers(0).getAvatar());
                         friendChat.updateRoomMsg(null, "", -1, -1, -1);
                     }
+
+                    String friendUid =  friendEntity.getUid();
+                    String userName =  userInfo.getUsers(0).getName();
+                    String userAvatar = userInfo.getUsers(0).getAvatar();
+                    ContactHelper.getInstance().updateGroupMemberNameAndAvatar(
+                            friendUid,
+                            userName,
+                            userAvatar);
+
+                    GroupMemberUtil.groupMemberUtil.updateGroupMemberEntity(
+                            friendUid,
+                            userName,
+                            userAvatar);
+
+                    ContactUpdateBean updateBean = new ContactUpdateBean(friendUid, userAvatar);
+                    EventBus.getDefault().post(updateBean);
+
                     ContactNotice.receiverFriend();
                     ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
                 } catch (InvalidProtocolBufferException e) {

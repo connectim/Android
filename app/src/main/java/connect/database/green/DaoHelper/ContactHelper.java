@@ -359,7 +359,6 @@ public class ContactHelper extends BaseDao {
         return entities == null || entities.size() == 0 ? null : entities.get(0);
     }
 
-
     /**
      * group member entity
      *
@@ -466,6 +465,11 @@ public class ContactHelper extends BaseDao {
                 (TextUtils.isEmpty(nickname) ? "''" : "\"" + nickname + "\"") +
                 " WHERE IDENTIFIER = ? AND (UID = ? OR CONNECT_ID = ?);";
         daoSession.getDatabase().execSQL(sql, new Object[]{identify, uid, uid});
+    }
+
+    public void updateGroupMemberNameAndAvatar(String uid, String nickname, String avatar) {
+        String sql = "UPDATE GROUP_MEMBER_ENTITY SET USERNAME = ?, AVATAR=? WHERE UID = ? ;";
+        daoSession.getDatabase().execSQL(sql, new Object[]{nickname, avatar, uid});
     }
 
     /*********************************  add ***********************************/
