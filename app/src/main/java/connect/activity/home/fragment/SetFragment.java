@@ -22,6 +22,7 @@ import connect.activity.set.GeneralActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportActivity;
+import connect.activity.set.SupportFeedbackActivity;
 import connect.activity.set.UserConnectIdActivity;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
@@ -124,7 +125,8 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.llProblem)
     void intoProblem(View view) {
-        ActivityUtil.next(mActivity, SupportActivity.class);
+        //ActivityUtil.next(mActivity, SupportActivity.class);
+        ActivityUtil.next(mActivity,SupportFeedbackActivity.class);
     }
 
     @OnClick(R.id.llAbout)
