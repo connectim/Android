@@ -34,13 +34,10 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
-import connect.activity.home.bean.ConversationAction;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -339,6 +336,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 normalChat = new CFriendChat(friendEntity);
                 break;
             case 1:
+            case 3:
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomkey);
                 normalChat = new CGroupChat(groupEntity);
                 break;
@@ -358,7 +356,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 normalChat.sendPushMsg(msgExtEntity);
                 break;
             case Photo:
-                msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content),  (int)objects[2],  (int)objects[3]);
+                msgExtEntity = normalChat.photoMsg(content, content, FileUtil.fileSize(content), (int) objects[2], (int) objects[3]);
                 baseFileUp = new PhotoUpload(activity, normalChat, msgExtEntity, new FileUploadListener() {
                     @Override
                     public void upSuccess(String msgid) {
@@ -416,35 +414,29 @@ public class ChatActivity extends BaseChatSendActivity {
             }
         }
 
-        ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
-        if (conversionEntity == null) {
-            switch (talker.getTalkType()) {
-                case CONNECT_SYSTEM:
-                    CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
-                    break;
-                case PRIVATE:
-                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(normalChat.chatKey());
-                    if (contactEntity == null) {
-                        contactEntity = new ContactEntity();
-                        contactEntity.setUid(normalChat.chatKey());
-                        contactEntity.setAvatar(talker.getAvatar());
-                        contactEntity.setUsername(talker.getNickName());
-                    }
-                    CFriendChat cFriendChat = new CFriendChat(contactEntity);
-                    cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
-                    break;
-                case GROUPCHAT:
-                case GROUP_DISCUSSION:
-                    GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(normalChat.chatKey());
-                    if (groupEntity != null) {
-                        CGroupChat cGroupChat = new CGroupChat(groupEntity);
-                        cGroupChat.updateRoomMsg(draft, showtxt, sendtime);
-                    }
-                    break;
-            }
-        } else {
-            ConversionHelper.getInstance().updateRoomEntity(normalChat.chatKey(), draft, showtxt, sendtime);
-            ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
+        switch (talker.getTalkType()) {
+            case CONNECT_SYSTEM:
+                CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
+                break;
+            case PRIVATE:
+                ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(normalChat.chatKey());
+                if (contactEntity == null) {
+                    contactEntity = new ContactEntity();
+                    contactEntity.setUid(normalChat.chatKey());
+                    contactEntity.setAvatar(talker.getAvatar());
+                    contactEntity.setUsername(talker.getNickName());
+                }
+                CFriendChat cFriendChat = new CFriendChat(contactEntity);
+                cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
+                break;
+            case GROUPCHAT:
+            case GROUP_DISCUSSION:
+                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(normalChat.chatKey());
+                if (groupEntity != null) {
+                    CGroupChat cGroupChat = new CGroupChat(groupEntity);
+                    cGroupChat.updateRoomMsg(draft, showtxt, sendtime);
+                }
+                break;
         }
     }
 

@@ -165,33 +165,6 @@ public class HttpRequest {
         });
     }
 
-    public void postUploadFile(String url, byte[] content, final ResultCall resultCall) {
-        RequestBody requestBody = RequestBody.create(MEDIA_TYPE_DEFAULT, content);
-        Request request = new Request.Builder()
-                .url("http://192.168.40.4:18081" + url)
-                .post(requestBody)
-                .build();
-
-        mOkHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                ProgressUtil.getInstance().dismissProgress();
-                resultCall.onError();
-                dealOnFailure(call);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-                try {
-                    Integer code = resultCall.parseNetworkResponse(response);
-                    sendResultCallback(code, resultCall);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
     private void sendResultCallback(final Integer code, final ResultCall resultCall) {
         mDelivery.post(new Runnable() {
             @Override

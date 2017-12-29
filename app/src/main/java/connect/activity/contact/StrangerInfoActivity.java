@@ -99,7 +99,7 @@ public class StrangerInfoActivity extends BaseActivity {
             return;
         GlideUtil.loadAvatarRound(avatarRimg, sendUserInfo.getAvatar());
         nameTv.setText(sendUserInfo.getName());
-        if(ContactHelper.getInstance().loadFriend(uid) == null){
+        if(ContactHelper.getInstance().loadFriendByUid(uid) == null){
             isHaveFriend = false;
         }else{
             isHaveFriend = true;
@@ -134,6 +134,7 @@ public class StrangerInfoActivity extends BaseActivity {
         switch (notice.ntEnum) {
             case MSG_SEND_SUCCESS:
                 MsgSendBean msgSendBean = (MsgSendBean) objs[0];
+                Integer errorNum = (Integer) objs[1];
                 if (msgSendBean.getType() == MsgSendBean.SendType.TypeSendFriendQuest) {
                     FriendRequestEntity requestEntity = new FriendRequestEntity();
                     requestEntity.setAvatar(sendUserInfo.getAvatar());
@@ -144,15 +145,14 @@ public class StrangerInfoActivity extends BaseActivity {
                     if(isHaveFriend){
                         requestEntity.setStatus(3);
                     } else {
-                        if(ContactHelper.getInstance().loadFriend(sendUserInfo.getUid()) == null){
-                            requestEntity.setStatus(3);
-                        }else{
+                        if(errorNum == 100){
                             requestEntity.setStatus(2);
+                        }else{
+                            requestEntity.setStatus(3);
                         }
+                        requestEntity.setRead(1);
+                        ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
                     }
-                    requestEntity.setRead(1);
-                    ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
-
                     ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
                     ActivityUtil.goBack(mActivity);
                 }

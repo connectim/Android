@@ -25,9 +25,9 @@
     <property>
         <APP_MODE>release</APP_MODE>
         <HTTP_MODE>true</HTTP_MODE>
-        <SOCKET_ADDRESS>im.connect.im</SOCKET_ADDRESS>
+        <SOCKET_ADDRESS>120.78.210.217</SOCKET_ADDRESS>
         <SOCKET_PORT>19090</SOCKET_PORT>
-        <SERVER_ADDRESS>https://short.connect.im</SERVER_ADDRESS>
+        <SERVER_ADDRESS>https://short-bm.connect.im</SERVER_ADDRESS>
         <SERVER_PUBKEY>038bf4f74a5aaad532179c9714e2fa6ac8342b5b2c608572e4a12e8708401e0632</SERVER_PUBKEY>
         <CRASH_APPID>9b63c64ee1</CRASH_APPID>
         <CRASH_TAGS>40297</CRASH_TAGS>

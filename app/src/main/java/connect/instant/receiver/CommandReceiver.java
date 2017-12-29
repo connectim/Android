@@ -234,7 +234,7 @@ public class CommandReceiver implements CommandListener {
     }
 
     @Override
-    public void receiverFriendRequest(Connect.ReceiveFriendRequest friendRequest) {
+    public void receiverFriendRequest(int number,Connect.ReceiveFriendRequest friendRequest) {
         if (friendRequest != null && friendRequest.getSender() != null && !friendRequest.getSender().getUid().equals("")) {
             ConvertUtil convertUtil = new ConvertUtil();
             ContactHelper.getInstance().inserFriendQuestEntity(convertUtil.convertFriendRequestEntity(friendRequest));

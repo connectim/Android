@@ -52,8 +52,8 @@ public class CommandLocalReceiver implements CommandListener {
     }
 
     @Override
-    public void receiverFriendRequest(Connect.ReceiveFriendRequest friendRequest) {
-        getCommandListener().receiverFriendRequest(friendRequest);
+    public void receiverFriendRequest(int number,Connect.ReceiveFriendRequest friendRequest) {
+        getCommandListener().receiverFriendRequest(number,friendRequest);
     }
 
     @Override

@@ -107,6 +107,17 @@ public class ContactHelper extends BaseDao {
         return friendEntities;
     }
 
+    public ContactEntity loadFriendByUid(String uid) {
+        QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
+        queryBuilder.where(ContactEntityDao.Properties.Uid.eq(uid)).build();
+        List<ContactEntity> friendEntities = queryBuilder.list();
+        ContactEntity contactEntity = null;
+        if(friendEntities!=null&&friendEntities.size()>0){
+            contactEntity=friendEntities.get(0);
+        }
+        return contactEntity;
+    }
+
     /********************************* select ***********************************/
     public Connect.ChatType loadChatType(String uid) {
         if (TextUtils.isEmpty(uid)) {

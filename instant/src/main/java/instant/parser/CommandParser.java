@@ -72,7 +72,7 @@ public class CommandParser extends InterParse {
                     //HomeAction.sendTypeMsg(HomeAction.HomeType.EXIT);
                     break;
                 case 0x08://receive add friend request
-                    receiverAddFriendRequest(command.getDetail(), msgid, command.getErrNo());
+                    receiverAddFriendRequest(command.getDetail(), command.getErrNo(),msgid);
                     break;
                 case 0x09://Accept agreed to be a friend request
                     receiverAcceptAddFriend(command.getDetail(), msgid, command.getErrNo());
@@ -267,7 +267,7 @@ public class CommandParser extends InterParse {
         String msgid = null;
 
         if (objs.length == 2) {
-            msgid = (String) objs[0];
+            msgid = (String) objs[1];
             Map<String, Object> failMap = FailMsgsManager.getInstance().getFailMap(msgid);
             if (failMap != null) {
                 isMySend = true;
@@ -275,17 +275,21 @@ public class CommandParser extends InterParse {
         }
 
         if (isMySend) {//youself send add Friend request
-            switch ((int) objs[1]) {
+            switch ((int) objs[0]) {
                 case 0:
                     receiptUserSendAckMsg(msgid, true);
                     break;
+                case 100:
+                case 200:
+                    receiptUserSendAckMsg(msgid, true, objs[0]);
+                    break;
                 default:
-                    receiptUserSendAckMsg(msgid, false, objs[1]);
+                    receiptUserSendAckMsg(msgid, false, objs[0]);
                     break;
             }
         } else {
             Connect.ReceiveFriendRequest friendRequest = Connect.ReceiveFriendRequest.parseFrom(buffer);
-            CommandLocalReceiver.receiver.receiverFriendRequest(friendRequest);
+            CommandLocalReceiver.receiver.receiverFriendRequest((int)objs[0],friendRequest);
         }
     }
 

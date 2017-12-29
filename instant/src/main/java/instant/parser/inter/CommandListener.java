@@ -17,7 +17,7 @@ public interface CommandListener {
 
     void contactChanges(Connect.ChangeRecords changeRecords);
 
-    void receiverFriendRequest(Connect.ReceiveFriendRequest friendRequest);
+    void receiverFriendRequest(int number,Connect.ReceiveFriendRequest friendRequest);
 
     void acceptFriendRequest(Connect.FriendListChange listChange);
 

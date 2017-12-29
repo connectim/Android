@@ -151,7 +151,6 @@ public abstract class InterParse {
         if (objects.length == 3) {
             serverObj = objects[2];
         }
-
         CommandLocalReceiver.receiver.commandReceipt((Boolean) objects[1], reqObj, serverObj);
         FailMsgsManager.getInstance().removeFailMap(msgid);
     }
