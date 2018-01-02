@@ -33,6 +33,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         public final static Property Common = new Property(6, Integer.class, "common", false, "COMMON");
         public final static Property Source = new Property(7, Integer.class, "source", false, "SOURCE");
         public final static Property Blocked = new Property(8, Boolean.class, "blocked", false, "BLOCKED");
+        public final static Property Ou = new Property(9, String.class, "ou", false, "OU");
     }
 
 
@@ -56,7 +57,8 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
                 "\"REMARK\" TEXT," + // 5: remark
                 "\"COMMON\" INTEGER," + // 6: common
                 "\"SOURCE\" INTEGER," + // 7: source
-                "\"BLOCKED\" INTEGER);"); // 8: blocked
+                "\"BLOCKED\" INTEGER," + // 8: blocked
+                "\"OU\" TEXT);"); // 9: ou
     }
 
     /** Drops the underlying database table. */
@@ -109,6 +111,11 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         if (blocked != null) {
             stmt.bindLong(9, blocked ? 1L: 0L);
         }
+ 
+        String ou = entity.getOu();
+        if (ou != null) {
+            stmt.bindString(10, ou);
+        }
     }
 
     @Override
@@ -155,6 +162,11 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         if (blocked != null) {
             stmt.bindLong(9, blocked ? 1L: 0L);
         }
+ 
+        String ou = entity.getOu();
+        if (ou != null) {
+            stmt.bindString(10, ou);
+        }
     }
 
     @Override
@@ -173,7 +185,8 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // remark
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // common
             cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // source
-            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0 // blocked
+            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0, // blocked
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // ou
         );
         return entity;
     }
@@ -189,6 +202,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         entity.setCommon(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
         entity.setSource(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
         entity.setBlocked(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
+        entity.setOu(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
      }
     
     @Override

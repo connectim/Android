@@ -60,8 +60,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     ImageView shareImg;
     @Bind(R.id.address_tv)
     TextView addressTv;
-    @Bind(R.id.set_alias_rela)
-    RelativeLayout setAliasRela;
     @Bind(R.id.add_favorites_tb)
     View addFavoritesTb;
     @Bind(R.id.add_block_tb)
@@ -125,7 +123,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
         GlideUtil.loadAvatarRound(avatarRimg, (null == friendEntity || null == friendEntity.getAvatar()) ? "" : friendEntity.getAvatar());
         nameTv.setText(friendEntity.getUsername());
         addressTv.setText(friendEntity.getUid());
-        aliasTv.setText(TextUtils.isEmpty(friendEntity.getRemark()) ? "" : friendEntity.getRemark());
+        aliasTv.setText(friendEntity.getOu());
         addBlockTb.setSelected(friendEntity.getBlocked() == null ? false : friendEntity.getBlocked());
     }
 
@@ -154,11 +152,6 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @OnClick(R.id.share_img)
     void goSendShare(View view) {
         SelectRecentlyChatActivity.startActivity(mActivity, SelectRecentlyChatActivity.SHARE_CARD, friendEntity);
-    }
-
-    @OnClick(R.id.set_alias_rela)
-    void goSetAlias(View view) {
-        FriendInfoAliasActivity.startActivity(mActivity, friendEntity.getUid());
     }
 
     @OnClick(R.id.add_favorites_tb)

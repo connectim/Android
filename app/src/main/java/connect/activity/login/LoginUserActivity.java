@@ -65,7 +65,7 @@ public class LoginUserActivity extends BaseActivity {
 
     @OnClick(R.id.next_btn)
     void nextBtn(View view){
-        String name = nameEt.getText().toString();
+        String name = nameEt.getText().toString().trim();
         String password = passwordEt.getText().toString();
         Connect.LoginReq loginReq = Connect.LoginReq.newBuilder()
                 .setUsername(name)
