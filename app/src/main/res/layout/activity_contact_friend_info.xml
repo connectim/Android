@@ -97,11 +97,11 @@
                     android:text=""
                     android:textColor="@color/color_007aff"/>
             </LinearLayout>
-
+            <View
+                style="@style/BaseViewLine.d1d5da"/>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_50"
-                android:layout_marginTop="@dimen/dp_20"
                 android:background="@drawable/selector_list_item_bg"
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/dp_15"
@@ -184,7 +184,7 @@
                 android:layout_marginBottom="@dimen/dp_20"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/dp_60"
                 android:background="@drawable/selector_list_item_bg_8px"
                 android:gravity="center"
                 android:text="@string/Link_Delete_This_Friend"

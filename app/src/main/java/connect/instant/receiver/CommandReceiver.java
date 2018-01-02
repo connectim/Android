@@ -144,6 +144,7 @@ public class CommandReceiver implements CommandListener {
             groupEntity.setName(group.getName());
             groupEntity.setCategory(group.getCategory());
             groupEntity.setSummary(group.getSummary());
+            groupEntity.setCommon(1);
             groupEntityMap.put(groupIdentifier, groupEntity);
 
             List<Connect.GroupMember> members = groupInfo.getMembersList();
