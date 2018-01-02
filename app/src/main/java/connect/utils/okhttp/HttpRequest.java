@@ -1,6 +1,8 @@
 package connect.utils.okhttp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -11,11 +13,13 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
+import connect.activity.login.LoginUserActivity;
 import connect.ui.activity.R;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.base.BaseApplication;
@@ -139,6 +143,11 @@ public class HttpRequest {
      * @param resultCall
      */
     public void post(String url, byte[] content, final ResultCall resultCall) {
+        if (!HttpRequest.isConnectNet()) {
+            ToastUtil.getInstance().showToast(R.string.Chat_Network_connection_failed_please_check_network);
+            return;
+        }
+
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE_DEFAULT, content);
         Request request = new Request.Builder()
                 .url(ConfigUtil.getInstance().serverAddress() + url)
@@ -181,7 +190,21 @@ public class HttpRequest {
                 } else if(code == 2420){
                     // uid/pubKey error
                     ToastUtil.getInstance().showToast(R.string.Set_Load_failed_please_try_again_later);
-                } else {
+                } else if(code == 2700){
+                    BaseApplication.getInstance().exitRegisterAccount();
+                    Activity activityCurr = BaseApplication.getInstance().getActivityList().get(0);
+
+                    List<Activity> list = BaseApplication.getInstance().getActivityList();
+                    for (Activity activity : list) {
+                        if (!activity.getClass().getName().equals(activityCurr.getClass().getName())) {
+                            activity.finish();
+                        }
+                    }
+
+                    Intent intent = new Intent(activityCurr, LoginUserActivity.class);
+                    activityCurr.startActivity(intent);
+                    activityCurr.finish();
+                } else{
                     resultCall.onError(resultCall.getData());
                 }
             }

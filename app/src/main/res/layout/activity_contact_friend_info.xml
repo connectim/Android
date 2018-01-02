@@ -99,7 +99,6 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/set_alias_rela"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_50"
                 android:layout_marginTop="@dimen/dp_20"
@@ -115,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:gravity="center_vertical"
-                    android:text="@string/Link_Set_Remark_and_Tag"/>
+                    android:text="@string/Link_Department"/>
 
                 <TextView
                     android:id="@+id/alias_tv"
@@ -124,21 +123,13 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dp_7"
                     android:layout_marginRight="@dimen/dp_7"
-                    android:layout_toLeftOf="@+id/number_right"
+                    android:layout_alignParentRight="true"
                     android:ellipsize="end"
                     android:gravity="right"
                     android:lines="1"
                     android:text=""
                     android:textColor="@color/color_a5a7ae"
                     android:textSize="@dimen/sp_16"/>
-
-                <ImageView
-                    android:id="@+id/number_right"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:contentDescription="@string/app_name"
-                    android:src="@mipmap/group_item_arrow"/>
             </RelativeLayout>
 
             <View style="@style/BaseViewLine.d1d5da"/>

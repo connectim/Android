@@ -26,14 +26,16 @@ public class ContactEntity implements Serializable {
     private Integer common;
     private Integer source;
     private Boolean blocked;
+    private String ou;
 
     @Generated(hash = 393979869)
     public ContactEntity() {
     }
-    @Generated(hash = 176866406)
+
+    @Generated(hash = 231865947)
     public ContactEntity(Long _id, @NotNull String uid, String connectId,
             String username, String avatar, String remark, Integer common,
-            Integer source, Boolean blocked) {
+            Integer source, Boolean blocked, String ou) {
         this._id = _id;
         this.uid = uid;
         this.connectId = connectId;
@@ -43,7 +45,9 @@ public class ContactEntity implements Serializable {
         this.common = common;
         this.source = source;
         this.blocked = blocked;
+        this.ou = ou;
     }
+
     public Long get_id() {
         return this._id;
     }
@@ -99,5 +103,11 @@ public class ContactEntity implements Serializable {
         this.blocked = blocked;
     }
 
-    
+    public String getOu() {
+        return ou;
+    }
+
+    public void setOu(String ou) {
+        this.ou = ou;
+    }
 }

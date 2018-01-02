@@ -261,6 +261,7 @@
     <string name="Link_Send_successful">Успешно отправлено</string>
     <string name="Link_Send_to">Отправить %s</string>
     <string name="Link_Set_Remark_and_Tag">Настройки примечание</string>
+    <string name="Link_Department">сектор</string>
     <string name="Link_Set_Tag">Создать тег</string>
     <string name="Link_Set_group_nicknames_only_be_in_this_group">Создать название для группы.
         Название группы можно будет увидеть только членам этой группы

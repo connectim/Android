@@ -223,6 +223,7 @@
     <string name="Link_Send_successful">发送成功</string>
     <string name="Link_Send_to">发送给%s</string>
     <string name="Link_Set_Remark_and_Tag">设置备注</string>
+    <string name="Link_Department">部门</string>
     <string name="Link_Set_Tag">设置标签</string>
     <string name="Link_Set_group_nicknames_only_be_in_this_group">设置一个群昵称，这个昵称只会在当前群组可见</string>
     <string name="Link_Share">分享</string>

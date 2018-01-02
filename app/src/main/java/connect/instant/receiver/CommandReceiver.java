@@ -196,6 +196,7 @@ public class CommandReceiver implements CommandListener {
                     entity.setBlocked(friendInfo.getBlackList());
                     entity.setRemark(friendInfo.getRemark());
                     entity.setSource(friendInfo.getSource());
+                    entity.setOu(friendInfo.getOu());
                     ContactHelper.getInstance().insertContact(entity);
 
                     if (newFriend) { // Add a welcome message
@@ -268,6 +269,7 @@ public class CommandReceiver implements CommandListener {
         contactEntity.setBlocked(friendInfo.getBlackList());
         contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
         contactEntity.setSource(friendInfo.getSource());
+        contactEntity.setOu(friendInfo.getOu());
         ContactHelper.getInstance().insertContact(contactEntity);
 
         ContactNotice.receiverFriend();

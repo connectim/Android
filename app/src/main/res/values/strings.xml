@@ -251,6 +251,7 @@
     <string name="Link_Send_successful">Send successful</string>
     <string name="Link_Send_to">Send to %s</string>
     <string name="Link_Set_Remark_and_Tag">Set Remark</string>
+    <string name="Link_Department">Department</string>
     <string name="Link_Set_Tag">Set Tag</string>
     <string name="Link_Set_group_nicknames_only_be_in_this_group">Set up a group nickname. The
         nickname will only be presented in this group
