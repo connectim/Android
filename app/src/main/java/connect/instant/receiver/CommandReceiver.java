@@ -234,7 +234,7 @@ public class CommandReceiver implements CommandListener {
     }
 
     @Override
-    public void receiverFriendRequest(int number,Connect.ReceiveFriendRequest friendRequest) {
+    public void receiverFriendRequest(int number, Connect.ReceiveFriendRequest friendRequest) {
         if (friendRequest != null && friendRequest.getSender() != null && !friendRequest.getSender().getUid().equals("")) {
             ConvertUtil convertUtil = new ConvertUtil();
             ContactHelper.getInstance().inserFriendQuestEntity(convertUtil.convertFriendRequestEntity(friendRequest));
@@ -329,50 +329,46 @@ public class CommandReceiver implements CommandListener {
                 Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(groupChange.getDetail());
                 List<Connect.UserInfo> userInfos = usersInfo.getUsersList();
 
-                if (groupEntity == null) {//The request of details
-                    GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupKey);
-                } else {
-                    Map<String, GroupMemberEntity> memberEntityMap = new HashMap<>();
-                    for (Connect.UserInfo info : userInfos) {
-                        GroupMemberEntity groupMemEntity = new GroupMemberEntity();
-                        groupMemEntity.setIdentifier(groupKey);
-                        groupMemEntity.setUid(info.getUid());
-                        groupMemEntity.setUsername(info.getUsername());
-                        groupMemEntity.setNick(info.getUsername());
-                        groupMemEntity.setAvatar(info.getAvatar());
-                        groupMemEntity.setRole(0);
-                        memberEntityMap.put(info.getUid(), groupMemEntity);
+                Map<String, GroupMemberEntity> memberEntityMap = new HashMap<>();
+                for (Connect.UserInfo info : userInfos) {
+                    GroupMemberEntity groupMemEntity = new GroupMemberEntity();
+                    groupMemEntity.setIdentifier(groupKey);
+                    groupMemEntity.setUid(info.getUid());
+                    groupMemEntity.setUsername(info.getUsername());
+                    groupMemEntity.setNick(info.getUsername());
+                    groupMemEntity.setAvatar(info.getAvatar());
+                    groupMemEntity.setRole(0);
+                    memberEntityMap.put(info.getUid(), groupMemEntity);
+                }
+                Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
+                List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
+                ContactHelper.getInstance().inserGroupMemEntity(memEntities);
+
+                for (GroupMemberEntity memEntity : memEntities) {
+                    String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
+                    if (groupChange.hasInviteBy()) {
+                        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+
+                        Connect.UserInfo inviteBy = groupChange.getInviteBy();
+                        String inviteByName = inviteBy.getUid().equals(myUid) ?
+                                context.getString(R.string.Chat_You) : inviteBy.getName();
+
+                        String invitorname = memEntity.getUid().equals(myUid) ?
+                                context.getString(R.string.Chat_You) : memberName;
+                        noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, inviteByName, invitorname);
+                    } else {
+                        noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
                     }
-                    Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
-                    List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
-                    ContactHelper.getInstance().inserGroupMemEntity(memEntities);
 
-                    normalChat = new CGroupChat(groupEntity);
-                    for (GroupMemberEntity memEntity : memEntities) {
-                        String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
-                        if (groupChange.hasInviteBy()) {
-                            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+                    if (groupEntity == null) {
+                        FailMsgsManager.getInstance().insertReceiveMsg(groupKey, TimeUtil.timestampToMsgid(), noticeStr);
+                    } else {
+                        normalChat = new CGroupChat(groupEntity);
+                        ChatMsgEntity msgExtEntity = normalChat.noticeMsg(0, noticeStr, "");
+                        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
-                            Connect.UserInfo inviteBy = groupChange.getInviteBy();
-                            String inviteByName = inviteBy.getUid().equals(myUid) ?
-                                    context.getString(R.string.Chat_You) : inviteBy.getName();
-
-                            String invitorname = memEntity.getUid().equals(myUid) ?
-                                    context.getString(R.string.Chat_You) : memberName;
-                            noticeStr = context.getString(R.string.Link_invited_to_the_group_chat, inviteByName, invitorname);
-                        } else {
-                            noticeStr = context.getString(R.string.Link_enter_the_group, memberName);
-                        }
-
-                        if (normalChat == null) {
-                            FailMsgsManager.getInstance().insertReceiveMsg(groupKey, TimeUtil.timestampToMsgid(), noticeStr);
-                        } else {
-                            ChatMsgEntity msgExtEntity = normalChat.noticeMsg(0, noticeStr, "");
-                            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-
-                            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgExtEntity);
-                            ((ConversationListener) normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
-                        }
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupKey, msgExtEntity);
+                        ((ConversationListener) normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
                     }
                 }
                 break;

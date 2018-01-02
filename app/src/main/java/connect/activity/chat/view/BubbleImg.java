@@ -7,9 +7,17 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.google.protobuf.compiler.PluginProtos;
+
+import java.io.File;
+
 import connect.activity.base.BaseApplication;
 import connect.utils.chatfile.download.DownLoadFile;
 import connect.utils.chatfile.inter.InterFileDown;
+import connect.utils.log.LogManager;
 import instant.bean.MsgDirect;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
@@ -20,6 +28,7 @@ import protos.Connect;
 
 public class BubbleImg extends RelativeLayout {
 
+    private static String TAG="_BubbleImg";
     private Context context;
 
     private boolean openBurn = false;
@@ -98,6 +107,8 @@ public class BubbleImg extends RelativeLayout {
                     .load(localPath)
                     .override(imgWidth, imgHeight)
                     .crossFade(1000)
+                    .error(R.mipmap.img_default)
+                    .listener(listener)
                     .bitmapTransform(new CenterCrop(context), new BlurMaskTransformation(context, msgDirect == MsgDirect.From ? R.mipmap.message_box_white2x : R.mipmap.message_box_blue2x, (openBurn && msgDirect == MsgDirect.From) ? 16 : 0))
                     .into(imageView);
         } else {
@@ -138,4 +149,18 @@ public class BubbleImg extends RelativeLayout {
     public String getLocalPath() {
         return localPath;
     }
+
+    RequestListener listener = new RequestListener<String, GlideDrawable>() {
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+            LogManager.getLogger().d(TAG, "isFromMemoryCache:"+e.getMessage()+"  model:"+model+" isFirstResource: "+isFirstResource);
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            //imageView.setImageDrawable(resource);
+            return false;
+        }
+    };
 }

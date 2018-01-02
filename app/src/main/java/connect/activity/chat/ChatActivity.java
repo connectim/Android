@@ -303,7 +303,7 @@ public class ChatActivity extends BaseChatSendActivity {
                     if (tempFile.exists() && tempFile.length() > 0) {
                         if (albumFile.getMediaType() == AlbumFile.TYPE_IMAGE) {
                             List<String> paths = new ArrayList<>();
-                            paths.add(albumFile.getPath());
+                            paths.add(filePath);
                             MsgSend.sendOuterMsg(MsgSend.MsgSendType.Photo, paths);
                         } else {
                             int length = (int) (albumFile.getDuration() / 1000);

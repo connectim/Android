@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import connect.activity.chat.bean.RecExtBean;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.GroupRecBean;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -34,6 +35,8 @@ import connect.utils.TimeUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import instant.bean.ChatMsgEntity;
+import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
 public class GroupService extends Service {
@@ -81,7 +84,7 @@ public class GroupService extends Service {
         }
     }
 
-    public void groupInfo(String pubkey) {
+    public void groupInfo(final String pubkey) {
         Connect.GroupId groupId = Connect.GroupId.newBuilder()
                 .setIdentifier(pubkey)
                 .build();
@@ -134,6 +137,19 @@ public class GroupService extends Service {
                             messageTime = messageEntity.getCreatetime();
                         }
                         cGroupChat.updateRoomMsg("", content, messageTime);
+
+                        Map<String, Object> failMaps = FailMsgsManager.getInstance().receiveFailMsgs(pubkey);
+                        if (!failMaps.isEmpty()) {
+                            for (Object obj : failMaps.values()) {
+                                if (obj instanceof String) {
+                                    ChatMsgEntity msgExtEntity = cGroupChat.noticeMsg(0, (String) obj, "");
+                                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+
+                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
+                                }
+                            }
+                        }
+
                         ContactNotice.receiverGroup();
                     }
                 } catch (Exception e) {
