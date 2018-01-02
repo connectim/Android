@@ -100,6 +100,7 @@ public class StrangerInfoActivity extends BaseActivity {
             return;
         GlideUtil.loadAvatarRound(avatarRimg, sendUserInfo.getAvatar());
         nameTv.setText(sendUserInfo.getName());
+        sourceTv.setText(sendUserInfo.getOu());
         if(ContactHelper.getInstance().loadFriendByUid(uid) == null){
             isHaveFriend = false;
         }else{

@@ -29,7 +29,8 @@
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
         android:paddingLeft="@dimen/dp_10"
-        android:hint="@string/Login_username" />
+        android:hint="@string/Login_username"
+        android:singleLine="true"/>
     <View
         style="@style/BaseViewLine.d1d5da"
         android:layout_marginTop="@dimen/dp_5"
@@ -45,7 +46,8 @@
         android:layout_marginRight="@dimen/dp_20"
         android:paddingLeft="@dimen/dp_10"
         android:inputType="textPassword"
-        android:hint="@string/Login_Password"/>
+        android:hint="@string/Login_Password"
+        android:singleLine="true"/>
     <View
         style="@style/BaseViewLine.d1d5da"
         android:layout_marginLeft="@dimen/dp_20"
