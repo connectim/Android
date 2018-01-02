@@ -258,7 +258,7 @@
     <string name="Link_search_someThing">电话号码/CONNECT ID</string>
     <string name="Link_the_group_member_can_see_the_QR">启用后，群成员可以看见群二维码</string>
     <string name="Link_update_Failed">修改失败</string>
-    <string name="Link_user_friends">%s的朋友</string>
+    <string name="Link_user_friends">%s的群</string>
     <string name="Login_created_by_random_number_generator">由随机数生成器生成</string>
     <string name="Login_Avatar_upload_failed">头像上传失败</string>
     <string name="Login_Camera_guide_tip">点击拍照,按住摄像</string>
@@ -346,7 +346,7 @@
     <string name="Set_Log_Out">退出</string>
     <string name="Set_Delete_account">删除账户</string>
     <string name="Set_Logging_out">正在退出...</string>
-    <string name="Set_Logout_delete_login_data_still_log">退出登录将删除你的登录信息，你仍要退出当前账户么?</string>
+    <string name="Set_Logout_delete_login_data_still_log">退出后不会删除任何历史数据,下次登录依然可以使用本帐号</string>
     <string name="Set_delete_account_hinit">删除账户后将不可恢复，确定删除当前账户吗?</string>
     <string name="Set_Miner_fee">手续费</string>
     <string name="Set_My_Profile">个人资料</string>
@@ -525,4 +525,5 @@
     <string name="Link_Join_Group_Success">成功加入群聊</string>
     <string name="Chat_No_Data">没有数据...</string>
     <string name="Chat_Create_Group_Success">创建群组成功</string>
+    <string name="Error_Device_Remote_Login">你的设备已经在在%1$s上登录</string>
 </resources>

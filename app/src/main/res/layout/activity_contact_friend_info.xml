@@ -76,13 +76,12 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/id_lin"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_50"
                 android:background="@drawable/selector_list_item_bg"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:gravity="center_vertical">
 
                 <TextView
                     style="@style/BaseTextStyle"
@@ -92,11 +91,11 @@
                 <TextView
                     android:id="@+id/address_tv"
                     style="@style/BaseTextStyle"
-                    android:layout_marginLeft="@dimen/dp_15"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/dp_15"
                     android:text=""
                     android:textColor="@color/color_007aff"/>
-            </LinearLayout>
+            </RelativeLayout>
             <View
                 style="@style/BaseViewLine.d1d5da"/>
             <RelativeLayout

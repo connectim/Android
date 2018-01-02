@@ -38,7 +38,6 @@ import connect.activity.home.fragment.ContactFragment;
 import connect.activity.home.fragment.ConversationFragment;
 import connect.activity.home.fragment.SetFragment;
 import connect.activity.home.view.CheckUpdate;
-import connect.activity.login.LoginPhoneActivity;
 import connect.activity.login.LoginUserActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -48,6 +47,7 @@ import connect.service.GroupService;
 import connect.service.UpdateInfoService;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.DialogUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveUrlUtil;
@@ -158,7 +158,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 1000);
                 break;
             case EXIT:
-                NotificationManager mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE) ;
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.cancel(1001);
 
                 mHandler.removeMessages(TIMEOUT_DELAYEXIT);
@@ -185,6 +185,20 @@ public class HomeActivity extends BaseFragmentActivity {
                 int fragmentCode = (Integer) objects[0];
                 switchFragment(fragmentCode);
                 break;
+            case REMOTE_LOGIN:
+                String deviceName = (String) objects[0];
+                DialogUtil.showAlertTextView(activity, null, getString(R.string.Error_Device_Remote_Login, deviceName), null, getString(R.string.Common_OK), true, false,new DialogUtil.OnItemClickListener() {
+                    @Override
+                    public void confirm(String value) {
+                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
+                    }
+
+                    @Override
+                    public void cancel() {
+
+                    }
+                });
+                break;
         }
     }
 
@@ -207,20 +221,21 @@ public class HomeActivity extends BaseFragmentActivity {
         }
     }
 
-    private void updataRequest(){
-        new AsyncTask<Void,Void,Integer>(){
+    private void updataRequest() {
+        new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {
                 List<FriendRequestEntity> requestList = ContactHelper.getInstance().loadFriendRequestNew();
-                if(requestList == null){
+                if (requestList == null) {
                     return 0;
                 }
                 return requestList.size();
             }
+
             @Override
             protected void onPostExecute(Integer integer) {
                 super.onPostExecute(integer);
-                setFragmentDot(1,integer);
+                setFragmentDot(1, integer);
             }
         }.execute();
     }
@@ -329,9 +344,9 @@ public class HomeActivity extends BaseFragmentActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        PermissionUtil.getInstance().onRequestPermissionsResult(activity,requestCode,permissions,grantResults,checkUpdata.permissomCallBack);
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionUtil.getInstance().onRequestPermissionsResult(activity, requestCode, permissions, grantResults, checkUpdata.permissomCallBack);
     }
 
     @Override

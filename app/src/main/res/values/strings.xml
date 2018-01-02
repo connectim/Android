@@ -298,7 +298,7 @@
         QR code
     </string>
     <string name="Link_update_Failed">update Failed</string>
-    <string name="Link_user_friends">%s\'s friends</string>
+    <string name="Link_user_friends">%s\'s group</string>
     <string name="Login_created_by_random_number_generator">created by random number generator
     </string>
     <string name="Login_Avatar_upload_failed">Avatar upload failed</string>
@@ -403,7 +403,7 @@
     <string name="Set_Log_Out">Log Out</string>
     <string name="Set_Delete_account">Delete the account</string>
     <string name="Set_Logging_out">Logging out...</string>
-    <string name="Set_Logout_delete_login_data_still_log">Log out will delete your login information, you still want to exit the current account?</string>
+    <string name="Set_Logout_delete_login_data_still_log">Logout will not delete any data ,You can still log in with this account.</string>
     <string name="Set_delete_account_hinit">Will not resume after the delete account, make sure to delete the current account?</string>
     <string name="Set_Miner_fee">Transaction fee</string>
     <string name="Set_My_Profile">My Profile</string>
@@ -608,4 +608,5 @@
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>
     <string name="Chat_No_Data">No Data...</string>
     <string name="Chat_Create_Group_Success">Create group success</string>
+    <string name="Error_Device_Remote_Login">Your device is already logged on on%1$s</string>
 </resources>

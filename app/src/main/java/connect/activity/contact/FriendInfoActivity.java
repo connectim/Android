@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -67,7 +67,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @Bind(R.id.alias_tv)
     TextView aliasTv;
     @Bind(R.id.id_lin)
-    LinearLayout idLin;
+    RelativeLayout idLin;
 
     private FriendInfoActivity mActivity;
     private FriendInfoContract.Presenter presenter;

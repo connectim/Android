@@ -34,4 +34,9 @@ public class ExceptionLocalReceiver implements ExceptionListener {
     public void exitAccount() {
         getExceptionListener().exitAccount();
     }
+
+    @Override
+    public void  remoteLogin(String devicename) {
+        getExceptionListener().remoteLogin(devicename);
+    }
 }

@@ -366,7 +366,7 @@ public class FileUtil {
      * file type
      */
     public enum FileType {
-        IMG(".png"), VOICE(".aac"), VIDEO(".mp4");
+        IMG(".png"), VOICE(".amr"), VIDEO(".mp4");
 
         String fileType;
 

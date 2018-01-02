@@ -4,14 +4,16 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
-import connect.activity.chat.bean.RecExtBean;
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.RecExtBean;
+import connect.utils.log.LogManager;
 
 /**
  * media play
  */
 public class MediaUtil {
 
+    private static String TAG = "_MediaUtil";
     private static MediaUtil mediaUtil;
     private MediaPlayer mediaPlayer;
     private String filePath = null;
@@ -53,7 +55,7 @@ public class MediaUtil {
             mediaPlayer.setDataSource(filePath);
             mediaPlayer.prepare();
         } catch (Exception e) {
-            // TODO: handle exception
+            LogManager.getLogger().d(TAG, e.getMessage());
         }
         mediaPlayer.start();
     }

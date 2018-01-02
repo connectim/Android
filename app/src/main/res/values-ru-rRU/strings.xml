@@ -315,7 +315,7 @@
         QR код
     </string>
     <string name="Link_update_Failed">Сбой при исправлении</string>
-    <string name="Link_user_friends">%s друга</string>
+    <string name="Link_user_friends">%s группа</string>
     <string name="Login_created_by_random_number_generator">Создается с помощью генератора случайных
         чисел
     </string>
@@ -430,7 +430,7 @@
     <string name="Set_Log_Out">Выйти из учетной записи</string>
     <string name="Set_Delete_account">Удалить счета</string>
     <string name="Set_Logging_out">Выход...</string>
-    <string name="Set_Logout_delete_login_data_still_log">Выход для входа в систему будет удалить тебя информация о входе в систему, ты по-прежнему уйти ли текущего счета?</string>
+    <string name="Set_Logout_delete_login_data_still_log">после выхода  в следующий раз  не  удалять любые  исторических данных  ,  по - прежнему  можете использовать этот  счет  входа </string>
     <string name="Set_delete_account_hinit">После удаления счета не будет восстановлен, уверен, удаление текущего счета?</string>
     <string name="Set_Miner_fee">Комиссионный сбор</string>
     <string name="Set_My_Profile">Мой профайл</string>
@@ -657,4 +657,5 @@
     <string name="Link_Join_Group_Success">успех  к  групповой чат </string>
     <string name="Chat_No_Data">Нет данных...</string>
     <string name="Chat_Create_Group_Success">создать группу  успеха</string>
+    <string name="Error_Device_Remote_Login">Ты  уже  на  оборудование  в  %1$s  входа  в</string>
 </resources>
