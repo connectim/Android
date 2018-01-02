@@ -107,7 +107,7 @@ public class AlbumActivity extends BaseFragmentActivity implements AlbumContract
     public void sendImgInfos() {
         ArrayList<AlbumFile> albumFiles = new ArrayList<>();
         for (AlbumFile albumFile : imageInfoMap.values()) {
-            if (albumFile.getSize() > 1024 * 1024 * 10) {
+            if (albumFile.getSize() > 1024 * 1024 * 20) {
                 continue;
             }
             albumFiles.add(albumFile);

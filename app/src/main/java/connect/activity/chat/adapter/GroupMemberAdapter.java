@@ -12,22 +12,22 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.contact.FriendInfoActivity;
+import connect.activity.contact.StrangerInfoActivity;
+import connect.activity.contact.bean.SourceType;
+import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
-import connect.activity.contact.bean.SourceType;
-import connect.activity.set.UserInfoActivity;
 import connect.utils.PinyinUtil;
-import connect.utils.system.SystemDataUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.system.SystemDataUtil;
 import connect.widget.SideScrollView;
 import protos.Connect;
 /**
@@ -72,7 +72,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
     @Override
     public void onBindViewHolder(final MemberReHolder holder, final int position) {
         GroupMemberEntity memEntity = groupMemEntities.get(position);
-        String name = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
+        String name = TextUtils.isEmpty(memEntity.getUsername()) ? "" : memEntity.getUsername();
         holder.nameTxt.setText(name);
         GlideUtil.loadAvatarRound(holder.headImg, memEntity.getAvatar());
 
@@ -84,7 +84,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
             holder.txt.setText(curFirst);
         } else {
             GroupMemberEntity lastEntity = groupMemEntities.get(position - 1);
-            String lastName = TextUtils.isEmpty(lastEntity.getNick()) ? lastEntity.getUsername() : lastEntity.getNick();
+            String lastName = TextUtils.isEmpty(lastEntity.getUsername()) ? "" : lastEntity.getUsername();
             if (TextUtils.isEmpty(lastName)) lastName = "#";
             String lastFirst = PinyinUtil.chatToPinyin(lastName.charAt(0));
 

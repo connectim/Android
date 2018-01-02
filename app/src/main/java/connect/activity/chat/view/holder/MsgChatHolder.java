@@ -186,8 +186,8 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                             headImg.setUserUid(memberKey);
 
                             String memberName = "";
-                            if (ts != null) {
-                                memberName = TextUtils.isEmpty(ts.getNick()) ? ts.getUsername() : ts.getNick();
+                            if (ts != null && !TextUtils.isEmpty(ts.getUsername())) {
+                                memberName = ts.getUsername();
                             }
                             memberTxt.setText(memberName);
                         }

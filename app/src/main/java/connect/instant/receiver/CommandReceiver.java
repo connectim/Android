@@ -152,9 +152,7 @@ public class CommandReceiver implements CommandListener {
                 memberEntity.setUid(member.getUid());
                 memberEntity.setAvatar(member.getAvatar());
                 memberEntity.setUsername(member.getName());
-                memberEntity.setNick(member.getNick());
                 memberEntity.setRole(member.getRole());
-                memberEntity.setUsername(member.getUsername());
                 String memberIdentifyKey = groupIdentifier + member.getUid();
                 memberEntityMap.put(memberIdentifyKey, memberEntity);
             }
@@ -356,7 +354,7 @@ public class CommandReceiver implements CommandListener {
 
                             Connect.UserInfo inviteBy = groupChange.getInviteBy();
                             String inviteByName = inviteBy.getUid().equals(myUid) ?
-                                    context.getString(R.string.Chat_You) : inviteBy.getUsername();
+                                    context.getString(R.string.Chat_You) : inviteBy.getName();
 
                             String invitorname = memEntity.getUid().equals(myUid) ?
                                     context.getString(R.string.Chat_You) : memberName;
