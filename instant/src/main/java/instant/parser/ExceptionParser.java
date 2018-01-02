@@ -2,7 +2,7 @@ package instant.parser;
 
 import java.nio.ByteBuffer;
 
-import instant.parser.localreceiver.CommandLocalReceiver;
+import instant.parser.localreceiver.ExceptionLocalReceiver;
 
 /**
  * Created by pujin on 2017/4/18.
@@ -27,6 +27,6 @@ public class ExceptionParser extends InterParse {
      * Be offline
      */
    private void crowdedOffline() {
-
+       ExceptionLocalReceiver.localReceiver.exitAccount();
    }
 }

@@ -1,6 +1,5 @@
 package connect.activity.chat.activity;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,18 +10,13 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.List;
 
-import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.GeoAddressBean;
 import connect.activity.chat.bean.MsgSend;
-import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
-import connect.database.green.bean.ConversionSettingEntity;
-import connect.instant.model.CFriendChat;
 import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;

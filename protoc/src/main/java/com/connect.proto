@@ -115,19 +115,20 @@ bytes body=3;
 
 //user ===============
 message UserInfo {
-    string username = 1;
-  string avatar = 2;
-  string pub_key = 3;
-  string uid = 4;
-  bool recommend = 5;
-  string connectId = 6;
-  int32 source = 7;
-  int64 created_at = 8;
-  bool update_connect_id = 9;
-  bool password_check = 10;
-  string ca_pub = 11;
-  string name = 13;
-  int64 id = 100;
+   string username = 1;
+ string avatar = 2;
+ string pub_key = 3;
+ string uid = 4;
+ bool recommend = 5;
+ string connectId = 6;
+ int32 source = 7;
+ int64 created_at = 8;
+ bool update_connect_id = 9;
+ bool password_check = 10;
+ string ca_pub = 11;
+ string name = 12;
+ string ou = 13;
+ int64 id = 100;
 }
 
 message UsersInfo {
@@ -572,6 +573,7 @@ message DeviceInfo {
     int32 cv = 4;
     string uuid = 5;
     ChatCookieData chatCookieData = 6;
+    string token = 7;
 }
 
 message QuitMessage {
@@ -1378,6 +1380,7 @@ message FriendInfo {
   string connect_id = 8;
   bool blackList = 9;
   string name = 10;
+   string ou=11;
 }
 
 message Preferences {

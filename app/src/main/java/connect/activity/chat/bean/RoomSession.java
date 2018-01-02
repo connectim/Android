@@ -81,4 +81,12 @@ public class RoomSession {
         }
         return avatar;
     }
+
+    public void updateChatAvatar(String friendUid,String newAvatar){
+        String key = CHAT_AVATAR + friendUid;
+        String avatar = keyMap.get(key);
+        if (!TextUtils.isEmpty(avatar)) {
+            keyMap.put(key, newAvatar);
+        }
+    }
 }

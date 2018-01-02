@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.ContactUpdateBean;
+import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.model.GroupMemberUtil;
 import connect.activity.contact.bean.ContactNotice;
@@ -150,6 +151,9 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     friendEntity.setUsername(userInfo.getUsers(0).getName());
                     mView.updateView(friendEntity);
                     ContactHelper.getInstance().insertContact(friendEntity);
+
+                    RoomSession.roomSession.updateChatAvatar(userInfo.getUsers(0).getUid(),userInfo.getUsers(0).getAvatar());
+
                     // Update the message list user information
                     ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getUid());
                     if (conversionEntity != null) {

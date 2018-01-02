@@ -59,11 +59,22 @@ public class ShakeHandParser extends InterParse {
         chatCookie.setToken(token);
         Session.getInstance().setChatCookie(chatCookie);
 
-        Connect.NewConnection connectionNew = Connect.NewConnection.newBuilder()
+        //Data encryption devices
+        String deviceId = DeviceInfoUtil.getDeviceId();
+        String deviceName = Build.DEVICE;
+        String local = DeviceInfoUtil.getDeviceLanguage();
+        String uuid = DeviceInfoUtil.getLocalUid();
+
+        Connect.DeviceInfo deviceInfo = Connect.DeviceInfo.newBuilder()
+                .setDeviceId(deviceId)
+                .setDeviceName(deviceName)
+                .setLocale(local)
+                .setUuid(uuid)
                 .setToken(token)
                 .build();
+
         Connect.StructData dataStruct = Connect.StructData.newBuilder()
-                .setPlainData(connectionNew.toByteString())
+                .setPlainData(deviceInfo.toByteString())
                 .build();
 
         String uid = Session.getInstance().getConnectCookie().getUid();
