@@ -27,7 +27,6 @@ import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
@@ -52,8 +51,8 @@ public class StrangerInfoActivity extends BaseActivity {
     TextView addressTv;
     @Bind(R.id.addFriend_btn)
     Button addFriendBtn;
-    @Bind(R.id.source_tv)
-    TextView sourceTv;
+    @Bind(R.id.department_tv)
+    TextView departmentTv;
 
     private StrangerInfoActivity mActivity;
     private Connect.UserInfo sendUserInfo;
@@ -100,15 +99,15 @@ public class StrangerInfoActivity extends BaseActivity {
             return;
         GlideUtil.loadAvatarRound(avatarRimg, sendUserInfo.getAvatar());
         nameTv.setText(sendUserInfo.getName());
-        sourceTv.setText(sendUserInfo.getOu());
-        if(ContactHelper.getInstance().loadFriendByUid(uid) == null){
+        departmentTv.setText(sendUserInfo.getOu());
+        if (ContactHelper.getInstance().loadFriendByUid(uid) == null) {
             isHaveFriend = false;
-        }else{
+        } else {
             isHaveFriend = true;
         }
 
-        String friendUid =  sendUserInfo.getUid();
-        String userName =  sendUserInfo.getName();
+        String friendUid = sendUserInfo.getUid();
+        String userName = sendUserInfo.getName();
         String userAvatar = sendUserInfo.getAvatar();
         ContactHelper.getInstance().updateGroupMemberNameAndAvatar(
                 friendUid,
@@ -137,7 +136,7 @@ public class StrangerInfoActivity extends BaseActivity {
         msgSendBean.setTips(tips);
 
         UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.requestAddFriend(sendUserInfo.getUid(),sendUserInfo.getPubKey(),tips,sourceType.getType(),msgSendBean);
+        userOrderBean.requestAddFriend(sendUserInfo.getUid(), sendUserInfo.getPubKey(), tips, sourceType.getType(), msgSendBean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -157,23 +156,23 @@ public class StrangerInfoActivity extends BaseActivity {
                     requestEntity.setUid(sendUserInfo.getUid());
                     requestEntity.setSource(sourceType.getType());
                     requestEntity.setTips(msgSendBean.getTips());
-                    if(isHaveFriend){
+                    if (isHaveFriend) {
                         requestEntity.setStatus(3);
                     } else {
-                        if(errorNum == 100){
+                        if (errorNum == 100) {
                             requestEntity.setStatus(2);
-                        }else{
+                        } else {
                             requestEntity.setStatus(3);
                         }
                         requestEntity.setRead(1);
                         ContactHelper.getInstance().inserFriendQuestEntity(requestEntity);
                     }
-                    ToastEUtil.makeText(mActivity,R.string.Link_Send_successful).show();
+                    ToastEUtil.makeText(mActivity, R.string.Link_Send_successful).show();
                     ActivityUtil.goBack(mActivity);
                 }
                 break;
             case MSG_SEND_FAIL:
-                ToastEUtil.makeText(mActivity,R.string.Login_Send_failed,ToastEUtil.TOAST_STATUS_FAILE).show();
+                ToastEUtil.makeText(mActivity, R.string.Login_Send_failed, ToastEUtil.TOAST_STATUS_FAILE).show();
                 break;
         }
     }
@@ -188,12 +187,12 @@ public class StrangerInfoActivity extends BaseActivity {
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
-                    if(structData == null || structData.getPlainData() == null){
+                    if (structData == null || structData.getPlainData() == null) {
                         return;
                     }
                     Connect.UsersInfo usersInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
                     sendUserInfo = usersInfo.getUsers(0);
-                    if(sendUserInfo != null && !TextUtils.isEmpty(sendUserInfo.getUid())){
+                    if (sendUserInfo != null && !TextUtils.isEmpty(sendUserInfo.getUid())) {
                         updataView();
                     }
                 } catch (InvalidProtocolBufferException e) {

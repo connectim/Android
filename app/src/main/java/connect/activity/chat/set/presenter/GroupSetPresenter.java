@@ -235,7 +235,6 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
 
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                 }
-
                 ContactNotice.receiverGroup();
             }
 
