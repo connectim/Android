@@ -163,6 +163,12 @@ public class HomeActivity extends BaseFragmentActivity {
 
                 mHandler.removeMessages(TIMEOUT_DELAYEXIT);
                 BaseApplication.getInstance().exitRegisterAccount();
+                List<Activity> list = BaseApplication.getInstance().getActivityList();
+                for (Activity activity1 : list) {
+                    if (!activity1.getClass().getName().equals(activity.getClass().getName())) {
+                        activity1.finish();
+                    }
+                }
                 Intent intent = new Intent(activity, LoginUserActivity.class);
                 activity.startActivity(intent);
                 finish();

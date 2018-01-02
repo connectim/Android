@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
+import connect.activity.home.bean.HomeAction;
 import connect.activity.login.LoginUserActivity;
 import connect.ui.activity.R;
 import connect.activity.home.bean.HttpRecBean;
@@ -191,19 +192,7 @@ public class HttpRequest {
                     // uid/pubKey error
                     ToastUtil.getInstance().showToast(R.string.Set_Load_failed_please_try_again_later);
                 } else if(code == 2700){
-                    BaseApplication.getInstance().exitRegisterAccount();
-                    Activity activityCurr = BaseApplication.getInstance().getActivityList().get(0);
-
-                    List<Activity> list = BaseApplication.getInstance().getActivityList();
-                    for (Activity activity : list) {
-                        if (!activity.getClass().getName().equals(activityCurr.getClass().getName())) {
-                            activity.finish();
-                        }
-                    }
-
-                    Intent intent = new Intent(activityCurr, LoginUserActivity.class);
-                    activityCurr.startActivity(intent);
-                    activityCurr.finish();
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
                 } else{
                     resultCall.onError(resultCall.getData());
                 }
