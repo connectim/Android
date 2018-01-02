@@ -129,7 +129,7 @@ public class AboutActivity extends BaseActivity {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                     versionResponse = Connect.VersionResponse.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(versionResponse)){
+                    if(!TextUtils.isEmpty(versionResponse.getVersion())){
                         compareInt = StringUtil.VersionComparison(versionResponse.getVersion(),SystemDataUtil.getVersionName(mActivity));
                         switch (compareInt){
                             case 1:

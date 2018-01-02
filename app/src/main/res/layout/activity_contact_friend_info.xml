@@ -132,8 +132,6 @@
                     android:textSize="@dimen/sp_16"/>
             </RelativeLayout>
 
-            <View style="@style/BaseViewLine.d1d5da"/>
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_50"

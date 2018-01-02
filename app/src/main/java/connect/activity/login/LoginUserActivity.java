@@ -99,7 +99,7 @@ public class LoginUserActivity extends BaseActivity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
         public void afterTextChanged(Editable s) {
-            String name = nameEt.getText().toString();
+            String name = nameEt.getText().toString().trim();
             String password = passwordEt.getText().toString();
             if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)){
                 nextBtn.setEnabled(true);
