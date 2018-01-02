@@ -219,7 +219,8 @@ public class HttpRequest {
                     // uid/pubKey error
                     ToastUtil.getInstance().showToast(R.string.Set_Load_failed_please_try_again_later);
                 } else if(code == 2700){
-                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
+                    //HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
+                    ToastUtil.getInstance().showToast(R.string.Set_Load_failed_please_try_again_later);
                 } else{
                     resultCall.onError(resultCall.getData());
                 }
