@@ -167,6 +167,7 @@
     <string name="Link_Add_as_a_friend">Send friend verification</string>
     <string name="Link_Add_to_Contacts">Add to Contacts</string>
     <string name="Link_Added">Added</string>
+    <string name="Link_Not_logged_in">Not logged in</string>
     <string name="Link_An_error_occurred_change_nickname">An error occurred change nickname</string>
     <string name="Link_Black_List">Block List</string>
     <string name="Link_Block">Block</string>
@@ -609,4 +610,5 @@
     <string name="Chat_No_Data">No Data...</string>
     <string name="Chat_Create_Group_Success">Create group success</string>
     <string name="Error_Device_Remote_Login">Your device is already logged on on%1$s</string>
+    <string name="Company_company">Company</string>
 </resources>

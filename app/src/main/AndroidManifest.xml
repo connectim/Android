@@ -96,6 +96,10 @@
             android:name="connect.widget.takepicture.TakePictureActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name="connect.activity.company.DepartmentActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name="connect.activity.login.RegisterGetRandomActivity"
             android:screenOrientation="portrait"/>
         <activity

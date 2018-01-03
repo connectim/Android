@@ -74,6 +74,7 @@ public class OkHttpUtil {
         HttpRequest.getInstance().post(url, httpRequest, resultCall);
     }
 
+
 //    private Connect.HttpRequest getHttpRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey,String uid, ByteString bytes){
 //        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
 //        if(null == gcmData){
