@@ -78,18 +78,11 @@ public class Session {
         userCookieMap.put(pbk, cookie);
     }
 
-    public UserCookie getUserCookie(String pbk) {
+    private UserCookie getUserCookie(String pbk) {
         if (userCookieMap == null) {
             userCookieMap = new HashMap<>();
         }
         return userCookieMap.get(pbk);
-    }
-
-    public void removeCookie(String publicKey) {
-        if (userCookieMap == null) {
-            userCookieMap = new HashMap<>();
-        }
-        userCookieMap.remove(publicKey);
     }
 
     /****************************************  CONNECT FAIL TIME    ***************************************/

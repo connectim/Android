@@ -1,11 +1,9 @@
 package instant.sender.model;
 
-import instant.R;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.bean.Session;
 import instant.bean.UserCookie;
-import instant.ui.InstantSdk;
 import protos.Connect;
 
 /**
@@ -20,12 +18,6 @@ public abstract class NormalChat extends BaseChat {
         Connect.TextMessage.Builder builder = Connect.TextMessage.newBuilder()
                 .setContent(string);
 
-        if (chatType() == Connect.ChatType.PRIVATE_VALUE) {
-            long destructtime = destructReceipt();
-            if (destructtime > 0) {
-                builder.setSnapTime(destructtime);
-            }
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
@@ -40,12 +32,6 @@ public abstract class NormalChat extends BaseChat {
                 .setImageWidth(width)
                 .setImageHeight(height);
 
-        if (chatType() == Connect.ChatType.PRIVATE_VALUE) {
-            long destructtime = destructReceipt();
-            if (destructtime > 0) {
-                builder.setSnapTime(destructtime);
-            }
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
@@ -57,12 +43,6 @@ public abstract class NormalChat extends BaseChat {
                 .setUrl(string)
                 .setTimeLength(length);
 
-        if (chatType() == Connect.ChatType.PRIVATE_VALUE) {
-            long destructtime = destructReceipt();
-            if (destructtime > 0) {
-                builder.setSnapTime(destructtime);
-            }
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
@@ -78,12 +58,6 @@ public abstract class NormalChat extends BaseChat {
                 .setImageWidth(width)
                 .setImageHeight(height);
 
-        if (chatType() == Connect.ChatType.PRIVATE_VALUE) {
-            long destructtime = destructReceipt();
-            if (destructtime > 0) {
-                builder.setSnapTime(destructtime);
-            }
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
@@ -94,12 +68,6 @@ public abstract class NormalChat extends BaseChat {
         Connect.EmotionMessage.Builder builder = Connect.EmotionMessage.newBuilder()
                 .setContent(string);
 
-        if (chatType() == Connect.ChatType.PRIVATE_VALUE) {
-            long destructtime = destructReceipt();
-            if (destructtime > 0) {
-                builder.setSnapTime(destructtime);
-            }
-        }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
     }
@@ -199,18 +167,6 @@ public abstract class NormalChat extends BaseChat {
         return msgExtEntity;
     }
 
-    @Override
-    public ChatMsgEntity encryptChatMsg() {
-        ChatMsgEntity msgExtEntity = (ChatMsgEntity) createBaseChat(MessageType.NOTICE_ENCRYPTCHAT);
-        Connect.NotifyMessage notifyMessage = Connect.NotifyMessage.newBuilder()
-                .setNotifyType(0)
-                .setContent(InstantSdk.instantSdk.getBaseContext().getString(R.string.Chat_You_are_start_encrypt_chat_Messages_encrypted))
-                .build();
-
-        msgExtEntity.setContents(notifyMessage.toByteArray());
-        return msgExtEntity;
-    }
-
     public Connect.MessagePost normalChatMessage(Connect.MessageData data) {
         UserCookie connectCookie = Session.getInstance().getConnectCookie();
         String uid = connectCookie.getUid();
@@ -222,5 +178,8 @@ public abstract class NormalChat extends BaseChat {
         return messagePost;
     }
 
-    public abstract long destructReceipt();
+    @Override
+    public String friendPublicKey() {
+        return null;
+    }
 }

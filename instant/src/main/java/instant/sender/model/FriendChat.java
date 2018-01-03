@@ -5,10 +5,9 @@ import instant.bean.MessageType;
 import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.bean.UserCookie;
-import instant.bean.UserOrderBean;
-import instant.parser.localreceiver.MessageLocalReceiver;
 import instant.sender.SenderManager;
 import instant.utils.TimeUtil;
+import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -20,12 +19,11 @@ public class FriendChat extends NormalChat {
     private static String TAG = "_FriendChat";
 
     protected String friendUid = null;
+    protected String friendPublicKey = null;
 
-    public FriendChat(String uid) {
+    public FriendChat(String uid, String publicKey) {
         this.friendUid = uid;
-
-        UserOrderBean userOrderBean = new UserOrderBean();
-        userOrderBean.friendChatCookie(friendUid);
+        this.friendPublicKey = publicKey;
     }
 
     @Override
@@ -51,7 +49,18 @@ public class FriendChat extends NormalChat {
         try {
             Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
 
+            UserCookie userCookie = Session.getInstance().getConnectCookie();
+            String userPrivate = userCookie.getPrivateKey();
+            String friend = chatKey();
+            EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, userPrivate, friend, msgExtEntity.getContents());
+            chatMessageBuilder.setCipherData(gcmData);
+
+            Connect.ChatSession chatSession = Connect.ChatSession.newBuilder()
+                    .setPubKey(friendPublicKey)
+                    .build();
             Connect.MessageData messageData = Connect.MessageData.newBuilder()
+                    .setChatSession(chatSession)
                     .setChatMsg(chatMessageBuilder)
                     .build();
 
@@ -79,16 +88,8 @@ public class FriendChat extends NormalChat {
     }
 
     @Override
-    public long destructReceipt() {
-        return MessageLocalReceiver.localReceiver.chatBurnTime(friendUid);
-    }
-
-    @Override
     public int chatType() {
         return Connect.ChatType.PRIVATE_VALUE;
-    }
-
-    public void setFriendCookie(UserCookie friendCookie) {
     }
 
     public ChatMsgEntity inviteJoinGroupMsg(String avatar, String name, String id, String token) {

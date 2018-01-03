@@ -65,19 +65,13 @@ public class VoiceUpload extends BaseFileUp {
     @Override
     public void fileEncrypt() {
         super.fileEncrypt();
-        Connect.RichMedia richMedia = null;
-        if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-            richMedia = Connect.RichMedia.newBuilder().
-                    setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(sourceCompressFile)))
-                    .build();
-        } else {
-            byte[] sourceFileByte = FileUtil.filePathToByteArray(sourceCompressFile);
-            ByteString sourceFileBytes = ByteString.copyFrom(sourceFileByte);
 
-            richMedia = Connect.RichMedia.newBuilder().
-                    setEntity(sourceFileBytes)
-                    .build();
-        }
+        byte[] sourceFileByte = FileUtil.filePathToByteArray(sourceCompressFile);
+        ByteString sourceFileBytes = ByteString.copyFrom(sourceFileByte);
+
+        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
+                setEntity(sourceFileBytes)
+                .build();
 
         Connect.StructData structData = Connect.StructData.newBuilder()
                 .setPlainData(richMedia.toByteString())

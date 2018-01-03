@@ -46,7 +46,7 @@ public class SharedUtil {
     private synchronized static SharedUtil getInstance(Context context) {
         if (null == sharePreUtil || null == sharePre) {
             sharePreUtil = new SharedUtil();
-            UserCookie userCookie = Session.getInstance().getUserCookie(Session.CONNECT_USER);
+            UserCookie userCookie = Session.getInstance().getConnectCookie();
             if (null == userCookie || TextUtils.isEmpty(userCookie.getUid())) {
                 userCookie = sharePreUtil.loadDefaultConnectCookie();
             }

@@ -184,8 +184,7 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
                 .setMsgType(getMessageType())
                 .setFrom(getMessage_from())
                 .setTo(getMessage_to())
-                .setMsgTime(getCreatetime())
-                .setBody(ByteString.copyFrom(getContents()));
+                .setMsgTime(getCreatetime());
         return builder;
     }
 

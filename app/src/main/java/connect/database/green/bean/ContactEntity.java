@@ -1,12 +1,12 @@
 package connect.database.green.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
-import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class ContactEntity implements Serializable {
@@ -27,15 +27,16 @@ public class ContactEntity implements Serializable {
     private Integer source;
     private Boolean blocked;
     private String ou;
+    private String publicKey;
 
     @Generated(hash = 393979869)
     public ContactEntity() {
     }
 
-    @Generated(hash = 231865947)
+    @Generated(hash = 1040196782)
     public ContactEntity(Long _id, @NotNull String uid, String connectId,
             String username, String avatar, String remark, Integer common,
-            Integer source, Boolean blocked, String ou) {
+            Integer source, Boolean blocked, String ou, String publicKey) {
         this._id = _id;
         this.uid = uid;
         this.connectId = connectId;
@@ -46,6 +47,7 @@ public class ContactEntity implements Serializable {
         this.source = source;
         this.blocked = blocked;
         this.ou = ou;
+        this.publicKey = publicKey;
     }
 
     public Long get_id() {
@@ -109,5 +111,13 @@ public class ContactEntity implements Serializable {
 
     public void setOu(String ou) {
         this.ou = ou;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
     }
 }

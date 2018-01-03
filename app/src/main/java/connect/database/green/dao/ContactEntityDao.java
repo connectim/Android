@@ -34,6 +34,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         public final static Property Source = new Property(7, Integer.class, "source", false, "SOURCE");
         public final static Property Blocked = new Property(8, Boolean.class, "blocked", false, "BLOCKED");
         public final static Property Ou = new Property(9, String.class, "ou", false, "OU");
+        public final static Property PublicKey = new Property(10, String.class, "publicKey", false, "PUBLIC_KEY");
     }
 
 
@@ -58,7 +59,8 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
                 "\"COMMON\" INTEGER," + // 6: common
                 "\"SOURCE\" INTEGER," + // 7: source
                 "\"BLOCKED\" INTEGER," + // 8: blocked
-                "\"OU\" TEXT);"); // 9: ou
+                "\"OU\" TEXT," + // 9: ou
+                "\"PUBLIC_KEY\" TEXT);"); // 10: publicKey
     }
 
     /** Drops the underlying database table. */
@@ -116,6 +118,11 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         if (ou != null) {
             stmt.bindString(10, ou);
         }
+ 
+        String publicKey = entity.getPublicKey();
+        if (publicKey != null) {
+            stmt.bindString(11, publicKey);
+        }
     }
 
     @Override
@@ -167,6 +174,11 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         if (ou != null) {
             stmt.bindString(10, ou);
         }
+ 
+        String publicKey = entity.getPublicKey();
+        if (publicKey != null) {
+            stmt.bindString(11, publicKey);
+        }
     }
 
     @Override
@@ -186,7 +198,8 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // common
             cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // source
             cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0, // blocked
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // ou
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // ou
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // publicKey
         );
         return entity;
     }
@@ -203,6 +216,7 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         entity.setSource(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
         entity.setBlocked(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
         entity.setOu(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setPublicKey(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
      }
     
     @Override

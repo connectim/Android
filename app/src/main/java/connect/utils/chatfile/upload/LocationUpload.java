@@ -8,7 +8,6 @@ import com.google.protobuf.ByteString;
 import java.io.File;
 
 import connect.utils.BitmapUtil;
-import connect.utils.FileUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
 import instant.bean.ChatMsgEntity;
@@ -77,22 +76,16 @@ public class LocationUpload extends BaseFileUp {
     @Override
     public void fileEncrypt() {
         super.fileEncrypt();
-        Connect.RichMedia richMedia = null;
-        if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-            richMedia = Connect.RichMedia.newBuilder().
-                    setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(thumbCompressFile))).
-                    setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(sourceCompressFile))).build();
-        } else {
-            byte[] thumbnailFileByte = FileUtil.filePathToByteArray(thumbCompressFile);
-            ByteString thumbnailFileBytes = ByteString.copyFrom(thumbnailFileByte);
-            byte[] sourceFileByte = FileUtil.filePathToByteArray(sourceCompressFile);
-            ByteString sourceFileBytes = ByteString.copyFrom(sourceFileByte);
 
-            richMedia = Connect.RichMedia.newBuilder()
-                    .setThumbnail(thumbnailFileBytes)
-                    .setEntity(sourceFileBytes)
-                    .build();
-        }
+        byte[] thumbnailFileByte = encodeAESGCMStructData(thumbCompressFile);
+        byte[] sourceFileByte = encodeAESGCMStructData(sourceCompressFile);
+        ByteString thumbnailFileBytes = ByteString.copyFrom(thumbnailFileByte);
+        ByteString sourceFileBytes = ByteString.copyFrom(sourceFileByte);
+
+        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder()
+                .setThumbnail(thumbnailFileBytes)
+                .setEntity(sourceFileBytes)
+                .build();
 
         Connect.StructData structData = Connect.StructData.newBuilder()
                 .setPlainData(richMedia.toByteString())

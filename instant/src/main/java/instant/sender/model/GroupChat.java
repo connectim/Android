@@ -1,5 +1,7 @@
 package instant.sender.model;
 
+import com.google.protobuf.ByteString;
+
 import java.util.List;
 
 import instant.bean.ChatMsgEntity;
@@ -25,14 +27,6 @@ public class GroupChat extends NormalChat {
     protected String myGroupName = "";
 
     private String myUid;
-    /**
-     * user Cookie
-     */
-    private UserCookie userCookie = null;
-    /**
-     * friend Cookie
-     */
-    private UserCookie groupMemberCookie = null;
 
     public GroupChat(String groupKey) {
         this.groupKey = groupKey;
@@ -58,6 +52,8 @@ public class GroupChat extends NormalChat {
     @Override
     public void sendPushMsg(ChatMsgEntity msgExtEntity) {
         Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
+        chatMessageBuilder.setBody(ByteString.copyFrom(msgExtEntity.getContents()));
+
         Connect.MessageData messageData = Connect.MessageData.newBuilder()
                 .setChatMsg(chatMessageBuilder)
                 .build();
@@ -84,11 +80,6 @@ public class GroupChat extends NormalChat {
     @Override
     public int chatType() {
         return Connect.ChatType.GROUPCHAT_VALUE;
-    }
-
-    @Override
-    public long destructReceipt() {
-        return 0L;
     }
 
     public void updateMyNickName() {

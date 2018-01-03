@@ -13,14 +13,13 @@ import connect.utils.FileUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
 import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
-import instant.utils.SharedUtil;
+import instant.utils.cryption.EncryptionUtil;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -42,31 +41,17 @@ public abstract class BaseFileUp implements InterFileUp {
 
     }
 
-    public UserCookie loadUserCookie() {
-        UserCookie userCookie = Session.getInstance().getChatCookie();
-        if (userCookie == null) {
-            userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
+    public synchronized byte[] encodeAESGCMStructData(String filePath) {
+        byte[] fileBytes = FileUtil.filePathToByteArray(filePath);
+        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
+            String friendPublicKey = baseChat.friendPublicKey();
+            UserCookie userCookie = Session.getInstance().getConnectCookie();
+            String myPrivateKey = userCookie.getPrivateKey();
+
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, ByteString.copyFrom(fileBytes));
+            fileBytes = gcmData.toByteArray();
         }
-
-        return userCookie;
-    }
-
-    /**
-     * File encryption
-     *
-     * @param filePath
-     * @return
-     */
-    public Connect.GcmData encodeAESGCMStructData(String filePath) {
-        byte[] fileSie = FileUtil.filePathToByteArray(filePath);
-        ByteString fileBytes = ByteString.copyFrom(fileSie);
-        LogManager.getLogger().d(TAG, "ByteString size:" + fileBytes.size());
-
-        Connect.GcmData gcmData = null;
-//        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE || baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-//            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, randomNumber, fileSie);
-//        }
-        return gcmData;
+        return fileBytes;
     }
 
     public void resultUpFile(Connect.MediaFile mediaFile, final FileResult fileResult) {

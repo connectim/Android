@@ -3,16 +3,23 @@ package connect.utils.chatfile.download;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import connect.utils.chatfile.inter.InterFileDown;
 import connect.utils.okhttp.HttpRequest;
+import instant.bean.Session;
+import instant.bean.UserCookie;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.EncryptionUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
+import protos.Connect;
 
 /**
  * File download tool

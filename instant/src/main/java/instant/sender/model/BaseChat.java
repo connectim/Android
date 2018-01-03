@@ -128,12 +128,6 @@ public abstract class BaseChat<T> implements Serializable {
     public abstract T outerWebsiteMsg(String url, String title, String subtitle, String img);
 
     /**
-     * 发送加密提示消息
-     * @return
-     */
-    public abstract T encryptChatMsg();
-
-    /**
      * 初始化不同类型的消息
      * @param type
      * @return
@@ -162,4 +156,5 @@ public abstract class BaseChat<T> implements Serializable {
         isStranger = stranger;
     }
 
+    public abstract String friendPublicKey();
 }

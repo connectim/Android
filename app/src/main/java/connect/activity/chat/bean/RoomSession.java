@@ -28,6 +28,7 @@ public class RoomSession {
     private Map<String, String> keyMap = new HashMap<>();
     private Connect.ChatType chatType = Connect.ChatType.PRIVATE;
     private String chatKey;
+    private String chatPublicKey;
 
     private long burntime;
 
@@ -88,5 +89,13 @@ public class RoomSession {
         if (!TextUtils.isEmpty(avatar)) {
             keyMap.put(key, newAvatar);
         }
+    }
+
+    public String getChatPublicKey() {
+        return chatPublicKey;
+    }
+
+    public void setChatPublicKey(String chatPublicKey) {
+        this.chatPublicKey = chatPublicKey;
     }
 }

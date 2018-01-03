@@ -12,7 +12,10 @@ import java.util.concurrent.TimeUnit;
 
 import instant.bean.Session;
 import instant.bean.SocketACK;
+import instant.bean.UserCookie;
 import instant.sender.inter.LocalServiceListener;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import instant.utils.log.LogManager;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
@@ -117,19 +120,15 @@ public class SenderManager implements LocalServiceListener {
 
                 ByteBuffer byteBuffer = null;
                 if (transfer) { // transferData,Encapsulating server checksum data
-                    Connect.StructData structData = Connect.StructData.newBuilder()
-                            .setPlainData(bytes)
-                            .build();
+                    UserCookie userCookie = Session.getInstance().getChatCookie();
+                    String priKey = userCookie.getPrivateKey();
+                    Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE,
+                            Session.getInstance().getChatCookie().getSalts(), bytes);
+                    String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
+                    Connect.IMTransferData transferData = Connect.IMTransferData.newBuilder().
+                            setSign(signHash).setCipherData(gcmData).build();
 
-                    String uid = Session.getInstance().getConnectCookie().getUid();
-                    String token = Session.getInstance().getChatCookie().getToken();
-                    Connect.IMTransferData imTransferData = Connect.IMTransferData.newBuilder()
-                            .setBody(structData.toByteString())
-                            .setUid(uid)
-                            .setToken(token)
-                            .build();
-
-                    byteBuffer = ByteBuffer.wrap(imTransferData.toByteArray());
+                    byteBuffer = ByteBuffer.wrap(transferData.toByteArray());
                     serviceListener.messageSend(ack.getOrder(), byteBuffer);
                 } else {
                     byteBuffer = ByteBuffer.wrap(bytes.toByteArray());

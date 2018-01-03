@@ -10,10 +10,14 @@ import java.util.Map;
 
 import instant.bean.Session;
 import instant.bean.SocketACK;
+import instant.bean.UserCookie;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.sender.SenderManager;
 import instant.utils.SharedUtil;
 import instant.utils.TimeUtil;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -46,7 +50,9 @@ public abstract class InterParse {
      */
     protected synchronized Connect.StructData imTransferToStructData(ByteBuffer buffer) throws Exception {
         Connect.IMTransferData imTransferData = Connect.IMTransferData.parseFrom(buffer.array());
-        return Connect.StructData.parseFrom(imTransferData.getBody());
+        byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE,
+                Session.getInstance().getChatCookie().getSalts(), imTransferData.getCipherData());
+        return Connect.StructData.parseFrom(bytes);
     }
 
     /**
@@ -67,17 +73,19 @@ public abstract class InterParse {
                 .setMsgId(msgid)
                 .build();
 
-        Connect.StructData structData= Connect.StructData.newBuilder()
-                .setPlainData(ack.toByteString())
-                .build();
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE,
+                Session.getInstance().getChatCookie().getSalts(), ack.toByteString());
 
-        String uid = Session.getInstance().getConnectCookie().getUid();
-        String token = Session.getInstance().getChatCookie().getToken();
+        String myPrivateKey = userCookie.getPrivateKey();
+        String uid = userCookie.getUid();
+        String token = userCookie.getToken();
+        String signHash = SupportKeyUril.signHash(myPrivateKey, gcmData.toByteArray());
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
+                .setCipherData(gcmData)
                 .setUid(uid)
                 .setToken(token)
-                .setBody(structData.toByteString())
-                .build();
+                .setSign(signHash).build();
 
         SenderManager.getInstance().sendToMsg(socketack, backAck.toByteString());
     }
@@ -89,15 +97,18 @@ public abstract class InterParse {
                 .addAllAcks(socketACKs)
                 .build();
 
-        Connect.StructData structData = Connect.StructData.newBuilder()
-                .setPlainData(ackBatch.toByteString())
-                .build();
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.NONE,
+                Session.getInstance().getChatCookie().getSalts(), ackBatch.toByteString());
 
-        String uid = Session.getInstance().getConnectCookie().getUid();
-        String token = Session.getInstance().getChatCookie().getToken();
+        String myPrivateKey = userCookie.getPrivateKey();
+        String uid = userCookie.getUid();
+        String token = userCookie.getToken();
+        String signHash = SupportKeyUril.signHash(myPrivateKey, gcmData.toByteArray());
         Connect.IMTransferData backAck = Connect.IMTransferData.newBuilder()
-                .setBody(structData.toByteString())
+                .setCipherData(gcmData)
                 .setToken(token)
+                .setSign(signHash)
                 .setUid(uid)
                 .build();
 

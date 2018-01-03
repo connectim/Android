@@ -1,8 +1,14 @@
 package instant.parser;
 
+import com.google.protobuf.ByteString;
+
 import java.nio.ByteBuffer;
 
+import instant.bean.Session;
+import instant.bean.UserCookie;
 import instant.parser.localreceiver.MessageLocalReceiver;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -41,6 +47,15 @@ public class ChatParser extends InterParse {
     public synchronized void singleChat(Connect.MessagePost msgpost) throws Exception {
         Connect.MessageData messageData = msgpost.getMsgData();
         Connect.ChatMessage chatMessage = messageData.getChatMsg();
+
+        String friendPublicKey = messageData.getChatSession().getPubKey();
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
+        String myPrivateKey = userCookie.getPrivateKey();
+
+        EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
+        byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, chatMessage.getCipherData());
+        chatMessage.toBuilder().setBody(ByteString.copyFrom(contents));
+
         MessageLocalReceiver.localReceiver.singleChat(chatMessage);
     }
 

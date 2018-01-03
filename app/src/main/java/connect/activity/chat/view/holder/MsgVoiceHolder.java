@@ -8,7 +8,9 @@ import android.widget.ImageView;
 import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.VoiceImg;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.TimeUtil;
@@ -83,6 +85,13 @@ public class MsgVoiceHolder extends MsgChatHolder {
                             public void successDown(byte[] bytes) {
                                 if (null != loadImg) {
                                     loadImg.setVisibility(View.GONE);
+                                }
+
+                                if (Connect.ChatType.forNumber(msgExtEntity.getChatType()) == Connect.ChatType.PRIVATE) {
+                                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_ower());
+                                    if (contactEntity != null) {
+                                        bytes = decodeFile(contactEntity.getPublicKey(), bytes);
+                                    }
                                 }
 
                                 FileUtil.byteArrToFilePath(bytes, localPath);

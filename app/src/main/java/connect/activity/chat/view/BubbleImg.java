@@ -5,24 +5,24 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.google.protobuf.compiler.PluginProtos;
-
-import java.io.File;
 
 import connect.activity.base.BaseApplication;
-import connect.utils.chatfile.download.DownLoadFile;
-import connect.utils.chatfile.inter.InterFileDown;
-import connect.utils.log.LogManager;
-import instant.bean.MsgDirect;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
+import connect.utils.chatfile.download.DownLoadFile;
+import connect.utils.chatfile.inter.InterFileDown;
 import connect.utils.glide.BlurMaskTransformation;
+import connect.utils.log.LogManager;
 import connect.utils.system.SystemUtil;
+import instant.bean.MsgDirect;
 import instant.sender.model.RobotChat;
 import protos.Connect;
 
@@ -118,6 +118,13 @@ public class BubbleImg extends RelativeLayout {
                 public void successDown(byte[] bytes) {
                     progressBar.setVisibility(GONE);
                     String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
+
+                    if (chatType == Connect.ChatType.PRIVATE) {
+                        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(pukkey);
+                        if (contactEntity != null) {
+                            bytes = decodeFile(contactEntity.getPublicKey(), bytes);
+                        }
+                    }
                     FileUtil.byteArrToFilePath(bytes, localPath);
                     loadUri(direct, chatType, pukkey, msgid, ecdh,localPath, imgwidth, imgheight);
                 }

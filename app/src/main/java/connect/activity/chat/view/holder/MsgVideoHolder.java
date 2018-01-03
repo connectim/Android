@@ -10,6 +10,8 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.exts.VideoPlayerActivity;
 import connect.activity.chat.view.BubbleImg;
 import connect.activity.chat.view.DVideoProView;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.chatfile.download.DownLoadFile;
@@ -81,6 +83,13 @@ public class MsgVideoHolder extends MsgChatHolder {
                                 videomsg.setOpenBurn(false);
                                 videomsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),
                                         "", videoMessage.getUrl(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
+
+                                if (chatType == Connect.ChatType.PRIVATE) {
+                                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_ower());
+                                    if (contactEntity != null) {
+                                        bytes = decodeFile(contactEntity.getPublicKey(), bytes);
+                                    }
+                                }
 
                                 FileUtil.byteArrToFilePath(bytes, localPath);
                                 if (videoMessage.getSnapTime() == 0) {
@@ -162,6 +171,14 @@ public class MsgVideoHolder extends MsgChatHolder {
                     @Override
                     public void successDown(byte[] bytes) {
                         videoProView.loadState(true, 0);
+
+                        if (Connect.ChatType.forNumber(msgExtEntity.getChatType()) == Connect.ChatType.PRIVATE) {
+                            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_ower());
+                            if (contactEntity != null) {
+                                bytes = decodeFile(contactEntity.getPublicKey(), bytes);
+                            }
+                        }
+
                         FileUtil.byteArrToFilePath(bytes, localPath);
                         SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
                     }

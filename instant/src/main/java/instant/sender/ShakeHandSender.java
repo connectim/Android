@@ -1,10 +1,16 @@
 package instant.sender;
 
+import com.google.protobuf.ByteString;
+
+import connect.wallet.jni.AllNativeMethod;
 import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.bean.UserCookie;
 import instant.parser.localreceiver.ConnectLocalReceiver;
-import instant.utils.DeviceInfoUtil;
+import instant.utils.StringUtil;
+import instant.utils.XmlParser;
+import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import instant.utils.log.LogManager;
 import protos.Connect;
 
@@ -31,22 +37,35 @@ public class ShakeHandSender {
         UserCookie userCookie = Session.getInstance().getConnectCookie();
         String uid = userCookie.getUid();
         String token = userCookie.getToken();
+        String priKey = userCookie.getPrivateKey();
+
+        String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
+        String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
+
+        String cdSeed = AllNativeMethod.cdCreateSeed(16, 4);
+        UserCookie tempCookie = new UserCookie();
+        tempCookie.setPrivateKey(randomPriKey);
+        tempCookie.setPublicKey(randomPubKey);
+        tempCookie.setSalts(cdSeed.getBytes());
+        tempCookie.setToken(token);
+        Session.getInstance().setChatCookie(tempCookie);
 
         Connect.NewConnection newConnection = Connect.NewConnection.newBuilder()
+                .setPubKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey)))
+                .setSalt(ByteString.copyFrom(cdSeed.getBytes()))
                 .setToken(token)
                 .build();
-        Connect.StructData structData = Connect.StructData.newBuilder()
-                .setPlainData(newConnection.toByteString())
-                .build();
 
-        String deviceId = DeviceInfoUtil.getDeviceId();
-        Connect.TcpRequest imRequest = Connect.TcpRequest.newBuilder()
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
+                priKey, XmlParser.getInstance().serverPubKey(), newConnection.toByteString());
+
+        String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
+        Connect.TcpRequest tcpRequest = Connect.TcpRequest.newBuilder()
                 .setUid(uid)
-                .setToken(token)
-                .setDeviceId(deviceId)
-                .setBody(structData.toByteString())
+                .setCipherData(gcmData)
+                .setSign(signHash)
                 .build();
 
-        SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, imRequest.toByteString());
+        SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, tcpRequest.toByteString());
     }
 }

@@ -81,9 +81,4 @@ public class DiscussChat extends NormalChat {
     public String nickName() {
         return "";
     }
-
-    @Override
-    public long destructReceipt() {
-        return 0;
-    }
 }
