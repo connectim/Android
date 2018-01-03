@@ -34,6 +34,7 @@ import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.MsgNoticeBean;
+import connect.activity.home.fragment.CompanyFragment;
 import connect.activity.home.fragment.ContactFragment;
 import connect.activity.home.fragment.ConversationFragment;
 import connect.activity.home.fragment.SetFragment;
@@ -67,6 +68,8 @@ public class HomeActivity extends BaseFragmentActivity {
     ImageView contact;
     @Bind(R.id.set)
     ImageView set;
+    @Bind(R.id.company)
+    ImageView company;
     @Bind(R.id.home_content)
     FrameLayout homeContent;
     @Bind(R.id.msg_rela)
@@ -88,6 +91,7 @@ public class HomeActivity extends BaseFragmentActivity {
     private SetFragment setFragment;
     private ResolveUrlUtil resolveUrlUtil;
     private CheckUpdate checkUpdata;
+    private CompanyFragment companyFragment;
 
     public static void startActivity(Activity activity) {
         ActivityUtil.next(activity, HomeActivity.class);
@@ -187,7 +191,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 break;
             case REMOTE_LOGIN:
                 String deviceName = (String) objects[0];
-                DialogUtil.showAlertTextView(activity, null, getString(R.string.Error_Device_Remote_Login, deviceName), null, getString(R.string.Common_OK), true, false,new DialogUtil.OnItemClickListener() {
+                DialogUtil.showAlertTextView(activity, null, getString(R.string.Error_Device_Remote_Login, deviceName), null, getString(R.string.Common_OK), true, false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
@@ -240,7 +244,7 @@ public class HomeActivity extends BaseFragmentActivity {
         }.execute();
     }
 
-    @OnClick({R.id.msg_rela, R.id.contact_rela, R.id.set_rela})
+    @OnClick({R.id.msg_rela, R.id.contact_rela, R.id.company_rela, R.id.set_rela})
     public void OnClickListener(View view) {
         initBottomTab();
         switch (view.getId()) {
@@ -252,8 +256,12 @@ public class HomeActivity extends BaseFragmentActivity {
                 switchFragment(1);
                 contact.setSelected(true);
                 break;
-            case R.id.set_rela:
+            case R.id.company_rela:
                 switchFragment(2);
+                company.setSelected(true);
+                break;
+            case R.id.set_rela:
+                switchFragment(3);
                 set.setSelected(true);
                 break;
         }
@@ -262,12 +270,14 @@ public class HomeActivity extends BaseFragmentActivity {
     private void initBottomTab() {
         msg.setSelected(false);
         contact.setSelected(false);
+        company.setSelected(false);
         set.setSelected(false);
     }
 
     public void setDefaultFragment() {
         chatListFragment = ConversationFragment.startFragment();
         contactFragment = ContactFragment.startFragment();
+        companyFragment = CompanyFragment.startFragment();
         setFragment = SetFragment.startFragment();
 
         switchFragment(0);
@@ -303,6 +313,13 @@ public class HomeActivity extends BaseFragmentActivity {
                 }
                 break;
             case 2:
+                if (!companyFragment.isAdded()) {
+                    fragmentTransaction.add(R.id.home_content, companyFragment);
+                } else {
+                    fragmentTransaction.show(companyFragment);
+                }
+                break;
+            case 3:
                 if (!setFragment.isAdded()) {
                     fragmentTransaction.add(R.id.home_content, setFragment);
                 } else {

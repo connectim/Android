@@ -69,6 +69,21 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/company_rela"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            android:layout_weight="1">
+
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@+id/company"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/selector_setting"/>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/set_rela"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"

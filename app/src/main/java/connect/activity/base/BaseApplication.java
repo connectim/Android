@@ -88,7 +88,11 @@ public class BaseApplication extends Application implements InterAccount {
         InstantSdk.instantSdk.stopInstant();
 
         //Remove the local login information
-        SharedPreferenceUtil.getInstance().remove(SharedPreferenceUtil.USER_INFO);
+        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        userBean.setUid("");
+        userBean.setToken("");
+        SharedPreferenceUtil.getInstance().putUser(userBean);
+
         DaoManager.getInstance().closeDataBase();
 
         //service

@@ -34,6 +34,9 @@ public class UriUtil {
     public static String CONNECT_V2_SIGN_UP_PASSWORD = "/connect/v2/sign_in/password";
     /** The private key is registered */
     public static String CONNECT_V3_LOGIN = "/connect/v3/login";
+    /** The private key is registered */
+    public static String CONNECT_V3_SYNC_WORKMATE = "/connect/v3/sync_workmate";
+
 
     /**======================================================================================
      *                                Login successfully initialized
@@ -87,7 +90,8 @@ public class UriUtil {
     public static String V2_SETTING_MOBILE_VERIFY = "/connect/v2/setting/mobile/verify";
     /** delete account */
     public static String V2_SETTING_DELETE_USER = "/connect/v2/setting/delete_user";
-
+    /** delete account */
+    public static String CONNECT_V3_PUBKEY = "/connect/v3/pubkey";
 
     /**======================================================================================
      *                                wallet

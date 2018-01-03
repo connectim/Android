@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import butterknife.Bind;
@@ -21,9 +22,11 @@ import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.StringUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
+import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
 import protos.Connect;
@@ -61,6 +64,8 @@ public class LoginUserActivity extends BaseActivity {
         nextBtn.setEnabled(false);
         nameEt.addTextChangedListener(textWatcher);
         passwordEt.addTextChangedListener(textWatcher);
+
+
     }
 
     @OnClick(R.id.next_btn)
@@ -76,10 +81,17 @@ public class LoginUserActivity extends BaseActivity {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                     Connect.UserLoginInfo userLoginInfo = Connect.UserLoginInfo.parseFrom(structData.getPlainData());
-                    UserBean userBean = new UserBean(userLoginInfo.getName(), userLoginInfo.getAvatar(), userLoginInfo.getUid(), userLoginInfo.getOU(), userLoginInfo.getToken());
-                    SharedPreferenceUtil.getInstance().putUser(userBean);
-                    HomeActivity.startActivity(mActivity);
-                    mActivity.finish();
+                    UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                    if(userBean != null || TextUtils.isEmpty(userLoginInfo.getPubKey())
+                            || !userLoginInfo.getPubKey().equals(userBean.getPubKey())){
+                        requestUpdatePub(userLoginInfo);
+                    }else{
+                        UserBean userBean1 = new UserBean(userLoginInfo.getName(), userLoginInfo.getAvatar(), userLoginInfo.getUid(),
+                                userLoginInfo.getOU(), userLoginInfo.getToken(),userBean.getPubKey(),userBean.getPriKey());
+                        SharedPreferenceUtil.getInstance().putUser(userBean1);
+                        HomeActivity.startActivity(mActivity);
+                        mActivity.finish();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -89,6 +101,36 @@ public class LoginUserActivity extends BaseActivity {
             public void onError(Connect.HttpNotSignResponse response) {
                 ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
             }
+        });
+    }
+
+    private void requestUpdatePub(final Connect.UserLoginInfo userLoginInfo){
+        final String priKey = "L12LREW9xUHDADSi37RckeML7wVX17FWLaRmtfWgdRVHs3SM8cEY";
+        final String pubKey1 = "02158228fd95f6984886775cf9d0580aa9b5009c8b92c96abc7bca26d1f7f52b61";
+        Connect.PubKey pubKey = Connect.PubKey.newBuilder()
+                .setPubKey(pubKey1)
+                .build();
+        ByteString random = ByteString.copyFrom(StringUtil.getSecureRandom(16));
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setRandom(random)
+                .setPlainData(pubKey.toByteString())
+                .build();
+        Connect.HttpRequest httpRequest = Connect.HttpRequest.newBuilder()
+                .setUid(userLoginInfo.getUid())
+                .setBody(structData.toByteString())
+                .setToken(userLoginInfo.getToken()).build();
+        HttpRequest.getInstance().post(UriUtil.CONNECT_V3_PUBKEY, httpRequest, new ResultCall<Connect.HttpNotSignResponse>() {
+            @Override
+            public void onResponse(Connect.HttpNotSignResponse response) {
+                UserBean userBean1 = new UserBean(userLoginInfo.getName(), userLoginInfo.getAvatar(), userLoginInfo.getUid(),
+                        userLoginInfo.getOU(), userLoginInfo.getToken(),pubKey1, priKey);
+                SharedPreferenceUtil.getInstance().putUser(userBean1);
+                HomeActivity.startActivity(mActivity);
+                mActivity.finish();
+            }
+
+            @Override
+            public void onError(Connect.HttpNotSignResponse response) {}
         });
     }
 

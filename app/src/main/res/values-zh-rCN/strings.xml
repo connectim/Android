@@ -144,6 +144,7 @@
     <string name="Link_Add_as_a_friend">发送朋友验证</string>
     <string name="Link_Add_to_Contacts">添加到联系人</string>
     <string name="Link_Added">已添加</string>
+    <string name="Link_Not_logged_in">未登录</string>
     <string name="Link_An_error_occurred_change_nickname">更新昵称失败</string>
     <string name="Link_Black_List">黑名单</string>
     <string name="Link_Block">加入黑名单</string>
@@ -526,4 +527,6 @@
     <string name="Chat_No_Data">没有数据...</string>
     <string name="Chat_Create_Group_Success">创建群组成功</string>
     <string name="Error_Device_Remote_Login">你的设备已经在在%1$s上登录</string>
+
+    <string name="Company_company">公司</string>
 </resources>
