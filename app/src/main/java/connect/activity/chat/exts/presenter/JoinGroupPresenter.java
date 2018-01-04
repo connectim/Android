@@ -44,7 +44,7 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupInfoBaseShare baseShare = Connect.GroupInfoBaseShare.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(baseShare)){
@@ -122,7 +122,7 @@ public class JoinGroupPresenter implements JoinGroupContract.Presenter{
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupInfoBase groupInfoBase = Connect.GroupInfoBase.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfoBase)) {

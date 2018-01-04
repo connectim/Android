@@ -36,18 +36,20 @@
         android:layout_marginTop="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"/>
+
     <EditText
         android:id="@id/password_et"
         style="@style/EditStyle.16"
-        android:layout_height="@dimen/dp_40"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="@dimen/dp_40"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
-        android:paddingLeft="@dimen/dp_10"
-        android:inputType="textPassword"
+        android:layout_marginTop="@dimen/dp_10"
         android:hint="@string/Login_Password"
-        android:singleLine="true"/>
+        android:inputType="textPassword"
+        android:paddingLeft="@dimen/dp_10"
+        android:singleLine="true" />
+
     <View
         style="@style/BaseViewLine.d1d5da"
         android:layout_marginLeft="@dimen/dp_20"

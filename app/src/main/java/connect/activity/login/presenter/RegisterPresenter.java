@@ -115,7 +115,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
 //            public void onResponse(Connect.HttpResponse response) {
 //                try {
 //                    ProgressUtil.getInstance().dismissProgress();
-//                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+//                    Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
 //                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
 //                            userBeanOut.getUid(), imResponse.getCipherData());
 //                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());

@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,13 +21,13 @@ import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.ConfigUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
-import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.widget.TopToolBar;
+import connect.wallet.jni.AllNativeMethod;
 import protos.Connect;
 
 /**
@@ -65,7 +64,9 @@ public class LoginUserActivity extends BaseActivity {
         nameEt.addTextChangedListener(textWatcher);
         passwordEt.addTextChangedListener(textWatcher);
 
-
+        if (!ConfigUtil.getInstance().appMode()) {
+            passwordEt.setText("Abcd1234");
+        }
     }
 
     @OnClick(R.id.next_btn)
@@ -105,8 +106,8 @@ public class LoginUserActivity extends BaseActivity {
     }
 
     private void requestUpdatePub(final Connect.UserLoginInfo userLoginInfo){
-        final String priKey = "L12LREW9xUHDADSi37RckeML7wVX17FWLaRmtfWgdRVHs3SM8cEY";
-        final String pubKey1 = "02158228fd95f6984886775cf9d0580aa9b5009c8b92c96abc7bca26d1f7f52b61";
+        final String priKey = AllNativeMethod.cdCreateNewPrivKey();
+        final String pubKey1 = AllNativeMethod.cdGetPubKeyFromPrivKey(priKey);
         Connect.PubKey pubKey = Connect.PubKey.newBuilder()
                 .setPubKey(pubKey1)
                 .build();

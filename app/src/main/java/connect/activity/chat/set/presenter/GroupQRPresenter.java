@@ -57,7 +57,7 @@ public class GroupQRPresenter implements GroupQRContract.Presenter {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupHash groupHash = Connect.GroupHash.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(groupHash)){
@@ -88,7 +88,7 @@ public class GroupQRPresenter implements GroupQRContract.Presenter {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GroupUrl groupUrl = Connect.GroupUrl.parseFrom(structData.getPlainData());
                     if(!ProtoBufUtil.getInstance().checkProtoBuf(groupUrl)){

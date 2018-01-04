@@ -176,7 +176,7 @@ public class SafetyNewPhoneActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try{
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.SecurityToken securityToken = Connect.SecurityToken .parseFrom(structData.getPlainData());
                     token = securityToken.getToken();

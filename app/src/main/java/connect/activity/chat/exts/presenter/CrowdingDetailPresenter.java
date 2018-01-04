@@ -46,7 +46,7 @@ public class CrowdingDetailPresenter implements CrowdingDetailContract.Presenter
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     crowdfunding = Connect.Crowdfunding.parseFrom(structData.getPlainData());
                     if (!ProtoBufUtil.getInstance().checkProtoBuf(crowdfunding)) {

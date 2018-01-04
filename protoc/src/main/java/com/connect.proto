@@ -509,7 +509,8 @@ bytes tag = 3;
 bytes ciphertext = 4;
 }
 message IMResponse {
-  bytes body = 1;
+   string sign = 1;
+   GcmData cipher_data = 2;
 }
 
 message RequestNotEncrypt {
@@ -525,10 +526,10 @@ GcmData cipher_data = 3;
 }
 
 message IMTransferData {
-string uid = 1;
-string token = 2;
-string sign = 3;
-GcmData cipher_data = 4;
+ string sign = 1;
+ GcmData cipher_data = 2;
+ string token = 3;
+ string uid = 4;
 }
 
 message Ack {
@@ -1768,6 +1769,7 @@ string name =3;
 string o_u =4;
 string uid =5;
 string avatar = 6;
+string pub_key = 7;
 }
 
 message HttpRequest {
@@ -1775,3 +1777,30 @@ message HttpRequest {
   bytes body = 2;
   string token = 3;
 }
+
+message Workmate {
+ string name = 1;
+ string o_u = 2;
+ string uid = 3;
+ string avatar = 4;
+ string pub_key = 5;
+ bool registed = 6;
+}
+
+message Workmates {
+ repeated Workmate list = 1;
+}
+
+message PubKey {
+ string pub_key = 1;
+}
+
+message Department {
+ string name = 1;
+ int64 id = 2;
+}
+
+message Departments {
+ repeated Department list = 1;
+}
+

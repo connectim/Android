@@ -97,7 +97,7 @@ public class MsgLuckyHolder extends MsgChatHolder {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.GrabRedPackageResp packageResp = Connect.GrabRedPackageResp.parseFrom(structData.getPlainData());
                     if (!ProtoBufUtil.getInstance().checkProtoBuf(packageResp)) {//state default 0

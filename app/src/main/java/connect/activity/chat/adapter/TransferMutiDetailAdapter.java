@@ -68,7 +68,7 @@ public class TransferMutiDetailAdapter extends RecyclerView.Adapter<TransferMuti
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
                         try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                            Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
                             Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                             Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
                             if (ProtoBufUtil.getInstance().checkProtoBuf(userInfo)) {

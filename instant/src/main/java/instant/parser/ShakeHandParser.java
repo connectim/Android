@@ -56,9 +56,11 @@ public class ShakeHandParser extends InterParse {
         Connect.IMResponse response = Connect.IMResponse.parser().parseFrom(buffer.array());
 
         UserCookie userCookie = Session.getInstance().getConnectCookie();
+        String uid = userCookie.getUid();
         String myPrivateKey = userCookie.getPrivateKey();
-        // byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, XmlParser.getInstance().serverPubKey(), response.getBody());
-        Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
+
+        byte[] bytes = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, XmlParser.getInstance().serverPubKey(), response.getCipherData());
+        Connect.StructData structData = Connect.StructData.parseFrom(bytes);
         Connect.NewConnection newConnection = Connect.NewConnection.parser().parseFrom(structData.getPlainData());
 
         String token = newConnection.getToken();
@@ -97,6 +99,8 @@ public class ShakeHandParser extends InterParse {
         Connect.IMTransferData imTransferData = Connect.IMTransferData.newBuilder()
                 .setCipherData(gcmDataTemp)
                 .setSign(signHash)
+                .setToken(token)
+                .setUid(uid)
                 .build();
 
         SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_SECOND, imTransferData.toByteString());

@@ -39,7 +39,7 @@ public class GroupCrowdingRecordPresenter implements GroupCrowdingRecordContract
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
+                    Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
                     Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                     Connect.Crowdfundings crowdfundings = Connect.Crowdfundings.parseFrom(structData.getPlainData());
                     List<Connect.Crowdfunding> list = crowdfundings.getListList();
