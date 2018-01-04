@@ -179,7 +179,7 @@ public class DepartmentActivity extends BaseActivity {
                     UserInfoActivity.startActivity(mActivity);
                 }else if(contactEntity != null){
                     FriendInfoActivity.startActivity(mActivity, departmentBean.getUid());
-                }else{
+                }else if(departmentBean.getRegisted()){
                     StrangerInfoActivity.startActivity(mActivity, departmentBean.getUid(), SourceType.SEARCH);
                 }
             }
