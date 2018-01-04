@@ -23,12 +23,16 @@ import connect.activity.base.BaseActivity;
 import connect.activity.company.adapter.DepartmentAdapter;
 import connect.activity.company.adapter.DepartmentBean;
 import connect.activity.company.adapter.NameLinear;
+import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.SearchFriendResultActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
+import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -58,6 +62,7 @@ public class DepartmentActivity extends BaseActivity {
     private DepartmentActivity mActivity;
     private DepartmentAdapter adapter;
     private ArrayList<Connect.Department> nameList = new ArrayList<>();
+    private UserBean userBean;
 
     public static void lunchActivity(Activity activity) {
         Bundle bundle = new Bundle();
@@ -78,6 +83,7 @@ public class DepartmentActivity extends BaseActivity {
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Chat_Organizational_structure);
+        userBean = SharedPreferenceUtil.getInstance().getUser();
 
         nameLinear.setItemClickListener(onItemClickListener);
 
@@ -168,13 +174,20 @@ public class DepartmentActivity extends BaseActivity {
                 nameLinear.notifyAddView(nameList, scrollview);
                 requestDepartment(departmentBean.getId());
             } else {
-
+                ContactEntity contactEntity = ContactHelper.getInstance().loadFriendByUid(departmentBean.getUid());
+                if(userBean.getUid().equals(departmentBean.getUid())){
+                    UserInfoActivity.startActivity(mActivity);
+                }else if(contactEntity != null){
+                    FriendInfoActivity.startActivity(mActivity, departmentBean.getUid());
+                }else{
+                    StrangerInfoActivity.startActivity(mActivity, departmentBean.getUid(), SourceType.SEARCH);
+                }
             }
         }
 
         @Override
         public void addFriend(int position, DepartmentBean departmentBean) {
-            StrangerInfoActivity.startActivity(mActivity, departmentBean.getUid(), SourceType.SEARCH);
+
         }
     };
 

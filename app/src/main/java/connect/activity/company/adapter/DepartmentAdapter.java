@@ -57,7 +57,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
             holder.nameTvS.setText(departmentBean.getName());
             holder.nicName.setText(departmentBean.getO_u());
             if(departmentBean.getRegisted()){
-                holder.addBtn.setText(R.string.Link_Add);
+                holder.addBtn.setText(R.string.Chat_Chats);
                 holder.addBtn.setEnabled(true);
                 holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff));
                 holder.addBtn.setOnClickListener(new View.OnClickListener() {
