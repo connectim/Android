@@ -82,7 +82,7 @@ public class LoginUserActivity extends BaseActivity {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                     Connect.UserLoginInfo userLoginInfo = Connect.UserLoginInfo.parseFrom(structData.getPlainData());
                     UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-                    if(userBean != null || TextUtils.isEmpty(userLoginInfo.getPubKey())
+                    if(userBean == null || TextUtils.isEmpty(userLoginInfo.getPubKey())
                             || !userLoginInfo.getPubKey().equals(userBean.getPubKey())){
                         requestUpdatePub(userLoginInfo);
                     }else{

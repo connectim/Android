@@ -19,6 +19,7 @@ import java.util.List;
 import connect.activity.base.BaseApplication;
 import connect.activity.contact.model.ContactListManage;
 import connect.activity.home.bean.ContactBean;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.PinyinUtil;
 import connect.utils.glide.GlideUtil;
@@ -115,36 +116,44 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 break;
             case STATUS_FRIEND:
-                String currLetter = contactManage.checkShowFriendTop(currBean, mData.get(position - 1));
-                if (TextUtils.isEmpty(currLetter)) {
+                if(currBean.getStatus() == 7){
                     ((FriendHolder) holder).topTv.setVisibility(View.GONE);
                     ((FriendHolder) holder).lineView.setVisibility(View.VISIBLE);
-                } else {
-                    ((FriendHolder) holder).topTv.setVisibility(View.VISIBLE);
-                    ((FriendHolder) holder).lineView.setVisibility(View.GONE);
-                    ((FriendHolder) holder).topTv.setCompoundDrawables(null, null, null, null);
-                    switch (currBean.getStatus()) {
-                        case 2: // group
-                            Drawable draGroup = activity.getResources().getDrawable(R.mipmap.contract_group_chat3x);
-                            draGroup.setBounds(0, 0, draGroup.getMinimumWidth(), draGroup.getMinimumHeight());
-                            ((FriendHolder) holder).topTv.setCompoundDrawables(draGroup, null, null, null);
-                            ((FriendHolder) holder).topTv.setText(R.string.Link_Group);
-                            break;
-                        case 3: // Common friends
-                            Drawable draCommon = activity.getResources().getDrawable(R.mipmap.contract_favorite13x);
-                            draCommon.setBounds(0, 0, draCommon.getMinimumWidth(), draCommon.getMinimumHeight());
-                            ((FriendHolder) holder).topTv.setCompoundDrawables(draCommon, null, null, null);
-                            ((FriendHolder) holder).topTv.setText(R.string.Link_Favorite_Friend);
-                            break;
-                        case 4:
-                            ((FriendHolder) holder).topTv.setText(currLetter);
-                            break;
-                        default:
-                            break;
+
+                    ((FriendHolder) holder).avater.setImageResource(R.mipmap.department);
+                    ((FriendHolder) holder).name.setText(R.string.Chat_Organizational_structure);
+                }else{
+                    String currLetter = contactManage.checkShowFriendTop(currBean, mData.get(position - 1));
+                    if (TextUtils.isEmpty(currLetter)) {
+                        ((FriendHolder) holder).topTv.setVisibility(View.GONE);
+                        ((FriendHolder) holder).lineView.setVisibility(View.VISIBLE);
+                    } else {
+                        ((FriendHolder) holder).topTv.setVisibility(View.VISIBLE);
+                        ((FriendHolder) holder).lineView.setVisibility(View.GONE);
+                        ((FriendHolder) holder).topTv.setCompoundDrawables(null, null, null, null);
+                        switch (currBean.getStatus()) {
+                            case 2: // group
+                                Drawable draGroup = activity.getResources().getDrawable(R.mipmap.contract_group_chat3x);
+                                draGroup.setBounds(0, 0, draGroup.getMinimumWidth(), draGroup.getMinimumHeight());
+                                ((FriendHolder) holder).topTv.setCompoundDrawables(draGroup, null, null, null);
+                                ((FriendHolder) holder).topTv.setText(R.string.Link_Group);
+                                break;
+                            case 3: // Common friends
+                                Drawable draCommon = activity.getResources().getDrawable(R.mipmap.contract_favorite13x);
+                                draCommon.setBounds(0, 0, draCommon.getMinimumWidth(), draCommon.getMinimumHeight());
+                                ((FriendHolder) holder).topTv.setCompoundDrawables(draCommon, null, null, null);
+                                ((FriendHolder) holder).topTv.setText(R.string.Link_Favorite_Friend);
+                                break;
+                            case 4:
+                                ((FriendHolder) holder).topTv.setText(currLetter);
+                                break;
+                            default:
+                                break;
+                        }
                     }
+                    GlideUtil.loadAvatarRound(((FriendHolder) holder).avater, currBean.getAvatar());
+                    ((FriendHolder) holder).name.setText(currBean.getName());
                 }
-                GlideUtil.loadAvatarRound(((FriendHolder) holder).avater, currBean.getAvatar());
-                ((FriendHolder) holder).name.setText(currBean.getName());
                 break;
             case STATUS_FRIEND_CONNECT:
                 String connectLetter = contactManage.checkShowFriendTop(currBean, mData.get(position - 1));
@@ -180,7 +189,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int status = mData.get(position).getStatus();
         if (status == 1) {
             return STATUS_REQUEST;
-        } else if (status == 2 || status == 3 || status == 4) {
+        } else if (status == 2 || status == 3 || status == 4 || status == 7) {
             return STATUS_FRIEND;
         } else if(status == 6){
             return STATUS_FRIEND_CONNECT;
@@ -230,12 +239,16 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView topTv;
         RelativeLayout contentLayout;
         View lineView;
+        ImageView avatarImg;
+        TextView nameTv;
 
         public ConnectHolder(View itemView) {
             super(itemView);
             contentLayout = (RelativeLayout)itemView.findViewById(R.id.content_layout);
             topTv = (TextView)itemView.findViewById(R.id.top_tv);
             lineView = itemView.findViewById(R.id.line_view);
+            avatarImg = (ImageView)itemView.findViewById(R.id.avatar_img);
+            nameTv = (TextView)itemView.findViewById(R.id.name_tv);
         }
     }
 
@@ -284,6 +297,9 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 final int friendSize = friendMap.get("friend").size() + friendMap.get("favorite").size();
                 final int groupSize = groupList.size();
                 finalList.addAll(listRequest);
+                ContactBean contactBean = new ContactBean();
+                contactBean.setStatus(7);
+                finalList.add(contactBean);
                 finalList.addAll(friendMap.get("favorite"));
                 finalList.addAll(groupList);
                 finalList.addAll(friendMap.get("friend"));

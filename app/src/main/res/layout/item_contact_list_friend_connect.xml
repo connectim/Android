@@ -35,6 +35,7 @@
             android:scaleType="fitXY"
             android:src="@mipmap/connect_logo" />
         <TextView
+            android:id="@+id/name_tv"
             style="@style/BaseTextStyle.16"
             android:layout_toRightOf="@+id/avatar_img"
             android:textStyle="bold"
