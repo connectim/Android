@@ -54,7 +54,7 @@ public class ChatParser extends InterParse {
 
         EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
         byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, chatMessage.getCipherData());
-        chatMessage.toBuilder().setBody(ByteString.copyFrom(contents));
+        chatMessage = chatMessage.toBuilder().setBody(ByteString.copyFrom(contents)).build();
 
         MessageLocalReceiver.localReceiver.singleChat(chatMessage);
     }

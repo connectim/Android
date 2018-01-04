@@ -51,13 +51,13 @@ public class FriendChat extends NormalChat {
 
             UserCookie userCookie = Session.getInstance().getConnectCookie();
             String userPrivate = userCookie.getPrivateKey();
-            String friend = chatKey();
+            String userPublicKey = userCookie.getPublicKey();
             EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, userPrivate, friend, msgExtEntity.getContents());
+            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, userPrivate, friendPublicKey, msgExtEntity.getContents());
             chatMessageBuilder.setCipherData(gcmData);
 
             Connect.ChatSession chatSession = Connect.ChatSession.newBuilder()
-                    .setPubKey(friendPublicKey)
+                    .setPubKey(userPublicKey)
                     .build();
             Connect.MessageData messageData = Connect.MessageData.newBuilder()
                     .setChatSession(chatSession)
@@ -102,5 +102,10 @@ public class FriendChat extends NormalChat {
 
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
+    }
+
+    @Override
+    public String friendPublicKey() {
+        return friendPublicKey;
     }
 }

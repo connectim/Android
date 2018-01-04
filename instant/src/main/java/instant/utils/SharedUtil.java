@@ -10,7 +10,6 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.ui.InstantSdk;
 
@@ -46,7 +45,7 @@ public class SharedUtil {
     private synchronized static SharedUtil getInstance(Context context) {
         if (null == sharePreUtil || null == sharePre) {
             sharePreUtil = new SharedUtil();
-            UserCookie userCookie = Session.getInstance().getConnectCookie();
+            UserCookie userCookie = InstantSdk.instantSdk.getDefaultCookie();
             if (null == userCookie || TextUtils.isEmpty(userCookie.getUid())) {
                 userCookie = sharePreUtil.loadDefaultConnectCookie();
             }

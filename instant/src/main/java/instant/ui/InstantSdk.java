@@ -18,6 +18,7 @@ public class InstantSdk {
 
     private static final String TAG = "_InstantSdk";
     private Context context;
+    private UserCookie defaultCookie;
 
     private synchronized static InstantSdk getInstance() {
         if (instantSdk == null) {
@@ -37,6 +38,8 @@ public class InstantSdk {
         userCookie.setToken(token);
         userCookie.setPrivateKey(privateKey);
         userCookie.setPublicKey(publicKey);
+
+        defaultCookie = userCookie;
         Session.getInstance().setConnectCookie(userCookie);
 
         SenderService.startService(context);
@@ -45,6 +48,10 @@ public class InstantSdk {
 
     public Context getBaseContext() {
         return context;
+    }
+
+    public UserCookie getDefaultCookie() {
+        return defaultCookie;
     }
 
     public void stopInstant(){

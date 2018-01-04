@@ -151,4 +151,11 @@ public class SupportKeyUril {
         }
         return signHash;
     }
+
+    public static byte[] createSecureRandom(int num) {
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[num];
+        random.nextBytes(bytes);
+        return bytes;
+    }
 }

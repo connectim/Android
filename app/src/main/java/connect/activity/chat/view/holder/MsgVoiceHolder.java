@@ -8,11 +8,10 @@ import android.widget.ImageView;
 import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.VoiceImg;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
+import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.chatfile.download.DownLoadFile;
 import connect.utils.chatfile.inter.InterFileDown;
@@ -46,6 +45,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
         RoomSession.getInstance().checkBurnTime(voiceMessage.getSnapTime());
+        final String fileKey = StringUtil.bytesToHexString(voiceMessage.getFileKey().toByteArray());
 
         boolean visiable = false;
         if (msgExtEntity.parseDirect() == MsgDirect.From) {
@@ -88,10 +88,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                 }
 
                                 if (Connect.ChatType.forNumber(msgExtEntity.getChatType()) == Connect.ChatType.PRIVATE) {
-                                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_ower());
-                                    if (contactEntity != null) {
-                                        bytes = decodeFile(contactEntity.getPublicKey(), bytes);
-                                    }
+                                    bytes = decodeFile(fileKey, bytes);
                                 }
 
                                 FileUtil.byteArrToFilePath(bytes, localPath);

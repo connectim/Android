@@ -51,4 +51,16 @@ public class DecryptionUtil {
                 add, add.length, rss, rss.length, iv, iv.length, tag, tag.length);
         return dataAESGCM;
     }
+
+    public static synchronized byte[] decodeAESGCM(byte[] rawECDHkey, Connect.GcmData gcmData) {
+        byte[] aad = gcmData.getAad().toByteArray();
+        byte[] iv = gcmData.getIv().toByteArray();
+        byte[] cipher = gcmData.getCiphertext().toByteArray();
+        byte[] tag = gcmData.getTag().toByteArray();
+
+        byte[] rss = rawECDHkey;
+        byte[] dataAESGCM = AllNativeMethod.cdxtalkDecodeAESGCM(cipher, cipher.length,
+                aad, aad.length, rss, rss.length, iv, iv.length, tag, tag.length);
+        return dataAESGCM;
+    }
 }

@@ -110,6 +110,7 @@ public class CommandReceiver implements CommandListener {
             contactEntity.setSource(friendInfo.getSource());
             contactEntity.setRemark(friendInfo.getRemark());
             contactEntity.setOu(friendInfo.getOu());
+            contactEntity.setPublicKey(friendInfo.getPubKey());
             contactEntityMap.put(friendUid, contactEntity);
         }
         Collection<ContactEntity> contactEntityCollection = contactEntityMap.values();

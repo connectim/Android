@@ -96,7 +96,10 @@ public class VoiceUpload extends BaseFileUp {
 
                 try {
                     Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
-                    voiceMessage = voiceMessage.toBuilder().setUrl(url).build();
+                    voiceMessage = voiceMessage.toBuilder()
+                            .setUrl(url)
+                            .setFileKey(ByteString.copyFrom(getRandomNumber()))
+                            .build();
 
                     msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(voiceMessage.toByteArray());

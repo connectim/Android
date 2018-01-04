@@ -1385,6 +1385,7 @@ message FriendInfo {
   bool blackList = 9;
   string name = 10;
    string ou=11;
+   string pub_key = 12;
 }
 
 message Preferences {
@@ -1804,3 +1805,7 @@ message Departments {
  repeated Department list = 1;
 }
 
+message SyncWorkmates {
+Workmates workmates = 1;
+Departments depts = 2;
+}

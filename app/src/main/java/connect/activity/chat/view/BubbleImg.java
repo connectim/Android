@@ -13,8 +13,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import connect.activity.base.BaseApplication;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.chatfile.download.DownLoadFile;
@@ -88,7 +86,7 @@ public class BubbleImg extends RelativeLayout {
         }
     }
 
-    public void loadUri(final MsgDirect direct, final Connect.ChatType chatType, final String pukkey, final String msgid, final String ecdh,final String url, final float imgwidth, final float imgheight) {
+    public void loadUri(final MsgDirect direct, final Connect.ChatType chatType, final String pukkey, final String msgid, final String filekey,final String url, final float imgwidth, final float imgheight) {
         msgDirect = direct;
 
         imageView.setImageBitmap(null);
@@ -120,13 +118,10 @@ public class BubbleImg extends RelativeLayout {
                     String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
 
                     if (chatType == Connect.ChatType.PRIVATE) {
-                        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(pukkey);
-                        if (contactEntity != null) {
-                            bytes = decodeFile(contactEntity.getPublicKey(), bytes);
-                        }
+                        bytes = decodeFile(filekey, bytes);
                     }
                     FileUtil.byteArrToFilePath(bytes, localPath);
-                    loadUri(direct, chatType, pukkey, msgid, ecdh,localPath, imgwidth, imgheight);
+                    loadUri(direct, chatType, pukkey, msgid, filekey,localPath, imgwidth, imgheight);
                 }
 
                 @Override

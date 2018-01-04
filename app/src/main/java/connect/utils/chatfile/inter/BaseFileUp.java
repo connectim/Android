@@ -3,7 +3,6 @@ package connect.utils.chatfile.inter;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.database.green.DaoHelper.MessageHelper;
@@ -16,10 +15,9 @@ import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
-import instant.bean.Session;
-import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
 import instant.utils.cryption.EncryptionUtil;
+import instant.utils.cryption.SupportKeyUril;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -38,24 +36,18 @@ public abstract class BaseFileUp implements InterFileUp {
     private byte[] randomNumber = new byte[]{};
 
     public BaseFileUp() {
-
+        randomNumber = SupportKeyUril.createSecureRandom(32);
     }
 
     public synchronized byte[] encodeAESGCMStructData(String filePath) {
         byte[] fileBytes = FileUtil.filePathToByteArray(filePath);
-        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
-            String friendPublicKey = baseChat.friendPublicKey();
-            UserCookie userCookie = Session.getInstance().getConnectCookie();
-            String myPrivateKey = userCookie.getPrivateKey();
-
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPublicKey, ByteString.copyFrom(fileBytes));
-            fileBytes = gcmData.toByteArray();
-        }
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, randomNumber, fileBytes);
+        fileBytes = gcmData.toByteArray();
         return fileBytes;
     }
 
     public void resultUpFile(Connect.MediaFile mediaFile, final FileResult fileResult) {
-        HttpRequest.getInstance().post(UriUtil.UPLOAD_FILE, mediaFile.toByteArray(), new ResultCall<Connect.HttpResponse>() {
+        HttpRequest.getInstance().postUploadFile(UriUtil.UPLOAD_FILE, mediaFile.toByteArray(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {

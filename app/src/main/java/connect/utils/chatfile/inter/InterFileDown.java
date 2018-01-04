@@ -2,8 +2,7 @@ package connect.utils.chatfile.inter;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import instant.bean.Session;
-import instant.bean.UserCookie;
+import connect.utils.StringUtil;
 import instant.utils.cryption.DecryptionUtil;
 import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
@@ -20,16 +19,12 @@ public abstract class InterFileDown {
 
     public abstract void onProgress(long bytesWritten, long totalSize);
 
-    public byte[] decodeFile(String friendPubicKey, byte[] fileBytes) {
+    public byte[] decodeFile(String fileKey, byte[] fileBytes) {
         byte[] decodeBytes = fileBytes;
         try {
-            UserCookie userCookie = Session.getInstance().getConnectCookie();
-            String myPrivateKey = userCookie.getPrivateKey();
-
             Connect.GcmData gcmData = Connect.GcmData.parseFrom(fileBytes);
-            Connect.StructData structData = null;
-            structData = DecryptionUtil.decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, friendPubicKey, gcmData);
-            decodeBytes = structData.getPlainData().toByteArray();
+            byte[] ecdhExts =StringUtil.hexStringToBytes(fileKey);
+            decodeBytes = DecryptionUtil.decodeAESGCM(ecdhExts, gcmData);
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
