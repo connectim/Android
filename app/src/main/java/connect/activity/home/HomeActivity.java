@@ -302,7 +302,7 @@ public class HomeActivity extends BaseFragmentActivity {
                     fragmentTransaction.show(contactFragment);
                 }
                 break;
-            case 3:
+            case 2:
                 if (!setFragment.isAdded()) {
                     fragmentTransaction.add(R.id.home_content, setFragment);
                 } else {

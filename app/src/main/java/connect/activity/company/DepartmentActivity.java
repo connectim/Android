@@ -24,7 +24,11 @@ import connect.activity.company.adapter.DepartmentAdapter;
 import connect.activity.company.adapter.DepartmentBean;
 import connect.activity.company.adapter.NameLinear;
 import connect.activity.contact.SearchFriendResultActivity;
+import connect.activity.contact.StrangerInfoActivity;
+import connect.activity.contact.bean.SourceType;
 import connect.activity.home.view.LineDecoration;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -170,7 +174,7 @@ public class DepartmentActivity extends BaseActivity {
 
         @Override
         public void addFriend(int position, DepartmentBean departmentBean) {
-
+            StrangerInfoActivity.startActivity(mActivity, departmentBean.getUid(), SourceType.SEARCH);
         }
     };
 
