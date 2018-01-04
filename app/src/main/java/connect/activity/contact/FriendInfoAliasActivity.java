@@ -98,7 +98,7 @@ public class FriendInfoAliasActivity extends BaseActivity {
                     ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
                     ContactNotice.receiverFriend();
 
-                    CFriendChat friendChat = new CFriendChat(friendEntity);
+                    CFriendChat friendChat = new CFriendChat(friendEntity.getUid());
                     friendChat.updateRoomMsg(null, "", -1, -1, -1);
 
                     ActivityUtil.goBack(mActivity);

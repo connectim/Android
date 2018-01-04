@@ -84,10 +84,7 @@ public class MsgVideoHolder extends MsgChatHolder {
                                 videomsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),
                                         fileKey, videoMessage.getUrl(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
 
-                                if (chatType == Connect.ChatType.PRIVATE) {
-                                    bytes = decodeFile(fileKey, bytes);
-                                }
-
+                                bytes = decodeFile(fileKey, bytes);
                                 FileUtil.byteArrToFilePath(bytes, localPath);
                                 if (videoMessage.getSnapTime() == 0) {
                                     startPlayVideo(localPath, videoMessage.getTimeLength(), "");
@@ -171,10 +168,7 @@ public class MsgVideoHolder extends MsgChatHolder {
                     public void successDown(byte[] bytes) {
                         videoProView.loadState(true, 0);
 
-                        if (Connect.ChatType.forNumber(msgExtEntity.getChatType()) == Connect.ChatType.PRIVATE) {
-                            bytes = decodeFile(fileKey, bytes);
-                        }
-
+                        bytes = decodeFile(fileKey, bytes);
                         FileUtil.byteArrToFilePath(bytes, localPath);
                         SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
                     }

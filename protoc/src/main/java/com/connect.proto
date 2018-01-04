@@ -1196,7 +1196,8 @@ enum ChatType {
 }
 //临时协同密钥
 message ChatSession {
-	 string pubKey = 1;
+   string pubKey = 1;
+   string friendPubkey = 2;
 }
 //消息体
 message ChatMessage {

@@ -25,14 +25,14 @@ import protos.Connect;
  * Created by Administrator on 2017/8/9.
  */
 
-public class GroupInvitePresenter implements GroupInviteContract.Presenter{
+public class GroupInvitePresenter implements GroupInviteContract.Presenter {
 
     private GroupInviteContract.BView view;
     private String groupKey;
     private Activity activity;
 
-    public GroupInvitePresenter(GroupInviteContract.BView view){
-        this.view=view;
+    public GroupInvitePresenter(GroupInviteContract.BView view) {
+        this.view = view;
         view.setPresenter(this);
     }
 
@@ -63,17 +63,14 @@ public class GroupInvitePresenter implements GroupInviteContract.Presenter{
                             String uid = res.getUid();
                             String token = res.getToken();
 
-                            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(uid);
-                            if (friendEntity != null) {
-                                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
-                                CFriendChat friendChat = new CFriendChat(friendEntity);
-                                ChatMsgEntity msgExtEntity = friendChat.inviteJoinGroupMsg(groupEntity.getAvatar(), groupEntity.getName(),
-                                        groupEntity.getIdentifier(), token);
+                            GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupKey);
+                            CFriendChat friendChat = new CFriendChat(uid);
+                            ChatMsgEntity msgExtEntity = friendChat.inviteJoinGroupMsg(groupEntity.getAvatar(), groupEntity.getName(),
+                                    groupEntity.getIdentifier(), token);
 
-                                friendChat.sendPushMsg(msgExtEntity);
-                                MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-                                friendChat.updateRoomMsg(null, "[" + activity.getString(R.string.Link_Join_Group) + "]", msgExtEntity.getCreatetime());
-                            }
+                            friendChat.sendPushMsg(msgExtEntity);
+                            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+                            friendChat.updateRoomMsg(null, "[" + activity.getString(R.string.Link_Join_Group) + "]", msgExtEntity.getCreatetime());
                         }
                     }
 

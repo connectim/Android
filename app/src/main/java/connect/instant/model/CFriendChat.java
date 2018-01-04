@@ -2,6 +2,8 @@ package connect.instant.model;
 
 import android.text.TextUtils;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import java.util.List;
 
 import connect.activity.base.BaseApplication;
@@ -16,27 +18,72 @@ import connect.database.green.bean.ConversionEntity;
 import connect.instant.inter.ConversationListener;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
+import connect.utils.UriUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
 import instant.sender.model.FriendChat;
+import protos.Connect;
 
 /**
  * Created by Administrator on 2017/10/19.
  */
 
-public class CFriendChat extends FriendChat implements ConversationListener{
+public class CFriendChat extends FriendChat implements ConversationListener {
 
     private ContactEntity contactEntity;
 
     public CFriendChat(String uid) {
-        super(uid,"");
-        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(uid);
-        this.contactEntity = contactEntity;
-        this.friendPublicKey = contactEntity.getPublicKey();
+        super(uid, "");
+
+        contactEntity = ContactHelper.getInstance().loadFriendEntity(uid);
+        if (contactEntity == null) {
+            List<RoomAttrBean> roomAttrBeen = ConversionHelper.getInstance().loadRoomEntities(uid);
+            if (roomAttrBeen.size() > 0) {
+                RoomAttrBean attrBean = roomAttrBeen.get(0);
+                contactEntity = new ContactEntity();
+                contactEntity.setUid(uid);
+                contactEntity.setAvatar(attrBean.getAvatar());
+                contactEntity.setUsername(attrBean.getName());
+            }
+        }
+        requestFriendInfo(uid);
     }
 
-    public CFriendChat(ContactEntity contactEntity) {
-        super(contactEntity.getUid(),contactEntity.getPublicKey());
-        this.contactEntity = contactEntity;
+    public void requestFriendInfo(final String frienduid) {
+        Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
+                .setTyp(1)
+                .setCriteria(frienduid)
+                .build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
+            @Override
+            public void onResponse(Connect.HttpNotSignResponse response) {
+                try {
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
+                    Connect.UsersInfo userInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
+
+                    Connect.UserInfo userinfo = userInfo.getUsers(0);
+                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(frienduid);
+                    if (contactEntity == null) {
+                        contactEntity = new ContactEntity();
+                        setStranger(true);
+                    }
+                    contactEntity.setPublicKey(userinfo.getPubKey());
+                    contactEntity.setAvatar(userinfo.getAvatar());
+                    contactEntity.setUsername(userinfo.getName());
+                    contactEntity.setUid(userinfo.getUid());
+
+                    setFriendPublicKey(userinfo.getPubKey());
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpNotSignResponse response) {
+
+            }
+        });
     }
 
     @Override
@@ -75,7 +122,7 @@ public class CFriendChat extends FriendChat implements ConversationListener{
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg) {
-        updateRoomMsg(draft,showText,msgtime,at,newmsg,true);
+        updateRoomMsg(draft, showText, msgtime, at, newmsg, true);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad) {
@@ -107,7 +154,7 @@ public class CFriendChat extends FriendChat implements ConversationListener{
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
                         at,
                         (isStranger ? 1 : 0),
-                        (msgtime <=0 ? 0 : msgtime)
+                        (msgtime <= 0 ? 0 : msgtime)
                 );
             }
         }

@@ -201,7 +201,7 @@ public class CommandReceiver implements CommandListener {
                     ContactHelper.getInstance().insertContact(entity);
 
                     if (newFriend) { // Add a welcome message
-                        CFriendChat normalChat = new CFriendChat(entity);
+                        CFriendChat normalChat = new CFriendChat(uid);
                         normalChat.createWelcomeMessage();
                     }
                     FailMsgsManager.getInstance().receiveFailMsgs(uid);
@@ -275,7 +275,7 @@ public class CommandReceiver implements CommandListener {
 
         ContactNotice.receiverFriend();
         if (newFriend) {
-            CFriendChat normalChat = new CFriendChat(contactEntity);
+            CFriendChat normalChat = new CFriendChat(friendInfo.getUid());
             normalChat.createWelcomeMessage();
         }
         FailMsgsManager.getInstance().receiveFailMsgs(contactEntity.getUid());
@@ -462,32 +462,20 @@ public class CommandReceiver implements CommandListener {
         } else {
             Connect.UserInfo userInfo = packageInfo.getSender();
 
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getPubKey());
-            if (friendEntity == null) {
-                friendEntity = new ContactEntity();
-                friendEntity.setAvatar(userInfo.getAvatar());
-                friendEntity.setUsername(userInfo.getUsername());
-                friendEntity.setUid(userInfo.getUid());
-            }
-
-            CFriendChat normalChat = new CFriendChat(friendEntity);
+            CFriendChat normalChat = new CFriendChat(userInfo.getPubKey());
             ChatMsgEntity msgExtEntity = normalChat.luckPacketMsg(1, packageInfo.getHashId(), 0L, packageInfo.getTips());
             msgExtEntity.setMessage_to(mypublickey);
             msgExtEntity.setSend_status(1);
 
             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
             normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
-            HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(Connect.ChatType.PRIVATE, friendEntity.getUid()));
+            HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(Connect.ChatType.PRIVATE, userInfo.getPubKey()));
         }
     }
 
     @Override
     public void burnReadingSetting(Connect.EphemeralSetting setting) {
         String friendUid = setting.getUid();
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(friendUid);
-        if (friendEntity == null) {
-            return;
-        }
         ConversionSettingEntity settingEntity = ConversionSettingHelper.getInstance().loadSetEntity(friendUid);
         if (settingEntity == null) {
             settingEntity = new ConversionSettingEntity();
@@ -506,7 +494,7 @@ public class CommandReceiver implements CommandListener {
         ConversionSettingHelper.getInstance().updateBurnTime(friendUid, settingTime);
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNREAD_SET, friendUid, settingTime);
 
-        CFriendChat cFriendChat = new CFriendChat(friendEntity);
+        CFriendChat cFriendChat = new CFriendChat(friendUid);
         ChatMsgEntity msgEntity = cFriendChat.noticeMsg(0, content, "");
         MessageHelper.getInstance().insertMsgExtEntity(msgEntity);
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, friendUid, msgEntity);

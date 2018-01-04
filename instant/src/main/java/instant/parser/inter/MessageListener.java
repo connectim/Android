@@ -10,7 +10,7 @@ public interface MessageListener {
 
     long chatBurnTime(String publicKey);
 
-    void singleChat(Connect.ChatMessage chatMessage) throws Exception;
+    void singleChat(Connect.MessageData messageData) throws Exception;
 
     void groupChat(Connect.ChatMessage messagePost);
 

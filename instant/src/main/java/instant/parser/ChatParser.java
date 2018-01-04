@@ -46,17 +46,7 @@ public class ChatParser extends InterParse {
 
     public synchronized void singleChat(Connect.MessagePost msgpost) throws Exception {
         Connect.MessageData messageData = msgpost.getMsgData();
-        Connect.ChatMessage chatMessage = messageData.getChatMsg();
-
-        String friendPublicKey = messageData.getChatSession().getPubKey();
-        UserCookie userCookie = Session.getInstance().getConnectCookie();
-        String myPrivateKey = userCookie.getPrivateKey();
-
-        EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
-        byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, chatMessage.getCipherData());
-        chatMessage = chatMessage.toBuilder().setBody(ByteString.copyFrom(contents)).build();
-
-        MessageLocalReceiver.localReceiver.singleChat(chatMessage);
+        MessageLocalReceiver.localReceiver.singleChat(messageData);
     }
 
     /**

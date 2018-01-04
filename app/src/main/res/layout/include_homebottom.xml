@@ -14,7 +14,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <RelativeLayout
             android:id="@+id/msg_rela"
@@ -66,21 +69,6 @@
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp_10"
                 android:visibility="gone"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/company_rela"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_48"
-            android:layout_weight="1">
-
-            <ImageView
-                android:contentDescription="@string/app_name"
-                android:id="@+id/company"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/selector_setting"/>
         </RelativeLayout>
 
         <RelativeLayout

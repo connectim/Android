@@ -18,6 +18,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
+import connect.activity.company.DepartmentActivity;
 import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.ScanAddFriendActivity;
@@ -124,6 +125,7 @@ public class ContactFragment extends BaseFragment {
                     FriendInfoActivity.startActivity(mActivity, entity.getUid());
                     break;
                 case 7:
+                    DepartmentActivity.lunchActivity(mActivity);
                     break;
                 default:
                     break;

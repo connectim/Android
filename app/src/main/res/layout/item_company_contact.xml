@@ -6,17 +6,36 @@
     android:orientation="vertical"
     android:background="@drawable/selector_list_item_bg">
 
-    <TextView
-        android:id="@id/txt"
+    <LinearLayout
+        android:id="@+id/department_linear"
         android:layout_width="match_parent"
-        android:layout_height="23dp"
-        android:background="@color/color_f1f1f1"
-        android:gravity="center_vertical"
-        android:hint=""
+        android:layout_height="@dimen/dp_52"
+        android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_15"
-        android:textColor="@color/color_161A21"
-        android:textSize="@dimen/sp_12"
-        android:visibility="gone" />
+        android:paddingRight="@dimen/dp_15"
+        android:background="@drawable/selector_list_item_bg"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/department_tv"
+            style="@style/BaseTextStyle.16"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="" />
+        <TextView
+            android:id="@+id/count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_a5a7ae"
+            android:textSize="@dimen/sp_16"/>
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/group_item_arrow"
+            android:layout_marginLeft="@dimen/dp_10"/>
+    </LinearLayout>
 
 
     <RelativeLayout

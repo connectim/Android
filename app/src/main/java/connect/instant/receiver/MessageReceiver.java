@@ -1,5 +1,8 @@
 package connect.instant.receiver;
 
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.home.bean.GroupRecBean;
@@ -15,9 +18,16 @@ import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
+import connect.utils.UriUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
+import instant.bean.Session;
+import instant.bean.UserCookie;
 import instant.parser.inter.MessageListener;
+import instant.utils.cryption.DecryptionUtil;
+import instant.utils.cryption.EncryptionUtil;
 import protos.Connect;
 
 /**
@@ -44,14 +54,64 @@ public class MessageReceiver implements MessageListener {
     }
 
     @Override
-    public void singleChat(Connect.ChatMessage chatMessage) throws Exception {
-        String friendUid = chatMessage.getFrom();
+    public void singleChat(Connect.MessageData messageData) throws Exception {
+        final Connect.ChatMessage chatMessage = messageData.getChatMsg();
+
+        final String friendUid = chatMessage.getFrom();
+        String friendPublicKey = messageData.getChatSession().getPubKey();
+
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendUid);
-        if (contactEntity == null) {
+
+        final UserCookie userCookie = Session.getInstance().getConnectCookie();
+        final String myPrivateKey = userCookie.getPrivateKey();
+        final EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
+        final Connect.GcmData gcmData = chatMessage.getCipherData();
+        final byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, gcmData);
+        if (contents.length <= 2) {
             return;
         }
 
-        CFriendChat friendChat = new CFriendChat(contactEntity);
+        if (contactEntity == null) {
+            Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
+                    .setTyp(1)
+                    .setCriteria(friendUid)
+                    .build();
+            OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
+                @Override
+                public void onResponse(Connect.HttpNotSignResponse response) {
+                    try {
+                        Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
+                        Connect.UsersInfo userInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
+
+                        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendUid);
+                        if (contactEntity == null) {
+                            Connect.UserInfo userinfo = userInfo.getUsers(0);
+                            contactEntity = new ContactEntity();
+                            contactEntity.setPublicKey(userinfo.getPubKey());
+                            contactEntity.setAvatar(userinfo.getAvatar());
+                            contactEntity.setUsername(userinfo.getName());
+                            contactEntity.setUid(userinfo.getUid());
+                        }
+
+                        dealFriendChat(contactEntity, chatMessage, contents);
+                    } catch (InvalidProtocolBufferException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onError(Connect.HttpNotSignResponse response) {
+                }
+            });
+        } else {
+            dealFriendChat(contactEntity, chatMessage, contents);
+        }
+    }
+
+    public void dealFriendChat(ContactEntity contactEntity, Connect.ChatMessage chatMessage, byte[] contents) {
+        chatMessage = chatMessage.toBuilder().setBody(ByteString.copyFrom(contents)).build();
+
+        CFriendChat friendChat = new CFriendChat(contactEntity.getUid());
         ChatMsgEntity chatMsgEntity = ChatMsgEntity.transToMessageEntity(chatMessage.getMsgId(),
                 chatMessage.getFrom(), chatMessage.getChatType().getNumber(), chatMessage.getMsgType(),
                 chatMessage.getFrom(), chatMessage.getTo(),
@@ -62,8 +122,8 @@ public class MessageReceiver implements MessageListener {
 
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, chatMsgEntity.getMessage_from(), chatMsgEntity);
         NotificationBar.notificationBar.noticeBarMsg(chatMsgEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, chatMsgEntity.showContent());
-
     }
+
 
     @Override
     public void groupChat(Connect.ChatMessage chatMessage) {

@@ -36,6 +36,9 @@ public class UriUtil {
     public static String CONNECT_V3_LOGIN = "/connect/v3/login";
     /** The private key is registered */
     public static String CONNECT_V3_SYNC_WORKMATE = "/connect/v3/sync_workmate";
+    /** The private key is registered */
+    public static String CONNECT_V3_DEPARTMENT = "/connect/v3/department";
+    public static String CONNECT_V3_WORKMATE_SEARCH = "/connect/v3/workmate/search";
 
 
     /**======================================================================================

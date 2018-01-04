@@ -58,6 +58,7 @@ public class FriendChat extends NormalChat {
 
             Connect.ChatSession chatSession = Connect.ChatSession.newBuilder()
                     .setPubKey(userPublicKey)
+                    .setFriendPubkey(friendPublicKey)
                     .build();
             Connect.MessageData messageData = Connect.MessageData.newBuilder()
                     .setChatSession(chatSession)
@@ -107,5 +108,9 @@ public class FriendChat extends NormalChat {
     @Override
     public String friendPublicKey() {
         return friendPublicKey;
+    }
+
+    public void setFriendPublicKey(String friendPublicKey) {
+        this.friendPublicKey = friendPublicKey;
     }
 }

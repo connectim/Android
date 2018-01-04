@@ -282,8 +282,7 @@ public class OuterWebsiteActivity extends BaseActivity {
             } else {
                 switch (type) {
                     case 0:
-                        ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(pubkey);
-                        baseChat = new CFriendChat(friend);
+                        baseChat = new CFriendChat(pubkey);
                         break;
                     case 1:
                         GroupEntity group = ContactHelper.getInstance().loadGroupEntity(pubkey);

@@ -179,6 +179,9 @@ public class MessageParser extends InterParse {
             case 9://upload cookie salt not match
                 reloadUserCookie(msgid, rejectUid);
                 break;
+            case 10://PUBKEY_NOT_MATCH
+                UnreachableLocalReceiver.localReceiver.publicKeyNotMatch(msgid, rejectUid);
+                break;
         }
         receiptMsg(msgid, 2);
     }

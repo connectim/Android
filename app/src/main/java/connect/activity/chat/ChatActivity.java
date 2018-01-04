@@ -332,8 +332,7 @@ public class ChatActivity extends BaseChatSendActivity {
         NormalChat normalChat = null;
         switch (roomType) {
             case 0:
-                ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(roomkey);
-                normalChat = new CFriendChat(friendEntity);
+                normalChat = new CFriendChat(roomkey);
                 break;
             case 1:
             case 3:
@@ -419,14 +418,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
                 break;
             case PRIVATE:
-                ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(normalChat.chatKey());
-                if (contactEntity == null) {
-                    contactEntity = new ContactEntity();
-                    contactEntity.setUid(normalChat.chatKey());
-                    contactEntity.setAvatar(talker.getAvatar());
-                    contactEntity.setUsername(talker.getNickName());
-                }
-                CFriendChat cFriendChat = new CFriendChat(contactEntity);
+                CFriendChat cFriendChat = new CFriendChat(normalChat.chatKey());
                 cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
                 break;
             case GROUPCHAT:

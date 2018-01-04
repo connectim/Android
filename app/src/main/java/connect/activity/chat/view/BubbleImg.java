@@ -117,9 +117,7 @@ public class BubbleImg extends RelativeLayout {
                     progressBar.setVisibility(GONE);
                     String localPath = FileUtil.newContactFileName(pukkey, msgid, FileUtil.FileType.IMG);
 
-                    if (chatType == Connect.ChatType.PRIVATE) {
-                        bytes = decodeFile(filekey, bytes);
-                    }
+                    bytes = decodeFile(filekey, bytes);
                     FileUtil.byteArrToFilePath(bytes, localPath);
                     loadUri(direct, chatType, pukkey, msgid, filekey,localPath, imgwidth, imgheight);
                 }

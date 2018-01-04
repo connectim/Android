@@ -17,6 +17,7 @@ public class Talker implements Serializable {
     private String nickName;
     private String avatar;
     private boolean isStranger;
+    private String friendPublicKey;
 
     public Talker(Connect.ChatType talkType, String talkKey) {
         this.talkType = talkType;
@@ -54,5 +55,13 @@ public class Talker implements Serializable {
 
     public void setStranger(boolean stranger) {
         isStranger = stranger;
+    }
+
+    public String getFriendPublicKey() {
+        return friendPublicKey;
+    }
+
+    public void setFriendPublicKey(String friendPublicKey) {
+        this.friendPublicKey = friendPublicKey;
     }
 }

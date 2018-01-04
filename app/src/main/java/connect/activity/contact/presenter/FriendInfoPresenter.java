@@ -76,7 +76,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
         NormalChat baseChat = null;
         if (type == 0) {
             ContactEntity acceptFriend = ContactHelper.getInstance().loadFriendEntity(pubKey);
-            baseChat = new CFriendChat(acceptFriend);
+            baseChat = new CFriendChat(acceptFriend.getUid());
             talker = new Talker(Connect.ChatType.PRIVATE,pubKey);
         } else if (type == 1||type == 3) {
             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(pubKey);
@@ -155,12 +155,9 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     RoomSession.roomSession.updateChatAvatar(userInfo.getUsers(0).getUid(),userInfo.getUsers(0).getAvatar());
 
                     // Update the message list user information
-                    ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(friendEntity.getUid());
-                    if (conversionEntity != null) {
-                        CFriendChat friendChat = new CFriendChat(friendEntity);
-                        ConversionHelper.getInstance().updateRoomEntityAvatar(friendEntity.getUid(), userInfo.getUsers(0).getAvatar());
-                        friendChat.updateRoomMsg(null, "", -1, -1, -1);
-                    }
+                    CFriendChat friendChat = new CFriendChat(friendEntity.getUid());
+                    ConversionHelper.getInstance().updateRoomEntityAvatar(friendEntity.getUid(), userInfo.getUsers(0).getAvatar());
+                    friendChat.updateRoomMsg(null, "", -1, -1, -1);
 
                     String friendUid =  friendEntity.getUid();
                     String userName =  userInfo.getUsers(0).getName();

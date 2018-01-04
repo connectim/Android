@@ -2,12 +2,14 @@ package connect.activity.company.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import protos.Connect;
 public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.ViewHolder> {
 
     private Activity activity;
-    private ArrayList<Connect.Workmate> list;
+    private ArrayList<DepartmentBean> list = new ArrayList<>();
     private OnItemClickListener itemClickListener;
 
     public DepartmentAdapter(Activity activity) {
@@ -41,33 +43,47 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
 
     @Override
     public void onBindViewHolder(DepartmentAdapter.ViewHolder holder, final int position) {
-        final Connect.Workmate workmate = list.get(position);
-        GlideUtil.loadImage(holder.avater, workmate.getAvatar());
-        holder.nameTvS.setText(workmate.getName());
-        holder.nicName.setText(workmate.getOU());
-        if(workmate.getRegisted()){
-            holder.addBtn.setText(R.string.Link_Add);
-            holder.addBtn.setEnabled(true);
-            holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff));
-            holder.addBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(itemClickListener != null){
-                        itemClickListener.addFriend(position, workmate);
-                    }
-                }
-            });
+        final DepartmentBean departmentBean = list.get(position);
+        if(departmentBean.getId() != null){
+            holder.departmentLinear.setVisibility(View.VISIBLE);
+            holder.contentLin.setVisibility(View.GONE);
+
+            holder.departmentTv.setText(departmentBean.getName());
         }else{
-            holder.addBtn.setText(R.string.Link_Not_logged_in);
-            holder.addBtn.setEnabled(false);
-            holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_858998));
+            holder.departmentLinear.setVisibility(View.GONE);
+            holder.contentLin.setVisibility(View.VISIBLE);
+
+            GlideUtil.loadAvatarRound(holder.avater, departmentBean.getAvatar());
+            holder.nameTvS.setText(departmentBean.getName());
+            holder.nicName.setText(departmentBean.getO_u());
+            if(departmentBean.getRegisted()){
+                holder.addBtn.setText(R.string.Link_Add);
+                holder.addBtn.setEnabled(true);
+                holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff));
+                holder.addBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(itemClickListener != null){
+                            itemClickListener.addFriend(position, departmentBean);
+                        }
+                    }
+                });
+            }else{
+                holder.addBtn.setText(R.string.Link_Not_logged_in);
+                holder.addBtn.setEnabled(false);
+                holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_858998));
+            }
         }
         holder.contentLin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(workmate.getRegisted()){
-                    itemClickListener.itemClick(workmate);
-                }
+                itemClickListener.itemClick(departmentBean);
+            }
+        });
+        holder.departmentLinear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemClickListener.itemClick(departmentBean);
             }
         });
     }
@@ -78,22 +94,32 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout contentLin;
+        RelativeLayout contentLin;
         ImageView avater;
         TextView nameTvS;
         TextView nicName;
         Button addBtn;
+
+        LinearLayout departmentLinear;
+        TextView departmentTv;
+        TextView countTv;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            contentLin = (LinearLayout)itemView.findViewById(R.id.content_rela);
+            contentLin = (RelativeLayout)itemView.findViewById(R.id.content_layout);
             avater = (ImageView)itemView.findViewById(R.id.avatar_rimg);
             nameTvS = (TextView)itemView.findViewById(R.id.nickname_tv);
             nicName = (TextView)itemView.findViewById(R.id.hint_tv);
             addBtn = (Button) itemView.findViewById(R.id.status_btn);
+
+            departmentLinear = (LinearLayout)itemView.findViewById(R.id.department_linear);
+            departmentTv = (TextView)itemView.findViewById(R.id.department_tv);
+            countTv = (TextView)itemView.findViewById(R.id.count_tv);
         }
     }
 
-    public void setNotify(ArrayList<Connect.Workmate> list){
+    public void setNotify(ArrayList<DepartmentBean> list){
+        this.list.clear();
         if(list.size() > 0){
             this.list.addAll(list);
         }
@@ -105,9 +131,9 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
     }
 
     public interface OnItemClickListener{
-        void itemClick(Connect.Workmate workmate);
+        void itemClick(DepartmentBean departmentBean);
 
-        void addFriend(int position, Connect.Workmate workmate);
+        void addFriend(int position, DepartmentBean departmentBean);
     }
 
 }

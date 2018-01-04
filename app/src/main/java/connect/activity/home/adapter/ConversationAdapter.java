@@ -139,6 +139,8 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                     closeMenu();
 
                     Talker talker = new Talker(Connect.ChatType.forNumber(roomAttr.getRoomtype()), roomAttr.getRoomid());
+                    talker.setNickName(roomAttr.getName());
+                    talker.setAvatar(roomAttr.getAvatar());
                     HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, talker);
                 }
             }

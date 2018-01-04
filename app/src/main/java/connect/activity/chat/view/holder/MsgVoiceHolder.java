@@ -87,10 +87,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                     loadImg.setVisibility(View.GONE);
                                 }
 
-                                if (Connect.ChatType.forNumber(msgExtEntity.getChatType()) == Connect.ChatType.PRIVATE) {
-                                    bytes = decodeFile(fileKey, bytes);
-                                }
-
+                                bytes = decodeFile(fileKey, bytes);
                                 FileUtil.byteArrToFilePath(bytes, localPath);
                                 voiceImg.startPlay(msgExtEntity.getMessage_id(), localPath, new VoiceImg.VoicePlayListener() {
                                     @Override
