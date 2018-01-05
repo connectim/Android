@@ -166,6 +166,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     ((ConnectHolder) holder).topTv.setCompoundDrawables(null, null, null, null);
                     ((ConnectHolder) holder).topTv.setText(connectLetter);
                 }
+                GlideUtil.loadAvatarRound(((ConnectHolder) holder).avatarImg, R.mipmap.connect_logo);
                 break;
             case STATUS_FRIEND_COUNT:
                 ((CountHolder) holder).bottomCount.setText(currBean.getName());

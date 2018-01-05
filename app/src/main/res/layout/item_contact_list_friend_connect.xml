@@ -32,8 +32,7 @@
             android:id="@+id/avatar_img"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
-            android:scaleType="fitXY"
-            android:src="@mipmap/connect_logo" />
+            android:scaleType="fitXY"/>
         <TextView
             android:id="@+id/name_tv"
             style="@style/BaseTextStyle.16"
