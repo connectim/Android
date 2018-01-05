@@ -78,7 +78,12 @@ public abstract class BaseChatActvity extends BaseActivity {
         Connect.ChatType chatType = talker.getTalkType();
         switch (chatType) {
             case PRIVATE:
-                normalChat = new CFriendChat(talker.getTalkKey());
+                CFriendChat cFriendChat = new CFriendChat(talker.getTalkKey());
+                if (!TextUtils.isEmpty(talker.getNickName())) {
+                    cFriendChat.setUserAvatar(talker.getAvatar());
+                    cFriendChat.setUserName(talker.getNickName());
+                }
+                normalChat = cFriendChat;
                 break;
             case GROUPCHAT:
             case GROUP_DISCUSSION:

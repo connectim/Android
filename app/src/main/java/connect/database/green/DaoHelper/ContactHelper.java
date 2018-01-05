@@ -332,6 +332,41 @@ public class ContactHelper extends BaseDao {
     /**
      * group member entity
      *
+     * @param memberkey
+     * @return
+     */
+    public List<GroupMemberEntity> loadGroupMemEntitiesWithOutGroupKey(String memberkey) {
+        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
+                "WHERE M.UID ==? GROUP BY M.UID ORDER BY M.ROLE DESC;";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{memberkey});
+
+        GroupMemberEntity groupMemEntity = null;
+        List<GroupMemberEntity> groupMemEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            groupMemEntity = new GroupMemberEntity();
+            groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
+            groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
+            groupMemEntity.setUid(cursorGetString(cursor, "UID"));
+            groupMemEntity.setNick(cursorGetString(cursor, "NICK"));//friend mark
+            groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
+            groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
+            groupMemEntity.setAvatar(cursorGetString(cursor, "AVATAR"));
+
+            String remark = cursorGetString(cursor, "REMARK");
+            if (!TextUtils.isEmpty(remark)) {
+                groupMemEntity.setNick(remark);
+            }
+            groupMemEntities.add(groupMemEntity);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return groupMemEntities;
+    }
+
+    /**
+     * group member entity
+     *
      * @param identify
      * @param memberkey
      * @return

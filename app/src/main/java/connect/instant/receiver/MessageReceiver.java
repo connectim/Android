@@ -21,6 +21,7 @@ import connect.utils.NotificationBar;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.wallet.jni.AllNativeMethod;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.bean.Session;
@@ -112,6 +113,8 @@ public class MessageReceiver implements MessageListener {
         chatMessage = chatMessage.toBuilder().setBody(ByteString.copyFrom(contents)).build();
 
         CFriendChat friendChat = new CFriendChat(contactEntity.getUid());
+        friendChat.setUserName(contactEntity.getUsername());
+        friendChat.setUserAvatar(contactEntity.getAvatar());
         ChatMsgEntity chatMsgEntity = ChatMsgEntity.transToMessageEntity(chatMessage.getMsgId(),
                 chatMessage.getFrom(), chatMessage.getChatType().getNumber(), chatMessage.getMsgType(),
                 chatMessage.getFrom(), chatMessage.getTo(),

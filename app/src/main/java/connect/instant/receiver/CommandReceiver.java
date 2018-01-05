@@ -198,6 +198,7 @@ public class CommandReceiver implements CommandListener {
                     entity.setRemark(friendInfo.getRemark());
                     entity.setSource(friendInfo.getSource());
                     entity.setOu(friendInfo.getOu());
+                    entity.setPublicKey(friendInfo.getPubKey());
                     ContactHelper.getInstance().insertContact(entity);
 
                     if (newFriend) { // Add a welcome message
@@ -271,6 +272,7 @@ public class CommandReceiver implements CommandListener {
         contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
         contactEntity.setSource(friendInfo.getSource());
         contactEntity.setOu(friendInfo.getOu());
+        contactEntity.setPublicKey(friendInfo.getPubKey());
         ContactHelper.getInstance().insertContact(contactEntity);
 
         ContactNotice.receiverFriend();
@@ -336,7 +338,7 @@ public class CommandReceiver implements CommandListener {
                     GroupMemberEntity groupMemEntity = new GroupMemberEntity();
                     groupMemEntity.setIdentifier(groupKey);
                     groupMemEntity.setUid(info.getUid());
-                    groupMemEntity.setUsername(info.getUsername());
+                    groupMemEntity.setUsername(info.getName());
                     groupMemEntity.setNick(info.getUsername());
                     groupMemEntity.setAvatar(info.getAvatar());
                     groupMemEntity.setRole(0);

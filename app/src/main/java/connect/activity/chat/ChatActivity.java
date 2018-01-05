@@ -37,7 +37,6 @@ import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -419,6 +418,10 @@ public class ChatActivity extends BaseChatSendActivity {
                 break;
             case PRIVATE:
                 CFriendChat cFriendChat = new CFriendChat(normalChat.chatKey());
+                if (!TextUtils.isEmpty(talker.getNickName())) {
+                    cFriendChat.setUserAvatar(talker.getAvatar());
+                    cFriendChat.setUserName(talker.getNickName());
+                }
                 cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
                 break;
             case GROUPCHAT:

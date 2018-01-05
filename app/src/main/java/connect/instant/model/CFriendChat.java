@@ -15,6 +15,7 @@ import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
+import connect.database.green.bean.GroupMemberEntity;
 import connect.instant.inter.ConversationListener;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
@@ -31,21 +32,31 @@ import protos.Connect;
 
 public class CFriendChat extends FriendChat implements ConversationListener {
 
-    private ContactEntity contactEntity;
+    private String userName;
+    private String userAvatar;
 
     public CFriendChat(String uid) {
         super(uid, "");
 
-        contactEntity = ContactHelper.getInstance().loadFriendEntity(uid);
+        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(uid);
         if (contactEntity == null) {
             List<RoomAttrBean> roomAttrBeen = ConversionHelper.getInstance().loadRoomEntities(uid);
-            if (roomAttrBeen.size() > 0) {
+            if (roomAttrBeen.size() == 0) {
+                List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntitiesWithOutGroupKey(uid);
+                if (memberEntities.size() > 0) {
+                    GroupMemberEntity memberEntity = memberEntities.get(0);
+                    userName = memberEntity.getUsername();
+                    userAvatar = memberEntity.getAvatar();
+                }
+            } else {
                 RoomAttrBean attrBean = roomAttrBeen.get(0);
-                contactEntity = new ContactEntity();
-                contactEntity.setUid(uid);
-                contactEntity.setAvatar(attrBean.getAvatar());
-                contactEntity.setUsername(attrBean.getName());
+                userName = attrBean.getName();
+                userAvatar = attrBean.getAvatar();
             }
+        } else {
+            userName = contactEntity.getUsername();
+            userAvatar = contactEntity.getAvatar();
+            setFriendPublicKey(contactEntity.getPublicKey());
         }
         requestFriendInfo(uid);
     }
@@ -55,6 +66,7 @@ public class CFriendChat extends FriendChat implements ConversationListener {
                 .setTyp(1)
                 .setCriteria(frienduid)
                 .build();
+
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
@@ -63,16 +75,8 @@ public class CFriendChat extends FriendChat implements ConversationListener {
                     Connect.UsersInfo userInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
 
                     Connect.UserInfo userinfo = userInfo.getUsers(0);
-                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(frienduid);
-                    if (contactEntity == null) {
-                        contactEntity = new ContactEntity();
-                        setStranger(true);
-                    }
-                    contactEntity.setPublicKey(userinfo.getPubKey());
-                    contactEntity.setAvatar(userinfo.getAvatar());
-                    contactEntity.setUsername(userinfo.getName());
-                    contactEntity.setUid(userinfo.getUid());
-
+                    userName = userinfo.getName();
+                    userAvatar = userinfo.getAvatar();
                     setFriendPublicKey(userinfo.getPubKey());
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
@@ -89,14 +93,29 @@ public class CFriendChat extends FriendChat implements ConversationListener {
     @Override
     public String headImg() {
         super.headImg();
-        return contactEntity.getAvatar();
+        return userAvatar;
     }
 
     @Override
     public String nickName() {
         super.nickName();
-        String nickName = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
-        return nickName;
+        return userName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserAvatar() {
+        return userAvatar;
+    }
+
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
     }
 
     /**
