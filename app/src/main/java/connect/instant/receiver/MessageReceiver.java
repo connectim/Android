@@ -1,5 +1,10 @@
 package connect.instant.receiver;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -21,7 +26,6 @@ import connect.utils.NotificationBar;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.jni.AllNativeMethod;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.bean.Session;
@@ -111,22 +115,23 @@ public class MessageReceiver implements MessageListener {
 
     public void dealFriendChat(ContactEntity contactEntity, Connect.ChatMessage chatMessage, byte[] contents) {
         chatMessage = chatMessage.toBuilder().setBody(ByteString.copyFrom(contents)).build();
-
-        CFriendChat friendChat = new CFriendChat(contactEntity.getUid());
-        friendChat.setUserName(contactEntity.getUsername());
-        friendChat.setUserAvatar(contactEntity.getAvatar());
         ChatMsgEntity chatMsgEntity = ChatMsgEntity.transToMessageEntity(chatMessage.getMsgId(),
                 chatMessage.getFrom(), chatMessage.getChatType().getNumber(), chatMessage.getMsgType(),
                 chatMessage.getFrom(), chatMessage.getTo(),
                 chatMessage.getBody().toByteArray(), chatMessage.getMsgTime(), 1);
-
         MessageHelper.getInstance().insertMsgExtEntity(chatMsgEntity);
-        friendChat.updateRoomMsg(null, chatMsgEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
+
+        long messageTime = chatMessage.getMsgTime();
+
+        CFriendChat friendChat = new CFriendChat(contactEntity.getUid());
+        friendChat.setUserName(contactEntity.getUsername());
+        friendChat.setUserAvatar(contactEntity.getAvatar());
+        friendChat.updateRoomMsg(null, chatMsgEntity.showContent(), messageTime, -1, 1, false);
 
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, chatMsgEntity.getMessage_from(), chatMsgEntity);
         NotificationBar.notificationBar.noticeBarMsg(chatMsgEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, chatMsgEntity.showContent());
-    }
 
+    }
 
     @Override
     public void groupChat(Connect.ChatMessage chatMessage) {

@@ -659,6 +659,6 @@
     <string name="Link_Join_Group_Success">успех  к  групповой чат </string>
     <string name="Chat_No_Data">Нет данных...</string>
     <string name="Chat_Create_Group_Success">создать группу  успеха</string>
-    <string name="Error_Device_Remote_Login">Ты уже на оборудование в %1$s входа в</string>
+    <string name="Error_Device_Remote_Login">ваш счет  уже  в  %1$s  устройств  входа  в</string>
     <string name="Company_company">компания</string>
 </resources>

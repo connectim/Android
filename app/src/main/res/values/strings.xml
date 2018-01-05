@@ -610,6 +610,6 @@
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>
     <string name="Chat_No_Data">No Data...</string>
     <string name="Chat_Create_Group_Success">Create group success</string>
-    <string name="Error_Device_Remote_Login">Your device is already logged on on%1$s</string>
+    <string name="Error_Device_Remote_Login">Your account is already logged on on the%1$s device</string>
     <string name="Company_company">Company</string>
 </resources>

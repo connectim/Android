@@ -64,9 +64,9 @@ public class LoginUserActivity extends BaseActivity {
         nameEt.addTextChangedListener(textWatcher);
         passwordEt.addTextChangedListener(textWatcher);
 
-        if (!ConfigUtil.getInstance().appMode()) {
-            passwordEt.setText("Abcd1234");
-        }
+//        if (!ConfigUtil.getInstance().appMode()) {
+//            passwordEt.setText("Abcd1234");
+//        }
     }
 
     @OnClick(R.id.next_btn)

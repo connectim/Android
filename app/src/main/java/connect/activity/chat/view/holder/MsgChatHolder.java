@@ -120,9 +120,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                             String uid = RoomSession.getInstance().getRoomKey();
                             ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(uid);
                             if (friend == null) {
-                                //String address = SupportKeyUril.getAddressFromPubKey(uid);
-                                String address = "";
-                                StrangerInfoActivity.startActivity((Activity) context, address, SourceType.GROUP);
+                                StrangerInfoActivity.startActivity((Activity) context, uid, SourceType.GROUP);
                             } else {
                                 FriendInfoActivity.startActivity((Activity) context, uid);
                             }
