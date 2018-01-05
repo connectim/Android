@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import connect.activity.base.BaseApplication;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
+import connect.widget.DepartmentAvatar;
 import protos.Connect;
 
 /**
@@ -53,7 +54,8 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
             holder.departmentLinear.setVisibility(View.GONE);
             holder.contentLin.setVisibility(View.VISIBLE);
 
-            GlideUtil.loadAvatarRound(holder.avater, departmentBean.getAvatar());
+            //GlideUtil.loadAvatarRound(holder.avater, departmentBean.getAvatar());
+            holder.avater.setAvatarName(departmentBean.getName());
             holder.nameTvS.setText(departmentBean.getName());
             holder.nicName.setText(departmentBean.getO_u());
             if(departmentBean.getRegisted()){
@@ -95,7 +97,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
 
     class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout contentLin;
-        ImageView avater;
+        DepartmentAvatar avater;
         TextView nameTvS;
         TextView nicName;
         Button addBtn;
@@ -107,7 +109,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             contentLin = (RelativeLayout)itemView.findViewById(R.id.content_layout);
-            avater = (ImageView)itemView.findViewById(R.id.avatar_rimg);
+            avater = (DepartmentAvatar)itemView.findViewById(R.id.avatar_rimg);
             nameTvS = (TextView)itemView.findViewById(R.id.nickname_tv);
             nicName = (TextView)itemView.findViewById(R.id.hint_tv);
             addBtn = (Button) itemView.findViewById(R.id.status_btn);

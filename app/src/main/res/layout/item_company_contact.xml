@@ -15,6 +15,12 @@
         android:paddingRight="@dimen/dp_15"
         android:background="@drawable/selector_list_item_bg"
         android:visibility="gone">
+        <ImageView
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"
+            android:scaleType="fitXY"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/department_two"/>
         <TextView
             android:id="@+id/department_tv"
             style="@style/BaseTextStyle.16"
@@ -22,7 +28,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="" />
+            android:layout_marginLeft="@dimen/dp_22"
+            android:text="aaaaa" />
         <TextView
             android:id="@+id/count_tv"
             android:layout_width="wrap_content"
@@ -78,14 +85,23 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
 
-        <ImageView
+
+
+        <connect.widget.DepartmentAvatar
+            android:id="@+id/avatar_rimg"
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+        <!--<ImageView
             android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
             android:scaleType="fitXY"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true" />-->
     </RelativeLayout>
 
 </LinearLayout>
