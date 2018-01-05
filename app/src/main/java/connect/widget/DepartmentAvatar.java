@@ -39,10 +39,10 @@ public class DepartmentAvatar extends RelativeLayout {
 
     public void setAvatarName(String name){
         if(name.length() > 2){
-            this.setBackgroundColor(context.getResources().getColor(R.color.color_F27E32));
+            this.setBackground(context.getResources().getDrawable(R.drawable.shape_8px_f27e32));
             nameTv.setText(name.substring(1,3));
         }else{
-            this.setBackgroundColor(context.getResources().getColor(R.color.color_6B91EA));
+            this.setBackground(context.getResources().getDrawable(R.drawable.shape_8px_6b91ea));
             nameTv.setText(name);
         }
     }

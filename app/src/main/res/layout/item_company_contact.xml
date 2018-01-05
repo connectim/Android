@@ -44,7 +44,6 @@
             android:layout_marginLeft="@dimen/dp_10"/>
     </LinearLayout>
 
-
     <RelativeLayout
         android:id="@id/content_layout"
         android:layout_width="match_parent"
@@ -84,8 +83,6 @@
             android:layout_width="@dimen/dp_60"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
-
-
 
         <connect.widget.DepartmentAvatar
             android:id="@+id/avatar_rimg"
