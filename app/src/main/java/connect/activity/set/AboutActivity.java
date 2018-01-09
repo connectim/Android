@@ -120,7 +120,7 @@ public class AboutActivity extends BaseActivity {
 
     private void requestAppUpdate(){
         Connect.VersionRequest versionRequest = Connect.VersionRequest.newBuilder()
-                .setCategory(1)
+                .setCategory(2)
                 .setPlatform(2)
                 .setProtocolVersion(1)
                 .setVersion(SystemDataUtil.getVersionName(mActivity))
