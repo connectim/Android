@@ -58,7 +58,7 @@
     <Button
         style="@style/ButtonLongStyle"
         android:id="@id/next_btn"
-        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_60"
         android:enabled="false"
         android:text="@string/Common_OK"/>
 
