@@ -14,8 +14,8 @@ android {
         applicationId "com.iwork.im"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 2
-        versionName "0.0.2"
+        versionCode 12
+        versionName "0.0.1"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -111,15 +111,6 @@ def releaseTime() {
 }
 
 greendao {
-    /**
-     * The database version number
-     * The database upgrade need to change the version number, data migration
-     * 1--->0.0.3
-     * 2--->0.0.4
-     * 3--->0.0.8
-     * 4--->0.0.9
-     * 5--->0.1.2
-     */
     schemaVersion 5
     daoPackage 'connect.database.green.dao'
     targetGenDir 'src/main/java'
