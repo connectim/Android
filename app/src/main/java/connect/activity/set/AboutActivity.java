@@ -13,18 +13,17 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
 import connect.service.UpdateAppService;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
-import connect.utils.permission.PermissionUtil;
-import connect.utils.system.SystemDataUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -118,9 +117,9 @@ public class AboutActivity extends BaseActivity {
 
     private void requestAppUpdate(){
         Connect.VersionRequest versionRequest = Connect.VersionRequest.newBuilder()
-                .setCategory(1)
+                .setCategory(2)
                 .setPlatform(2)
-                .setProtocolVersion(0)
+                .setProtocolVersion(1)
                 .setVersion(SystemDataUtil.getVersionName(mActivity))
                 .build();
         HttpRequest.getInstance().post(UriUtil.CONNECT_V1_VERSION, versionRequest, new ResultCall<Connect.HttpNotSignResponse>() {

@@ -14,7 +14,7 @@ android {
         applicationId "com.iwork.im"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 12
+        versionCode 1
         versionName "0.0.1"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
