@@ -33,7 +33,7 @@ public class ConfigUtil {
     }
 
     public ConfigUtil() {
-        initConfig(ModeEnum.TEST);
+        initConfig(ModeEnum.RELEASE);
     }
 
     /**

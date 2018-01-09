@@ -617,6 +617,7 @@
     <string name="Chat_Create_Group_Success">Create group success</string>
     <string name="Error_Device_Remote_Login">Your account is already logged on on the%1$s device</string>
     <string name="Company_company">Company</string>
+    <string name="Login">Login</string>
     <string name="Login_Account">Company username</string>
     <string name="Login_password">Password</string>
     <string name="Please_Input_Login_username">Company username</string>

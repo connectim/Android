@@ -666,6 +666,7 @@
     <string name="Chat_Create_Group_Success">создать группу  успеха</string>
     <string name="Error_Device_Remote_Login">ваш счет  уже  в  %1$s  устройств  входа  в</string>
     <string name="Company_company">компания</string>
+    <string name="Login">вход</string>
     <string name="Login_Account">компания  имя пользователя</string>
     <string name="Login_password">пароль</string>
     <string name="Please_Input_Login_username">компания  имя пользователя</string>
