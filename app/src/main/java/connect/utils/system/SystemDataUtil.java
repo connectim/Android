@@ -30,6 +30,19 @@ import connect.utils.log.LogManager;
 
 public class SystemDataUtil {
 
+    public String getVersionCode(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo;
+        String versionCode = "1";
+        try {
+            packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            versionCode = packageInfo.versionCode + "";
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+
     /**
      * Get the APP version Name
      *

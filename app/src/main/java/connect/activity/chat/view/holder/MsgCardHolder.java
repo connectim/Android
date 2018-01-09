@@ -5,10 +5,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import connect.activity.chat.bean.RoomSession;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
+import connect.activity.login.bean.UserBean;
+import connect.activity.set.UserInfoActivity;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -41,11 +43,16 @@ public class MsgCardHolder extends MsgChatHolder {
             @Override
             public void onClick(View v) {
                 String uid = cardMessage.getUid();
-                ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(cardMessage.getUid());
-                if (entity == null) {
-                    StrangerInfoActivity.startActivity((Activity) context, uid, SourceType.CARD);
+                UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+                if (uid.equals(userBean.getUid())) {
+                    UserInfoActivity.startActivity((Activity) context);
                 } else {
-                    FriendInfoActivity.startActivity((Activity) context, uid);
+                    ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(cardMessage.getUid());
+                    if (entity == null) {
+                        StrangerInfoActivity.startActivity((Activity) context, uid, SourceType.CARD);
+                    } else {
+                        FriendInfoActivity.startActivity((Activity) context, uid);
+                    }
                 }
             }
         });

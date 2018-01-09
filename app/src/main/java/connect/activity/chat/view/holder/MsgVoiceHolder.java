@@ -79,11 +79,15 @@ public class MsgVoiceHolder extends MsgChatHolder {
                         voiceImg.startPlay(localPath);
                     } else {
                         voiceImg.downLoading();
+                        if (null != loadImg) {
+                            loadImg.setVisibility(View.VISIBLE);
+                        }
 
                         DownLoadFile loadFile = new DownLoadFile(url, new InterFileDown() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 if (null != loadImg) {
+                                    loadImg.clearAnimation();
                                     loadImg.setVisibility(View.GONE);
                                 }
 
@@ -104,15 +108,18 @@ public class MsgVoiceHolder extends MsgChatHolder {
 
                             @Override
                             public void failDown() {
-
+                                if (null != loadImg) {
+                                    loadImg.clearAnimation();
+                                    loadImg.setVisibility(View.GONE);
+                                }
                             }
 
                             @Override
                             public void onProgress(long bytesWritten, long totalSize) {
                                 int progress = (int) (bytesWritten * 100 / totalSize);
-                                if (null != loadImg) {
-                                    loadImg.setVisibility(View.VISIBLE);
-                                }
+//                                if (null != loadImg) {
+//                                    loadImg.setVisibility(View.VISIBLE);
+//                                }
                             }
                         });
                         loadFile.downFile();
