@@ -44,6 +44,7 @@
     <string name="Chat_Time">Time</string>
     <string name="Chat_Album">Photos</string>
     <string name="Chat_Organizational_structure">Organizational structure</string>
+    <string name="Chat_Contact_details">Contact details</string>
     <string name="Chat_Audio">[Audio]</string>
     <string name="Chat_Best_luck">Best luck</string>
     <string name="Chat_Bitcoin_has_been_return_to_your_wallet">Bitcoin has been return to your
@@ -249,6 +250,7 @@
         release your ownership
     </string>
     <string name="Link_Send">Send</string>
+    <string name="Link_Inactive">Inactive</string>
     <string name="Link_Send_friend_request">Send friend request</string>
     <string name="Link_Send_successful">Send successful</string>
     <string name="Link_Send_to">Send to %s</string>
@@ -289,6 +291,9 @@
     <string name="Link_contact_count_group_count">%1$d contact,%2$d group</string>
     <string name="Link_enter_the_group">%s join the group</string>
     <string name="Link_group_count">%d group</string>
+    <string name="Link_Employee_number">Employee number:</string>
+    <string name="Link_Subordinate_departments">Subordinate departments:</string>
+    <string name="Link_Contact_number">Contact number:</string>
     <string name="Link_have_joined_the_group">You\'ve joined in the group</string>
     <string name="Link_invite_encrypted_chat_with_APP_Download">%s invite you to start encrypted
         chat with connect.im Connect is an open source P2P encrypted messages APP.

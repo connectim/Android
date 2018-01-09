@@ -25,6 +25,7 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.company.adapter.DepartmentAdapter;
 import connect.activity.company.adapter.DepartmentBean;
 import connect.activity.company.adapter.NameLinear;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
@@ -105,8 +106,8 @@ public class DepartmentActivity extends BaseActivity {
         nameLinear.setVisibility(View.VISIBLE);
         nameList.clear();
         Connect.Department department = Connect.Department.newBuilder()
-                .setId(1)
-                .setName("BITMAIN")
+                .setId(2)
+                .setName("比特大陆")
                 .build();
         nameList.add(department);
         nameLinear.notifyAddView(nameList, scrollview);
@@ -175,29 +176,35 @@ public class DepartmentActivity extends BaseActivity {
                 nameLinear.notifyAddView(nameList, scrollview);
                 requestDepartment(departmentBean.getId());
             } else {
-                ContactEntity contactEntity = ContactHelper.getInstance().loadFriendByUid(departmentBean.getUid());
+                if(userBean.getUid().equals(departmentBean.getUid())){
+                    UserInfoActivity.startActivity(mActivity);
+                }else{
+                    String department = TextUtils.isEmpty(departmentBean.getO_u()) ? nameList.get(nameList.size()-1).getName() : departmentBean.getO_u();
+                    ContactInfoActivity.lunchActivity(mActivity, departmentBean, department);
+                }
+                /*ContactEntity contactEntity = ContactHelper.getInstance().loadFriendByUid(departmentBean.getUid());
                 if(userBean.getUid().equals(departmentBean.getUid())){
                     UserInfoActivity.startActivity(mActivity);
                 }else if(contactEntity != null){
                     FriendInfoActivity.startActivity(mActivity, departmentBean.getUid());
                 }else if(departmentBean.getRegisted()){
                     StrangerInfoActivity.startActivity(mActivity, departmentBean.getUid(), SourceType.SEARCH);
-                }
+                }*/
             }
         }
 
         @Override
         public void addFriend(int position, DepartmentBean departmentBean) {
-            Talker talker = new Talker(Connect.ChatType.PRIVATE, departmentBean.getUid());
+            /*Talker talker = new Talker(Connect.ChatType.PRIVATE, departmentBean.getUid());
             talker.setAvatar(departmentBean.getAvatar());
             talker.setNickName(departmentBean.getName());
             talker.setFriendPublicKey(departmentBean.getPub_key());
-            ChatActivity.startActivity(mActivity, talker);
+            ChatActivity.startActivity(mActivity, talker);*/
         }
     };
 
     private void requestDepartment(Long id) {
-        Connect.Department department = Connect.Department.newBuilder()
+        final Connect.Department department = Connect.Department.newBuilder()
                 .setId(id)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_DEPARTMENT, department, new ResultCall<Connect.HttpNotSignResponse>() {
@@ -211,17 +218,11 @@ public class DepartmentActivity extends BaseActivity {
                         DepartmentBean departmentBean = new DepartmentBean();
                         departmentBean.setId(department1.getId());
                         departmentBean.setName(department1.getName());
+                        departmentBean.setCount(department1.getCount());
                         list.add(departmentBean);
                     }
                     for (Connect.Workmate workmate : syncWorkmates.getWorkmates().getListList()) {
-                        DepartmentBean departmentBean = new DepartmentBean();
-                        departmentBean.setUid(workmate.getUid());
-                        departmentBean.setName(workmate.getName());
-                        departmentBean.setAvatar(workmate.getAvatar());
-                        departmentBean.setO_u(workmate.getOU());
-                        departmentBean.setPub_key(workmate.getPubKey());
-                        departmentBean.setRegisted(workmate.getRegisted());
-                        list.add(departmentBean);
+                        list.add(getContactBean(workmate));
                     }
                     adapter.setNotify(list);
                 } catch (Exception e) {
@@ -256,14 +257,7 @@ public class DepartmentActivity extends BaseActivity {
                     }
                     ArrayList<DepartmentBean> list = new ArrayList<>();
                     for (Connect.Workmate workmate : workmates.getListList()) {
-                        DepartmentBean departmentBean = new DepartmentBean();
-                        departmentBean.setUid(workmate.getUid());
-                        departmentBean.setName(workmate.getName());
-                        departmentBean.setAvatar(workmate.getAvatar());
-                        departmentBean.setO_u(workmate.getOU());
-                        departmentBean.setPub_key(workmate.getPubKey());
-                        departmentBean.setRegisted(workmate.getRegisted());
-                        list.add(departmentBean);
+                        list.add(getContactBean(workmate));
                     }
                     adapter.setNotify(list);
                     nameLinear.setVisibility(View.GONE);
@@ -275,6 +269,21 @@ public class DepartmentActivity extends BaseActivity {
             @Override
             public void onError(Connect.HttpNotSignResponse response) {}
         });
+    }
+
+    private DepartmentBean getContactBean(Connect.Workmate workmate){
+        DepartmentBean departmentBean = new DepartmentBean();
+        departmentBean.setUid(workmate.getUid());
+        departmentBean.setName(workmate.getName());
+        departmentBean.setAvatar(workmate.getAvatar());
+        departmentBean.setO_u(workmate.getOU());
+        departmentBean.setPub_key(workmate.getPubKey());
+        departmentBean.setRegisted(workmate.getRegisted());
+        departmentBean.setEmpNo(workmate.getEmpNo());
+        departmentBean.setMobile(workmate.getMobile());
+        departmentBean.setGender(workmate.getGender());
+        departmentBean.setTips(workmate.getTips());
+        return departmentBean;
     }
 
 }

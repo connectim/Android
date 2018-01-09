@@ -98,6 +98,10 @@
         <activity
             android:name="connect.activity.company.DepartmentActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name="connect.activity.contact.ContactInfoActivity"
+            android:screenOrientation="portrait"/>
+
 
         <activity
             android:name="connect.activity.login.RegisterGetRandomActivity"
