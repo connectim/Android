@@ -69,7 +69,11 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void updateMsgSendState(String publickey, String msgid, int state) {
-        MessageEntity msgEntity = MessageEntity.chatMsgToMessageEntity(MessageHelper.getInstance().loadMsgByMsgid(msgid));
+        ChatMsgEntity chatMsgEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
+        if(chatMsgEntity==null){
+            return;
+        }
+        MessageEntity msgEntity = MessageEntity.chatMsgToMessageEntity(chatMsgEntity);
         if (msgEntity != null) {
             msgEntity.setSend_status(state);
             MessageHelper.getInstance().updateMsg(msgEntity);

@@ -66,11 +66,11 @@ public class VoiceUpload extends BaseFileUp {
     public void fileEncrypt() {
         super.fileEncrypt();
 
-        byte[] sourceFileByte = FileUtil.filePathToByteArray(sourceCompressFile);
+        byte[] sourceFileByte = encodeAESGCMStructData(sourceCompressFile);
         ByteString sourceFileBytes = ByteString.copyFrom(sourceFileByte);
 
-        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder().
-                setEntity(sourceFileBytes)
+        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder()
+                .setEntity(sourceFileBytes)
                 .build();
 
         Connect.StructData structData = Connect.StructData.newBuilder()

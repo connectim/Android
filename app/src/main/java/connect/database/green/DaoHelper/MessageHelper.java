@@ -136,16 +136,17 @@ public class MessageHelper extends BaseDao {
 
     /********************************* add ***********************************/
     public void insertMessageEntity(MessageEntity msgEntity) {
-        // messageEntityDao.insertOrReplaceInTx(msgEntity);
-        daoSession.clear();
-        String sql = "INSERT INTO MESSAGE_ENTITY (MESSAGE_OWER, MESSAGE_ID, CHAT_TYPE, MESSAGE_FROM ,MESSAGE_TO, MESSAGE_TYPE, CONTENT," +
-                "READ_TIME,SEND_STATUS,SNAP_TIME,CREATETIME) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+        messageEntityDao.insertOrReplaceInTx(msgEntity);
 
-        Object[] objects = new Object[]{msgEntity.getMessage_ower(), msgEntity.getMessage_id(), msgEntity.getChatType(), msgEntity.getMessage_from(),
-                msgEntity.getMessage_to(), msgEntity.getMessageType(), msgEntity.getContent(),
-                msgEntity.getRead_time(), msgEntity.getSend_status(), msgEntity.getSnap_time(), msgEntity.getCreatetime()
-        };
-        daoSession.getDatabase().execSQL(sql, objects);
+        //        daoSession.clear();
+//        String sql = "INSERT INTO MESSAGE_ENTITY (MESSAGE_OWER, MESSAGE_ID, CHAT_TYPE, MESSAGE_FROM ,MESSAGE_TO, MESSAGE_TYPE, CONTENT," +
+//                "READ_TIME,SEND_STATUS,SNAP_TIME,CREATETIME) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+//
+//        Object[] objects = new Object[]{msgEntity.getMessage_ower(), msgEntity.getMessage_id(), msgEntity.getChatType(), msgEntity.getMessage_from(),
+//                msgEntity.getMessage_to(), msgEntity.getMessageType(), msgEntity.getContent(),
+//                msgEntity.getRead_time(), msgEntity.getSend_status(), msgEntity.getSnap_time(), msgEntity.getCreatetime()
+//        };
+//        daoSession.getDatabase().execSQL(sql, objects);
     }
 
     public ChatMsgEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
@@ -191,7 +192,7 @@ public class MessageHelper extends BaseDao {
         bd.executeDeleteWithoutDetachingEntities();
     }
 
-    public void clearChatMsgs(){
+    public void clearChatMsgs() {
         messageEntityDao.deleteAll();
     }
 

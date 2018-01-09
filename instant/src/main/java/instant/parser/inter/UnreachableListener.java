@@ -18,5 +18,5 @@ public interface UnreachableListener {
 
     void saltNotMatch(String msgid, String rejectUid, Connect.ChatCookie cookie) throws Exception;
 
-    void publicKeyNotMatch(String msgid, String rejectUid) throws Exception;
+    void publicKeyNotMatch(String msgid, String rejectUid,Connect.PubKey pubKey) throws Exception;
 }

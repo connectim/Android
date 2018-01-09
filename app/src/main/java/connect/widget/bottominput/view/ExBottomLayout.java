@@ -83,7 +83,7 @@ public class ExBottomLayout extends RelativeLayout {
         Connect.ChatType roomType = RoomSession.getInstance().getRoomType();
         actionList.add(new BaseAction(R.mipmap.chat_bar_picture, R.string.Chat_Photo));
         actionList.add(new BaseAction(R.mipmap.chat_bar_camera, R.string.Chat_Sight));
-        actionList.add(new BaseAction(R.mipmap.message_send_location3x, R.string.Chat_Loc));
+//        actionList.add(new BaseAction(R.mipmap.message_send_location3x, R.string.Chat_Loc));
         if (roomType == Connect.ChatType.CONNECT_SYSTEM) {
 
         } else {

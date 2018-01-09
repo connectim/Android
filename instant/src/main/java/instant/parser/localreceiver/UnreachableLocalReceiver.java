@@ -56,7 +56,7 @@ public class UnreachableLocalReceiver implements UnreachableListener {
     }
 
     @Override
-    public void publicKeyNotMatch(String msgid, String rejectUid) throws Exception {
-        getUnreachableListener().publicKeyNotMatch(msgid, rejectUid);
+    public void publicKeyNotMatch(String msgid, String rejectUid,Connect.PubKey pubKey) throws Exception {
+        getUnreachableListener().publicKeyNotMatch(msgid, rejectUid,pubKey);
     }
 }

@@ -1,5 +1,7 @@
 package instant.parser;
 
+import com.google.protobuf.ByteString;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +148,7 @@ public class MessageParser extends InterParse {
 
         String msgid = rejectMessage.getMsgId();
         String rejectUid = rejectMessage.getUid();
+        ByteString data = rejectMessage.getData();
         switch (rejectMessage.getStatus()) {
             case 1://The user does not exist
             case 2://Is not a friend relationship
@@ -180,7 +183,8 @@ public class MessageParser extends InterParse {
                 reloadUserCookie(msgid, rejectUid);
                 break;
             case 10://PUBKEY_NOT_MATCH
-                UnreachableLocalReceiver.localReceiver.publicKeyNotMatch(msgid, rejectUid);
+                Connect.PubKey pubKey = Connect.PubKey.parseFrom(data);
+                UnreachableLocalReceiver.localReceiver.publicKeyNotMatch(msgid, rejectUid,pubKey);
                 break;
         }
         receiptMsg(msgid, 2);

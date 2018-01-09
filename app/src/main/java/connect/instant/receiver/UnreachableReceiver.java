@@ -77,10 +77,11 @@ public class UnreachableReceiver implements UnreachableListener {
     }
 
     @Override
-    public void publicKeyNotMatch(String msgid, final String rejectUid) throws Exception {
+    public void publicKeyNotMatch(String msgid, final String rejectUid,Connect.PubKey pubKey) throws Exception {
         final ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity != null) {
             CFriendChat friendChat = new CFriendChat(rejectUid);
+            friendChat.setFriendPublicKey(pubKey.getPubKey());
             friendChat.sendPushMsg(messageEntity);
         }
     }

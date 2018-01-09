@@ -74,7 +74,11 @@ public class MessageEntity implements Serializable {
     }
 
     public static MessageEntity chatMsgToMessageEntity(ChatMsgEntity chatMsgEntity) {
-        String content = StringUtil.bytesToHexString(chatMsgEntity.getContents());
+        byte[] contentBytes = chatMsgEntity.getContents();
+        if (contentBytes == null) {
+            contentBytes = StringUtil.hexStringToBytes(chatMsgEntity.getContent());
+        }
+        String content = StringUtil.bytesToHexString(contentBytes);
 
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.set_id(chatMsgEntity.get_id());
