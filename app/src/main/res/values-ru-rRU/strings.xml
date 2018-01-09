@@ -45,6 +45,7 @@
     <string name="Chat_Time">время</string>
     <string name="Chat_Album">Фотоальбом</string>
     <string name="Chat_Organizational_structure">В структуру</string>
+    <string name="Chat_Contact_details">За контактов</string>
     <string name="Chat_Audio">[Аудио]</string>
     <string name="Chat_Best_luck">Хорошее везение</string>
     <string name="Chat_Bitcoin_has_been_return_to_your_wallet">После истечения времени денежного
@@ -259,6 +260,7 @@
         Вы добровольно должны отказаться от прав хозяина группы
     </string>
     <string name="Link_Send">Отправить</string>
+    <string name="Link_Inactive">Не активировать</string>
     <string name="Link_Send_friend_request">Отправить запрос о дружбе</string>
     <string name="Link_Send_successful">Успешно отправлено</string>
     <string name="Link_Send_to">Отправить %s</string>
@@ -305,6 +307,9 @@
     <string name="Link_contact_count_group_count">Контактное лицо %1$d, группа %2$d</string>
     <string name="Link_enter_the_group">Добавить группу %s</string>
     <string name="Link_group_count">Группа %d</string>
+    <string name="Link_Employee_number">Номер сотрудника:</string>
+    <string name="Link_Subordinate_departments">Принадлежащего сектор:</string>
+    <string name="Link_Contact_number">Номер:</string>
     <string name="Link_have_joined_the_group">Вы уже добавлены в эту группу</string>
     <string name="Link_invite_encrypted_chat_with_APP_Download">%s приглашает Вас начать
         зашифрованный чат с Connect, Connect - это приложение для зашифрованного общения P2P。Адрес

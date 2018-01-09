@@ -36,6 +36,7 @@
     <string name="Chat_Time">时间</string>
     <string name="Chat_Album">相册</string>
     <string name="Chat_Organizational_structure">组织架构</string>
+    <string name="Chat_Contact_details">联系人详情</string>
     <string name="Chat_Audio">[语音]</string>
     <string name="Chat_Best_luck">手气最佳</string>
     <string name="Chat_Bitcoin_has_been_return_to_your_wallet">红包超时，余额已经退回到你的钱包</string>
@@ -221,6 +222,7 @@
     <string name="Link_Select_new_owner">选择新群主</string>
     <string name="Link_Selecting__new_owner__release_your_ownership">确定 %s 作为群主, 你将主动放弃群主身份</string>
     <string name="Link_Send">发送</string>
+    <string name="Link_Inactive">未激活</string>
     <string name="Link_Send_friend_request">发送好友请求</string>
     <string name="Link_Send_successful">发送成功</string>
     <string name="Link_Send_to">发送给%s</string>
@@ -252,6 +254,9 @@
     <string name="Link_contact_count_group_count">%1$d位联系人,%2$d个群组</string>
     <string name="Link_enter_the_group">%s加入群聊</string>
     <string name="Link_group_count">%d个群组</string>
+    <string name="Link_Employee_number">员工编号：</string>
+    <string name="Link_Subordinate_departments">所属部门：</string>
+    <string name="Link_Contact_number">联系号码：</string>
     <string name="Link_have_joined_the_group">你已经加入这个群组</string>
     <string name="Link_invite_encrypted_chat_with_APP_Download">%s
         邀请您使用Connect开始加密聊天，Connect是一个开源的P2P加密聊天APP。下载地址: https://connect.im

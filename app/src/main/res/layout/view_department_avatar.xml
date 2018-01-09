@@ -11,4 +11,14 @@
         android:layout_centerInParent="true"
         android:textSize="@dimen/sp_16"/>
 
+    <TextView
+        android:id="@+id/inactive_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Link_Inactive"
+        android:layout_centerInParent="true"
+        android:textSize="@dimen/sp_10"
+        android:textColor="@color/color_8E8E8E"
+        android:visibility="gone"/>
+
 </RelativeLayout>

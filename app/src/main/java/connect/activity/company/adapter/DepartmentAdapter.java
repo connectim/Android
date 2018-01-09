@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,13 +15,7 @@ import java.util.ArrayList;
 
 import connect.activity.base.BaseApplication;
 import connect.ui.activity.R;
-import connect.utils.glide.GlideUtil;
 import connect.widget.DepartmentAvatar;
-import protos.Connect;
-
-/**
- * Created by Administrator on 2018/1/3 0003.
- */
 
 public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.ViewHolder> {
 
@@ -50,15 +43,23 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
             holder.contentLin.setVisibility(View.GONE);
 
             holder.departmentTv.setText(departmentBean.getName());
+            holder.countTv.setText("(" + departmentBean.getCount() + ")");
         }else{
             holder.departmentLinear.setVisibility(View.GONE);
             holder.contentLin.setVisibility(View.VISIBLE);
 
             //GlideUtil.loadAvatarRound(holder.avater, departmentBean.getAvatar());
-            holder.avater.setAvatarName(departmentBean.getName());
             holder.nameTvS.setText(departmentBean.getName());
-            holder.nicName.setText(departmentBean.getO_u());
+            if(TextUtils.isEmpty(departmentBean.getO_u())){
+                holder.nicName.setVisibility(View.GONE);
+            }else{
+                holder.nicName.setVisibility(View.VISIBLE);
+                holder.nicName.setText(departmentBean.getO_u());
+            }
             if(departmentBean.getRegisted()){
+                holder.avater.setAvatarName(departmentBean.getName(), false, departmentBean.getGender());
+
+                /*holder.addBtn.setVisibility(View.GONE);
                 holder.addBtn.setText(R.string.Chat_Chats);
                 holder.addBtn.setEnabled(true);
                 holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff));
@@ -69,11 +70,13 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
                             itemClickListener.addFriend(position, departmentBean);
                         }
                     }
-                });
+                });*/
             }else{
+                holder.avater.setAvatarName(departmentBean.getName(), true, departmentBean.getGender());
+                /*holder.addBtn.setVisibility(View.VISIBLE);
                 holder.addBtn.setText(R.string.Link_Not_logged_in);
                 holder.addBtn.setEnabled(false);
-                holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_858998));
+                holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_858998));*/
             }
         }
         holder.contentLin.setOnClickListener(new View.OnClickListener() {

@@ -241,6 +241,9 @@ public class PermissionUtil {
             case NOT_ALLOW:
                 message = activity.getString(R.string.Link_Unable_to_access_permissom);
                 break;
+            case PERMISSION_PHONE:
+                message = activity.getString(R.string.Link_Unable_to_access_permissom);
+                break;
         }
         DialogUtil.showAlertTextView(activity, activity.getString(R.string.Set_tip_title), message,
                 "", activity.getString(R.string.Set_Setting), false, false, new DialogUtil.OnItemClickListener() {
