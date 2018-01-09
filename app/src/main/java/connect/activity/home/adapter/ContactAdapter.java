@@ -19,7 +19,6 @@ import java.util.List;
 import connect.activity.base.BaseApplication;
 import connect.activity.contact.model.ContactListManage;
 import connect.activity.home.bean.ContactBean;
-import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.PinyinUtil;
 import connect.utils.glide.GlideUtil;
