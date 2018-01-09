@@ -36,7 +36,7 @@ public class UpdateAppService extends Service {
         down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         down.setVisibleInDownloadsUi(true);
         down.setTitle(getString(R.string.app_name));
-        down.setDescription(getString(R.string.Common_Download_App,"Connect"));
+        down.setDescription(getString(R.string.Common_Download_App,"iWork"));
 
         FileUtil.deleteFile(Environment.getExternalStorageDirectory() + pathDown);
         file = new File(Environment.getExternalStorageDirectory() + pathDown);

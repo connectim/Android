@@ -30,9 +30,9 @@ public class CheckUpdate {
 
     public void check(){
         Connect.VersionRequest versionRequest = Connect.VersionRequest.newBuilder()
-                .setCategory(1)
+                .setCategory(2)
                 .setPlatform(2)
-                .setProtocolVersion(0)
+                .setProtocolVersion(1)
                 .setVersion(SystemDataUtil.getVersionName(activity))
                 .build();
         HttpRequest.getInstance().post(UriUtil.CONNECT_V1_VERSION, versionRequest, new ResultCall<Connect.HttpNotSignResponse>() {
