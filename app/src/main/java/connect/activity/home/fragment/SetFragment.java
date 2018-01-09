@@ -21,7 +21,6 @@ import connect.activity.set.AboutActivity;
 import connect.activity.set.GeneralActivity;
 import connect.activity.set.PrivateActivity;
 import connect.activity.set.SafetyActivity;
-import connect.activity.set.SupportActivity;
 import connect.activity.set.SupportFeedbackActivity;
 import connect.activity.set.UserConnectIdActivity;
 import connect.activity.set.UserInfoActivity;

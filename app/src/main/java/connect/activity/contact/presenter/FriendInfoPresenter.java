@@ -23,7 +23,6 @@ import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.instant.inter.ConversationListener;
 import connect.instant.model.CFriendChat;
@@ -104,13 +103,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                 if (sendBean.getType() == MsgSendBean.SendType.TypeAddFavorites) {
                     mView.setCommon(sendBean.getCommon());
                 } else if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
-                    ContactHelper.getInstance().deleteEntity(sendBean.getUid());
-                    ContactHelper.getInstance().deleteRequestEntity(sendBean.getUid());
-                    ContactHelper.getInstance().removeFriend(sendBean.getUid());
-                    ContactNotice.receiverContact();
-
-                    ToastEUtil.makeText(mView.getActivity(), R.string.Link_Delete_Successful).show();
-                    ActivityUtil.goBack(mView.getActivity());
+                    deleteFriend(sendBean.getUid());
                 } else if(sendBean.getType() == MsgSendBean.SendType.TypeFriendBlock){
                     mView.setBlack(sendBean.getBlack());
                 }
@@ -120,12 +113,26 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                 if(sendBean.getType() == MsgSendBean.SendType.TypeAddFavorites) {
                     ToastUtil.getInstance().showToast(errorCode + "");
                 }else if (sendBean.getType() == MsgSendBean.SendType.TypeDeleteFriend) {
-                    ToastEUtil.makeText(mView.getActivity(),R.string.Link_Delete_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
+                    if(errorCode == 2){
+                        deleteFriend(sendBean.getUid());
+                    }else{
+                        ToastEUtil.makeText(mView.getActivity(),R.string.Link_Delete_Failed,ToastEUtil.TOAST_STATUS_FAILE).show();
+                    }
                 }else if(sendBean.getType() == MsgSendBean.SendType.TypeFriendBlock) {
                     ToastUtil.getInstance().showToast(errorCode + "");
                 }
                 break;
         }
+    }
+
+    private void deleteFriend(String uid){
+        ContactHelper.getInstance().deleteEntity(uid);
+        ContactHelper.getInstance().deleteRequestEntity(uid);
+        ContactHelper.getInstance().removeFriend(uid);
+        ContactNotice.receiverContact();
+
+        ToastEUtil.makeText(mView.getActivity(), R.string.Link_Delete_Successful).show();
+        ActivityUtil.goBack(mView.getActivity());
     }
 
     /**
