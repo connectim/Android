@@ -193,14 +193,6 @@ public class DepartmentActivity extends BaseActivity {
                     contactEntity.setOu(department);
                     ContactInfoActivity.lunchActivity(mActivity, contactEntity);
                 }
-                /*ContactEntity contactEntity = ContactHelper.getInstance().loadFriendByUid(departmentBean.getUid());
-                if(userBean.getUid().equals(departmentBean.getUid())){
-                    UserInfoActivity.startActivity(mActivity);
-                }else if(contactEntity != null){
-                    FriendInfoActivity.startActivity(mActivity, departmentBean.getUid());
-                }else if(departmentBean.getRegisted()){
-                    StrangerInfoActivity.startActivity(mActivity, departmentBean.getUid(), SourceType.SEARCH);
-                }*/
             }
         }
 
