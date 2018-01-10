@@ -23,11 +23,7 @@ public class ConfigUtil {
 
     public static ConfigUtil getInstance() {
         if (configUtil == null) {
-            synchronized (ConfigUtil.class) {
-                if (configUtil == null) {
-                    configUtil = new ConfigUtil();
-                }
-            }
+            configUtil = new ConfigUtil();
         }
         return configUtil;
     }

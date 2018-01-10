@@ -134,7 +134,7 @@ public class AlbumScanner implements IAlbumScanner {
                 IMAGES,
                 null,
                 null,
-                MediaStore.Images.Media.DATE_ADDED);
+                MediaStore.Images.Media.DATE_ADDED + " desc");
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
