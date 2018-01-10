@@ -28,6 +28,7 @@ import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ContactAdapter;
 import connect.activity.home.bean.ContactBean;
+import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -76,13 +77,14 @@ public class ContactFragment extends BaseFragment {
     private void initView() {
         toolbarTop.setBlackStyle();
         toolbarTop.setTitle(null, R.string.Link_Contacts);
-        toolbarTop.setRightImg(R.mipmap.add_white3x);
+        //toolbarTop.setRightImg(R.mipmap.add_white3x);
         toolbarTop.setLeftImg(R.mipmap.search3x);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new ContactAdapter(mActivity);
         recyclerview.setAdapter(adapter);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
         sideBar.setOnTouchingLetterChangedListener(changedListener);
 
         adapter.setOnSideMenuListener(onSideMenuListener);
@@ -96,7 +98,7 @@ public class ContactFragment extends BaseFragment {
 
     @OnClick(R.id.right_lin)
     void goAddFriend(View view) {
-        ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
+        //ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
     }
 
     SideBar.OnTouchingLetterChangedListener changedListener = new SideBar.OnTouchingLetterChangedListener(){

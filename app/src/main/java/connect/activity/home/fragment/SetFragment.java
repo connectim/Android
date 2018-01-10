@@ -135,7 +135,7 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.address_scan_img)
     void showScanAddress(View view) {
-        ActivityUtil.next(mActivity, UserConnectIdActivity.class);
+        //ActivityUtil.next(mActivity, UserConnectIdActivity.class);
     }
 
     @OnClick(R.id.log_out_tv)

@@ -16,6 +16,7 @@ public class ContactBean {
     private String tips;
     private int count;
     private String ou;
+    private int gender;
 
     public ContactBean() {
     }
@@ -79,5 +80,13 @@ public class ContactBean {
 
     public void setOu(String ou) {
         this.ou = ou;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 }
