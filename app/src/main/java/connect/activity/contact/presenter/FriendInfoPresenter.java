@@ -82,7 +82,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
             baseChat = new CGroupChat(groupEntity);
             talker = new Talker(Connect.ChatType.GROUPCHAT,pubKey);
         }
-        ChatMsgEntity msgExtEntity = baseChat.cardMsg(friendEntity.getUid(), friendEntity.getUsername(), friendEntity.getAvatar());
+        ChatMsgEntity msgExtEntity = baseChat.cardMsg(friendEntity.getUid(), friendEntity.getName(), friendEntity.getAvatar());
         baseChat.sendPushMsg(msgExtEntity);
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
         ((ConversationListener)baseChat).updateRoomMsg(null, BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Visting_card), msgExtEntity.getCreatetime());
@@ -155,7 +155,7 @@ public class FriendInfoPresenter implements FriendInfoContract.Presenter {
                     }
                     // Update the database information
                     friendEntity.setAvatar(userInfo.getUsers(0).getAvatar());
-                    friendEntity.setUsername(userInfo.getUsers(0).getName());
+                    friendEntity.setName(userInfo.getUsers(0).getName());
                     mView.updateView(friendEntity);
                     ContactHelper.getInstance().insertContact(friendEntity);
 

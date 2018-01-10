@@ -93,12 +93,12 @@ public class CommandReceiver implements CommandListener {
     }
 
     @Override
-    public void loadAllContacts(Connect.SyncUserRelationship userRelationship) throws Exception {
-        Connect.RelationShip relationShip = userRelationship.getRelationShip();
-        List<Connect.FriendInfo> friendInfoList = relationShip.getFriendsList();
+    public void loadAllContacts(Connect.SyncCompany userRelationship) throws Exception {
+        Connect.WorkmatesVersion relationShip = userRelationship.getWorkmatesVersion();
+        List<Connect.Workmate> friendInfoList = relationShip.getListList();
 
         Map<String, ContactEntity> contactEntityMap = new HashMap<>();
-        for (Connect.FriendInfo friendInfo : friendInfoList) {
+        for (Connect.Workmate friendInfo : friendInfoList) {
             String friendUid = friendInfo.getUid();
 
             if (TextUtils.isEmpty(friendUid)) {
@@ -107,14 +107,16 @@ public class CommandReceiver implements CommandListener {
 
             ContactEntity contactEntity = new ContactEntity();
             contactEntity.setUid(friendUid);
-            contactEntity.setConnectId(friendInfo.getConnectId());
-            contactEntity.setUsername(friendInfo.getName());
+            contactEntity.setName(friendInfo.getName());
             contactEntity.setAvatar(friendInfo.getAvatar());
-            contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
-            contactEntity.setSource(friendInfo.getSource());
-            contactEntity.setRemark(friendInfo.getRemark());
-            contactEntity.setOu(friendInfo.getOu());
+            contactEntity.setRemark("");
+            contactEntity.setOu(friendInfo.getOU());
             contactEntity.setPublicKey(friendInfo.getPubKey());
+            contactEntity.setRegisted(true);
+            contactEntity.setEmpNo(friendInfo.getEmpNo());
+            contactEntity.setMobile(friendInfo.getMobile());
+            contactEntity.setGender(friendInfo.getGender());
+            contactEntity.setTips(friendInfo.getTips());
             contactEntityMap.put(friendUid, contactEntity);
         }
         Collection<ContactEntity> contactEntityCollection = contactEntityMap.values();
@@ -126,9 +128,8 @@ public class CommandReceiver implements CommandListener {
         if (connectEntity == null) {
             connectEntity = new ContactEntity();
             connectEntity.setUid(connect);
-            connectEntity.setUsername(connect);
+            connectEntity.setName(connect);
             connectEntity.setUid(connect);
-            connectEntity.setSource(-1);
 
             friendInfoEntities.add(connectEntity);
         }
@@ -175,10 +176,10 @@ public class CommandReceiver implements CommandListener {
     }
 
     @Override
-    public void contactChanges(Connect.ChangeRecords changeRecords) {
-        List<Connect.ChangeRecord> recordsList = changeRecords.getChangeRecordsList();
-        for (Connect.ChangeRecord record : recordsList) {
-            Connect.FriendInfo friendInfo = record.getFriendInfo();
+    public void contactChanges(Connect.WorkmateChangeRecords changeRecords) {
+        List<Connect.WorkmateChangeRecord > recordsList = changeRecords.getWorkmateChangeRecordsList();
+        for (Connect.WorkmateChangeRecord  record : recordsList) {
+            Connect.Workmate friendInfo = record.getWorkmate();
             String uid = friendInfo.getUid();
 
             ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(uid);
@@ -194,15 +195,17 @@ public class CommandReceiver implements CommandListener {
                     }
 
                     entity.setUid(uid);
-                    entity.setConnectId(friendInfo.getConnectId());
-                    entity.setUsername(friendInfo.getName());
+                    entity.setName(friendInfo.getName());
                     entity.setAvatar(friendInfo.getAvatar());
-                    entity.setCommon(friendInfo.getCommon() ? 1 : 0);
-                    entity.setBlocked(friendInfo.getBlackList());
-                    entity.setRemark(friendInfo.getRemark());
-                    entity.setSource(friendInfo.getSource());
-                    entity.setOu(friendInfo.getOu());
+                    entity.setRemark("");
+                    entity.setOu(friendInfo.getOU());
                     entity.setPublicKey(friendInfo.getPubKey());
+                    entity.setRegisted(true);
+
+                    entity.setEmpNo(friendInfo.getEmpNo());
+                    entity.setMobile(friendInfo.getMobile());
+                    entity.setGender(friendInfo.getGender());
+                    entity.setTips(friendInfo.getTips());
                     ContactHelper.getInstance().insertContact(entity);
 
                     if (newFriend) { // Add a welcome message
@@ -233,7 +236,7 @@ public class CommandReceiver implements CommandListener {
                     break;
                 case "remark":
                     if (entity != null) {
-                        ContactHelper.getInstance().updataFriendRemark(uid, friendInfo.getRemark());
+                        ContactHelper.getInstance().updataFriendRemark(uid, "");
                     }
                     break;
             }
@@ -268,15 +271,12 @@ public class CommandReceiver implements CommandListener {
             newFriend = true;
         }
         contactEntity.setUid(friendInfo.getUid());
-        contactEntity.setUsername(friendInfo.getName());
+        contactEntity.setName(friendInfo.getName());
         contactEntity.setAvatar(friendInfo.getAvatar());
-        contactEntity.setConnectId(friendInfo.getConnectId());
         contactEntity.setRemark(friendInfo.getRemark());
-        contactEntity.setBlocked(friendInfo.getBlackList());
-        contactEntity.setCommon(friendInfo.getCommon() ? 1 : 0);
-        contactEntity.setSource(friendInfo.getSource());
         contactEntity.setOu(friendInfo.getOu());
         contactEntity.setPublicKey(friendInfo.getPubKey());
+        contactEntity.setRegisted(true);
         ContactHelper.getInstance().insertContact(contactEntity);
 
         ContactNotice.receiverFriend();

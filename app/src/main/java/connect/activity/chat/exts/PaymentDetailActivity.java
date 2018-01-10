@@ -128,12 +128,12 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
         ContactEntity entity = null;
         if (msgExtEntity.parseDirect() == MsgDirect.To) {//I started gathering
             entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_to());
-            username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
+            username = TextUtils.isEmpty(entity.getName()) ? entity.getRemark() : entity.getName();
             txt1.setText(String.format(getString(R.string.Wallet_has_requested_to_payment), username));
             txt4.setVisibility(View.INVISIBLE);
         } else {//I received the payment
             entity = ContactHelper.getInstance().loadFriendEntity(msgExtEntity.getMessage_from());
-            username = TextUtils.isEmpty(entity.getUsername()) ? entity.getRemark() : entity.getUsername();
+            username = TextUtils.isEmpty(entity.getName()) ? entity.getRemark() : entity.getName();
             txt1.setText(String.format(getString(R.string.Wallet_has_requested_for_payment), username));
             txt4.setVisibility(View.VISIBLE);
         }

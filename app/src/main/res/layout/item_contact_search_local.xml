@@ -28,14 +28,31 @@
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
             android:scaleType="fitXY"/>
-        <TextView
-            android:id="@+id/name_tv"
-            style="@style/BaseTextStyle.14"
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_toRightOf="@+id/avatar_rimg"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:textStyle="bold"
-            android:text=""/>
+            android:layout_marginLeft="@dimen/dp_20">
+            <TextView
+                android:id="@+id/name_tv"
+                style="@style/BaseTextStyle.14"
+                android:textStyle="bold"
+                android:text=""/>
+            <TextView
+                android:id="@+id/line_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_5" />
+            <TextView
+                android:id="@+id/ou_tv"
+                style="@style/BaseTextStyle.12"
+                android:textSize="@dimen/sp_10"
+                android:textColor="@color/color_A6A6A6"
+                android:text="" />
+        </LinearLayout>
+
     </RelativeLayout>
 
 </LinearLayout>

@@ -87,7 +87,7 @@ public class ContactHelper extends BaseDao {
 
     public List<ContactEntity> loadFriendBlack() {
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.where(ContactEntityDao.Properties.Blocked.eq(true)).build();
+        //queryBuilder.where(ContactEntityDao.Properties.Blocked.eq(true)).build();
         List<ContactEntity> friendEntities = queryBuilder.list();
         return friendEntities;
     }
@@ -210,9 +210,7 @@ public class ContactHelper extends BaseDao {
             value = "";
         }
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.whereOr(ContactEntityDao.Properties.ConnectId.eq(value),
-                ContactEntityDao.Properties.Uid.eq(value))
-                .limit(1).build();
+        queryBuilder.where(ContactEntityDao.Properties.Uid.eq(value)).limit(1).build();
         List<ContactEntity> friendEntities = queryBuilder.listLazy();
         return (friendEntities == null || friendEntities.size() == 0) ? null : friendEntities.get(0);
     }
@@ -225,7 +223,7 @@ public class ContactHelper extends BaseDao {
      */
     public List<ContactEntity> loadFriendEntityFromText(String text) {
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.where(ContactEntityDao.Properties.Username.like(text + "%")).limit(1).build();
+        queryBuilder.where(ContactEntityDao.Properties.Name.like(text + "%")).limit(1).build();
         List<ContactEntity> friendEntities = queryBuilder.list();
         return friendEntities;
     }

@@ -122,7 +122,7 @@ public class TransferSingleDetailPresenter implements TransferSingleDetailContra
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(pubkey);
             if (friendEntity != null) {
                 avatar = friendEntity.getAvatar();
-                name = friendEntity.getUsername();
+                name = friendEntity.getName();
             } else {
                 String address = "";
                 Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()

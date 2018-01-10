@@ -14,7 +14,8 @@
         android:paddingLeft="@dimen/dp_15"
         android:drawablePadding="@dimen/dp_3"
         android:drawableLeft="@mipmap/contract_add_new_friends_small3x"
-        android:text="@string/Link_New_Friends" />
+        android:text="@string/Link_New_Friends"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/new_friend_layout"

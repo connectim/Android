@@ -117,10 +117,9 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     public void updateView(ContactEntity friendEntity) {
         this.friendEntity = friendEntity;
         GlideUtil.loadAvatarRound(avatarRimg, (null == friendEntity || null == friendEntity.getAvatar()) ? "" : friendEntity.getAvatar());
-        nameTv.setText(friendEntity.getUsername());
+        nameTv.setText(friendEntity.getName());
         addressTv.setText(friendEntity.getUid());
         aliasTv.setText(friendEntity.getOu());
-        addBlockTb.setSelected(friendEntity.getBlocked() == null ? false : friendEntity.getBlocked());
     }
 
     @OnClick(R.id.left_img)
@@ -136,7 +135,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @OnClick(R.id.id_lin)
     void copyAddress(View view) {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        cm.setText(friendEntity.getConnectId());
+        //cm.setText(friendEntity.getConnectId());
         ToastEUtil.makeText(mActivity, R.string.Set_Copied).show();
     }
 
@@ -220,7 +219,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
 
     @Override
     public void setCommon(boolean isCommon) {
-        friendEntity.setCommon(isCommon ? 1 : 0);
+        //friendEntity.setCommon(isCommon ? 1 : 0);
         addFavoritesTb.setSelected(isCommon);
         ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
         ContactNotice.receiverFriend();
@@ -229,7 +228,7 @@ public class FriendInfoActivity extends BaseActivity implements FriendInfoContra
     @Override
     public void setBlack(boolean black) {
         addBlockTb.setSelected(black);
-        friendEntity.setBlocked(black);
+        //friendEntity.setBlocked(black);
         ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
         ContactNotice.receiverFriend();
     }

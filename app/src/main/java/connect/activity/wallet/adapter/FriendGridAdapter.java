@@ -52,7 +52,7 @@ public class FriendGridAdapter extends BaseAdapter {
             viewHolder.avaterRimg.setImageResource(R.mipmap.message_add_friends2x);
         }else{
             GlideUtil.loadAvatarRound(viewHolder.avaterRimg,mListData.get(position).getAvatar());
-            viewHolder.nameTv.setText(mListData.get(position).getUsername());
+            viewHolder.nameTv.setText(mListData.get(position).getName());
         }
 
         return convertView;

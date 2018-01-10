@@ -15,6 +15,7 @@ public class ContactBean {
     private int status;
     private String tips;
     private int count;
+    private String ou;
 
     public ContactBean() {
     }
@@ -70,5 +71,13 @@ public class ContactBean {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getOu() {
+        return ou;
+    }
+
+    public void setOu(String ou) {
+        this.ou = ou;
     }
 }

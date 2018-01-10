@@ -94,7 +94,7 @@ public class MessageReceiver implements MessageListener {
                             contactEntity = new ContactEntity();
                             contactEntity.setPublicKey(userinfo.getPubKey());
                             contactEntity.setAvatar(userinfo.getAvatar());
-                            contactEntity.setUsername(userinfo.getName());
+                            contactEntity.setName(userinfo.getName());
                             contactEntity.setUid(userinfo.getUid());
                         }
 
@@ -124,7 +124,7 @@ public class MessageReceiver implements MessageListener {
         long messageTime = chatMessage.getMsgTime();
 
         CFriendChat friendChat = new CFriendChat(contactEntity.getUid());
-        friendChat.setUserName(contactEntity.getUsername());
+        friendChat.setUserName(contactEntity.getName());
         friendChat.setUserAvatar(contactEntity.getAvatar());
         friendChat.updateRoomMsg(null, chatMsgEntity.showContent(), messageTime, -1, 1, false);
 

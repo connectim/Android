@@ -42,10 +42,12 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/name_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_12"
                 android:text="@string/Login_Account"
                 android:textColor="@color/color_828282"
                 android:textSize="@dimen/sp_14"/>
@@ -57,7 +59,6 @@
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_24"
                 android:layout_marginRight="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_12"
                 android:hint="@string/Please_Input_Login_username"
                 android:singleLine="true"
                 android:textSize="@dimen/sp_14"/>
@@ -70,13 +71,16 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/pass_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_20"
                 android:text="@string/Login_password"
                 android:textColor="@color/color_828282"
-                android:textSize="@dimen/sp_14"/>
+                android:textSize="@dimen/sp_14"
+                android:paddingBottom="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_12"/>
 
             <EditText
                 android:id="@id/password_et"
@@ -85,7 +89,6 @@
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_24"
                 android:layout_marginRight="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_12"
                 android:hint="@string/Please_Input_Login_password"
                 android:inputType="textPassword"
                 android:singleLine="true"

@@ -126,11 +126,11 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
             memEntity.setIdentifier(groupKey);
             memEntity.setUid(contact.getUid());
             memEntity.setAvatar(contact.getAvatar());
-            memEntity.setNick(contact.getUsername());
+            memEntity.setNick(contact.getName());
             memEntity.setRole(0);
-            memEntity.setUsername(contact.getUsername());
+            memEntity.setUsername(contact.getName());
             memEntities.add(memEntity);
-            stringMems = stringMems + contact.getUsername() + ",";
+            stringMems = stringMems + contact.getName() + ",";
         }
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         GroupMemberEntity memEntity = new GroupMemberEntity();

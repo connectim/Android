@@ -131,7 +131,7 @@ public class NotificationBar {
                 ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(roomid);
                 if (friend != null) {
                     talker = new Talker(Connect.ChatType.PRIVATE,roomid);
-                    tickerTitle = TextUtils.isEmpty(friend.getRemark()) ? friend.getUsername() : friend.getRemark();
+                    tickerTitle = TextUtils.isEmpty(friend.getRemark()) ? friend.getName() : friend.getRemark();
                 }
                 break;
             case GROUPCHAT:

@@ -54,7 +54,7 @@ public class CFriendChat extends FriendChat implements ConversationListener {
                 userAvatar = attrBean.getAvatar();
             }
         } else {
-            userName = contactEntity.getUsername();
+            userName = contactEntity.getName();
             userAvatar = contactEntity.getAvatar();
             setFriendPublicKey(contactEntity.getPublicKey());
         }

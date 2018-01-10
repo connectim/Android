@@ -28,6 +28,7 @@ import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -109,7 +110,13 @@ public class DepartmentActivity extends BaseActivity {
 
     @OnClick(R.id.left_img)
     void goBack(View view) {
-        ActivityUtil.goBack(mActivity);
+        if(nameList.size() == 1){
+            ActivityUtil.goBack(mActivity);
+        }else{
+            nameList.remove(nameList.size() - 1);
+            nameLinear.notifyAddView(nameList, scrollview);
+            requestDepartment(nameList.get(nameList.size() - 1).getId());
+        }
     }
 
     @OnClick(R.id.del_tv)
@@ -173,7 +180,18 @@ public class DepartmentActivity extends BaseActivity {
                     UserInfoActivity.startActivity(mActivity);
                 }else{
                     String department = TextUtils.isEmpty(departmentBean.getO_u()) ? nameList.get(nameList.size()-1).getName() : departmentBean.getO_u();
-                    ContactInfoActivity.lunchActivity(mActivity, departmentBean, department);
+                    ContactEntity contactEntity = new ContactEntity();
+                    contactEntity.setName(departmentBean.getName());
+                    contactEntity.setAvatar(departmentBean.getAvatar());
+                    contactEntity.setPublicKey(departmentBean.getPub_key());
+                    contactEntity.setEmpNo(departmentBean.getEmpNo());
+                    contactEntity.setMobile(departmentBean.getMobile());
+                    contactEntity.setGender(departmentBean.getGender());
+                    contactEntity.setTips(departmentBean.getTips());
+                    contactEntity.setRegisted(departmentBean.getRegisted());
+                    contactEntity.setUid(departmentBean.getUid());
+                    contactEntity.setOu(department);
+                    ContactInfoActivity.lunchActivity(mActivity, contactEntity);
                 }
             }
         }
@@ -227,10 +245,10 @@ public class DepartmentActivity extends BaseActivity {
         if(TextUtils.isEmpty(name)){
             return;
         }
-        Connect.Workmate workmate = Connect.Workmate.newBuilder()
-                .setName(name)
+        Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
+                .setCriteria(name)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_WORKMATE_SEARCH, workmate, new ResultCall<Connect.HttpNotSignResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_WORKMATE_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {

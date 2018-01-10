@@ -82,11 +82,11 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
             TextView name = (TextView) headerview.findViewById(R.id.name);
 
             adminImg.setVisibility(View.GONE);
-            if (TextUtils.isEmpty(entity.getUsername())) {
+            if (TextUtils.isEmpty(entity.getName())) {
                 name.setVisibility(View.GONE);
             } else {
                 name.setVisibility(View.VISIBLE);
-                String nametxt = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
+                String nametxt = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
                 name.setText(nametxt);
             }
 

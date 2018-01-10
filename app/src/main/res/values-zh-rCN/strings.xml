@@ -142,6 +142,8 @@
     <string name="Link_Accept">接受</string>
     <string name="Link_Add">添加</string>
     <string name="Link_Add_Failed">添加失败</string>
+    <string name="Link_Add_focus">设置为特别关注</string>
+    <string name="Link_Cancle_focus">取消特别关注</string>
     <string name="Link_Add_Successful">添加成功</string>
     <string name="Link_Add_as_a_friend">发送朋友验证</string>
     <string name="Link_Add_to_Contacts">添加到联系人</string>
@@ -251,7 +253,7 @@
     <string name="Link_apply_to_join_group_chat">%1$s申请加入群聊%2$s</string>
     <string name="Link_become_new_group_owner">%s成为了群主</string>
     <string name="Link_contact_count">%1$d位联系人%2$s%3$s</string>
-    <string name="Link_contact_count_group_count">%1$d位联系人,%2$d个群组</string>
+    <string name="Link_contact_count_group_count">%1$d位联系人 %2$d个群组</string>
     <string name="Link_enter_the_group">%s加入群聊</string>
     <string name="Link_group_count">%d个群组</string>
     <string name="Link_Employee_number">员工编号：</string>

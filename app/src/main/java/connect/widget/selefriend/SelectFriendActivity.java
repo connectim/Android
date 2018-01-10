@@ -230,7 +230,7 @@ public class SelectFriendActivity extends BaseActivity {
             friendEntity.setAvatar(groupMemEntity.getAvatar());
             friendEntity.setUid(groupMemEntity.getUid());
             String name = TextUtils.isEmpty(groupMemEntity.getUsername()) ? groupMemEntity.getNick() : groupMemEntity.getUsername();
-            friendEntity.setUsername(name);
+            friendEntity.setName(name);
             list.add(friendEntity);
         }
         return list;

@@ -8,7 +8,7 @@
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_80"
         android:layout_gravity="center"
-        android:background="@drawable/shape_circle_6d6e75"
+        android:background="@drawable/shape_8px_d8d8d8"
         android:gravity="center"
         android:textColor="@color/color_white"
         android:textSize="@dimen/sp_32"

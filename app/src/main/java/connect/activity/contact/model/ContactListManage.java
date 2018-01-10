@@ -83,20 +83,20 @@ public class ContactListManage {
         ArrayList<ContactBean> friendList = new ArrayList<>();
         for(ContactEntity friendEntity : loacalFriend){
             if(friendEntity.getUid().equals(pubKeyExc)) continue;
-            if(friendEntity.getBlocked() != null && friendEntity.getBlocked()) continue;
 
             ContactBean contactBean = new ContactBean();
-            String name = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
+            String name = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getName() : friendEntity.getRemark();
             contactBean.setName(name);
             contactBean.setAvatar(friendEntity.getAvatar());
             contactBean.setUid(friendEntity.getUid());
-            if(friendEntity.getSource() != null && friendEntity.getSource() == -1){
+            contactBean.setOu(friendEntity.getOu());
+            if(TextUtils.isEmpty(friendEntity.getPublicKey())){
                 contactBean.setStatus(6);
                 friendList.add(contactBean);
-            }else if(friendEntity.getCommon() != null && friendEntity.getCommon()==1){
+            }/*else if(friendEntity.getCommon() != null && friendEntity.getCommon()==1){
                 contactBean.setStatus(3);
                 favoritesList.add(contactBean);
-            }else{
+            }*/else{
                 contactBean.setStatus(4);
                 friendList.add(contactBean);
             }

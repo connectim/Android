@@ -42,7 +42,7 @@ public class ContactCardAdapter extends RecyclerView.Adapter<ContactCardAdapter.
         ContactEntity entity = friendEntities.get(position);
 
         GlideUtil.loadAvatarRound(holder.roundimg, entity.getAvatar());
-        String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
+        String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
         holder.name.setText(curName);
 
         if (TextUtils.isEmpty(curName)) curName = "#";
@@ -53,7 +53,7 @@ public class ContactCardAdapter extends RecyclerView.Adapter<ContactCardAdapter.
             holder.txt.setText(curFirst);
         } else {
             ContactEntity lastEntity = friendEntities.get(position - 1);
-            String lastName = TextUtils.isEmpty(lastEntity.getRemark()) ? lastEntity.getUsername() : lastEntity.getRemark();
+            String lastName = TextUtils.isEmpty(lastEntity.getRemark()) ? lastEntity.getName() : lastEntity.getRemark();
             String lastFirst = PinyinUtil.chatToPinyin(lastName.charAt(0));
 
             if (lastFirst.equals(curFirst)) {
@@ -74,7 +74,7 @@ public class ContactCardAdapter extends RecyclerView.Adapter<ContactCardAdapter.
     public int getPositionForSection(char selectchar) {
         for (int i = 0; i < friendEntities.size(); i++) {
             ContactEntity entity = friendEntities.get(i);
-            String showName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
+            String showName = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
             String firstChar = PinyinUtil.chatToPinyin(showName.charAt(0));
             if (firstChar.charAt(0) >= selectchar) {
                 return i;

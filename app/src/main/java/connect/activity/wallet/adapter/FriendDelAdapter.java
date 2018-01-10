@@ -42,7 +42,7 @@ public class FriendDelAdapter extends RecyclerView.Adapter<FriendDelAdapter.Frie
         holder.contentLayout.getLayoutParams().width = SystemDataUtil.getScreenWidth();
         final ContactEntity friendEntity = list.get(position);
         GlideUtil.loadAvatarRound(holder.avater,friendEntity.getAvatar());
-        holder.name.setText(friendEntity.getUsername());
+        holder.name.setText(friendEntity.getName());
         holder.deleteTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

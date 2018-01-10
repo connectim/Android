@@ -108,7 +108,7 @@ public class PrivateBlackActivity extends BaseActivity {
                 if (sendBean.getType() == MsgSendBean.SendType.TypeFriendBlock) {
                     ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(sendBean.getUid());
                     if (null != friendEntity) {
-                        friendEntity.setBlocked(false);
+                        //friendEntity.setBlocked(false);
                         ContactHelper.getInstance().updataFriendSetEntity(friendEntity);
                         ContactNotice.receiverFriend();
                     }

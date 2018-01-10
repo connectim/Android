@@ -19,90 +19,73 @@ public class ContactEntity implements Serializable {
     @NotNull
     @Unique
     private String uid;
-    private String connectId;
-    private String username;
+    private String name;
     private String avatar;
-    private String remark;
-    private Integer common;
-    private Integer source;
-    private Boolean blocked;
     private String ou;
     private String publicKey;
+    private String empNo;
+    private String mobile;
+    private Integer gender;
+    private String tips;
+    private String remark;
+    private Boolean registed;
+
+    @Generated(hash = 259936923)
+    public ContactEntity(Long _id, @NotNull String uid, String name, String avatar,
+            String ou, String publicKey, String empNo, String mobile,
+            Integer gender, String tips, String remark, Boolean registed) {
+        this._id = _id;
+        this.uid = uid;
+        this.name = name;
+        this.avatar = avatar;
+        this.ou = ou;
+        this.publicKey = publicKey;
+        this.empNo = empNo;
+        this.mobile = mobile;
+        this.gender = gender;
+        this.tips = tips;
+        this.remark = remark;
+        this.registed = registed;
+    }
 
     @Generated(hash = 393979869)
     public ContactEntity() {
     }
 
-    @Generated(hash = 1040196782)
-    public ContactEntity(Long _id, @NotNull String uid, String connectId,
-            String username, String avatar, String remark, Integer common,
-            Integer source, Boolean blocked, String ou, String publicKey) {
-        this._id = _id;
-        this.uid = uid;
-        this.connectId = connectId;
-        this.username = username;
-        this.avatar = avatar;
-        this.remark = remark;
-        this.common = common;
-        this.source = source;
-        this.blocked = blocked;
-        this.ou = ou;
-        this.publicKey = publicKey;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public Long get_id() {
-        return this._id;
+        return _id;
     }
+
     public void set_id(Long _id) {
         this._id = _id;
     }
+
     public String getUid() {
-        return this.uid;
+        return uid;
     }
+
     public void setUid(String uid) {
         this.uid = uid;
     }
-    public String getConnectId() {
-        return this.connectId;
+
+    public String getName() {
+        return name;
     }
-    public void setConnectId(String connectId) {
-        this.connectId = connectId;
+
+    public void setName(String name) {
+        this.name = name;
     }
-    public String getUsername() {
-        return this.username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
+
     public String getAvatar() {
-        return this.avatar;
+        return avatar;
     }
+
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-    public String getRemark() {
-        return this.remark;
-    }
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-    public Integer getCommon() {
-        return this.common;
-    }
-    public void setCommon(Integer common) {
-        this.common = common;
-    }
-    public Integer getSource() {
-        return this.source;
-    }
-    public void setSource(Integer source) {
-        this.source = source;
-    }
-    public Boolean getBlocked() {
-        return this.blocked;
-    }
-    public void setBlocked(Boolean blocked) {
-        this.blocked = blocked;
     }
 
     public String getOu() {
@@ -119,5 +102,53 @@ public class ContactEntity implements Serializable {
 
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
+    }
+
+    public String getEmpNo() {
+        return empNo;
+    }
+
+    public void setEmpNo(String empNo) {
+        this.empNo = empNo;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public String getTips() {
+        return tips;
+    }
+
+    public void setTips(String tips) {
+        this.tips = tips;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public Boolean getRegisted() {
+        return registed;
+    }
+
+    public void setRegisted(Boolean registed) {
+        this.registed = registed;
     }
 }
