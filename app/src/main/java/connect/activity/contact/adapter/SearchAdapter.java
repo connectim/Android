@@ -80,14 +80,14 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
             } else if (viewType == ViewType.VIEW_TYP_LOCAL.ordinal()) {
-                if (position > 0 && TextUtils.isEmpty(mDataList.get(position - 1).getUsername())) {
+                if (position > 0 && TextUtils.isEmpty(mDataList.get(position - 1).getName())) {
                     ((LocalHolder)holder).txt.setVisibility(View.VISIBLE);
                     ((LocalHolder)holder).txt.setText(R.string.Link_Contacts);
                 } else {
                     ((LocalHolder)holder).txt.setVisibility(View.GONE);
                 }
                 GlideUtil.loadAvatarRound(((LocalHolder)holder).avatar, mDataList.get(position).getAvatar());
-                ((LocalHolder)holder).nameTv.setText(mDataList.get(position).getUsername());
+                ((LocalHolder)holder).nameTv.setText(mDataList.get(position).getName());
                 ((LocalHolder)holder).contentRela.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -100,7 +100,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        if (!TextUtils.isEmpty(mDataList.get(position).getUsername())) {
+        if (!TextUtils.isEmpty(mDataList.get(position).getName())) {
             return ViewType.VIEW_TYP_LOCAL.ordinal();
         } else if (!TextUtils.isEmpty(mDataList.get(position).getUid())) {
             return ViewType.VIEW_TYP_SERVER.ordinal();

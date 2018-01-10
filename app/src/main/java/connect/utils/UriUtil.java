@@ -38,7 +38,10 @@ public class UriUtil {
     public static String CONNECT_V3_SYNC_WORKMATE = "/connect/v3/sync_workmate";
     /** The private key is registered */
     public static String CONNECT_V3_DEPARTMENT = "/connect/v3/department";
+    /** Query the user information 1: name(en)  2:uid  3:name(zh)*/
     public static String CONNECT_V3_WORKMATE_SEARCH = "/connect/v3/workmate/search";
+    public static String CONNECT_V3_USERS_FOLLOW = "/connect/v3/users/follow";
+
 
 
     /**======================================================================================

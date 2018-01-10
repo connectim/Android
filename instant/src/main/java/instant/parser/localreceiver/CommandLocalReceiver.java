@@ -42,12 +42,12 @@ public class CommandLocalReceiver implements CommandListener {
     }
 
     @Override
-    public void loadAllContacts(Connect.SyncUserRelationship userRelationship) throws Exception {
+    public void loadAllContacts(Connect.SyncCompany userRelationship) throws Exception {
         getCommandListener().loadAllContacts(userRelationship);
     }
 
     @Override
-    public void contactChanges(Connect.ChangeRecords changeRecords) {
+    public void contactChanges(Connect.WorkmateChangeRecords changeRecords) {
         getCommandListener().contactChanges(changeRecords);
     }
 

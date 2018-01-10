@@ -42,7 +42,7 @@ public class TransferToPresenter implements TransferToContract.Presenter{
             requestContactInfo(transferaddress);
         } else {
             String avatar = contactEntity.getAvatar();
-            String username = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
+            String username = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getName() : contactEntity.getRemark();
             String transferinfo = activity.getString(R.string.Wallet_Transfer_To_User, username);
             view.showTransferInfo(avatar, transferinfo);
         }
@@ -63,12 +63,12 @@ public class TransferToPresenter implements TransferToContract.Presenter{
 
                     if (ProtoBufUtil.getInstance().checkProtoBuf(sendUserInfo)) {
                         contactEntity = new ContactEntity();
-                        contactEntity.setUsername(sendUserInfo.getUsername());
+                        contactEntity.setName(sendUserInfo.getUsername());
                         contactEntity.setUid(sendUserInfo.getUid());
                         contactEntity.setAvatar(sendUserInfo.getAvatar());
 
                         String avatar = contactEntity.getAvatar();
-                        String username = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getUsername() : contactEntity.getRemark();
+                        String username = TextUtils.isEmpty(contactEntity.getRemark()) ? contactEntity.getName() : contactEntity.getRemark();
                         String transferinfo = activity.getString(R.string.Wallet_Transfer_To_User, username);
                         view.showTransferInfo(avatar, transferinfo);
                     }

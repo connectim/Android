@@ -20,6 +20,7 @@ import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.company.DepartmentActivity;
 import connect.activity.contact.AddFriendActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.ScanAddFriendActivity;
 import connect.activity.contact.SearchFriendActivity;
@@ -27,6 +28,8 @@ import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ContactAdapter;
 import connect.activity.home.bean.ContactBean;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
@@ -122,7 +125,9 @@ public class ContactFragment extends BaseFragment {
                     break;
                 case 3:
                 case 4:
-                    FriendInfoActivity.startActivity(mActivity, entity.getUid());
+                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendByUid(entity.getUid());
+                    ContactInfoActivity.lunchActivity(mActivity, contactEntity, contactEntity.getOu());
+                    //FriendInfoActivity.startActivity(mActivity, entity.getUid());
                     break;
                 case 7:
                     DepartmentActivity.lunchActivity(mActivity);

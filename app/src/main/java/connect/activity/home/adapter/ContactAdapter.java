@@ -121,6 +121,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                     ((FriendHolder) holder).avater.setImageResource(R.mipmap.department);
                     ((FriendHolder) holder).name.setText(R.string.Chat_Organizational_structure);
+                    ((FriendHolder) holder).ouTv.setVisibility(View.GONE);
                 }else{
                     String currLetter = contactManage.checkShowFriendTop(currBean, mData.get(position - 1));
                     if (TextUtils.isEmpty(currLetter)) {
@@ -149,6 +150,14 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             default:
                                 break;
                         }
+                    }
+                    if(currBean.getStatus() == 3 || currBean.getStatus() == 4){
+                        ((FriendHolder) holder).ouTv.setVisibility(View.VISIBLE);
+                        ((FriendHolder) holder).lineTv.setVisibility(View.VISIBLE);
+                        ((FriendHolder) holder).ouTv.setText(currBean.getOu());
+                    }else{
+                        ((FriendHolder) holder).ouTv.setVisibility(View.GONE);
+                        ((FriendHolder) holder).lineTv.setVisibility(View.GONE);
                     }
                     GlideUtil.loadAvatarRound(((FriendHolder) holder).avater, currBean.getAvatar());
                     ((FriendHolder) holder).name.setText(currBean.getName());
@@ -223,6 +232,8 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView topTv;
         RelativeLayout contentLayout;
         View lineView;
+        TextView ouTv;
+        TextView lineTv;
 
         public FriendHolder(View itemView) {
             super(itemView);
@@ -231,6 +242,8 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             avater = (ImageView) itemView.findViewById(R.id.avatar_rimg);
             name = (TextView) itemView.findViewById(R.id.name_tv);
             lineView = itemView.findViewById(R.id.line_view);
+            ouTv = (TextView)itemView.findViewById(R.id.ou_tv);
+            lineTv = (TextView)itemView.findViewById(R.id.line_tv);
         }
     }
 
@@ -271,12 +284,12 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             protected Void doInBackground(Void... params) {
                 switch (updateType){
                     case updateTypeContact:
-                        listRequest = contactManage.getContactRequest();
+                        //listRequest = contactManage.getContactRequest();
                         groupList = contactManage.getGroupData();
                         friendMap = contactManage.getFriendList();
                         break;
                     case updateTypeRequest:
-                        listRequest = contactManage.getContactRequest();
+                        //listRequest = contactManage.getContactRequest();
                         break;
                     case updateTypeGroup:
                         groupList = contactManage.getGroupData();
@@ -296,7 +309,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ArrayList<ContactBean> finalList = new ArrayList<>();
                 final int friendSize = friendMap.get("friend").size() + friendMap.get("favorite").size();
                 final int groupSize = groupList.size();
-                finalList.addAll(listRequest);
+                //finalList.addAll(listRequest);
                 ContactBean contactBean = new ContactBean();
                 contactBean.setStatus(7);
                 finalList.add(contactBean);

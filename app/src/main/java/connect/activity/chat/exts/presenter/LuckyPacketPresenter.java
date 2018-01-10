@@ -52,7 +52,7 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
                 if (userBean.getUid().equals(roomKey)) {
                     friendEntity = new ContactEntity();
                     friendEntity.setAvatar(userBean.getAvatar());
-                    friendEntity.setUsername(userBean.getName());
+                    friendEntity.setName(userBean.getName());
                     friendEntity.setUid(userBean.getUid());
                 } else {
                     ActivityUtil.goBack(activity);
@@ -61,7 +61,7 @@ public class LuckyPacketPresenter implements LuckyPacketContract.Presenter{
             }
 
             String avatar = friendEntity.getAvatar();
-            String nameTxt = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
+            String nameTxt = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getName() : friendEntity.getRemark();
             view.showUserInfo(avatar, nameTxt);
         } else if (roomtype == 1) {
             groupEntity = ContactHelper.getInstance().loadGroupEntity(roomKey);

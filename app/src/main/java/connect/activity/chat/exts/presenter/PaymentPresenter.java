@@ -44,7 +44,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
             if (mypubkey.equals(pubkey)) {
                 friendEntity = new ContactEntity();
                 friendEntity.setAvatar(userBean.getAvatar());
-                friendEntity.setUsername(userBean.getName());
+                friendEntity.setName(userBean.getName());
                 friendEntity.setUid(userBean.getUid());
             } else {
                 ActivityUtil.goBack(activity);
@@ -53,7 +53,7 @@ public class PaymentPresenter implements PaymentContract.Presenter{
         }
 
         String avatar = friendEntity.getAvatar();
-        String nameTxt = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
+        String nameTxt = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getName() : friendEntity.getRemark();
         view.showPayment(avatar, nameTxt);
     }
 

@@ -245,11 +245,11 @@ public class CommandParser extends InterParse {
     private void syncContacts(ByteString buffer) throws Exception {
         String version = SharedUtil.getInstance().getStringValue(SharedUtil.CONTACTS_VERSION);
         if (TextUtils.isEmpty(version)) {
-            Connect.SyncUserRelationship relationship = Connect.SyncUserRelationship.parseFrom(buffer);
-            version = relationship.getRelationShip().getVersion();
+            Connect.SyncCompany relationship = Connect.SyncCompany.parseFrom(buffer);
+            version = relationship.getWorkmatesVersion().getVersion();
             CommandLocalReceiver.receiver.loadAllContacts(relationship);
         } else {
-            Connect.ChangeRecords changeRecords = Connect.ChangeRecords.parseFrom(buffer);
+            Connect.WorkmateChangeRecords changeRecords = Connect.WorkmateChangeRecords.parseFrom(buffer);
             version = changeRecords.getVersion();
             CommandLocalReceiver.receiver.contactChanges(changeRecords);
         }

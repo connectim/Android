@@ -165,6 +165,8 @@
     <string name="Link_Accept">Accept</string>
     <string name="Link_Add">Add</string>
     <string name="Link_Add_Failed">Add Failed</string>
+    <string name="Link_Add_focus">Set to pay special attention to</string>
+    <string name="Link_Cancle_focus">Cancel the special attention</string>
     <string name="Link_Add_Successful">Add Successful</string>
     <string name="Link_Add_as_a_friend">Send friend verification</string>
     <string name="Link_Add_to_Contacts">Add to Contacts</string>
@@ -288,7 +290,7 @@
     <string name="Link_apply_to_join_group_chat">%1$s apply to join group chat %2$s</string>
     <string name="Link_become_new_group_owner">%s become new group owner</string>
     <string name="Link_contact_count">%1$d contact%2$s%3$s</string>
-    <string name="Link_contact_count_group_count">%1$d contact,%2$d group</string>
+    <string name="Link_contact_count_group_count">%1$d contact %2$d group</string>
     <string name="Link_enter_the_group">%s join the group</string>
     <string name="Link_group_count">%d group</string>
     <string name="Link_Employee_number">Employee number:</string>

@@ -11,8 +11,8 @@ public class FriendCompara extends BaseCompare<ContactEntity> {
 
     @Override
     public int compare(ContactEntity lhs, ContactEntity rhs) {
-        String lhsStr = TextUtils.isEmpty(lhs.getRemark()) ? lhs.getUsername() : lhs.getRemark();
-        String rhsStr = TextUtils.isEmpty(rhs.getRemark()) ? rhs.getUsername() : rhs.getRemark();
+        String lhsStr = TextUtils.isEmpty(lhs.getRemark()) ? lhs.getName() : lhs.getRemark();
+        String rhsStr = TextUtils.isEmpty(rhs.getRemark()) ? rhs.getName() : rhs.getRemark();
 
         return compareString(lhsStr, rhsStr);
     }

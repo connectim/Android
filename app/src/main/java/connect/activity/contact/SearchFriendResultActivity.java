@@ -73,7 +73,7 @@ public class SearchFriendResultActivity extends BaseActivity {
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Search_friends);
-        toolbar.setRightImg(R.mipmap.search3x);
+        //toolbar.setRightImg(R.mipmap.search3x);
 
         searchEdit.setOnKeyListener(keyListener);
         searchEdit.addTextChangedListener(textWatcher);
@@ -95,10 +95,10 @@ public class SearchFriendResultActivity extends BaseActivity {
         ActivityUtil.goBack(mActivity);
     }
 
-    @OnClick(R.id.right_lin)
+    /*@OnClick(R.id.right_lin)
     void searchUser(View view) {
         requestSearch();
-    }
+    }*/
 
     @OnClick(R.id.del_tv)
     void delEdit(View view) {

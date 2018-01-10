@@ -172,6 +172,8 @@
     <string name="Link_Accept">Принято</string>
     <string name="Link_Add">Добавить</string>
     <string name="Link_Add_Failed">Сбой при добавлении</string>
+    <string name="Link_Add_focus">Для настройки особое внимание</string>
+    <string name="Link_Cancle_focus">Отмена особого внимания</string>
     <string name="Link_Add_Successful">Успешно добавлен</string>
     <string name="Link_Add_as_a_friend">Добавить в друзья</string>
     <string name="Link_Add_to_Contacts">Добавить контакт</string>
@@ -304,7 +306,7 @@
     </string>
     <string name="Link_become_new_group_owner">Стать новым владельцем группы %s</string>
     <string name="Link_contact_count">%1$d контактное лицо %2$s%3$s</string>
-    <string name="Link_contact_count_group_count">Контактное лицо %1$d, группа %2$d</string>
+    <string name="Link_contact_count_group_count">Контактное лицо %1$d группа %2$d</string>
     <string name="Link_enter_the_group">Добавить группу %s</string>
     <string name="Link_group_count">Группа %d</string>
     <string name="Link_Employee_number">Номер сотрудника:</string>

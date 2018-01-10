@@ -10,6 +10,6 @@
         android:layout_height="@dimen/dp_40"
         android:gravity="center"
         android:textSize="@dimen/sp_14"
-        android:textColor="@color/color_858998"/>
+        android:textColor="@color/color_A6A6A6"/>
 
 </LinearLayout>

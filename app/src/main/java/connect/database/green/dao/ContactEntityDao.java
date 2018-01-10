@@ -26,15 +26,16 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
     public static class Properties {
         public final static Property _id = new Property(0, Long.class, "_id", true, "_id");
         public final static Property Uid = new Property(1, String.class, "uid", false, "UID");
-        public final static Property ConnectId = new Property(2, String.class, "connectId", false, "CONNECT_ID");
-        public final static Property Username = new Property(3, String.class, "username", false, "USERNAME");
-        public final static Property Avatar = new Property(4, String.class, "avatar", false, "AVATAR");
-        public final static Property Remark = new Property(5, String.class, "remark", false, "REMARK");
-        public final static Property Common = new Property(6, Integer.class, "common", false, "COMMON");
-        public final static Property Source = new Property(7, Integer.class, "source", false, "SOURCE");
-        public final static Property Blocked = new Property(8, Boolean.class, "blocked", false, "BLOCKED");
-        public final static Property Ou = new Property(9, String.class, "ou", false, "OU");
-        public final static Property PublicKey = new Property(10, String.class, "publicKey", false, "PUBLIC_KEY");
+        public final static Property Name = new Property(2, String.class, "name", false, "NAME");
+        public final static Property Avatar = new Property(3, String.class, "avatar", false, "AVATAR");
+        public final static Property Ou = new Property(4, String.class, "ou", false, "OU");
+        public final static Property PublicKey = new Property(5, String.class, "publicKey", false, "PUBLIC_KEY");
+        public final static Property EmpNo = new Property(6, String.class, "empNo", false, "EMP_NO");
+        public final static Property Mobile = new Property(7, String.class, "mobile", false, "MOBILE");
+        public final static Property Gender = new Property(8, Integer.class, "gender", false, "GENDER");
+        public final static Property Tips = new Property(9, String.class, "tips", false, "TIPS");
+        public final static Property Remark = new Property(10, String.class, "remark", false, "REMARK");
+        public final static Property Registed = new Property(11, Boolean.class, "registed", false, "REGISTED");
     }
 
 
@@ -52,15 +53,16 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"CONTACT_ENTITY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
                 "\"UID\" TEXT NOT NULL UNIQUE ," + // 1: uid
-                "\"CONNECT_ID\" TEXT," + // 2: connectId
-                "\"USERNAME\" TEXT," + // 3: username
-                "\"AVATAR\" TEXT," + // 4: avatar
-                "\"REMARK\" TEXT," + // 5: remark
-                "\"COMMON\" INTEGER," + // 6: common
-                "\"SOURCE\" INTEGER," + // 7: source
-                "\"BLOCKED\" INTEGER," + // 8: blocked
-                "\"OU\" TEXT," + // 9: ou
-                "\"PUBLIC_KEY\" TEXT);"); // 10: publicKey
+                "\"NAME\" TEXT," + // 2: name
+                "\"AVATAR\" TEXT," + // 3: avatar
+                "\"OU\" TEXT," + // 4: ou
+                "\"PUBLIC_KEY\" TEXT," + // 5: publicKey
+                "\"EMP_NO\" TEXT," + // 6: empNo
+                "\"MOBILE\" TEXT," + // 7: mobile
+                "\"GENDER\" INTEGER," + // 8: gender
+                "\"TIPS\" TEXT," + // 9: tips
+                "\"REMARK\" TEXT," + // 10: remark
+                "\"REGISTED\" INTEGER);"); // 11: registed
     }
 
     /** Drops the underlying database table. */
@@ -79,49 +81,54 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         }
         stmt.bindString(2, entity.getUid());
  
-        String connectId = entity.getConnectId();
-        if (connectId != null) {
-            stmt.bindString(3, connectId);
-        }
- 
-        String username = entity.getUsername();
-        if (username != null) {
-            stmt.bindString(4, username);
+        String name = entity.getName();
+        if (name != null) {
+            stmt.bindString(3, name);
         }
  
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(5, avatar);
-        }
- 
-        String remark = entity.getRemark();
-        if (remark != null) {
-            stmt.bindString(6, remark);
-        }
- 
-        Integer common = entity.getCommon();
-        if (common != null) {
-            stmt.bindLong(7, common);
-        }
- 
-        Integer source = entity.getSource();
-        if (source != null) {
-            stmt.bindLong(8, source);
-        }
- 
-        Boolean blocked = entity.getBlocked();
-        if (blocked != null) {
-            stmt.bindLong(9, blocked ? 1L: 0L);
+            stmt.bindString(4, avatar);
         }
  
         String ou = entity.getOu();
         if (ou != null) {
-            stmt.bindString(10, ou);
+            stmt.bindString(5, ou);
         }
  
         String publicKey = entity.getPublicKey();
         if (publicKey != null) {
-            stmt.bindString(11, publicKey);
+            stmt.bindString(6, publicKey);
+        }
+ 
+        String empNo = entity.getEmpNo();
+        if (empNo != null) {
+            stmt.bindString(7, empNo);
+        }
+ 
+        String mobile = entity.getMobile();
+        if (mobile != null) {
+            stmt.bindString(8, mobile);
+        }
+ 
+        Integer gender = entity.getGender();
+        if (gender != null) {
+            stmt.bindLong(9, gender);
+        }
+ 
+        String tips = entity.getTips();
+        if (tips != null) {
+            stmt.bindString(10, tips);
+        }
+ 
+        String remark = entity.getRemark();
+        if (remark != null) {
+            stmt.bindString(11, remark);
+        }
+ 
+        Boolean registed = entity.getRegisted();
+        if (registed != null) {
+            stmt.bindLong(12, registed ? 1L: 0L);
         }
     }
 
@@ -135,49 +142,54 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         }
         stmt.bindString(2, entity.getUid());
  
-        String connectId = entity.getConnectId();
-        if (connectId != null) {
-            stmt.bindString(3, connectId);
-        }
- 
-        String username = entity.getUsername();
-        if (username != null) {
-            stmt.bindString(4, username);
+        String name = entity.getName();
+        if (name != null) {
+            stmt.bindString(3, name);
         }
  
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(5, avatar);
-        }
- 
-        String remark = entity.getRemark();
-        if (remark != null) {
-            stmt.bindString(6, remark);
-        }
- 
-        Integer common = entity.getCommon();
-        if (common != null) {
-            stmt.bindLong(7, common);
-        }
- 
-        Integer source = entity.getSource();
-        if (source != null) {
-            stmt.bindLong(8, source);
-        }
- 
-        Boolean blocked = entity.getBlocked();
-        if (blocked != null) {
-            stmt.bindLong(9, blocked ? 1L: 0L);
+            stmt.bindString(4, avatar);
         }
  
         String ou = entity.getOu();
         if (ou != null) {
-            stmt.bindString(10, ou);
+            stmt.bindString(5, ou);
         }
  
         String publicKey = entity.getPublicKey();
         if (publicKey != null) {
-            stmt.bindString(11, publicKey);
+            stmt.bindString(6, publicKey);
+        }
+ 
+        String empNo = entity.getEmpNo();
+        if (empNo != null) {
+            stmt.bindString(7, empNo);
+        }
+ 
+        String mobile = entity.getMobile();
+        if (mobile != null) {
+            stmt.bindString(8, mobile);
+        }
+ 
+        Integer gender = entity.getGender();
+        if (gender != null) {
+            stmt.bindLong(9, gender);
+        }
+ 
+        String tips = entity.getTips();
+        if (tips != null) {
+            stmt.bindString(10, tips);
+        }
+ 
+        String remark = entity.getRemark();
+        if (remark != null) {
+            stmt.bindString(11, remark);
+        }
+ 
+        Boolean registed = entity.getRegisted();
+        if (registed != null) {
+            stmt.bindLong(12, registed ? 1L: 0L);
         }
     }
 
@@ -191,15 +203,16 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
         ContactEntity entity = new ContactEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
             cursor.getString(offset + 1), // uid
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // connectId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // username
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // avatar
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // remark
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // common
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // source
-            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0, // blocked
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // ou
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // publicKey
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // avatar
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // ou
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // publicKey
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // empNo
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // mobile
+            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // gender
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // tips
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // remark
+            cursor.isNull(offset + 11) ? null : cursor.getShort(offset + 11) != 0 // registed
         );
         return entity;
     }
@@ -208,15 +221,16 @@ public class ContactEntityDao extends AbstractDao<ContactEntity, Long> {
     public void readEntity(Cursor cursor, ContactEntity entity, int offset) {
         entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUid(cursor.getString(offset + 1));
-        entity.setConnectId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setUsername(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setAvatar(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setRemark(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setCommon(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
-        entity.setSource(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setBlocked(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
-        entity.setOu(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setPublicKey(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setAvatar(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setOu(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setPublicKey(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setEmpNo(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setMobile(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setGender(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
+        entity.setTips(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setRemark(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setRegisted(cursor.isNull(offset + 11) ? null : cursor.getShort(offset + 11) != 0);
      }
     
     @Override
