@@ -624,4 +624,5 @@
     <string name="Please_Input_Login_password">password</string>
     <string name="Login_Immediately">Landing immediately</string>
     <string name="Beijing_BitMain">Beijing BitMain Technology Co., Ltd.</string>
+    <string name="title_activity_group_depart_select">GroupDepartSelectActivity</string>
 </resources>

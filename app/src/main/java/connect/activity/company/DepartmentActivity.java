@@ -175,14 +175,6 @@ public class DepartmentActivity extends BaseActivity {
                     String department = TextUtils.isEmpty(departmentBean.getO_u()) ? nameList.get(nameList.size()-1).getName() : departmentBean.getO_u();
                     ContactInfoActivity.lunchActivity(mActivity, departmentBean, department);
                 }
-                /*ContactEntity contactEntity = ContactHelper.getInstance().loadFriendByUid(departmentBean.getUid());
-                if(userBean.getUid().equals(departmentBean.getUid())){
-                    UserInfoActivity.startActivity(mActivity);
-                }else if(contactEntity != null){
-                    FriendInfoActivity.startActivity(mActivity, departmentBean.getUid());
-                }else if(departmentBean.getRegisted()){
-                    StrangerInfoActivity.startActivity(mActivity, departmentBean.getUid(), SourceType.SEARCH);
-                }*/
             }
         }
 

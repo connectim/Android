@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.PrivateSetContract;
+import connect.activity.chat.set.group.GroupDepartSelectActivity;
 import connect.activity.chat.set.presenter.PrivateSetPresenter;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
@@ -187,7 +188,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
             public void onClick(View v) {
                 String address = (String) v.getTag();
                 if (TextUtils.isEmpty(address)) {
-                    GroupCreateSelecrActivity.startActivity(activity, roomKey);
+                    GroupDepartSelectActivity.startActivity(activity, roomKey);
                 } else if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(address)) {
                     UserInfoActivity.startActivity(activity);
                 } else {
