@@ -113,7 +113,8 @@ public class SearchFriendActivity extends BaseActivity {
                     mActivity.finish();
                     break;
                 case 2:
-                    FriendInfoActivity.startActivity(mActivity, list.getUid());
+                    //FriendInfoActivity.startActivity(mActivity, list.getUid());
+                    ContactInfoActivity.lunchActivity(mActivity, list);
                     mActivity.finish();
                     break;
                 default:

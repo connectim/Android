@@ -42,8 +42,6 @@ public class UriUtil {
     public static String CONNECT_V3_WORKMATE_SEARCH = "/connect/v3/workmate/search";
     public static String CONNECT_V3_USERS_FOLLOW = "/connect/v3/users/follow";
 
-
-
     /**======================================================================================
      *                                Login successfully initialized
      * ====================================================================================== */

@@ -183,7 +183,6 @@ public class DepartmentActivity extends BaseActivity {
                     ContactEntity contactEntity = new ContactEntity();
                     contactEntity.setName(departmentBean.getName());
                     contactEntity.setAvatar(departmentBean.getAvatar());
-                    contactEntity.setOu(departmentBean.getO_u());
                     contactEntity.setPublicKey(departmentBean.getPub_key());
                     contactEntity.setEmpNo(departmentBean.getEmpNo());
                     contactEntity.setMobile(departmentBean.getMobile());
@@ -191,7 +190,8 @@ public class DepartmentActivity extends BaseActivity {
                     contactEntity.setTips(departmentBean.getTips());
                     contactEntity.setRegisted(departmentBean.getRegisted());
                     contactEntity.setUid(departmentBean.getUid());
-                    ContactInfoActivity.lunchActivity(mActivity, contactEntity, department);
+                    contactEntity.setOu(department);
+                    ContactInfoActivity.lunchActivity(mActivity, contactEntity);
                 }
                 /*ContactEntity contactEntity = ContactHelper.getInstance().loadFriendByUid(departmentBean.getUid());
                 if(userBean.getUid().equals(departmentBean.getUid())){
@@ -255,7 +255,6 @@ public class DepartmentActivity extends BaseActivity {
         }
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(name)
-                .setTyp(3)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_WORKMATE_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override

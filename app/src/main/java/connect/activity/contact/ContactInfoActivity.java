@@ -66,10 +66,9 @@ public class ContactInfoActivity extends BaseActivity {
     private ContactInfoActivity mActivity;
     private ContactEntity contactEntity;
 
-    public static void lunchActivity(Activity activity, ContactEntity contactEntity, String department) {
+    public static void lunchActivity(Activity activity, ContactEntity contactEntity) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("bean", contactEntity);
-        bundle.putString("department", department);
         ActivityUtil.next(activity, ContactInfoActivity.class, bundle);
     }
 
@@ -89,7 +88,6 @@ public class ContactInfoActivity extends BaseActivity {
         toolbar.setTitle(null, R.string.Chat_Contact_details);
 
         contactEntity = (ContactEntity) getIntent().getExtras().getSerializable("bean");
-        contactEntity.setOu(getIntent().getExtras().getString("department"));
         avatarImage.setAvatarName(contactEntity.getName(), false, contactEntity.getGender());
         nameText.setText(contactEntity.getName());
         if(contactEntity.getGender() == 1){
