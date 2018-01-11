@@ -57,6 +57,16 @@ public class StringUtil {
         return "";
     }
 
+    public static boolean checkZh(String s){
+        char c = s.charAt(0);
+        int i =(int)c;
+        if((i>=65&&i<=90)||(i>=97&&i<=122)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * byte to String
      *

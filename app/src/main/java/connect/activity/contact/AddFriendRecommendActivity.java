@@ -103,7 +103,7 @@ public class AddFriendRecommendActivity extends BaseActivity {
     };
 
     public void requestRecommendUser() {
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_RECOMMEND, ByteString.copyFrom(new byte[]{}),
+        /*OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_RECOMMEND, ByteString.copyFrom(new byte[]{}),
                 new ResultCall<Connect.HttpResponse>() {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
@@ -122,7 +122,7 @@ public class AddFriendRecommendActivity extends BaseActivity {
 
                     @Override
                     public void onError(Connect.HttpResponse response) {}
-                });
+                });*/
     }
 
     public void requestNoInterest(final Connect.UserInfoBase entity) {

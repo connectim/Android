@@ -624,10 +624,6 @@ string upgrade_url=7;
 }
 
 //friend relationship ===============
-message RelationShip {
-string version = 1;
-repeated FriendInfo friends = 2;
-}
 
 message SyncRelationship {
 string version = 1;
@@ -672,21 +668,6 @@ message ReceiveFriendRequest {
 UserInfoBase sender = 1;
 string  tips = 2;
 int32 source = 3;
-}
-
-message ChangeRecords {
-string version=1;
-repeated ChangeRecord changeRecords = 2;
-}
-
-message ChangeRecord {
-string category = 1;
-FriendInfo friendInfo = 2;
-}
-
-message SyncUserRelationship {
-RelationShip relationShip=1;
-UserCommonGroups userCommonGroups=2;
 }
 
 //message===============
@@ -1787,6 +1768,10 @@ message Workmate {
  string avatar = 4;
  string pub_key = 5;
  bool registed = 6;
+ string emp_no = 7;
+ string mobile = 8;
+ int32  gender = 9;
+ string tips = 10;
 }
 
 message Workmates {
@@ -1800,6 +1785,7 @@ message PubKey {
 message Department {
  string name = 1;
  int64 id = 2;
+ int64 count=3;
 }
 
 message Departments {
@@ -1809,4 +1795,54 @@ message Departments {
 message SyncWorkmates {
 Workmates workmates = 1;
 Departments depts = 2;
+}
+
+message UserFollow {
+ string uid = 1;
+ bool follow = 2;
+}
+
+message SyncUserRelationship {
+RelationShip relationShip=1;
+UserCommonGroups userCommonGroups=2;
+}
+
+message RelationShip {
+string version = 1;
+repeated FriendInfo friends = 2;
+}
+
+message ChangeRecords {
+string version=1;
+repeated ChangeRecord changeRecords = 2;
+}
+
+message ChangeRecord {
+string category = 1;
+FriendInfo friendInfo = 2;
+}
+
+message SyncCompany {
+ WorkmatesVersion workmatesVersion=1;
+ UserCommonGroups userCommonGroups=2;
+}
+
+message WorkmatesVersion {
+ repeated Workmate list = 1;
+ string version = 2;
+}
+
+message WorkmateChangeRecords {
+ string version = 1;
+ repeated WorkmateChangeRecord workmateChangeRecords = 2;
+}
+
+message WorkmateChangeRecord {
+ string category = 1;
+ Workmate workmate = 2;
+}
+
+message WorkmateVersion {
+ string uid = 1;
+ string version = 2;
 }

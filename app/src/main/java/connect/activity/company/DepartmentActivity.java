@@ -101,7 +101,7 @@ public class DepartmentActivity extends BaseActivity {
         nameList.clear();
         Connect.Department department = Connect.Department.newBuilder()
                 .setId(2)
-                .setName("比特大陆")
+                .setName("BITMAIN")
                 .build();
         nameList.add(department);
         nameLinear.notifyAddView(nameList, scrollview);
@@ -194,15 +194,6 @@ public class DepartmentActivity extends BaseActivity {
                     ContactInfoActivity.lunchActivity(mActivity, contactEntity);
                 }
             }
-        }
-
-        @Override
-        public void addFriend(int position, DepartmentBean departmentBean) {
-            /*Talker talker = new Talker(Connect.ChatType.PRIVATE, departmentBean.getUid());
-            talker.setAvatar(departmentBean.getAvatar());
-            talker.setNickName(departmentBean.getName());
-            talker.setFriendPublicKey(departmentBean.getPub_key());
-            ChatActivity.startActivity(mActivity, talker);*/
         }
     };
 

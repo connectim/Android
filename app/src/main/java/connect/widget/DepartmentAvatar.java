@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import connect.ui.activity.R;
+import connect.utils.StringUtil;
 
 /**
  * Created by Administrator on 2018/1/5 0005.
@@ -40,10 +41,18 @@ public class DepartmentAvatar extends RelativeLayout {
     }
 
     public void setAvatarName(String name, boolean isShow, int gender){
-        if(name.length() > 2){
-            nameTv.setText(name.substring(1,3));
+        if(StringUtil.checkZh(name)){
+            if(name.length() > 2){
+                nameTv.setText(name.substring(0,2).toUpperCase());
+            }else{
+                nameTv.setText(name.toUpperCase());
+            }
         }else{
-            nameTv.setText(name);
+            if(name.length() > 2){
+                nameTv.setText(name.substring(1,3));
+            }else{
+                nameTv.setText(name);
+            }
         }
 
         if(gender == 1){

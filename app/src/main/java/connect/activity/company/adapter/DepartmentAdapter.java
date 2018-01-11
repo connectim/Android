@@ -137,8 +137,6 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
 
     public interface OnItemClickListener{
         void itemClick(DepartmentBean departmentBean);
-
-        void addFriend(int position, DepartmentBean departmentBean);
     }
 
 }

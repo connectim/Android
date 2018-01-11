@@ -22,6 +22,7 @@ import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.ProgressUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
@@ -67,12 +68,7 @@ public class LoginUserActivity extends BaseActivity {
         nextBtn.setEnabled(false);
         nameEt.addTextChangedListener(textWatcher);
         passwordEt.addTextChangedListener(textWatcher);
-
-//        if (!ConfigUtil.getInstance().appMode()) {
-//            passwordEt.setText("Abcd1234");
-//        }
     }
-
 
     @OnClick(R.id.name_text)
     void nameText(View view) {
@@ -86,6 +82,7 @@ public class LoginUserActivity extends BaseActivity {
 
     @OnClick(R.id.next_btn)
     void nextBtn(View view) {
+        ProgressUtil.getInstance().showProgress(mActivity);
         String name = nameEt.getText().toString().trim();
         String password = passwordEt.getText().toString();
         Connect.LoginReq loginReq = Connect.LoginReq.newBuilder()
@@ -105,6 +102,8 @@ public class LoginUserActivity extends BaseActivity {
                         UserBean userBean1 = new UserBean(userLoginInfo.getName(), userLoginInfo.getAvatar(), userLoginInfo.getUid(),
                                 userLoginInfo.getOU(), userLoginInfo.getToken(), userBean.getPubKey(), userBean.getPriKey());
                         SharedPreferenceUtil.getInstance().putUser(userBean1);
+
+                        ProgressUtil.getInstance().dismissProgress();
                         HomeActivity.startActivity(mActivity);
                         mActivity.finish();
                     }
@@ -115,6 +114,7 @@ public class LoginUserActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
+                ProgressUtil.getInstance().dismissProgress();
                 ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
             }
         });
