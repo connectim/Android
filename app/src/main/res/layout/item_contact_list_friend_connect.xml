@@ -6,7 +6,7 @@
 
     <View
         android:id="@+id/line_view"
-        style="@style/BaseViewLine.d1d5da"/>
+        style="@style/BaseViewLine.eeeeee"/>
 
     <TextView
         android:id="@+id/top_tv"
@@ -23,23 +23,31 @@
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/selector_list_item_bg"
-        android:paddingLeft="@dimen/dp_15"
-        android:paddingRight="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10">
-        <ImageView
-            android:id="@+id/avatar_img"
-            android:layout_width="@dimen/dp_38"
-            android:layout_height="@dimen/dp_38"
-            android:scaleType="fitXY"/>
+        android:background="@drawable/selector_list_item_bg">
+        <RelativeLayout
+            android:id="@+id/avatar_rela"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/color_FBFBFB"
+            android:paddingLeft="@dimen/dp_15"
+            android:paddingRight="@dimen/dp_15"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10">
+            <ImageView
+                android:id="@+id/avatar_img"
+                android:layout_width="@dimen/dp_38"
+                android:layout_height="@dimen/dp_38"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/name_tv"
             style="@style/BaseTextStyle.16"
-            android:layout_toRightOf="@+id/avatar_img"
+            android:layout_toRightOf="@+id/avatar_rela"
             android:textStyle="bold"
             android:text="@string/app_name"
-            android:layout_marginLeft="@dimen/dp_22"
+            android:layout_marginLeft="@dimen/dp_15"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
+
 </LinearLayout>

@@ -68,7 +68,8 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/right_arrow"
             android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_8"/>
+            android:layout_marginRight="@dimen/dp_8"
+            android:visibility="gone"/>
 
         <ImageView
             android:contentDescription="@string/app_name"
