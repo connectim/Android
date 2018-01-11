@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:maxWidth="@dimen/dp_180"
             android:textColor="@color/color_161A21"
-            android:textSize="@dimen/sp_17"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             android:singleLine="true"
             android:ellipsize="middle"/>
@@ -63,7 +63,7 @@
             android:maxWidth="@dimen/dp_70"
             android:lines="1"
             android:textColor="@color/color_161A21"
-            android:textSize="@dimen/sp_16"/>
+            android:textSize="@dimen/sp_14"/>
 
         <ImageView
             android:contentDescription="@string/app_name"

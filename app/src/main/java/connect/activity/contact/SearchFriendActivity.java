@@ -71,6 +71,7 @@ public class SearchFriendActivity extends BaseActivity {
 
     @OnClick(R.id.cancel_tv)
     void goBack(View view) {
+        SystemUtil.hideKeyBoard(mActivity, searchEdit);
         ActivityUtil.goBackWithResult(mActivity, 0, null, android.R.anim.fade_in, android.R.anim.fade_out);
     }
 

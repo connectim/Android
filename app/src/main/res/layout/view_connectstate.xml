@@ -12,7 +12,7 @@
         android:text="@string/Chat_Not_connected"
         android:textStyle="bold"
         android:textColor="@color/color_ffffff"
-        android:textSize="@dimen/sp_17"/>
+        android:textSize="@dimen/sp_14"/>
 
     <ProgressBar
         android:id="@id/probar1"

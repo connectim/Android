@@ -22,7 +22,7 @@
             android:src="@mipmap/department_two"/>
         <TextView
             android:id="@+id/department_tv"
-            style="@style/BaseTextStyle.16"
+            style="@style/BaseTextStyle.14"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical|right"
             android:textColor="@color/color_a5a7ae"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_14"
             android:singleLine="true"
             android:text=""/>
         <ImageView
@@ -63,7 +63,7 @@
             android:layout_centerInParent="true">
             <TextView
                 android:id="@+id/nickname_tv"
-                style="@style/BaseTextStyle.16"
+                style="@style/BaseTextStyle.14"
                 android:lines="1"
                 android:ellipsize="middle"
                 android:text="" />

@@ -44,7 +44,7 @@ public class NameLinear extends LinearLayout {
             TextView textView = new TextView(context);
             textView.setSingleLine();
             textView.setPadding(5,5,5,5);
-            textView.setTextSize(16);
+            textView.setTextSize(14);
             if(i == list.size() - 1){
                 textView.setText(department.getName());
             }else{

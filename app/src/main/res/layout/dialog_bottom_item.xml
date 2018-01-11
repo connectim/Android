@@ -9,6 +9,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:textColor="@color/color_007aff"
-        android:textSize="@dimen/sp_18"/>
+        android:textSize="@dimen/sp_14"/>
 
 </LinearLayout>

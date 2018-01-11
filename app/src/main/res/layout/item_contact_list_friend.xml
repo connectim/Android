@@ -18,7 +18,7 @@
 
     <View
         android:id="@+id/line_view"
-        style="@style/BaseViewLine.eeeeee"/>
+        style="@style/BaseViewLine.f1f1f1"/>
 
     <RelativeLayout
         android:id="@id/content_layout"
@@ -70,5 +70,8 @@
         </RelativeLayout>
 
     </RelativeLayout>
+
+    <View
+        style="@style/BaseViewLine.f1f1f1"/>
 
 </LinearLayout>

@@ -46,6 +46,8 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int STATUS_FRIEND_COUNT = 102;
     /** Connect robot */
     private final int STATUS_FRIEND_CONNECT = 103;
+    /** Connect robot */
+    private final int STATUS_FRIEND_TITLE = 104;
     /** Update all contact */
     public final String updateTypeContact = "contact";
     /** Update friend request */
@@ -83,6 +85,9 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (viewType == STATUS_FRIEND_CONNECT) {
             view = inflater.inflate(R.layout.item_contact_list_friend_connect, parent, false);
             holder = new ConnectHolder(view);
+        } else if (viewType == STATUS_FRIEND_TITLE) {
+            view = inflater.inflate(R.layout.item_contact_list_friend_title, parent, false);
+            holder = new TitleHolder(view);
         } else if (viewType == STATUS_FRIEND_COUNT) {
             view = inflater.inflate(R.layout.item_contact_list_count, parent, false);
             holder = new CountHolder(view);
@@ -127,10 +132,10 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     String currLetter = contactManage.checkShowFriendTop(currBean, mData.get(position - 1));
                     if (TextUtils.isEmpty(currLetter)) {
                         ((FriendHolder) holder).topTv.setVisibility(View.GONE);
-                        ((FriendHolder) holder).lineView.setVisibility(View.VISIBLE);
+                        ((FriendHolder) holder).lineView.setVisibility(View.GONE);
                     } else {
                         ((FriendHolder) holder).topTv.setVisibility(View.VISIBLE);
-                        ((FriendHolder) holder).lineView.setVisibility(View.GONE);
+                        ((FriendHolder) holder).lineView.setVisibility(View.VISIBLE);
                         ((FriendHolder) holder).topTv.setCompoundDrawables(null, null, null, null);
                         switch (currBean.getStatus()) {
                             case 2: // group
@@ -182,10 +187,10 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 String connectLetter = contactManage.checkShowFriendTop(currBean, mData.get(position - 1));
                 if (TextUtils.isEmpty(connectLetter)) {
                     ((ConnectHolder) holder).topTv.setVisibility(View.GONE);
-                    ((ConnectHolder) holder).lineView.setVisibility(View.VISIBLE);
+                    ((ConnectHolder) holder).lineView.setVisibility(View.GONE);
                 } else {
                     ((ConnectHolder) holder).topTv.setVisibility(View.VISIBLE);
-                    ((ConnectHolder) holder).lineView.setVisibility(View.GONE);
+                    ((ConnectHolder) holder).lineView.setVisibility(View.VISIBLE);
                     ((ConnectHolder) holder).topTv.setCompoundDrawables(null, null, null, null);
                     ((ConnectHolder) holder).topTv.setText(connectLetter);
                 }
@@ -193,6 +198,8 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 break;
             case STATUS_FRIEND_COUNT:
                 ((CountHolder) holder).bottomCount.setText(currBean.getName());
+                break;
+            case STATUS_FRIEND_TITLE:
                 break;
             default:
                 break;
@@ -217,7 +224,9 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return STATUS_FRIEND;
         } else if(status == 6){
             return STATUS_FRIEND_CONNECT;
-        } else {
+        } else if(status == 8){
+            return STATUS_FRIEND_TITLE;
+        }else {
             return STATUS_FRIEND_COUNT;
         }
     }
@@ -292,6 +301,14 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    class TitleHolder extends RecyclerView.ViewHolder{
+
+        public TitleHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+
     /**
      * Update the friends list.
      */
@@ -330,6 +347,11 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ContactBean contactBean = new ContactBean();
                 contactBean.setStatus(7);
                 finalList.add(contactBean);
+                if(friendMap.get("friend").size() > 0){
+                    ContactBean contactBean1 = new ContactBean();
+                    contactBean1.setStatus(8);
+                    finalList.add(contactBean1);
+                }
                 finalList.addAll(friendMap.get("favorite"));
                 finalList.addAll(groupList);
                 finalList.addAll(friendMap.get("friend"));
