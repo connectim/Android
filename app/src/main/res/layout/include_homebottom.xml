@@ -6,11 +6,6 @@
                 android:background="@color/color_f1f1f1"
                 android:orientation="horizontal">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/px_1"
-        android:background="@color/color_b3b5bc"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"

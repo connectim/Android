@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_20"
         android:textSize="@dimen/sp_14"
         android:textColor="@color/color_6d6e75"
         android:text="@string/Set_Versions_number"/>
@@ -84,7 +84,7 @@
             android:layout_marginLeft="@dimen/dp_10"/>
     </LinearLayout>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -92,5 +92,5 @@
         android:gravity="center"
         android:text="@string/app_name"
         android:textColor="@color/color_161A21"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_14" />-->
 </LinearLayout>
