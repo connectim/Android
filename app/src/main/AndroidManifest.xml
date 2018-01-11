@@ -341,13 +341,17 @@
 
         <service
             android:name="connect.service.GroupService"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
             android:name="connect.activity.chat.set.GroupCreateActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.set.group.GroupDepartSelectActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.chat.set.TalkGroupCreateActivity"
+            android:label="@string/title_activity_talk_group_create"></activity>
     </application>
+
 </manifest>

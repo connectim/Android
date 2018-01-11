@@ -41,6 +41,8 @@ public class UriUtil {
     /** Query the user information 1: name(en)  2:uid  3:name(zh)*/
     public static String CONNECT_V3_WORKMATE_SEARCH = "/connect/v3/workmate/search";
     public static String CONNECT_V3_USERS_FOLLOW = "/connect/v3/users/follow";
+    /** 根据 部门id查询 所有员工 */
+    public static String CONNECT_V3_DEPAERTMENT_WORKMATES = "/connect/v3/department/workmates";
 
     /**======================================================================================
      *                                Login successfully initialized
