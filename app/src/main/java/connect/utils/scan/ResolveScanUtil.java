@@ -2,13 +2,11 @@ package connect.utils.scan;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.net.URL;
 
-import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
@@ -50,7 +48,7 @@ public class ResolveScanUtil {
             dealScanUrl(value);
         }else if(value.contains(TYPE_WEB_GROUP_)){
             // Determine whether to join the group of links
-            dealScanGroup(value);
+            // dealScanGroup(value);
         }/*else if(value.contains(TRANSFER_SCAN_HEAD)){
             // Determine whether to transfer links
             dealScanTransfer(value);
@@ -81,15 +79,6 @@ public class ResolveScanUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Two-dimensional code is a group application link
-     */
-    private void dealScanGroup(String value){
-        String[] valueArray = value.replace(TYPE_WEB_GROUP_,"").split("/");
-        ApplyJoinGroupActivity.startActivity(activity, ApplyJoinGroupActivity.EApplyGroup.QRSCAN, valueArray[0],value);
-        ActivityUtil.goBack(activity);
     }
 
     /**

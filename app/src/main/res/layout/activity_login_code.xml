@@ -109,7 +109,7 @@
             style="@style/ButtonLongStyle"
             android:layout_marginTop="@dimen/dp_32"
             android:enabled="false"
-            android:text="@string/Login_Immediately"/>
+            android:text="@string/Login_Immediately" />
     </LinearLayout>
 
     <LinearLayout

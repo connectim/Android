@@ -167,11 +167,6 @@ public class SearchFriendResultActivity extends BaseActivity {
             }
             mActivity.finish();
         }
-
-        @Override
-        public void addFriend(int position, DepartmentBean departmentBean) {
-
-        }
     };
 
     private void requestSearch() {

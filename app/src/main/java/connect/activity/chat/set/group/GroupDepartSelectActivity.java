@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 
@@ -22,6 +21,8 @@ import connect.activity.base.BaseListener;
 import connect.activity.chat.adapter.GroupDepartSelectAdapter;
 import connect.activity.company.adapter.NameLinear;
 import connect.activity.home.view.LineDecoration;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.UriUtil;
@@ -61,7 +62,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
         Bundle bundle = new Bundle();
         bundle.putBoolean("Is_Create", iscreate);
         bundle.putSerializable("Uids", uids);
-        ActivityUtil.next(activity, GroupDepartSelectActivity.class, bundle,200);
+        ActivityUtil.next(activity, GroupDepartSelectActivity.class, bundle, 200);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Chat_set_Create_New_Group);
-        toolbarTop.setRightText(getString(R.string.Common_OK));
+        toolbarTop.setRightText(getString(R.string.Chat_Select_Count, 0));
         toolbarTop.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,6 +104,17 @@ public class GroupDepartSelectActivity extends BaseActivity {
 
         isCreate = getIntent().getBooleanExtra("Is_Create", true);
         selectedUids = (List<String>) getIntent().getSerializableExtra("Uids");
+        if (isCreate) {
+            if (selectedUids.size() >= 2) {
+                toolbarTop.setRightTextEnable(true);
+            } else {
+                toolbarTop.setRightTextEnable(false);
+            }
+            toolbarTop.setRightText(getString(R.string.Chat_Select_Count, selectedUids.size()));
+        } else {
+            toolbarTop.setRightTextEnable(false);
+            toolbarTop.setRightText(getString(R.string.Chat_Select_Count, 0));
+        }
 
         nameLinear.setVisibility(View.VISIBLE);
         nameList.clear();
@@ -121,6 +133,8 @@ public class GroupDepartSelectActivity extends BaseActivity {
         recyclerview.setAdapter(departSelectAdapter);
         departSelectAdapter.setFriendUid(selectedUids);
         departSelectAdapter.setItemClickListener(new GroupDepartSelectAdapter.GroupDepartSelectListener() {
+
+            UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
 
             @Override
             public boolean isContains(String selectKey) {
@@ -148,11 +162,27 @@ public class GroupDepartSelectActivity extends BaseActivity {
                             for (Connect.Workmate workmate : workmates.getListList()) {
                                 DepartSelectBean selectBean = new DepartSelectBean();
                                 selectBean.setWorkmate(workmate);
-                                if (!TextUtils.isEmpty(workmate.getUid())) {
-                                    String workmateKey = "W" + workmate.getUid();
-                                    selectDeparts.put(workmateKey, selectBean);
+                                if (workmate.getRegisted()) {
+                                    String uid = workmate.getUid();
+                                    String myUid =userBean.getUid();
+                                    if (!selectedUids.contains(uid) && !uid.equals(myUid)) {
+                                        String workmateKey = "W" + uid;
+                                        selectDeparts.put(workmateKey, selectBean);
+                                    }
                                 }
                             }
+
+                            int countSelect = 0;
+                            for (String key : selectDeparts.keySet()) {
+                                if (key.contains("W")) {
+                                    countSelect++;
+                                }
+                            }
+                            if (isCreate) {
+                                countSelect = countSelect + selectedUids.size();
+                            }
+                            toolbarTop.setRightText(getString(R.string.Chat_Select_Count, countSelect));
+                            toolbarTop.setRightTextEnable(isCreate?countSelect >= 2:countSelect >= 1);
                         }
 
                         @Override
@@ -169,6 +199,18 @@ public class GroupDepartSelectActivity extends BaseActivity {
                                 String workmateKey = "W" + workmate.getUid();
                                 selectDeparts.remove(workmateKey);
                             }
+
+                            int countSelect = 0;
+                            for (String key : selectDeparts.keySet()) {
+                                if (key.contains("W")) {
+                                    countSelect++;
+                                }
+                            }
+                            if (isCreate) {
+                                countSelect = countSelect + selectedUids.size();
+                            }
+                            toolbarTop.setRightText(getString(R.string.Chat_Select_Count, countSelect));
+                            toolbarTop.setRightTextEnable(isCreate?countSelect >= 2:countSelect >= 1);
                         }
 
                         @Override
@@ -184,18 +226,32 @@ public class GroupDepartSelectActivity extends BaseActivity {
                 final String workmateId = workmate.getUid();
                 final String workmateKey = "W" + workmateId;
                 if (isSelect) {
-                    if (!TextUtils.isEmpty(workmate.getUid())) {
-                        selectDeparts.put(workmateKey, workmate);
+                    if (workmate.getRegisted()) {
+                        DepartSelectBean selectBean = new DepartSelectBean();
+                        selectBean.setWorkmate(workmate);
+                        selectDeparts.put(workmateKey, selectBean);
                     }
                 } else {
                     selectDeparts.remove(workmateKey);
                 }
+
+                int countSelect = 0;
+                for (String key : selectDeparts.keySet()) {
+                    if (key.contains("W")) {
+                        countSelect++;
+                    }
+                }
+                if (isCreate) {
+                    countSelect = countSelect + selectedUids.size();
+                }
+                toolbarTop.setRightText(getString(R.string.Chat_Select_Count, countSelect));
+                if (countSelect >= 1) {
+                    toolbarTop.setRightTextEnable(true);
+                } else {
+                    toolbarTop.setRightTextEnable(false);
+                }
             }
         });
-
-        if(!isCreate){
-
-        }
 
         requestDepartmentInfoShow(department.getId());
         if (isCreate) {
@@ -214,6 +270,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
                 .build();
 
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_DEPARTMENT, department, new ResultCall<Connect.HttpNotSignResponse>() {
+
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
@@ -289,9 +346,11 @@ public class GroupDepartSelectActivity extends BaseActivity {
                 }
 
                 for (Connect.Workmate workmate : workmates) {
-                    DepartSelectBean selectBean = new DepartSelectBean();
-                    selectBean.setWorkmate(workmate);
-                    departSelectBeanList.add(selectBean);
+                    if (workmate.getRegisted()) {
+                        DepartSelectBean selectBean = new DepartSelectBean();
+                        selectBean.setWorkmate(workmate);
+                        departSelectBeanList.add(selectBean);
+                    }
                 }
                 departSelectAdapter.notifyData(departSelectBeanList);
             }

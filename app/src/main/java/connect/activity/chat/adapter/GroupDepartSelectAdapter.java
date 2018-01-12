@@ -56,7 +56,7 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             final Connect.Department department1 = department.getDepartment();
             final String departmentKey = "B" + department1.getId();
             holder.departmentSelectView.setSelected(departSelectListener.isContains(departmentKey));
-
+            holder.countTv.setText("(" + department1.getCount() + ")");
             holder.departmentTv.setText(department1.getName());
             holder.departmentSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,7 +80,7 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.contentLin.setVisibility(View.VISIBLE);
 
             final Connect.Workmate workmate = department.getWorkmate();
-            final String workmateKey = "W" + workmate.getUid();
+            final String workmateKey = "W" + workmate.getEmpNo();
             holder.workmateSelectView.setSelected(departSelectListener.isContains(workmateKey));
             holder.nameTvS.setText(workmate.getName());
             if (TextUtils.isEmpty(workmate.getOU())) {
@@ -90,9 +90,9 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
                 holder.nicName.setText(workmate.getOU());
             }
             if (workmate.getRegisted()) {
-                holder.avater.setAvatarName(workmate.getName(), false, 1);
+                holder.avater.setAvatarName(workmate.getName(), false, workmate.getGender());
             } else {
-                holder.avater.setAvatarName(workmate.getName(), true, 1);
+                holder.avater.setAvatarName(workmate.getName(), true, workmate.getGender());
             }
             holder.workmateSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override

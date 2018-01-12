@@ -21,14 +21,11 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.company.DepartmentActivity;
 import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.ScanAddFriendActivity;
 import connect.activity.contact.SearchFriendActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ContactAdapter;
 import connect.activity.home.bean.ContactBean;
-import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -84,7 +81,7 @@ public class ContactFragment extends BaseFragment {
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new ContactAdapter(mActivity);
         recyclerview.setAdapter(adapter);
-        recyclerview.addItemDecoration(new LineDecoration(mActivity));
+        //recyclerview.addItemDecoration(new LineDecoration(mActivity));
         sideBar.setOnTouchingLetterChangedListener(changedListener);
 
         adapter.setOnSideMenuListener(onSideMenuListener);

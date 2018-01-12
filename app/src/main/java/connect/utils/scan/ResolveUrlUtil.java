@@ -3,17 +3,16 @@ package connect.utils.scan;
 import android.app.Activity;
 import android.net.Uri;
 
-import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
-import connect.ui.activity.R;
-import connect.activity.chat.exts.ApplyJoinGroupActivity;
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.contact.FriendInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.home.bean.MsgNoticeBean;
+import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastUtil;
 import instant.bean.UserOrderBean;
@@ -77,10 +76,6 @@ public class ResolveUrlUtil {
                 dealPacket(resultBean);
                 break;
             case TYPE_WEB_GROUNP:
-                ApplyJoinGroupActivity.startActivity(activity, ApplyJoinGroupActivity.EApplyGroup.TOKEN, resultBean.getToken());
-                if(isCloseScan){
-                    ActivityUtil.goBack(activity);
-                }
                 break;
             default:
                 break;

@@ -84,7 +84,7 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
      * Synchronize the encrypted phone number
      */
     private void syncPhone(Connect.PhoneBook phoneBook){
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PHONE_SYNC, phoneBook, new ResultCall<Connect.HttpNotSignResponse>() {
+        /*OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PHONE_SYNC, phoneBook, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 getServeFriend();
@@ -94,7 +94,7 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
             public void onError(Connect.HttpNotSignResponse response) {
                 ProgressUtil.getInstance().dismissProgress();
             }
-        });
+        });*/
     }
 
     /**
@@ -102,7 +102,7 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
      */
     private void getServeFriend() {
         Connect.RequestNotEncrypt notEncrypt = Connect.RequestNotEncrypt.newBuilder().build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_PHONEBOOK, notEncrypt, new ResultCall<Connect.HttpNotSignResponse>() {
+        /*OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_PHONEBOOK, notEncrypt, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
@@ -125,7 +125,7 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
             public void onError(Connect.HttpNotSignResponse response) {
                 handler.sendEmptyMessage(UPDATE_CODE);
             }
-        });
+        });*/
     }
 
     private Handler handler = new Handler(Looper.getMainLooper()) {

@@ -1,6 +1,7 @@
 package connect.activity.chat.set.presenter;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.contract.TalkGroupCreateContract;
+import connect.activity.home.bean.GroupRecBean;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -55,7 +57,7 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
      *                      “HIGH”:2
      */
     @Override
-    public void createGroup(String groupName, int groupCategory) {
+    public void createGroup(String groupName) {
         List<Connect.AddGroupUserInfo> groupUserInfos = new ArrayList<>();
         for (Connect.Workmate entity : contactEntities) {
             Connect.AddGroupUserInfo userInfo = Connect.AddGroupUserInfo.newBuilder()

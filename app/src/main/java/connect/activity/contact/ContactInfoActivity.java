@@ -222,7 +222,6 @@ public class ContactInfoActivity extends BaseActivity {
                     ContactHelper.getInstance().deleteEntity(contactEntity.getUid());
                     ToastEUtil.makeText(mActivity, R.string.Link_Delete_Successful).show();
                     ContactNotice.receiverContact();
-                    mActivity.finish();
                 }
             }
 

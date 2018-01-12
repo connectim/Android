@@ -26,6 +26,7 @@ public class BaseGroupSelectAdapter extends RecyclerView.Adapter<BaseGroupSelect
 
     private List<ContactEntity> contactEntities = new ArrayList<>();
     private Context context;
+    private String friendUid = "";
 
     public BaseGroupSelectAdapter() {
 
@@ -40,8 +41,8 @@ public class BaseGroupSelectAdapter extends RecyclerView.Adapter<BaseGroupSelect
     public FavoriteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.item_basegroup_favorite, parent, false);
-        FavoriteHolder memberHolder = new FavoriteHolder(view);
-        return memberHolder;
+        FavoriteHolder holder = new FavoriteHolder(view);
+        return holder;
     }
 
     @Override
@@ -79,16 +80,19 @@ public class BaseGroupSelectAdapter extends RecyclerView.Adapter<BaseGroupSelect
                 holder.avatarImg.setVisibility(View.GONE);
                 holder.departmentAvatar.setVisibility(View.VISIBLE);
 
-                holder.selectView.setSelected(groupSelectListener.isContains(entity.getEmpNo()));
+                holder.selectView.setSelected(groupSelectListener.isContains(entity.getUid()));
                 holder.nameTv.setText(name);
                 holder.departmentAvatar.setAvatarName(name, false, entity.getGender());
                 holder.contentLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        boolean isselect = holder.selectView.isSelected();
-                        isselect = !isselect;
-                        groupSelectListener.itemClick(isselect, entity);
-                        holder.selectView.setSelected(isselect);
+                        String uid = entity.getUid();
+                        if (!TextUtils.isEmpty(friendUid) && !friendUid.equals(uid)) {
+                            boolean isselect = holder.selectView.isSelected();
+                            isselect = !isselect;
+                            groupSelectListener.itemClick(isselect, entity);
+                            holder.selectView.setSelected(isselect);
+                        }
                     }
                 });
             }
@@ -98,16 +102,19 @@ public class BaseGroupSelectAdapter extends RecyclerView.Adapter<BaseGroupSelect
             holder.avatarImg.setVisibility(View.VISIBLE);
             holder.departmentAvatar.setVisibility(View.GONE);
 
-            holder.selectView.setSelected(groupSelectListener.isContains(entity.getEmpNo()));
+            holder.selectView.setSelected(groupSelectListener.isContains(entity.getUid()));
             holder.nameTv.setText(name);
             GlideUtil.loadAvatarRound(holder.avatarImg, entity.getAvatar());
             holder.contentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    boolean isselect = holder.selectView.isSelected();
-                    isselect = !isselect;
-                    groupSelectListener.itemClick(isselect, entity);
-                    holder.selectView.setSelected(isselect);
+                    String uid = entity.getUid();
+                    if (!TextUtils.isEmpty(friendUid) && !friendUid.equals(uid)) {
+                        boolean isselect = holder.selectView.isSelected();
+                        isselect = !isselect;
+                        groupSelectListener.itemClick(isselect, entity);
+                        holder.selectView.setSelected(isselect);
+                    }
                 }
             });
         }
@@ -130,11 +137,11 @@ public class BaseGroupSelectAdapter extends RecyclerView.Adapter<BaseGroupSelect
         FavoriteHolder(View view) {
             super(view);
             topTv = (TextView) view.findViewById(R.id.top_tv);
-            contentLayout = (LinearLayout) view.findViewById(R.id.content_layout);
+            contentLayout = (LinearLayout) view.findViewById(R.id.linearlayout);
             selectView = view.findViewById(R.id.select);
             departmentAvatar = (DepartmentAvatar) view.findViewById(R.id.avatar_lin);
             avatarImg = (ImageView) view.findViewById(R.id.avatar_rimg);
-            nameTv = (TextView) view.findViewById(R.id.name_tv);
+            nameTv = (TextView) view.findViewById(R.id.text_view);
         }
     }
 
@@ -151,5 +158,9 @@ public class BaseGroupSelectAdapter extends RecyclerView.Adapter<BaseGroupSelect
 
     public void setGroupSelectListener(BaseGroupSelectListener groupSelectListener) {
         this.groupSelectListener = groupSelectListener;
+    }
+
+    public void setFriendUid(String friendUid) {
+        this.friendUid = friendUid;
     }
 }

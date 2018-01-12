@@ -17,6 +17,6 @@ public interface TalkGroupCreateContract {
     }
 
     interface Presenter extends BasePresenter {
-        void createGroup(String groupName, int groupCategory);
+        void createGroup(String groupName);
     }
 }

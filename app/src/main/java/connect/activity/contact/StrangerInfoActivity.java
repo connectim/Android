@@ -182,7 +182,7 @@ public class StrangerInfoActivity extends BaseActivity {
                 .setCriteria(uid)
                 .setTyp(1)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
+        /*OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
@@ -204,7 +204,7 @@ public class StrangerInfoActivity extends BaseActivity {
             public void onError(Connect.HttpNotSignResponse response) {
                 ToastEUtil.makeText(mActivity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();
             }
-        });
+        });*/
     }
 
     @Override

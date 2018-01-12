@@ -302,9 +302,6 @@
             android:name="connect.activity.chat.exts.GroupCrowdingRecordsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="connect.activity.chat.exts.ApplyJoinGroupActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="connect.activity.chat.exts.OuterWebsiteActivity"
             android:screenOrientation="portrait" />
         <activity

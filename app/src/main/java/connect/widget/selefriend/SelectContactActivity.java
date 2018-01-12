@@ -47,7 +47,7 @@ public class SelectContactActivity extends BaseActivity {
     /** Common group of */
     private List<ContactBean> groupList;
     /** friend */
-    private HashMap<String, List<ContactBean>> friendMap;
+    private ArrayList<ContactBean> friendList;
 
     public static void startActivity(Activity activity, String type, Serializable... extension) {
         Bundle bundle = new Bundle();
@@ -130,7 +130,7 @@ public class SelectContactActivity extends BaseActivity {
             protected Void doInBackground(Void... params) {
                 ContactListManage contactManage = new ContactListManage();
                 groupList = contactManage.getGroupData();
-                friendMap = contactManage.getFriendListExcludeSys("");
+                friendList = contactManage.getFriendListExcludeSys("");
                 return null;
             }
 
@@ -138,10 +138,9 @@ public class SelectContactActivity extends BaseActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 ArrayList<ContactBean> finalList = new ArrayList<>();
-                finalList.addAll(friendMap.get("favorite"));
                 finalList.addAll(groupList);
-                finalList.addAll(friendMap.get("friend"));
-                adapter.setStartPosition(finalList.size() - friendMap.get("friend").size());
+                finalList.addAll(friendList);
+                adapter.setStartPosition(finalList.size() - friendList.size());
                 adapter.setDataNotify(finalList);
             }
         }.execute();

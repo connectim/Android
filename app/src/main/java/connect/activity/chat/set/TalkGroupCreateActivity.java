@@ -38,6 +38,7 @@ public class TalkGroupCreateActivity extends BaseActivity implements TalkGroupCr
 
     private static String CONTACT_LIST = "CONTACT_LIST";
     private TalkGroupCreateActivity activity;
+    boolean isCreate =true;
     private List<Connect.Workmate> contactEntities;
     private TalkGroupCreateContract.Presenter presenter;
 
@@ -49,8 +50,9 @@ public class TalkGroupCreateActivity extends BaseActivity implements TalkGroupCr
         initView();
     }
 
-    public static void startActivity(Activity activity, ArrayList<Connect.Workmate> contactEntities) {
+    public static void startActivity(Activity activity, boolean isCreate, ArrayList<Connect.Workmate> contactEntities) {
         Bundle bundle = new Bundle();
+        bundle.putBoolean("Is_Create", isCreate);
         bundle.putSerializable(CONTACT_LIST, contactEntities);
         ActivityUtil.next(activity, TalkGroupCreateActivity.class, bundle);
     }
@@ -78,8 +80,9 @@ public class TalkGroupCreateActivity extends BaseActivity implements TalkGroupCr
                 if (TextUtils.isEmpty(groupName)) {
                     groupName = edittxt1.getHint().toString();
                 }
-                int groupCategory = 1;
-                presenter.createGroup(groupName, groupCategory);
+                if(isCreate){
+                    presenter.createGroup(groupName);
+                }
 
                 Message message = new Message();
                 message.what = 100;
@@ -90,6 +93,7 @@ public class TalkGroupCreateActivity extends BaseActivity implements TalkGroupCr
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         edittxt1.setHint(String.format(activity.getString(R.string.Link_user_friends), userBean.getName()));
 
+        isCreate = getIntent().getBooleanExtra("Is_Create", true);
         contactEntities = (List<Connect.Workmate>) getIntent().getSerializableExtra(CONTACT_LIST);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerview.setLayoutManager(linearLayoutManager);
