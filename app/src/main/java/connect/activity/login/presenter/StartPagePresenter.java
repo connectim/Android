@@ -40,7 +40,7 @@ public class StartPagePresenter implements StartContract.Presenter {
                 if (!SharedPreferenceUtil.getInstance().containsUser()) {
                     mView.goIntoLoginForPhone();
                 } else {
-                    openFromWeb(mActivity);
+                    //openFromWeb(mActivity);
                     mView.goIntoHome();
                 }
 
@@ -61,12 +61,12 @@ public class StartPagePresenter implements StartContract.Presenter {
      * Save url with open the App.
      * @param activity The activity reference
      */
-    private void openFromWeb(Activity activity) {
+    /*private void openFromWeb(Activity activity) {
         Intent intent = activity.getIntent();
         String action = intent.getAction();
         Uri uri = intent.getData();
         if (Intent.ACTION_VIEW.equals(action) && RegularUtil.matches(uri.toString(), ResolveUrlUtil.Web_Url)) {
             SharedPreferenceUtil.getInstance().putValue(SharedPreferenceUtil.WEB_OPEN_APP,uri.toString());
         }
-    }
+    }*/
 }

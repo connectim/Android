@@ -1,5 +1,6 @@
 package connect.activity.home.fragment;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -109,12 +110,12 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.llSafety)
     void intoSafety(View view) {
-        ActivityUtil.next(mActivity, SafetyActivity.class);
+       // ActivityUtil.next(mActivity, SafetyActivity.class);
     }
 
     @OnClick(R.id.llPrivate)
     void intoPrivate(View view) {
-        ActivityUtil.next(mActivity, PrivateActivity.class);
+       // ActivityUtil.next(mActivity, PrivateActivity.class);
     }
 
     @OnClick(R.id.llChatSetting)

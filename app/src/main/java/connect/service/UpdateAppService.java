@@ -25,7 +25,7 @@ public class UpdateAppService extends Service {
     DownloadManager manager;
     DownloadCompleteReceiver receiver;
     File file;
-    private String pathDown = "/Connect/download/connect_im.apk";
+    private String pathDown = "/iWork/download/iWork.apk";
 
     private void initDownManager(String downLoadUrl) {
         manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);

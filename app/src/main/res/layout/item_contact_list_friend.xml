@@ -58,11 +58,6 @@
             android:paddingTop="@dimen/dp_9"
             android:paddingBottom="@dimen/dp_9"
             android:background="@color/color_FBFBFB">
-            <connect.widget.DepartmentAvatar
-                android:id="@+id/avatar_lin"
-                android:layout_width="@dimen/dp_38"
-                android:layout_height="@dimen/dp_38"
-                android:visibility="gone"/>
             <ImageView
                 android:id="@+id/avatar_rimg"
                 android:layout_width="@dimen/dp_38"

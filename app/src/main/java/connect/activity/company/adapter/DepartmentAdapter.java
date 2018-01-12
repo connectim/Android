@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 import connect.activity.base.BaseApplication;
 import connect.ui.activity.R;
+import connect.utils.glide.GlideUtil;
 import connect.widget.DepartmentAvatar;
 
 public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.ViewHolder> {
@@ -57,26 +59,13 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
                 holder.nicName.setText(departmentBean.getO_u());
             }
             if(departmentBean.getRegisted()){
-                holder.avater.setAvatarName(departmentBean.getName(), false, departmentBean.getGender());
-
-                /*holder.addBtn.setVisibility(View.GONE);
-                holder.addBtn.setText(R.string.Chat_Chats);
-                holder.addBtn.setEnabled(true);
-                holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff));
-                holder.addBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(itemClickListener != null){
-                            itemClickListener.addFriend(position, departmentBean);
-                        }
-                    }
-                });*/
+                holder.avater.setVisibility(View.GONE);
+                holder.avatarImage.setVisibility(View.VISIBLE);
+                GlideUtil.loadAvatarRound(holder.avatarImage, departmentBean.getAvatar(), 8);
             }else{
+                holder.avater.setVisibility(View.VISIBLE);
+                holder.avatarImage.setVisibility(View.GONE);
                 holder.avater.setAvatarName(departmentBean.getName(), true, departmentBean.getGender());
-                /*holder.addBtn.setVisibility(View.VISIBLE);
-                holder.addBtn.setText(R.string.Link_Not_logged_in);
-                holder.addBtn.setEnabled(false);
-                holder.addBtn.setTextColor(BaseApplication.getInstance().getResources().getColor(R.color.color_858998));*/
             }
         }
         holder.contentLin.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +88,8 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView avatarImage;
         RelativeLayout contentLin;
         DepartmentAvatar avater;
         TextView nameTvS;
@@ -116,6 +107,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
             nameTvS = (TextView)itemView.findViewById(R.id.nickname_tv);
             nicName = (TextView)itemView.findViewById(R.id.hint_tv);
             addBtn = (Button) itemView.findViewById(R.id.status_btn);
+            avatarImage = (ImageView)itemView.findViewById(R.id.avatar_image);
 
             departmentLinear = (LinearLayout)itemView.findViewById(R.id.department_linear);
             departmentTv = (TextView)itemView.findViewById(R.id.department_tv);

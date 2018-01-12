@@ -136,25 +136,12 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         ((FriendHolder) holder).ouTv.setVisibility(View.VISIBLE);
                         ((FriendHolder) holder).lineTv.setVisibility(View.VISIBLE);
                         ((FriendHolder) holder).ouTv.setText(currBean.getOu());
-
-                        if(TextUtils.isEmpty(currBean.getAvatar())){
-                            ((FriendHolder) holder).avatar.setVisibility(View.GONE);
-                            ((FriendHolder) holder).avatarLin.setVisibility(View.VISIBLE);
-                            ((FriendHolder) holder).avatarLin.setAvatarName(currBean.getName(), false, currBean.getGender());
-                        }else{
-                            ((FriendHolder) holder).avatarLin.setVisibility(View.GONE);
-                            ((FriendHolder) holder).avatar.setVisibility(View.VISIBLE);
-                            GlideUtil.loadAvatarRound(((FriendHolder) holder).avatar, currBean.getAvatar());
-                        }
                     }else{
                         ((FriendHolder) holder).ouTv.setVisibility(View.GONE);
                         ((FriendHolder) holder).lineTv.setVisibility(View.GONE);
-
-                        ((FriendHolder) holder).avatarLin.setVisibility(View.GONE);
-                        ((FriendHolder) holder).avatar.setVisibility(View.VISIBLE);
-                        GlideUtil.loadAvatarRound(((FriendHolder) holder).avatar, currBean.getAvatar());
                     }
 
+                    GlideUtil.loadAvatarRound(((FriendHolder) holder).avatar, currBean.getAvatar(), 8);
                     ((FriendHolder) holder).name.setText(currBean.getName());
                 }
                 break;
@@ -208,7 +195,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     class FriendHolder extends RecyclerView.ViewHolder {
 
-        DepartmentAvatar avatarLin;
         TextView name;
         ImageView avatar;
         TextView topTv;
@@ -226,7 +212,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             lineView = itemView.findViewById(R.id.line_view);
             ouTv = (TextView)itemView.findViewById(R.id.ou_tv);
             lineTv = (TextView)itemView.findViewById(R.id.line_tv);
-            avatarLin = (DepartmentAvatar)itemView.findViewById(R.id.avatar_lin);
         }
     }
 
