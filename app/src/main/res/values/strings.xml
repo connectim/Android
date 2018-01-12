@@ -628,4 +628,5 @@
     <string name="Beijing_BitMain">Beijing BitMain Technology Co., Ltd.</string>
     <string name="title_activity_group_depart_select">GroupDepartSelectActivity</string>
     <string name="title_activity_talk_group_create">TalkGroupCreateActivity</string>
+    <string name="title_activity_base_group_select">BaseGroupSelectActivity</string>
 </resources>

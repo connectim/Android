@@ -20,7 +20,6 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseListener;
 import connect.activity.chat.adapter.GroupDepartSelectAdapter;
-import connect.activity.chat.set.TalkGroupCreateActivity;
 import connect.activity.company.adapter.NameLinear;
 import connect.activity.home.view.LineDecoration;
 import connect.ui.activity.R;
@@ -43,7 +42,8 @@ public class GroupDepartSelectActivity extends BaseActivity {
     RecyclerView recyclerview;
 
     private GroupDepartSelectActivity activity;
-    private String friendUid = "";
+    private boolean isCreate = true;
+    private List<String> selectedUids = new ArrayList();
     private ArrayList<Connect.Department> nameList = new ArrayList<>();
     private Map<String, Object> selectDeparts = new HashMap<>();//部门 B  成员 W
 
@@ -57,10 +57,11 @@ public class GroupDepartSelectActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, String uid) {
+    public static void startActivity(Activity activity, boolean iscreate, ArrayList<String> uids) {
         Bundle bundle = new Bundle();
-        bundle.putString("Uid", uid);
-        ActivityUtil.next(activity, GroupDepartSelectActivity.class, bundle);
+        bundle.putBoolean("Is_Create", iscreate);
+        bundle.putSerializable("Uids", uids);
+        ActivityUtil.next(activity, GroupDepartSelectActivity.class, bundle,200);
     }
 
     @Override
@@ -94,11 +95,14 @@ public class GroupDepartSelectActivity extends BaseActivity {
                     }
                 }
 
-                TalkGroupCreateActivity.startActivity(activity, workmates);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("ArrayList", workmates);
+                ActivityUtil.goBackWithResult(activity, 200, bundle);
             }
         });
 
-        friendUid = getIntent().getStringExtra("Uid");
+        isCreate = getIntent().getBooleanExtra("Is_Create", true);
+        selectedUids = (List<String>) getIntent().getSerializableExtra("Uids");
 
         nameLinear.setVisibility(View.VISIBLE);
         nameList.clear();
@@ -115,12 +119,12 @@ public class GroupDepartSelectActivity extends BaseActivity {
         recyclerview.addItemDecoration(new LineDecoration(activity));
         departSelectAdapter = new GroupDepartSelectAdapter(activity);
         recyclerview.setAdapter(departSelectAdapter);
-        departSelectAdapter.setFriendUid(friendUid);
+        departSelectAdapter.setFriendUid(selectedUids);
         departSelectAdapter.setItemClickListener(new GroupDepartSelectAdapter.GroupDepartSelectListener() {
 
             @Override
             public boolean isContains(String selectKey) {
-                return selectDeparts.containsKey(selectKey) || selectKey.equals("W" + friendUid);
+                return selectDeparts.containsKey(selectKey) || selectedUids.contains(selectKey);
             }
 
             @Override
@@ -162,7 +166,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
                         public void Success(Connect.Workmates workmates) {
                             selectDeparts.remove(departmentKey);
                             for (Connect.Workmate workmate : workmates.getListList()) {
-                                String workmateKey = "W" + workmate.getEmpNo();
+                                String workmateKey = "W" + workmate.getUid();
                                 selectDeparts.remove(workmateKey);
                             }
                         }
@@ -177,7 +181,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
 
             @Override
             public void workmateClick(boolean isSelect, Connect.Workmate workmate) {
-                final String workmateId = workmate.getEmpNo();
+                final String workmateId = workmate.getUid();
                 final String workmateKey = "W" + workmateId;
                 if (isSelect) {
                     if (!TextUtils.isEmpty(workmate.getUid())) {
@@ -189,8 +193,14 @@ public class GroupDepartSelectActivity extends BaseActivity {
             }
         });
 
+        if(!isCreate){
+
+        }
+
         requestDepartmentInfoShow(department.getId());
-        requestUserInfo(friendUid);
+        if (isCreate) {
+            requestUserInfo(selectedUids.get(0));
+        }
     }
 
     /**

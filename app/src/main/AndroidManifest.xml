@@ -351,7 +351,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.set.TalkGroupCreateActivity"
-            android:label="@string/title_activity_talk_group_create"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.chat.set.BaseGroupSelectActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -26,7 +26,7 @@ import protos.Connect;
 public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSelectAdapter.ViewHolder> {
 
     private Activity activity;
-    private String friendUid = "";
+    private List<String> uids = null;
     private List<DepartSelectBean> departSelectBeens = new ArrayList<>();
 
     public GroupDepartSelectAdapter(Activity activity) {
@@ -58,8 +58,6 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.departmentSelectView.setSelected(departSelectListener.isContains(departmentKey));
 
             holder.departmentTv.setText(department1.getName());
-            holder.countTv.setText("(" + department1.getCount() + ")");
-
             holder.departmentSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -82,7 +80,7 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.contentLin.setVisibility(View.VISIBLE);
 
             final Connect.Workmate workmate = department.getWorkmate();
-            final String workmateKey = "W" + workmate.getEmpNo();
+            final String workmateKey = "W" + workmate.getUid();
             holder.workmateSelectView.setSelected(departSelectListener.isContains(workmateKey));
             holder.nameTvS.setText(workmate.getName());
             if (TextUtils.isEmpty(workmate.getOU())) {
@@ -92,14 +90,14 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
                 holder.nicName.setText(workmate.getOU());
             }
             if (workmate.getRegisted()) {
-                holder.avater.setAvatarName(workmate.getName(), false, workmate.getGender());
+                holder.avater.setAvatarName(workmate.getName(), false, 1);
             } else {
-                holder.avater.setAvatarName(workmate.getName(), true, workmate.getGender());
+                holder.avater.setAvatarName(workmate.getName(), true, 1);
             }
             holder.workmateSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!workmate.getUid().equals(friendUid) && !TextUtils.isEmpty(workmate.getUid())) {
+                    if (!uids.contains(workmate.getUid()) && !TextUtils.isEmpty(workmate.getUid())) {
                         boolean isselect = holder.workmateSelectView.isSelected();
                         isselect = !isselect;
                         departSelectListener.workmateClick(isselect, workmate);
@@ -164,7 +162,7 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
         void itemClick(Connect.Department department);
     }
 
-    public void setFriendUid(String friendUid) {
-        this.friendUid = friendUid;
+    public void setFriendUid(List<String> friendUid) {
+        this.uids = friendUid;
     }
 }
