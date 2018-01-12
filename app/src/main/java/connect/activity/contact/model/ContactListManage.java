@@ -81,7 +81,8 @@ public class ContactListManage {
         Collections.sort(loacalFriend, friendCompara);
         ArrayList<ContactBean> friendList = new ArrayList<>();
         for(ContactEntity friendEntity : loacalFriend){
-            if(friendEntity.getUid().equals(pubKeyExc)) continue;
+            if(friendEntity.getUid().equals(pubKeyExc))
+                continue;
 
             ContactBean contactBean = new ContactBean();
             contactBean.setName(friendEntity.getName());

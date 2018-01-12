@@ -123,7 +123,7 @@ public class HomeActivity extends BaseFragmentActivity {
 
                 ConnectState.getInstance().sendEvent(ConnectState.ConnectType.CONNECT);
                 requestAppUpdata();
-                checkWebOpen();
+                //checkWebOpen();
             }
         }.execute();
     }
@@ -214,14 +214,14 @@ public class HomeActivity extends BaseFragmentActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    /*@Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ContactNotice notice) {
         if (notice.getNotice() == ContactNotice.ConNotice.RecAddFriendHome) {
             updataRequest();
         }
-    }
+    }*/
 
-    private void updataRequest() {
+    /*private void updataRequest() {
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... params) {
@@ -238,7 +238,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 setFragmentDot(1, integer);
             }
         }.execute();
-    }
+    }*/
 
     @OnClick({R.id.msg_rela, R.id.contact_rela, R.id.set_rela})
     public void OnClickListener(View view) {
@@ -330,13 +330,13 @@ public class HomeActivity extends BaseFragmentActivity {
         }
     }
 
-    private void checkWebOpen() {
+    /*private void checkWebOpen() {
         resolveUrlUtil = new ResolveUrlUtil(activity);
         String value = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.WEB_OPEN_APP);
         if (!TextUtils.isEmpty(value)) {
             resolveUrlUtil.checkAppOpen(value);
         }
-    }
+    }*/
 
     private void requestAppUpdata() {
         checkUpdata = new CheckUpdate(activity);
