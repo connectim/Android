@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,7 +21,6 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
-import connect.activity.company.adapter.DepartmentBean;
 import connect.activity.contact.bean.ContactNotice;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
@@ -29,13 +29,12 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
+import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.permission.PermissionUtil;
 import connect.widget.DepartmentAvatar;
 import connect.widget.TopToolBar;
-import connect.widget.album.AlbumActivity;
-import connect.widget.takepicture.TakePictureActivity;
 import instant.utils.SharedUtil;
 import protos.Connect;
 
@@ -62,6 +61,8 @@ public class ContactInfoActivity extends BaseActivity {
     DepartmentAvatar avatarImage;
     @Bind(R.id.gender_image)
     ImageView genderImage;
+    @Bind(R.id.avatar_imageview)
+    ImageView avatarImageview;
 
     private ContactInfoActivity mActivity;
     private ContactEntity contactEntity;
@@ -88,23 +89,30 @@ public class ContactInfoActivity extends BaseActivity {
         toolbar.setTitle(null, R.string.Chat_Contact_details);
 
         contactEntity = (ContactEntity) getIntent().getExtras().getSerializable("bean");
-        avatarImage.setAvatarName(contactEntity.getName(), false, contactEntity.getGender());
         nameText.setText(contactEntity.getName());
-        if(contactEntity.getGender() == 1){
+        if (contactEntity.getGender() == 1) {
             genderImage.setImageResource(R.mipmap.man);
-        }else{
+        } else {
             genderImage.setImageResource(R.mipmap.woman);
         }
         signTv.setText(contactEntity.getTips());
         numberTv.setText(contactEntity.getEmpNo());
         departmentTv.setText(contactEntity.getOu());
         phoneTv.setText(contactEntity.getMobile());
-        if (!contactEntity.getRegisted()) {
-            chatBtn.setVisibility(View.GONE);
-            toolbar.setRightTextEnable(false);
-        }else{
+        if (contactEntity.getRegisted()) {
             toolbar.setRightImg(R.mipmap.menu_white);
             toolbar.setRightTextEnable(true);
+
+            avatarImageview.setVisibility(View.VISIBLE);
+            avatarImage.setVisibility(View.GONE);
+            GlideUtil.loadAvatarRound(avatarImageview, contactEntity.getAvatar(), 8);
+        } else {
+            chatBtn.setVisibility(View.GONE);
+            toolbar.setRightTextEnable(false);
+
+            avatarImageview.setVisibility(View.GONE);
+            avatarImage.setVisibility(View.VISIBLE);
+            avatarImage.setAvatarName(contactEntity.getName(), true, contactEntity.getGender());
         }
         searchUser(contactEntity.getUid());
     }
@@ -118,9 +126,9 @@ public class ContactInfoActivity extends BaseActivity {
     void showDialog(View view) {
         final ContactEntity contactEntity1 = ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid());
         String message;
-        if(contactEntity1 == null){
+        if (contactEntity1 == null) {
             message = mActivity.getResources().getString(R.string.Link_Add_focus);
-        }else{
+        } else {
             message = mActivity.getResources().getString(R.string.Link_Cancle_focus);
         }
         ArrayList<String> list = new ArrayList<>();
@@ -130,9 +138,9 @@ public class ContactInfoActivity extends BaseActivity {
             public void confirm(int position) {
                 switch (position) {
                     case 0:
-                        if(contactEntity1 == null){
+                        if (contactEntity1 == null) {
                             addFollow(true);
-                        }else{
+                        } else {
                             addFollow(false);
                         }
                         break;
@@ -170,10 +178,11 @@ public class ContactInfoActivity extends BaseActivity {
         }
 
         @Override
-        public void deny(String[] permissions) {}
+        public void deny(String[] permissions) {
+        }
     };
 
-    private void searchUser(String uid){
+    private void searchUser(String uid) {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(uid)
                 .setTyp(2)
@@ -185,20 +194,21 @@ public class ContactInfoActivity extends BaseActivity {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.Workmates workmates = Connect.Workmates.parseFrom(structData.getPlainData());
                     Connect.Workmate workmate = workmates.getList(0);
-                    if(!workmate.getAvatar().equals(contactEntity.getAvatar())){
+                    if (!workmate.getAvatar().equals(contactEntity.getAvatar())) {
                         contactEntity.setAvatar(workmate.getAvatar());
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
             @Override
-            public void onError(Connect.HttpNotSignResponse response) {}
+            public void onError(Connect.HttpNotSignResponse response) {
+            }
         });
     }
 
-    private void addFollow(final boolean isAdd){
+    private void addFollow(final boolean isAdd) {
         Connect.UserFollow userFollow = Connect.UserFollow.newBuilder()
                 .setFollow(isAdd)
                 .setUid(contactEntity.getUid())
@@ -210,15 +220,15 @@ public class ContactInfoActivity extends BaseActivity {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.WorkmateVersion workmateVersion = Connect.WorkmateVersion.parseFrom(structData.getPlainData());
                     SharedUtil.getInstance().putValue(SharedUtil.CONTACTS_VERSION, workmateVersion.getVersion());
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if(isAdd){
+                if (isAdd) {
                     contactEntity.setRegisted(true);
                     ContactHelper.getInstance().insertContact(contactEntity);
                     ToastEUtil.makeText(mActivity, R.string.Login_Save_successful).show();
                     ContactNotice.receiverContact();
-                }else{
+                } else {
                     ContactHelper.getInstance().deleteEntity(contactEntity.getUid());
                     ToastEUtil.makeText(mActivity, R.string.Link_Delete_Successful).show();
                     ContactNotice.receiverContact();
@@ -226,7 +236,8 @@ public class ContactInfoActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpNotSignResponse response) {}
+            public void onError(Connect.HttpNotSignResponse response) {
+            }
         });
     }
 

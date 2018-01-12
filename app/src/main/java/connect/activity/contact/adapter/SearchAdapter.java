@@ -90,15 +90,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 ((LocalHolder)holder).nameText.setText(mDataList.get(position).getName());
                 ((LocalHolder)holder).ouTv.setText(mDataList.get(position).getOu());
-                if(TextUtils.isEmpty(mDataList.get(position).getAvatar())){
-                    ((LocalHolder)holder).avatar.setVisibility(View.GONE);
-                    ((LocalHolder)holder).avatarLin.setVisibility(View.VISIBLE);
-                    ((LocalHolder)holder).avatarLin.setAvatarName(mDataList.get(position).getName(), false, mDataList.get(position).getGender());
-                }else{
-                    ((LocalHolder)holder).avatar.setVisibility(View.VISIBLE);
-                    ((LocalHolder)holder).avatarLin.setVisibility(View.GONE);
-                    GlideUtil.loadAvatarRound(((LocalHolder)holder).avatar, mDataList.get(position).getAvatar());
-                }
+                GlideUtil.loadAvatarRound(((LocalHolder)holder).avatar, mDataList.get(position).getAvatar(), 8);
 
                 ((LocalHolder)holder).contentRela.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -142,7 +134,6 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     class LocalHolder extends RecyclerView.ViewHolder {
 
-        DepartmentAvatar avatarLin;
         TextView ouTv;
         TextView lineTv;
         TextView nameText;
@@ -158,7 +149,6 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             avatar = (ImageView) itemView.findViewById(R.id.avatar_rimg);
             ouTv = (TextView)itemView.findViewById(R.id.ou_tv);
             lineTv = (TextView)itemView.findViewById(R.id.line_tv);
-            avatarLin = (DepartmentAvatar)itemView.findViewById(R.id.avatar_lin);
         }
     }
 

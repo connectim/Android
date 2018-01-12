@@ -107,17 +107,13 @@ public class SharedPreferenceUtil {
 
     public boolean containsUser() {
         boolean isContain = true;
-        isContain = isContains(USER_INFO);
-        if (isContain) {
-            String userStr = getStringValue(USER_INFO);
-            if (TextUtils.isEmpty(userStr)) {
+        String userStr = getStringValue(USER_INFO);
+        if(TextUtils.isEmpty(userStr)){
+            isContain = false;
+        }else{
+            UserBean userBean = new Gson().fromJson(userStr, UserBean.class);
+            if(userBean == null || TextUtils.isEmpty(userBean.getUid())){
                 isContain = false;
-            } else {
-                UserBean userBean = new Gson().fromJson(userStr, UserBean.class);
-                isContain = userBean != null && !TextUtils.isEmpty(userBean.getUid())
-                        && !TextUtils.isEmpty(userBean.getUid())
-                        && !TextUtils.isEmpty(userBean.getUid());
-
             }
         }
         return isContain;
