@@ -20,6 +20,8 @@ public class TopToolBar extends LinearLayout{
 
     private final Context context;
     private RelativeLayout leftRela;
+    private RelativeLayout titleSearchRela;
+    private LinearLayout titleNormalLinear;
     private ImageView leftImg;
     private ImageView titleImg;
     private TextView titleTv;
@@ -43,6 +45,8 @@ public class TopToolBar extends LinearLayout{
         leftImg = (ImageView) view.findViewById(R.id.left_img);
         titleImg = (ImageView) view.findViewById(R.id.title_img);
         titleTv = (TextView) view.findViewById(R.id.title_tv);
+        titleNormalLinear= (LinearLayout) view.findViewById(R.id.title_linear_normal);
+        titleSearchRela = (RelativeLayout) view.findViewById(R.id.title_relative_edite);
         rightImg = (ImageView) view.findViewById(R.id.right_img);
         rightText = (TextView) view.findViewById(R.id.right_text);
         rightLayout = (LinearLayout) view.findViewById(R.id.right_lin);
@@ -92,6 +96,10 @@ public class TopToolBar extends LinearLayout{
         if(textId != null){
             titleTv.setText(textId);
         }
+    }
+
+    public void setSearchTitle(String hint){
+
     }
 
     public void setRightImg(Integer resId){

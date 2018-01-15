@@ -10,6 +10,7 @@
     <dimen name="px_10">10px</dimen>
     <dimen name="px_12">12px</dimen>
     <dimen name="px_20">20px</dimen>
+    <dimen name="px_90">90px</dimen>
     <!-- dp -->
     <dimen name="dp__8">-8dp</dimen>
     <dimen name="dp__10">-10dp</dimen>

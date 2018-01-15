@@ -65,6 +65,9 @@
     <item name="right_lin" type="id"/>
     <item name="right_text" type="id"/>
     <item name="right_img" type="id"/>
+    <item name="title_linear_normal" type="id"/>
+    <item name="title_relative_edite" type="id"/>
+    <item name="title_edittext" type="id"/>
 
     <!-- System camera -->
     <item name="photo" type="id"/>

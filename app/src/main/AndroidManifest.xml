@@ -352,6 +352,9 @@
         <activity
             android:name="connect.activity.chat.set.BaseGroupSelectActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.workbench.WorkSeachActivity"
+            android:label="@string/title_activity_work_seach"></activity>
     </application>
 
 </manifest>

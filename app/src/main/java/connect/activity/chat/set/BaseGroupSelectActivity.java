@@ -210,7 +210,12 @@ public class BaseGroupSelectActivity extends BaseActivity {
             if (organizeWorks == null || organizeWorks.size() == 0) {
                 return;
             } else {
-                workmates.addAll(organizeWorks);
+                for (Connect.Workmate workmate : organizeWorks) {
+                    String uid = workmate.getUid();
+                    if (!selectMembers.containsKey(uid)) {
+                        workmates.add(workmate);
+                    }
+                }
             }
 
             if (isCreateGroup) {
@@ -249,7 +254,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
                     contactEntity.setUid(userInfo1.getUid());
                     contactEntity.setPublicKey(userInfo1.getCaPub());
                     contactEntity.setAvatar(userInfo1.getAvatar());
-                    selectMembers.put("C", contactEntity);
+                    selectMembers.put(userInfo1.getUid(), contactEntity);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }

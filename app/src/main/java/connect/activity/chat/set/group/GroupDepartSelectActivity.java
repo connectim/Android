@@ -138,7 +138,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
 
             @Override
             public boolean isContains(String selectKey) {
-                return selectDeparts.containsKey(selectKey) || selectedUids.contains(selectKey);
+                return selectDeparts.containsKey(selectKey) || selectedUids.contains(selectKey.substring(1));
             }
 
             @Override
