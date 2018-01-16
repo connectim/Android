@@ -549,6 +549,15 @@
     <string name="Work_Visitors_reason">访客目的：%1$s</string>
     <string name="Work_Visitors_phone">联系方式：%1$s</string>
     <string name="Work_Visitors_time">访问时间：%1$s</string>
+    <string name="Work_Visitors_share">分享邀请二维码</string>
+    <string name="Work_Visitors_Facial_information">脸部信息：</string>
+    <string name="Work_Visitors_Left_face">左脸</string>
+    <string name="Work_Visitors_Is_face">正脸</string>
+    <string name="Work_Visitors_Right_face">右脸</string>
+    <string name="Work_Visitors_to_approval">访客审批</string>
+    <string name="Work_Visitors_sure_to_deny_access">是否确认拒绝访问？</string>
+    <string name="Work_Visitors_agree_to_visit">是否确认同意访问？</string>
+
 
     <string name="Chat_Refreshing">正在更新...</string>
     <string name="Link_Join_Group_Success">成功加入群聊</string>

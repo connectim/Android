@@ -22,7 +22,7 @@ public class WorkbenchMenuAdapter extends RecyclerView.Adapter {
 
     private ArrayList<MenuBean> mDates = new ArrayList<>();
     private Activity mActivity;
-    private OnItemMuneClickListener onItemClickListence;
+    private OnItemMenuClickListener onItemClickListence;
 
     public WorkbenchMenuAdapter(Activity mActivity) {
         this.mActivity = mActivity;
@@ -76,11 +76,11 @@ public class WorkbenchMenuAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListence(OnItemMuneClickListener onItemClickListence){
+    public void setOnItemClickListence(OnItemMenuClickListener onItemClickListence){
         this.onItemClickListence = onItemClickListence;
     }
 
-    public interface OnItemMuneClickListener{
+    public interface OnItemMenuClickListener{
         void itemClick(int position, MenuBean item);
     }
 

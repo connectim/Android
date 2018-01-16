@@ -125,7 +125,7 @@ public class ContactFragment extends BaseFragment {
                 case 3:
                 case 4:
                     ContactEntity contactEntity = ContactHelper.getInstance().loadFriendByUid(entity.getUid());
-                    ContactInfoActivity.lunchActivity(mActivity, contactEntity);
+                    ContactInfoActivity.lunchActivity(mActivity, contactEntity, "");
                     //FriendInfoActivity.startActivity(mActivity, entity.getUid());
                     break;
                 case 7:

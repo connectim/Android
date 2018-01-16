@@ -53,11 +53,7 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
 
     @Override
     public void goIntoLoginForPhone() {
-        //LoginUserActivity.startActivity(mActivity);
-        UserBean userBean1 = new UserBean("111", "", "dsfseqwerffqwff",
-                "963", "asdfasfsdfsdf", "asdfasdfsdf", "dasdasda");
-        SharedPreferenceUtil.getInstance().putUser(userBean1);
-        HomeActivity.startActivity(mActivity);
+        LoginUserActivity.startActivity(mActivity);
     }
 
     @Override

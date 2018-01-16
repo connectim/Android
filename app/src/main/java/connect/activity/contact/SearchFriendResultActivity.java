@@ -163,7 +163,7 @@ public class SearchFriendResultActivity extends BaseActivity {
                 contactEntity.setTips(departmentBean.getTips());
                 contactEntity.setRegisted(departmentBean.getRegisted());
                 contactEntity.setUid(departmentBean.getUid());
-                ContactInfoActivity.lunchActivity(mActivity, contactEntity);
+                ContactInfoActivity.lunchActivity(mActivity, contactEntity, "");
             }
             mActivity.finish();
         }

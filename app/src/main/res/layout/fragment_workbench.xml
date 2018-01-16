@@ -63,16 +63,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <View
+    <LinearLayout
+        android:id="@+id/my_app_linear"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:background="@color/color_F6F6F6"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_2"
+            android:background="@color/color_F6F6F6"/>
+        <TextView
+            style="@style/BaseTextStyle.12"
+            android:textColor="@color/color_B6B6B6"
+            android:padding="@dimen/dp_10"
+            android:text="@string/Link_My_application"/>
+    </LinearLayout>
 
-    <TextView
-        style="@style/BaseTextStyle.12"
-        android:textColor="@color/color_B6B6B6"
-        android:padding="@dimen/dp_10"
-        android:text="@string/Link_My_application"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_menu_recycler"
