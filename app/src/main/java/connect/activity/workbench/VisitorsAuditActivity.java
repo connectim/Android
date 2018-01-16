@@ -14,10 +14,14 @@ import connect.activity.base.BaseActivity;
 import connect.activity.home.bean.HomeAction;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.BitmapUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
+import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
+import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
@@ -39,16 +43,10 @@ public class VisitorsAuditActivity extends BaseActivity {
     TextView phoneTv;
     @Bind(R.id.time_tv)
     TextView timeTv;
-    @Bind(R.id.left_face_text)
-    TextView leftFaceText;
     @Bind(R.id.left_face_image)
     ImageView leftFaceImage;
-    @Bind(R.id.is_face_text)
-    TextView isFaceText;
     @Bind(R.id.is_face_image)
     ImageView isFaceImage;
-    @Bind(R.id.right_face_text)
-    TextView rightFaceText;
     @Bind(R.id.right_face_image)
     ImageView rightFaceImage;
     @Bind(R.id.refuse_text)
@@ -86,10 +84,14 @@ public class VisitorsAuditActivity extends BaseActivity {
 
         nameTv.setText(visitorRecord.getGuestName());
         reasonTv.setText(getString(R.string.Work_Visitors_reason, visitorRecord.getReason()));
-        reasonTv.setText(getString(R.string.Work_Visitors_phone, visitorRecord.getStaffPhone()));
-        String time = TimeUtil.getTime(visitorRecord.getStartTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR) + "-" +
+        phoneTv.setText(StringUtil.getFormatPhone(visitorRecord.getStaffPhone()));
+        String time = TimeUtil.getTime(visitorRecord.getStartTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR) + "——" +
                 TimeUtil.getTime(visitorRecord.getEndTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR);
         timeTv.setText(getString(R.string.Work_Visitors_time, time));
+
+        leftFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceLeft()));
+        isFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceMiddle()));
+        rightFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceRight()));
     }
 
     @OnClick(R.id.left_img)
@@ -99,12 +101,12 @@ public class VisitorsAuditActivity extends BaseActivity {
 
     @OnClick(R.id.refuse_text)
     void refuseText(View view) {
-        showAuditDialog(getResources().getString(R.string.Work_Visitors_sure_to_deny_access), true);
+        showAuditDialog(getResources().getString(R.string.Work_Visitors_sure_to_deny_access), false);
     }
 
     @OnClick(R.id.agree_text)
     void agreeText(View view) {
-        showAuditDialog(getResources().getString(R.string.Work_Visitors_agree_to_visit), false);
+        showAuditDialog(getResources().getString(R.string.Work_Visitors_agree_to_visit), true);
     }
 
     private void showAuditDialog(String message, final boolean valid){
@@ -113,7 +115,7 @@ public class VisitorsAuditActivity extends BaseActivity {
                 "", "", false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
-                        requestAidit(valid);
+                        requestAudit(valid);
                     }
 
                     @Override
@@ -121,20 +123,21 @@ public class VisitorsAuditActivity extends BaseActivity {
                 });
     }
 
-    private void requestAidit(boolean valid){
+    private void requestAudit(boolean valid){
         Connect.Examine examine = Connect.Examine.newBuilder()
                 .setGuestId(visitorRecord.getGuestId())
                 .setValid(valid)
                 .build();
-
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_EXAMINE_VERIFY, examine, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-
+                int a=  1;
             }
 
             @Override
-            public void onError(Connect.HttpNotSignResponse response) {}
+            public void onError(Connect.HttpNotSignResponse response) {
+                ToastUtil.getInstance().showToast(response.getMessage());
+            }
         });
     }
 

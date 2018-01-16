@@ -547,7 +547,7 @@
     <string name="Work_Visitors">访客</string>
     <string name="Work_Visitors_info">访客信息</string>
     <string name="Work_Visitors_reason">访客目的：%1$s</string>
-    <string name="Work_Visitors_phone">联系方式：%1$s</string>
+    <string name="Work_Visitors_phone">联系方式：</string>
     <string name="Work_Visitors_time">访问时间：%1$s</string>
     <string name="Work_Visitors_share">分享邀请二维码</string>
     <string name="Work_Visitors_Facial_information">脸部信息：</string>

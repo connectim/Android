@@ -197,4 +197,18 @@ public class StringUtil {
         random.nextBytes(bytes);
         return bytes;
     }
+
+    public static String getFormatPhone(String phone){
+        StringBuffer stringBuffer = new StringBuffer("");
+        for(int i = 0; i < phone.length(); i ++){
+            if(stringBuffer.length() == 3){
+                stringBuffer.append(" ");
+            }else if(stringBuffer.length() == 8){
+                stringBuffer.append(" ");
+            }
+            stringBuffer.append(phone.charAt(i));
+        }
+        return stringBuffer.toString();
+    }
+
 }

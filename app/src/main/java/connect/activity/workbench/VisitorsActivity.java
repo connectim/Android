@@ -132,7 +132,7 @@ public class VisitorsActivity extends BaseActivity {
     VisitorAdapter.OnItemClickListener onItemClickListener = new VisitorAdapter.OnItemClickListener() {
         @Override
         public void itemClick(Connect.VisitorRecord visitorRecord) {
-
+            VisitorsAuditActivity.lunchActivity(mActivity, visitorRecord);
         }
     };
 

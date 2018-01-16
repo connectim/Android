@@ -630,7 +630,7 @@
     <string name="Work_Visitors">Visitors</string>
     <string name="Work_Visitors_info">The visitor information</string>
     <string name="Work_Visitors_reason">Purpose of visitors:%1$s</string>
-    <string name="Work_Visitors_phone">Contact information:%1$s</string>
+    <string name="Work_Visitors_phone">Contact information:</string>
     <string name="Work_Visitors_time">Visit time:%1$s</string>
     <string name="Work_Visitors_share">Share invitation qr code</string>
     <string name="Work_Visitors_Facial_information">Facial information:</string>

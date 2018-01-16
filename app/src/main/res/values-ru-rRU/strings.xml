@@ -679,7 +679,7 @@
     <string name="Work_Visitors">посетители</string>
     <string name="Work_Visitors_info">Посетители информации</string>
     <string name="Work_Visitors_reason">Посетители цели:%1$s</string>
-    <string name="Work_Visitors_phone">Способ связи:%1$s</string>
+    <string name="Work_Visitors_phone">Способ связи:</string>
     <string name="Work_Visitors_time">Время визита:%1$s</string>
     <string name="Work_Visitors_share">ErWeiMa поделиться приглашение</string>
     <string name="Work_Visitors_Facial_information">Личной информации:</string>
