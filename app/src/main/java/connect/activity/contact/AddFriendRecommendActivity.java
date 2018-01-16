@@ -6,9 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -16,7 +13,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.RecommendAdapter;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.home.view.LineDecoration;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -88,12 +84,12 @@ public class AddFriendRecommendActivity extends BaseActivity {
     private RecommendAdapter.OnAddListener onAddListener = new RecommendAdapter.OnAddListener() {
         @Override
         public void add(int position, Connect.UserInfoBase entity) {
-            StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
+            ContactInfoActivity.lunchActivity(mActivity, entity.getUid());
         }
 
         @Override
         public void itemClick(int position, Connect.UserInfoBase entity) {
-            StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
+            ContactInfoActivity.lunchActivity(mActivity, entity.getUid());
         }
 
         @Override

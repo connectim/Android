@@ -5,13 +5,9 @@ import android.net.Uri;
 
 import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.MsgSendBean;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastUtil;
@@ -89,12 +85,7 @@ public class ResolveUrlUtil {
      */
     private void dealFriend(ScanResultBean resultBean, boolean isCloseScan){
         if (!resultBean.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(resultBean.getAddress());
-            if (friendEntity != null) {
-                ContactInfoActivity.lunchActivity(activity, resultBean.getAddress());
-            } else {
-                StrangerInfoActivity.startActivity(activity, resultBean.getAddress(), SourceType.QECODE);
-            }
+            ContactInfoActivity.lunchActivity(activity, resultBean.getAddress());
             if(isCloseScan){
                 ActivityUtil.goBack(activity);
             }

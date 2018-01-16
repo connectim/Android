@@ -11,6 +11,10 @@ public class UserBean implements Serializable{
     private String o_u;
     private String pubKey;
     private String priKey;
+    private String emp_no;
+    private String mobile;
+    private int gender;
+    private String tips;
 
     public UserBean() {}
 
@@ -78,5 +82,37 @@ public class UserBean implements Serializable{
 
     public void setPriKey(String priKey) {
         this.priKey = priKey;
+    }
+
+    public String getEmp_no() {
+        return emp_no;
+    }
+
+    public void setEmp_no(String emp_no) {
+        this.emp_no = emp_no;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    public String getTips() {
+        return tips;
+    }
+
+    public void setTips(String tips) {
+        this.tips = tips;
     }
 }

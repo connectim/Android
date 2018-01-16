@@ -7,8 +7,11 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.protobuf.ByteString;
@@ -22,6 +25,7 @@ import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastUtil;
@@ -41,11 +45,17 @@ public class LoginUserActivity extends BaseActivity {
     @Bind(R.id.password_et)
     EditText passwordEt;
     @Bind(R.id.next_btn)
-    Button nextBtn;
+    TextView nextBtn;
     @Bind(R.id.pass_text)
     TextView passText;
     @Bind(R.id.name_text)
     TextView nameText;
+    @Bind(R.id.text_forget_password)
+    TextView textForgetPassword;
+    @Bind(R.id.image_loading)
+    View imageLoading;
+    @Bind(R.id.relative_login)
+    RelativeLayout relativeLogin;
 
     private LoginUserActivity mActivity;
 
@@ -68,6 +78,7 @@ public class LoginUserActivity extends BaseActivity {
         nextBtn.setEnabled(false);
         nameEt.addTextChangedListener(textWatcher);
         passwordEt.addTextChangedListener(textWatcher);
+        relativeLogin.setEnabled(false);
     }
 
     @OnClick(R.id.name_text)
@@ -80,9 +91,30 @@ public class LoginUserActivity extends BaseActivity {
         passwordEt.requestFocus();
     }
 
-    @OnClick(R.id.next_btn)
+    @OnClick(R.id.text_forget_password)
+    void forgetPasswordClick() {
+        DialogUtil.showAlertTextView(mActivity,
+                mActivity.getString(R.string.Set_tip_title),
+                mActivity.getString(R.string.Login_Connect_Change_Password),
+                "", "", false, new DialogUtil.OnItemClickListener() {
+                    @Override
+                    public void confirm(String value) {
+
+                    }
+
+                    @Override
+                    public void cancel() {
+
+                    }
+                });
+    }
+
+    @OnClick(R.id.relative_login)
     void nextBtn(View view) {
-        ProgressUtil.getInstance().showProgress(mActivity);
+        imageLoading.setVisibility(View.VISIBLE);
+        Animation loadAnimation = AnimationUtils.loadAnimation(mActivity, R.anim.loading_white);
+        imageLoading.startAnimation(loadAnimation);
+
         String name = nameEt.getText().toString().trim();
         String password = passwordEt.getText().toString();
         Connect.LoginReq loginReq = Connect.LoginReq.newBuilder()
@@ -92,6 +124,9 @@ public class LoginUserActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
+                    imageLoading.clearAnimation();
+                    imageLoading.setVisibility(View.GONE);
+
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                     Connect.UserLoginInfo userLoginInfo = Connect.UserLoginInfo.parseFrom(structData.getPlainData());
                     UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
@@ -101,9 +136,12 @@ public class LoginUserActivity extends BaseActivity {
                     } else {
                         UserBean userBean1 = new UserBean(userLoginInfo.getName(), userLoginInfo.getAvatar(), userLoginInfo.getUid(),
                                 userLoginInfo.getOU(), userLoginInfo.getToken(), userBean.getPubKey(), userBean.getPriKey());
+                        userBean1.setEmp_no(userLoginInfo.getEmpNo());
+                        userBean1.setGender(userLoginInfo.getGender());
+                        userBean1.setMobile(userLoginInfo.getMobile());
+                        userBean1.setTips(userLoginInfo.getTips());
                         SharedPreferenceUtil.getInstance().putUser(userBean1);
 
-                        ProgressUtil.getInstance().dismissProgress();
                         HomeActivity.startActivity(mActivity);
                         mActivity.finish();
                     }
@@ -114,7 +152,9 @@ public class LoginUserActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
-                ProgressUtil.getInstance().dismissProgress();
+                imageLoading.clearAnimation();
+                imageLoading.setVisibility(View.GONE);
+
                 ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
             }
         });
@@ -140,6 +180,10 @@ public class LoginUserActivity extends BaseActivity {
             public void onResponse(Connect.HttpNotSignResponse response) {
                 UserBean userBean1 = new UserBean(userLoginInfo.getName(), userLoginInfo.getAvatar(), userLoginInfo.getUid(),
                         userLoginInfo.getOU(), userLoginInfo.getToken(), pubKey1, priKey);
+                userBean1.setEmp_no(userLoginInfo.getEmpNo());
+                userBean1.setGender(userLoginInfo.getGender());
+                userBean1.setMobile(userLoginInfo.getMobile());
+                userBean1.setTips(userLoginInfo.getTips());
                 SharedPreferenceUtil.getInstance().putUser(userBean1);
                 HomeActivity.startActivity(mActivity);
                 mActivity.finish();
@@ -162,12 +206,12 @@ public class LoginUserActivity extends BaseActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            String name = nameEt.getText().toString().trim();
+            String name = nameEt.getText().toString();
             String password = passwordEt.getText().toString();
-            if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
-                nextBtn.setEnabled(true);
+            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(password)) {
+                relativeLogin.setEnabled(false);
             } else {
-                nextBtn.setEnabled(false);
+                relativeLogin.setEnabled(true);
             }
         }
     };

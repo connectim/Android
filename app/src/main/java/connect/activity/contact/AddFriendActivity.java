@@ -96,7 +96,7 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
         @Override
         public void accept(int position, FriendRequestEntity entity) {
             if (entity.getStatus() == NewRequestAdapter.RECOMMEND_ADD_FRIEND) {
-                StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.RECOMMEND);
+                ContactInfoActivity.lunchActivity(mActivity, entity.getUid());
             } else {
                 AddFriendAcceptActivity.startActivity(mActivity, entity);
             }
@@ -114,7 +114,7 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
                 } else if (entity.getStatus() == NewRequestAdapter.ACCEPTE_ADD_FRIEND) {
                     AddFriendAcceptActivity.startActivity(mActivity, entity);
                 } else {
-                    StrangerInfoActivity.startActivity(mActivity, entity.getUid(), SourceType.getSourceType(entity.getSource()));
+                    ContactInfoActivity.lunchActivity(mActivity, entity.getUid());
                 }
             }
         }

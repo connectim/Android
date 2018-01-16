@@ -119,12 +119,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 ((FriendHolder) holder).topTv.setCompoundDrawables(draGroup, null, null, null);
                                 ((FriendHolder) holder).topTv.setText(R.string.Link_Group);
                                 break;
-                            /*case 3: // Common friends
-                                Drawable draCommon = activity.getResources().getDrawable(R.mipmap.contract_favorite13x);
-                                draCommon.setBounds(0, 0, draCommon.getMinimumWidth(), draCommon.getMinimumHeight());
-                                ((FriendHolder) holder).topTv.setCompoundDrawables(draCommon, null, null, null);
-                                ((FriendHolder) holder).topTv.setText(R.string.Link_Favorite_Friend);
-                                break;*/
                             case 4:
                                 ((FriendHolder) holder).topTv.setText(currLetter);
                                 break;
@@ -141,7 +135,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         ((FriendHolder) holder).lineTv.setVisibility(View.GONE);
                     }
 
-                    GlideUtil.loadAvatarRound(((FriendHolder) holder).avatar, currBean.getAvatar(), 8);
+                    GlideUtil.loadAvatarRound(((FriendHolder) holder).avatar, currBean.getAvatar());
                     ((FriendHolder) holder).name.setText(currBean.getName());
                 }
                 break;

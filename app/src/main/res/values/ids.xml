@@ -236,4 +236,7 @@
     <item name="image_search_state" type="id" />
     <item name="image_title_search" type="id" />
     <item name="text_no_more_results" type="id" />
+    <item name="text_forget_password" type="id" />
+    <item name="image_loading" type="id" />
+    <item name="relative_login" type="id" />
 </resources>

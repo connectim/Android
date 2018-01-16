@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.UserInfoActivity;
@@ -47,12 +46,7 @@ public class MsgCardHolder extends MsgChatHolder {
                 if (uid.equals(userBean.getUid())) {
                     UserInfoActivity.startActivity((Activity) context);
                 } else {
-                    ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(cardMessage.getUid());
-                    if (entity == null) {
-                        StrangerInfoActivity.startActivity((Activity) context, uid, SourceType.CARD);
-                    } else {
-                        ContactInfoActivity.lunchActivity((Activity) context, uid);
-                    }
+                    ContactInfoActivity.lunchActivity((Activity) context, uid);
                 }
             }
         });

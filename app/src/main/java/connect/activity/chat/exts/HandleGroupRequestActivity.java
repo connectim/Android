@@ -22,11 +22,7 @@ import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.exts.contract.HandleGroupRequestContract;
 import connect.activity.chat.exts.presenter.HandleGroupRequestPresenter;
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
-import connect.activity.contact.bean.SourceType;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.glide.GlideUtil;
@@ -160,12 +156,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
         switch (view.getId()) {
             case R.id.txt6:
                 String invitorUid = reviewed.getUserInfo().getUid();
-                ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(invitorUid);
-                if (friend == null) {
-                    StrangerInfoActivity.startActivity(activity, invitorUid, SourceType.GROUP);
-                } else {
-                    ContactInfoActivity.lunchActivity(activity, invitorUid);
-                }
+                ContactInfoActivity.lunchActivity(activity, invitorUid);
                 break;
             case R.id.btn1:
                 String agreeCaPublicKey = reviewed.getUserInfo().getCaPub();

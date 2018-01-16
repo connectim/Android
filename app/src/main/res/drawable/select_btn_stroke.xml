@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:drawable="@drawable/shape_stroke_0da835" android:state_enabled="true" android:state_pressed="true"/>
-    <item android:drawable="@drawable/shape_stroke_green" android:state_enabled="true" android:state_pressed="false"/>
+    <item android:drawable="@drawable/shape_stroke_blue" android:state_enabled="true" android:state_pressed="false"/>
     <item android:drawable="@drawable/shape_stroke_gray" android:state_enabled="false"/>
 
 </selector>

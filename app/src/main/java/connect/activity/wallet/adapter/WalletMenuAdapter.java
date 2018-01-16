@@ -29,7 +29,7 @@ public class WalletMenuAdapter extends RecyclerView.Adapter<WalletMenuAdapter.Wa
 
     @Override
     public WalletMenuAdapter.WalletMenuItem onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.wallet_menu_item, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.workbench_menu_item, null);
         return new WalletMenuItem(view);
     }
 

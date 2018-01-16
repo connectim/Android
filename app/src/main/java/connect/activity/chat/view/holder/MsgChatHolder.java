@@ -19,7 +19,6 @@ import connect.activity.chat.model.GroupMemberUtil;
 import connect.activity.chat.view.BurnProBar;
 import connect.activity.chat.view.MsgStateView;
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
@@ -118,12 +117,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                             UserInfoActivity.startActivity((Activity) context);
                         } else if (direct == MsgDirect.From) {
                             String uid = RoomSession.getInstance().getRoomKey();
-                            ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(uid);
-                            if (friend == null) {
-                                StrangerInfoActivity.startActivity((Activity) context, uid, SourceType.GROUP);
-                            } else {
-                                ContactInfoActivity.lunchActivity((Activity) context, uid);
-                            }
+                            ContactInfoActivity.lunchActivity((Activity) context, uid);
                         }
                     }
                 });
@@ -156,12 +150,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                             UserInfoActivity.startActivity((Activity) context);
                         } else if (direct == MsgDirect.From) {
                             String memberKey = msgExtEntity.getMessage_from();
-                            ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(memberKey);
-                            if (friend == null) {
-                                StrangerInfoActivity.startActivity((Activity) context, memberKey, SourceType.GROUP);
-                            } else {
-                                ContactInfoActivity.lunchActivity((Activity) context, memberKey);
-                            }
+                            ContactInfoActivity.lunchActivity((Activity) context, memberKey);
                         }
                     }
                 });

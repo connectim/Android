@@ -9,8 +9,6 @@ import java.net.URL;
 
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
-import connect.activity.contact.bean.SourceType;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -112,7 +110,7 @@ public class ResolveScanUtil {
                         ActivityUtil.goBack(activity);
                         break;
                     case 2:
-                        StrangerInfoActivity.startActivity(activity, uid, SourceType.QECODE);
+                        ContactInfoActivity.lunchActivity(activity, uid);
                         ActivityUtil.goBack(activity);
                         break;
                     case 3:

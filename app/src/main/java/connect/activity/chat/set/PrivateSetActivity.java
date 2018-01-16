@@ -17,15 +17,11 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.PrivateSetContract;
 import connect.activity.chat.set.presenter.PrivateSetPresenter;
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.ui.activity.R;
@@ -37,7 +33,7 @@ import connect.widget.TopToolBar;
  * private chat setting
  * Created by gtq on 2016/11/22.
  */
-public class PrivateSetActivity extends BaseActivity implements PrivateSetContract.BView{
+public class PrivateSetActivity extends BaseActivity implements PrivateSetContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -171,7 +167,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
                     @Override
                     public void confirm(int position) {
                         ConversionHelper.getInstance().deleteRoom(roomKey);
-                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY,roomKey);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY, roomKey);
                     }
                 });
             }
@@ -185,18 +181,13 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String address = (String) v.getTag();
-                if (TextUtils.isEmpty(address)) {
+                String uid = (String) v.getTag();
+                if (TextUtils.isEmpty(uid)) {
                     BaseGroupSelectActivity.startActivity(activity, true, roomKey);
-                } else if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(address)) {
+                } else if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(uid)) {
                     UserInfoActivity.startActivity(activity);
                 } else {
-                    ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);
-                    if (entity == null) {
-                        StrangerInfoActivity.startActivity(activity, address, SourceType.SEARCH);
-                    } else {
-                        ContactInfoActivity.lunchActivity(activity, entity.getUid());
-                    }
+                    ContactInfoActivity.lunchActivity(activity, uid);
                 }
             }
         });

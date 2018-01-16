@@ -124,6 +124,8 @@
     <string name="Chat_set_Create_New_Group">创建群组</string>
     <string name="Chat_set_Group_Chat_Encrypt_Open">开启后,群组消息通过点对点加密传输</string>
     <string name="Common_Cancel">取消</string>
+    <string name="Common_Management">管理</string>
+    <string name="Common_The_search_application">搜索应用</string>
     <string name="Common_Completed">已完成</string>
     <string name="Common_Download_App">正在下载%s</string>
     <string name="Common_In">在%s中</string>
@@ -154,7 +156,6 @@
     <string name="Link_Block">加入黑名单</string>
     <string name="Link_Clear_All_Chat_History">清除聊天记录</string>
     <string name="Link_Clear_Chat_History">清空历史记录</string>
-    <string name="Link_Contacts">联系人</string>
     <string name="Link_Delete">删除</string>
     <string name="Link_Delete_Failed">删除失败</string>
     <string name="Link_Delete_Successful">删除成功</string>
@@ -224,6 +225,9 @@
     <string name="Link_Select_new_owner">选择新群主</string>
     <string name="Link_Selecting__new_owner__release_your_ownership">确定 %s 作为群主, 你将主动放弃群主身份</string>
     <string name="Link_Send">发送</string>
+    <string name="Link_Contacts">联系人</string>
+    <string name="Link_Dialogue">对话</string>
+    <string name="Link_Workbench">工作台</string>
     <string name="Link_Inactive">未激活</string>
     <string name="Link_Send_friend_request">发送好友请求</string>
     <string name="Link_Send_successful">发送成功</string>
@@ -257,6 +261,7 @@
     <string name="Link_enter_the_group">%s加入群聊</string>
     <string name="Link_group_count">%d个群组</string>
     <string name="Link_Employee_number">员工编号：</string>
+    <string name="Link_My_application">我的应用</string>
     <string name="Link_Subordinate_departments">所属部门：</string>
     <string name="Link_Contact_number">联系号码：</string>
     <string name="Link_have_joined_the_group">你已经加入这个群组</string>
@@ -530,6 +535,21 @@
     <string name="Chat_Enter_Subscribe">进入订阅号</string>
     <string name="Chat_Subscribe_Success">[订阅成功]</string>
 
+    <string name="Work_Add">添加</string>
+    <string name="Work_On_a_business_trip">出差</string>
+    <string name="Work_Ask_for_leave">请假</string>
+    <string name="Work_To_submit_an_expense_account">报销</string>
+    <string name="Work_The_examination_and_approval">审批</string>
+    <string name="Work_Subsidized_meals">餐补</string>
+    <string name="Work_Recruitment">招聘</string>
+    <string name="Work_The_contract">合同</string>
+    <string name="Work_Wage">工资</string>
+    <string name="Work_Visitors">访客</string>
+    <string name="Work_Visitors_info">访客信息</string>
+    <string name="Work_Visitors_reason">访客目的：%1$s</string>
+    <string name="Work_Visitors_phone">联系方式：%1$s</string>
+    <string name="Work_Visitors_time">访问时间：%1$s</string>
+
     <string name="Chat_Refreshing">正在更新...</string>
     <string name="Link_Join_Group_Success">成功加入群聊</string>
     <string name="Chat_No_Data">没有数据...</string>
@@ -553,4 +573,6 @@
     <string name="Link_Group_Create">创建群组</string>
     <string name="Link_Group_Invite">邀请入群</string>
     <string name="Link_Group_Invite_Success">邀请成功</string>
+    <string name="Login_Forget_Password">忘记密码</string>
+    <string name="Login_Connect_Change_Password">请联系管理人员修改密码</string>
 </resources>

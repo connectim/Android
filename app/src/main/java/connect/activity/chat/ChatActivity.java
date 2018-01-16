@@ -139,6 +139,7 @@ public class ChatActivity extends BaseChatSendActivity {
         recordview.setVisibility(View.GONE);
         inputPanel.setActivity(this);
         inputPanel.setRecordView(recordview);
+        updateBurnState(0);
 
         // robot/stranger donot show setting
         if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
