@@ -275,9 +275,9 @@ public class BaseGroupSelectActivity extends BaseActivity {
                 .addAllUids(selectUids)
                 .build();
 
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_GROUP_INVITE, inviteWorkmate, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_GROUP_INVITE, inviteWorkmate, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
                 ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
                     @Override
@@ -288,7 +288,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 if (response.getCode() == 2430) {
                     ToastEUtil.makeText(activity, R.string.Link_Qr_code_is_invalid, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else {
