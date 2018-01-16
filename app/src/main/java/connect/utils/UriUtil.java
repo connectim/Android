@@ -45,7 +45,10 @@ public class UriUtil {
     public static String CONNECT_V3_API_BANNERS = "/connect/v3/api/banners";
     public static String CONNECT_V3_API_APPLICATIONS = "/connect/v3/api/applications";
     public static String CONNECT_V3_PROXY_VISITOR_RECORDS = "/connect/v3/proxy/visitor/records";
-
+    /** 根据 部门id查询 所有员工 */
+    public static String CONNECT_V3_DEPAERTMENT_WORKMATES = "/connect/v3/department/workmates";
+    /** 群成员邀请入群 */
+    public static String CONNECT_V3_GROUP_INVITE = "/connect/v3/group/invite";
 
     /**======================================================================================
      *                                Login successfully initialized

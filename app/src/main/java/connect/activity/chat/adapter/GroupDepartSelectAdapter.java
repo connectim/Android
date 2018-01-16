@@ -26,7 +26,7 @@ import protos.Connect;
 public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSelectAdapter.ViewHolder> {
 
     private Activity activity;
-    private String friendUid = "";
+    private List<String> uids = null;
     private List<DepartSelectBean> departSelectBeens = new ArrayList<>();
 
     public GroupDepartSelectAdapter(Activity activity) {
@@ -54,24 +54,25 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.contentLin.setVisibility(View.GONE);
 
             final Connect.Department department1 = department.getDepartment();
-            String departmentKey = "B" + department1.getId();
+            final String departmentKey = "B" + department1.getId();
             holder.departmentSelectView.setSelected(departSelectListener.isContains(departmentKey));
-
-            holder.departmentTv.setText(department1.getName());
             holder.countTv.setText("(" + department1.getCount() + ")");
-
+            holder.departmentTv.setText(department1.getName());
             holder.departmentSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     boolean isselect = holder.departmentSelectView.isSelected();
+                    isselect = !isselect;
                     departSelectListener.departmentClick(isselect, department1);
-                    holder.departmentSelectView.setSelected(!isselect);
+                    holder.departmentSelectView.setSelected(isselect);
                 }
             });
             holder.departmentLinear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    departSelectListener.itemClick(department1);
+                    if (!departSelectListener.isContains(departmentKey)) {
+                        departSelectListener.itemClick(department1);
+                    }
                 }
             });
         } else {
@@ -79,7 +80,7 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.contentLin.setVisibility(View.VISIBLE);
 
             final Connect.Workmate workmate = department.getWorkmate();
-            String workmateKey = "W" + workmate.getUid();
+            final String workmateKey = "W" + workmate.getEmpNo();
             holder.workmateSelectView.setSelected(departSelectListener.isContains(workmateKey));
             holder.nameTvS.setText(workmate.getName());
             if (TextUtils.isEmpty(workmate.getOU())) {
@@ -96,10 +97,11 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.workmateSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!workmate.getUid().equals(friendUid)) {
+                    if (!uids.contains(workmate.getUid()) && !TextUtils.isEmpty(workmate.getUid())) {
                         boolean isselect = holder.workmateSelectView.isSelected();
+                        isselect = !isselect;
                         departSelectListener.workmateClick(isselect, workmate);
-                        holder.workmateSelectView.setSelected(!isselect);
+                        holder.workmateSelectView.setSelected(isselect);
                     }
                 }
             });
@@ -160,7 +162,7 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
         void itemClick(Connect.Department department);
     }
 
-    public void setFriendUid(String friendUid) {
-        this.friendUid = friendUid;
+    public void setFriendUid(List<String> friendUid) {
+        this.uids = friendUid;
     }
 }

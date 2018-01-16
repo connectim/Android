@@ -60,10 +60,11 @@ public class GroupCreateSelecrActivity extends BaseActivity implements GroupCrea
         initView();
     }
 
-    public static void startActivity(Activity activity, String pubkey) {
+    public static void startActivity(Activity activity, boolean iscreate, String uid) {
         Bundle bundle = new Bundle();
-        bundle.putString(FRIEND_UID, pubkey);
-        ActivityUtil.next(activity, GroupCreateSelecrActivity.class, bundle);
+        bundle.putBoolean("Is_Create", iscreate);
+        bundle.putString("Uid", uid);
+        ActivityUtil.next(activity, GroupCreateSelecrActivity.class, bundle,200);
     }
 
     @Override

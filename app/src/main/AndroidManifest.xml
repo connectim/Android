@@ -305,9 +305,6 @@
             android:name="connect.activity.chat.exts.GroupCrowdingRecordsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="connect.activity.chat.exts.ApplyJoinGroupActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="connect.activity.chat.exts.OuterWebsiteActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -344,13 +341,20 @@
 
         <service
             android:name="connect.service.GroupService"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
             android:name="connect.activity.chat.set.GroupCreateActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.set.group.GroupDepartSelectActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.chat.set.TalkGroupCreateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.chat.set.BaseGroupSelectActivity"
+            android:screenOrientation="portrait" />
     </application>
+
 </manifest>

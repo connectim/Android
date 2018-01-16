@@ -1797,6 +1797,14 @@ Workmates workmates = 1;
 Departments depts = 2;
 }
 
+
+message GroupInviteWorkmate {
+ string inviteBy = 1;
+ string tips = 2;
+ repeated string uids = 3;
+ string identifier = 4;
+}
+
 message UserFollow {
  string uid = 1;
  bool follow = 2;

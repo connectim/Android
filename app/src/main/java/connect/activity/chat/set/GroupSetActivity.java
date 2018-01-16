@@ -132,7 +132,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
             public void onClick(View v) {
                 String address = (String) v.getTag();
                 if ("GROUP_ADD".equals(address)) {
-                    GroupInviteActivity.startActivity(activity, groupKey);
+                    BaseGroupSelectActivity.startActivity(activity, false, groupKey);
                 } else {
                     if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(address)) {
                         UserInfoActivity.startActivity(activity);

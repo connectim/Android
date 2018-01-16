@@ -126,7 +126,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 if (!TextUtils.isEmpty(talkey)) {
                     switch (talker.getTalkType()) {
                         case PRIVATE:
-                            PrivateSetActivity.startActivity(activity, talkey);
+                            PrivateSetActivity.startActivity(activity, normalChat.chatKey());
                             break;
                         case GROUPCHAT:
                         case GROUP_DISCUSSION:

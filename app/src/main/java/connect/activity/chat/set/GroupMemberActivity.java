@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.base.compare.GroupComPara;
 import connect.activity.chat.adapter.GroupMemberAdapter;
 import connect.activity.chat.set.contract.GroupMemberContract;
+import connect.activity.chat.set.group.GroupDepartSelectActivity;
 import connect.activity.chat.set.presenter.GroupMemberPresenter;
 import connect.activity.home.view.LineDecoration;
 import connect.database.SharedPreferenceUtil;
@@ -78,7 +80,13 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         toolbarTop.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GroupInviteActivity.startActivity(activity, groupKey);
+                ArrayList<String> selectedUid = new ArrayList<String>();
+                List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
+                for (GroupMemberEntity entity : memberEntities) {
+                    selectedUid.add(entity.getUid());
+                }
+
+                GroupDepartSelectActivity.startActivity(activity, false, selectedUid);
             }
         });
 
@@ -113,7 +121,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         new GroupMemberPresenter(this).start();
     }
 
-    private class GroupMemberOnscrollListener extends RecyclerView.OnScrollListener{
+    private class GroupMemberOnscrollListener extends RecyclerView.OnScrollListener {
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
