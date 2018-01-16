@@ -118,6 +118,9 @@
             android:name="connect.activity.set.UserConnectIdActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="connect.activity.workbench.VisitorsActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="connect.activity.set.SafetyActivity"
             android:screenOrientation="portrait" />
         <activity

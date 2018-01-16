@@ -11,11 +11,11 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,18 +30,15 @@ import connect.activity.base.BaseApplication;
 import connect.activity.base.BaseFragmentActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
-import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.home.fragment.ContactFragment;
 import connect.activity.home.fragment.ConversationFragment;
 import connect.activity.home.fragment.SetFragment;
+import connect.activity.home.fragment.WorkbenchFragment;
 import connect.activity.home.view.CheckUpdate;
 import connect.activity.login.LoginUserActivity;
-import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.FriendRequestEntity;
 import connect.instant.bean.ConnectState;
 import connect.service.GroupService;
 import connect.service.UpdateInfoService;
@@ -67,6 +64,8 @@ public class HomeActivity extends BaseFragmentActivity {
     ImageView contact;
     @Bind(R.id.set)
     ImageView set;
+    @Bind(R.id.workbench)
+    ImageView workbench;
     @Bind(R.id.home_content)
     FrameLayout homeContent;
     @Bind(R.id.msg_rela)
@@ -75,16 +74,28 @@ public class HomeActivity extends BaseFragmentActivity {
     RelativeLayout contactRela;
     @Bind(R.id.set_rela)
     RelativeLayout setRela;
+    @Bind(R.id.workbench_rela)
+    RelativeLayout workbenchRela;
     @Bind(R.id.badgetv)
     MaterialBadgeTextView badgetv;
     @Bind(R.id.contact_badgetv)
     MaterialBadgeTextView contactBadgetv;
 
     private static String TAG = "Tag_HomeActivity";
+    @Bind(R.id.msg_text)
+    TextView msgText;
+    @Bind(R.id.contact_text)
+    TextView contactText;
+    @Bind(R.id.workbench_text)
+    TextView workbenchText;
+    @Bind(R.id.set_text)
+    TextView setText;
+
     private HomeActivity activity;
 
     private ConversationFragment chatListFragment;
     private ContactFragment contactFragment;
+    private WorkbenchFragment workbenchFragment;
     private SetFragment setFragment;
     private ResolveUrlUtil resolveUrlUtil;
     private CheckUpdate checkUpdata;
@@ -123,7 +134,6 @@ public class HomeActivity extends BaseFragmentActivity {
 
                 ConnectState.getInstance().sendEvent(ConnectState.ConnectType.CONNECT);
                 requestAppUpdata();
-                //checkWebOpen();
             }
         }.execute();
     }
@@ -214,47 +224,29 @@ public class HomeActivity extends BaseFragmentActivity {
         }
     }
 
-    /*@Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(ContactNotice notice) {
-        if (notice.getNotice() == ContactNotice.ConNotice.RecAddFriendHome) {
-            updataRequest();
-        }
-    }*/
-
-    /*private void updataRequest() {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                List<FriendRequestEntity> requestList = ContactHelper.getInstance().loadFriendRequestNew();
-                if (requestList == null) {
-                    return 0;
-                }
-                return requestList.size();
-            }
-
-            @Override
-            protected void onPostExecute(Integer integer) {
-                super.onPostExecute(integer);
-                setFragmentDot(1, integer);
-            }
-        }.execute();
-    }*/
-
-    @OnClick({R.id.msg_rela, R.id.contact_rela, R.id.set_rela})
+    @OnClick({R.id.msg_rela, R.id.contact_rela, R.id.workbench_rela, R.id.set_rela})
     public void OnClickListener(View view) {
         initBottomTab();
         switch (view.getId()) {
             case R.id.msg_rela:
                 switchFragment(0);
                 msg.setSelected(true);
+                msgText.setSelected(true);
                 break;
             case R.id.contact_rela:
                 switchFragment(1);
                 contact.setSelected(true);
+                contactText.setSelected(true);
+                break;
+            case R.id.workbench_rela:
+                switchFragment(2);
+                workbench.setSelected(true);
+                workbenchText.setSelected(true);
                 break;
             case R.id.set_rela:
-                switchFragment(2);
+                switchFragment(3);
                 set.setSelected(true);
+                setText.setSelected(true);
                 break;
         }
     }
@@ -262,12 +254,19 @@ public class HomeActivity extends BaseFragmentActivity {
     private void initBottomTab() {
         msg.setSelected(false);
         contact.setSelected(false);
+        workbench.setSelected(false);
         set.setSelected(false);
+
+        msgText.setSelected(false);
+        contactText.setSelected(false);
+        workbenchText.setSelected(false);
+        setText.setSelected(false);
     }
 
     public void setDefaultFragment() {
         chatListFragment = ConversationFragment.startFragment();
         contactFragment = ContactFragment.startFragment();
+        workbenchFragment = WorkbenchFragment.startFragment();
         setFragment = SetFragment.startFragment();
 
         switchFragment(0);
@@ -303,6 +302,13 @@ public class HomeActivity extends BaseFragmentActivity {
                 }
                 break;
             case 2:
+                if (!workbenchFragment.isAdded()) {
+                    fragmentTransaction.add(R.id.home_content, workbenchFragment);
+                } else {
+                    fragmentTransaction.show(workbenchFragment);
+                }
+                break;
+            case 3:
                 if (!setFragment.isAdded()) {
                     fragmentTransaction.add(R.id.home_content, setFragment);
                 } else {
@@ -329,14 +335,6 @@ public class HomeActivity extends BaseFragmentActivity {
                 break;
         }
     }
-
-    /*private void checkWebOpen() {
-        resolveUrlUtil = new ResolveUrlUtil(activity);
-        String value = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.WEB_OPEN_APP);
-        if (!TextUtils.isEmpty(value)) {
-            resolveUrlUtil.checkAppOpen(value);
-        }
-    }*/
 
     private void requestAppUpdata() {
         checkUpdata = new CheckUpdate(activity);

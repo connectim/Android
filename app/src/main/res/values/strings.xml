@@ -140,6 +140,8 @@
     <string name="Chat_set_the_self_destruct_timer_to">%1$s set the self-destruct timer to %2$s
     </string>
     <string name="Common_Cancel">Cancel</string>
+    <string name="Common_Management">Management</string>
+    <string name="Common_The_search_application">The search application</string>
     <string name="Common_Completed">Completed</string>
     <string name="Common_Download_App">Downloading%s</string>
     <string name="Common_In">In \'%s</string>
@@ -252,6 +254,8 @@
         release your ownership
     </string>
     <string name="Link_Send">Send</string>
+    <string name="Link_Dialogue">Dialogue</string>
+    <string name="Link_Workbench">The workbench</string>
     <string name="Link_Inactive">Inactive</string>
     <string name="Link_Send_friend_request">Send friend request</string>
     <string name="Link_Send_successful">Send successful</string>
@@ -293,6 +297,7 @@
     <string name="Link_contact_count_group_count">%1$d contact %2$d group</string>
     <string name="Link_enter_the_group">%s join the group</string>
     <string name="Link_group_count">%d group</string>
+    <string name="Link_My_application">My application</string>
     <string name="Link_Employee_number">Employee number:</string>
     <string name="Link_Subordinate_departments">Subordinate departments:</string>
     <string name="Link_Contact_number">Contact number:</string>
@@ -612,6 +617,21 @@
     <string name="Chat_View_Full_Text">View full text</string>
     <string name="Chat_Enter_Subscribe">Enter subscriber Account</string>
     <string name="Chat_Subscribe_Success">[Subscribe Success]</string>
+
+    <string name="Work_Add">add</string>
+    <string name="Work_On_a_business_trip">On a business trip</string>
+    <string name="Work_Ask_for_leave">Ask for leave</string>
+    <string name="Work_To_submit_an_expense_account">To submit an expense account</string>
+    <string name="Work_The_examination_and_approval">The examination and approval</string>
+    <string name="Work_Subsidized_meals">Subsidized meals</string>
+    <string name="Work_Recruitment">Recruitment</string>
+    <string name="Work_The_contract">The contract</string>
+    <string name="Work_Wage">Wage</string>
+    <string name="Work_Visitors">Visitors</string>
+    <string name="Work_Visitors_info">The visitor information</string>
+    <string name="Work_Visitors_reason">Purpose of visitors:%1$s</string>
+    <string name="Work_Visitors_phone">Contact information:%1$s</string>
+    <string name="Work_Visitors_time">Visit time:%1$s</string>
 
     <string name="Chat_Refreshing">Refreshing...</string>
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>

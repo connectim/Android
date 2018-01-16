@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_ffffff">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:background="@color/color_161A21"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <RelativeLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:layout_centerVertical="true">
+            <RelativeLayout
+                android:id="@+id/search_relative"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_28"
+                android:background="@drawable/shape_search"
+                android:layout_centerInParent="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@mipmap/department_search"
+                    android:drawablePadding="@dimen/dp_5"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:text="@string/Common_The_search_application"/>
+            </RelativeLayout>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/manager_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_5"
+                android:textColor="@color/color_ffffff"
+                android:textSize="@dimen/sp_14"
+                android:text="@string/Common_Management"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <connect.widget.cyclepager.CycleViewPager
+        android:id="@+id/cycle_ViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_150"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/application_menu_recycler"
+        android:fadingEdge="none"
+        android:overScrollMode="never"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:background="@color/color_F6F6F6"/>
+
+    <TextView
+        style="@style/BaseTextStyle.12"
+        android:textColor="@color/color_B6B6B6"
+        android:padding="@dimen/dp_10"
+        android:text="@string/Link_My_application"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_menu_recycler"
+        android:fadingEdge="none"
+        android:overScrollMode="never"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

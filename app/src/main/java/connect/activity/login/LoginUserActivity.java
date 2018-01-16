@@ -101,6 +101,10 @@ public class LoginUserActivity extends BaseActivity {
                     } else {
                         UserBean userBean1 = new UserBean(userLoginInfo.getName(), userLoginInfo.getAvatar(), userLoginInfo.getUid(),
                                 userLoginInfo.getOU(), userLoginInfo.getToken(), userBean.getPubKey(), userBean.getPriKey());
+                        userBean1.setEmp_no(userLoginInfo.getEmpNo());
+                        userBean1.setGender(userLoginInfo.getGender());
+                        userBean1.setMobile(userLoginInfo.getMobile());
+                        userBean1.setTips(userLoginInfo.getTips());
                         SharedPreferenceUtil.getInstance().putUser(userBean1);
 
                         ProgressUtil.getInstance().dismissProgress();
@@ -140,6 +144,10 @@ public class LoginUserActivity extends BaseActivity {
             public void onResponse(Connect.HttpNotSignResponse response) {
                 UserBean userBean1 = new UserBean(userLoginInfo.getName(), userLoginInfo.getAvatar(), userLoginInfo.getUid(),
                         userLoginInfo.getOU(), userLoginInfo.getToken(), pubKey1, priKey);
+                userBean1.setEmp_no(userLoginInfo.getEmpNo());
+                userBean1.setGender(userLoginInfo.getGender());
+                userBean1.setMobile(userLoginInfo.getMobile());
+                userBean1.setTips(userLoginInfo.getTips());
                 SharedPreferenceUtil.getInstance().putUser(userBean1);
                 HomeActivity.startActivity(mActivity);
                 mActivity.finish();

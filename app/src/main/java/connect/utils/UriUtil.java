@@ -41,6 +41,11 @@ public class UriUtil {
     /** Query the user information 1: name(en)  2:uid  3:name(zh)*/
     public static String CONNECT_V3_WORKMATE_SEARCH = "/connect/v3/workmate/search";
     public static String CONNECT_V3_USERS_FOLLOW = "/connect/v3/users/follow";
+    public static String CONNECT_V3_PROXY_TOKEN = "/connect/v3/proxy/token";
+    public static String CONNECT_V3_API_BANNERS = "/connect/v3/api/banners";
+    public static String CONNECT_V3_API_APPLICATIONS = "/connect/v3/api/applications";
+    public static String CONNECT_V3_PROXY_VISITOR_RECORDS = "/connect/v3/proxy/visitor/records";
+
 
     /**======================================================================================
      *                                Login successfully initialized

@@ -40,7 +40,7 @@
         android:layout_margin="@dimen/dp_10"
         android:gravity="center"
         android:text=""
-        android:textColor="@color/color_00c400"
+        android:textColor="@color/color_ffffff"
         android:textSize="@dimen/sp_16"/>
     <TextView
         android:id="@id/voice_tv"
