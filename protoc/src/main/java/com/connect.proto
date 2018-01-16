@@ -1746,13 +1746,17 @@ string password = 2;
 }
 
 message UserLoginInfo {
-string token = 1;
-bool logined =2;
-string name =3;
-string o_u =4;
-string uid =5;
-string avatar = 6;
-string pub_key = 7;
+ string token = 1;
+ bool logined = 2;
+ string name = 3;
+ string o_u = 4;
+ string uid = 5;
+ string avatar = 6;
+ string pub_key = 7;
+ string emp_no = 8;
+ string mobile = 9;
+ int32  gender = 10;
+ string tips = 11;
 }
 
 message HttpRequest {
@@ -1795,14 +1799,6 @@ message Departments {
 message SyncWorkmates {
 Workmates workmates = 1;
 Departments depts = 2;
-}
-
-
-message GroupInviteWorkmate {
- string inviteBy = 1;
- string tips = 2;
- repeated string uids = 3;
- string identifier = 4;
 }
 
 message UserFollow {
@@ -1853,4 +1849,73 @@ message WorkmateChangeRecord {
 message WorkmateVersion {
  string uid = 1;
  string version = 2;
+}
+
+message Staff {
+ string staff_id = 1;
+ string token = 2;
+}
+
+message Banner {
+  string name = 1;
+  string title = 2;
+  string img = 3;
+  string href = 4;
+  string router = 5;
+  int32 priority = 6;
+  int32 category = 7;
+}
+
+message Banners {
+  repeated Banner list =1;
+}
+
+message Application {
+  string name = 1;
+  string code = 2;
+  string img = 3;
+  string href = 4;
+  string router = 5;
+  int32 priority = 6;
+  int32 category = 7;
+}
+
+message Applications {
+  repeated Application list =1;
+}
+
+message Examine {
+  string guest_id = 1;
+  bool valid = 2;
+  string reason =3;
+}
+
+message VisitorRecordsReq {
+  string page_num = 1;
+  string page_size = 2;
+  string staff_id = 3;
+}
+
+message VisitorRecord {
+  int32 id = 1;
+  string staffId = 2;
+  string staffName = 3;
+  string staffPhone = 4;
+  string guestId = 5;
+  string guestName = 6;
+  int64 startTime = 7;
+  int64 endTime = 8;
+  string reason = 9;
+  bool status = 10;
+}
+
+message VisitorRecords {
+  repeated VisitorRecord list = 1;
+}
+
+message GroupInviteWorkmate {
+ string inviteBy = 1;
+ string tips = 2;
+ repeated string uids = 3;
+ string identifier = 4;
 }

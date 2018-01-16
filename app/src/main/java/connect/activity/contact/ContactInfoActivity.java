@@ -67,6 +67,10 @@ public class ContactInfoActivity extends BaseActivity {
     private ContactInfoActivity mActivity;
     private ContactEntity contactEntity;
 
+    public static void lunchActivity(Activity activity, String uid) {
+
+    }
+
     public static void lunchActivity(Activity activity, ContactEntity contactEntity) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("bean", contactEntity);

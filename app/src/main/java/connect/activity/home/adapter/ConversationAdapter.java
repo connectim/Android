@@ -16,8 +16,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.GroupRecBean;
+import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
 import connect.activity.workbench.WorkSeachActivity;
@@ -139,12 +141,10 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 } else {
                     closeMenu();
 
-//                    Talker talker = new Talker(Connect.ChatType.forNumber(roomAttr.getRoomtype()), roomAttr.getRoomid());
-//                    talker.setNickName(roomAttr.getName());
-//                    talker.setAvatar(roomAttr.getAvatar());
-//                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, talker);
-
-                    WorkSeachActivity.startActivity(activity);
+                    Talker talker = new Talker(Connect.ChatType.forNumber(roomAttr.getRoomtype()), roomAttr.getRoomid());
+                    talker.setNickName(roomAttr.getName());
+                    talker.setAvatar(roomAttr.getAvatar());
+                    HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, talker);
                 }
             }
         });

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.contact.FriendInfoActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.set.UserInfoActivity;
@@ -122,7 +122,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
                         if (friendEntity == null) {
                             StrangerInfoActivity.startActivity(activity, indexEntity.getUid(), SourceType.GROUP);
                         } else {
-                            FriendInfoActivity.startActivity(activity, friendEntity.getUid());
+                            ContactInfoActivity.lunchActivity(activity, friendEntity.getUid());
                         }
                     }
                 }

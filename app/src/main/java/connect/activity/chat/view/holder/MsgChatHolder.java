@@ -18,7 +18,7 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.model.GroupMemberUtil;
 import connect.activity.chat.view.BurnProBar;
 import connect.activity.chat.view.MsgStateView;
-import connect.activity.contact.FriendInfoActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.set.UserInfoActivity;
@@ -122,7 +122,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                             if (friend == null) {
                                 StrangerInfoActivity.startActivity((Activity) context, uid, SourceType.GROUP);
                             } else {
-                                FriendInfoActivity.startActivity((Activity) context, uid);
+                                ContactInfoActivity.lunchActivity((Activity) context, uid);
                             }
                         }
                     }
@@ -160,7 +160,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                             if (friend == null) {
                                 StrangerInfoActivity.startActivity((Activity) context, memberKey, SourceType.GROUP);
                             } else {
-                                FriendInfoActivity.startActivity((Activity) context, memberKey);
+                                ContactInfoActivity.lunchActivity((Activity) context, memberKey);
                             }
                         }
                     }

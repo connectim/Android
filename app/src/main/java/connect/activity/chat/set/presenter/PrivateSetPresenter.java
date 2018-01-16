@@ -18,7 +18,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 import connect.utils.glide.GlideUtil;
 
 /**
@@ -69,8 +68,15 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
 
         ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);
         if (friendEntity == null) {
-            ActivityUtil.goBack(activity);
-            return;
+            ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(roomKey);
+            if (conversionEntity == null) {
+                return;
+            } else {
+                friendEntity = new ContactEntity();
+                friendEntity.setAvatar(conversionEntity.getAvatar());
+                friendEntity.setUid(conversionEntity.getIdentifier());
+                friendEntity.setName(conversionEntity.getName());
+            }
         }
         List<ContactEntity> entities = new ArrayList<>();
         entities.add(friendEntity);

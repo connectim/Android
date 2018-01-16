@@ -21,7 +21,7 @@ import connect.activity.chat.bean.ApplyGroupBean;
 import connect.activity.chat.bean.ContainerBean;
 import connect.activity.chat.exts.contract.HandleGroupRequestContract;
 import connect.activity.chat.exts.presenter.HandleGroupRequestPresenter;
-import connect.activity.contact.FriendInfoActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -164,7 +164,7 @@ public class HandleGroupRequestActivity extends BaseActivity implements HandleGr
                 if (friend == null) {
                     StrangerInfoActivity.startActivity(activity, invitorUid, SourceType.GROUP);
                 } else {
-                    FriendInfoActivity.startActivity(activity, invitorUid);
+                    ContactInfoActivity.lunchActivity(activity, invitorUid);
                 }
                 break;
             case R.id.btn1:

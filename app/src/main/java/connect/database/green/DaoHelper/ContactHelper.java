@@ -149,13 +149,13 @@ public class ContactHelper extends BaseDao {
             uid = "";
         }
 
-        String sql = "SELECT F.USERNAME AS FNAME, F.REMARK AS FREMARK, F.AVATAR AS FAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM CONTACT_ENTITY F LEFT OUTER JOIN CONVERSION_ENTITY C WHERE F.UID = ? AND F.UID = C.IDENTIFIER LIMIT 1;";
+        String sql = "SELECT F.REMARK AS FREMARK, F.AVATAR AS FAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM CONTACT_ENTITY F LEFT OUTER JOIN CONVERSION_ENTITY C WHERE F.UID = ? AND F.UID = C.IDENTIFIER LIMIT 1;";
 
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{uid});
 
         Talker talker = new Talker(Connect.ChatType.PRIVATE, uid);
         while (cursor.moveToNext()) {
-            String userName = cursorGetString(cursor, "FNAME");
+            String userName = cursorGetString(cursor, "CNAME");
             String userRemark = cursorGetString(cursor, "FREMARK");
             String userAvatar = cursorGetString(cursor, "FAVATAR");
 

@@ -676,4 +676,12 @@
     <string name="Login_Immediately">посадку незамедлительно</string>
     <string name="Beijing_BitMain">Beijing BitMain Technology Co., Ltd.</string>
     <string name="Work_No_More_Results">Больше никаких  результатов поиска</string>
+    <string name="Work_Third_Party_Service">услуг третьих сторон</string>
+    <string name="Work_Service_Search">Поиск  приложений</string>
+    <string name="Work_Search">поиск</string>
+    <string name="Link_exit_the_group">%sыход из  группы</string>
+
+    <string name="Link_Group_Create">создать группу</string>
+    <string name="Link_Group_Invite">пригласить  в  группы</string>
+    <string name="Link_Group_Invite_Success">Приглашение выполнено успешно</string>
 </resources>

@@ -1,18 +1,16 @@
 package connect.activity.workbench.adapter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-import connect.activity.home.adapter.CompanyAdapter;
 import connect.ui.activity.R;
-import protos.Connect;
+
 
 /**
  * Created by PuJin on 2018/1/15.
@@ -23,39 +21,38 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(activity);
-        View view = inflater.inflate(R.layout.item_contact_department, parent, false);
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.item_worksearch, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        final ArrayList<Connect.Workmate> itemList = list.get(position);
-        holder.departmentTv.setText(itemList.get(0).getOU());
-        //holder.countTv.setText(itemList.size());
-        holder.contentLin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClickListener.itemClick(itemList);
-            }
-        });
+
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return 5;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout contentLin;
-        TextView departmentTv;
-        TextView countTv;
+        RelativeLayout thirdPartRelative;
+        ImageView categortyImg;
+        TextView categoryTxt;
+        TextView addStateTxt;
+        ImageView searchStateImg;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
+            thirdPartRelative = (RelativeLayout) itemView.findViewById(R.id.relative_thirdpart);
+            categortyImg = (ImageView) itemView.findViewById(R.id.image_category);
+            categoryTxt = (TextView) itemView.findViewById(R.id.text_category);
+            addStateTxt = (TextView) itemView.findViewById(R.id.text_has_added);
+            searchStateImg = (ImageView) itemView.findViewById(R.id.image_search_state);
         }
     }
 }

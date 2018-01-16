@@ -110,7 +110,7 @@ public class AddFriendActivity extends BaseActivity implements AddFriendContract
             } else {
                 ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(entity.getUid());
                 if (friendEntity != null) {
-                    FriendInfoActivity.startActivity(mActivity, entity.getUid());
+                    ContactInfoActivity.lunchActivity(mActivity, entity.getUid());
                 } else if (entity.getStatus() == NewRequestAdapter.ACCEPTE_ADD_FRIEND) {
                     AddFriendAcceptActivity.startActivity(mActivity, entity);
                 } else {

@@ -145,16 +145,6 @@ public class ChatActivity extends BaseChatSendActivity {
             toolbar.setRightImg(R.mipmap.menu_white);
         }
 
-        if (normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-            roomSession.setBurntime(-1);
-            updateBurnState(0);
-        } else {
-            ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
-            long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? -1 : chatSetEntity.getSnap_time();
-            roomSession.setBurntime(burntime);
-            updateBurnState(burntime);
-        }
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         linearLayoutManager.setStackFromEnd(true);

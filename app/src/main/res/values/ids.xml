@@ -228,4 +228,12 @@
     <item name="state_touch_scale_rotate" type="id"/>
     <item name="view_image_watcher" type="id" />
 
+
+    <item name="relative_thirdpart" type="id" />
+    <item name="image_category" type="id" />
+    <item name="text_category" type="id" />
+    <item name="text_has_added" type="id" />
+    <item name="image_search_state" type="id" />
+    <item name="image_title_search" type="id" />
+    <item name="text_no_more_results" type="id" />
 </resources>

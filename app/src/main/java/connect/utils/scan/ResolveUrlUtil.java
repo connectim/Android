@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 
 import connect.activity.chat.exts.TransferToActivity;
-import connect.activity.contact.FriendInfoActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.contact.bean.SourceType;
@@ -91,7 +91,7 @@ public class ResolveUrlUtil {
         if (!resultBean.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
             ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(resultBean.getAddress());
             if (friendEntity != null) {
-                FriendInfoActivity.startActivity(activity, resultBean.getAddress());
+                ContactInfoActivity.lunchActivity(activity, resultBean.getAddress());
             } else {
                 StrangerInfoActivity.startActivity(activity, resultBean.getAddress(), SourceType.QECODE);
             }

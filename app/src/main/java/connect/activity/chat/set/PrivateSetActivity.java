@@ -16,7 +16,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.PrivateSetContract;
 import connect.activity.chat.set.presenter.PrivateSetPresenter;
-import connect.activity.contact.FriendInfoActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.SourceType;
 import connect.activity.home.bean.ConversationAction;
@@ -195,7 +195,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
                     if (entity == null) {
                         StrangerInfoActivity.startActivity(activity, address, SourceType.SEARCH);
                     } else {
-                        FriendInfoActivity.startActivity(activity, entity.getUid());
+                        ContactInfoActivity.lunchActivity(activity, entity.getUid());
                     }
                 }
             }

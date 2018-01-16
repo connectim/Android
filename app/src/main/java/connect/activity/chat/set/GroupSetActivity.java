@@ -21,7 +21,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.GroupSetContract;
 import connect.activity.chat.set.presenter.GroupSetPresenter;
-import connect.activity.contact.FriendInfoActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.StrangerInfoActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.SourceType;
@@ -141,7 +141,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
                         if (entity == null) {
                             StrangerInfoActivity.startActivity(activity, address, SourceType.CARD);
                         } else {
-                            FriendInfoActivity.startActivity(activity, entity.getUid());
+                            ContactInfoActivity.lunchActivity(activity, entity.getUid());
                         }
                     }
                 }
