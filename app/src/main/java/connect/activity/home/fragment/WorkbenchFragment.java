@@ -129,7 +129,7 @@ public class WorkbenchFragment extends BaseFragment {
 
     @OnClick(R.id.manager_tv)
     void managerMyApp(View view) {
-        WorkSeachActivity.startActivity(activity, true);
+        WorkSeachActivity.startActivity(activity, 1);
     }
 
     WorkbenchMenuAdapter.OnItemMenuClickListener onItemMenuClickListener = new WorkbenchMenuAdapter.OnItemMenuClickListener() {
@@ -153,7 +153,7 @@ public class WorkbenchFragment extends BaseFragment {
             if (item.getCode().equals("visitors")) {
                 VisitorsActivity.lunchActivity(activity);
             }else if (item.getCode().equals("add")){
-                WorkSeachActivity.startActivity(activity,false);
+                WorkSeachActivity.startActivity(activity,2);
             }else {
                 DialogUtil.showAlertTextView(activity, getString(R.string.Set_tip_title),
                         getString(R.string.Link_Function_Under_Development),
@@ -226,7 +226,7 @@ public class WorkbenchFragment extends BaseFragment {
     void onClickListener(View view) {
         switch (view.getId()) {
             case R.id.search_relative:
-                WorkSeachActivity.startActivity(activity,false);
+                WorkSeachActivity.startActivity(activity,0);
                 break;
         }
     }

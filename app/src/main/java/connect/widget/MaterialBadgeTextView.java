@@ -221,7 +221,7 @@ e.printStackTrace();
     public void setHighLightMode(boolean isDisplayInToolbarMenu){
         isHighLightMode = true;
         ViewGroup.LayoutParams params = getLayoutParams();
-        int width = SystemUtil.dipToPx(8);
+        int width = SystemUtil.dipToPx(18);
         params.width = width;
         params.height = params.width;
         if(isDisplayInToolbarMenu && params instanceof FrameLayout.LayoutParams){
