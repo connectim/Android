@@ -1,29 +1,34 @@
 package connect.activity.workbench;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.home.bean.HomeAction;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
 import connect.utils.DialogUtil;
-import connect.utils.ProgressUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
+import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
-import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -55,13 +60,16 @@ public class VisitorsAuditActivity extends BaseActivity {
     TextView agreeText;
     @Bind(R.id.bottom_lin)
     LinearLayout bottomLin;
+    @Bind(R.id.bottom_relative)
+    RelativeLayout bottomRelative;
 
     private VisitorsAuditActivity mActivity;
     private Connect.VisitorRecord visitorRecord;
 
-    public static void lunchActivity(Activity activity, Connect.VisitorRecord visitorRecord) {
+    public static void lunchActivity(Activity activity, Connect.VisitorRecord visitorRecord, int status) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("bean",visitorRecord);
+        bundle.putSerializable("bean", visitorRecord);
+        bundle.putInt("status", status);
         ActivityUtil.next(activity, VisitorsAuditActivity.class, bundle);
     }
 
@@ -80,7 +88,7 @@ public class VisitorsAuditActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Work_Visitors_to_approval);
 
-        visitorRecord = (Connect.VisitorRecord)getIntent().getExtras().getSerializable("bean");
+        visitorRecord = (Connect.VisitorRecord) getIntent().getExtras().getSerializable("bean");
 
         nameTv.setText(visitorRecord.getGuestName());
         reasonTv.setText(getString(R.string.Work_Visitors_reason, visitorRecord.getReason()));
@@ -92,6 +100,11 @@ public class VisitorsAuditActivity extends BaseActivity {
         leftFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceLeft()));
         isFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceMiddle()));
         rightFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceRight()));
+
+        int status = getIntent().getExtras().getInt("status",0);
+        if(status == 1){
+            bottomRelative.setVisibility(View.GONE);
+        }
     }
 
     @OnClick(R.id.left_img)
@@ -109,7 +122,29 @@ public class VisitorsAuditActivity extends BaseActivity {
         showAuditDialog(getResources().getString(R.string.Work_Visitors_agree_to_visit), true);
     }
 
-    private void showAuditDialog(String message, final boolean valid){
+    @OnClick(R.id.phone_tv)
+    void callPhone(View view) {
+        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_PHONE}, permissionCallBack);
+    }
+
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
+        @Override
+        public void granted(String[] permissions) {
+            if (permissions != null && permissions.length > 0) {
+                if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + visitorRecord.getStaffPhone()));
+                mActivity.startActivity(intent);
+            }
+        }
+
+        @Override
+        public void deny(String[] permissions) {
+        }
+    };
+
+    private void showAuditDialog(String message, final boolean valid) {
         DialogUtil.showAlertTextView(mActivity,
                 mActivity.getResources().getString(R.string.Set_tip_title), message,
                 "", "", false, new DialogUtil.OnItemClickListener() {
@@ -119,11 +154,12 @@ public class VisitorsAuditActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void cancel() {}
+                    public void cancel() {
+                    }
                 });
     }
 
-    private void requestAudit(boolean valid){
+    private void requestAudit(boolean valid) {
         Connect.Examine examine = Connect.Examine.newBuilder()
                 .setGuestId(visitorRecord.getGuestId())
                 .setValid(valid)
@@ -131,7 +167,8 @@ public class VisitorsAuditActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_EXAMINE_VERIFY, examine, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                int a=  1;
+                ToastEUtil.makeText(mActivity, R.string.Login_Update_successful).show();
+                ActivityUtil.goBack(mActivity);
             }
 
             @Override

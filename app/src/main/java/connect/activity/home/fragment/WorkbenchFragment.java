@@ -132,16 +132,8 @@ public class WorkbenchFragment extends BaseFragment {
         public void itemClick(int position, MenuBean item) {
             if (item.getCode().equals("visitors")) {
                 VisitorsActivity.lunchActivity(activity);
-            }else{
-                DialogUtil.showAlertTextView(activity, getString(R.string.Set_tip_title),
-                        getString(R.string.Link_Function_Under_Development),
-                        "", "", true, new DialogUtil.OnItemClickListener() {
-                            @Override
-                            public void confirm(String value) {}
-
-                            @Override
-                            public void cancel() {}
-                        });
+            }else if (item.getCode().equals("add")){
+                WorkSeachActivity.startActivity(activity);
             }
         }
     };
@@ -162,8 +154,7 @@ public class WorkbenchFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onError(Connect.HttpNotSignResponse response) {
-                    }
+                    public void onError(Connect.HttpNotSignResponse response) {}
                 });
     }
 

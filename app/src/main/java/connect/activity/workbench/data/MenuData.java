@@ -20,14 +20,6 @@ public class MenuData {
     public MenuBean getData(String code){
         MenuBean menuBean = new MenuBean();
         menuBean.setCode(code);
-        /*|  1 | 出差   | business_trip  |     | NULL | #      |        1 |        1 |      1 |       NULL |       NULL |
-        |  2 | 请假   | leave          |     | NULL | #      |        2 |        1 |      1 |       NULL |       NULL |
-        |  3 | 报销   | reimbursement  |     | NULL | #      |        3 |        1 |      1 |       NULL |       NULL |
-        |  4 | 审批   | examine        |     | NULL | #      |        4 |        1 |      1 |       NULL |       NULL |
-        |  5 | 餐补   | meal_allowance |     | NULL | #      |        5 |        1 |      1 |       NULL |       NULL |
-        |  6 | 招聘   | recruit        |     | NULL | #      |        6 |        1 |      1 |       NULL |       NULL |
-        |  7 | 合同   | contract       |     | NULL | #      |        7 |        1 |      1 |       NULL |       NULL |
-        |  8 | 工资   | salary         |     | NULL | #      |        8 |        1 |      1 |       NULL |       NULL |*/
 
         switch (code){
             case "business_trip":

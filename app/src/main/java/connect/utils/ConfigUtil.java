@@ -101,6 +101,7 @@ public class ConfigUtil {
     private String HTTP_MODE = "HTTP_MODE";
     private String SERVER_PUBKEY = "SERVER_PUBKEY";
     private String SERVER_ADDRESS = "SERVER_ADDRESS";
+    private String VISITOR_ADDRESS = "VISITOR_ADDRESS";
     private String SHARE_CARD_ADDRESS = "SHARE_CARD_ADDRESS";
     private String SHARE_PAY_ADDRESS = "SHARE_PAY_ADDRESS";
     private String CRASH_TAGS = "CRASH_TAGS";
@@ -137,6 +138,10 @@ public class ConfigUtil {
      */
     public String serverAddress() {
         return keyMaps.get(SERVER_ADDRESS);
+    }
+
+    public String visitorAddress() {
+        return keyMaps.get(VISITOR_ADDRESS);
     }
 
     /**

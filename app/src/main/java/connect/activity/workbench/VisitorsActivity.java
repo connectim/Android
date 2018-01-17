@@ -147,6 +147,7 @@ public class VisitorsActivity extends BaseFragmentActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_TOKEN, staff, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
+                ProgressUtil.getInstance().dismissProgress();
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.Staff staff1 = Connect.Staff.parseFrom(structData.getPlainData());
@@ -155,10 +156,8 @@ public class VisitorsActivity extends BaseFragmentActivity {
                     Bitmap bitmap = createScan.generateQRCode("https://wx-kq.bitmain.com/guest/info?token=" + staff1.getToken());
                     File file = BitmapUtil.getInstance().bitmapSavePath(bitmap);
                     shareMsg(getResources().getString(R.string.Work_Visitors_share), "", "", file);
-                    ProgressUtil.getInstance().dismissProgress();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ProgressUtil.getInstance().dismissProgress();
                 }
             }
 

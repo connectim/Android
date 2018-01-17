@@ -70,6 +70,12 @@ public class VisitorAdapter extends RecyclerView.Adapter<VisitorAdapter.ViewHold
                 itemClickListener.itemClick(visitorRecord);
             }
         });
+        holder.phoneTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemClickListener.callClick(visitorRecord);
+            }
+        });
     }
 
     @Override
@@ -112,6 +118,8 @@ public class VisitorAdapter extends RecyclerView.Adapter<VisitorAdapter.ViewHold
 
     public interface OnItemClickListener{
         void itemClick(Connect.VisitorRecord visitorRecord);
+
+        void callClick(Connect.VisitorRecord visitorRecord);
     }
 
     public void setItemClickListener(OnItemClickListener itemClickListener) {

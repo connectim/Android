@@ -1,7 +1,12 @@
 package connect.activity.workbench.fragment;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +28,7 @@ import connect.ui.activity.R;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.permission.PermissionUtil;
 import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
 
@@ -61,10 +67,16 @@ public class AuditFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mActivity = getActivity();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         initView();
     }
 
     private void initView() {
+        page = 1;
         refreshview.setColorSchemeResources(R.color.color_ebecee, R.color.color_c8ccd5, R.color.color_lightgray);
         refreshview.setOnRefreshListener(onRefreshListener);
         recyclerview.addOnScrollListener(endlessScrollListener);
@@ -95,10 +107,34 @@ public class AuditFragment extends BaseFragment {
         }
     };
 
+    private String phone;
     VisitorAdapter.OnItemClickListener onItemClickListener = new VisitorAdapter.OnItemClickListener() {
         @Override
         public void itemClick(Connect.VisitorRecord visitorRecord) {
-            VisitorsAuditActivity.lunchActivity(mActivity, visitorRecord);
+            VisitorsAuditActivity.lunchActivity(mActivity, visitorRecord, 0);
+        }
+
+        @Override
+        public void callClick(Connect.VisitorRecord visitorRecord) {
+            phone = visitorRecord.getStaffPhone();
+            PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_PHONE}, permissionCallBack);
+        }
+    };
+
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
+        @Override
+        public void granted(String[] permissions) {
+            if (permissions != null && permissions.length > 0) {
+                if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
+                mActivity.startActivity(intent);
+            }
+        }
+
+        @Override
+        public void deny(String[] permissions) {
         }
     };
 

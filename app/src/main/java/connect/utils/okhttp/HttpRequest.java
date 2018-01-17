@@ -27,6 +27,7 @@ import connect.activity.base.BaseApplication;
 import connect.utils.ConfigUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastUtil;
+import connect.utils.UriUtil;
 import connect.utils.log.LogManager;
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -148,10 +149,19 @@ public class HttpRequest {
             ToastUtil.getInstance().showToast(R.string.Chat_Network_connection_failed_please_check_network);
             return;
         }
+        String address;
+        if(url.equals(UriUtil.CONNECT_V3_PROXY_VISITOR_RECORDS) ||
+                url.equals(UriUtil.CONNECT_V3_PROXY_RECORDS_HISTORY) ||
+                url.equals(UriUtil.CONNECT_V3_PROXY_EXAMINE_VERIFY) ||
+                url.equals(UriUtil.CONNECT_V3_PROXY_TOKEN)){
+            address = ConfigUtil.getInstance().visitorAddress() + url;
+        }else{
+            address = ConfigUtil.getInstance().serverAddress() + url;
+        }
 
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE_DEFAULT, content);
         Request request = new Request.Builder()
-                .url(ConfigUtil.getInstance().serverAddress() + url)
+                .url(address)
                 .post(requestBody)
                 .build();
 
