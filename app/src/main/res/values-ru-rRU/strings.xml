@@ -720,4 +720,5 @@
     <string name="Login_Connect_Change_Password">Пожалуйста, свяжитесь с администрацией, чтобы изменить пароль</string>
     <string name="Link_Function_Under_Development">Функция находится в разработке...</string>
     <string name="Link_Function_Manager">Управление приложениями</string>
+    <string name="Error_Device_Remote_Other_Login">Ваша учетная запись уже подписана на других устройствах</string>
 </resources>

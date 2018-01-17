@@ -96,13 +96,14 @@ public class BaseGroupSelectActivity extends BaseActivity {
 
                     Connect.Workmate workmate = Connect.Workmate.newBuilder()
                             .setPubKey(entity.getPublicKey())
+                            .setUid(entity.getUid())
                             .setName(entity.getName())
                             .setAvatar(entity.getAvatar())
-                            .setGender(entity.getGender())
-                            .setMobile(entity.getMobile())
-                            .setOU(entity.getOu())
-                            .setRegisted(entity.getRegisted())
-                            .setTips(entity.getTips())
+                            .setGender(null == entity.getGender() ? 1 : entity.getGender())
+                            .setMobile(TextUtils.isEmpty(entity.getMobile()) ? "" : entity.getMobile())
+                            .setOU(TextUtils.isEmpty(entity.getOu()) ? "" : entity.getOu())
+                            .setRegisted(null == entity.getRegisted() ? false : entity.getRegisted())
+                            .setTips(TextUtils.isEmpty(entity.getTips()) ? "" : entity.getTips())
                             .build();
                     workmates.add(workmate);
                 }
@@ -176,7 +177,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
                 }
 
                 toolbar.setRightText(getString(R.string.Chat_Select_Count, selectMembers.size()));
-                toolbar.setRightTextEnable(selectMembers.size() >= 3);
+                toolbar.setRightTextEnable(selectMembers.size() >= 2);
             }
         });
     }

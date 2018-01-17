@@ -40,7 +40,7 @@ public class WorkSeachActivity extends BaseActivity {
 
     private WorkSeachActivity activity;
     private WorkSearchAdapter workSearchAdapter;
-    private boolean isManager = false;
+    private int fromCategory = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +50,15 @@ public class WorkSeachActivity extends BaseActivity {
         initView();
     }
 
-    public static void startActivity(Activity activity, boolean isManager) {
+    /**
+     * @param activity
+     * @param category  0: 搜索
+     *                  1: 管理
+     *                  2: 添加
+     */
+    public static void startActivity(Activity activity, int category) {
         Bundle bundle = new Bundle();
-        bundle.putBoolean("Is_Manager", isManager);
+        bundle.putInt("Category", category);
         ActivityUtil.next(activity, WorkSeachActivity.class, bundle);
     }
 
@@ -69,10 +75,10 @@ public class WorkSeachActivity extends BaseActivity {
         });
 
 
-        isManager = getIntent().getBooleanExtra("Is_Manager", false);
-        if(isManager){
+        fromCategory = getIntent().getIntExtra("Is_Manager", 0);
+        if (fromCategory == 1) {
             toolbar.setTitle(getResources().getString(R.string.Link_Function_Manager));
-        }else{
+        } else {
             toolbar.setRightText(getResources().getString(R.string.Work_Search));
             toolbar.setSearchTitle(R.mipmap.icon_search_small3x, getResources().getString(R.string.Work_Service_Search));
             toolbar.setRightListener(new View.OnClickListener() {
@@ -124,7 +130,7 @@ public class WorkSeachActivity extends BaseActivity {
                     Connect.Applications applications = Connect.Applications.parseFrom(structData.getPlainData());
                     List<Connect.Application> applications1 = applications.getListList();
 
-                    if (isManager) {
+                    if (fromCategory == 1 || fromCategory == 2) {
                         List<Connect.Application> filterApplications = new ArrayList<Connect.Application>();
                         for (Connect.Application application : applications1) {
                             if (application.getCategory() == 2) {
