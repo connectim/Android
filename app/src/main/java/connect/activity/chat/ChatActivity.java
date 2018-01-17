@@ -139,8 +139,7 @@ public class ChatActivity extends BaseChatSendActivity {
         inputPanel.setRecordView(recordview);
         updateBurnState(0);
 
-        // robot/stranger donot show setting
-        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
+        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM)) {
             toolbar.setRightImg(R.mipmap.menu_white);
         }
 
