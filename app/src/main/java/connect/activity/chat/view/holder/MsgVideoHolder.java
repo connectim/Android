@@ -42,7 +42,6 @@ public class MsgVideoHolder extends MsgChatHolder {
     public void buildRowData(final MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
-        RoomSession.getInstance().checkBurnTime(videoMessage.getSnapTime());
 
         int videoTime = videoMessage.getTimeLength();
         timeTxt.setText(String.format(Locale.ENGLISH, "%1$02d:%2$02d", videoTime / 60, videoTime % 60));

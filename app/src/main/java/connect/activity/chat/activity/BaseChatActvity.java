@@ -71,6 +71,7 @@ public abstract class BaseChatActvity extends BaseActivity {
         roomSession = RoomSession.getInstance();
         roomSession.setRoomType(talker.getTalkType());
         roomSession.setRoomKey(talker.getTalkKey());
+        roomSession.setFriendAvatar(talker.getAvatar());
 
         Connect.ChatType chatType = talker.getTalkType();
         switch (chatType) {

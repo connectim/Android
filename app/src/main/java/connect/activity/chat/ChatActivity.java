@@ -34,6 +34,7 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
+import connect.activity.home.bean.RoomAttrBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.GroupEntity;

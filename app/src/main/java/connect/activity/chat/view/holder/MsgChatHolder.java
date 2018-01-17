@@ -14,7 +14,6 @@ import connect.activity.base.BaseListener;
 import connect.activity.chat.bean.GroupMemberUtil;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.view.BurnProBar;
 import connect.activity.chat.view.MsgStateView;
 import connect.activity.contact.ContactInfoActivity;
 import connect.activity.set.UserInfoActivity;
@@ -38,7 +37,6 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
 
     protected ChatHeadImg headImg;
     protected TextView memberTxt;
-    protected BurnProBar burnProBar;
     protected MsgStateView msgStateView;
     protected RelativeLayout contentLayout;
 
@@ -50,7 +48,6 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         super(itemView);
         headImg = (ChatHeadImg) itemView.findViewById(R.id.roundimg_head);
         memberTxt = (TextView) itemView.findViewById(R.id.usernameText);
-        burnProBar = (BurnProBar) itemView.findViewById(R.id.burnprogressbar);
         msgStateView = (MsgStateView) itemView.findViewById(R.id.msgstateview);
         contentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
 
@@ -96,14 +93,13 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         switch (chatType) {
             case PRIVATE:
                 GlideUtil.loadAvatarRound(headImg, direct == MsgDirect.From ?
-                        RoomSession.getInstance().getChatAvatar() :
+                        RoomSession.getInstance().getFriendAvatar() :
                         SharedPreferenceUtil.getInstance().getUser().getAvatar());
                 headImg.setUserUid(direct == MsgDirect.From ?
                         RoomSession.getInstance().getRoomKey() :
                         SharedPreferenceUtil.getInstance().getUser().getUid());
 
-                headImg.setVisibility(RoomSession.getInstance().getBurntime() <= 0 ? View.VISIBLE :
-                        View.GONE);
+                headImg.setVisibility(View.VISIBLE);
                 headImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -165,14 +161,8 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     });
                 }
 
-                if (burnProBar != null) {
-                    burnProBar.setVisibility(View.GONE);
-                }
                 break;
             case CONNECT_SYSTEM:
-                if (burnProBar != null) {
-                    burnProBar.setVisibility(View.GONE);
-                }
                 if (memberTxt != null) {
                     memberTxt.setVisibility(View.GONE);
                 }

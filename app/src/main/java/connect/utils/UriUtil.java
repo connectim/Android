@@ -48,6 +48,9 @@ public class UriUtil {
     public static String CONNECT_V3_PROXY_EXAMINE_VERIFY = "/attendance/v3/proxy/examine/verify";
     public static String CONNECT_V3_PROXY_RECORDS_HISTORY = "/attendance/v3/proxy/visitor/records/history";
 
+    public static String CONNECT_V3_API_APPLICATIONS_ADD = "/connect/v3/api/applications/add";
+    public static String CONNECT_V3_API_APPLICATIONS_DEL = "/connect/v3/api/applications/del";
+
     /** 根据 部门id查询 所有员工 */
     public static String CONNECT_V3_DEPAERTMENT_WORKMATES = "/connect/v3/department/workmates";
     /** 群成员邀请入群 */
