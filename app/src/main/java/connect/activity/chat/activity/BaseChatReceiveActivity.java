@@ -132,7 +132,7 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 if (identify.equals(normalChat.chatKey())) {
                     String groupName = (String) objects[1];
                     ((GroupChat) normalChat).setNickName(groupName);
-                    updateBurnState(RoomSession.getInstance().getBurntime() <= 0 ? 0 : 1);
+                    updateBurnState(0);
                 }
                 break;
             case GROUP_UPDATEMYNAME://update my nick in group

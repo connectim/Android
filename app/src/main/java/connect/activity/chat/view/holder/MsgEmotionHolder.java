@@ -26,7 +26,6 @@ public class MsgEmotionHolder extends MsgChatHolder {
     public void buildRowData(MsgBaseHolder msgBaseHolder, ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         Connect.EmotionMessage emotionMessage = Connect.EmotionMessage.parseFrom(msgExtEntity.getContents());
-        RoomSession.getInstance().checkBurnTime(emotionMessage.getSnapTime());
 
         String filepath = emotionMessage.getContent();
         filepath = EmoManager.GIF_PATH + File.separator + filepath + ".gif";

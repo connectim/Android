@@ -43,7 +43,6 @@ public class MsgVoiceHolder extends MsgChatHolder {
     public void buildRowData(final MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
-        RoomSession.getInstance().checkBurnTime(voiceMessage.getSnapTime());
         final String fileKey = StringUtil.bytesToHexString(voiceMessage.getFileKey().toByteArray());
 
         boolean visiable = false;

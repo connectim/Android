@@ -25,16 +25,4 @@ public class ChatHeadImg extends ImageView {
     public void setUserUid(String uid) {
         this.userUid = uid;
     }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        EventBus.getDefault().unregister(this);
-    }
 }

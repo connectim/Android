@@ -1872,12 +1872,13 @@ message Banners {
 
 message Application {
   string name = 1;
-  string code = 2;
-  string img = 3;
-  string href = 4;
-  string router = 5;
-  int32 priority = 6;
-  int32 category = 7;
+string code = 2;
+string img = 3;
+string href = 4;
+string router = 5;
+int32 priority = 6;
+int32 category = 7;
+bool added = 8;
 }
 
 message Applications {

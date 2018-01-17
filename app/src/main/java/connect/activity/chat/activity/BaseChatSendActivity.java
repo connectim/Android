@@ -140,26 +140,6 @@ public abstract class BaseChatSendActivity extends BaseChatReceiveActivity {
                 chatMsgEntity = normalChat.cardMsg((String) objects[0], (String) objects[1], (String) objects[2]);
                 sendNormalMsg(true, chatMsgEntity);
                 break;
-            case BURNREAD_SETTING:
-                int settingTime = (int) objects[0];
-                RoomSession.getInstance().setBurntime(settingTime);
-                ConversionSettingHelper.getInstance().updateBurnTime(talker.getTalkKey(), settingTime);
-
-                String content = "";
-                if (settingTime <= 0) {
-                    content = getString(R.string.Chat_disable_the_self_descruct, getString(R.string.Chat_You));
-                } else {
-                    content = getString(R.string.Chat_set_the_self_destruct_timer_to, getString(R.string.Chat_You), TimeUtil.parseBurnTime(settingTime));
-                }
-                ChatMsgEntity msgEntity = normalChat.noticeMsg(0, content, "");
-                MessageHelper.getInstance().insertMsgExtEntity(msgEntity);
-                sendNormalMsg(false, msgEntity);
-
-                updateBurnState(settingTime);
-                uid = SharedPreferenceUtil.getInstance().getUser().getUid();
-                userOrderBean = new UserOrderBean();
-                userOrderBean.burnReadSetting(uid, talker.getTalkKey(), settingTime);
-                break;
             case BURNREAD_RECEIPT:
                 String messageId = (String) objects[0];
 

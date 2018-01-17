@@ -18,10 +18,6 @@
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"/>
 
-        <connect.activity.chat.view.BurnProBar
-            android:id="@id/burnprogressbar"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"/>
     </LinearLayout>
 
     <RelativeLayout
