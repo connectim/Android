@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import connect.activity.workbench.WorkSeachActivity;
 import connect.activity.workbench.data.MenuBean;
 import connect.activity.workbench.data.MenuData;
 import connect.ui.activity.R;
+import connect.utils.DialogUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -87,7 +89,9 @@ public class WorkbenchFragment extends BaseFragment {
         cycleViewPager.setOnItemClickListener(new CycleViewPager.ItemSyscleClickListener() {
             @Override
             public void itemClickL(Connect.Banner banner, int position) {
-                OuterWebsiteActivity.startActivity(activity, banner.getHref());
+                if(!TextUtils.isEmpty(banner.getHref())){
+                    OuterWebsiteActivity.startActivity(activity, banner.getHref());
+                }
             }
         });
         getBanners();
@@ -108,15 +112,18 @@ public class WorkbenchFragment extends BaseFragment {
         myMenuRecycler.setAdapter(myAppMenuAdapter);
     }
 
-    @OnClick(R.id.search_relative)
-    void searchRelative(View view) {
-
-    }
-
     WorkbenchMenuAdapter.OnItemMenuClickListener onItemMenuClickListener = new WorkbenchMenuAdapter.OnItemMenuClickListener() {
         @Override
         public void itemClick(int position, MenuBean item) {
+            DialogUtil.showAlertTextView(activity, getString(R.string.Set_tip_title),
+                    getString(R.string.Link_Function_Under_Development),
+                    "", "", true, new DialogUtil.OnItemClickListener() {
+                        @Override
+                        public void confirm(String value) {}
 
+                        @Override
+                        public void cancel() {}
+                    });
         }
     };
 
@@ -125,6 +132,16 @@ public class WorkbenchFragment extends BaseFragment {
         public void itemClick(int position, MenuBean item) {
             if (item.getCode().equals("visitors")) {
                 VisitorsActivity.lunchActivity(activity);
+            }else{
+                DialogUtil.showAlertTextView(activity, getString(R.string.Set_tip_title),
+                        getString(R.string.Link_Function_Under_Development),
+                        "", "", true, new DialogUtil.OnItemClickListener() {
+                            @Override
+                            public void confirm(String value) {}
+
+                            @Override
+                            public void cancel() {}
+                        });
             }
         }
     };

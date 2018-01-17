@@ -47,6 +47,8 @@
                 android:padding="@dimen/dp_5"
                 android:textColor="@color/color_ffffff"
                 android:textSize="@dimen/sp_14"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:text="@string/Common_Management"/>
         </LinearLayout>
     </LinearLayout>

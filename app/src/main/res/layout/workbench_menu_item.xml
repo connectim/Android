@@ -17,6 +17,8 @@
         style="@style/BaseTextStyle.12"
         android:layout_marginTop="@dimen/dp_3"
         android:textColor="@color/color_8E8E8E"
-        android:gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:singleLine="true"
+        android:ellipsize="end"/>
 
 </LinearLayout>

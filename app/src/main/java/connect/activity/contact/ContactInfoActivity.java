@@ -232,6 +232,7 @@ public class ContactInfoActivity extends BaseActivity {
                         if(contactEntityLocal != null){
                             if (!workmate.getAvatar().equals(contactEntityLocal.getAvatar())) {
                                 contactEntity.setAvatar(workmate.getAvatar());
+                                showView();
                                 ContactHelper.getInstance().insertContact(contactEntity);
                                 ContactNotice.receiverContact();
                             }

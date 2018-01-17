@@ -72,7 +72,6 @@ public class VisitorsActivity extends BaseFragmentActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Work_Visitors_info);
         toolbarTop.setRightText(R.string.Link_Invite);
-        toolbarTop.setRightTextEnable(true);
 
         auditFragment = AuditFragment.startFragment();
         approvedFragment = ApprovedFragment.startFragment();
@@ -107,7 +106,6 @@ public class VisitorsActivity extends BaseFragmentActivity {
                 break;
         }
     }
-
 
     public void switchFragment(int code) {
         FragmentManager fragmentManager = getSupportFragmentManager();
