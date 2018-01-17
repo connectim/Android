@@ -559,6 +559,8 @@
     <string name="Work_Visitors_agree_to_visit">是否确认同意访问？</string>
     <string name="Work_Visitors_to_audit">待审核</string>
     <string name="Work_Visitors_the_approved">已审核</string>
+    <string name="Work_Visitors_apply_list">申请列表</string>
+    <string name="Work_Visitors_audit_records">审核记录</string>
 
     <string name="Chat_Refreshing">正在更新...</string>
     <string name="Link_Join_Group_Success">成功加入群聊</string>
