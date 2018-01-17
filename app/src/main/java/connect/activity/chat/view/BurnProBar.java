@@ -11,17 +11,15 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import connect.activity.chat.bean.DestructReadBean;
-import connect.activity.chat.bean.LinkMessageRow;
-import instant.bean.ChatMsgEntity;
-import instant.bean.MsgDirect;
-import connect.activity.chat.bean.MsgExtEntity;
+
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
 import connect.utils.system.SystemUtil;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 
 /**
  * Created by gtq on 2016/12/13.
@@ -96,14 +94,6 @@ public class BurnProBar extends View {
             MsgSend.sendOuterMsg(MsgSend.MsgSendType.BURNREAD_RECEIPT, msgExtEntity.getMessage_id());
         }
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(DestructReadBean readBean) {
-        if (msgExtEntity.getMessage_id().equals(readBean.getMessageId())) {
-            startBurnRead();
-        }
-    }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(RecExtBean bean) {

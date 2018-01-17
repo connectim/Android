@@ -1,4 +1,4 @@
-package connect.activity.wallet.bean;
+package connect.utils.data;
 
 /**
  * Created by Administrator on 2016/12/15.

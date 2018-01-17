@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import connect.activity.base.BaseActivity;
 import connect.activity.base.compare.GroupComPara;
 import connect.activity.chat.adapter.GroupMemberAdapter;
 import connect.activity.chat.set.contract.GroupMemberContract;
-import connect.activity.chat.set.group.GroupDepartSelectActivity;
 import connect.activity.chat.set.presenter.GroupMemberPresenter;
 import connect.activity.home.view.LineDecoration;
 import connect.database.SharedPreferenceUtil;

@@ -11,23 +11,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import connect.activity.base.BaseListener;
-import connect.activity.chat.bean.DestructReadBean;
-import connect.activity.chat.bean.LinkMessageRow;
+import connect.activity.chat.bean.GroupMemberUtil;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.model.GroupMemberUtil;
 import connect.activity.chat.view.BurnProBar;
 import connect.activity.chat.view.MsgStateView;
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.ChatHeadImg;
@@ -123,22 +117,6 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                 });
                 if (memberTxt != null) {
                     memberTxt.setVisibility(View.GONE);
-                }
-                if (burnProBar != null) {
-                    long destructtime = msgExtEntity.parseDestructTime();
-                    if (destructtime == 0) {
-                        burnProBar.setVisibility(View.GONE);
-                    } else {
-                        burnProBar.setVisibility(View.VISIBLE);
-                        burnProBar.setMsgExtEntity(msgExtEntity);
-
-                        LinkMessageRow msgType = LinkMessageRow.toMsgType(msgExtEntity.getMessageType());
-                        burnProBar.loadBurnMsg();
-                        if (direct == MsgDirect.From && (msgType == LinkMessageRow.Text || msgType == LinkMessageRow.Emotion)) {
-                            msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
-                            DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
-                        }
-                    }
                 }
                 break;
             case GROUPCHAT:

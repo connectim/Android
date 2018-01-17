@@ -23,7 +23,6 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.adapter.BaseGroupSelectAdapter;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.set.group.GroupDepartSelectActivity;
 import connect.activity.home.bean.GroupRecBean;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
@@ -107,7 +106,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
                             .build();
                     workmates.add(workmate);
                 }
-                TalkGroupCreateActivity.startActivity(activity, isCreateGroup, workmates);
+                GroupCreateActivity.startActivity(activity, isCreateGroup, workmates);
 
                 Message message = new Message();
                 message.what = 100;
@@ -229,7 +228,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
             }
 
             if (isCreateGroup) {
-                TalkGroupCreateActivity.startActivity(activity, true, workmates);
+                GroupCreateActivity.startActivity(activity, true, workmates);
             } else {
                 List<String> uids = new ArrayList<>();
                 for (Connect.Workmate workmate : workmates) {

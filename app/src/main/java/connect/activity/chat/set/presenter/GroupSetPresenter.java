@@ -106,24 +106,6 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
 
         view.groupName(groupEntity.getName());
 
-//        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
-//        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myUid);
-//        String myAlias = "";
-//        if (myMember == null) {
-//
-//        }else{
-//            myAlias = TextUtils.isEmpty(myMember.getNick()) ? myMember.getUsername() : myMember.getNick();
-//        }
-//        view.groupMyAlias(myAlias);
-
-//        view.groupQRCode();
-//
-//        boolean visiable = false;
-//        if (!(myMember == null || myMember.getRole() == null || myMember.getRole() == 0)) {
-//            visiable = true;
-//        }
-//        view.groupManager(visiable);
-
         ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(roomKey);
         boolean top = false;
         if (conversionEntity != null) {

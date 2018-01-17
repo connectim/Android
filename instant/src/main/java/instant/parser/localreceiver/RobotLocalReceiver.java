@@ -57,11 +57,6 @@ public class RobotLocalReceiver implements RobotListener {
     }
 
     @Override
-    public void reviewedMessage(Connect.Reviewed reviewed) {
-        getRobotListener().reviewedMessage(reviewed);
-    }
-
-    @Override
     public void announcementMessage(Connect.Announcement announcement) {
         getRobotListener().announcementMessage(announcement);
     }

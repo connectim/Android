@@ -6,15 +6,12 @@ import android.graphics.drawable.Drawable;
 import org.junit.Test;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.CountryBean;
-import connect.activity.wallet.bean.RateBean;
 import connect.ui.activity.R;
 import connect.utils.data.PhoneDataUtil;
-import connect.utils.data.RateDataUtil;
 import connect.utils.data.ResourceUtil;
 
 import static org.junit.Assert.assertTrue;
@@ -47,23 +44,12 @@ public class DataUtilTest {
 
     @Test
     public void getRateData() {
-        ArrayList<RateBean> listRate =  RateDataUtil.getInstance().getRateData();
-        if(listRate == null || listRate.size() == 0){
-            assertTrue(false);
-        }else{
-            assertTrue(true);
-        }
+
     }
 
     @Test
     public void getRate() {
-        String code = "CNY";
-        RateBean rateBean =  RateDataUtil.getInstance().getRate(code);
-        if(rateBean != null && rateBean.getCode().equals(code)){
-            assertTrue(true);
-        }else{
-            assertTrue(false);
-        }
+
     }
 
     @Test

@@ -17,10 +17,10 @@ import connect.activity.base.BaseApplication;
 import connect.activity.home.HomeActivity;
 import connect.activity.set.adapter.CurrencyAdapter;
 import connect.utils.data.LanguageData;
-import connect.activity.wallet.bean.RateBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.data.RateBean;
 import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
 

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.chat.set.group.DepartSelectBean;
+import connect.activity.chat.bean.DepartSelectBean;
 import connect.ui.activity.R;
 import connect.widget.DepartmentAvatar;
 import protos.Connect;
