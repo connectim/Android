@@ -58,6 +58,7 @@ public class WorkbenchFragment extends BaseFragment {
     private FragmentActivity activity;
     private WorkbenchMenuAdapter appMenuAdapter;
     private WorkbenchMenuAdapter myAppMenuAdapter;
+     ArrayList<MenuBean> myListMenu = new ArrayList<>();
 
     public static WorkbenchFragment startFragment() {
         WorkbenchFragment workbenchFragment = new WorkbenchFragment();
@@ -110,6 +111,11 @@ public class WorkbenchFragment extends BaseFragment {
         myAppMenuAdapter.setOnItemClickListence(onItemMyMenuClickListener);
         myMenuRecycler.setLayoutManager(new GridLayoutManager(activity, 4));
         myMenuRecycler.setAdapter(myAppMenuAdapter);
+    }
+
+    @OnClick(R.id.manager_tv)
+    void managerMyApp(View view) {
+
     }
 
     WorkbenchMenuAdapter.OnItemMenuClickListener onItemMenuClickListener = new WorkbenchMenuAdapter.OnItemMenuClickListener() {
@@ -188,8 +194,7 @@ public class WorkbenchFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onError(Connect.HttpNotSignResponse response) {
-                    }
+                    public void onError(Connect.HttpNotSignResponse response) {}
                 });
     }
 
