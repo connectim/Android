@@ -69,7 +69,7 @@ public class AuditFragment extends BaseFragment {
         refreshview.setOnRefreshListener(onRefreshListener);
         recyclerview.addOnScrollListener(endlessScrollListener);
 
-        adapter = new VisitorAdapter(mActivity);
+        adapter = new VisitorAdapter(mActivity, 1);
         adapter.setItemClickListener(onItemClickListener);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);

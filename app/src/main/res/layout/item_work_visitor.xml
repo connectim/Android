@@ -19,6 +19,15 @@
             style="@style/BaseTextStyle.14"
             android:gravity="center_vertical"
             android:text=""/>
+        <TextView
+            android:id="@+id/status_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BaseTextStyle.14"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text=""
+            android:layout_marginRight="@dimen/dp_20"/>
         <ImageView
             android:contentDescription="@string/app_name"
             android:layout_width="wrap_content"

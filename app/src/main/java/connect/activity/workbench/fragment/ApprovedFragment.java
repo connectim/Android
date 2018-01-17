@@ -74,7 +74,7 @@ public class ApprovedFragment extends BaseFragment {
         refreshview.setOnRefreshListener(onRefreshListener);
         recyclerview.addOnScrollListener(endlessScrollListener);
 
-        adapter = new VisitorAdapter(mActivity);
+        adapter = new VisitorAdapter(mActivity, 2);
         adapter.setItemClickListener(onItemClickListener);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
@@ -103,7 +103,7 @@ public class ApprovedFragment extends BaseFragment {
     VisitorAdapter.OnItemClickListener onItemClickListener = new VisitorAdapter.OnItemClickListener() {
         @Override
         public void itemClick(Connect.VisitorRecord visitorRecord) {
-            VisitorsAuditActivity.lunchActivity(mActivity, visitorRecord);
+            //VisitorsAuditActivity.lunchActivity(mActivity, visitorRecord);
         }
     };
 

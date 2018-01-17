@@ -26,15 +26,20 @@
                 android:textSize="@dimen/sp_14"
                 android:gravity="center"
                 android:background="@drawable/selector_list_item_bg"
-                android:text="@string/Work_Visitors_to_audit"/>
+                android:text="@string/Work_Visitors_apply_list"/>
             <View
                 android:id="@+id/to_audit_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
-                android:background="@color/color_1C6ED5"
+                android:background="@color/color_3081EA"
                 android:layout_alignParentBottom="true"/>
         </RelativeLayout>
 
+        <View
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="match_parent"
+            android:background="@color/color_line_diviver"/>
+        
         <RelativeLayout
             android:layout_width="0px"
             android:layout_height="match_parent"
@@ -47,12 +52,12 @@
                 android:textSize="@dimen/sp_14"
                 android:gravity="center"
                 android:background="@drawable/selector_list_item_bg"
-                android:text="@string/Work_Visitors_the_approved"/>
+                android:text="@string/Work_Visitors_audit_records"/>
             <View
                 android:id="@+id/the_approved_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
-                android:background="@color/color_1C6ED5"
+                android:background="@color/color_3081EA"
                 android:layout_alignParentBottom="true"
                 android:visibility="gone"/>
         </RelativeLayout>

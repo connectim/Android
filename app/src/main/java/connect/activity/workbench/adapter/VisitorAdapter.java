@@ -23,10 +23,12 @@ import protos.Connect;
 public class VisitorAdapter extends RecyclerView.Adapter<VisitorAdapter.ViewHolder>  {
 
     private final Activity activity;
+    private final int style;
     private ArrayList<Connect.VisitorRecord> mListData = new ArrayList();
     private OnItemClickListener itemClickListener;
 
-    public VisitorAdapter(Activity activity) {
+    public VisitorAdapter(Activity activity, int style) {
+        this.style = style;
         this.activity = activity;
     }
 
@@ -48,6 +50,20 @@ public class VisitorAdapter extends RecyclerView.Adapter<VisitorAdapter.ViewHold
         String time = TimeUtil.getTime(visitorRecord.getStartTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR) + "——" +
                 TimeUtil.getTime(visitorRecord.getEndTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR);
         holder.timeTv.setText(activity.getString(R.string.Work_Visitors_time, time));
+
+        if(style == 1){
+            holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_868686));
+            holder.statusTv.setText("(" + activity.getResources().getString(R.string.Work_Visitors_to_audit) + ")");
+        }else{
+            if(visitorRecord.getStatus()){
+                holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_3081EA));
+                holder.statusTv.setText("(" + activity.getResources().getString(R.string.Chat_Have_agreed) + ")");
+            }else{
+                holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_C72F2F));
+                holder.statusTv.setText("(" + activity.getResources().getString(R.string.Chat_Have_refused) + ")");
+            }
+        }
+
         holder.contentLinear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,6 +89,7 @@ public class VisitorAdapter extends RecyclerView.Adapter<VisitorAdapter.ViewHold
         TextView reasonTv;
         TextView timeTv;
         TextView phoneTv;
+        TextView statusTv;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -81,6 +98,7 @@ public class VisitorAdapter extends RecyclerView.Adapter<VisitorAdapter.ViewHold
             reasonTv = (TextView) itemView.findViewById(R.id.reason_tv);
             timeTv = (TextView) itemView.findViewById(R.id.time_tv);
             phoneTv = (TextView) itemView.findViewById(R.id.phone_tv);
+            statusTv = (TextView) itemView.findViewById(R.id.status_tv);
         }
     }
 
