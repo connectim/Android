@@ -14,7 +14,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.io.File;
 
-import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.BubbleImg;
@@ -66,8 +65,6 @@ public class MsgImgHolder extends MsgChatHolder {
                 if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
                     msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-
-                    DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
                 }
             }
         });

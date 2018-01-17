@@ -23,12 +23,6 @@ public interface GroupSetContract {
 
         void groupName(String groupname);
 
-        void groupMyAlias(String alias);
-
-        void groupQRCode();
-
-        void groupManager(boolean visiable);
-
         void topSwitch(boolean top);
 
         void noticeSwitch(boolean notice);

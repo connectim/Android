@@ -16,12 +16,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.bean.DestructReadBean;
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.exts.contract.VideoPlayContract;
 import connect.activity.chat.exts.presenter.VideoPlayPresenter;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.MessageEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.TimeUtil;
@@ -126,8 +123,6 @@ public class VideoPlayerActivity extends BaseActivity implements VideoPlayContra
                 ChatMsgEntity msgExtEntity = MessageHelper.getInstance().loadMsgByMsgid(messageId);
                 msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                 MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-
-                DestructReadBean.getInstance().sendEventDelay(messageId);
             }
         }
     };

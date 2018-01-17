@@ -1,4 +1,4 @@
-package connect.activity.chat.set.group;
+package connect.activity.chat.bean;
 
 import java.io.Serializable;
 

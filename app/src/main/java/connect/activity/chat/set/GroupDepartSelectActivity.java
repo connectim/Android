@@ -1,4 +1,4 @@
-package connect.activity.chat.set.group;
+package connect.activity.chat.set;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseListener;
 import connect.activity.chat.adapter.GroupDepartSelectAdapter;
+import connect.activity.chat.bean.DepartSelectBean;
 import connect.activity.company.adapter.NameLinear;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
