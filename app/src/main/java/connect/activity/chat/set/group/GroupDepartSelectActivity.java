@@ -70,7 +70,6 @@ public class GroupDepartSelectActivity extends BaseActivity {
         activity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
-        toolbarTop.setTitle(null, R.string.Chat_set_Create_New_Group);
         toolbarTop.setRightText(getString(R.string.Chat_Select_Count, 0));
         toolbarTop.setLeftListener(new View.OnClickListener() {
             @Override
@@ -105,6 +104,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
         isCreate = getIntent().getBooleanExtra("Is_Create", true);
         selectedUids = (List<String>) getIntent().getSerializableExtra("Uids");
         if (isCreate) {
+            toolbarTop.setTitle(getResources().getString(R.string.Link_Group_Create));
             if (selectedUids.size() >= 2) {
                 toolbarTop.setRightTextEnable(true);
             } else {
@@ -112,6 +112,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
             }
             toolbarTop.setRightText(getString(R.string.Chat_Select_Count, selectedUids.size()));
         } else {
+            toolbarTop.setTitle(getResources().getString(R.string.Link_Group_Invite));
             toolbarTop.setRightTextEnable(false);
             toolbarTop.setRightText(getString(R.string.Chat_Select_Count, 0));
         }
@@ -138,7 +139,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
 
             @Override
             public boolean isContains(String selectKey) {
-                return selectDeparts.containsKey(selectKey) || selectedUids.contains(selectKey);
+                return selectDeparts.containsKey(selectKey) || selectedUids.contains(selectKey.substring(1));
             }
 
             @Override

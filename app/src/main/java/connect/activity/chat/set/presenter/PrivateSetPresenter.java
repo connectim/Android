@@ -11,14 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.set.contract.PrivateSetContract;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 import connect.utils.glide.GlideUtil;
 
 /**
@@ -67,11 +65,10 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
 
         view.clearMessage();
 
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);
-        if (friendEntity == null) {
-            ActivityUtil.goBack(activity);
-            return;
-        }
+        ContactEntity friendEntity = new ContactEntity();
+        friendEntity.setAvatar(view.getAvatar());
+        friendEntity.setUid(view.getRoomKey());
+        friendEntity.setName(view.getName());
         List<ContactEntity> entities = new ArrayList<>();
         entities.add(friendEntity);
         entities.add(new ContactEntity());
@@ -86,7 +83,7 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
                 name.setVisibility(View.GONE);
             } else {
                 name.setVisibility(View.VISIBLE);
-                String nametxt = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
+                String nametxt = TextUtils.isEmpty(entity.getName()) ? "" : entity.getName();
                 name.setText(nametxt);
             }
 

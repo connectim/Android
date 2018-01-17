@@ -22,6 +22,7 @@ import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
+import connect.activity.workbench.WorkSeachActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -42,12 +43,14 @@ import static connect.widget.SideScrollView.SideScrollListener;
  */
 public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ConversationHolder> {
 
+    private Activity activity;
     private RecyclerView recyclerView;
     private SideScrollView lastOpenScrollView = null;
     private LayoutInflater inflater;
     private List<RoomAttrBean> roomAttrBeanList = new ArrayList<>();
 
     public ConversationAdapter(Activity activity, RecyclerView recyclerView) {
+        this.activity = activity;
         inflater = LayoutInflater.from(activity);
         this.recyclerView = recyclerView;
     }
@@ -73,7 +76,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @Override
     public void onBindViewHolder(ConversationHolder holder, final int position) {
         final RoomAttrBean roomAttr = roomAttrBeanList.get(position);
-        holder.directTxt.showText(roomAttr.getAt(),roomAttr.getDraft(), TextUtils.isEmpty(roomAttr.getContent()) ? "" : roomAttr.getContent());
+        holder.directTxt.showText(roomAttr.getAt(), roomAttr.getDraft(), TextUtils.isEmpty(roomAttr.getContent()) ? "" : roomAttr.getContent());
         try {
             long sendtime = roomAttr.getTimestamp();
             holder.timeTxt.setText(0 == sendtime ? "" : TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), sendtime));
@@ -244,7 +247,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         public ConversationHolder(View itemView) {
             super(itemView);
             contentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
-            bottomLayout= (LinearLayout) itemView.findViewById(R.id.bottom_layout);
+            bottomLayout = (LinearLayout) itemView.findViewById(R.id.bottom_layout);
             bottomTrash = (RelativeLayout) itemView.findViewById(R.id.bottom_trash);
             bottomNotify = (RelativeLayout) itemView.findViewById(R.id.bottom_notify);
 

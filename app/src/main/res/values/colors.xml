@@ -3,6 +3,7 @@
     <color name="color_black">#000000</color>
     <color name="color_clear">#00000000</color>
 
+    <color name="color_aeaeae">#AEAEAE</color>
     <color name="color_0da835">#0DA835</color>
     <color name="color_ebecee">#EBECEE</color>
     <color name="color_e2e4e6">#E2E4E6</color>
@@ -35,6 +36,7 @@
     <color name="color_A6A6A6">#A6A6A6</color>
     <color name="color_6277AE">#6277AE</color>
     <color name="color_a5a7ae">#A5A7AE</color>
+    <color name="color_b6b6b6">#B6B6B6</color>
     <color name="color_A5A5A5">#A5A5A5</color>
     <color name="color_b3b5bc">#B3B5BC</color>
     <color name="color_767a82">#767A82</color>
@@ -60,6 +62,7 @@
     <color name="color_D2D2D2">#D2D2D2</color>
     <color name="color_ccc3c3ca">#CCC3C3CA</color>
     <color name="color_cc161a21">#80161A21</color>
+    <color name="color_cccccc">#CCCCCC</color>
     <color name="color_6B91EA">#6B91EA</color>
     <color name="color_366B91EA">#366B91EA</color>
     <color name="color_F27E32">#F27E32</color>
@@ -71,6 +74,7 @@
     <color name="color_bg_activity">#F1F1F1</color>
     <color name="color_spaceline">#D2D2D6</color>
     <color name="color_line_diviver">#EEEEEE</color>
+    <color name="color_e7e7e7">#E7E7E7</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_lightgray">#D0D2D6</color>
     <color name="color_red">#FF6C5A</color>

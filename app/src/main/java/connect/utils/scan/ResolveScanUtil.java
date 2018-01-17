@@ -8,9 +8,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.net.URL;
 
 import connect.activity.chat.exts.OuterWebsiteActivity;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
-import connect.activity.contact.bean.SourceType;
+import connect.activity.contact.ContactInfoActivity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -108,11 +106,11 @@ public class ResolveScanUtil {
             public void call(int status, String uid) {
                 switch (status){
                     case 1:
-                        FriendInfoActivity.startActivity(activity, uid);
+                        ContactInfoActivity.lunchActivity(activity, uid);
                         ActivityUtil.goBack(activity);
                         break;
                     case 2:
-                        StrangerInfoActivity.startActivity(activity, uid, SourceType.QECODE);
+                        ContactInfoActivity.lunchActivity(activity, uid);
                         ActivityUtil.goBack(activity);
                         break;
                     case 3:

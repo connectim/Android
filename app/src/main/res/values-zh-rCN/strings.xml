@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="Chat_Add_as_a_friend_to_chat">添加为好友才能开始聊天</string>
     <string name="Chat_Agree">同意</string>
     <string name="Chat_Album_Permission_Get">缺少读取系统相册的权限，请点击 "设置" - "权限" 授予应用权限</string>
@@ -574,4 +574,16 @@
     <string name="Please_Input_Login_password">密码</string>
     <string name="Login_Immediately">立即登陆</string>
     <string name="Beijing_BitMain">北京比特大陆科技有限公司</string>
+    <string name="Work_No_More_Results">没有更多的搜索结果</string>
+    <string name="Work_Third_Party_Service">第三方服务</string>
+    <string name="Work_Service_Search">搜索应用</string>
+    <string name="Work_Search">搜索</string>
+
+    <string name="Link_exit_the_group">%s离开了群聊</string>
+    <string name="Link_Group_Create">创建群组</string>
+    <string name="Link_Group_Invite">邀请入群</string>
+    <string name="Link_Group_Invite_Success">邀请成功</string>
+    <string name="Login_Forget_Password">忘记密码</string>
+    <string name="Login_Connect_Change_Password">请联系管理人员修改密码</string>
+    <string name="Link_Function_Under_Development">功能正在开发中...</string>
 </resources>

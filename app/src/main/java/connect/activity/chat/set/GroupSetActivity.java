@@ -21,15 +21,11 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.GroupSetContract;
 import connect.activity.chat.set.presenter.GroupSetPresenter;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.bean.ContactNotice;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -130,19 +126,14 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String address = (String) v.getTag();
-                if ("GROUP_ADD".equals(address)) {
+                String uid = (String) v.getTag();
+                if ("GROUP_ADD".equals(uid)) {
                     BaseGroupSelectActivity.startActivity(activity, false, groupKey);
                 } else {
-                    if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(address)) {
+                    if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(uid)) {
                         UserInfoActivity.startActivity(activity);
                     } else {
-                        ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);
-                        if (entity == null) {
-                            StrangerInfoActivity.startActivity(activity, address, SourceType.CARD);
-                        } else {
-                            FriendInfoActivity.startActivity(activity, entity.getUid());
-                        }
+                        ContactInfoActivity.lunchActivity(activity, uid);
                     }
                 }
             }

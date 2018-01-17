@@ -187,12 +187,6 @@
             android:name="connect.activity.contact.ScanAddFriendActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="connect.activity.contact.StrangerInfoActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.contact.FriendInfoActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="connect.activity.contact.FriendInfoAliasActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -358,6 +352,9 @@
         <activity
             android:name="connect.activity.chat.set.BaseGroupSelectActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.workbench.WorkSeachActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

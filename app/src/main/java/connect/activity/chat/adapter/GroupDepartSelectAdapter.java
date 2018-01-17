@@ -80,7 +80,7 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.contentLin.setVisibility(View.VISIBLE);
 
             final Connect.Workmate workmate = department.getWorkmate();
-            final String workmateKey = "W" + workmate.getEmpNo();
+            final String workmateKey = "W" + workmate.getUid();
             holder.workmateSelectView.setSelected(departSelectListener.isContains(workmateKey));
             holder.nameTvS.setText(workmate.getName());
             if (TextUtils.isEmpty(workmate.getOU())) {
