@@ -24,10 +24,10 @@ import connect.activity.base.BaseFragment;
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.home.adapter.WorkbenchMenuAdapter;
 import connect.activity.workbench.VisitorsActivity;
+import connect.activity.workbench.WorkSeachActivity;
 import connect.activity.workbench.data.MenuBean;
 import connect.activity.workbench.data.MenuData;
 import connect.ui.activity.R;
-import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -160,6 +160,7 @@ public class WorkbenchFragment extends BaseFragment {
                             Connect.Applications applications = Connect.Applications.parseFrom(structData.getPlainData());
                             List<Connect.Application> list = applications.getListList();
                             ArrayList<MenuBean> listMenu = new ArrayList<>();
+
                             ArrayList<MenuBean> myListMenu = new ArrayList<>();
                             for (Connect.Application application : list) {
                                 MenuBean menuBean = MenuData.getInstance().getData(application.getCode());
@@ -182,6 +183,15 @@ public class WorkbenchFragment extends BaseFragment {
                     public void onError(Connect.HttpNotSignResponse response) {
                     }
                 });
+    }
+
+    @OnClick({R.id.search_relative})
+    void onClickListener(View view) {
+        switch (view.getId()) {
+            case R.id.search_relative:
+                WorkSeachActivity.startActivity(activity);
+                break;
+        }
     }
 
     @Override

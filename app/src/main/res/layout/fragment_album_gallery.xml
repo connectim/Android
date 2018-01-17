@@ -47,7 +47,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:background="@drawable/shape_stroke_green"
+            android:background="@drawable/shape_stroke_blue"
             android:gravity="center"
             android:paddingLeft="@dimen/dp_6"
             android:paddingRight="@dimen/dp_6"

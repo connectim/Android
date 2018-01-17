@@ -80,13 +80,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         toolbarTop.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<String> selectedUid = new ArrayList<String>();
-                List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(groupKey);
-                for (GroupMemberEntity entity : memberEntities) {
-                    selectedUid.add(entity.getUid());
-                }
-
-                GroupDepartSelectActivity.startActivity(activity, false, selectedUid);
+                BaseGroupSelectActivity.startActivity(activity, false, groupKey);
             }
         });
 

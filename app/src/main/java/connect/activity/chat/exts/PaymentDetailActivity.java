@@ -158,7 +158,7 @@ public class PaymentDetailActivity extends BaseActivity implements PaymentDetail
                 btn.setTag(0);
             } else {
                 btn.setText(getResources().getString(R.string.Set_Payment));
-                btn.setBackgroundResource(R.drawable.shape_stroke_green);
+                btn.setBackgroundResource(R.drawable.shape_stroke_blue);
                 btn.setTag(1);
             }
         } else if (state == 1) {

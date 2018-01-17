@@ -68,6 +68,13 @@ public class ContactInfoActivity extends BaseActivity {
     private ContactEntity contactEntity;
     private String uid;
 
+
+    public static void lunchActivity(Activity activity, String uid) {
+        Bundle bundle = new Bundle();
+        bundle.putString("uid", uid);
+        ActivityUtil.next(activity, ContactInfoActivity.class, bundle);
+    }
+
     public static void lunchActivity(Activity activity, ContactEntity contactEntity, String uid) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("bean", contactEntity);
@@ -168,6 +175,9 @@ public class ContactInfoActivity extends BaseActivity {
 
     @OnClick(R.id.chat_btn)
     void chat(View view) {
+        if (contactEntity == null || TextUtils.isEmpty(contactEntity.getUid())) {
+            return;
+        }
         Talker talker = new Talker(Connect.ChatType.PRIVATE, contactEntity.getUid());
         talker.setAvatar(contactEntity.getAvatar());
         talker.setNickName(contactEntity.getName());
@@ -205,7 +215,7 @@ public class ContactInfoActivity extends BaseActivity {
                     Connect.Workmates workmates = Connect.Workmates.parseFrom(structData.getPlainData());
                     Connect.Workmate workmate = workmates.getList(0);
                     if(contactEntity == null){
-                        ContactEntity contactEntityNew = new ContactEntity();
+                        contactEntity = new ContactEntity();
                         contactEntity.setName(workmate.getName());
                         contactEntity.setAvatar(workmate.getAvatar());
                         contactEntity.setPublicKey(workmate.getPubKey());
@@ -216,7 +226,6 @@ public class ContactInfoActivity extends BaseActivity {
                         contactEntity.setRegisted(workmate.getRegisted());
                         contactEntity.setUid(workmate.getUid());
                         contactEntity.setOu(workmate.getOU());
-                        contactEntity = contactEntityNew;
                         showView();
                     }else{
                         final ContactEntity contactEntityLocal = ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid());

@@ -14,7 +14,6 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.AddPhoneAdapter;
 import connect.activity.contact.bean.PhoneContactBean;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.contact.contract.AddFriendPhoneContract;
 import connect.activity.contact.presenter.AddFriendPhonePresenter;
 import connect.ui.activity.R;
@@ -122,7 +121,7 @@ public class AddFriendPhoneActivity extends BaseActivity implements AddFriendPho
 
         @Override
         public void addFriend(int position, PhoneContactBean contactBean) {
-            StrangerInfoActivity.startActivity(mActivity, contactBean.getAddress(), SourceType.CONTACT);
+            ContactInfoActivity.lunchActivity(mActivity, contactBean.getAddress());
         }
     };
 

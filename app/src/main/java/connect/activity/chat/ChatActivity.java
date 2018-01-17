@@ -35,9 +35,7 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.instant.inter.ConversationListener;
@@ -126,7 +124,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 if (!TextUtils.isEmpty(talkey)) {
                     switch (talker.getTalkType()) {
                         case PRIVATE:
-                            PrivateSetActivity.startActivity(activity, normalChat.chatKey());
+                            PrivateSetActivity.startActivity(activity, normalChat.chatKey(),normalChat.headImg(),normalChat.nickName());
                             break;
                         case GROUPCHAT:
                         case GROUP_DISCUSSION:
@@ -139,20 +137,11 @@ public class ChatActivity extends BaseChatSendActivity {
         recordview.setVisibility(View.GONE);
         inputPanel.setActivity(this);
         inputPanel.setRecordView(recordview);
+        updateBurnState(0);
 
         // robot/stranger donot show setting
         if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
             toolbar.setRightImg(R.mipmap.menu_white);
-        }
-
-        if (normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-            roomSession.setBurntime(-1);
-            updateBurnState(0);
-        } else {
-            ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
-            long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? -1 : chatSetEntity.getSnap_time();
-            roomSession.setBurntime(burntime);
-            updateBurnState(burntime);
         }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

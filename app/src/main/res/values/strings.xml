@@ -655,7 +655,15 @@
     <string name="Please_Input_Login_password">password</string>
     <string name="Login_Immediately">Landing immediately</string>
     <string name="Beijing_BitMain">Beijing BitMain Technology Co., Ltd.</string>
-    <string name="title_activity_group_depart_select">GroupDepartSelectActivity</string>
-    <string name="title_activity_talk_group_create">TalkGroupCreateActivity</string>
-    <string name="title_activity_base_group_select">BaseGroupSelectActivity</string>
+    <string name="Work_No_More_Results">No more search results</string>
+    <string name="Work_Service_Search">Search application</string>
+    <string name="Work_Search">Search</string>
+    <string name="Link_exit_the_group">%sExit the group</string>
+
+    <string name="Link_Group_Create">Create Group</string>
+    <string name="Link_Group_Invite">Invite into the group</string>
+    <string name="Link_Group_Invite_Success">The invitation is successful</string>
+    <string name="Login_Forget_Password">Forget password</string>
+    <string name="Login_Connect_Change_Password">Please contact management to change your password</string>
+    <string name="Link_Function_Under_Development">Function is under development...</string>
 </resources>
