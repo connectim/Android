@@ -22,8 +22,6 @@ import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
-import connect.activity.workbench.WorkSeachActivity;
-import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;

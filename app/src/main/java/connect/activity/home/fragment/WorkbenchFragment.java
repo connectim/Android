@@ -133,7 +133,7 @@ public class WorkbenchFragment extends BaseFragment {
             if (item.getCode().equals("visitors")) {
                 VisitorsActivity.lunchActivity(activity);
             }else if (item.getCode().equals("add")){
-                WorkSeachActivity.startActivity(activity);
+                WorkSeachActivity.startActivity(activity,true);
             }
         }
     };
@@ -197,7 +197,7 @@ public class WorkbenchFragment extends BaseFragment {
     void onClickListener(View view) {
         switch (view.getId()) {
             case R.id.search_relative:
-                WorkSeachActivity.startActivity(activity);
+                WorkSeachActivity.startActivity(activity,false);
                 break;
         }
     }

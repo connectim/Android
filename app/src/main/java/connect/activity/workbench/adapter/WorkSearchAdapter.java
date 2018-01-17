@@ -48,12 +48,12 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
         holder.categortyImg.setBackgroundResource(menuBean.getIconId());
         holder.categoryTxt.setText(menuBean.getTextId());
         holder.addStateTxt.setVisibility(View.GONE);
-        holder.searchStateImg.setSelected(true);
+        holder.searchStateImg.setSelected(application.getAdded());
         holder.contentRelative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String categoryCode= application.getCode();
-                interWorksearch.itemClick(categoryCode);
+                interWorksearch.itemClick(!application.getAdded(), categoryCode);
             }
         });
     }
@@ -90,6 +90,6 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
     }
 
     public interface InterWorksearch {
-        void itemClick(String code);
+        void itemClick(boolean isAdd ,String code);
     }
 }
