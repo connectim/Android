@@ -1897,16 +1897,19 @@ message VisitorRecordsReq {
 }
 
 message VisitorRecord {
-  int32 id = 1;
-  string staffId = 2;
-  string staffName = 3;
-  string staffPhone = 4;
-  string guestId = 5;
-  string guestName = 6;
-  int64 startTime = 7;
-  int64 endTime = 8;
-  string reason = 9;
-  bool status = 10;
+ int32 id = 1;
+ string staffId = 2;
+ string staffName = 3;
+ string staffPhone = 4;
+ string guestId = 5;
+ string guestName = 6;
+ int64 startTime = 7;
+ int64 endTime = 8;
+ string reason = 9;
+ bool status = 10;
+ string face_left = 11;
+ string face_middle = 12;
+ string face_right = 13;
 }
 
 message VisitorRecords {
@@ -1918,4 +1921,8 @@ message GroupInviteWorkmate {
  string tips = 2;
  repeated string uids = 3;
  string identifier = 4;
+}
+
+message ExamineMessage {
+   string body = 1;
 }

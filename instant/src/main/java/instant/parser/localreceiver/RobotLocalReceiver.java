@@ -90,4 +90,9 @@ public class RobotLocalReceiver implements RobotListener {
     public void addressNotifyMessage(Connect.AddressNotify addressNotify) {
         getRobotListener().addressNotifyMessage(addressNotify);
     }
+
+    @Override
+    public void auditMessage(Connect.ExamineMessage examineMessage) {
+        getRobotListener().auditMessage(examineMessage);
+    }
 }

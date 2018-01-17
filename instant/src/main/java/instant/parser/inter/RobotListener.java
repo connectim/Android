@@ -30,4 +30,6 @@ public interface RobotListener {
     void removeGroupMessage(Connect.RemoveGroup removeGroup);
 
     void addressNotifyMessage(Connect.AddressNotify addressNotify);
+
+    void auditMessage(Connect.ExamineMessage  examineMessage);
 }
