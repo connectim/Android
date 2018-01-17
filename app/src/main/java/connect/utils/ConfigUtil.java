@@ -176,6 +176,7 @@ public class ConfigUtil {
     }
 
     public enum ModeEnum {
+        PC("pc"),
         TEST("test"),
         SANDBOX("sandbox"),
         RELEASE("release");

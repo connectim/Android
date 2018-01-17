@@ -67,12 +67,13 @@ public class AuditFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mActivity = getActivity();
+        initView();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initView();
+        //initView();
     }
 
     private void initView() {

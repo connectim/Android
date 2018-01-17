@@ -9,12 +9,15 @@ import android.view.View;
 
 import com.google.protobuf.ByteString;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
+import connect.activity.contact.bean.AppsState;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.workbench.adapter.WorkSearchAdapter;
 import connect.ui.activity.R;
@@ -37,7 +40,7 @@ public class WorkSeachActivity extends BaseActivity {
 
     private WorkSeachActivity activity;
     private WorkSearchAdapter workSearchAdapter;
-    private boolean isManager=false;
+    private boolean isManager = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +96,8 @@ public class WorkSeachActivity extends BaseActivity {
             @Override
             public void itemClick(boolean isAdd ,String code) {
                 updateAppsAddState(isAdd, code);
+
+                EventBus.getDefault().post(new AppsState(AppsState.AppsEnum.APPLICATION));
             }
         });
 
@@ -122,7 +127,7 @@ public class WorkSeachActivity extends BaseActivity {
                     if (isManager) {
                         List<Connect.Application> filterApplications = new ArrayList<Connect.Application>();
                         for (Connect.Application application : applications1) {
-                            if (application.getCategory() <= 2) {
+                            if (application.getCategory() == 2) {
                                 filterApplications.add(application);
                             }
                         }

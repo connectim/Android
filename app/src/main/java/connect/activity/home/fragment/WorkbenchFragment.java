@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import com.google.protobuf.ByteString;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.chat.exts.OuterWebsiteActivity;
+import connect.activity.contact.bean.AppsState;
 import connect.activity.home.adapter.WorkbenchMenuAdapter;
 import connect.activity.workbench.VisitorsActivity;
 import connect.activity.workbench.WorkSeachActivity;
@@ -58,6 +62,7 @@ public class WorkbenchFragment extends BaseFragment {
     private FragmentActivity activity;
     private WorkbenchMenuAdapter appMenuAdapter;
     private WorkbenchMenuAdapter myAppMenuAdapter;
+     ArrayList<MenuBean> myListMenu = new ArrayList<>();
 
     public static WorkbenchFragment startFragment() {
         WorkbenchFragment workbenchFragment = new WorkbenchFragment();
@@ -77,6 +82,7 @@ public class WorkbenchFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         activity = getActivity();
         initView();
+        EventBus.getDefault().register(this);
     }
 
     private void initView() {
@@ -112,6 +118,20 @@ public class WorkbenchFragment extends BaseFragment {
         myMenuRecycler.setAdapter(myAppMenuAdapter);
     }
 
+    @Subscribe
+    public void onEventMainThread(AppsState appsState) {
+        switch (appsState.getAppsEnum()) {
+            case APPLICATION:
+                getApplication();
+                break;
+        }
+    }
+
+    @OnClick(R.id.manager_tv)
+    void managerMyApp(View view) {
+        WorkSeachActivity.startActivity(activity, true);
+    }
+
     WorkbenchMenuAdapter.OnItemMenuClickListener onItemMenuClickListener = new WorkbenchMenuAdapter.OnItemMenuClickListener() {
         @Override
         public void itemClick(int position, MenuBean item) {
@@ -133,7 +153,17 @@ public class WorkbenchFragment extends BaseFragment {
             if (item.getCode().equals("visitors")) {
                 VisitorsActivity.lunchActivity(activity);
             }else if (item.getCode().equals("add")){
-                WorkSeachActivity.startActivity(activity,true);
+                WorkSeachActivity.startActivity(activity,false);
+            }else {
+                DialogUtil.showAlertTextView(activity, getString(R.string.Set_tip_title),
+                        getString(R.string.Link_Function_Under_Development),
+                        "", "", true, new DialogUtil.OnItemClickListener() {
+                            @Override
+                            public void confirm(String value) {}
+
+                            @Override
+                            public void cancel() {}
+                        });
             }
         }
     };
@@ -174,7 +204,7 @@ public class WorkbenchFragment extends BaseFragment {
                                 MenuBean menuBean = MenuData.getInstance().getData(application.getCode());
                                 if (application.getCategory() == 1) {
                                     listMenu.add(menuBean);
-                                } else {
+                                } else if(application.getCategory() == 2 && application.getAdded()) {
                                     myListMenu.add(menuBean);
                                 }
                             }
@@ -188,8 +218,7 @@ public class WorkbenchFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onError(Connect.HttpNotSignResponse response) {
-                    }
+                    public void onError(Connect.HttpNotSignResponse response) {}
                 });
     }
 
@@ -206,5 +235,6 @@ public class WorkbenchFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
     }
 }
