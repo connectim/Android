@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.List;
@@ -17,35 +18,40 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.activity.base.BaseActivity;
-import connect.activity.home.view.LineDecoration;
-import connect.activity.workbench.adapter.VisitorAdapter;
+import connect.activity.base.BaseFragmentActivity;
+import connect.activity.workbench.fragment.ApprovedFragment;
+import connect.activity.workbench.fragment.AuditFragment;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
+import connect.utils.ProgressUtil;
+import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import connect.widget.pullTorefresh.EndlessScrollListener;
 import connect.widget.zxing.utils.CreateScan;
 import protos.Connect;
 
-public class VisitorsActivity extends BaseActivity {
+public class VisitorsActivity extends BaseFragmentActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.recyclerview)
-    RecyclerView recyclerview;
-    @Bind(R.id.refreshview)
-    SwipeRefreshLayout refreshview;
-    @Bind(R.id.no_data_lin)
-    LinearLayout noDataLin;
+    @Bind(R.id.to_audit_text)
+    TextView toAuditText;
+    @Bind(R.id.to_audit_line)
+    View toAuditLine;
+    @Bind(R.id.the_approved_text)
+    TextView theApprovedText;
+    @Bind(R.id.the_approved_line)
+    View theApprovedLine;
+    @Bind(R.id.content_fragment)
+    FrameLayout contentFragment;
 
     private VisitorsActivity mActivity;
-    private int page = 1;
-    private int MAX_RECOMMEND_COUNT = 20;
-    private VisitorAdapter adapter;
+
+    private AuditFragment auditFragment;
+    private ApprovedFragment approvedFragment;
 
     public static void lunchActivity(Activity activity) {
         ActivityUtil.next(activity, VisitorsActivity.class);
@@ -68,27 +74,77 @@ public class VisitorsActivity extends BaseActivity {
         toolbarTop.setRightText(R.string.Link_Invite);
         toolbarTop.setRightTextEnable(true);
 
-        refreshview.setColorSchemeResources(R.color.color_ebecee, R.color.color_c8ccd5, R.color.color_lightgray);
-        refreshview.setOnRefreshListener(onRefreshListener);
-        recyclerview.addOnScrollListener(endlessScrollListener);
+        auditFragment = AuditFragment.startFragment();
+        approvedFragment = ApprovedFragment.startFragment();
 
-        adapter = new VisitorAdapter(mActivity);
-        adapter.setItemClickListener(onItemClickListener);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
-        recyclerview.setLayoutManager(linearLayoutManager);
-        recyclerview.addItemDecoration(new LineDecoration(mActivity, true));
-        recyclerview.setAdapter(adapter);
-        requestVisitorData();
+        switchFragment(0);
+        toAuditText.setSelected(true);
+        toAuditLine.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick({R.id.to_audit_text, R.id.the_approved_text})
+    public void OnClickListener(View view) {
+        toAuditText.setSelected(false);
+        toAuditLine.setVisibility(View.GONE);
+        theApprovedText.setSelected(false);
+        theApprovedLine.setVisibility(View.GONE);
+
+        switch (view.getId()) {
+            case R.id.to_audit_text:
+                switchFragment(0);
+                toAuditText.setSelected(true);
+                toAuditLine.setVisibility(View.VISIBLE);
+                break;
+            case R.id.the_approved_text:
+                switchFragment(1);
+                theApprovedText.setSelected(true);
+                theApprovedLine.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+
+    public void switchFragment(int code) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                if (fragment.isVisible()) {
+                    fragmentTransaction.hide(fragment);
+                }
+            }
+        }
+        switch (code) {
+            case 0:
+                if (!auditFragment.isAdded()) {
+                    fragmentTransaction.add(R.id.content_fragment, auditFragment);
+                } else {
+                    fragmentTransaction.show(auditFragment);
+                }
+                break;
+            case 1:
+                if (!approvedFragment.isAdded()) {
+                    fragmentTransaction.add(R.id.content_fragment, approvedFragment);
+                } else {
+                    fragmentTransaction.show(approvedFragment);
+                }
+                break;
+        }
+
+        //commit :IllegalStateException: Can not perform this action after onSaveInstanceState
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @OnClick(R.id.right_lin)
     void shareInvite(View view) {
+        ProgressUtil.getInstance().showProgress(mActivity);
         Connect.Staff staff = Connect.Staff.newBuilder().build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_TOKEN, staff, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
@@ -98,74 +154,20 @@ public class VisitorsActivity extends BaseActivity {
                     Connect.Staff staff1 = Connect.Staff.parseFrom(structData.getPlainData());
 
                     CreateScan createScan = new CreateScan();
-                    Bitmap bitmap = createScan.generateQRCode(" https://wx-kq.bitmain.com/guest/info?token=" + staff1.getToken());
+                    Bitmap bitmap = createScan.generateQRCode("https://wx-kq.bitmain.com/guest/info?token=" + staff1.getToken());
                     File file = BitmapUtil.getInstance().bitmapSavePath(bitmap);
                     shareMsg(getResources().getString(R.string.Work_Visitors_share), "", "", file);
+                    ProgressUtil.getInstance().dismissProgress();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    ProgressUtil.getInstance().dismissProgress();
                 }
             }
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
-                int a = 1;
-            }
-        });
-    }
-
-    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            page = 0;
-            requestVisitorData();
-        }
-    };
-
-    EndlessScrollListener endlessScrollListener = new EndlessScrollListener() {
-        @Override
-        public void onLoadMore() {
-            page++;
-            requestVisitorData();
-        }
-    };
-
-    VisitorAdapter.OnItemClickListener onItemClickListener = new VisitorAdapter.OnItemClickListener() {
-        @Override
-        public void itemClick(Connect.VisitorRecord visitorRecord) {
-            VisitorsAuditActivity.lunchActivity(mActivity, visitorRecord);
-        }
-    };
-
-    private void requestVisitorData() {
-        Connect.VisitorRecordsReq visitorRecordsReq = Connect.VisitorRecordsReq.newBuilder()
-                .setPageNum(page + "")
-                .setPageSize(MAX_RECOMMEND_COUNT + "")
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_VISITOR_RECORDS, visitorRecordsReq, new ResultCall<Connect.HttpNotSignResponse>() {
-            @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                refreshview.setRefreshing(false);
-                try {
-                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
-                    Connect.VisitorRecords visitorRecords = Connect.VisitorRecords.parseFrom(structData.getPlainData());
-                    List<Connect.VisitorRecord> list = visitorRecords.getListList();
-                    if(page == 1 && list.size() == 0){
-                        noDataLin.setVisibility(View.VISIBLE);
-                        refreshview.setVisibility(View.GONE);
-                    }
-                    if (page > 1) {
-                        adapter.setNotifyData(list, false);
-                    } else {
-                        adapter.setNotifyData(list, true);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-                refreshview.setRefreshing(false);
+                ToastUtil.getInstance().showToast(response.getMessage());
+                ProgressUtil.getInstance().dismissProgress();
             }
         });
     }

@@ -10,22 +10,60 @@
         android:layout_height="wrap_content"/>
 
     <LinearLayout
-        android:id="@+id/no_data_lin"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/Network_No_data"
-            android:textSize="@dimen/sp_18"/>
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/to_audit_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@drawable/home_selector_text_color"
+                android:textSize="@dimen/sp_14"
+                android:gravity="center"
+                android:background="@drawable/selector_list_item_bg"
+                android:text="@string/Work_Visitors_to_audit"/>
+            <View
+                android:id="@+id/to_audit_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:background="@color/color_1C6ED5"
+                android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/the_approved_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@drawable/home_selector_text_color"
+                android:textSize="@dimen/sp_14"
+                android:gravity="center"
+                android:background="@drawable/selector_list_item_bg"
+                android:text="@string/Work_Visitors_the_approved"/>
+            <View
+                android:id="@+id/the_approved_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:background="@color/color_1C6ED5"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone"/>
+        </RelativeLayout>
     </LinearLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <FrameLayout
+        android:id="@+id/content_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!--<android.support.v4.widget.SwipeRefreshLayout
         android:id="@id/refreshview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,6 +76,6 @@
             android:dividerHeight="@dimen/px_1"
             android:listSelector="@android:color/transparent">
         </android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>-->
 
 </LinearLayout>

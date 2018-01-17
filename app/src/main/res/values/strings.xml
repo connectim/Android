@@ -640,7 +640,8 @@
     <string name="Work_Visitors_to_approval">Visitors to approval</string>
     <string name="Work_Visitors_sure_to_deny_access">Are you sure to deny access?</string>
     <string name="Work_Visitors_agree_to_visit">Do you agree to visit?</string>
-
+    <string name="Work_Visitors_to_audit">To audit</string>
+    <string name="Work_Visitors_the_approved">The approved</string>
 
     <string name="Chat_Refreshing">Refreshing...</string>
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>
