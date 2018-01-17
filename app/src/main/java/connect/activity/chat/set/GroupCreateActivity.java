@@ -16,18 +16,18 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.adapter.GroupCreateAdapter;
-import connect.activity.chat.set.contract.GroupCreateContract;
-import connect.activity.chat.set.presenter.GroupCreatePresenter;
+import connect.activity.chat.adapter.TalkGroupCreateAdapter;
+import connect.activity.chat.set.contract.TalkGroupCreateContract;
+import connect.activity.chat.set.presenter.TalkGroupCreatePresenter;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
+import protos.Connect;
 
-public class GroupCreateActivity extends BaseActivity implements GroupCreateContract.BView {
+public class GroupCreateActivity extends BaseActivity implements TalkGroupCreateContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -38,8 +38,9 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
 
     private static String CONTACT_LIST = "CONTACT_LIST";
     private GroupCreateActivity activity;
-    private List<ContactEntity> contactEntities;
-    private GroupCreateContract.Presenter presenter;
+    boolean isCreate = true;
+    private List<Connect.Workmate> workmates;
+    private TalkGroupCreateContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +50,10 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         initView();
     }
 
-    public static void startActivity(Activity activity, ArrayList<ContactEntity> contactEntities) {
+    public static void startActivity(Activity activity, boolean isCreate, ArrayList<Connect.Workmate> workmates) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(CONTACT_LIST, contactEntities);
+        bundle.putBoolean("Is_Create", isCreate);
+        bundle.putSerializable(CONTACT_LIST, workmates);
         ActivityUtil.next(activity, GroupCreateActivity.class, bundle);
     }
 
@@ -78,8 +80,9 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
                 if (TextUtils.isEmpty(groupName)) {
                     groupName = edittxt1.getHint().toString();
                 }
-                int groupCategory = 1;
-                presenter.createGroup(groupName, groupCategory);
+                if(isCreate){
+                    presenter.createGroup(groupName);
+                }
 
                 Message message = new Message();
                 message.what = 100;
@@ -90,15 +93,16 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         edittxt1.setHint(String.format(activity.getString(R.string.Link_user_friends), userBean.getName()));
 
-        contactEntities = (List<ContactEntity>) getIntent().getSerializableExtra(CONTACT_LIST);
+        isCreate = getIntent().getBooleanExtra("Is_Create", true);
+        workmates = (List<Connect.Workmate>) getIntent().getSerializableExtra(CONTACT_LIST);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.addItemDecoration(new LineDecoration(activity));
-        GroupCreateAdapter adapter = new GroupCreateAdapter();
-        adapter.setData(contactEntities);
+        TalkGroupCreateAdapter adapter = new TalkGroupCreateAdapter();
+        adapter.setData(workmates);
         recyclerview.setAdapter(adapter);
 
-        new GroupCreatePresenter(this).start();
+        new TalkGroupCreatePresenter(this).start();
     }
 
     private Handler handler = new Handler() {
@@ -114,12 +118,12 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
     };
 
     @Override
-    public List<ContactEntity> groupMemberList() {
-        return contactEntities;
+    public List<Connect.Workmate> groupMemberList() {
+        return workmates;
     }
 
     @Override
-    public void setPresenter(GroupCreateContract.Presenter presenter) {
+    public void setPresenter(TalkGroupCreateContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -127,4 +131,5 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
     public Activity getActivity() {
         return activity;
     }
+
 }

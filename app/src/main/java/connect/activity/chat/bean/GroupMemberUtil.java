@@ -1,4 +1,4 @@
-package connect.activity.chat.model;
+package connect.activity.chat.bean;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 

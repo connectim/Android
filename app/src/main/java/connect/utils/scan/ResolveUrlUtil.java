@@ -3,7 +3,6 @@ package connect.utils.scan;
 import android.app.Activity;
 import android.net.Uri;
 
-import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.MsgNoticeBean;
@@ -62,9 +61,6 @@ public class ResolveUrlUtil {
             case TYPE_WEB_FRIEND:
                 dealFriend(resultBean, isCloseScan);
                 break;
-            case TYPE_WEB_PAY:
-                dealPay(resultBean, isCloseScan);
-                break;
             case TYPE_WEB_TRANSFER:
                 dealTransfer(resultBean);
                 break;
@@ -89,22 +85,6 @@ public class ResolveUrlUtil {
             if(isCloseScan){
                 ActivityUtil.goBack(activity);
             }
-        }
-    }
-
-    /**
-     * Enter the user payment interface
-     * @param resultBean
-     * @param isCloseScan
-     */
-    private void dealPay(ScanResultBean resultBean, boolean isCloseScan){
-        Double amount = null;
-        if (resultBean.getAmount() != null)
-            amount = Double.valueOf(resultBean.getAmount());
-
-        TransferToActivity.startActivity(activity, resultBean.getAddress(), amount);
-        if(isCloseScan){
-            ActivityUtil.goBack(activity);
         }
     }
 

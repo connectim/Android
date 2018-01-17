@@ -32,7 +32,6 @@ public class Talker implements Serializable {
         return talkKey;
     }
 
-
     public String getNickName() {
         return nickName;
     }

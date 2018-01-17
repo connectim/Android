@@ -114,13 +114,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             holder.badgeTxt.setBadgeCount(roomAttr.getDisturb(), roomAttr.getUnread());
         }
 
-        if (0 == roomAttr.getStranger() || SharedPreferenceUtil.getInstance().getUser().getUid().equals(roomAttr.getRoomid())) {//not stranger
-            holder.stangerTxt.setVisibility(View.GONE);
-        } else {
-            holder.stangerTxt.setVisibility(View.VISIBLE);
-            holder.stangerTxt.setText(inflater.getContext().getString(R.string.Link_Stranger));
-        }
-
         if (roomAttr.getTop() == 1) {
             holder.conTop.setVisibility(View.VISIBLE);
             holder.contentLayout.setBackgroundResource(R.color.color_f1f1f1);

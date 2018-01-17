@@ -157,9 +157,6 @@
             android:name="connect.activity.set.PrivateBlackActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="connect.activity.set.GeneralCurrencyActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="connect.activity.set.SupportFeedbackActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -222,26 +219,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="connect.activity.chat.exts.PaymentActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="connect.activity.chat.exts.TransferToActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="connect.activity.chat.exts.PaymentDetailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="connect.activity.chat.exts.CrowdingDetailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="connect.activity.chat.exts.LuckyPacketActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name="connect.activity.chat.set.ContactCardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
@@ -273,33 +250,11 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
-        <activity
-            android:name="connect.activity.chat.exts.TransferSingleDetailActivity"
-            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.set.GroupNameActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.set.GroupMyNameActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.set.GroupManageActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.set.GroupQRActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.set.GroupIntroduceActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.set.GroupOwnerToActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.exts.HandleGroupRequestActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.exts.GroupCrowdingRecordsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.exts.OuterWebsiteActivity"
@@ -326,28 +281,15 @@
         <activity
             android:name="connect.activity.home.DBUpdateActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.set.GroupCreateSelecrActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.set.GroupInviteActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.exts.TransferMutiDetailActivity"
-            android:screenOrientation="portrait" />
-
         <service
             android:name="connect.service.GroupService"
             android:exported="false" />
 
         <activity
+            android:name="connect.activity.chat.set.GroupDepartSelectActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="connect.activity.chat.set.GroupCreateActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.set.group.GroupDepartSelectActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.chat.set.TalkGroupCreateActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.set.BaseGroupSelectActivity"
