@@ -108,7 +108,16 @@ public class TopToolBar extends LinearLayout {
         titleSearchRela.setVisibility(VISIBLE);
 
         titleSearchImg.setImageResource(resourceid);
-        titleEdit.setText(hint);
+        titleEdit.setHint(hint);
+    }
+
+    public String getSearchTxt(){
+        String content = titleEdit.getText().toString();
+        return content;
+    }
+
+    public void clearSearchTxt(){
+        titleEdit.setText("");
     }
 
     public void setRightImg(Integer resId) {

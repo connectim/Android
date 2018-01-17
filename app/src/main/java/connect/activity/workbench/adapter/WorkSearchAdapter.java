@@ -9,7 +9,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
+import connect.activity.workbench.data.MenuBean;
+import connect.activity.workbench.data.MenuData;
 import connect.ui.activity.R;
+import protos.Connect;
 
 
 /**
@@ -18,6 +23,13 @@ import connect.ui.activity.R;
 
 public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.ViewHolder> {
 
+
+    private List<Connect.Application> applications = null;
+
+    public void setDatas(List<Connect.Application> applications) {
+        this.applications = applications;
+        notifyDataSetChanged();
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -30,17 +42,31 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+        final Connect.Application application = applications.get(position);
 
+        MenuBean menuBean = MenuData.getInstance().getData(application.getCode());
+        holder.categortyImg.setBackgroundResource(menuBean.getIconId());
+        holder.categoryTxt.setText(menuBean.getTextId());
+        holder.addStateTxt.setVisibility(View.GONE);
+        holder.searchStateImg.setSelected(true);
+        holder.contentRelative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String categoryCode= application.getCode();
+                interWorksearch.itemClick(categoryCode);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 5;
+        return applications == null ? 0 : applications.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout thirdPartRelative;
+        RelativeLayout contentRelative;
         ImageView categortyImg;
         TextView categoryTxt;
         TextView addStateTxt;
@@ -49,10 +75,21 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             thirdPartRelative = (RelativeLayout) itemView.findViewById(R.id.relative_thirdpart);
+            contentRelative = (RelativeLayout) itemView.findViewById(R.id.relative_worksearch_content);
             categortyImg = (ImageView) itemView.findViewById(R.id.image_category);
             categoryTxt = (TextView) itemView.findViewById(R.id.text_category);
             addStateTxt = (TextView) itemView.findViewById(R.id.text_has_added);
             searchStateImg = (ImageView) itemView.findViewById(R.id.image_search_state);
         }
+    }
+
+    public InterWorksearch interWorksearch;
+
+    public void setInterWorksearch(InterWorksearch interWorksearch) {
+        this.interWorksearch = interWorksearch;
+    }
+
+    public interface InterWorksearch {
+        void itemClick(String code);
     }
 }

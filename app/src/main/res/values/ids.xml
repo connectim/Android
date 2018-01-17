@@ -230,6 +230,7 @@
 
 
     <item name="relative_thirdpart" type="id" />
+    <item name="relative_worksearch_content" type="id" />
     <item name="image_category" type="id" />
     <item name="text_category" type="id" />
     <item name="text_has_added" type="id" />

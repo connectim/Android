@@ -66,14 +66,19 @@ public class ContactInfoActivity extends BaseActivity {
 
     private ContactInfoActivity mActivity;
     private ContactEntity contactEntity;
+    private String uid;
+
 
     public static void lunchActivity(Activity activity, String uid) {
-
+        Bundle bundle = new Bundle();
+        bundle.putString("uid", uid);
+        ActivityUtil.next(activity, ContactInfoActivity.class, bundle);
     }
 
-    public static void lunchActivity(Activity activity, ContactEntity contactEntity) {
+    public static void lunchActivity(Activity activity, ContactEntity contactEntity, String uid) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("bean", contactEntity);
+        bundle.putString("uid", uid);
         ActivityUtil.next(activity, ContactInfoActivity.class, bundle);
     }
 
@@ -92,7 +97,16 @@ public class ContactInfoActivity extends BaseActivity {
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Chat_Contact_details);
 
+        uid = getIntent().getExtras().getString("uid");
         contactEntity = (ContactEntity) getIntent().getExtras().getSerializable("bean");
+        if(contactEntity != null){
+            uid = contactEntity.getUid();
+            showView();
+        }
+        searchUser(uid);
+    }
+
+    private void showView(){
         nameText.setText(contactEntity.getName());
         if (contactEntity.getGender() == 1) {
             genderImage.setImageResource(R.mipmap.man);
@@ -118,7 +132,6 @@ public class ContactInfoActivity extends BaseActivity {
             avatarImage.setVisibility(View.VISIBLE);
             avatarImage.setAvatarName(contactEntity.getName(), true, contactEntity.getGender());
         }
-        searchUser(contactEntity.getUid());
     }
 
     @OnClick(R.id.left_img)
@@ -162,6 +175,9 @@ public class ContactInfoActivity extends BaseActivity {
 
     @OnClick(R.id.chat_btn)
     void chat(View view) {
+        if (contactEntity == null || TextUtils.isEmpty(contactEntity.getUid())) {
+            return;
+        }
         Talker talker = new Talker(Connect.ChatType.PRIVATE, contactEntity.getUid());
         talker.setAvatar(contactEntity.getAvatar());
         talker.setNickName(contactEntity.getName());
@@ -198,8 +214,28 @@ public class ContactInfoActivity extends BaseActivity {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.Workmates workmates = Connect.Workmates.parseFrom(structData.getPlainData());
                     Connect.Workmate workmate = workmates.getList(0);
-                    if (!workmate.getAvatar().equals(contactEntity.getAvatar())) {
+                    if(contactEntity == null){
+                        contactEntity = new ContactEntity();
+                        contactEntity.setName(workmate.getName());
                         contactEntity.setAvatar(workmate.getAvatar());
+                        contactEntity.setPublicKey(workmate.getPubKey());
+                        contactEntity.setEmpNo(workmate.getEmpNo());
+                        contactEntity.setMobile(workmate.getMobile());
+                        contactEntity.setGender(workmate.getGender());
+                        contactEntity.setTips(workmate.getTips());
+                        contactEntity.setRegisted(workmate.getRegisted());
+                        contactEntity.setUid(workmate.getUid());
+                        contactEntity.setOu(workmate.getOU());
+                        showView();
+                    }else{
+                        final ContactEntity contactEntityLocal = ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid());
+                        if(contactEntityLocal != null){
+                            if (!workmate.getAvatar().equals(contactEntityLocal.getAvatar())) {
+                                contactEntity.setAvatar(workmate.getAvatar());
+                                ContactHelper.getInstance().insertContact(contactEntity);
+                                ContactNotice.receiverContact();
+                            }
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

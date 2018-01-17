@@ -15,6 +15,10 @@ public interface PrivateSetContract {
 
         String getRoomKey();
 
+        String getAvatar();
+
+        String getName();
+
         void switchTop(String name, boolean state);
 
         void switchDisturb(String name, boolean state);

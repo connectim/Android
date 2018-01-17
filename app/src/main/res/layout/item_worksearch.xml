@@ -8,7 +8,8 @@
     <RelativeLayout
         android:id="@id/relative_thirdpart"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_46">
+        android:layout_height="@dimen/dp_46"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,6 +27,7 @@
         android:background="@color/color_e7e7e7" />
 
     <RelativeLayout
+        android:id="@id/relative_worksearch_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_62"
         android:gravity="center_vertical">

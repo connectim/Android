@@ -191,7 +191,7 @@ public class DepartmentActivity extends BaseActivity {
                     contactEntity.setRegisted(departmentBean.getRegisted());
                     contactEntity.setUid(departmentBean.getUid());
                     contactEntity.setOu(department);
-                    ContactInfoActivity.lunchActivity(mActivity, contactEntity);
+                    ContactInfoActivity.lunchActivity(mActivity, contactEntity, "");
                 }
             }
         }

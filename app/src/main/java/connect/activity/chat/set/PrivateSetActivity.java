@@ -42,8 +42,10 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
 
     private PrivateSetActivity activity;
     private static String TAG = "_PrivateSetActivity";
-    private static String UID = "UID";
+
     private String roomKey = "";
+    private String avatar = "";
+    private String name = "";
 
     private PrivateSetContract.Presenter presenter;
 
@@ -55,9 +57,11 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
         initView();
     }
 
-    public static void startActivity(Activity activity, String roomkey) {
+    public static void startActivity(Activity activity, String uid, String avatar, String name) {
         Bundle bundle = new Bundle();
-        bundle.putString(UID, roomkey);
+        bundle.putString("Uid", uid);
+        bundle.putString("Avatar", avatar);
+        bundle.putString("Name", name);
         ActivityUtil.next(activity, PrivateSetActivity.class, bundle);
     }
 
@@ -74,7 +78,9 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
             }
         });
 
-        roomKey = getIntent().getStringExtra(UID);
+        roomKey = getIntent().getStringExtra("Uid");
+        avatar = getIntent().getStringExtra("Avatar");
+        name = getIntent().getStringExtra("Name");
         new PrivateSetPresenter(this).start();
     }
 
@@ -91,6 +97,16 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
     @Override
     public String getRoomKey() {
         return roomKey;
+    }
+
+    @Override
+    public String getAvatar() {
+        return avatar;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

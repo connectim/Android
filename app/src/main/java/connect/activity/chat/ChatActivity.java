@@ -35,9 +35,7 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.instant.inter.ConversationListener;
@@ -126,7 +124,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 if (!TextUtils.isEmpty(talkey)) {
                     switch (talker.getTalkType()) {
                         case PRIVATE:
-                            PrivateSetActivity.startActivity(activity, normalChat.chatKey());
+                            PrivateSetActivity.startActivity(activity, normalChat.chatKey(),normalChat.headImg(),normalChat.nickName());
                             break;
                         case GROUPCHAT:
                         case GROUP_DISCUSSION:

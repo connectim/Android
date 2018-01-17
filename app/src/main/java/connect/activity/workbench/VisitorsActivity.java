@@ -2,13 +2,14 @@ package connect.activity.workbench;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.util.List;
@@ -17,16 +18,17 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.contact.adapter.RecommendAdapter;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.workbench.adapter.VisitorAdapter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.BitmapUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
 import connect.widget.pullTorefresh.EndlessScrollListener;
+import connect.widget.zxing.utils.CreateScan;
 import protos.Connect;
 
 public class VisitorsActivity extends BaseActivity {
@@ -37,6 +39,8 @@ public class VisitorsActivity extends BaseActivity {
     RecyclerView recyclerview;
     @Bind(R.id.refreshview)
     SwipeRefreshLayout refreshview;
+    @Bind(R.id.no_data_lin)
+    LinearLayout noDataLin;
 
     private VisitorsActivity mActivity;
     private int page = 1;
@@ -84,11 +88,32 @@ public class VisitorsActivity extends BaseActivity {
     }
 
     @OnClick(R.id.right_lin)
-    void save(View view) {
+    void shareInvite(View view) {
+        Connect.Staff staff = Connect.Staff.newBuilder().build();
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_TOKEN, staff, new ResultCall<Connect.HttpNotSignResponse>() {
+            @Override
+            public void onResponse(Connect.HttpNotSignResponse response) {
+                try {
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
+                    Connect.Staff staff1 = Connect.Staff.parseFrom(structData.getPlainData());
 
+                    CreateScan createScan = new CreateScan();
+                    Bitmap bitmap = createScan.generateQRCode(" https://wx-kq.bitmain.com/guest/info?token=" + staff1.getToken());
+                    File file = BitmapUtil.getInstance().bitmapSavePath(bitmap);
+                    shareMsg(getResources().getString(R.string.Work_Visitors_share), "", "", file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpNotSignResponse response) {
+                int a = 1;
+            }
+        });
     }
 
-    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
             page = 0;
@@ -99,19 +124,19 @@ public class VisitorsActivity extends BaseActivity {
     EndlessScrollListener endlessScrollListener = new EndlessScrollListener() {
         @Override
         public void onLoadMore() {
-            page ++;
+            page++;
             requestVisitorData();
         }
     };
 
-    VisitorAdapter.OnItemClickListener onItemClickListener = new VisitorAdapter.OnItemClickListener(){
+    VisitorAdapter.OnItemClickListener onItemClickListener = new VisitorAdapter.OnItemClickListener() {
         @Override
         public void itemClick(Connect.VisitorRecord visitorRecord) {
 
         }
     };
 
-    private void requestVisitorData(){
+    private void requestVisitorData() {
         Connect.VisitorRecordsReq visitorRecordsReq = Connect.VisitorRecordsReq.newBuilder()
                 .setPageNum(page + "")
                 .setPageSize(MAX_RECOMMEND_COUNT + "")
@@ -124,9 +149,13 @@ public class VisitorsActivity extends BaseActivity {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.VisitorRecords visitorRecords = Connect.VisitorRecords.parseFrom(structData.getPlainData());
                     List<Connect.VisitorRecord> list = visitorRecords.getListList();
-                    if(page > 1){
+                    if(page == 1 && list.size() == 0){
+                        noDataLin.setVisibility(View.VISIBLE);
+                        refreshview.setVisibility(View.GONE);
+                    }
+                    if (page > 1) {
                         adapter.setNotifyData(list, false);
-                    }else{
+                    } else {
                         adapter.setNotifyData(list, true);
                     }
                 } catch (Exception e) {
@@ -141,15 +170,14 @@ public class VisitorsActivity extends BaseActivity {
         });
     }
 
-    public void shareMsg(String activityTitle, String msgTitle, String msgText, String imgPath) {
+    public void shareMsg(String activityTitle, String msgTitle, String msgText, File file) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        if (imgPath == null || imgPath.equals("")) {
+        if (file == null) {
             intent.setType("text/plain");
         } else {
-            File f = new File(imgPath);
-            if (f != null && f.exists() && f.isFile()) {
+            if (file != null && file.exists() && file.isFile()) {
                 intent.setType("image/jpg");
-                Uri u = Uri.fromFile(f);
+                Uri u = Uri.fromFile(file);
                 intent.putExtra(Intent.EXTRA_STREAM, u);
             }
         }

@@ -134,6 +134,7 @@
                 android:id="@id/image_loading"
                 android:layout_width="@dimen/dp_15"
                 android:layout_height="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_2"
                 android:background="@mipmap/icon_loading"
                 android:visibility="gone" />
 
@@ -144,7 +145,6 @@
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@+id/image_loading"
                 android:enabled="false"
-                android:padding="@dimen/dp_2"
                 android:text="@string/Login_Immediately"
                 android:textColor="@color/color_ffffff" />
         </RelativeLayout>

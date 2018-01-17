@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,13 +21,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
+import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.home.adapter.WorkbenchMenuAdapter;
 import connect.activity.workbench.VisitorsActivity;
 import connect.activity.workbench.WorkSeachActivity;
 import connect.activity.workbench.data.MenuBean;
 import connect.activity.workbench.data.MenuData;
 import connect.ui.activity.R;
-import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -49,6 +50,8 @@ public class WorkbenchFragment extends BaseFragment {
     RecyclerView applicationMenuRecycler;
     @Bind(R.id.my_menu_recycler)
     RecyclerView myMenuRecycler;
+    @Bind(R.id.my_app_linear)
+    LinearLayout myAppLinear;
 
     private FragmentActivity activity;
     private WorkbenchMenuAdapter appMenuAdapter;
@@ -76,47 +79,48 @@ public class WorkbenchFragment extends BaseFragment {
 
     private void initView() {
         initCyclePager();
-        initAppMune();
-        initMyAppMune();
+        initAppMenu();
+        initMyAppMenu();
     }
 
     private void initCyclePager() {
         cycleViewPager.setOnItemClickListener(new CycleViewPager.ItemSyscleClickListener() {
             @Override
             public void itemClickL(Connect.Banner banner, int position) {
-                ToastUtil.getInstance().showToast("ddianjile" + position);
+                OuterWebsiteActivity.startActivity(activity, banner.getHref());
             }
         });
         getBanners();
     }
 
-    private void initAppMune() {
+    private void initAppMenu() {
         appMenuAdapter = new WorkbenchMenuAdapter(activity);
-        appMenuAdapter.setOnItemClickListence(onItemMuneClickListener);
+        appMenuAdapter.setOnItemClickListence(onItemMenuClickListener);
         applicationMenuRecycler.setLayoutManager(new GridLayoutManager(activity, 4));
         applicationMenuRecycler.setAdapter(appMenuAdapter);
         getApplication();
     }
 
-    private void initMyAppMune() {
-        ArrayList<MenuBean> mymenuList = new ArrayList<>();
-        mymenuList.add(MenuData.getInstance().getData("visitors"));
-        mymenuList.add(MenuData.getInstance().getData("add"));
+    private void initMyAppMenu() {
         myAppMenuAdapter = new WorkbenchMenuAdapter(activity);
-        myAppMenuAdapter.setOnItemClickListence(onItemMyMuneClickListener);
+        myAppMenuAdapter.setOnItemClickListence(onItemMyMenuClickListener);
         myMenuRecycler.setLayoutManager(new GridLayoutManager(activity, 4));
         myMenuRecycler.setAdapter(myAppMenuAdapter);
-        myAppMenuAdapter.setNotify(mymenuList);
     }
 
-    WorkbenchMenuAdapter.OnItemMuneClickListener onItemMuneClickListener = new WorkbenchMenuAdapter.OnItemMuneClickListener() {
+    @OnClick(R.id.search_relative)
+    void searchRelative(View view) {
+
+    }
+
+    WorkbenchMenuAdapter.OnItemMenuClickListener onItemMenuClickListener = new WorkbenchMenuAdapter.OnItemMenuClickListener() {
         @Override
         public void itemClick(int position, MenuBean item) {
 
         }
     };
 
-    WorkbenchMenuAdapter.OnItemMuneClickListener onItemMyMuneClickListener = new WorkbenchMenuAdapter.OnItemMuneClickListener() {
+    WorkbenchMenuAdapter.OnItemMenuClickListener onItemMyMenuClickListener = new WorkbenchMenuAdapter.OnItemMenuClickListener() {
         @Override
         public void itemClick(int position, MenuBean item) {
             if (item.getCode().equals("visitors")) {
@@ -156,11 +160,20 @@ public class WorkbenchFragment extends BaseFragment {
                             Connect.Applications applications = Connect.Applications.parseFrom(structData.getPlainData());
                             List<Connect.Application> list = applications.getListList();
                             ArrayList<MenuBean> listMenu = new ArrayList<>();
+
+                            ArrayList<MenuBean> myListMenu = new ArrayList<>();
                             for (Connect.Application application : list) {
                                 MenuBean menuBean = MenuData.getInstance().getData(application.getCode());
-                                listMenu.add(menuBean);
+                                if (application.getCategory() == 1) {
+                                    listMenu.add(menuBean);
+                                } else {
+                                    myListMenu.add(menuBean);
+                                }
                             }
+                            myListMenu.add(MenuData.getInstance().getData("add"));
+                            myAppLinear.setVisibility(View.VISIBLE);
                             appMenuAdapter.setNotify(listMenu);
+                            myAppMenuAdapter.setNotify(myListMenu);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -168,7 +181,6 @@ public class WorkbenchFragment extends BaseFragment {
 
                     @Override
                     public void onError(Connect.HttpNotSignResponse response) {
-                        int a = 1;
                     }
                 });
     }

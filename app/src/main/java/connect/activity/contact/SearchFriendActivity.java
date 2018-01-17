@@ -114,7 +114,7 @@ public class SearchFriendActivity extends BaseActivity {
                     mActivity.finish();
                     break;
                 case 2:
-                    ContactInfoActivity.lunchActivity(mActivity, list);
+                    ContactInfoActivity.lunchActivity(mActivity, list, "");
                     mActivity.finish();
                     break;
                 default:
