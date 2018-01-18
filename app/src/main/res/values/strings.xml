@@ -665,7 +665,7 @@
     <string name="Work_Service_Search">Search application</string>
     <string name="Work_Search">Search</string>
     <string name="Link_exit_the_group">%sexit the group</string>
-
+    <string name="Work_Third_Party_Service">Third-party service</string>
     <string name="Link_Group_Create">Create Group</string>
     <string name="Link_Group_Invite">Invite into the group</string>
     <string name="Link_Group_Invite_Success">The invitation is successful</string>
