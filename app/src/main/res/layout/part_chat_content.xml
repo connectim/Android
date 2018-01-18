@@ -84,6 +84,7 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
                     android:contentDescription="@string/app_name"
+                    android:visibility="gone"
                     android:src="@mipmap/message_stick_on_top2x" />
 
                 <ImageView
@@ -96,8 +97,8 @@
 
                 <ImageView
                     android:id="@id/notify"
-                    android:layout_width="@dimen/dp_25"
-                    android:layout_height="@dimen/dp_25"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
                     android:contentDescription="@string/app_name"
                     android:src="@mipmap/message_notify_disable_small2x"
                     android:visibility="gone" />

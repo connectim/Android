@@ -5,7 +5,6 @@ import java.util.Map;
 
 import connect.activity.chat.view.row.MsgBaseRow;
 import connect.activity.chat.view.row.MsgCardRow;
-import connect.activity.chat.view.row.MsgEmotionRow;
 import connect.activity.chat.view.row.MsgImgRow;
 import connect.activity.chat.view.row.MsgLocationRow;
 import connect.activity.chat.view.row.MsgNoticeRow;
@@ -26,7 +25,6 @@ public enum LinkMessageRow {
     Voice(2, new MsgVoiceRow()),
     Photo(3, new MsgImgRow()),
     Video(4, new MsgVideoRow()),
-    Emotion(5, new MsgEmotionRow()),
     Location(17, new MsgLocationRow()),
     Name_Card(18, new MsgCardRow()),
     OUTER_WEBSITE(25, new MsgWebsiteRow()),
