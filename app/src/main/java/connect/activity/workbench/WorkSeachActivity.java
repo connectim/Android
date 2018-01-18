@@ -102,8 +102,6 @@ public class WorkSeachActivity extends BaseActivity {
             @Override
             public void itemClick(boolean isAdd ,String code) {
                 updateAppsAddState(isAdd, code);
-
-                EventBus.getDefault().post(new AppsState(AppsState.AppsEnum.APPLICATION));
             }
         });
 
@@ -167,6 +165,8 @@ public class WorkSeachActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 searchAppsWorks("");
+
+                EventBus.getDefault().post(new AppsState(AppsState.AppsEnum.APPLICATION));
             }
 
             @Override
