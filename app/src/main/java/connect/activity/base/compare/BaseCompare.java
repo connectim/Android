@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 public abstract class BaseCompare<T> implements Comparator<T> {
 
+    private static String Tag = "_BaseCompare";
     private Collator collator = Collator.getInstance();
 
     int compareString(String lhs, String rhs) {

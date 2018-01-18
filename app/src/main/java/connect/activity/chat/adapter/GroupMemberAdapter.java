@@ -33,17 +33,16 @@ import protos.Connect;
  */
 public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.MemberReHolder> {
 
-    private RecyclerView recyclerView;
     private SideScrollView sideScrollView = null;
     private Activity activity;
     private LayoutInflater inflater;
     private boolean canScroll = true;
     private List<GroupMemberEntity> groupMemEntities = new ArrayList<>();
 
-    public GroupMemberAdapter(Activity activity, RecyclerView recyclerView) {
+    public GroupMemberAdapter(Activity activity, List<GroupMemberEntity> entities) {
         this.activity = activity;
         inflater = LayoutInflater.from(activity);
-        this.recyclerView = recyclerView;
+        this.groupMemEntities = entities;
     }
 
     public void setCanScroll(boolean canScroll) {
