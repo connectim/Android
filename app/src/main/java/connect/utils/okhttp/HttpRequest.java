@@ -169,7 +169,12 @@ public class HttpRequest {
             @Override
             public void onFailure(Call call, IOException e) {
                 ProgressUtil.getInstance().dismissProgress();
-                resultCall.onError();
+                mDelivery.post(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       resultCall.onError();
+                                   }
+                               });
                 dealOnFailure(call);
             }
 
