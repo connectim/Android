@@ -114,6 +114,7 @@ public class ExBottomLayout extends RelativeLayout {
             bottomView.setLayoutParams(params);
             bottomView.setTag(lastCount);
             bottomView.setOnClickListener(bottomClickListener);
+            bottomView.setPress();
             emojiTabview.addView(bottomView);
             catePagers += sticker.getPagerCount();
         }

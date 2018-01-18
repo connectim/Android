@@ -221,7 +221,7 @@ e.printStackTrace();
     public void setHighLightMode(boolean isDisplayInToolbarMenu){
         isHighLightMode = true;
         ViewGroup.LayoutParams params = getLayoutParams();
-        int width = SystemUtil.dipToPx(18);
+        int width = SystemUtil.dipToPx(12);
         params.width = width;
         params.height = params.width;
         if(isDisplayInToolbarMenu && params instanceof FrameLayout.LayoutParams){
@@ -231,7 +231,7 @@ e.printStackTrace();
         setLayoutParams(params);
 
         final int diameter = Math.abs(width - (int) (2.5 * (float) mShadowRadius));
-        OvalShadow oval = new OvalShadow(mShadowRadius, diameter);
+        OvalShape oval = new OvalShape();
         ShapeDrawable drawable = new ShapeDrawable(oval);
         ViewCompat.setLayerType(this, ViewCompat.LAYER_TYPE_SOFTWARE, drawable.getPaint());
         drawable.getPaint().setColor(backgroundColor);

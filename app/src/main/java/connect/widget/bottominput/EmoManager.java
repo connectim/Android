@@ -35,7 +35,6 @@ public class EmoManager {
     }
 
     public static final String EMOJI_PATH = "emoji";
-    public static final String GIF_PATH = "gif";
 
     private final static String EMJ_ACTIVITIES = "activities";
     private final static String EMJ_ANIMALS = "animals";

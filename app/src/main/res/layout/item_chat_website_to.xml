@@ -5,7 +5,6 @@
               android:layout_below="@id/showtime"
               android:gravity="right">
 
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,17 +37,17 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/color_black"
-            android:textSize="@dimen/sp_16"/>
+            android:textSize="@dimen/sp_14"/>
 
         <TextView
             android:id="@id/txt3"
-            android:layout_width="@dimen/dp_120"
+            android:layout_width="@dimen/dp_160"
             android:layout_height="wrap_content"
             android:layout_below="@id/txt2"
             android:ellipsize="end"
             android:maxLines="3"
             android:textColor="@color/color_858998"
-            android:textSize="@dimen/sp_10"/>
+            android:textSize="@dimen/sp_12"/>
 
         <ImageView
             android:id="@id/roundimg1"

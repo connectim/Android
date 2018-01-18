@@ -60,9 +60,9 @@ public class EmotionGridAdapter extends BaseAdapter {
         }
 
         String path = EmoManager.EMOJI_PATH + "/" + stickBean.getName() + "/" + stickers.get(position);
-        String gif = EmoManager.GIF_PATH + "/" + FileUtil.subExtentsion(stickers.get(position)) + ".gif";
+        // String gif = EmoManager.GIF_PATH + "/" + FileUtil.subExtentsion(stickers.get(position)) + ".gif";
         GlideUtil.loadImageAssets(holder.img, path);
-        holder.img.setGifPath(gif);
+        // holder.img.setGifPath(gif);
         holder.img.setPopListener(new PopWindowImg.IPopWindowListener() {
             @Override
             public void OnClick(String filePath) {
