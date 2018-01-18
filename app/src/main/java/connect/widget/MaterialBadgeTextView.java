@@ -23,7 +23,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import connect.ui.activity.R;
-import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
 
 public class MaterialBadgeTextView extends TextView {
@@ -195,8 +194,8 @@ e.printStackTrace();
             if (count <= 0) {
                 setVisibility(View.GONE);
             } else {
-                setHighLightMode();
                 setVisibility(View.VISIBLE);
+                setHighLightMode();
             }
         }
     }
@@ -221,7 +220,7 @@ e.printStackTrace();
     public void setHighLightMode(boolean isDisplayInToolbarMenu){
         isHighLightMode = true;
         ViewGroup.LayoutParams params = getLayoutParams();
-        int width = SystemUtil.dipToPx(18);
+        int width = SystemUtil.dipToPx(12);
         params.width = width;
         params.height = params.width;
         if(isDisplayInToolbarMenu && params instanceof FrameLayout.LayoutParams){
@@ -231,7 +230,7 @@ e.printStackTrace();
         setLayoutParams(params);
 
         final int diameter = Math.abs(width - (int) (2.5 * (float) mShadowRadius));
-        OvalShadow oval = new OvalShadow(mShadowRadius, diameter);
+        OvalShadow oval = new OvalShadow(4, diameter);
         ShapeDrawable drawable = new ShapeDrawable(oval);
         ViewCompat.setLayerType(this, ViewCompat.LAYER_TYPE_SOFTWARE, drawable.getPaint());
         drawable.getPaint().setColor(backgroundColor);
@@ -241,7 +240,7 @@ e.printStackTrace();
         } else {
             setBackgroundDrawable(drawable);
         }
-        setText("");
+        setText(" ");
         setVisibility(View.VISIBLE);
     }
 
@@ -260,18 +259,22 @@ e.printStackTrace();
             mShadowPaint = new Paint();
             mShadowRadius = shadowRadius;
             mCircleDiameter = circleDiameter;
-            mRadialGradient = new RadialGradient(mCircleDiameter / 2, mCircleDiameter / 2,
-                    mShadowRadius, new int[]{
-                    FILL_SHADOW_COLOR, Color.TRANSPARENT
-            }, null, Shader.TileMode.CLAMP);
-            mShadowPaint.setShader(mRadialGradient);
+            if (shadowRadius > 5) {
+                mRadialGradient = new RadialGradient(mCircleDiameter / 2, mCircleDiameter / 2,
+                        mShadowRadius, new int[]{
+                        FILL_SHADOW_COLOR, Color.TRANSPARENT
+                }, null, Shader.TileMode.CLAMP);
+                mShadowPaint.setShader(mRadialGradient);
+            }
         }
 
         @Override
         public void draw(Canvas canvas, Paint paint) {
             final int viewWidth = MaterialBadgeTextView.this.getWidth();
             final int viewHeight = MaterialBadgeTextView.this.getHeight();
-            canvas.drawCircle(viewWidth / 2, viewHeight / 2, (mCircleDiameter / 2 + mShadowRadius), mShadowPaint);
+            if (mShadowRadius > 5) {
+                canvas.drawCircle(viewWidth / 2, viewHeight / 2, (mCircleDiameter / 2 + mShadowRadius), mShadowPaint);
+            }
             canvas.drawCircle(viewWidth / 2, viewHeight / 2, (mCircleDiameter / 2), paint);
         }
     }

@@ -15,7 +15,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.io.File;
 
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.BubbleImg;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
