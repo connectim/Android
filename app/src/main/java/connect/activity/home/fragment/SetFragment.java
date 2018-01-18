@@ -136,36 +136,7 @@ public class SetFragment extends BaseFragment {
     @OnClick(R.id.llAbout)
     void intoAbout(View view) {
         AboutActivity.startActivity(mActivity);
-        /*Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, " https://wx-kq.bitmain.com/guest/info?token=" + staff1.getToken());
-        shareIntent.setType("text/plain");
-        startActivity(Intent.createChooser(shareIntent, "分享到"));*/
     }
-
-    /*@OnClick(R.id.bottom_lin)
-    void bottomLin(View view) {
-        UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        Connect.Staff staff = Connect.Staff.newBuilder()
-                .setStaffId(userBean.getUid())
-                .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_TOKEN, staff, new ResultCall<Connect.HttpNotSignResponse>() {
-            @Override
-            public void onResponse(Connect.HttpNotSignResponse response) {
-                try {
-                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
-                    staff1 = Connect.Staff.parseFrom(structData.getPlainData());
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(Connect.HttpNotSignResponse response) {}
-        });
-    }*/
-
 
     @OnClick(R.id.address_scan_img)
     void showScanAddress(View view) {
