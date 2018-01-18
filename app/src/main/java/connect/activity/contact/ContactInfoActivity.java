@@ -118,9 +118,11 @@ public class ContactInfoActivity extends BaseActivity {
         departmentTv.setText(contactEntity.getOu());
         phoneTv.setText(contactEntity.getMobile());
         if (contactEntity.getRegisted()) {
-            toolbar.setRightImg(R.mipmap.menu_white);
-            toolbar.setRightTextEnable(true);
-
+            if(ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid()) == null){
+                toolbar.setRightText(R.string.Work_Pay_attention_to_him);
+            }else{
+                toolbar.setRightText(R.string.Work_Cancel_the_attention);
+            }
             avatarImageview.setVisibility(View.VISIBLE);
             avatarImage.setVisibility(View.GONE);
             GlideUtil.loadAvatarRound(avatarImageview, contactEntity.getAvatar(), 8);
@@ -140,32 +142,12 @@ public class ContactInfoActivity extends BaseActivity {
     }
 
     @OnClick(R.id.right_lin)
-    void showDialog(View view) {
-        final ContactEntity contactEntity1 = ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid());
-        String message;
-        if (contactEntity1 == null) {
-            message = mActivity.getResources().getString(R.string.Link_Add_focus);
+    void attention(View view) {
+        if (ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid()) == null) {
+            addFollow(true);
         } else {
-            message = mActivity.getResources().getString(R.string.Link_Cancle_focus);
+            addFollow(false);
         }
-        ArrayList<String> list = new ArrayList<>();
-        list.add(message);
-        DialogUtil.showBottomView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
-            @Override
-            public void confirm(int position) {
-                switch (position) {
-                    case 0:
-                        if (contactEntity1 == null) {
-                            addFollow(true);
-                        } else {
-                            addFollow(false);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
     }
 
     @OnClick(R.id.cell_image)
@@ -269,11 +251,14 @@ public class ContactInfoActivity extends BaseActivity {
                     ContactHelper.getInstance().insertContact(contactEntity);
                     ToastEUtil.makeText(mActivity, R.string.Login_Save_successful).show();
                     ContactNotice.receiverContact();
+                    toolbar.setRightText(R.string.Work_Cancel_the_attention);
                 } else {
                     ContactHelper.getInstance().deleteEntity(contactEntity.getUid());
                     ToastEUtil.makeText(mActivity, R.string.Link_Delete_Successful).show();
                     ContactNotice.receiverContact();
+                    toolbar.setRightText(R.string.Work_Pay_attention_to_him);
                 }
+
             }
 
             @Override

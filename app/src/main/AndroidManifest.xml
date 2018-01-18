@@ -100,7 +100,7 @@
             android:name="connect.widget.takepicture.TakePictureActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="connect.activity.company.DepartmentActivity"
+            android:name="connect.activity.contact.DepartmentActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.ContactInfoActivity"

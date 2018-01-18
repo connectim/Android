@@ -17,7 +17,7 @@
         <RelativeLayout
             android:layout_width="0px"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:layout_centerVertical="true">
             <RelativeLayout
                 android:id="@id/search_relative"

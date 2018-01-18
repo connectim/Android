@@ -1,4 +1,4 @@
-package connect.activity.company.adapter;
+package connect.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

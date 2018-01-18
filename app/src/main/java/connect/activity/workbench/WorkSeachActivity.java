@@ -75,12 +75,12 @@ public class WorkSeachActivity extends BaseActivity {
         });
 
 
-        fromCategory = getIntent().getIntExtra("Is_Manager", 0);
+        fromCategory = getIntent().getIntExtra("Category", 0);
         if (fromCategory == 1) {
             toolbar.setTitle(getResources().getString(R.string.Link_Function_Manager));
         } else {
             toolbar.setRightText(getResources().getString(R.string.Work_Search));
-            toolbar.setSearchTitle(R.mipmap.icon_search_small3x, getResources().getString(R.string.Work_Service_Search));
+            toolbar.setSearchTitle(R.mipmap.department_search, getResources().getString(R.string.Work_Service_Search));
             toolbar.setRightListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -170,8 +170,7 @@ public class WorkSeachActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-            }
+            public void onError(Connect.HttpNotSignResponse response) {}
         });
     }
 }

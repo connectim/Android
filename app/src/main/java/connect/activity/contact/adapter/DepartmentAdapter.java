@@ -1,4 +1,4 @@
-package connect.activity.company.adapter;
+package connect.activity.contact.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import connect.activity.base.BaseApplication;
+import connect.activity.contact.bean.DepartmentBean;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 import connect.widget.DepartmentAvatar;

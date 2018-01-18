@@ -28,7 +28,7 @@
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/icon_search_small3x"/>
+                android:src="@mipmap/department_search"/>
             <EditText
                 android:id="@+id/search_edit"
                 style="@style/EditStyle"

@@ -693,6 +693,8 @@
     <string name="Work_Visitors_the_approved">Уже аудита</string>
     <string name="Work_Visitors_apply_list">Список заявок</string>
     <string name="Work_Visitors_audit_records">аудита</string>
+    <string name="Work_Pay_attention_to_him">Внимание,он</string>
+    <string name="Work_Cancel_the_attention">Отмена внимание</string>
 
     <string name="Chat_Refreshing">обновление ...</string>
     <string name="Link_Join_Group_Success">успех  к  групповой чат </string>

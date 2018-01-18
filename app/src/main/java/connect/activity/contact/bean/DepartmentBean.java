@@ -1,4 +1,4 @@
-package connect.activity.company.adapter;
+package connect.activity.contact.bean;
 
 import java.io.Serializable;
 

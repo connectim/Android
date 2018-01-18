@@ -140,7 +140,7 @@
     <string name="Chat_set_the_self_destruct_timer_to">%1$s set the self-destruct timer to %2$s
     </string>
     <string name="Common_Cancel">Cancel</string>
-    <string name="Common_Management">Management</string>
+    <string name="Common_Management">Manage</string>
     <string name="Common_The_search_application">The search application</string>
     <string name="Common_Completed">Completed</string>
     <string name="Common_Download_App">Downloading%s</string>
@@ -644,6 +644,8 @@
     <string name="Work_Visitors_the_approved">The approved</string>
     <string name="Work_Visitors_apply_list">To apply for the list</string>
     <string name="Work_Visitors_audit_records">Audit records</string>
+    <string name="Work_Pay_attention_to_him">Pay attention to him</string>
+    <string name="Work_Cancel_the_attention">Cancel the attention</string>
 
     <string name="Chat_Refreshing">Refreshing...</string>
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>

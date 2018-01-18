@@ -14,23 +14,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.company.adapter.DepartmentAdapter;
-import connect.activity.company.adapter.DepartmentBean;
-import connect.activity.contact.adapter.SearchResultAdapter;
-import connect.activity.contact.bean.SourceType;
+import connect.activity.contact.adapter.DepartmentAdapter;
+import connect.activity.contact.bean.DepartmentBean;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;

@@ -16,7 +16,7 @@
         android:background="@color/color_ffffff"
         android:scrollbars="none">
 
-        <connect.activity.company.adapter.NameLinear
+        <connect.widget.NameLinear
             android:id="@+id/name_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

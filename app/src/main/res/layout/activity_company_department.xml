@@ -68,7 +68,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:background="@color/color_ffffff">
-        <connect.activity.company.adapter.NameLinear
+        <connect.widget.NameLinear
             android:id="@+id/name_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

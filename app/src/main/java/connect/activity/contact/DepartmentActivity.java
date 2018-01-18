@@ -1,4 +1,4 @@
-package connect.activity.company;
+package connect.activity.contact;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,10 +20,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
-import connect.activity.company.adapter.DepartmentAdapter;
-import connect.activity.company.adapter.DepartmentBean;
-import connect.activity.company.adapter.NameLinear;
-import connect.activity.contact.ContactInfoActivity;
+import connect.activity.contact.adapter.DepartmentAdapter;
+import connect.activity.contact.bean.DepartmentBean;
+import connect.widget.NameLinear;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.UserInfoActivity;

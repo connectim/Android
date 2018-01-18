@@ -20,7 +20,7 @@ import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseListener;
 import connect.activity.chat.adapter.GroupDepartSelectAdapter;
 import connect.activity.chat.bean.DepartSelectBean;
-import connect.activity.company.adapter.NameLinear;
+import connect.widget.NameLinear;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
