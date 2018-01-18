@@ -1871,24 +1871,18 @@ message Banners {
 }
 
 message Application {
-  string name = 1;
-string code = 2;
-string img = 3;
-string href = 4;
-string router = 5;
-int32 priority = 6;
-int32 category = 7;
-bool added = 8;
+ string name = 1;
+ string code = 2;
+ string img = 3;
+ string href = 4;
+ string router = 5;
+ int32 priority = 6;
+ int32 category = 7;
+ bool added = 8;
 }
 
 message Applications {
   repeated Application list =1;
-}
-
-message Examine {
-  string guest_id = 1;
-  bool valid = 2;
-  string reason =3;
 }
 
 message VisitorRecordsReq {
@@ -1924,6 +1918,12 @@ message GroupInviteWorkmate {
  string identifier = 4;
 }
 
+message Examine {
+ string guest_id = 1;
+ int32 valid = 2;
+ string reason = 3;
+}
+
 message ExamineMessage {
-   string body = 1;
+  string body = 1;
 }
