@@ -14,6 +14,7 @@ import java.util.List;
 import connect.activity.workbench.data.MenuBean;
 import connect.activity.workbench.data.MenuData;
 import connect.ui.activity.R;
+import connect.utils.DialogUtil;
 import protos.Connect;
 
 
@@ -23,7 +24,7 @@ import protos.Connect;
 
 public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.ViewHolder> {
 
-
+    private Context context;
     private List<Connect.Application> applications = null;
 
     public void setDatas(List<Connect.Application> applications) {
@@ -33,7 +34,7 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_worksearch, parent, false);
         ViewHolder holder = new ViewHolder(view);
@@ -49,11 +50,26 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
         holder.categoryTxt.setText(menuBean.getTextId());
         holder.addStateTxt.setVisibility(View.GONE);
         holder.searchStateImg.setSelected(!application.getAdded());
+        holder.searchStateImg.setVisibility(application.getCategory() == 1 ? View.GONE : View.VISIBLE);
         holder.contentRelative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String categoryCode= application.getCode();
-                interWorksearch.itemClick(!application.getAdded(), categoryCode);
+                if (application.getCategory() == 1) {
+                    DialogUtil.showAlertTextView(context, context.getString(R.string.Set_tip_title),
+                            context.getString(R.string.Link_Function_Under_Development),
+                            "", "", true, new DialogUtil.OnItemClickListener() {
+                                @Override
+                                public void confirm(String value) {
+                                }
+
+                                @Override
+                                public void cancel() {
+                                }
+                            });
+                } else {
+                    String code = application.getCode();
+                    interWorksearch.itemClick(!application.getAdded(), code);
+                }
             }
         });
     }
@@ -90,6 +106,6 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
     }
 
     public interface InterWorksearch {
-        void itemClick(boolean isAdd ,String code);
+        void itemClick(boolean isAdd, String code);
     }
 }

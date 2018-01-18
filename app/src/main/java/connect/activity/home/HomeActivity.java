@@ -11,6 +11,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -197,7 +198,10 @@ public class HomeActivity extends BaseFragmentActivity {
                 break;
             case REMOTE_LOGIN:
                 String deviceName = (String) objects[0];
-                DialogUtil.showAlertTextView(activity, null, getString(R.string.Error_Device_Remote_Login, deviceName), null, getString(R.string.Common_OK), true, false, new DialogUtil.OnItemClickListener() {
+                String showContent = TextUtils.isEmpty(deviceName) ?
+                        getString(R.string.Error_Device_Remote_Other_Login) :
+                        getString(R.string.Error_Device_Remote_Login, deviceName);
+                DialogUtil.showAlertTextView(activity, null,showContent , null, getString(R.string.Common_OK), true, false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
