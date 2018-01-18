@@ -1,12 +1,7 @@
 package connect.activity.workbench.fragment;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -28,7 +22,6 @@ import connect.ui.activity.R;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
@@ -39,8 +32,6 @@ import protos.Connect;
 
 public class ApprovedFragment extends BaseFragment {
 
-    @Bind(R.id.no_data_lin)
-    LinearLayout noDataLin;
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
     @Bind(R.id.refreshview)
@@ -134,10 +125,6 @@ public class ApprovedFragment extends BaseFragment {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.VisitorRecords visitorRecords = Connect.VisitorRecords.parseFrom(structData.getPlainData());
                     List<Connect.VisitorRecord> list = visitorRecords.getListList();
-                    if (page == 1 && list.size() == 0) {
-                        noDataLin.setVisibility(View.VISIBLE);
-                        recyclerview.setVisibility(View.GONE);
-                    }
                     if (page > 1) {
                         adapter.setNotifyData(list, false);
                     } else {

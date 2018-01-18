@@ -154,8 +154,14 @@ public class LoginUserActivity extends BaseActivity {
             public void onError(Connect.HttpNotSignResponse response) {
                 imageLoading.clearAnimation();
                 imageLoading.setVisibility(View.GONE);
-
                 ToastUtil.getInstance().showToast(R.string.Login_Password_incorrect);
+            }
+
+            @Override
+            public void onError() {
+                super.onError();
+                imageLoading.clearAnimation();
+                imageLoading.setVisibility(View.GONE);
             }
         });
     }

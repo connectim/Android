@@ -109,12 +109,12 @@ public class VisitorsAuditActivity extends BaseActivity {
 
     @OnClick(R.id.refuse_text)
     void refuseText(View view) {
-        showAuditDialog(getResources().getString(R.string.Work_Visitors_sure_to_deny_access), false);
+        showAuditDialog(getResources().getString(R.string.Work_Visitors_sure_to_deny_access), 0);
     }
 
     @OnClick(R.id.agree_text)
     void agreeText(View view) {
-        showAuditDialog(getResources().getString(R.string.Work_Visitors_agree_to_visit), true);
+        showAuditDialog(getResources().getString(R.string.Work_Visitors_agree_to_visit), 1);
     }
 
     @OnClick(R.id.phone_tv)
@@ -122,7 +122,7 @@ public class VisitorsAuditActivity extends BaseActivity {
         SystemUtil.callPhone(mActivity, visitorRecord.getStaffPhone());
     }
 
-    private void showAuditDialog(String message, final boolean valid) {
+    private void showAuditDialog(String message, final int valid) {
         DialogUtil.showAlertTextView(mActivity,
                 mActivity.getResources().getString(R.string.Set_tip_title), message,
                 "", "", false, new DialogUtil.OnItemClickListener() {
@@ -137,7 +137,7 @@ public class VisitorsAuditActivity extends BaseActivity {
                 });
     }
 
-    private void requestAudit(boolean valid) {
+    private void requestAudit(int valid) {
         Connect.Examine examine = Connect.Examine.newBuilder()
                 .setGuestId(visitorRecord.getGuestId())
                 .setValid(valid)
