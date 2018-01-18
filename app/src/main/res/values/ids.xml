@@ -146,6 +146,7 @@
     <item name="linearlayout_1" type="id"/>
     <item name="linearlayout_2" type="id"/>
     <item name="scrollview" type="id"/>
+    <item name="pickscrollview" type="id"/>
     <item name="state" type="id"/>
     <item name="imgs" type="id"/>
     <item name="txt" type="id"/>
