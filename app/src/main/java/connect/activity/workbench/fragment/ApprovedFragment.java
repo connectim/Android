@@ -29,6 +29,7 @@ import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemUtil;
 import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
 
@@ -108,7 +109,6 @@ public class ApprovedFragment extends BaseFragment {
         }
     };
 
-    private String phone;
     VisitorAdapter.OnItemClickListener onItemClickListener = new VisitorAdapter.OnItemClickListener() {
         @Override
         public void itemClick(Connect.VisitorRecord visitorRecord) {
@@ -117,25 +117,7 @@ public class ApprovedFragment extends BaseFragment {
 
         @Override
         public void callClick(Connect.VisitorRecord visitorRecord) {
-            phone = visitorRecord.getStaffPhone();
-            PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_PHONE}, permissionCallBack);
-        }
-    };
-
-    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
-        @Override
-        public void granted(String[] permissions) {
-            if (permissions != null && permissions.length > 0) {
-                if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
-                mActivity.startActivity(intent);
-            }
-        }
-
-        @Override
-        public void deny(String[] permissions) {
+            SystemUtil.callPhone(mActivity, visitorRecord.getStaffPhone());
         }
     };
 
@@ -154,7 +136,7 @@ public class ApprovedFragment extends BaseFragment {
                     List<Connect.VisitorRecord> list = visitorRecords.getListList();
                     if (page == 1 && list.size() == 0) {
                         noDataLin.setVisibility(View.VISIBLE);
-                        refreshview.setVisibility(View.GONE);
+                        recyclerview.setVisibility(View.GONE);
                     }
                     if (page > 1) {
                         adapter.setNotifyData(list, false);

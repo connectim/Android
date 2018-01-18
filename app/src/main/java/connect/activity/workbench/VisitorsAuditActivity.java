@@ -1,12 +1,7 @@
 package connect.activity.workbench;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,7 +23,7 @@ import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemUtil;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -124,25 +119,8 @@ public class VisitorsAuditActivity extends BaseActivity {
 
     @OnClick(R.id.phone_tv)
     void callPhone(View view) {
-        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_PHONE}, permissionCallBack);
+        SystemUtil.callPhone(mActivity, visitorRecord.getStaffPhone());
     }
-
-    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
-        @Override
-        public void granted(String[] permissions) {
-            if (permissions != null && permissions.length > 0) {
-                if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + visitorRecord.getStaffPhone()));
-                mActivity.startActivity(intent);
-            }
-        }
-
-        @Override
-        public void deny(String[] permissions) {
-        }
-    };
 
     private void showAuditDialog(String message, final boolean valid) {
         DialogUtil.showAlertTextView(mActivity,

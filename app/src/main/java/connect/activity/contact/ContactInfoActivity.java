@@ -33,6 +33,7 @@ import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemUtil;
 import connect.widget.DepartmentAvatar;
 import connect.widget.TopToolBar;
 import instant.utils.SharedUtil;
@@ -119,7 +120,11 @@ public class ContactInfoActivity extends BaseActivity {
         phoneTv.setText(contactEntity.getMobile());
         if (contactEntity.getRegisted()) {
             if(ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid()) == null){
-                toolbar.setRightText(R.string.Work_Pay_attention_to_him);
+                if (contactEntity.getGender() == 1) {
+                    toolbar.setRightText(R.string.Work_Pay_attention_to_him);
+                } else {
+                    toolbar.setRightText(R.string.Work_Pay_attention_to_her);
+                }
             }else{
                 toolbar.setRightText(R.string.Work_Cancel_the_attention);
             }
@@ -152,7 +157,7 @@ public class ContactInfoActivity extends BaseActivity {
 
     @OnClick(R.id.cell_image)
     void call(View view) {
-        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_PHONE}, permissionCallBack);
+        SystemUtil.callPhone(mActivity, contactEntity.getMobile());
     }
 
     @OnClick(R.id.chat_btn)
@@ -166,23 +171,6 @@ public class ContactInfoActivity extends BaseActivity {
         talker.setFriendPublicKey(contactEntity.getPublicKey());
         ChatActivity.startActivity(mActivity, talker);
     }
-
-    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
-        @Override
-        public void granted(String[] permissions) {
-            if (permissions != null && permissions.length > 0) {
-                if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contactEntity.getMobile()));
-                mActivity.startActivity(intent);
-            }
-        }
-
-        @Override
-        public void deny(String[] permissions) {
-        }
-    };
 
     private void searchUser(String uid) {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
@@ -256,7 +244,11 @@ public class ContactInfoActivity extends BaseActivity {
                     ContactHelper.getInstance().deleteEntity(contactEntity.getUid());
                     ToastEUtil.makeText(mActivity, R.string.Link_Delete_Successful).show();
                     ContactNotice.receiverContact();
-                    toolbar.setRightText(R.string.Work_Pay_attention_to_him);
+                    if (contactEntity.getGender() == 1) {
+                        toolbar.setRightText(R.string.Work_Pay_attention_to_him);
+                    } else {
+                        toolbar.setRightText(R.string.Work_Pay_attention_to_her);
+                    }
                 }
 
             }
