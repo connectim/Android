@@ -724,4 +724,5 @@
     <string name="Link_Function_Under_Development">Функция находится в разработке...</string>
     <string name="Link_Function_Manager">Управление приложениями</string>
     <string name="Error_Device_Remote_Other_Login">Ваша учетная запись уже подписана на других устройствах</string>
+    <string name="Link_Group_Launch">Групповой чат</string>
 </resources>

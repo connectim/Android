@@ -20,7 +20,6 @@ import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseListener;
 import connect.activity.chat.adapter.GroupDepartSelectAdapter;
 import connect.activity.chat.bean.DepartSelectBean;
-import connect.widget.NameLinear;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
@@ -29,6 +28,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.widget.NameLinear;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -86,9 +86,9 @@ public class GroupDepartSelectActivity extends BaseActivity {
                     String key = it.getKey();
                     Object object = it.getValue();
 
-                    if (key.contains("B")) {
+                    if (key.startsWith("B")) {
 
-                    } else if (key.contains("W")) {
+                    } else if (key.startsWith("W")) {
                         DepartSelectBean selectBean = (DepartSelectBean) object;
                         workmates.add(selectBean.getWorkmate());
                     } else {
@@ -256,7 +256,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
         });
 
         requestDepartmentInfoShow(department.getId());
-        if (isCreate) {
+        if (isCreate && selectedUids.size() > 0) {
             requestUserInfo(selectedUids.get(0));
         }
     }

@@ -1,17 +1,17 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="Chat_Add_as_a_friend_to_chat">Add as a friend to chat</string>
     <string name="Chat_Agree">agree</string>
-    <string name="Chat_Album_Permission_Get">Lack of reading system album permissions, click
-        "Settings" - "permissions" grant application permissions
+    <string name="Chat_Album_Permission_Get">Lack of reading system album permissions, please click
+        "Settings" - "permissions" to authorize application permissions
     </string>
     <string name="Chat_All_Image">Images</string>
     <string name="Chat_All_Image_Video">Images and Videos</string>
     <string name="Chat_All_Video">Videos</string>
     <string name="Chat_Funding">[Funding]</string>
-    <string name="Chat_Group_chat">Group chat</string>
+    <string name="Chat_Group_chat">Group chats</string>
     <string name="Chat_Group_has_been_disbanded">%s Group has been disbanded</string>
     <string name="Chat_Have_agreed">Accepted</string>
-    <string name="Chat_Have_refused">Refuse</string>
+    <string name="Chat_Have_refused">Refused</string>
     <string name="Chat_Loc">location</string>
     <string name="Chat_Member_Max">%1$d/%2$d members</string>
     <string name="Chat_Message_Black_Friend_Notice">The message has been issued but is rejected by
@@ -103,7 +103,7 @@
     <string name="Chat_Share_contact">Share the Contact Card</string>
     <string name="Chat_Share_contact_to">Share %1$s to %2$s</string>
     <string name="Chat_Sight">Sight</string>
-    <string name="Chat_Slide_left_to_cancel">Slide left to cancel</string>
+    <string name="Chat_Slide_left_to_cancel">Swipe to the left to cancel</string>
     <string name="Chat_Snapchat">[Snapchat]</string>
     <string name="Chat_Someone_note_me">[Someone @ me]</string>
     <string name="Chat_Sticky_on_Top_chat">Sticky on Top chat</string>
@@ -141,7 +141,7 @@
     </string>
     <string name="Common_Cancel">Cancel</string>
     <string name="Common_Management">Manage</string>
-    <string name="Common_The_search_application">The search application</string>
+    <string name="Common_The_search_application">Search application</string>
     <string name="Common_Completed">Completed</string>
     <string name="Common_Download_App">Downloading%s</string>
     <string name="Common_In">In \'%s</string>
@@ -210,7 +210,7 @@
     <string name="Link_From_Unknow">From unkown</string>
     <string name="Link_From_friends_to_share">From friends to share</string>
     <string name="Link_From_group_link">Link from group</string>
-    <string name="Link_Group">Group</string>
+    <string name="Link_Group">Groups</string>
     <string name="Link_Group_Introduction">Group Introduction</string>
     <string name="Link_Group_Name">Group Name</string>
     <string name="Link_Group_Setting">Group Setting</string>
@@ -254,8 +254,8 @@
         release your ownership
     </string>
     <string name="Link_Send">Send</string>
-    <string name="Link_Dialogue">Dialogue</string>
-    <string name="Link_Workbench">The workbench</string>
+    <string name="Link_Dialogue">Dialogues</string>
+    <string name="Link_Workbench">Workbench</string>
     <string name="Link_Inactive">Inactive</string>
     <string name="Link_Send_friend_request">Send friend request</string>
     <string name="Link_Send_successful">Send successful</string>
@@ -294,10 +294,10 @@
     <string name="Link_apply_to_join_group_chat">%1$s apply to join group chat %2$s</string>
     <string name="Link_become_new_group_owner">%s become new group owner</string>
     <string name="Link_contact_count">%1$d contact%2$s%3$s</string>
-    <string name="Link_contact_count_group_count">%1$d contact %2$d group</string>
+    <string name="Link_contact_count_group_count">%1$d contacts %2$d groups</string>
     <string name="Link_enter_the_group">%s join the group</string>
     <string name="Link_group_count">%d group</string>
-    <string name="Link_My_application">My application</string>
+    <string name="Link_My_application">My applications</string>
     <string name="Link_Employee_number">Employee number:</string>
     <string name="Link_Subordinate_departments">Subordinate departments:</string>
     <string name="Link_Contact_number">Contact number:</string>
@@ -311,9 +311,9 @@
     <string name="Link_the_group_member_can_see_the_QR">When enabled, the group member can see the
         QR code
     </string>
-    <string name="Link_update_Failed">update Failed</string>
+    <string name="Link_update_Failed">Update Failed</string>
     <string name="Link_user_friends">%s\'s group</string>
-    <string name="Login_created_by_random_number_generator">created by random number generator
+    <string name="Login_created_by_random_number_generator">Created by random number generator
     </string>
     <string name="Login_Avatar_upload_failed">Avatar upload failed</string>
     <string name="Login_Camera_guide_tip">Tap to take photo and hold to record vedio</string>
@@ -325,12 +325,12 @@
         around the mic
     </string>
     <string name="Login_Generated_Successful">Generated Successful</string>
-    <string name="Login_Generating_Bitcoin_address">btc address is being generated</string>
+    <string name="Login_Generating_Bitcoin_address">BTC address is being generated</string>
     <string name="Login_Generating_Private_and_Public_Key">Generating Private &amp; Public Key
     </string>
     <string name="Login_Next">Next</string>
     <string name="Login_Password">Password</string>
-    <string name="Login_username">username</string>
+    <string name="Login_username">Username</string>
     <string name="Login_Confirm_password">Confirm password</string>
     <string name="Login_Password_incorrect">Password incorrect</string>
     <string name="Login_Resend">Resend</string>
@@ -619,34 +619,34 @@
     <string name="Chat_Subscribe_Success">[Subscribe Success]</string>
 
     <string name="Work_Add">add</string>
-    <string name="Work_On_a_business_trip">On a business trip</string>
-    <string name="Work_Ask_for_leave">Ask for leave</string>
-    <string name="Work_To_submit_an_expense_account">To submit an expense account</string>
-    <string name="Work_The_examination_and_approval">The examination and approval</string>
-    <string name="Work_Subsidized_meals">Subsidized meals</string>
+    <string name="Work_On_a_business_trip">Business trip</string>
+    <string name="Work_Ask_for_leave">Leave work</string>
+    <string name="Work_To_submit_an_expense_account">Reimbursement</string>
+    <string name="Work_The_examination_and_approval">Approval</string>
+    <string name="Work_Subsidized_meals">Meal allowance</string>
     <string name="Work_Recruitment">Recruitment</string>
-    <string name="Work_The_contract">The contract</string>
-    <string name="Work_Wage">Wage</string>
+    <string name="Work_The_contract">Contract</string>
+    <string name="Work_Wage">Salary</string>
     <string name="Work_Visitors">Visitors</string>
-    <string name="Work_Visitors_info">The visitor information</string>
-    <string name="Work_Visitors_reason">Purpose of visitors:%1$s</string>
+    <string name="Work_Visitors_info">Visitor informations</string>
+    <string name="Work_Visitors_reason">Purpose of this visit:%1$s</string>
     <string name="Work_Visitors_phone">Contact information:</string>
     <string name="Work_Visitors_time">Visit time:%1$s</string>
     <string name="Work_Visitors_share">Share invitation qr code</string>
     <string name="Work_Visitors_Facial_information">Facial information:</string>
     <string name="Work_Visitors_Left_face">Left face</string>
-    <string name="Work_Visitors_Is_face">Is face</string>
+    <string name="Work_Visitors_Is_face">Frontal face</string>
     <string name="Work_Visitors_Right_face">Right face</string>
-    <string name="Work_Visitors_to_approval">Visitors to approval</string>
-    <string name="Work_Visitors_sure_to_deny_access">Are you sure to deny access?</string>
-    <string name="Work_Visitors_agree_to_visit">Do you agree to visit?</string>
-    <string name="Work_Visitors_to_audit">To audit</string>
-    <string name="Work_Visitors_the_approved">The approved</string>
-    <string name="Work_Visitors_apply_list">To apply for the list</string>
+    <string name="Work_Visitors_to_approval">Approval</string>
+    <string name="Work_Visitors_sure_to_deny_access">Are you sure to reject access?</string>
+    <string name="Work_Visitors_agree_to_visit">Do you approve the visit?</string>
+    <string name="Work_Visitors_to_audit">Pending</string>
+    <string name="Work_Visitors_the_approved">Audited</string>
+    <string name="Work_Visitors_apply_list">Apply list</string>
     <string name="Work_Visitors_audit_records">Audit records</string>
-    <string name="Work_Pay_attention_to_him">Pay attention to him</string>
-    <string name="Work_Pay_attention_to_her">Pay attention to her</string>
-    <string name="Work_Cancel_the_attention">Cancel the attention</string>
+    <string name="Work_Pay_attention_to_him">Follow</string>
+    <string name="Work_Pay_attention_to_her">Follow</string>
+    <string name="Work_Cancel_the_attention">Unfollow</string>
 
     <string name="Chat_Refreshing">Refreshing...</string>
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>
@@ -664,7 +664,7 @@
     <string name="Work_No_More_Results">No more search results</string>
     <string name="Work_Service_Search">Search application</string>
     <string name="Work_Search">Search</string>
-    <string name="Link_exit_the_group">%sExit the group</string>
+    <string name="Link_exit_the_group">%sexit the group</string>
 
     <string name="Link_Group_Create">Create Group</string>
     <string name="Link_Group_Invite">Invite into the group</string>
@@ -673,5 +673,6 @@
     <string name="Login_Connect_Change_Password">Please contact management to change your password</string>
     <string name="Link_Function_Under_Development">Function is under development...</string>
     <string name="Link_Function_Manager">Application Management</string>
-    <string name="Error_Device_Remote_Other_Login">Your account is already signed in on other device</string>
+    <string name="Error_Device_Remote_Other_Login">Your account is already signed in on other device!</string>
+    <string name="Link_Group_Launch">New chat</string>
 </resources>

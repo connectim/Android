@@ -241,5 +241,6 @@
     <item name="text_forget_password" type="id" />
     <item name="image_loading" type="id" />
     <item name="relative_login" type="id" />
+    <item name="text_newchat" type="id" />
     <item name="search_relative" type="id" />
 </resources>

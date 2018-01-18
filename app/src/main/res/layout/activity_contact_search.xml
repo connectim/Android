@@ -33,7 +33,7 @@
                 android:id="@+id/search_edit"
                 style="@style/EditStyle"
                 android:textSize="@dimen/sp_14"
-                android:textColor="@color/color_ffffff"
+                android:textColor="@color/color_161A21"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/left_img"

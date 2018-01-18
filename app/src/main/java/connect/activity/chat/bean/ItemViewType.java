@@ -19,6 +19,8 @@ public enum ItemViewType {
     Photo_To(1, LinkMessageRow.Photo),
     Video_From(-1, LinkMessageRow.Video),
     Video_To(1, LinkMessageRow.Video),
+    Emotion_From(-1, LinkMessageRow.Emotion),
+    Emotion_To(1, LinkMessageRow.Emotion),
     Location_From(-1, LinkMessageRow.Location),
     Location_To(1, LinkMessageRow.Location),
     Name_Card_From(-1, LinkMessageRow.Name_Card),

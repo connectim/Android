@@ -128,7 +128,8 @@ public class BaseGroupSelectActivity extends BaseActivity {
             contactEntities = ContactHelper.getInstance().loadFriend();
             requestUserInfo(uid);
         }
-        toolbar.setRightText(getString(R.string.Chat_Select_Count, isCreateGroup ? 1 : 0));
+        String showRight = getString(R.string.Chat_Select_Count, isCreateGroup ? TextUtils.isEmpty(uid) ? 0 : 1 : 0);
+        toolbar.setRightText(showRight);
 
         //添加组织架构
         ContactEntity originEntity = new ContactEntity();

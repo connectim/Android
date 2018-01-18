@@ -31,6 +31,7 @@ import connect.activity.base.BaseApplication;
 import connect.activity.base.BaseFragmentActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
+import connect.activity.chat.set.BaseGroupSelectActivity;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.MsgNoticeBean;
@@ -195,6 +196,9 @@ public class HomeActivity extends BaseFragmentActivity {
             case SWITCHFRAGMENT:
                 int fragmentCode = (Integer) objects[0];
                 switchFragment(fragmentCode);
+                break;
+            case GROUP_NEWCHAT:
+                BaseGroupSelectActivity.startActivity(activity, true, "");
                 break;
             case REMOTE_LOGIN:
                 String deviceName = (String) objects[0];
