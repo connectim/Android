@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -18,11 +19,13 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ConversationAdapter;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.RoomAttrBean;
+import connect.activity.home.fragment.view.ChatAddPopWindow;
 import connect.activity.home.view.ConnectStateView;
 import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -41,6 +44,7 @@ public class ConversationFragment extends BaseFragment {
     private String Tag = "_ConversationFragment";
     private Activity activity;
     private View view;
+    private PopupWindow popupWindow;
 
     private ConversationAdapter chatFragmentAdapter;
 
@@ -124,6 +128,22 @@ public class ConversationFragment extends BaseFragment {
 
         loadRooms();
         EventBus.getDefault().register(this);
+    }
+
+    @OnClick({R.id.relativelayout_1})
+    void onClickListener(View view) {
+        switch (view.getId()) {
+            case R.id.relativelayout_1:
+                if (popupWindow == null || !popupWindow.isShowing()) {
+                    PopupWindow popWindow = new ChatAddPopWindow(getActivity());
+                    popWindow.showAsDropDown(connectStateView.findViewById(R.id.relativelayout_1), 0, 5);
+                } else {
+                    if (null != popupWindow && popupWindow.isShowing()) {
+                        popupWindow.dismiss();
+                    }
+                }
+                break;
+        }
     }
 
     @Override

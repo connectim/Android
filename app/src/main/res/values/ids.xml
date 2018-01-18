@@ -146,6 +146,7 @@
     <item name="linearlayout_1" type="id"/>
     <item name="linearlayout_2" type="id"/>
     <item name="scrollview" type="id"/>
+    <item name="pickscrollview" type="id"/>
     <item name="state" type="id"/>
     <item name="imgs" type="id"/>
     <item name="txt" type="id"/>
@@ -240,5 +241,6 @@
     <item name="text_forget_password" type="id" />
     <item name="image_loading" type="id" />
     <item name="relative_login" type="id" />
+    <item name="text_newchat" type="id" />
     <item name="search_relative" type="id" />
 </resources>

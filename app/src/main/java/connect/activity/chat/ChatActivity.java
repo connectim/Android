@@ -34,7 +34,6 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
-import connect.activity.home.bean.RoomAttrBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.GroupEntity;
@@ -406,20 +405,11 @@ public class ChatActivity extends BaseChatSendActivity {
                 CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
                 break;
             case PRIVATE:
-                CFriendChat cFriendChat = new CFriendChat(normalChat.chatKey());
-                if (!TextUtils.isEmpty(talker.getNickName())) {
-                    cFriendChat.setUserAvatar(talker.getAvatar());
-                    cFriendChat.setUserName(talker.getNickName());
-                }
-                cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
+                ((CFriendChat) normalChat).updateRoomMsg(draft, showtxt, sendtime);
                 break;
             case GROUPCHAT:
             case GROUP_DISCUSSION:
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(normalChat.chatKey());
-                if (groupEntity != null) {
-                    CGroupChat cGroupChat = new CGroupChat(groupEntity);
-                    cGroupChat.updateRoomMsg(draft, showtxt, sendtime);
-                }
+                ((CGroupChat) normalChat).updateRoomMsg(draft, showtxt, sendtime);
                 break;
         }
     }

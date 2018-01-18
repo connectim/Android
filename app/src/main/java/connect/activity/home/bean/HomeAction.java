@@ -30,6 +30,7 @@ public class HomeAction extends BaseEvent {
         TOCHAT_GROUP,
         TOCHAT_ROBOT,
 
+        GROUP_NEWCHAT,
         REMOTE_LOGIN;
     }
 

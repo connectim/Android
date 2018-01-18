@@ -193,7 +193,7 @@ public class HttpRequest {
     public void postUploadFile(String url, byte[] content, final ResultCall resultCall) {
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE_DEFAULT, content);
         Request request = new Request.Builder()
-                .url("http://192.168.40.4:18081" + url)
+                .url("http://192.168.40.4:10086" + url)
                 .post(requestBody)
                 .build();
 

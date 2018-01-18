@@ -169,6 +169,7 @@ public class CFriendChat extends FriendChat implements ConversationListener {
                 ConversionHelper.getInstance().updateRoomEntity(
                         friendUid,
                         nickName(),
+                        headImg(),
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),

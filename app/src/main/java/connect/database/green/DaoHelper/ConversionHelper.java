@@ -152,11 +152,12 @@ public class ConversionHelper extends BaseDao {
     }
 
     public void updateRoomEntity(String identify, String draf, String content, int unRead, int isAt, int stranger, long messagetime) {
-        updateRoomEntity(identify, "", draf, content, unRead, isAt, stranger, messagetime);
+        updateRoomEntity(identify, "","", draf, content, unRead, isAt, stranger, messagetime);
     }
 
-    public void updateRoomEntity(String identify, String roomName, String draf, String content, int unRead, int isAt, int stranger, long messagetime) {
+    public void updateRoomEntity(String identify, String roomName,String avatar, String draf, String content, int unRead, int isAt, int stranger, long messagetime) {
         String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,UNREAD_COUNT = ? ,IS_AT = ? ,STRANGER = ? " +
+                (TextUtils.isEmpty(avatar) ? " " : ", AVATAR = '" + avatar + "'") +
                 (TextUtils.isEmpty(content) ? " " : ", CONTENT = '" + content + "'") +
                 (messagetime == 0 ? " " : ", LAST_TIME = " + messagetime) +
                 (TextUtils.isEmpty(roomName) ? "" : ", NAME = '" + roomName + "' ") +

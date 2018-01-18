@@ -16,12 +16,14 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.utils.system.SystemUtil;
+
 public class PromptView extends View {
 
     private Paint mPaint;
-    private int mSingleWidth = 120, mSingleHeight = 60;
+    private int mSingleWidth = SystemUtil.dipToPx(75), mSingleHeight = SystemUtil.dipToPx(35);
     private int mLineWidth = 1;
-    private int mArrowWidth = 45, mArrowHeight = 20;
+    private int mArrowWidth = SystemUtil.dipToPx(25), mArrowHeight = SystemUtil.dipToPx(13);
     private String[] mContentArray = null;
     private List<Rect> textRectList = new ArrayList<>();
     private List<RectF> rectFList = new ArrayList<>();
@@ -50,7 +52,7 @@ public class PromptView extends View {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setTextSize(20);
+        mPaint.setTextSize(SystemUtil.spToPx(13));
     }
 
     @Override
@@ -71,14 +73,15 @@ public class PromptView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (mContentArray == null) return;
+        int count = mContentArray.length;
         for (int i = 0; i < mContentArray.length; i++) {
-            drawPromptRect(canvas, i);
+            drawPromptRect(canvas, i,count);
         }
         //Draw the following hint arrows
         drawArrow(canvas);
     }
 
-    private void drawPromptRect(Canvas canvas, int i) {
+    private void drawPromptRect(Canvas canvas, int i,int count) {
         mPaint.setColor(Color.BLACK);
         RectF tipRectF = new RectF();
         tipRectF.left = mSingleWidth * i + i * mLineWidth;

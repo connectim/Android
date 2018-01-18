@@ -593,4 +593,5 @@
     <string name="Link_Function_Under_Development">功能正在开发中...</string>
     <string name="Link_Function_Manager">应用管理</string>
     <string name="Error_Device_Remote_Other_Login">你的账号已经在其他设备上登录</string>
+    <string name="Link_Group_Launch">发起群聊</string>
 </resources>

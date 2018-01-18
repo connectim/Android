@@ -87,7 +87,7 @@ public class BaseGroupSelectAdapter extends RecyclerView.Adapter<BaseGroupSelect
                     @Override
                     public void onClick(View view) {
                         String uid = entity.getUid();
-                        if (!TextUtils.isEmpty(friendUid) && !friendUid.equals(uid)) {
+                        if (!friendUid.equals(uid)) {
                             boolean isselect = holder.selectView.isSelected();
                             isselect = !isselect;
                             groupSelectListener.itemClick(isselect, entity);
@@ -109,7 +109,7 @@ public class BaseGroupSelectAdapter extends RecyclerView.Adapter<BaseGroupSelect
                 @Override
                 public void onClick(View view) {
                     String uid = entity.getUid();
-                    if (!TextUtils.isEmpty(friendUid) && !friendUid.equals(uid)) {
+                    if (!friendUid.equals(uid)) {
                         boolean isselect = holder.selectView.isSelected();
                         isselect = !isselect;
                         groupSelectListener.itemClick(isselect, entity);

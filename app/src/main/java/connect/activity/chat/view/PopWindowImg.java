@@ -11,13 +11,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
+import com.bumptech.glide.Glide;
+
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
-import connect.utils.system.SystemDataUtil;
-import connect.utils.system.SystemUtil;
 import connect.utils.TimeUtil;
 import connect.utils.log.LogManager;
-import connect.widget.GifView;
+import connect.utils.system.SystemDataUtil;
+import connect.utils.system.SystemUtil;
 
 /**
  * Created by gtq on 2016/12/10.
@@ -91,9 +92,10 @@ public class PopWindowImg extends ImageView {
         LogManager.getLogger().d(Tag, "touchLong");
 
         View gifView = LayoutInflater.from(getContext()).inflate(R.layout.view_popupimg, null);
-        GifView gif = (GifView) gifView.findViewById(R.id.gif);
-        gif.setGifResource(filePath);
-        gif.play();
+        ImageView imageView = (ImageView) gifView.findViewById(R.id.gif);
+        Glide.with(getContext())
+                .load(filePath)
+                .into(imageView);
 
         int[] location = SystemUtil.locationOnScreen(this);
         window = new PopupWindow(gifView, SystemUtil.dipToPx(100), SystemUtil.dipToPx(100));

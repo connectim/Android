@@ -40,14 +40,14 @@ public class EmojiPagerAdapter extends PagerAdapter {
         GridView gridView = null;
         if (stickbean.isBigStick()) {//big expression
             gridView = new GridView(context);
-            gridView.setPadding(10, SystemUtil.dipToPx(20), 10, 0);
+            gridView.setPadding(10, 10, 10, 0);
             gridView.setAdapter(new EmotionGridAdapter(context, stickbean, iEmojiClickListener));
-            gridView.setNumColumns(5);
+            gridView.setNumColumns(4);
             gridView.setHorizontalSpacing(5);
             gridView.setGravity(Gravity.CENTER);
             container.addView(gridView);
             return gridView;
-        } else {//small expression
+        } else {// small expression
             gridView = new GridView(context);
             gridView.setAdapter(new EmojiGridAdapter(context, stickbean));
             gridView.setNumColumns(7);
