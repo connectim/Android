@@ -41,6 +41,16 @@ public class UriUtil {
     /** Query the user information 1: name(en)  2:uid  3:name(zh)*/
     public static String CONNECT_V3_WORKMATE_SEARCH = "/connect/v3/workmate/search";
     public static String CONNECT_V3_USERS_FOLLOW = "/connect/v3/users/follow";
+    public static String CONNECT_V3_PROXY_TOKEN = "/attendance/v3/proxy/token";
+    public static String CONNECT_V3_API_BANNERS = "/connect/v3/api/banners";
+    public static String CONNECT_V3_API_APPLICATIONS = "/connect/v3/api/applications";
+    public static String CONNECT_V3_PROXY_VISITOR_RECORDS = "/attendance/v3/proxy/visitor/records";
+    public static String CONNECT_V3_PROXY_EXAMINE_VERIFY = "/attendance/v3/proxy/examine/verify";
+    public static String CONNECT_V3_PROXY_RECORDS_HISTORY = "/attendance/v3/proxy/visitor/records/history";
+
+    public static String CONNECT_V3_API_APPLICATIONS_ADD = "/connect/v3/api/applications/add";
+    public static String CONNECT_V3_API_APPLICATIONS_DEL = "/connect/v3/api/applications/del";
+
     /** 根据 部门id查询 所有员工 */
     public static String CONNECT_V3_DEPAERTMENT_WORKMATES = "/connect/v3/department/workmates";
     /** 群成员邀请入群 */

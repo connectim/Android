@@ -33,6 +33,7 @@ import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemUtil;
 import connect.widget.DepartmentAvatar;
 import connect.widget.TopToolBar;
 import instant.utils.SharedUtil;
@@ -66,10 +67,19 @@ public class ContactInfoActivity extends BaseActivity {
 
     private ContactInfoActivity mActivity;
     private ContactEntity contactEntity;
+    private String uid;
 
-    public static void lunchActivity(Activity activity, ContactEntity contactEntity) {
+
+    public static void lunchActivity(Activity activity, String uid) {
+        Bundle bundle = new Bundle();
+        bundle.putString("uid", uid);
+        ActivityUtil.next(activity, ContactInfoActivity.class, bundle);
+    }
+
+    public static void lunchActivity(Activity activity, ContactEntity contactEntity, String uid) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("bean", contactEntity);
+        bundle.putString("uid", uid);
         ActivityUtil.next(activity, ContactInfoActivity.class, bundle);
     }
 
@@ -88,7 +98,16 @@ public class ContactInfoActivity extends BaseActivity {
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Chat_Contact_details);
 
+        uid = getIntent().getExtras().getString("uid");
         contactEntity = (ContactEntity) getIntent().getExtras().getSerializable("bean");
+        if(contactEntity != null){
+            uid = contactEntity.getUid();
+            showView();
+        }
+        searchUser(uid);
+    }
+
+    private void showView(){
         nameText.setText(contactEntity.getName());
         if (contactEntity.getGender() == 1) {
             genderImage.setImageResource(R.mipmap.man);
@@ -100,9 +119,15 @@ public class ContactInfoActivity extends BaseActivity {
         departmentTv.setText(contactEntity.getOu());
         phoneTv.setText(contactEntity.getMobile());
         if (contactEntity.getRegisted()) {
-            toolbar.setRightImg(R.mipmap.menu_white);
-            toolbar.setRightTextEnable(true);
-
+            if(ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid()) == null){
+                if (contactEntity.getGender() == 1) {
+                    toolbar.setRightText(R.string.Work_Pay_attention_to_him);
+                } else {
+                    toolbar.setRightText(R.string.Work_Pay_attention_to_her);
+                }
+            }else{
+                toolbar.setRightText(R.string.Work_Cancel_the_attention);
+            }
             avatarImageview.setVisibility(View.VISIBLE);
             avatarImage.setVisibility(View.GONE);
             GlideUtil.loadAvatarRound(avatarImageview, contactEntity.getAvatar(), 8);
@@ -114,7 +139,6 @@ public class ContactInfoActivity extends BaseActivity {
             avatarImage.setVisibility(View.VISIBLE);
             avatarImage.setAvatarName(contactEntity.getName(), true, contactEntity.getGender());
         }
-        searchUser(contactEntity.getUid());
     }
 
     @OnClick(R.id.left_img)
@@ -123,64 +147,30 @@ public class ContactInfoActivity extends BaseActivity {
     }
 
     @OnClick(R.id.right_lin)
-    void showDialog(View view) {
-        final ContactEntity contactEntity1 = ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid());
-        String message;
-        if (contactEntity1 == null) {
-            message = mActivity.getResources().getString(R.string.Link_Add_focus);
+    void attention(View view) {
+        if (ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid()) == null) {
+            addFollow(true);
         } else {
-            message = mActivity.getResources().getString(R.string.Link_Cancle_focus);
+            addFollow(false);
         }
-        ArrayList<String> list = new ArrayList<>();
-        list.add(message);
-        DialogUtil.showBottomView(mActivity, list, new DialogUtil.DialogListItemClickListener() {
-            @Override
-            public void confirm(int position) {
-                switch (position) {
-                    case 0:
-                        if (contactEntity1 == null) {
-                            addFollow(true);
-                        } else {
-                            addFollow(false);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
     }
 
     @OnClick(R.id.cell_image)
     void call(View view) {
-        PermissionUtil.getInstance().requestPermission(mActivity, new String[]{PermissionUtil.PERMISSION_PHONE}, permissionCallBack);
+        SystemUtil.callPhone(mActivity, contactEntity.getMobile());
     }
 
     @OnClick(R.id.chat_btn)
     void chat(View view) {
+        if (contactEntity == null || TextUtils.isEmpty(contactEntity.getUid())) {
+            return;
+        }
         Talker talker = new Talker(Connect.ChatType.PRIVATE, contactEntity.getUid());
         talker.setAvatar(contactEntity.getAvatar());
         talker.setNickName(contactEntity.getName());
         talker.setFriendPublicKey(contactEntity.getPublicKey());
         ChatActivity.startActivity(mActivity, talker);
     }
-
-    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack() {
-        @Override
-        public void granted(String[] permissions) {
-            if (permissions != null && permissions.length > 0) {
-                if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contactEntity.getMobile()));
-                mActivity.startActivity(intent);
-            }
-        }
-
-        @Override
-        public void deny(String[] permissions) {
-        }
-    };
 
     private void searchUser(String uid) {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
@@ -194,8 +184,29 @@ public class ContactInfoActivity extends BaseActivity {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.Workmates workmates = Connect.Workmates.parseFrom(structData.getPlainData());
                     Connect.Workmate workmate = workmates.getList(0);
-                    if (!workmate.getAvatar().equals(contactEntity.getAvatar())) {
+                    if(contactEntity == null){
+                        contactEntity = new ContactEntity();
+                        contactEntity.setName(workmate.getName());
                         contactEntity.setAvatar(workmate.getAvatar());
+                        contactEntity.setPublicKey(workmate.getPubKey());
+                        contactEntity.setEmpNo(workmate.getEmpNo());
+                        contactEntity.setMobile(workmate.getMobile());
+                        contactEntity.setGender(workmate.getGender());
+                        contactEntity.setTips(workmate.getTips());
+                        contactEntity.setRegisted(workmate.getRegisted());
+                        contactEntity.setUid(workmate.getUid());
+                        contactEntity.setOu(workmate.getOU());
+                        showView();
+                    }else{
+                        final ContactEntity contactEntityLocal = ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid());
+                        if(contactEntityLocal != null){
+                            if (!workmate.getAvatar().equals(contactEntityLocal.getAvatar())) {
+                                contactEntity.setAvatar(workmate.getAvatar());
+                                showView();
+                                ContactHelper.getInstance().insertContact(contactEntity);
+                                ContactNotice.receiverContact();
+                            }
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -228,11 +239,18 @@ public class ContactInfoActivity extends BaseActivity {
                     ContactHelper.getInstance().insertContact(contactEntity);
                     ToastEUtil.makeText(mActivity, R.string.Login_Save_successful).show();
                     ContactNotice.receiverContact();
+                    toolbar.setRightText(R.string.Work_Cancel_the_attention);
                 } else {
                     ContactHelper.getInstance().deleteEntity(contactEntity.getUid());
                     ToastEUtil.makeText(mActivity, R.string.Link_Delete_Successful).show();
                     ContactNotice.receiverContact();
+                    if (contactEntity.getGender() == 1) {
+                        toolbar.setRightText(R.string.Work_Pay_attention_to_him);
+                    } else {
+                        toolbar.setRightText(R.string.Work_Pay_attention_to_her);
+                    }
                 }
+
             }
 
             @Override

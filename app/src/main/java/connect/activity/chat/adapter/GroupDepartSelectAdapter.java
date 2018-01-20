@@ -14,7 +14,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.chat.set.group.DepartSelectBean;
+import connect.activity.chat.bean.DepartSelectBean;
+import connect.activity.login.bean.UserBean;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.widget.DepartmentAvatar;
 import protos.Connect;
@@ -27,6 +29,7 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
 
     private Activity activity;
     private List<String> uids = null;
+    private UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
     private List<DepartSelectBean> departSelectBeens = new ArrayList<>();
 
     public GroupDepartSelectAdapter(Activity activity) {
@@ -80,8 +83,8 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.contentLin.setVisibility(View.VISIBLE);
 
             final Connect.Workmate workmate = department.getWorkmate();
-            final String workmateKey = "W" + workmate.getEmpNo();
-            holder.workmateSelectView.setSelected(departSelectListener.isContains(workmateKey));
+            final String workmateKey = "W" + workmate.getUid();
+            holder.workmateSelectView.setSelected(departSelectListener.isContains(workmateKey)|| ("W" + userBean.getUid()).equals(workmateKey));
             holder.nameTvS.setText(workmate.getName());
             if (TextUtils.isEmpty(workmate.getOU())) {
                 holder.nicName.setVisibility(View.GONE);
@@ -97,7 +100,9 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.workmateSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!uids.contains(workmate.getUid()) && !TextUtils.isEmpty(workmate.getUid())) {
+                    if (("W" + userBean.getUid()).equals(workmateKey)) {
+
+                    } else if (!uids.contains(workmate.getUid()) && !TextUtils.isEmpty(workmate.getUid())) {
                         boolean isselect = holder.workmateSelectView.isSelected();
                         isselect = !isselect;
                         departSelectListener.workmateClick(isselect, workmate);

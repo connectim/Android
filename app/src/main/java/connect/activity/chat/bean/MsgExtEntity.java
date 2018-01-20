@@ -1,10 +1,7 @@
 package connect.activity.chat.bean;
 
-import android.text.TextUtils;
-
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.MessageEntity;
-import connect.utils.StringUtil;
 import instant.bean.MsgDirect;
 import protos.Connect;
 

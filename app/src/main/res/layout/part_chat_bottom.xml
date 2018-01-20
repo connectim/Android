@@ -14,13 +14,13 @@
     <RelativeLayout
         android:id="@id/bottom_trash"
         android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_70"
+        android:layout_height="@dimen/dp_62"
         android:gravity="center">
 
         <ImageView
             android:contentDescription="@string/app_name"
             android:layout_width="@dimen/dp_31"
-            android:layout_height="@dimen/dp_70"
+            android:layout_height="@dimen/dp_31"
             android:src="@mipmap/message_trash2x"/>
     </RelativeLayout>
 
@@ -33,7 +33,7 @@
     <RelativeLayout
         android:id="@id/bottom_notify"
         android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_70"
+        android:layout_height="@dimen/dp_62"
         android:gravity="center">
 
         <ImageView

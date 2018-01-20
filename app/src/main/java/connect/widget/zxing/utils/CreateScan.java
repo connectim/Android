@@ -1,7 +1,9 @@
 package connect.widget.zxing.utils;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -20,11 +22,11 @@ import connect.ui.activity.R;
 public class CreateScan {
 
     /** Default width */
-    private int widthDef = 600;
+    private int widthDef = 350;
     /** Default height */
-    private int heightDef = 600;
+    private int heightDef = 350;
     /** Default background */
-    private int defaultBg = BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff);
+    private int defaultBg = BaseApplication.getInstance().getResources().getColor(R.color.color_f1f1f1);
 
     public Bitmap generateQRCode(String content) {
         return generateQRCode(content,defaultBg);
@@ -39,13 +41,12 @@ public class CreateScan {
             Hashtable hints = new Hashtable();
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
             //Two dimensional code frame width, where the document says 0-4
-            hints.put(EncodeHintType.MARGIN, 0);
+            hints.put(EncodeHintType.MARGIN, 4);
             BitMatrix matrix = writer.encode(content, BarcodeFormat.QR_CODE, widthDef, heightDef,hints);
             return bitMatrix2Bitmap(matrix,colorBg);
         } catch (WriterException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -63,9 +64,9 @@ public class CreateScan {
             }
         }
 
-        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
-        bitmap.setPixels(rawData, 0, w, 0, 0, w, h);
-        return bitmap;
+        Bitmap orginBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+        orginBitmap.setPixels(rawData, 0, w, 0, 0, w, h);
+        return orginBitmap;
     }
 
 

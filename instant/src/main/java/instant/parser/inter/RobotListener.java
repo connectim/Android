@@ -17,8 +17,6 @@ public interface RobotListener {
 
     void systemRedPackageMessage(Connect.SystemRedPackage redPackage);
 
-    void reviewedMessage(Connect.Reviewed reviewed);
-
     void announcementMessage(Connect.Announcement announcement);
 
     void systemRedpackgeNoticeMessage(Connect.SystemRedpackgeNotice packgeNotice);
@@ -30,4 +28,6 @@ public interface RobotListener {
     void removeGroupMessage(Connect.RemoveGroup removeGroup);
 
     void addressNotifyMessage(Connect.AddressNotify addressNotify);
+
+    void auditMessage(Connect.ExamineMessage  examineMessage);
 }

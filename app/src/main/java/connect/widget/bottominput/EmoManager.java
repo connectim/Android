@@ -62,9 +62,9 @@ public class EmoManager {
 
     private void initEMJOrder(){
         stickerOrder.put(EMJ_PNG, 0);
-        stickerOrder.put(EMJ_ACTIVITIES, 1);
-        stickerOrder.put(EMJ_ANIMALS, 2);
-        stickerOrder.put(EMJ_EMOTION, 3);
+        stickerOrder.put(EMJ_EMOTION, 1);
+        stickerOrder.put(EMJ_ACTIVITIES, 2);
+        stickerOrder.put(EMJ_ANIMALS, 3);
         stickerOrder.put(EMJ_FOOD, 4);
         stickerOrder.put(EMJ_GESTURE, 5);
         stickerOrder.put(EMJ_NATURE, 6);

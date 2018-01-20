@@ -3,15 +3,10 @@ package connect.utils.scan;
 import android.app.Activity;
 import android.net.Uri;
 
-import connect.activity.chat.exts.TransferToActivity;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.bean.MsgSendBean;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastUtil;
@@ -66,9 +61,6 @@ public class ResolveUrlUtil {
             case TYPE_WEB_FRIEND:
                 dealFriend(resultBean, isCloseScan);
                 break;
-            case TYPE_WEB_PAY:
-                dealPay(resultBean, isCloseScan);
-                break;
             case TYPE_WEB_TRANSFER:
                 dealTransfer(resultBean);
                 break;
@@ -89,31 +81,10 @@ public class ResolveUrlUtil {
      */
     private void dealFriend(ScanResultBean resultBean, boolean isCloseScan){
         if (!resultBean.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
-            ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(resultBean.getAddress());
-            if (friendEntity != null) {
-                FriendInfoActivity.startActivity(activity, resultBean.getAddress());
-            } else {
-                StrangerInfoActivity.startActivity(activity, resultBean.getAddress(), SourceType.QECODE);
-            }
+            ContactInfoActivity.lunchActivity(activity, resultBean.getAddress());
             if(isCloseScan){
                 ActivityUtil.goBack(activity);
             }
-        }
-    }
-
-    /**
-     * Enter the user payment interface
-     * @param resultBean
-     * @param isCloseScan
-     */
-    private void dealPay(ScanResultBean resultBean, boolean isCloseScan){
-        Double amount = null;
-        if (resultBean.getAmount() != null)
-            amount = Double.valueOf(resultBean.getAmount());
-
-        TransferToActivity.startActivity(activity, resultBean.getAddress(), amount);
-        if(isCloseScan){
-            ActivityUtil.goBack(activity);
         }
     }
 

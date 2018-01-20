@@ -10,7 +10,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.chat.exts.OuterWebsiteActivity;
-import connect.activity.chat.exts.TransferToActivity;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
@@ -91,17 +90,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                     }
                     String packetToken = content.substring(packetStart, packetEnd);
                     avaliableOuterRedPacket(packetToken);
-                } else if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE_PAY)) {//outer gather
-                    GlideUtil.loadImage(typeImg, R.mipmap.message_send_payment2x);
-
-                    int payStart = content.indexOf("address") + 8;
-                    int payEnd = content.indexOf("&");
-                    if (payEnd == -1) {
-                        payEnd = content.length();
-                    }
-                    String transToken = content.substring(payStart, payEnd);
-                    TransferToActivity.startActivity((Activity) context, transToken);
-                } else {//outer link
+                }else {//outer link
                     OuterWebsiteActivity.startActivity((Activity) context, content);
                 }
             }

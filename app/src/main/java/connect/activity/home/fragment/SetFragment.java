@@ -1,12 +1,13 @@
 package connect.activity.home.fragment;
 
-import android.graphics.Typeface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,18 +21,21 @@ import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.AboutActivity;
 import connect.activity.set.GeneralActivity;
-import connect.activity.set.PrivateActivity;
-import connect.activity.set.SafetyActivity;
 import connect.activity.set.SupportFeedbackActivity;
-import connect.activity.set.UserConnectIdActivity;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.ConfigUtil;
 import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
+import instant.utils.SharedUtil;
+import protos.Connect;
 
 /**
  * Set the main interface.
@@ -110,12 +114,12 @@ public class SetFragment extends BaseFragment {
 
     @OnClick(R.id.llSafety)
     void intoSafety(View view) {
-       // ActivityUtil.next(mActivity, SafetyActivity.class);
+        // ActivityUtil.next(mActivity, SafetyActivity.class);
     }
 
     @OnClick(R.id.llPrivate)
     void intoPrivate(View view) {
-       // ActivityUtil.next(mActivity, PrivateActivity.class);
+        // ActivityUtil.next(mActivity, PrivateActivity.class);
     }
 
     @OnClick(R.id.llChatSetting)
@@ -126,7 +130,7 @@ public class SetFragment extends BaseFragment {
     @OnClick(R.id.llProblem)
     void intoProblem(View view) {
         //ActivityUtil.next(mActivity, SupportActivity.class);
-        ActivityUtil.next(mActivity,SupportFeedbackActivity.class);
+        ActivityUtil.next(mActivity, SupportFeedbackActivity.class);
     }
 
     @OnClick(R.id.llAbout)
@@ -147,12 +151,13 @@ public class SetFragment extends BaseFragment {
                 "", "", false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
-                        ProgressUtil.getInstance().showProgress(mActivity,R.string.Set_Logging_out);
+                        ProgressUtil.getInstance().showProgress(mActivity, R.string.Set_Logging_out);
                         HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
                     }
 
                     @Override
-                    public void cancel() {}
+                    public void cancel() {
+                    }
                 });
     }
 

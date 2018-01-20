@@ -16,15 +16,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
+
 import connect.activity.base.BaseFragmentActivity;
 import connect.ui.activity.R;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.album.adapter.AlbumFolderAdapter;
 import connect.widget.album.contract.AlbumContract;
-import connect.widget.album.model.AlbumFolder;
-import connect.widget.album.fragment.AlbumPreviewFragment;
 import connect.widget.album.fragment.AlbumListFragment;
+import connect.widget.album.fragment.AlbumPreviewFragment;
+import connect.widget.album.model.AlbumFolder;
 import connect.widget.album.model.AlbumScanner;
 
 /**
@@ -111,6 +112,9 @@ public class AlbumPresenter implements AlbumContract.Presenter {
         LinearLayout list_lin = (LinearLayout) view.findViewById(R.id.list_lin);
 
         final List<AlbumFolder> albumFolders = bView.getAlbumFolders();
+        if (albumFolders.size() == 1 && albumFolders.get(0).getAlbumFiles().size() == 0) {
+            return;
+        }
         AlbumFolderAdapter folderAdapter = new AlbumFolderAdapter(albumFolders);
         if (folderAdapter != null) {
             list_lin.setVisibility(View.VISIBLE);

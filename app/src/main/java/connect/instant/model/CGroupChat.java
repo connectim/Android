@@ -88,6 +88,7 @@ public class CGroupChat extends GroupChat implements ConversationListener{
                 ConversionHelper.getInstance().updateRoomEntity(
                         groupKey,
                         nickName(),
+                        headImg(),
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),

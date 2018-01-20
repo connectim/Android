@@ -31,7 +31,7 @@ public class ContactCardAdapter extends RecyclerView.Adapter<ContactCardAdapter.
 
     @Override
     public CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_contactcard, parent,false);
+        View view = inflater.inflate(R.layout.item_contactcard, parent, false);
         CardHolder cardHolder = new CardHolder(view);
         view.setOnClickListener(itemClickListener);
         return cardHolder;
@@ -85,7 +85,7 @@ public class ContactCardAdapter extends RecyclerView.Adapter<ContactCardAdapter.
 
     private OnItemClickListener itemClickListener;
 
-    public interface OnItemClickListener extends View.OnClickListener{
+    public interface OnItemClickListener extends View.OnClickListener {
     }
 
     public void setItemClickListener(OnItemClickListener clickListener) {

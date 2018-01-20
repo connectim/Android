@@ -5,7 +5,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.VoiceImg;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -44,7 +43,6 @@ public class MsgVoiceHolder extends MsgChatHolder {
     public void buildRowData(final MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
-        RoomSession.getInstance().checkBurnTime(voiceMessage.getSnapTime());
         final String fileKey = StringUtil.bytesToHexString(voiceMessage.getFileKey().toByteArray());
 
         boolean visiable = false;
@@ -99,8 +97,6 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                         if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
                                             msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                                             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-
-                                            DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
                                         }
                                     }
                                 });

@@ -17,7 +17,7 @@ public class ErrorParser extends InterParse {
     public void msgParse() throws Exception {
         switch (ackByte) {
             case 0x00:
-                ExceptionLocalReceiver.localReceiver.exitAccount();
+                ExceptionLocalReceiver.localReceiver.remoteLogin("");
                 break;
         }
     }

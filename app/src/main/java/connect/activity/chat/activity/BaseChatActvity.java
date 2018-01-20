@@ -9,12 +9,9 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.ChatAdapter;
-import connect.activity.chat.bean.DestructOpenBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -74,6 +71,7 @@ public abstract class BaseChatActvity extends BaseActivity {
         roomSession = RoomSession.getInstance();
         roomSession.setRoomType(talker.getTalkType());
         roomSession.setRoomKey(talker.getTalkKey());
+        roomSession.setFriendAvatar(talker.getAvatar());
 
         Connect.ChatType chatType = talker.getTalkType();
         switch (chatType) {
@@ -108,12 +106,6 @@ public abstract class BaseChatActvity extends BaseActivity {
                 .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(this))
                 .setErrorImageRes(R.mipmap.img_default)
                 .create();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(DestructOpenBean openBean) {
-        long time = openBean.getTime();
-        updateBurnState(time);
     }
 
     public void sendNormalMsg(boolean needSend, ChatMsgEntity bean) {

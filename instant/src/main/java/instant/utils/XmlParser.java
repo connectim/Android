@@ -23,7 +23,7 @@ public class XmlParser {
     private Map<String, String> keyMaps = null;
 
     public XmlParser() {
-        initConfig(ModeEnum.TEST);
+        initConfig(ModeEnum.RELEASE);
     }
 
     /**
@@ -173,6 +173,7 @@ public class XmlParser {
     }
 
     public enum ModeEnum {
+        PC("pc"),
         TEST("test"),
         SANDBOX("sandbox"),
         RELEASE("release");

@@ -1,7 +1,6 @@
 package connect.instant.receiver;
 
 import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.ApplyGroupBean;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
@@ -40,6 +39,12 @@ public class RobotReceiver implements RobotListener {
     }
 
     @Override
+    public void auditMessage(Connect.ExamineMessage examineMessage) {
+        ChatMsgEntity chatMsgEntity = RobotChat.getInstance().noticeMsg(5, examineMessage.getBody(), "");
+        dealRobotMessage(chatMsgEntity);
+    }
+
+    @Override
     public void voiceMessage(Connect.VoiceMessage voiceMessage) {
         ChatMsgEntity chatMsgEntity = RobotChat.getInstance().voiceMsg(voiceMessage.getUrl(), voiceMessage.getTimeLength());
         dealRobotMessage(chatMsgEntity);
@@ -61,22 +66,6 @@ public class RobotReceiver implements RobotListener {
     @Override
     public void systemRedPackageMessage(Connect.SystemRedPackage redPackage) {
         ChatMsgEntity chatMsgEntity = RobotChat.getInstance().luckPacketMsg(0, redPackage.getHashId(), redPackage.getAmount(), redPackage.getTips());
-        dealRobotMessage(chatMsgEntity);
-    }
-
-    @Override
-    public void reviewedMessage(Connect.Reviewed reviewed) {
-        ChatMsgEntity chatMsgEntity = RobotChat.getInstance().groupReviewMsg(reviewed);
-
-        String msgid = chatMsgEntity.getMessage_id();
-        String groupApplyKey = reviewed.getIdentifier() + reviewed.getUserInfo().getPubKey();
-        ApplyGroupBean applyGroupBean = ParamManager.getInstance().loadGroupApply(groupApplyKey);
-        if (applyGroupBean == null) {//new apply
-            ParamManager.getInstance().updateGroupApply(groupApplyKey, reviewed.getTips(), reviewed.getSource(), 0, msgid);
-        } else {//repeat apply, remove the last
-            MessageHelper.getInstance().deleteMsgByid(applyGroupBean.getMsgid());
-            ParamManager.getInstance().updateGroupApply(groupApplyKey, reviewed.getTips(), reviewed.getSource(), -1, msgid);
-        }
         dealRobotMessage(chatMsgEntity);
     }
 

@@ -21,15 +21,11 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.GroupSetContract;
 import connect.activity.chat.set.presenter.GroupSetPresenter;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.bean.ContactNotice;
-import connect.activity.contact.bean.SourceType;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -130,19 +126,14 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String address = (String) v.getTag();
-                if ("GROUP_ADD".equals(address)) {
+                String uid = (String) v.getTag();
+                if ("GROUP_ADD".equals(uid)) {
                     BaseGroupSelectActivity.startActivity(activity, false, groupKey);
                 } else {
-                    if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(address)) {
+                    if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(uid)) {
                         UserInfoActivity.startActivity(activity);
                     } else {
-                        ContactEntity entity = ContactHelper.getInstance().loadFriendEntity(address);
-                        if (entity == null) {
-                            StrangerInfoActivity.startActivity(activity, address, SourceType.CARD);
-                        } else {
-                            FriendInfoActivity.startActivity(activity, entity.getUid());
-                        }
+                        ContactInfoActivity.lunchActivity(activity, uid);
                     }
                 }
             }
@@ -179,77 +170,6 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
     public void groupNameClickable(boolean clickable) {
         View view = findViewById(R.id.groupset_groupname);
         view.setEnabled(clickable);
-    }
-
-    @Override
-    public void groupMyAlias(String alias) {
-        View view = findViewById(R.id.groupset_myname);
-        view.setVisibility(TextUtils.isEmpty(alias) ? View.GONE : View.VISIBLE);
-        ImageView img1 = (ImageView) view.findViewById(R.id.img1);
-        TextView txt1 = (TextView) view.findViewById(R.id.txt1);
-        TextView txt2 = (TextView) view.findViewById(R.id.txt2);
-        ImageView img2 = (ImageView) view.findViewById(R.id.img2);
-
-        img1.setBackgroundResource(R.mipmap.message_groupchat_myname2x);
-        txt1.setText(getString(R.string.Link_My_Alias_in_Group));
-        if (!TextUtils.isEmpty(alias)) {
-            if (alias.length() > 10) {
-                alias = alias.substring(0, 10) + "...";
-            }
-            txt2.setText(alias);
-        }
-
-        img2.setImageResource(R.mipmap.group_item_arrow);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GroupMyNameActivity.startActivity(activity, groupKey);
-            }
-        });
-    }
-
-    @Override
-    public void groupQRCode() {
-        View view = findViewById(R.id.groupset_qrcode);
-        ImageView img1 = (ImageView) view.findViewById(R.id.img1);
-        TextView txt1 = (TextView) view.findViewById(R.id.txt1);
-        TextView txt2 = (TextView) view.findViewById(R.id.txt2);
-        ImageView img2 = (ImageView) view.findViewById(R.id.img2);
-
-        img1.setBackgroundResource(R.mipmap.message_groupchat_qrcode2x);
-        txt1.setText(getString(R.string.Link_Group_is_QR_Code));
-        txt2.setText("");
-
-        img2.setImageResource(R.mipmap.group_item_arrow);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GroupQRActivity.startActivity(activity, groupKey);
-            }
-        });
-    }
-
-    @Override
-    public void groupManager(boolean visiable) {
-        View view = findViewById(R.id.groupset_manage);
-        view.setVisibility(visiable ? View.VISIBLE : View.GONE);
-        ImageView img1 = (ImageView) view.findViewById(R.id.img1);
-        TextView txt1 = (TextView) view.findViewById(R.id.txt1);
-        TextView txt2 = (TextView) view.findViewById(R.id.txt2);
-        ImageView img2 = (ImageView) view.findViewById(R.id.img2);
-
-        img1.setBackgroundResource(R.mipmap.message_groupchat_setting);
-        txt1.setText(getString(R.string.Link_ManageGroup));
-        txt2.setText("");
-
-        img2.setImageResource(R.mipmap.group_item_arrow);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GroupManageActivity.startActivity(activity, groupKey);
-            }
-        });
-
     }
 
     @Override

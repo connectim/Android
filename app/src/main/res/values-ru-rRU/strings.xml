@@ -147,6 +147,8 @@
         уничтожения %2$s, информировать об удалении
     </string>
     <string name="Common_Cancel">Отменить</string>
+    <string name="Common_Management">управление</string>
+    <string name="Common_The_search_application">Поиск приложений</string>
     <string name="Common_Completed">Завершено</string>
     <string name="Common_Download_App">Загружается %s</string>
     <string name="Common_In">в %s</string>
@@ -262,6 +264,8 @@
         Вы добровольно должны отказаться от прав хозяина группы
     </string>
     <string name="Link_Send">Отправить</string>
+    <string name="Link_Dialogue">диалог</string>
+    <string name="Link_Workbench">стол</string>
     <string name="Link_Inactive">Не активировать</string>
     <string name="Link_Send_friend_request">Отправить запрос о дружбе</string>
     <string name="Link_Send_successful">Успешно отправлено</string>
@@ -309,6 +313,7 @@
     <string name="Link_contact_count_group_count">Контактное лицо %1$d группа %2$d</string>
     <string name="Link_enter_the_group">Добавить группу %s</string>
     <string name="Link_group_count">Группа %d</string>
+    <string name="Link_My_application">Я приложений</string>
     <string name="Link_Employee_number">Номер сотрудника:</string>
     <string name="Link_Subordinate_departments">Принадлежащего сектор:</string>
     <string name="Link_Contact_number">Номер:</string>
@@ -662,6 +667,36 @@
     <string name="Chat_Enter_Subscribe"> счета  в  подписки</string>
     <string name="Chat_Subscribe_Success">[подписка на успех]</string>
 
+    <string name="Work_Add">добавить</string>
+    <string name="Work_On_a_business_trip">В командировку</string>
+    <string name="Work_Ask_for_leave">leave</string>
+    <string name="Work_To_submit_an_expense_account">требования</string>
+    <string name="Work_The_examination_and_approval">утверждения</string>
+    <string name="Work_Subsidized_meals">Еда дополнительный</string>
+    <string name="Work_Recruitment">набор</string>
+    <string name="Work_The_contract">контракт</string>
+    <string name="Work_Wage">зарплата</string>
+    <string name="Work_Visitors">посетители</string>
+    <string name="Work_Visitors_info">Посетители информации</string>
+    <string name="Work_Visitors_reason">Посетители цели:%1$s</string>
+    <string name="Work_Visitors_phone">Способ связи:</string>
+    <string name="Work_Visitors_time">Время визита:%1$s</string>
+    <string name="Work_Visitors_share">ErWeiMa поделиться приглашение</string>
+    <string name="Work_Visitors_Facial_information">Личной информации:</string>
+    <string name="Work_Visitors_Left_face">налево</string>
+    <string name="Work_Visitors_Is_face">Положительный лицо</string>
+    <string name="Work_Visitors_Right_face">направо</string>
+    <string name="Work_Visitors_to_approval">Посетители утверждения</string>
+    <string name="Work_Visitors_sure_to_deny_access">Подтверждение ли доступ запрещен?</string>
+    <string name="Work_Visitors_agree_to_visit">Подтверждение согласия ли визит?</string>
+    <string name="Work_Visitors_to_audit">Предстоит рассматривать</string>
+    <string name="Work_Visitors_the_approved">Уже аудита</string>
+    <string name="Work_Visitors_apply_list">Список заявок</string>
+    <string name="Work_Visitors_audit_records">аудита</string>
+    <string name="Work_Pay_attention_to_him">Внимание,он</string>
+    <string name="Work_Pay_attention_to_her">Внимание,она</string>
+    <string name="Work_Cancel_the_attention">Отмена внимание</string>
+
     <string name="Chat_Refreshing">обновление ...</string>
     <string name="Link_Join_Group_Success">успех  к  групповой чат </string>
     <string name="Chat_No_Data">Нет данных...</string>
@@ -675,4 +710,19 @@
     <string name="Please_Input_Login_password">пароль</string>
     <string name="Login_Immediately">посадку незамедлительно</string>
     <string name="Beijing_BitMain">Beijing BitMain Technology Co., Ltd.</string>
+    <string name="Work_No_More_Results">Больше никаких  результатов поиска</string>
+    <string name="Work_Third_Party_Service">услуг третьих сторон</string>
+    <string name="Work_Service_Search">Поиск  приложений</string>
+    <string name="Work_Search">поиск</string>
+    <string name="Link_exit_the_group">%sыход из  группы</string>
+
+    <string name="Link_Group_Create">создать группу</string>
+    <string name="Link_Group_Invite">пригласить  в  группы</string>
+    <string name="Link_Group_Invite_Success">Приглашение выполнено успешно</string>
+    <string name="Login_Forget_Password">Забыли пароль</string>
+    <string name="Login_Connect_Change_Password">Пожалуйста, свяжитесь с администрацией, чтобы изменить пароль</string>
+    <string name="Link_Function_Under_Development">Функция находится в разработке...</string>
+    <string name="Link_Function_Manager">Управление приложениями</string>
+    <string name="Error_Device_Remote_Other_Login">Ваша учетная запись уже подписана на других устройствах</string>
+    <string name="Link_Group_Launch">Групповой чат</string>
 </resources>

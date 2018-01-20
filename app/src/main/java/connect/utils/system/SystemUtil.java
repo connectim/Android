@@ -156,8 +156,8 @@ public class SystemUtil {
      * @param phonenum
      */
     public static void callPhone(Context context, String phonenum) {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phonenum));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phonenum));
         context.startActivity(intent);
     }
 

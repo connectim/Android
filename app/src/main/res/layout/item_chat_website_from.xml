@@ -55,7 +55,7 @@
 
                 <TextView
                     android:id="@id/txt3"
-                    android:layout_width="@dimen/dp_140"
+                    android:layout_width="@dimen/dp_160"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/txt2"
                     android:ellipsize="end"
@@ -73,10 +73,4 @@
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
-
-    <connect.activity.chat.view.BurnProBar
-        android:id="@id/burnprogressbar"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginLeft="@dimen/dp_5"/>
 </LinearLayout>

@@ -65,6 +65,9 @@
     <item name="right_lin" type="id"/>
     <item name="right_text" type="id"/>
     <item name="right_img" type="id"/>
+    <item name="title_linear_normal" type="id"/>
+    <item name="title_relative_edite" type="id"/>
+    <item name="title_edittext" type="id"/>
 
     <!-- System camera -->
     <item name="photo" type="id"/>
@@ -143,6 +146,7 @@
     <item name="linearlayout_1" type="id"/>
     <item name="linearlayout_2" type="id"/>
     <item name="scrollview" type="id"/>
+    <item name="pickscrollview" type="id"/>
     <item name="state" type="id"/>
     <item name="imgs" type="id"/>
     <item name="txt" type="id"/>
@@ -225,4 +229,18 @@
     <item name="state_touch_scale_rotate" type="id"/>
     <item name="view_image_watcher" type="id" />
 
+
+    <item name="relative_thirdpart" type="id" />
+    <item name="relative_worksearch_content" type="id" />
+    <item name="image_category" type="id" />
+    <item name="text_category" type="id" />
+    <item name="text_has_added" type="id" />
+    <item name="image_search_state" type="id" />
+    <item name="image_title_search" type="id" />
+    <item name="text_no_more_results" type="id" />
+    <item name="text_forget_password" type="id" />
+    <item name="image_loading" type="id" />
+    <item name="relative_login" type="id" />
+    <item name="text_newchat" type="id" />
+    <item name="search_relative" type="id" />
 </resources>

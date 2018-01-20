@@ -23,7 +23,6 @@ import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.adapter.BaseGroupSelectAdapter;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.set.group.GroupDepartSelectActivity;
 import connect.activity.home.bean.GroupRecBean;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
@@ -77,7 +76,6 @@ public class BaseGroupSelectActivity extends BaseActivity {
         activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setTitle(getResources().getString(R.string.Chat_Choose_contact));
         toolbar.setRightText(getString(R.string.Chat_Select_Count, 0));
         toolbar.setRightTextEnable(false);
         toolbar.setLeftListener(new View.OnClickListener() {
@@ -98,17 +96,18 @@ public class BaseGroupSelectActivity extends BaseActivity {
 
                     Connect.Workmate workmate = Connect.Workmate.newBuilder()
                             .setPubKey(entity.getPublicKey())
+                            .setUid(entity.getUid())
                             .setName(entity.getName())
                             .setAvatar(entity.getAvatar())
-                            .setGender(entity.getGender())
-                            .setMobile(entity.getMobile())
-                            .setOU(entity.getOu())
-                            .setRegisted(entity.getRegisted())
-                            .setTips(entity.getTips())
+                            .setGender(null == entity.getGender() ? 1 : entity.getGender())
+                            .setMobile(TextUtils.isEmpty(entity.getMobile()) ? "" : entity.getMobile())
+                            .setOU(TextUtils.isEmpty(entity.getOu()) ? "" : entity.getOu())
+                            .setRegisted(null == entity.getRegisted() ? false : entity.getRegisted())
+                            .setTips(TextUtils.isEmpty(entity.getTips()) ? "" : entity.getTips())
                             .build();
                     workmates.add(workmate);
                 }
-                TalkGroupCreateActivity.startActivity(activity, isCreateGroup, workmates);
+                GroupCreateActivity.startActivity(activity, isCreateGroup, workmates);
 
                 Message message = new Message();
                 message.what = 100;
@@ -118,13 +117,19 @@ public class BaseGroupSelectActivity extends BaseActivity {
 
         isCreateGroup = getIntent().getBooleanExtra("Is_Create", true);
         uid = getIntent().getStringExtra("Uid");
+        if (isCreateGroup) {
+            toolbar.setTitle(getResources().getString(R.string.Link_Group_Create));
+        } else {
+            toolbar.setTitle(getResources().getString(R.string.Link_Group_Invite));
+        }
 
         List<ContactEntity> contactEntities = new ArrayList<>();
         if (isCreateGroup) {
             contactEntities = ContactHelper.getInstance().loadFriend();
             requestUserInfo(uid);
         }
-        toolbar.setRightText(getString(R.string.Chat_Select_Count, isCreateGroup ? 1 : 0));
+        String showRight = getString(R.string.Chat_Select_Count, isCreateGroup ? TextUtils.isEmpty(uid) ? 0 : 1 : 0);
+        toolbar.setRightText(showRight);
 
         //添加组织架构
         ContactEntity originEntity = new ContactEntity();
@@ -173,7 +178,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
                 }
 
                 toolbar.setRightText(getString(R.string.Chat_Select_Count, selectMembers.size()));
-                toolbar.setRightTextEnable(selectMembers.size() >= 3);
+                toolbar.setRightTextEnable(selectMembers.size() >= 2);
             }
         });
     }
@@ -210,7 +215,12 @@ public class BaseGroupSelectActivity extends BaseActivity {
             if (organizeWorks == null || organizeWorks.size() == 0) {
                 return;
             } else {
-                workmates.addAll(organizeWorks);
+                for (Connect.Workmate workmate : organizeWorks) {
+                    String uid = workmate.getUid();
+                    if (!selectMembers.containsKey(uid)) {
+                        workmates.add(workmate);
+                    }
+                }
             }
 
             if (isCreateGroup) {
@@ -220,7 +230,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
             }
 
             if (isCreateGroup) {
-                TalkGroupCreateActivity.startActivity(activity, true, workmates);
+                GroupCreateActivity.startActivity(activity, true, workmates);
             } else {
                 List<String> uids = new ArrayList<>();
                 for (Connect.Workmate workmate : workmates) {
@@ -249,7 +259,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
                     contactEntity.setUid(userInfo1.getUid());
                     contactEntity.setPublicKey(userInfo1.getCaPub());
                     contactEntity.setAvatar(userInfo1.getAvatar());
-                    selectMembers.put("C", contactEntity);
+                    selectMembers.put(userInfo1.getUid(), contactEntity);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -275,11 +285,18 @@ public class BaseGroupSelectActivity extends BaseActivity {
                 .addAllUids(selectUids)
                 .build();
 
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_GROUP_INVITE, inviteWorkmate, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_GROUP_INVITE, inviteWorkmate, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
-                ToastEUtil.makeText(activity, activity.getString(R.string.Link_Send_successful), 1, new ToastEUtil.OnToastListener() {
+
+                String showHint = "";
+                if (isCreateGroup) {
+                    showHint = getResources().getString(R.string.Login_Generated_Successful);
+                } else {
+                    showHint = getResources().getString(R.string.Link_Group_Invite_Success);
+                }
+                ToastEUtil.makeText(activity, showHint, 1, new ToastEUtil.OnToastListener() {
                     @Override
                     public void animFinish() {
                         ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupIdentify));
@@ -288,7 +305,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 if (response.getCode() == 2430) {
                     ToastEUtil.makeText(activity, R.string.Link_Qr_code_is_invalid, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else {

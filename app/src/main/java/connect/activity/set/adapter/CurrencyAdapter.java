@@ -9,13 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import connect.ui.activity.R;
-import connect.activity.wallet.bean.RateBean;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import connect.ui.activity.R;
+import connect.utils.data.RateBean;
 
 /**
  * Created by Administrator on 2017/1/12.

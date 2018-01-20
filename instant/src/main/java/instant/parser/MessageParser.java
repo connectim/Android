@@ -99,9 +99,9 @@ public class MessageParser extends InterParse {
                 Connect.SystemRedPackage redPackage = Connect.SystemRedPackage.parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.systemRedPackageMessage(redPackage);
                 break;
-            case 101://group review
-                Connect.Reviewed reviewed = Connect.Reviewed.parseFrom(msMessage.getBody().toByteArray());
-                RobotLocalReceiver.localReceiver.reviewedMessage(reviewed);
+            case 20://有待审核消息
+                Connect.ExamineMessage examineMessage = Connect.ExamineMessage.parseFrom(msMessage.getBody().toByteArray());
+                RobotLocalReceiver.localReceiver.auditMessage(examineMessage);
                 break;
             case 102://announce message
                 Connect.Announcement announcement = Connect.Announcement.parseFrom(msMessage.getBody().toByteArray());
@@ -120,7 +120,6 @@ public class MessageParser extends InterParse {
             case 105://Registered mobile phone in the new account binding The original account automatically lift and notice
                 Connect.UpdateMobileBind mobileBind = Connect.UpdateMobileBind.parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.updateMobileBindMessage(mobileBind);
-
                 break;
             case 106://Groups will be dissolved
                 Connect.RemoveGroup removeGroup = Connect.RemoveGroup.parseFrom(msMessage.getBody().toByteArray());

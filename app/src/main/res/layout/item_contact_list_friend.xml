@@ -61,7 +61,8 @@
             <ImageView
                 android:id="@+id/avatar_rimg"
                 android:layout_width="@dimen/dp_38"
-                android:layout_height="@dimen/dp_38"/>
+                android:layout_height="@dimen/dp_38"
+                android:scaleType="fitXY"/>
         </RelativeLayout>
 
     </RelativeLayout>

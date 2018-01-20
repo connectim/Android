@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -39,9 +40,13 @@ public class DialogView {
 
         final TextView library = (TextView)view.findViewById(R.id.photo_library);
         TextView cancel = (TextView)view.findViewById(R.id.cancel);
-        final PickHorScrollView horScrollView= (PickHorScrollView) view.findViewById(R.id.scrollview);
+        final PickHorScrollView horScrollView= (PickHorScrollView) view.findViewById(R.id.pickscrollview);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.linearlayout);
 
         List<String> images = recentImages();
+        if (images.size() == 0) {
+            linearLayout.setVisibility(View.GONE);
+        }
 
         horScrollView.setPickAdapter(new PickHoriScrollAdapter(context,images));
         horScrollView.setItemClickListener(new PickHorScrollView.OnItemClickListener() {

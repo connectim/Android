@@ -35,9 +35,7 @@ import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.instant.inter.ConversationListener;
@@ -126,7 +124,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 if (!TextUtils.isEmpty(talkey)) {
                     switch (talker.getTalkType()) {
                         case PRIVATE:
-                            PrivateSetActivity.startActivity(activity, normalChat.chatKey());
+                            PrivateSetActivity.startActivity(activity, normalChat.chatKey(),normalChat.headImg(),normalChat.nickName());
                             break;
                         case GROUPCHAT:
                         case GROUP_DISCUSSION:
@@ -139,20 +137,10 @@ public class ChatActivity extends BaseChatSendActivity {
         recordview.setVisibility(View.GONE);
         inputPanel.setActivity(this);
         inputPanel.setRecordView(recordview);
+        updateBurnState(0);
 
-        // robot/stranger donot show setting
-        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM || normalChat.isStranger())) {
+        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM)) {
             toolbar.setRightImg(R.mipmap.menu_white);
-        }
-
-        if (normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE || normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-            roomSession.setBurntime(-1);
-            updateBurnState(0);
-        } else {
-            ConversionSettingEntity chatSetEntity = ConversionSettingHelper.getInstance().loadSetEntity(talker.getTalkKey());
-            long burntime = (chatSetEntity == null || chatSetEntity.getSnap_time() == null) ? -1 : chatSetEntity.getSnap_time();
-            roomSession.setBurntime(burntime);
-            updateBurnState(burntime);
         }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -417,20 +405,11 @@ public class ChatActivity extends BaseChatSendActivity {
                 CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
                 break;
             case PRIVATE:
-                CFriendChat cFriendChat = new CFriendChat(normalChat.chatKey());
-                if (!TextUtils.isEmpty(talker.getNickName())) {
-                    cFriendChat.setUserAvatar(talker.getAvatar());
-                    cFriendChat.setUserName(talker.getNickName());
-                }
-                cFriendChat.updateRoomMsg(draft, showtxt, sendtime);
+                ((CFriendChat) normalChat).updateRoomMsg(draft, showtxt, sendtime);
                 break;
             case GROUPCHAT:
             case GROUP_DISCUSSION:
-                GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(normalChat.chatKey());
-                if (groupEntity != null) {
-                    CGroupChat cGroupChat = new CGroupChat(groupEntity);
-                    cGroupChat.updateRoomMsg(draft, showtxt, sendtime);
-                }
+                ((CGroupChat) normalChat).updateRoomMsg(draft, showtxt, sendtime);
                 break;
         }
     }
