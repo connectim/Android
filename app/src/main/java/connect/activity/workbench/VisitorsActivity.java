@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.Bind;
@@ -24,11 +28,16 @@ import connect.activity.workbench.fragment.AuditFragment;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
+import connect.service.UpdateAppService;
+import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
+import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.permission.PermissionUtil;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 import protos.Connect;
@@ -140,6 +149,7 @@ public class VisitorsActivity extends BaseFragmentActivity {
         fragmentTransaction.commitAllowingStateLoss();
     }
 
+    private Connect.Staff staff1;
     @OnClick(R.id.right_lin)
     void shareInvite(View view) {
         ProgressUtil.getInstance().showProgress(mActivity);

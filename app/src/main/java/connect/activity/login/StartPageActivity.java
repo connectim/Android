@@ -14,6 +14,7 @@ import connect.activity.login.presenter.StartPagePresenter;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.permission.PermissionUtil;
 
 /**
  * The App start page.
@@ -69,5 +70,17 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
     public Activity getActivity() {
         return mActivity;
     }
+
+    protected PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack() {
+        @Override
+        public void granted(String[] permissions) {
+
+        }
+
+        @Override
+        public void deny(String[] permissions) {
+            ActivityUtil.goBack(mActivity);
+        }
+    };
 
 }

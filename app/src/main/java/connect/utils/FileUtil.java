@@ -77,6 +77,14 @@ public class FileUtil {
         return createAbsNewFile(DIR_ROOT + File.separator +index);
     }
 
+    public static File newSdcardTempFile(FileType type) {
+        String index = randomFileName();
+        index = index + type.getFileType();
+
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        return createAbsNewFile(root + File.separator +index);
+    }
+
     /**
      * create new file
      * @param path

@@ -87,6 +87,7 @@ public class VisitorsAuditActivity extends BaseActivity {
 
         nameTv.setText(visitorRecord.getGuestName());
         reasonTv.setText(getString(R.string.Work_Visitors_reason, visitorRecord.getReason()));
+
         phoneTv.setText(StringUtil.getFormatPhone(visitorRecord.getStaffPhone()));
         String time = TimeUtil.getTime(visitorRecord.getStartTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR) + "——" +
                 TimeUtil.getTime(visitorRecord.getEndTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR);
