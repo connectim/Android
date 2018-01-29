@@ -29,6 +29,9 @@ public class HomeAction extends BaseEvent {
         TOCHAT_FRIEND,
         TOCHAT_GROUP,
         TOCHAT_ROBOT,
+
+        GROUP_NEWCHAT,
+        REMOTE_LOGIN;
     }
 
     @Override

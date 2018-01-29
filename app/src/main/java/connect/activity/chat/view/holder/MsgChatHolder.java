@@ -11,32 +11,23 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import connect.activity.base.BaseListener;
-import connect.activity.chat.bean.DestructReadBean;
-import connect.activity.chat.bean.LinkMessageRow;
-import connect.activity.chat.model.GroupMemberUtil;
-import connect.database.SharedPreferenceUtil;
-import connect.utils.cryption.SupportKeyUril;
-import instant.bean.MsgDirect;
+import connect.activity.chat.bean.GroupMemberUtil;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.view.BurnProBar;
 import connect.activity.chat.view.MsgStateView;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
-import connect.activity.contact.bean.SourceType;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.set.UserInfoActivity;
-import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
-import instant.bean.ChatMsgEntity;
 import connect.utils.glide.GlideUtil;
 import connect.widget.ChatHeadImg;
 import connect.widget.prompt.ChatPromptViewManager;
 import connect.widget.prompt.PromptViewHelper;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import protos.Connect;
 
 /**
@@ -46,7 +37,6 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
 
     protected ChatHeadImg headImg;
     protected TextView memberTxt;
-    protected BurnProBar burnProBar;
     protected MsgStateView msgStateView;
     protected RelativeLayout contentLayout;
 
@@ -58,7 +48,6 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         super(itemView);
         headImg = (ChatHeadImg) itemView.findViewById(R.id.roundimg_head);
         memberTxt = (TextView) itemView.findViewById(R.id.usernameText);
-        burnProBar = (BurnProBar) itemView.findViewById(R.id.burnprogressbar);
         msgStateView = (MsgStateView) itemView.findViewById(R.id.msgstateview);
         contentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
 
@@ -104,11 +93,13 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         switch (chatType) {
             case PRIVATE:
                 GlideUtil.loadAvatarRound(headImg, direct == MsgDirect.From ?
-                        RoomSession.getInstance().getChatAvatar() :
+                        RoomSession.getInstance().getFriendAvatar() :
                         SharedPreferenceUtil.getInstance().getUser().getAvatar());
+                headImg.setUserUid(direct == MsgDirect.From ?
+                        RoomSession.getInstance().getRoomKey() :
+                        SharedPreferenceUtil.getInstance().getUser().getUid());
 
-                headImg.setVisibility(RoomSession.getInstance().getBurntime() <= 0 ? View.VISIBLE :
-                        View.GONE);
+                headImg.setVisibility(View.VISIBLE);
                 headImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -116,34 +107,12 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                             UserInfoActivity.startActivity((Activity) context);
                         } else if (direct == MsgDirect.From) {
                             String uid = RoomSession.getInstance().getRoomKey();
-                            ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(uid);
-                            if (friend == null) {
-                                String address = SupportKeyUril.getAddressFromPubKey(uid);
-                                StrangerInfoActivity.startActivity((Activity) context, address, SourceType.GROUP);
-                            } else {
-                                FriendInfoActivity.startActivity((Activity) context, uid);
-                            }
+                            ContactInfoActivity.lunchActivity((Activity) context, uid);
                         }
                     }
                 });
                 if (memberTxt != null) {
                     memberTxt.setVisibility(View.GONE);
-                }
-                if (burnProBar != null) {
-                    long destructtime = msgExtEntity.parseDestructTime();
-                    if (destructtime == 0) {
-                        burnProBar.setVisibility(View.GONE);
-                    } else {
-                        burnProBar.setVisibility(View.VISIBLE);
-                        burnProBar.setMsgExtEntity(msgExtEntity);
-
-                        LinkMessageRow msgType = LinkMessageRow.toMsgType(msgExtEntity.getMessageType());
-                        burnProBar.loadBurnMsg();
-                        if (direct == MsgDirect.From && (msgType == LinkMessageRow.Text || msgType == LinkMessageRow.Emotion)) {
-                            msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
-                            DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
-                        }
-                    }
                 }
                 break;
             case GROUPCHAT:
@@ -154,14 +123,8 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                         if (direct == MsgDirect.To) {
                             UserInfoActivity.startActivity((Activity) context);
                         } else if (direct == MsgDirect.From) {
-                            String memberKey=msgExtEntity.getMessage_from();
-                            ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(memberKey);
-                            if (friend == null) {
-                                String address = SupportKeyUril.getAddressFromPubKey(memberKey);
-                                StrangerInfoActivity.startActivity((Activity) context, address, SourceType.GROUP);
-                            } else {
-                                FriendInfoActivity.startActivity((Activity) context, memberKey);
-                            }
+                            String memberKey = msgExtEntity.getMessage_from();
+                            ContactInfoActivity.lunchActivity((Activity) context, memberKey);
                         }
                     }
                 });
@@ -171,19 +134,21 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     if (memberTxt != null) {
                         memberTxt.setVisibility(View.GONE);
                     }
+                    headImg.setUserUid(SharedPreferenceUtil.getInstance().getUser().getUid());
                 } else if (direct == MsgDirect.From) {
                     memberTxt.setVisibility(View.VISIBLE);
-                    String groupKey=msgExtEntity.getMessage_ower();
-                    String memberKey = msgExtEntity.getMessage_from();
+                    String groupKey = msgExtEntity.getMessage_ower();
+                    final String memberKey = msgExtEntity.getMessage_from();
 
-                    GroupMemberUtil.groupMemberUtil.loadGroupMember(groupKey,memberKey, new BaseListener<GroupMemberEntity>() {
+                    GroupMemberUtil.groupMemberUtil.loadGroupMember(groupKey, memberKey, new BaseListener<GroupMemberEntity>() {
                         @Override
                         public void Success(GroupMemberEntity ts) {
                             GlideUtil.loadAvatarRound(headImg, ts.getAvatar());
+                            headImg.setUserUid(memberKey);
 
                             String memberName = "";
-                            if (ts != null) {
-                                memberName = TextUtils.isEmpty(ts.getNick()) ? ts.getUsername() : ts.getNick();
+                            if (ts != null && !TextUtils.isEmpty(ts.getUsername())) {
+                                memberName = ts.getUsername();
                             }
                             memberTxt.setText(memberName);
                         }
@@ -196,14 +161,8 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     });
                 }
 
-                if (burnProBar != null) {
-                    burnProBar.setVisibility(View.GONE);
-                }
                 break;
             case CONNECT_SYSTEM:
-                if (burnProBar != null) {
-                    burnProBar.setVisibility(View.GONE);
-                }
                 if (memberTxt != null) {
                     memberTxt.setVisibility(View.GONE);
                 }

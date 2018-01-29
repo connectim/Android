@@ -18,11 +18,6 @@
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_gravity="center"/>
-
-        <connect.activity.chat.view.BurnProBar
-            android:id="@id/burnprogressbar"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -34,10 +29,10 @@
         android:paddingRight="@dimen/dp_2"
         android:paddingTop="@dimen/dp_2">
 
-        <connect.widget.GifView
+        <ImageView
             android:id="@id/emotionmsg"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"/>
     </RelativeLayout>

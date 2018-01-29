@@ -39,6 +39,6 @@
         android:paddingLeft="@dimen/dp_5"
         android:paddingRight="@dimen/dp_5"
         android:text="+ 20%"
-        android:background="@drawable/shape_stroke_green"/>
+        android:background="@drawable/shape_stroke_blue"/>
 
 </RelativeLayout>

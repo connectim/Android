@@ -12,8 +12,6 @@ import instant.bean.UserCookie;
 import instant.sender.SenderManager;
 import instant.utils.RegularUtil;
 import instant.utils.TimeUtil;
-import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -29,10 +27,6 @@ public class GroupChat extends NormalChat {
     protected String myGroupName = "";
 
     private String myUid;
-    /** user Cookie */
-    private UserCookie userCookie = null;
-    /** friend Cookie */
-    private UserCookie groupMemberCookie = null;
 
     public GroupChat(String groupKey) {
         this.groupKey = groupKey;
@@ -58,36 +52,12 @@ public class GroupChat extends NormalChat {
     @Override
     public void sendPushMsg(ChatMsgEntity msgExtEntity) {
         Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
+        chatMessageBuilder.setBody(ByteString.copyFrom(msgExtEntity.getContents()));
 
-        String priKey = null;
-        byte[] randomSalt = null;
-        String friendKey = null;
+        Connect.MessageData messageData = Connect.MessageData.newBuilder()
+                .setChatMsg(chatMessageBuilder)
+                .build();
 
-        loadUserCookie();
-        loadFriendCookie();
-        EncryptionUtil.ExtendedECDH ecdhExts = null;
-        Connect.ChatSession.Builder sessionBuilder = Connect.ChatSession.newBuilder();
-        Connect.MessageData.Builder builder = Connect.MessageData.newBuilder();
-
-        priKey = userCookie.getPriKey();
-        randomSalt = userCookie.getSalt();
-        friendKey = groupMemberCookie.getPubKey();
-        byte[] friendSalt = groupMemberCookie.getSalt();
-        if (groupMemberCookie == null || friendSalt == null || friendSalt.length == 0) {
-            return;
-        }
-        ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-        ecdhExts.setBytes(SupportKeyUril.xor(randomSalt, friendSalt));
-        sessionBuilder.setSalt(ByteString.copyFrom(randomSalt))
-                .setPubKey(userCookie.getPubKey())
-                .setVer(ByteString.copyFrom(groupMemberCookie.getSalt()));
-
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(ecdhExts, priKey, friendKey, msgExtEntity.getContents());
-        chatMessageBuilder.setCipherData(gcmData);
-        builder.setChatMsg(chatMessageBuilder)
-                .setChatSession(sessionBuilder);
-
-        Connect.MessageData messageData = builder.build();
         Connect.MessagePost messagePost = normalChatMessage(messageData);
         SenderManager.getInstance().sendAckMsg(SocketACK.GROUP_CHAT, groupKey, messageData.getChatMsg().getMsgId(), messagePost.toByteString());
     }
@@ -112,16 +82,11 @@ public class GroupChat extends NormalChat {
         return Connect.ChatType.GROUPCHAT_VALUE;
     }
 
-    @Override
-    public long destructReceipt() {
-        return 0L;
+    public void updateMyNickName() {
     }
 
-    public void updateMyNickName(){
-    }
-
-    public void setNickName(String name){
-        this.myGroupName=name;
+    public void setNickName(String name) {
+        this.myGroupName = name;
     }
 
     public ChatMsgEntity groupTxtMsg(String string, List<String> address) {
@@ -134,17 +99,5 @@ public class GroupChat extends NormalChat {
         }
         msgExtEntity.setContents(builder.build().toByteArray());
         return msgExtEntity;
-    }
-
-    private void loadUserCookie() {
-        userCookie = Session.getInstance().getChatCookie();
-        if (userCookie == null) {
-        }
-    }
-
-    public void loadFriendCookie() {
-        groupMemberCookie = Session.getInstance().getGroupMemberCookie(groupKey, myUid);
-        if (groupMemberCookie == null) {//reload Group Member Cookie
-        }
     }
 }

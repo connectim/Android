@@ -2,36 +2,35 @@ package connect.activity.contact;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import connect.activity.base.BaseActivity;
+import connect.activity.contact.adapter.DepartmentAdapter;
+import connect.activity.contact.bean.DepartmentBean;
+import connect.activity.home.view.LineDecoration;
+import connect.activity.login.bean.UserBean;
+import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
-import connect.activity.contact.bean.SourceType;
-import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
@@ -50,11 +49,12 @@ public class SearchFriendResultActivity extends BaseActivity {
     ImageView delTv;
     @Bind(R.id.no_result_tv)
     TextView noResultTv;
-    @Bind(R.id.result_lin)
-    LinearLayout resultLin;
+    @Bind(R.id.recyclerview)
+    RecyclerView recyclerview;
 
     private SearchFriendResultActivity mActivity;
-    private Connect.UserInfo userInfoBase;
+    private DepartmentAdapter adapter;
+    private UserBean userBean;
 
     public static void startActivity(Activity activity, String text) {
         Bundle bundle = new Bundle();
@@ -76,12 +76,21 @@ public class SearchFriendResultActivity extends BaseActivity {
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setTitle(null, R.string.Link_Search_friends);
-        toolbar.setRightImg(R.mipmap.search3x);
+        //toolbar.setRightImg(R.mipmap.search3x);
+        userBean = SharedPreferenceUtil.getInstance().getUser();
 
         searchEdit.setOnKeyListener(keyListener);
         searchEdit.addTextChangedListener(textWatcher);
         String text = getIntent().getExtras().getString("text");
         searchEdit.setText(text);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        adapter = new DepartmentAdapter(mActivity);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
+        adapter.setItemClickListener(onItemChildClickListener);
+        recyclerview.setAdapter(adapter);
+
         requestSearch();
     }
 
@@ -90,58 +99,17 @@ public class SearchFriendResultActivity extends BaseActivity {
         ActivityUtil.goBack(mActivity);
     }
 
-    @OnClick(R.id.right_lin)
+    /*@OnClick(R.id.right_lin)
     void searchUser(View view) {
         requestSearch();
-    }
+    }*/
 
     @OnClick(R.id.del_tv)
     void delEdit(View view) {
         searchEdit.setText("");
     }
 
-    private void updateView(Connect.UserInfo userInfo){
-        resultLin.removeAllViews();
-        if(userInfo == null){
-            resultLin.removeAllViews();
-            noResultTv.setVisibility(View.VISIBLE);
-            return;
-        }else{
-            userInfoBase = userInfo;
-            noResultTv.setVisibility(View.GONE);
-        }
-
-        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_contact_search_result,null);
-        ImageView avatar = (ImageView)view.findViewById(R.id.avatar_rimg);
-        TextView nickname = (TextView)view.findViewById(R.id.nickname_tv);
-        Button statusBtn = (Button)view.findViewById(R.id.status_btn);
-        statusBtn.setText(R.string.Link_Add);
-        GlideUtil.loadAvatarRound(avatar,userInfo.getAvatar());
-        nickname.setText(userInfo.getUsername());
-
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(userInfo.getUid());
-        if(userInfo.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getUid())){
-            // Query the user themselves
-            resultLin.removeAllViews();
-            noResultTv.setVisibility(View.VISIBLE);
-        }else if(friendEntity != null){
-            // Query the user is already a good friend relationship
-            statusBtn.setVisibility(View.GONE);
-            view.setOnClickListener(onClickListener);
-            view.setTag(1);
-            resultLin.addView(view);
-        }else{
-            // Query the user is a stranger
-            statusBtn.setVisibility(View.VISIBLE);
-            view.setOnClickListener(onClickListener);
-            statusBtn.setOnClickListener(onClickListener);
-            view.setTag(2);
-            statusBtn.setTag(2);
-            resultLin.addView(view);
-        }
-    }
-
-    private View.OnKeyListener keyListener = new View.OnKeyListener(){
+    private View.OnKeyListener keyListener = new View.OnKeyListener() {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -156,35 +124,50 @@ public class SearchFriendResultActivity extends BaseActivity {
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
         @Override
         public void afterTextChanged(Editable s) {
-            if(TextUtils.isEmpty(s.toString())){
+            if (TextUtils.isEmpty(s.toString())) {
                 delTv.setVisibility(View.GONE);
-            }else{
+            } else {
                 delTv.setVisibility(View.VISIBLE);
             }
         }
     };
 
-    View.OnClickListener onClickListener = new View.OnClickListener(){
+    DepartmentAdapter.OnItemClickListener onItemChildClickListener = new DepartmentAdapter.OnItemClickListener() {
         @Override
-        public void onClick(View v) {
-            int tag = (int)v.getTag();
-            if(tag == 1){
-                FriendInfoActivity.startActivity(mActivity, userInfoBase.getUid());
-            }else if(tag == 2){
-                StrangerInfoActivity.startActivity(mActivity, userInfoBase.getUid(), SourceType.SEARCH);
+        public void itemClick(DepartmentBean departmentBean) {
+            if(userBean.getUid().equals(departmentBean.getUid())){
+                UserInfoActivity.startActivity(mActivity);
+            }else{
+                ContactEntity contactEntity = new ContactEntity();
+                contactEntity.setName(departmentBean.getName());
+                contactEntity.setAvatar(departmentBean.getAvatar());
+                contactEntity.setOu(departmentBean.getO_u());
+                contactEntity.setPublicKey(departmentBean.getPub_key());
+                contactEntity.setEmpNo(departmentBean.getEmpNo());
+                contactEntity.setMobile(departmentBean.getMobile());
+                contactEntity.setGender(departmentBean.getGender());
+                contactEntity.setTips(departmentBean.getTips());
+                contactEntity.setRegisted(departmentBean.getRegisted());
+                contactEntity.setUid(departmentBean.getUid());
+                ContactInfoActivity.lunchActivity(mActivity, contactEntity, "");
             }
+            mActivity.finish();
         }
     };
 
-    private void requestSearch(){
+    private void requestSearch() {
         String searchContext = searchEdit.getText().toString().trim();
         if (TextUtils.isEmpty(searchContext)) {
-            resultLin.removeAllViews();
+            recyclerview.setVisibility(View.GONE);
             noResultTv.setVisibility(View.VISIBLE);
             return;
         }
@@ -192,24 +175,33 @@ public class SearchFriendResultActivity extends BaseActivity {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(searchContext)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_WORKMATE_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.UserInfo userInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(userInfo)){
-                        updateView(userInfo);
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
+                    Connect.Workmates workmates = Connect.Workmates.parseFrom(structData.getPlainData());
+                    if (workmates.getListList().size() > 0) {
+                        noResultTv.setVisibility(View.GONE);
+                        recyclerview.setVisibility(View.VISIBLE);
+                        ArrayList<DepartmentBean> list = new ArrayList<>();
+                        for (Connect.Workmate workmate : workmates.getListList()) {
+                            list.add(getContactBean(workmate));
+                        }
+                        adapter.setNotify(list);
+                    } else {
+                        noResultTv.setVisibility(View.VISIBLE);
+                        recyclerview.setVisibility(View.GONE);
                     }
-                } catch (InvalidProtocolBufferException e) {
+                }catch (Exception e){
                     e.printStackTrace();
                 }
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
-                updateView(null);
+            public void onError(Connect.HttpNotSignResponse response) {
+                noResultTv.setVisibility(View.VISIBLE);
+                recyclerview.setVisibility(View.GONE);
 
                 String errorMessage = response.getMessage();
                 if (TextUtils.isEmpty(errorMessage)) {
@@ -218,6 +210,21 @@ public class SearchFriendResultActivity extends BaseActivity {
                 ToastEUtil.makeText(mActivity, errorMessage, 2).show();
             }
         });
+    }
+
+    private DepartmentBean getContactBean(Connect.Workmate workmate){
+        DepartmentBean departmentBean = new DepartmentBean();
+        departmentBean.setUid(workmate.getUid());
+        departmentBean.setName(workmate.getName());
+        departmentBean.setAvatar(workmate.getAvatar());
+        departmentBean.setO_u(workmate.getOU());
+        departmentBean.setPub_key(workmate.getPubKey());
+        departmentBean.setRegisted(workmate.getRegisted());
+        departmentBean.setEmpNo(workmate.getEmpNo());
+        departmentBean.setMobile(workmate.getMobile());
+        departmentBean.setGender(workmate.getGender());
+        departmentBean.setTips(workmate.getTips());
+        return departmentBean;
     }
 
 }

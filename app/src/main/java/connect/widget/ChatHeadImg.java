@@ -5,12 +5,10 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import connect.activity.chat.bean.DestructOpenBean;
 
 public class ChatHeadImg extends ImageView {
+
+    private String userUid = "";
 
     public ChatHeadImg(Context context) {
         super(context);
@@ -24,25 +22,7 @@ public class ChatHeadImg extends ImageView {
         super(context, attrs, defStyle);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        EventBus.getDefault().register(this);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(DestructOpenBean openBean) {
-        long time = openBean.getTime();
-        if (time <= 0) {
-            setVisibility(VISIBLE);
-        } else {
-            setVisibility(GONE);
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        EventBus.getDefault().unregister(this);
+    public void setUserUid(String uid) {
+        this.userUid = uid;
     }
 }

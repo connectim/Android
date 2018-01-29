@@ -1,5 +1,7 @@
 package instant.parser;
 
+import com.google.protobuf.ByteString;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ public class MessageParser extends InterParse {
                 unavailableMsg();
                 break;
             case 0x06://subscribe messgae
-                subscribePull();
+                //subscribePull();
                 break;
             case 0x09://notice message
                 noticeMsg();
@@ -97,9 +99,9 @@ public class MessageParser extends InterParse {
                 Connect.SystemRedPackage redPackage = Connect.SystemRedPackage.parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.systemRedPackageMessage(redPackage);
                 break;
-            case 101://group review
-                Connect.Reviewed reviewed = Connect.Reviewed.parseFrom(msMessage.getBody().toByteArray());
-                RobotLocalReceiver.localReceiver.reviewedMessage(reviewed);
+            case 20://有待审核消息
+                Connect.ExamineMessage examineMessage = Connect.ExamineMessage.parseFrom(msMessage.getBody().toByteArray());
+                RobotLocalReceiver.localReceiver.auditMessage(examineMessage);
                 break;
             case 102://announce message
                 Connect.Announcement announcement = Connect.Announcement.parseFrom(msMessage.getBody().toByteArray());
@@ -118,7 +120,6 @@ public class MessageParser extends InterParse {
             case 105://Registered mobile phone in the new account binding The original account automatically lift and notice
                 Connect.UpdateMobileBind mobileBind = Connect.UpdateMobileBind.parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.updateMobileBindMessage(mobileBind);
-
                 break;
             case 106://Groups will be dissolved
                 Connect.RemoveGroup removeGroup = Connect.RemoveGroup.parseFrom(msMessage.getBody().toByteArray());
@@ -146,6 +147,7 @@ public class MessageParser extends InterParse {
 
         String msgid = rejectMessage.getMsgId();
         String rejectUid = rejectMessage.getUid();
+        ByteString data = rejectMessage.getData();
         switch (rejectMessage.getStatus()) {
             case 1://The user does not exist
             case 2://Is not a friend relationship
@@ -178,6 +180,10 @@ public class MessageParser extends InterParse {
                 break;
             case 9://upload cookie salt not match
                 reloadUserCookie(msgid, rejectUid);
+                break;
+            case 10://PUBKEY_NOT_MATCH
+                Connect.PubKey pubKey = Connect.PubKey.parseFrom(data);
+                UnreachableLocalReceiver.localReceiver.publicKeyNotMatch(msgid, rejectUid,pubKey);
                 break;
         }
         receiptMsg(msgid, 2);
@@ -216,21 +222,10 @@ public class MessageParser extends InterParse {
         parseBean.msgParse();
     }
 
-    protected void subscribePull() throws Exception {
-        Connect.RSSPush rssPush = Connect.RSSPush.parseFrom(byteBuffer.array());
-        if (ext == 0) {
-            backOffLineAck(5, rssPush.getMsgId());
-        } else {
-            backOnLineAck(5, rssPush.getMsgId());
-        }
-
-        RobotLocalReceiver.localReceiver.subscribePull(rssPush);
-    }
-
     private void reloadUserCookie(String msgid, String uid) throws Exception {
         FailMsgsManager.getInstance().insertFailMsg(uid, msgid);
 
         CommandParser commandBean = new CommandParser((byte) 0x00, null);
-        commandBean.reloadUserCookie();
+        //commandBean.reloadUserCookie();
     }
 }

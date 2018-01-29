@@ -13,9 +13,8 @@ import java.io.File;
 import connect.utils.FileUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
-import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
-import instant.bean.UserCookie;
+import instant.bean.Session;
 import instant.sender.model.BaseChat;
 import protos.Connect;
 
@@ -99,29 +98,27 @@ public class VideoUpload extends BaseFileUp {
     @Override
     public void fileEncrypt() {
         super.fileEncrypt();
-        Connect.RichMedia richMedia = null;
-        Connect.GcmData gcmData = null;
-        if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-            richMedia = Connect.RichMedia.newBuilder().
-                    setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(thumbCompressFile))).
-                    setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(sourceCompressFile))).build();
-        } else {
-            Connect.GcmData firstGcmData = encodeAESGCMStructData(thumbCompressFile);
-            Connect.GcmData secondGcmData = encodeAESGCMStructData(sourceCompressFile);
 
-            richMedia = Connect.RichMedia.newBuilder().
-                    setThumbnail(firstGcmData.toByteString()).
-                    setEntity(secondGcmData.toByteString()).build();
-        }
+        byte[] thumbnailFileByte = encodeAESGCMStructData(thumbCompressFile);
+        byte[] sourceFileByte = encodeAESGCMStructData(sourceCompressFile);
+        ByteString thumbnailFileBytes = ByteString.copyFrom(thumbnailFileByte);
+        ByteString sourceFileBytes = ByteString.copyFrom(sourceFileByte);
 
-        UserCookie userCookie = loadUserCookie();
-        String myPrivateKey = userCookie.getPriKey();
-        String myPublicKey = userCookie.getPubKey();
+        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder()
+                .setThumbnail(thumbnailFileBytes)
+                .setEntity(sourceFileBytes)
+                .build();
 
-        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setPlainData(richMedia.toByteString())
+                .build();
+
+        String uid = Session.getInstance().getConnectCookie().getUid();
+        String token = Session.getInstance().getChatCookie().getToken();
         mediaFile = Connect.MediaFile.newBuilder()
-                .setPubKey(myPublicKey)
-                .setCipherData(gcmData)
+                .setUid(uid)
+                .setToken(token)
+                .setBody(structData.toByteString())
                 .build();
     }
 

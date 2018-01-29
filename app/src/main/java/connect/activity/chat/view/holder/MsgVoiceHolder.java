@@ -5,17 +5,17 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.utils.chatfile.download.DownLoadFile;
-import connect.utils.chatfile.inter.InterFileDown;
-import instant.bean.ChatMsgEntity;
-import instant.bean.MsgDirect;
 import connect.activity.chat.view.VoiceImg;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
+import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
+import connect.utils.chatfile.download.DownLoadFile;
+import connect.utils.chatfile.inter.InterFileDown;
+import instant.bean.ChatMsgEntity;
+import instant.bean.MsgDirect;
 import protos.Connect;
 
 /**
@@ -43,7 +43,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
     public void buildRowData(final MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
-        RoomSession.getInstance().checkBurnTime(voiceMessage.getSnapTime());
+        final String fileKey = StringUtil.bytesToHexString(voiceMessage.getFileKey().toByteArray());
 
         boolean visiable = false;
         if (msgExtEntity.parseDirect() == MsgDirect.From) {
@@ -77,15 +77,19 @@ public class MsgVoiceHolder extends MsgChatHolder {
                         voiceImg.startPlay(localPath);
                     } else {
                         voiceImg.downLoading();
+                        if (null != loadImg) {
+                            loadImg.setVisibility(View.VISIBLE);
+                        }
 
-                        Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
-                        DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getEcdh(),url, new InterFileDown() {
+                        DownLoadFile loadFile = new DownLoadFile(url, new InterFileDown() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 if (null != loadImg) {
+                                    loadImg.clearAnimation();
                                     loadImg.setVisibility(View.GONE);
                                 }
 
+                                bytes = decodeFile(fileKey, bytes);
                                 FileUtil.byteArrToFilePath(bytes, localPath);
                                 voiceImg.startPlay(msgExtEntity.getMessage_id(), localPath, new VoiceImg.VoicePlayListener() {
                                     @Override
@@ -93,8 +97,6 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                         if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
                                             msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                                             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-
-                                            DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
                                         }
                                     }
                                 });
@@ -102,15 +104,18 @@ public class MsgVoiceHolder extends MsgChatHolder {
 
                             @Override
                             public void failDown() {
-
+                                if (null != loadImg) {
+                                    loadImg.clearAnimation();
+                                    loadImg.setVisibility(View.GONE);
+                                }
                             }
 
                             @Override
                             public void onProgress(long bytesWritten, long totalSize) {
                                 int progress = (int) (bytesWritten * 100 / totalSize);
-                                if (null != loadImg) {
-                                    loadImg.setVisibility(View.VISIBLE);
-                                }
+//                                if (null != loadImg) {
+//                                    loadImg.setVisibility(View.VISIBLE);
+//                                }
                             }
                         });
                         loadFile.downFile();

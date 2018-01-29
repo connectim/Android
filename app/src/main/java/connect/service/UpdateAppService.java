@@ -25,7 +25,7 @@ public class UpdateAppService extends Service {
     DownloadManager manager;
     DownloadCompleteReceiver receiver;
     File file;
-    private String pathDown = "/Connect/download/connect_im.apk";
+    private String pathDown = "/iWork/download/iWork.apk";
 
     private void initDownManager(String downLoadUrl) {
         manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -36,7 +36,7 @@ public class UpdateAppService extends Service {
         down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         down.setVisibleInDownloadsUi(true);
         down.setTitle(getString(R.string.app_name));
-        down.setDescription(getString(R.string.Common_Download_App,"Connect"));
+        down.setDescription(getString(R.string.Common_Download_App,"iWork"));
 
         FileUtil.deleteFile(Environment.getExternalStorageDirectory() + pathDown);
         file = new File(Environment.getExternalStorageDirectory() + pathDown);

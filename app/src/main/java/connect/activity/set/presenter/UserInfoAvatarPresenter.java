@@ -15,18 +15,17 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.File;
 
-import connect.database.SharedPreferenceUtil;
-import connect.ui.activity.R;
+import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.contract.UserInfoAvatarContract;
-import connect.activity.base.BaseApplication;
+import connect.database.SharedPreferenceUtil;
+import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
@@ -109,13 +108,12 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
             @Override
             protected void onPostExecute(Connect.Avatar avatar) {
                 super.onPostExecute(avatar);
-                OkHttpUtil.getInstance().postEncrySelf(UriUtil.AVATAR_V1_SET, avatar, new ResultCall<Connect.HttpResponse>() {
+                OkHttpUtil.getInstance().postEncrySelf(UriUtil.AVATAR_V1_SET, avatar, new ResultCall<Connect.HttpNotSignResponse>() {
                     @Override
-                    public void onResponse(Connect.HttpResponse response) {
+                    public void onResponse(Connect.HttpNotSignResponse response) {
                         ProgressUtil.getInstance().dismissProgress();
                         try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                             Connect.AvatarInfo userAvatar = Connect.AvatarInfo.parseFrom(structData.getPlainData());
                             if (ProtoBufUtil.getInstance().checkProtoBuf(userAvatar)) {
                                 UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
@@ -130,7 +128,7 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
                     }
 
                     @Override
-                    public void onError(Connect.HttpResponse response) {
+                    public void onError(Connect.HttpNotSignResponse response) {
                         ProgressUtil.getInstance().dismissProgress();
                         if(response.getCode() == 2408){
                             ToastEUtil.makeText(mView.getActivity(),R.string.Login_User_avatar_is_illegal,ToastEUtil.TOAST_STATUS_FAILE).show();

@@ -33,6 +33,7 @@ public class ConversionEntity implements Serializable {
     @Generated(hash = 1944361742)
     public ConversionEntity() {
     }
+
     @Generated(hash = 1307192277)
     public ConversionEntity(Long _id, @NotNull String identifier, Integer type,
             String name, String avatar, String draft, String content,
@@ -51,6 +52,7 @@ public class ConversionEntity implements Serializable {
         this.stranger = stranger;
         this.last_time = last_time;
     }
+
     public Long get_id() {
         return this._id;
     }

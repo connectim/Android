@@ -1,12 +1,7 @@
 package connect.activity.chat.bean;
 
-import android.text.TextUtils;
-
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.MessageEntity;
-import connect.utils.StringUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import instant.bean.MsgDirect;
 import protos.Connect;
 
@@ -64,16 +59,12 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
 
 
     public MsgDirect parseDirect() {
-        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getUid();
         return mypubkey.equals(getMessage_from()) ? MsgDirect.To : MsgDirect.From;
     }
 
     public MessageEntity transToMessageEntity() {
         String content = getContent();
-        if (TextUtils.isEmpty(content)) {
-            Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SupportKeyUril.localHashKey().getBytes(), getContents());
-            content = StringUtil.bytesToHexString(gcmData.toByteArray());
-        }
 
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.set_id(get_id());

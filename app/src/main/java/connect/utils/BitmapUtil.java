@@ -7,6 +7,7 @@ import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 
 import java.io.ByteArrayOutputStream;
@@ -311,6 +312,11 @@ public class BitmapUtil {
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         view.buildDrawingCache();
         return view.getDrawingCache();
+    }
+
+    public static Bitmap base64ToBitmap(String base64Data) {
+        byte[] bytes = Base64.decode(base64Data, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
 }

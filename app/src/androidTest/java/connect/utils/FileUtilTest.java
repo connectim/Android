@@ -69,7 +69,7 @@ public class FileUtilTest {
 
     @Test
     public void deleteContactFile() throws Exception {
-        String pubKey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String pubKey = SharedPreferenceUtil.getInstance().getUser().getUid();
         assertTrue(FileUtil.deleteContactFile(pubKey));
     }
 

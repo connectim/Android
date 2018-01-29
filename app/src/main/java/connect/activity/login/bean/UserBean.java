@@ -6,25 +6,26 @@ public class UserBean implements Serializable{
 
     private String name;
     private String avatar;
-    private String priKey;
-    private String pubKey;
-    private String phone;
-    private String connectId;
     private String uid;
-    private boolean isOpenPassword = false;
-    private boolean updateConnectId;
+    private String token;
+    private String o_u;
+    private String pubKey;
+    private String priKey;
+    private String emp_no;
+    private String mobile;
+    private int gender;
+    private String tips;
 
     public UserBean() {}
 
-    public UserBean(String name, String avatar, String priKey, String pubKey, String phone, String connectId, String uid, boolean updateConnectId) {
+    public UserBean(String name, String avatar, String uid, String o_u, String token, String pubKey,String priKey) {
         this.name = name;
         this.avatar = avatar;
-        this.priKey = priKey;
-        this.pubKey = pubKey;
-        this.phone = phone;
-        this.connectId = connectId;
         this.uid = uid;
-        this.updateConnectId = updateConnectId;
+        this.o_u = o_u;
+        this.token = token;
+        this.pubKey = pubKey;
+        this.priKey = priKey;
     }
 
     public String getName() {
@@ -43,12 +44,28 @@ public class UserBean implements Serializable{
         this.avatar = avatar;
     }
 
-    public String getPriKey() {
-        return priKey;
+    public String getUid() {
+        return uid;
     }
 
-    public void setPriKey(String priKey) {
-        this.priKey = priKey;
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getO_u() {
+        return o_u;
+    }
+
+    public void setO_u(String o_u) {
+        this.o_u = o_u;
     }
 
     public String getPubKey() {
@@ -59,43 +76,43 @@ public class UserBean implements Serializable{
         this.pubKey = pubKey;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPriKey() {
+        return priKey;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPriKey(String priKey) {
+        this.priKey = priKey;
     }
 
-    public String getConnectId() {
-        return connectId;
+    public String getEmp_no() {
+        return emp_no;
     }
 
-    public void setConnectId(String connectId) {
-        this.connectId = connectId;
+    public void setEmp_no(String emp_no) {
+        this.emp_no = emp_no;
     }
 
-    public String getUid() {
-        return uid;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
-    public boolean isOpenPassword() {
-        return isOpenPassword;
+    public int getGender() {
+        return gender;
     }
 
-    public void setOpenPassword(boolean openPassword) {
-        isOpenPassword = openPassword;
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
-    public boolean isUpdateConnectId() {
-        return updateConnectId;
+    public String getTips() {
+        return tips;
     }
 
-    public void setUpdateConnectId(boolean updateConnectId) {
-        this.updateConnectId = updateConnectId;
+    public void setTips(String tips) {
+        this.tips = tips;
     }
 }

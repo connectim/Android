@@ -20,8 +20,6 @@ import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ConfigUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.log.LogManager;
 import connect.utils.okhttp.LoggerInterceptor;
 import io.reactivex.Observable;
@@ -103,7 +101,7 @@ public class HttpUtil {
      */
     public static Connect.IMRequest getIMRequest(ByteString bytes) {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        return getIMRequest(userBean.getPriKey(), userBean.getPubKey(), bytes);
+        return getIMRequest(userBean.getUid(), userBean.getUid(), bytes);
     }
 
     public static Connect.IMRequest getIMRequest(String priKey, String pubKey, ByteString bytes) {
@@ -113,21 +111,22 @@ public class HttpUtil {
             Toast.makeText(BaseApplication.getInstance(), R.string.ErrorCode_Request_Error,Toast.LENGTH_LONG).show();
             return null;
         }
-        return getIMRequest(EncryptionUtil.ExtendedECDH.SALT, priKey, pubKey, bytes);
+       // return getIMRequest(EncryptionUtil.ExtendedECDH.SALT, priKey, pubKey, bytes);
+    return null;
     }
 
-    public static Connect.IMRequest getIMRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey, ByteString bytes) {
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
-        if(null == gcmData){
-            LogManager.getLogger().i("-----ecdh-----","ecdh null");
-            return null;
-        }
-        Connect.IMRequest imRequest = Connect.IMRequest.newBuilder()
-                .setPubKey(pubKey)
-                .setCipherData(gcmData)
-                .setSign(SupportKeyUril.signHash(priKey, gcmData.toByteArray())).build();
-        return imRequest;
-    }
+//    public static Connect.IMRequest getIMRequest(EncryptionUtil.ExtendedECDH exts, String priKey, String pubKey, ByteString bytes) {
+//        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(exts, priKey, bytes);
+//        if(null == gcmData){
+//            LogManager.getLogger().i("-----ecdh-----","ecdh null");
+//            return null;
+//        }
+//        Connect.IMRequest imRequest = Connect.IMRequest.newBuilder()
+//                .setPubKey(pubKey)
+//                .setCipherData(gcmData)
+//                .setSign(SupportKeyUril.signHash(priKey, gcmData.toByteArray())).build();
+//        return imRequest;
+//    }
 
     /**
      * 获取Api类

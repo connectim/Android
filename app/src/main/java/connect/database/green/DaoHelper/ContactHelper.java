@@ -19,7 +19,6 @@ import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-
 import connect.database.green.dao.ContactEntityDao;
 import connect.database.green.dao.FriendRequestEntityDao;
 import connect.database.green.dao.GroupEntityDao;
@@ -88,7 +87,7 @@ public class ContactHelper extends BaseDao {
 
     public List<ContactEntity> loadFriendBlack() {
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.where(ContactEntityDao.Properties.Blocked.eq(true)).build();
+        //queryBuilder.where(ContactEntityDao.Properties.Blocked.eq(true)).build();
         List<ContactEntity> friendEntities = queryBuilder.list();
         return friendEntities;
     }
@@ -106,6 +105,17 @@ public class ContactHelper extends BaseDao {
         queryBuilder.where(ContactEntityDao.Properties.Uid.notIn(pubkeys)).build();
         List<ContactEntity> friendEntities = queryBuilder.list();
         return friendEntities;
+    }
+
+    public ContactEntity loadFriendByUid(String uid) {
+        QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
+        queryBuilder.where(ContactEntityDao.Properties.Uid.eq(uid)).build();
+        List<ContactEntity> friendEntities = queryBuilder.list();
+        ContactEntity contactEntity = null;
+        if(friendEntities!=null&&friendEntities.size()>0){
+            contactEntity=friendEntities.get(0);
+        }
+        return contactEntity;
     }
 
     /********************************* select ***********************************/
@@ -139,13 +149,13 @@ public class ContactHelper extends BaseDao {
             uid = "";
         }
 
-        String sql = "SELECT F.USERNAME AS FNAME, F.REMARK AS FREMARK, F.AVATAR AS FAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM CONTACT_ENTITY F LEFT OUTER JOIN CONVERSION_ENTITY C WHERE F.UID = ? AND F.UID = C.IDENTIFIER LIMIT 1;";
+        String sql = "SELECT F.REMARK AS FREMARK, F.AVATAR AS FAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM CONTACT_ENTITY F LEFT OUTER JOIN CONVERSION_ENTITY C WHERE F.UID = ? AND F.UID = C.IDENTIFIER LIMIT 1;";
 
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{uid});
 
         Talker talker = new Talker(Connect.ChatType.PRIVATE, uid);
         while (cursor.moveToNext()) {
-            String userName = cursorGetString(cursor, "FNAME");
+            String userName = cursorGetString(cursor, "CNAME");
             String userRemark = cursorGetString(cursor, "FREMARK");
             String userAvatar = cursorGetString(cursor, "FAVATAR");
 
@@ -200,10 +210,7 @@ public class ContactHelper extends BaseDao {
             value = "";
         }
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.whereOr(ContactEntityDao.Properties.Ca_pub.eq(value),
-                ContactEntityDao.Properties.ConnectId.eq(value),
-                ContactEntityDao.Properties.Uid.eq(value))
-                .limit(1).build();
+        queryBuilder.where(ContactEntityDao.Properties.Uid.eq(value)).limit(1).build();
         List<ContactEntity> friendEntities = queryBuilder.listLazy();
         return (friendEntities == null || friendEntities.size() == 0) ? null : friendEntities.get(0);
     }
@@ -216,7 +223,7 @@ public class ContactHelper extends BaseDao {
      */
     public List<ContactEntity> loadFriendEntityFromText(String text) {
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.where(ContactEntityDao.Properties.Username.like(text + "%")).limit(1).build();
+        queryBuilder.where(ContactEntityDao.Properties.Name.like(text + "%")).limit(1).build();
         List<ContactEntity> friendEntities = queryBuilder.list();
         return friendEntities;
     }
@@ -323,6 +330,41 @@ public class ContactHelper extends BaseDao {
     /**
      * group member entity
      *
+     * @param memberkey
+     * @return
+     */
+    public List<GroupMemberEntity> loadGroupMemEntitiesWithOutGroupKey(String memberkey) {
+        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
+                "WHERE M.UID ==? GROUP BY M.UID ORDER BY M.ROLE DESC;";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{memberkey});
+
+        GroupMemberEntity groupMemEntity = null;
+        List<GroupMemberEntity> groupMemEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            groupMemEntity = new GroupMemberEntity();
+            groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
+            groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
+            groupMemEntity.setUid(cursorGetString(cursor, "UID"));
+            groupMemEntity.setNick(cursorGetString(cursor, "NICK"));//friend mark
+            groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
+            groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
+            groupMemEntity.setAvatar(cursorGetString(cursor, "AVATAR"));
+
+            String remark = cursorGetString(cursor, "REMARK");
+            if (!TextUtils.isEmpty(remark)) {
+                groupMemEntity.setNick(remark);
+            }
+            groupMemEntities.add(groupMemEntity);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return groupMemEntities;
+    }
+
+    /**
+     * group member entity
+     *
      * @param identify
      * @param memberkey
      * @return
@@ -361,18 +403,16 @@ public class ContactHelper extends BaseDao {
         return entities == null || entities.size() == 0 ? null : entities.get(0);
     }
 
-
     /**
      * group member entity
      *
      * @param identify
-     * @param memberkey
      * @return
      */
-    public List<GroupMemberEntity> loadGroupMemberEntitiesExcept(String identify, String memberkey) {
+    public List<GroupMemberEntity> loadGroupMemberEntities(String identify) {
         String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
-                "WHERE M.IDENTIFIER = ? AND M.UID !=? GROUP BY M.UID ORDER BY M.ROLE DESC;";
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{identify, memberkey});
+                "WHERE M.IDENTIFIER = ? GROUP BY M.UID ORDER BY M.ROLE DESC;";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{identify});
 
         GroupMemberEntity groupMemEntity = null;
         List<GroupMemberEntity> groupMemEntities = new ArrayList<>();
@@ -469,6 +509,11 @@ public class ContactHelper extends BaseDao {
                 (TextUtils.isEmpty(nickname) ? "''" : "\"" + nickname + "\"") +
                 " WHERE IDENTIFIER = ? AND (UID = ? OR CONNECT_ID = ?);";
         daoSession.getDatabase().execSQL(sql, new Object[]{identify, uid, uid});
+    }
+
+    public void updateGroupMemberNameAndAvatar(String uid, String nickname, String avatar) {
+        String sql = "UPDATE GROUP_MEMBER_ENTITY SET USERNAME = ?, AVATAR=? WHERE UID = ? ;";
+        daoSession.getDatabase().execSQL(sql, new Object[]{nickname, avatar, uid});
     }
 
     /*********************************  add ***********************************/

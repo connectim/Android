@@ -8,12 +8,10 @@ import com.google.protobuf.ByteString;
 import java.io.File;
 
 import connect.utils.BitmapUtil;
-import connect.utils.FileUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
-import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
-import instant.bean.UserCookie;
+import instant.bean.Session;
 import instant.sender.model.BaseChat;
 import protos.Connect;
 
@@ -78,28 +76,27 @@ public class LocationUpload extends BaseFileUp {
     @Override
     public void fileEncrypt() {
         super.fileEncrypt();
-        Connect.GcmData gcmData = null;
-        Connect.RichMedia richMedia = null;
-        if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-            richMedia = Connect.RichMedia.newBuilder().
-                    setThumbnail(ByteString.copyFrom(FileUtil.filePathToByteArray(thumbCompressFile))).
-                    setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(sourceCompressFile))).build();
-        } else {
-            Connect.GcmData firstGcmData = encodeAESGCMStructData(thumbCompressFile);
-            Connect.GcmData secondGcmData = encodeAESGCMStructData(sourceCompressFile);
-            richMedia = Connect.RichMedia.newBuilder().
-                    setThumbnail(firstGcmData.toByteString()).
-                    setEntity(secondGcmData.toByteString()).build();
-        }
 
-        UserCookie userCookie = loadUserCookie();
-        String myPrivateKey = userCookie.getPriKey();
-        String myPublicKey = userCookie.getPubKey();
+        byte[] thumbnailFileByte = encodeAESGCMStructData(thumbCompressFile);
+        byte[] sourceFileByte = encodeAESGCMStructData(sourceCompressFile);
+        ByteString thumbnailFileBytes = ByteString.copyFrom(thumbnailFileByte);
+        ByteString sourceFileBytes = ByteString.copyFrom(sourceFileByte);
 
-        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
-        mediaFile = Connect.MediaFile.newBuilder().
-                setPubKey(myPublicKey)
-                .setCipherData(gcmData)
+        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder()
+                .setThumbnail(thumbnailFileBytes)
+                .setEntity(sourceFileBytes)
+                .build();
+
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setPlainData(richMedia.toByteString())
+                .build();
+
+        String uid = Session.getInstance().getConnectCookie().getUid();
+        String token = Session.getInstance().getChatCookie().getToken();
+        mediaFile = Connect.MediaFile.newBuilder()
+                .setUid(uid)
+                .setToken(token)
+                .setBody(structData.toByteString())
                 .build();
     }
 

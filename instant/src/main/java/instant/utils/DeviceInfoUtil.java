@@ -7,7 +7,6 @@ import android.provider.Settings;
 import java.util.Locale;
 import java.util.UUID;
 
-import connect.wallet.jni.AllNativeMethod;
 import instant.ui.InstantSdk;
 
 /**
@@ -30,7 +29,7 @@ public class DeviceInfoUtil {
             e.printStackTrace();
             deviceId = "";
         }
-        return AllNativeMethod.cdGetHash256(deviceId);
+        return StringUtil.cdHash256(deviceId);
     }
 
     /**
@@ -55,7 +54,7 @@ public class DeviceInfoUtil {
             serial = "serial";
         }
         serial = new UUID(deviceID.hashCode(), serial.hashCode()).toString();
-        return AllNativeMethod.cdGetHash256(serial);
+        return StringUtil.cdHash256(serial);
     }
 
     /**

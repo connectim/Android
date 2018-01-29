@@ -11,18 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.activity.chat.bean.LinkMessageRow;
-import connect.ui.activity.R;
+import connect.activity.base.BaseApplication;
+import connect.activity.chat.adapter.PickHoriScrollAdapter;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.view.PickHorScrollView;
-import connect.activity.chat.adapter.PickHoriScrollAdapter;
-import connect.activity.base.BaseApplication;
+import connect.ui.activity.R;
 import connect.utils.system.SystemDataUtil;
 
 /**
@@ -39,9 +40,13 @@ public class DialogView {
 
         final TextView library = (TextView)view.findViewById(R.id.photo_library);
         TextView cancel = (TextView)view.findViewById(R.id.cancel);
-        final PickHorScrollView horScrollView= (PickHorScrollView) view.findViewById(R.id.scrollview);
+        final PickHorScrollView horScrollView= (PickHorScrollView) view.findViewById(R.id.pickscrollview);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.linearlayout);
 
         List<String> images = recentImages();
+        if (images.size() == 0) {
+            linearLayout.setVisibility(View.GONE);
+        }
 
         horScrollView.setPickAdapter(new PickHoriScrollAdapter(context,images));
         horScrollView.setItemClickListener(new PickHorScrollView.OnItemClickListener() {
@@ -97,11 +102,12 @@ public class DialogView {
 
         while (mCursor.moveToNext()) {
             long id = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Images.Media._ID));
-            // Do not need to filter out the picture, only to get a picture of the photo album
             String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
             if (path.startsWith(sdcardPath + "/DCIM/100MEDIA") || path.startsWith(sdcardPath + "/DCIM/Camera/")
                     || path.startsWith(sdcardPath + "DCIM/100Andro")) {
-                //recentImgs.add("file://" + path);
+
+                File file = new File(path);
+                if (!file.exists() || !file.canRead() || file.length() < 5 * 1024) continue;
                 recentImgs.add(path);
             }
         }

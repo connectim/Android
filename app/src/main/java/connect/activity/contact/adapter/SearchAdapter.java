@@ -17,6 +17,7 @@ import java.util.List;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
+import connect.widget.DepartmentAvatar;
 
 import static connect.activity.contact.adapter.SearchAdapter.ViewType.VIEW_TYP_NOSEARCHS;
 
@@ -80,14 +81,17 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
             } else if (viewType == ViewType.VIEW_TYP_LOCAL.ordinal()) {
-                if (position > 0 && TextUtils.isEmpty(mDataList.get(position - 1).getUsername())) {
+                if (position > 0 && TextUtils.isEmpty(mDataList.get(position - 1).getName())) {
                     ((LocalHolder)holder).txt.setVisibility(View.VISIBLE);
-                    ((LocalHolder)holder).txt.setText(R.string.Link_Contacts);
+                    ((LocalHolder)holder).txt.setText(R.string.Link_Favorite_Friend);
                 } else {
                     ((LocalHolder)holder).txt.setVisibility(View.GONE);
                 }
-                GlideUtil.loadAvatarRound(((LocalHolder)holder).avatar, mDataList.get(position).getAvatar());
-                ((LocalHolder)holder).nameTv.setText(mDataList.get(position).getUsername());
+
+                ((LocalHolder)holder).nameText.setText(mDataList.get(position).getName());
+                ((LocalHolder)holder).ouTv.setText(mDataList.get(position).getOu());
+                GlideUtil.loadAvatarRound(((LocalHolder)holder).avatar, mDataList.get(position).getAvatar(), 8);
+
                 ((LocalHolder)holder).contentRela.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -100,7 +104,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        if (!TextUtils.isEmpty(mDataList.get(position).getUsername())) {
+        if (!TextUtils.isEmpty(mDataList.get(position).getName())) {
             return ViewType.VIEW_TYP_LOCAL.ordinal();
         } else if (!TextUtils.isEmpty(mDataList.get(position).getUid())) {
             return ViewType.VIEW_TYP_SERVER.ordinal();
@@ -130,7 +134,9 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     class LocalHolder extends RecyclerView.ViewHolder {
 
-        TextView nameTv;
+        TextView ouTv;
+        TextView lineTv;
+        TextView nameText;
         TextView txt;
         ImageView avatar;
         RelativeLayout contentRela;
@@ -138,9 +144,11 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public LocalHolder(View itemView) {
             super(itemView);
             contentRela = (RelativeLayout) itemView.findViewById(R.id.content_rela);
-            nameTv = (TextView) itemView.findViewById(R.id.name_tv);
+            nameText = (TextView) itemView.findViewById(R.id.name_text);
             txt = (TextView) itemView.findViewById(R.id.txt);
             avatar = (ImageView) itemView.findViewById(R.id.avatar_rimg);
+            ouTv = (TextView)itemView.findViewById(R.id.ou_tv);
+            lineTv = (TextView)itemView.findViewById(R.id.line_tv);
         }
     }
 

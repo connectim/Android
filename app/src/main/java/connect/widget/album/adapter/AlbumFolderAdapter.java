@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 import connect.widget.album.model.AlbumFile;
@@ -38,8 +39,12 @@ public class AlbumFolderAdapter extends RecyclerView.Adapter<AlbumFolderAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         AlbumFolder albumFolder = albumFolders.get(position);
+        List<AlbumFile> albumFiles = albumFolder.getAlbumFiles();
+        if (albumFiles.size() == 0) {
+            return;
+        }
 
-        AlbumFile frontCover = albumFolder.getAlbumFiles().get(0);
+        AlbumFile frontCover = albumFiles.get(0);
         GlideUtil.loadImage(holder.ivAlbumCover, frontCover.getPath());
         String folderName = albumFolder.getFolderName();
         folderName = folderName.length() > 8 ? folderName.substring(0, 8) + "..." : folderName;
@@ -51,9 +56,7 @@ public class AlbumFolderAdapter extends RecyclerView.Adapter<AlbumFolderAdapter.
             holder.videoStateImg.setVisibility(View.VISIBLE);
         }
 
-        List<AlbumFile> albumFiles = albumFolder.getAlbumFiles();
         holder.tvChildCount.setText(albumFiles.size() + "");
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

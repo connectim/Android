@@ -22,7 +22,6 @@ import connect.activity.home.bean.GroupRecBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
-import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -42,12 +41,14 @@ import static connect.widget.SideScrollView.SideScrollListener;
  */
 public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ConversationHolder> {
 
+    private Activity activity;
     private RecyclerView recyclerView;
     private SideScrollView lastOpenScrollView = null;
     private LayoutInflater inflater;
     private List<RoomAttrBean> roomAttrBeanList = new ArrayList<>();
 
     public ConversationAdapter(Activity activity, RecyclerView recyclerView) {
+        this.activity = activity;
         inflater = LayoutInflater.from(activity);
         this.recyclerView = recyclerView;
     }
@@ -73,7 +74,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @Override
     public void onBindViewHolder(ConversationHolder holder, final int position) {
         final RoomAttrBean roomAttr = roomAttrBeanList.get(position);
-        holder.directTxt.showText(roomAttr.getAt(),roomAttr.getDraft(), TextUtils.isEmpty(roomAttr.getContent()) ? "" : roomAttr.getContent());
+        holder.directTxt.showText(roomAttr.getAt(), roomAttr.getDraft(), TextUtils.isEmpty(roomAttr.getContent()) ? "" : roomAttr.getContent());
         try {
             long sendtime = roomAttr.getTimestamp();
             holder.timeTxt.setText(0 == sendtime ? "" : TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), sendtime));
@@ -111,13 +112,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             holder.badgeTxt.setBadgeCount(roomAttr.getDisturb(), roomAttr.getUnread());
         }
 
-        if (0 == roomAttr.getStranger() || SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(roomAttr.getRoomid())) {//not stranger
-            holder.stangerTxt.setVisibility(View.GONE);
-        } else {
-            holder.stangerTxt.setVisibility(View.VISIBLE);
-            holder.stangerTxt.setText(inflater.getContext().getString(R.string.Link_Stranger));
-        }
-
         if (roomAttr.getTop() == 1) {
             holder.conTop.setVisibility(View.VISIBLE);
             holder.contentLayout.setBackgroundResource(R.color.color_f1f1f1);
@@ -139,6 +133,8 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                     closeMenu();
 
                     Talker talker = new Talker(Connect.ChatType.forNumber(roomAttr.getRoomtype()), roomAttr.getRoomid());
+                    talker.setNickName(roomAttr.getName());
+                    talker.setAvatar(roomAttr.getAvatar());
                     HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, talker);
                 }
             }
@@ -158,6 +154,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 ConversionHelper.getInstance().deleteRoom(roomid);
                 MessageHelper.getInstance().deleteRoomMsg(roomid);
                 FileUtil.deleteContactFile(roomid);
+                ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_UNREAD);
 
                 if (isDeleteAble) {
                     isDeleteAble = false;
@@ -241,7 +238,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         public ConversationHolder(View itemView) {
             super(itemView);
             contentLayout = (RelativeLayout) itemView.findViewById(R.id.content_layout);
-            bottomLayout= (LinearLayout) itemView.findViewById(R.id.bottom_layout);
+            bottomLayout = (LinearLayout) itemView.findViewById(R.id.bottom_layout);
             bottomTrash = (RelativeLayout) itemView.findViewById(R.id.bottom_trash);
             bottomNotify = (RelativeLayout) itemView.findViewById(R.id.bottom_notify);
 

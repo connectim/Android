@@ -3,7 +3,6 @@ package instant.utils.cryption;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.wallet.jni.AllNativeMethod;
-import instant.utils.XmlParser;
 import protos.Connect;
 
 /**
@@ -19,15 +18,8 @@ public class DecryptionUtil {
         return DecryptionUtil.decodeAESGCM(extendedECDH, rawECDHkey, gcmData);
     }
 
-    /**
-     * Decryption GcmData returned to StructData
-     */
-    public static Connect.StructData decodeAESGCMStructData(Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(EncryptionUtil.ExtendedECDH.SALT, SupportKey.getInstance().getPrivateKey(), gcmData);
-    }
-
     public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, Connect.GcmData gcmData) {
-        return decodeAESGCMStructData(extendedECDH, priKey, XmlParser.getInstance().serverPubKey(), gcmData);
+        return decodeAESGCMStructData(extendedECDH, priKey, "", gcmData);
     }
 
     public static Connect.StructData decodeAESGCMStructData(EncryptionUtil.ExtendedECDH extendedECDH, String priKey, String pubKey, Connect.GcmData gcmData) {
@@ -48,21 +40,27 @@ public class DecryptionUtil {
 
     public static synchronized byte[] decodeAESGCM(EncryptionUtil.ExtendedECDH extendedECDH, byte[] rawECDHkey, Connect.GcmData gcmData) {
         rawECDHkey = EncryptionUtil.getKeyExtendedECDH(extendedECDH, rawECDHkey);
-        return decodeAESGCM(rawECDHkey,gcmData);
-    }
 
-    public static synchronized byte[] decodeAESGCM(byte[] rawECDHkey, Connect.GcmData gcmData) {
         byte[] iv = gcmData.getIv().toByteArray();
         byte[] add = "ConnectEncrypted".getBytes();
         byte[] cipher = gcmData.getCiphertext().toByteArray();
         byte[] tag = gcmData.getTag().toByteArray();
+
         byte[] rss = rawECDHkey;
-        byte[] dataAESGCM = AllNativeMethod.cdxtalkDecodeAESGCM(
-                cipher, cipher.length,
-                add, add.length,
-                rss, rss.length,
-                iv, iv.length,
-                tag, tag.length);
+        byte[] dataAESGCM = AllNativeMethod.cdxtalkDecodeAESGCM(cipher, cipher.length,
+                add, add.length, rss, rss.length, iv, iv.length, tag, tag.length);
+        return dataAESGCM;
+    }
+
+    public static synchronized byte[] decodeAESGCM(byte[] rawECDHkey, Connect.GcmData gcmData) {
+        byte[] aad = gcmData.getAad().toByteArray();
+        byte[] iv = gcmData.getIv().toByteArray();
+        byte[] cipher = gcmData.getCiphertext().toByteArray();
+        byte[] tag = gcmData.getTag().toByteArray();
+
+        byte[] rss = rawECDHkey;
+        byte[] dataAESGCM = AllNativeMethod.cdxtalkDecodeAESGCM(cipher, cipher.length,
+                aad, aad.length, rss, rss.length, iv, iv.length, tag, tag.length);
         return dataAESGCM;
     }
 }

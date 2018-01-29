@@ -1,17 +1,17 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="Chat_Add_as_a_friend_to_chat">Add as a friend to chat</string>
     <string name="Chat_Agree">agree</string>
-    <string name="Chat_Album_Permission_Get">Lack of reading system album permissions, click
-        "Settings" - "permissions" grant application permissions
+    <string name="Chat_Album_Permission_Get">Lack of reading system album permissions, please click
+        "Settings" - "permissions" to authorize application permissions
     </string>
     <string name="Chat_All_Image">Images</string>
     <string name="Chat_All_Image_Video">Images and Videos</string>
     <string name="Chat_All_Video">Videos</string>
     <string name="Chat_Funding">[Funding]</string>
-    <string name="Chat_Group_chat">Group chat</string>
+    <string name="Chat_Group_chat">Group chats</string>
     <string name="Chat_Group_has_been_disbanded">%s Group has been disbanded</string>
     <string name="Chat_Have_agreed">Accepted</string>
-    <string name="Chat_Have_refused">Refuse</string>
+    <string name="Chat_Have_refused">Refused</string>
     <string name="Chat_Loc">location</string>
     <string name="Chat_Member_Max">%1$d/%2$d members</string>
     <string name="Chat_Message_Black_Friend_Notice">The message has been issued but is rejected by
@@ -43,6 +43,8 @@
     <string name="Chat_The_main_content">The main content</string>
     <string name="Chat_Time">Time</string>
     <string name="Chat_Album">Photos</string>
+    <string name="Chat_Organizational_structure">Organizational structure</string>
+    <string name="Chat_Contact_details">Contact details</string>
     <string name="Chat_Audio">[Audio]</string>
     <string name="Chat_Best_luck">Best luck</string>
     <string name="Chat_Bitcoin_has_been_return_to_your_wallet">Bitcoin has been return to your
@@ -101,7 +103,7 @@
     <string name="Chat_Share_contact">Share the Contact Card</string>
     <string name="Chat_Share_contact_to">Share %1$s to %2$s</string>
     <string name="Chat_Sight">Sight</string>
-    <string name="Chat_Slide_left_to_cancel">Slide left to cancel</string>
+    <string name="Chat_Slide_left_to_cancel">Swipe to the left to cancel</string>
     <string name="Chat_Snapchat">[Snapchat]</string>
     <string name="Chat_Someone_note_me">[Someone @ me]</string>
     <string name="Chat_Sticky_on_Top_chat">Sticky on Top chat</string>
@@ -138,6 +140,8 @@
     <string name="Chat_set_the_self_destruct_timer_to">%1$s set the self-destruct timer to %2$s
     </string>
     <string name="Common_Cancel">Cancel</string>
+    <string name="Common_Management">Manage</string>
+    <string name="Common_The_search_application">Search application</string>
     <string name="Common_Completed">Completed</string>
     <string name="Common_Download_App">Downloading%s</string>
     <string name="Common_In">In \'%s</string>
@@ -163,10 +167,13 @@
     <string name="Link_Accept">Accept</string>
     <string name="Link_Add">Add</string>
     <string name="Link_Add_Failed">Add Failed</string>
+    <string name="Link_Add_focus">Set to pay special attention to</string>
+    <string name="Link_Cancle_focus">Cancel the special attention</string>
     <string name="Link_Add_Successful">Add Successful</string>
     <string name="Link_Add_as_a_friend">Send friend verification</string>
     <string name="Link_Add_to_Contacts">Add to Contacts</string>
     <string name="Link_Added">Added</string>
+    <string name="Link_Not_logged_in">Not logged in</string>
     <string name="Link_An_error_occurred_change_nickname">An error occurred change nickname</string>
     <string name="Link_Black_List">Block List</string>
     <string name="Link_Block">Block</string>
@@ -203,7 +210,7 @@
     <string name="Link_From_Unknow">From unkown</string>
     <string name="Link_From_friends_to_share">From friends to share</string>
     <string name="Link_From_group_link">Link from group</string>
-    <string name="Link_Group">Group</string>
+    <string name="Link_Group">Groups</string>
     <string name="Link_Group_Introduction">Group Introduction</string>
     <string name="Link_Group_Name">Group Name</string>
     <string name="Link_Group_Setting">Group Setting</string>
@@ -242,14 +249,19 @@
     <string name="Link_Search_Result">Search Result</string>
     <string name="Link_Search_friends">Search</string>
     <string name="Link_Select_new_owner">Select new owner</string>
+    <string name="Login_username_can_not_empty">The username can not be empty</string>
     <string name="Link_Selecting__new_owner__release_your_ownership">Selecting %s as new owner will
         release your ownership
     </string>
     <string name="Link_Send">Send</string>
+    <string name="Link_Dialogue">Dialogues</string>
+    <string name="Link_Workbench">Workbench</string>
+    <string name="Link_Inactive">Inactive</string>
     <string name="Link_Send_friend_request">Send friend request</string>
     <string name="Link_Send_successful">Send successful</string>
     <string name="Link_Send_to">Send to %s</string>
     <string name="Link_Set_Remark_and_Tag">Set Remark</string>
+    <string name="Link_Department">Department</string>
     <string name="Link_Set_Tag">Set Tag</string>
     <string name="Link_Set_group_nicknames_only_be_in_this_group">Set up a group nickname. The
         nickname will only be presented in this group
@@ -282,9 +294,13 @@
     <string name="Link_apply_to_join_group_chat">%1$s apply to join group chat %2$s</string>
     <string name="Link_become_new_group_owner">%s become new group owner</string>
     <string name="Link_contact_count">%1$d contact%2$s%3$s</string>
-    <string name="Link_contact_count_group_count">%1$d contact,%2$d group</string>
+    <string name="Link_contact_count_group_count">%1$d contacts %2$d groups</string>
     <string name="Link_enter_the_group">%s join the group</string>
     <string name="Link_group_count">%d group</string>
+    <string name="Link_My_application">My applications</string>
+    <string name="Link_Employee_number">Employee number:</string>
+    <string name="Link_Subordinate_departments">Subordinate departments:</string>
+    <string name="Link_Contact_number">Contact number:</string>
     <string name="Link_have_joined_the_group">You\'ve joined in the group</string>
     <string name="Link_invite_encrypted_chat_with_APP_Download">%s invite you to start encrypted
         chat with connect.im Connect is an open source P2P encrypted messages APP.
@@ -295,24 +311,26 @@
     <string name="Link_the_group_member_can_see_the_QR">When enabled, the group member can see the
         QR code
     </string>
-    <string name="Link_update_Failed">update Failed</string>
-    <string name="Link_user_friends">%s\'s friends</string>
-    <string name="Login_created_by_random_number_generator">created by random number generator
+    <string name="Link_update_Failed">Update Failed</string>
+    <string name="Link_user_friends">%s\'s group</string>
+    <string name="Login_created_by_random_number_generator">Created by random number generator
     </string>
     <string name="Login_Avatar_upload_failed">Avatar upload failed</string>
     <string name="Login_Camera_guide_tip">Tap to take photo and hold to record vedio</string>
     <string name="Login_Code">Code</string>
+    <string name="Login_Login_Account">Login</string>
     <string name="Login_Collecting_Sounds_as_Random_Seed">Collecting Sounds as Random Seed...
     </string>
     <string name="Login_Generated_Failure">Create failed, please make sure you\'ve made sound/voice
         around the mic
     </string>
     <string name="Login_Generated_Successful">Generated Successful</string>
-    <string name="Login_Generating_Bitcoin_address">btc address is being generated</string>
+    <string name="Login_Generating_Bitcoin_address">BTC address is being generated</string>
     <string name="Login_Generating_Private_and_Public_Key">Generating Private &amp; Public Key
     </string>
     <string name="Login_Next">Next</string>
     <string name="Login_Password">Password</string>
+    <string name="Login_username">Username</string>
     <string name="Login_Confirm_password">Confirm password</string>
     <string name="Login_Password_incorrect">Password incorrect</string>
     <string name="Login_Resend">Resend</string>
@@ -399,7 +417,7 @@
     <string name="Set_Log_Out">Log Out</string>
     <string name="Set_Delete_account">Delete the account</string>
     <string name="Set_Logging_out">Logging out...</string>
-    <string name="Set_Logout_delete_login_data_still_log">Log out will delete your login information, you still want to exit the current account?</string>
+    <string name="Set_Logout_delete_login_data_still_log">Logout will not delete any data ,You can still log in with this account.</string>
     <string name="Set_delete_account_hinit">Will not resume after the delete account, make sure to delete the current account?</string>
     <string name="Set_Miner_fee">Transaction fee</string>
     <string name="Set_My_Profile">My Profile</string>
@@ -588,7 +606,7 @@
     <string name="Wallet_transfer_man">Transfer (%d)</string>
     <string name="Wallet_transferOutVia_return">Refund the transfer</string>
     <string name="Wallet_transferOutVia_return_Success">Refund successfully</string>
-    <string name="app_name">Connect</string>
+    <string name="app_name">iWork</string>
     <string name="app_name_im">CONNECT.IM</string>
     <string name="Chat_Other_Part">the other</string>
     <string name="title_activity_group_create">GroupCreateActivity</string>
@@ -597,7 +615,64 @@
     <string name="Chat_Subscriber">Subscribe</string>
     <string name="Chat_Subscribe">Subscribe</string>
     <string name="Chat_View_Full_Text">View full text</string>
-    <string name="title_activity_subscribe_detail">SubscribeDetailActivity</string>
     <string name="Chat_Enter_Subscribe">Enter subscriber Account</string>
     <string name="Chat_Subscribe_Success">[Subscribe Success]</string>
+
+    <string name="Work_Add">add</string>
+    <string name="Work_On_a_business_trip">Business trip</string>
+    <string name="Work_Ask_for_leave">Leave work</string>
+    <string name="Work_To_submit_an_expense_account">Reimbursement</string>
+    <string name="Work_The_examination_and_approval">Approval</string>
+    <string name="Work_Subsidized_meals">Meal allowance</string>
+    <string name="Work_Recruitment">Recruitment</string>
+    <string name="Work_The_contract">Contract</string>
+    <string name="Work_Wage">Salary</string>
+    <string name="Work_Visitors">Visitors</string>
+    <string name="Work_Visitors_info">Visitor informations</string>
+    <string name="Work_Visitors_reason">Purpose of this visit:%1$s</string>
+    <string name="Work_Visitors_phone">Contact information:</string>
+    <string name="Work_Visitors_time">Visit time:%1$s</string>
+    <string name="Work_Visitors_share">Share invitation qr code</string>
+    <string name="Work_Visitors_Facial_information">Facial information:</string>
+    <string name="Work_Visitors_Left_face">Left face</string>
+    <string name="Work_Visitors_Is_face">Frontal face</string>
+    <string name="Work_Visitors_Right_face">Right face</string>
+    <string name="Work_Visitors_to_approval">Approval</string>
+    <string name="Work_Visitors_sure_to_deny_access">Are you sure to reject access?</string>
+    <string name="Work_Visitors_agree_to_visit">Do you approve the visit?</string>
+    <string name="Work_Visitors_to_audit">Pending</string>
+    <string name="Work_Visitors_the_approved">Audited</string>
+    <string name="Work_Visitors_apply_list">Apply list</string>
+    <string name="Work_Visitors_audit_records">Audit records</string>
+    <string name="Work_Pay_attention_to_him">Follow</string>
+    <string name="Work_Pay_attention_to_her">Follow</string>
+    <string name="Work_Cancel_the_attention">Unfollow</string>
+
+    <string name="Chat_Refreshing">Refreshing...</string>
+    <string name="Link_Join_Group_Success">Join the group chat successfully</string>
+    <string name="Chat_No_Data">No Data...</string>
+    <string name="Chat_Create_Group_Success">Create group success</string>
+    <string name="Error_Device_Remote_Login">Your account is already logged on on the%1$s device</string>
+    <string name="Company_company">Company</string>
+    <string name="Login">Login</string>
+    <string name="Login_Account">Company username</string>
+    <string name="Login_password">Password</string>
+    <string name="Please_Input_Login_username">Company username</string>
+    <string name="Please_Input_Login_password">password</string>
+    <string name="Login_Immediately">Landing immediately</string>
+    <string name="Beijing_BitMain">Beijing BitMain Technology Co., Ltd.</string>
+    <string name="Work_No_More_Results">No more search results</string>
+    <string name="Work_Service_Search">Search application</string>
+    <string name="Work_Search">Search</string>
+    <string name="Link_exit_the_group">%sexit the group</string>
+    <string name="Work_Third_Party_Service">Third-party service</string>
+    <string name="Link_Group_Create">Create Group</string>
+    <string name="Link_Group_Invite">Invite into the group</string>
+    <string name="Link_Group_Invite_Success">The invitation is successful</string>
+    <string name="Login_Forget_Password">Forget password</string>
+    <string name="Login_Connect_Change_Password">Please contact management to change your password</string>
+    <string name="Link_Function_Under_Development">Function is under development...</string>
+    <string name="Link_Function_Manager">Application Management</string>
+    <string name="Error_Device_Remote_Other_Login">Your account is already signed in on other device!</string>
+    <string name="Link_Group_Launch">New chat</string>
 </resources>

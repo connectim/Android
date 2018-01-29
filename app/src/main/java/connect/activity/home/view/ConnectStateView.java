@@ -50,12 +50,8 @@ public class ConnectStateView extends RelativeLayout {
                 txt1.setText(showTxt);
                 break;
             case REFRESH_ING:
-                showTxt = getContext().getString(R.string.Chat_Refreshing_Secret_Key);
-                probar1.setVisibility(VISIBLE);
-                txt1.setText(showTxt);
-                break;
             case REFRESH_SUCCESS:
-                showTxt = getContext().getString(R.string.Chat_Secret_Key_Refreshed);
+                showTxt = getContext().getString(R.string.Chat_Refreshing);
                 probar1.setVisibility(VISIBLE);
                 txt1.setText(showTxt);
                 break;

@@ -17,10 +17,8 @@ import java.util.List;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.BaseAction;
-import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RoomSession;
-import connect.widget.bottominput.inter.IEmojiClickListener;
 import connect.activity.chat.view.ChatEditText;
 import connect.ui.activity.R;
 import connect.utils.log.LogManager;
@@ -30,6 +28,7 @@ import connect.widget.bottominput.bean.BottomCateView;
 import connect.widget.bottominput.bean.StickPagerBean;
 import connect.widget.bottominput.bean.StickerCategory;
 import connect.widget.bottominput.emoji.EmojiPagerAdapter;
+import connect.widget.bottominput.inter.IEmojiClickListener;
 import connect.widget.bottominput.more.MorePagerAdapter;
 import protos.Connect;
 
@@ -84,19 +83,13 @@ public class ExBottomLayout extends RelativeLayout {
         Connect.ChatType roomType = RoomSession.getInstance().getRoomType();
         actionList.add(new BaseAction(R.mipmap.chat_bar_picture, R.string.Chat_Photo));
         actionList.add(new BaseAction(R.mipmap.chat_bar_camera, R.string.Chat_Sight));
+//        actionList.add(new BaseAction(R.mipmap.message_send_location3x, R.string.Chat_Loc));
         if (roomType == Connect.ChatType.CONNECT_SYSTEM) {
 
         } else {
-//            actionList.add(new BaseAction(R.mipmap.chat_bar_trasfer, R.string.Wallet_Transfer));
-//            actionList.add(new BaseAction(R.mipmap.chat_bar_redbag, R.string.Wallet_Packet));
-//            actionList.add(new BaseAction(R.mipmap.message_send_payment2x, R.string.Wallet_Receipt));
-
-            if (roomType == Connect.ChatType.PRIVATE) {
-                actionList.add(new BaseAction(R.mipmap.message_send_privacy_chat3x, R.string.Chat_Read_Burn));
-            }
             actionList.add(new BaseAction(R.mipmap.chat_bar_contract, R.string.Chat_Name_Card));
         }
-        //actionList.add(new BaseAction(R.mipmap.message_send_location3x, R.string.Chat_Loc));
+
         MorePagerAdapter moreAdapter = new MorePagerAdapter(morePagerview, actionList);
         morePagerview.setAdapter(moreAdapter);
         int count = moreAdapter.getCount();

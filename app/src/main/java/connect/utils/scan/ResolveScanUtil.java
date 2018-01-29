@@ -2,28 +2,20 @@ package connect.utils.scan;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.net.URL;
-import connect.activity.chat.exts.ApplyJoinGroupActivity;
+
 import connect.activity.chat.exts.OuterWebsiteActivity;
-import connect.activity.chat.exts.TransferToActivity;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
-import connect.activity.contact.bean.SourceType;
-import connect.activity.wallet.TransferAddressActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import protos.Connect;
@@ -54,7 +46,7 @@ public class ResolveScanUtil {
             dealScanUrl(value);
         }else if(value.contains(TYPE_WEB_GROUP_)){
             // Determine whether to join the group of links
-            dealScanGroup(value);
+            // dealScanGroup(value);
         }/*else if(value.contains(TRANSFER_SCAN_HEAD)){
             // Determine whether to transfer links
             dealScanTransfer(value);
@@ -88,15 +80,6 @@ public class ResolveScanUtil {
     }
 
     /**
-     * Two-dimensional code is a group application link
-     */
-    private void dealScanGroup(String value){
-        String[] valueArray = value.replace(TYPE_WEB_GROUP_,"").split("/");
-        ApplyJoinGroupActivity.startActivity(activity, ApplyJoinGroupActivity.EApplyGroup.QRSCAN, valueArray[0],value);
-        ActivityUtil.goBack(activity);
-    }
-
-    /**
      * The two-dimensional code is the transfer link
      */
     private void dealScanTransfer(String value){
@@ -108,10 +91,10 @@ public class ResolveScanUtil {
             String[] data = value.split("\\?" + "amount=");
             valueBitCoin = data[0].replace(TRANSFER_SCAN_HEAD,"");
         }
-        if(SupportKeyUril.checkAddress(valueBitCoin)){
-            TransferAddressActivity.startActivity(activity,valueBitCoin,amount);
-            return;
-        }
+//        if(SupportKeyUril.checkAddress(valueBitCoin)){
+//            //TransferAddressActivity.startActivity(activity,valueBitCoin,amount);
+//            return;
+//        }
     }
 
     /**
@@ -123,10 +106,12 @@ public class ResolveScanUtil {
             public void call(int status, String uid) {
                 switch (status){
                     case 1:
-                        FriendInfoActivity.startActivity(activity, uid);
+                        ContactInfoActivity.lunchActivity(activity, uid);
+                        ActivityUtil.goBack(activity);
                         break;
                     case 2:
-                        StrangerInfoActivity.startActivity(activity, uid, SourceType.QECODE);
+                        ContactInfoActivity.lunchActivity(activity, uid);
+                        ActivityUtil.goBack(activity);
                         break;
                     case 3:
                         ToastEUtil.makeText(activity, R.string.Login_scan_string_error, ToastEUtil.TOAST_STATUS_FAILE).show();
@@ -134,7 +119,6 @@ public class ResolveScanUtil {
                     default:
                         break;
                 }
-                ActivityUtil.goBack(activity);
             }
         });
     }
@@ -160,17 +144,16 @@ public class ResolveScanUtil {
 
         final Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(value)
-                .setTyp(2)
+                .setTyp(1)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
-                    Connect.UserInfo sendUserInfo = Connect.UserInfo.parseFrom(structData.getPlainData());
-                    if(sendUserInfo != null){
-                        onResultBack.call(2, sendUserInfo.getUid());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
+                    Connect.UsersInfo sendUserInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
+                    if(sendUserInfo != null && sendUserInfo.getUsersList().size() > 0){
+                        onResultBack.call(2, sendUserInfo.getUsers(0).getUid());
                     }else{
                         onResultBack.call(3, "");
                     }
@@ -180,7 +163,7 @@ public class ResolveScanUtil {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 if(response.getCode() == 2404){
                     onResultBack.call(3, "");
                 }

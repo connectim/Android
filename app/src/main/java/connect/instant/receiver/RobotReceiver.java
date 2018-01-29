@@ -1,25 +1,15 @@
 package connect.instant.receiver;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import connect.activity.base.BaseApplication;
-import connect.activity.chat.bean.ApplyGroupBean;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.home.bean.ConversationAction;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamManager;
-import connect.database.green.DaoHelper.SubscribeConversationHelper;
-import connect.database.green.DaoHelper.SubscribeDetailHelper;
-import connect.database.green.bean.SubscribeDetailEntity;
 import connect.instant.model.CRobotChat;
-import connect.instant.model.CSubscriberChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
-import connect.utils.StringUtil;
 import instant.bean.ChatMsgEntity;
 import instant.parser.inter.RobotListener;
 import instant.sender.model.RobotChat;
@@ -49,6 +39,12 @@ public class RobotReceiver implements RobotListener {
     }
 
     @Override
+    public void auditMessage(Connect.ExamineMessage examineMessage) {
+        ChatMsgEntity chatMsgEntity = RobotChat.getInstance().noticeMsg(5, examineMessage.getBody(), "");
+        dealRobotMessage(chatMsgEntity);
+    }
+
+    @Override
     public void voiceMessage(Connect.VoiceMessage voiceMessage) {
         ChatMsgEntity chatMsgEntity = RobotChat.getInstance().voiceMsg(voiceMessage.getUrl(), voiceMessage.getTimeLength());
         dealRobotMessage(chatMsgEntity);
@@ -74,22 +70,6 @@ public class RobotReceiver implements RobotListener {
     }
 
     @Override
-    public void reviewedMessage(Connect.Reviewed reviewed) {
-        ChatMsgEntity chatMsgEntity = RobotChat.getInstance().groupReviewMsg(reviewed);
-
-        String msgid = chatMsgEntity.getMessage_id();
-        String groupApplyKey = reviewed.getIdentifier() + reviewed.getUserInfo().getPubKey();
-        ApplyGroupBean applyGroupBean = ParamManager.getInstance().loadGroupApply(groupApplyKey);
-        if (applyGroupBean == null) {//new apply
-            ParamManager.getInstance().updateGroupApply(groupApplyKey, reviewed.getTips(), reviewed.getSource(), 0, msgid);
-        } else {//repeat apply, remove the last
-            MessageHelper.getInstance().deleteMsgByid(applyGroupBean.getMsgid());
-            ParamManager.getInstance().updateGroupApply(groupApplyKey, reviewed.getTips(), reviewed.getSource(), -1, msgid);
-        }
-        dealRobotMessage(chatMsgEntity);
-    }
-
-    @Override
     public void announcementMessage(Connect.Announcement announcement) {
         ChatMsgEntity chatMsgEntity = RobotChat.getInstance().systemAdNotice(announcement);
         dealRobotMessage(chatMsgEntity);
@@ -97,7 +77,7 @@ public class RobotReceiver implements RobotListener {
 
     @Override
     public void systemRedpackgeNoticeMessage(Connect.SystemRedpackgeNotice packgeNotice) {
-        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String mypubkey = SharedPreferenceUtil.getInstance().getUser().getUid();
         Connect.UserInfo userInfo = packgeNotice.getReceiver();
         String receiverName = userInfo.getPubKey().equals(mypubkey) ?
                 BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_You) : userInfo.getUsername();
@@ -129,7 +109,6 @@ public class RobotReceiver implements RobotListener {
         ChatMsgEntity chatMsgEntity = RobotChat.getInstance().txtMsg(content);
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-        userBean.setPhone("");
         SharedPreferenceUtil.getInstance().putUser(userBean);
         dealRobotMessage(chatMsgEntity);
     }
@@ -152,7 +131,7 @@ public class RobotReceiver implements RobotListener {
 
     public void dealRobotMessage(ChatMsgEntity chatMsgEntity) {
         chatMsgEntity.setSend_status(1);
-        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
+        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getUid();
         chatMsgEntity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));
         chatMsgEntity.setMessage_to(mypublickey);
 
@@ -162,41 +141,5 @@ public class RobotReceiver implements RobotListener {
         String content = chatMsgEntity.showContent();
         CRobotChat.getInstance().updateRoomMsg(null, content, chatMsgEntity.getCreatetime(), -1, 1);
         NotificationBar.notificationBar.noticeBarMsg(robotname, 2, content);
-    }
-
-    @Override
-    public void subscribePull(Connect.RSSPush rssPush) throws Exception {
-        List<SubscribeDetailEntity> chatMsgEntities = new ArrayList<>();
-        Connect.RSSMessage lastRssMessage = null;
-        Connect.RSSMessageList rssMessageList = Connect.RSSMessageList.parseFrom(rssPush.getData());
-        for (Connect.RSSMessage rssMessage : rssMessageList.getMessagesList()) {
-            SubscribeDetailEntity detailEntity = new SubscribeDetailEntity();
-            detailEntity.setMessageId(rssMessage.getId());
-            detailEntity.setRssId(rssMessage.getRssId());
-            detailEntity.setUnread(1);
-            detailEntity.setCategory(rssMessage.getCategory());
-            detailEntity.setContent(StringUtil.bytesToHexString(rssMessage.toByteArray()));
-            chatMsgEntities.add(detailEntity);
-            lastRssMessage = rssMessage;
-        }
-        if (lastRssMessage != null) {
-            SubscribeConversationHelper.subscribeConversationHelper.updataConversationEntity(
-                    lastRssMessage.getRssId(),
-                    lastRssMessage.getTitle(),
-                    lastRssMessage.getTime(),
-                    1);
-
-            CSubscriberChat.cSubscriberChat.updateConversationListEntity(
-                    lastRssMessage.getRssId(),
-                    "",
-                    "",
-                    lastRssMessage.getTitle(),
-                    lastRssMessage.getTime(),
-                    1);
-            CSubscriberChat.cSubscriberChat.updateRoomMsg("", lastRssMessage.getTitle(), lastRssMessage.getTime(), -1, 1);
-        }
-
-        SubscribeDetailHelper.subscribeDetailHelper.insertSubscribeEntities(chatMsgEntities);
-        ConversationAction.conversationAction.sendEventDelay(ConversationAction.ConverType.LOAD_UNREAD);
     }
 }

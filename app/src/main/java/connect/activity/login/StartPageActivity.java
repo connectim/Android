@@ -1,9 +1,7 @@
 package connect.activity.login;
 
 import android.app.Activity;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.ImageView;
 
 import butterknife.Bind;
@@ -14,6 +12,7 @@ import connect.activity.login.contract.StartContract;
 import connect.activity.login.presenter.StartPagePresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.permission.PermissionUtil;
 
 /**
  * The App start page.
@@ -37,6 +36,7 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
     @Override
     public void initView() {
         mActivity = this;
+        startImg.setImageResource(R.mipmap.bg_start_man);
         new StartPagePresenter(this).start();
     }
 
@@ -46,22 +46,17 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
     }
 
     @Override
-    public void setImage(String path) {
-        if (TextUtils.isEmpty(path)) {
-            startImg.setImageResource(R.mipmap.bg_start_man);
-        } else {
-            startImg.setImageBitmap(BitmapFactory.decodeFile(path));
-        }
-    }
-
-    @Override
     public void goIntoGuide() {
-        ActivityUtil.next(mActivity, GuidePageActivity.class);
+        //ActivityUtil.next(mActivity, GuidePageActivity.class);
     }
 
     @Override
     public void goIntoLoginForPhone() {
-        ActivityUtil.next(mActivity, LoginPhoneActivity.class);
+        LoginUserActivity.startActivity(mActivity);
+//        UserBean userBean1 = new UserBean("111", "", "dsfseqwerffqwff",
+//                "963", "asdfasfsdfsdf", "asdfasdfsdf", "dasdasda");
+//        SharedPreferenceUtil.getInstance().putUser(userBean1);
+//        HomeActivity.startActivity(mActivity);
     }
 
     @Override
@@ -73,5 +68,17 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
     public Activity getActivity() {
         return mActivity;
     }
+
+    protected PermissionUtil.ResultCallBack permissomCallBack = new PermissionUtil.ResultCallBack() {
+        @Override
+        public void granted(String[] permissions) {
+
+        }
+
+        @Override
+        public void deny(String[] permissions) {
+            ActivityUtil.goBack(mActivity);
+        }
+    };
 
 }

@@ -21,9 +21,7 @@ import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.permission.PermissionUtil;
-import connect.wallet.jni.AllNativeMethod;
 import connect.widget.TopToolBar;
 import connect.widget.camera.CircleProgressbar;
 
@@ -100,12 +98,12 @@ public class RegisterGetRandomActivity extends BaseActivity implements RegisterG
     void goJump(View view) {
         HashMap<String, String> hashMap = new HashMap<>();
         String strForBmp = StringUtil.bytesToHexString(SecureRandom.getSeed(64));
-        String random = SupportKeyUril.xor(strForBmp, StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
-        String prikey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(random, 44, 0, 0, 0, 0);
-        String pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
+//        String random = SupportKeyUril.xor(strForBmp, StringUtil.bytesToHexString(SecureRandom.getSeed(64)));
+//        String prikey = AllNativeMethod.cdGetPrivKeyFromSeedBIP44(random, 44, 0, 0, 0, 0);
+//        String pubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(prikey);
 
-        hashMap.put("priKey", prikey);
-        hashMap.put("pubKey", pubKey);
+        hashMap.put("priKey", "");
+        hashMap.put("pubKey", "");
         presenter.finishSuccess(hashMap);
     }
 
@@ -187,7 +185,6 @@ public class RegisterGetRandomActivity extends BaseActivity implements RegisterG
         String phone = bundle.getString("phone", "");
         String token = bundle.getString("token", "");
 
-        userBean.setPhone(phone);
         RegisterActivity.startActivity(mActivity, userBean, token);
         finish();
     }

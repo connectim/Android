@@ -8,9 +8,8 @@ import com.google.protobuf.ByteString;
 import connect.utils.FileUtil;
 import connect.utils.chatfile.inter.BaseFileUp;
 import connect.utils.chatfile.inter.FileUploadListener;
-import connect.utils.cryption.EncryptionUtil;
 import instant.bean.ChatMsgEntity;
-import instant.bean.UserCookie;
+import instant.bean.Session;
 import instant.sender.model.BaseChat;
 import protos.Connect;
 
@@ -66,27 +65,24 @@ public class VoiceUpload extends BaseFileUp {
     @Override
     public void fileEncrypt() {
         super.fileEncrypt();
-        Connect.RichMedia richMedia = null;
-        Connect.GcmData gcmData = null;
-        if (baseChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-            richMedia = Connect.RichMedia.newBuilder().
-                    setEntity(ByteString.copyFrom(FileUtil.filePathToByteArray(sourceCompressFile)))
-                    .build();
-        } else {
-            gcmData = encodeAESGCMStructData(sourceCompressFile);
-            richMedia = Connect.RichMedia.newBuilder().
-                    setEntity(gcmData.toByteString())
-                    .build();
-        }
 
-        UserCookie userCookie = loadUserCookie();
-        String myPrivateKey = userCookie.getPriKey();
-        String myPublicKey = userCookie.getPubKey();
+        byte[] sourceFileByte = encodeAESGCMStructData(sourceCompressFile);
+        ByteString sourceFileBytes = ByteString.copyFrom(sourceFileByte);
 
-        gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY, myPrivateKey, richMedia.toByteString());
+        Connect.RichMedia richMedia = Connect.RichMedia.newBuilder()
+                .setEntity(sourceFileBytes)
+                .build();
+
+        Connect.StructData structData = Connect.StructData.newBuilder()
+                .setPlainData(richMedia.toByteString())
+                .build();
+
+        String uid = Session.getInstance().getConnectCookie().getUid();
+        String token = Session.getInstance().getChatCookie().getToken();
         mediaFile = Connect.MediaFile.newBuilder()
-                .setPubKey(myPublicKey)
-                .setCipherData(gcmData)
+                .setUid(uid)
+                .setToken(token)
+                .setBody(structData.toByteString())
                 .build();
     }
 
@@ -100,7 +96,10 @@ public class VoiceUpload extends BaseFileUp {
 
                 try {
                     Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(msgExtEntity.getContents());
-                    voiceMessage = voiceMessage.toBuilder().setUrl(url).build();
+                    voiceMessage = voiceMessage.toBuilder()
+                            .setUrl(url)
+                            .setFileKey(ByteString.copyFrom(getRandomNumber()))
+                            .build();
 
                     msgExtEntity = (ChatMsgEntity) msgExtEntity.clone();
                     msgExtEntity.setContents(voiceMessage.toByteArray());

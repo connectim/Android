@@ -5,14 +5,11 @@ import android.text.TextUtils;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.GroupRecBean;
-import connect.activity.home.bean.HomeAction;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.database.green.bean.TransactionEntity;
@@ -50,16 +47,7 @@ public class TransactionReceiver implements TransactionListener {
         Connect.UserInfo senderInfo = transferNotice.getSender();
 
         String senderPubkey = senderInfo.getPubKey();
-        ContactEntity stranger = ContactHelper.getInstance().loadFriendEntity(senderPubkey);
-        if (stranger == null) {
-            stranger = new ContactEntity();
-            stranger.setUsername(senderInfo.getUsername());
-            stranger.setAvatar(senderInfo.getAvatar());
-            stranger.setUid(senderInfo.getUid());
-            stranger.setCa_pub(senderInfo.getCaPub());
-        }
-
-        CFriendChat normalChat = new CFriendChat(stranger);
+        CFriendChat normalChat = new CFriendChat(senderPubkey);
         ChatMsgEntity msgExtEntity = normalChat.transferMsg(0, transferNotice.getHashId(), transferNotice.getAmount(), transferNotice.getTips());
         msgExtEntity.setMessage_from(senderPubkey);
         msgExtEntity.setMessage_to(receiverInfo.getPubKey());
@@ -82,8 +70,7 @@ public class TransactionReceiver implements TransactionListener {
         NormalChat normalChat = null;
         Connect.ChatType chatType = ContactHelper.getInstance().loadChatType(notice.getIdentifer());
         if (chatType == Connect.ChatType.PRIVATE) {
-            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(notice.getIdentifer());
-            normalChat = new CFriendChat(contactEntity);
+            normalChat = new CFriendChat(notice.getIdentifer());
         } else if (chatType == Connect.ChatType.GROUPCHAT) {
             GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(notice.getIdentifer());
             normalChat = new CGroupChat(groupEntity);
@@ -118,25 +105,6 @@ public class TransactionReceiver implements TransactionListener {
 
     @Override
     public void singleBillPaymentNotice(Connect.BillNotice billNotice) {
-        String hashId = billNotice.getHashId();
-        Context context = BaseApplication.getInstance().getBaseContext();
-        TransactionHelper.getInstance().updateTransEntity(hashId, "", 1);
-
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(billNotice.getSender());
-        String showName = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
-        String content = context.getResources().getString(R.string.Chat_paid_the_bill_to, showName, context.getString(R.string.Chat_You));
-
-        if (friendEntity == null) {
-            FailMsgsManager.getInstance().insertReceiveMsg(billNotice.getSender(), TimeUtil.timestampToMsgid(), content);
-        } else {
-            String uid = friendEntity.getUid();
-            CFriendChat normalChat = new CFriendChat(friendEntity);
-            ChatMsgEntity msgExtEntity = normalChat.noticeMsg(1, content, hashId);
-            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-            normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
-
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, uid, msgExtEntity);
-        }
     }
 
     @Override
@@ -195,33 +163,5 @@ public class TransactionReceiver implements TransactionListener {
 
     @Override
     public void outerTransfer(Connect.TransferNotice notice) {
-        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getPubKey();
-        Connect.UserInfo sender = notice.getSender();
-        Connect.UserInfo receiver = notice.getReceiver();
-
-        boolean isMySendTo = sender.getPubKey().equals(mypublickey);
-        Connect.UserInfo friendInfo = isMySendTo ? receiver : sender;
-
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(friendInfo.getPubKey());
-        if (friendEntity == null) {
-            friendEntity = new ContactEntity();
-            friendEntity.setUid(friendInfo.getUid());
-            friendEntity.setCa_pub(friendInfo.getCaPub());
-            friendEntity.setAvatar(friendInfo.getAvatar());
-            friendEntity.setUsername(friendInfo.getUsername());
         }
-
-        NormalChat normalChat = new CFriendChat(friendEntity);
-        ChatMsgEntity msgExtEntity = normalChat.transferMsg(2, notice.getHashId(), notice.getAmount(), notice.getTips());
-        if (isMySendTo) {
-            msgExtEntity.setSend_status(1);
-        } else {
-            msgExtEntity.setMessage_from(friendEntity.getCa_pub());
-            msgExtEntity.setMessage_to(mypublickey);
-        }
-
-        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-        ((ConversationListener) normalChat).updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
-        HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(Connect.ChatType.PRIVATE,friendEntity.getUid()));
-    }
 }

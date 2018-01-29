@@ -31,7 +31,6 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
@@ -277,13 +276,12 @@ public class OuterWebsiteActivity extends BaseActivity {
             String pubkey = data.getStringExtra("object");
 
             NormalChat baseChat = null;
-            if (RoomSession.getInstance().getRoomKey().equals(pubkey)) {
+            if (pubkey.equals(RoomSession.getInstance().getRoomKey())) {
                 MsgSend.sendOuterMsg(MsgSend.MsgSendType.OUTER_WEBSITE, inUrl, title, TextUtils.isEmpty(subtitle) ? inUrl : subtitle, imgUrl);
             } else {
                 switch (type) {
                     case 0:
-                        ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(pubkey);
-                        baseChat = new CFriendChat(friend);
+                        baseChat = new CFriendChat(pubkey);
                         break;
                     case 1:
                         GroupEntity group = ContactHelper.getInstance().loadGroupEntity(pubkey);

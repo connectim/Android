@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg_userlogin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginTop="@dimen/dp_68"
+            android:background="@mipmap/icon_userlogo" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_18"
+            android:layout_marginRight="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/shape_stroke_20_ffffff"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_14"
+                android:text="@string/Login"
+                android:textColor="@color/color_1C6ED5"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold" />
+
+            <View
+                style="@style/BaseViewLine.d1d5da"
+                android:layout_marginTop="@dimen/dp_14" />
+
+
+            <TextView
+                android:id="@+id/name_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:paddingBottom="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_12"
+                android:text="@string/Login_Account"
+                android:textColor="@color/color_828282"
+                android:textSize="@dimen/sp_14" />
+
+            <EditText
+                android:id="@+id/name_et"
+                style="@style/EditStyle.16"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_24"
+                android:hint="@string/Please_Input_Login_username"
+                android:singleLine="true"
+                android:textSize="@dimen/sp_14" />
+
+            <View
+                style="@style/BaseViewLine.d1d5da"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_5" />
+
+
+            <TextView
+                android:id="@+id/pass_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_20"
+                android:paddingBottom="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_12"
+                android:text="@string/Login_password"
+                android:textColor="@color/color_828282"
+                android:textSize="@dimen/sp_14" />
+
+            <EditText
+                android:id="@id/password_et"
+                style="@style/EditStyle.16"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_24"
+                android:hint="@string/Please_Input_Login_password"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:textSize="@dimen/sp_14" />
+
+            <View
+                style="@style/BaseViewLine.d1d5da"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_5" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_10">
+
+                <TextView
+                    android:id="@id/text_forget_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/Login_Forget_Password"
+                    android:textColor="@color/color_BEBEBE"
+                    android:textSize="@dimen/sp_12" />
+            </RelativeLayout>
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@id/relative_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_46"
+            android:layout_marginLeft="@dimen/dp_18"
+            android:layout_marginRight="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_32"
+            android:background="@drawable/select_btn_short_stroke"
+            android:gravity="center">
+
+            <View
+                android:id="@id/image_loading"
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_2"
+                android:background="@mipmap/icon_loading"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@id/next_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_toRightOf="@+id/image_loading"
+                android:enabled="false"
+                android:text="@string/Login_Immediately"
+                android:textColor="@color/color_ffffff" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <View
+            style="@style/BaseViewLine.d1d5da"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_8"
+            android:text="@string/Beijing_BitMain"
+            android:textColor="@color/color_828282"
+            android:textSize="@dimen/sp_12" />
+
+        <View
+            style="@style/BaseViewLine.d1d5da"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_weight="1" />
+    </LinearLayout>
+</RelativeLayout>

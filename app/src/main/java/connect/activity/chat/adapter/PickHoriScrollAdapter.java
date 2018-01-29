@@ -15,6 +15,7 @@ import java.util.List;
  * Created by gtq on 2016/11/28.
  */
 public class PickHoriScrollAdapter {
+
     private Context context;
     private List<String> paths;
 

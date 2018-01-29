@@ -26,7 +26,6 @@ import connect.activity.set.UserConnectIdActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveScanUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.ScanBgView;

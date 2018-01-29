@@ -20,7 +20,6 @@
 
     <UserInfo>
         <attr name='username' type='string'></attr>
-        <attr name='avatar' type='string'></attr>
     </UserInfo>
 
     <SearchUser>

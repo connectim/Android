@@ -69,11 +69,6 @@ public class RobotChat extends NormalChat {
     }
 
     @Override
-    public long destructReceipt() {
-        return 0L;
-    }
-
-    @Override
     public String headImg() {
         return InstantSdk.instantSdk.getBaseContext().getString(R.string.app_name);
     }

@@ -7,6 +7,7 @@ import android.widget.TextView;
 import connect.activity.chat.exts.GoogleMapActivity;
 import connect.activity.chat.view.BubbleImg;
 import connect.ui.activity.R;
+import connect.utils.StringUtil;
 import instant.bean.ChatMsgEntity;
 import protos.Connect;
 
@@ -31,7 +32,8 @@ public class MsgLocationHolder extends MsgChatHolder {
         textView.setText(locationMessage.getAddress());
         String url = locationMessage.getScreenShot();
         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
-        imgmsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),msgExtEntity.getEcdh(),url, locationMessage.getImageWidth(), locationMessage.getImageHeight());
+        String hexString = StringUtil.bytesToHexString(locationMessage.getFileKey().toByteArray());
+        imgmsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),hexString,url, locationMessage.getImageWidth(), locationMessage.getImageHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

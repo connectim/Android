@@ -12,9 +12,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import connect.ui.activity.R;
-import connect.activity.chat.bean.RoomSession;
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.RoomSession;
+import connect.ui.activity.R;
 
 public class FileUtil {
 
@@ -75,6 +75,14 @@ public class FileUtil {
         String index = randomFileName();
         index = index + type.getFileType();
         return createAbsNewFile(DIR_ROOT + File.separator +index);
+    }
+
+    public static File newSdcardTempFile(FileType type) {
+        String index = randomFileName();
+        index = index + type.getFileType();
+
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        return createAbsNewFile(root + File.separator +index);
     }
 
     /**
@@ -237,18 +245,18 @@ public class FileUtil {
         if (!file.exists()) {
             return 0;
         }
-        return (int) (file.length() / 1024);
+        return (int) file.length();
     }
 
     public static String fileSize(int length) {
         String size = "";
-        FileSizeType sizeType = length < 1024 ? FileSizeType.KB : FileSizeType.M;
+        FileSizeType sizeType = length < (1024 * 1024) ? FileSizeType.KB : FileSizeType.M;
         switch (sizeType) {
             case KB:
-                size = length + " KB";
+                size = length / 1024 + " KB";
                 break;
             case M:
-                size = length / 1024 + " M";
+                size = length / 1024 / 1024 + " M";
                 break;
         }
         return size;
@@ -305,6 +313,9 @@ public class FileUtil {
         }
         flag = true;
         File[] files = dirFile.listFiles();
+        if (files == null || files.length == 0) {
+            return true;
+        }
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
                 flag = deleteFile(files[i].getAbsolutePath());
@@ -363,7 +374,7 @@ public class FileUtil {
      * file type
      */
     public enum FileType {
-        IMG(".png"), VOICE(".aac"), VIDEO(".mp4");
+        IMG(".png"), VOICE(".amr"), VIDEO(".mp4");
 
         String fileType;
 

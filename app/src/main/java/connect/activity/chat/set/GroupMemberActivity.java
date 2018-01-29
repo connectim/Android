@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
     private GroupMemberOnscrollListener onscrollListener = new GroupMemberOnscrollListener();
     private GroupMemberLetterChanged letterChanged = new GroupMemberLetterChanged();
     private LinearLayoutManager layoutManager;
+    private  List<GroupMemberEntity> memEntities =new ArrayList<>();
     private GroupMemberContract.Presenter presenter;
     private GroupMemberAdapter memberAdapter;
 
@@ -78,7 +80,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         toolbarTop.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GroupInviteActivity.startActivity(activity, groupKey);
+                BaseGroupSelectActivity.startActivity(activity, false, groupKey);
             }
         });
 
@@ -86,9 +88,13 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
         GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, myUid);
 
+        memEntities = ContactHelper.getInstance().loadGroupMemberEntities(groupKey);
+        Collections.sort(memEntities, new GroupComPara());
+        toolbarTop.setTitle(getString(R.string.Chat_Group_Members, memEntities.size()));
+
         layoutManager = new LinearLayoutManager(activity);
         recordview.setLayoutManager(layoutManager);
-        memberAdapter = new GroupMemberAdapter(activity, recordview);
+        memberAdapter = new GroupMemberAdapter(activity, memEntities);
 
         boolean canScroll = myMember != null && myMember.getRole() == 1;
         memberAdapter.setCanScroll(canScroll);
@@ -96,11 +102,6 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         recordview.addItemDecoration(new LineDecoration(activity));
         recordview.addOnScrollListener(onscrollListener);
 
-        final List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemberEntitiesExcept(groupKey, myUid);
-        Collections.sort(memEntities, new GroupComPara());
-        toolbarTop.setTitle(getString(R.string.Chat_Group_Members, memEntities.size()));
-
-        memberAdapter.setData(memEntities);
         memberAdapter.setItemRemoveListener(new GroupMemberAdapter.OnItemRemoveListener() {
             @Override
             public void itemRemove(GroupMemberEntity entity) {
@@ -113,7 +114,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberCont
         new GroupMemberPresenter(this).start();
     }
 
-    private class GroupMemberOnscrollListener extends RecyclerView.OnScrollListener{
+    private class GroupMemberOnscrollListener extends RecyclerView.OnScrollListener {
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

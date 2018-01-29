@@ -1,26 +1,33 @@
 package connect.utils.okhttp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.google.android.gms.common.server.response.FastJsonResponse;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessageV3;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
+import connect.activity.home.bean.HomeAction;
+import connect.activity.login.LoginUserActivity;
 import connect.ui.activity.R;
 import connect.activity.home.bean.HttpRecBean;
 import connect.activity.base.BaseApplication;
 import connect.utils.ConfigUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastUtil;
+import connect.utils.UriUtil;
 import connect.utils.log.LogManager;
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -127,6 +134,10 @@ public class HttpRequest {
         post(url, body.toByteArray(), resultCall);
     }
 
+    public void post(String url, ByteString bytes, final ResultCall resultCall) {
+        post(url, bytes.toByteArray(), resultCall);
+    }
+
     /**
      * Post Request(byte[] param)
      * @param url
@@ -134,9 +145,55 @@ public class HttpRequest {
      * @param resultCall
      */
     public void post(String url, byte[] content, final ResultCall resultCall) {
+        if (!HttpRequest.isConnectNet()) {
+            ToastUtil.getInstance().showToast(R.string.Chat_Network_connection_failed_please_check_network);
+            return;
+        }
+        String address;
+        if(url.equals(UriUtil.CONNECT_V3_PROXY_VISITOR_RECORDS) ||
+                url.equals(UriUtil.CONNECT_V3_PROXY_RECORDS_HISTORY) ||
+                url.equals(UriUtil.CONNECT_V3_PROXY_EXAMINE_VERIFY) ||
+                url.equals(UriUtil.CONNECT_V3_PROXY_TOKEN)){
+            address = ConfigUtil.getInstance().visitorAddress() + url;
+        }else{
+            address = ConfigUtil.getInstance().serverAddress() + url;
+        }
+
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE_DEFAULT, content);
         Request request = new Request.Builder()
-                .url(ConfigUtil.getInstance().serverAddress() + url)
+                .url(address)
+                .post(requestBody)
+                .build();
+
+        mOkHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                ProgressUtil.getInstance().dismissProgress();
+                mDelivery.post(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       resultCall.onError();
+                                   }
+                               });
+                dealOnFailure(call);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                try {
+                    Integer code = resultCall.parseNetworkResponse(response);
+                    sendResultCallback(code, resultCall);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void postUploadFile(String url, byte[] content, final ResultCall resultCall) {
+        RequestBody requestBody = RequestBody.create(MEDIA_TYPE_DEFAULT, content);
+        Request request = new Request.Builder()
+                .url("http://192.168.40.4:10086" + url)
                 .post(requestBody)
                 .build();
 
@@ -176,7 +233,10 @@ public class HttpRequest {
                 } else if(code == 2420){
                     // uid/pubKey error
                     ToastUtil.getInstance().showToast(R.string.Set_Load_failed_please_try_again_later);
-                } else {
+                } else if(code == 2700){
+                    //HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
+                    ToastUtil.getInstance().showToast(R.string.Set_Load_failed_please_try_again_later);
+                } else{
                     resultCall.onError(resultCall.getData());
                 }
             }

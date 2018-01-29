@@ -12,40 +12,37 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import connect.activity.contact.ContactInfoActivity;
+import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.StrangerInfoActivity;
-import connect.activity.contact.bean.SourceType;
-import connect.activity.set.UserInfoActivity;
 import connect.utils.PinyinUtil;
-import connect.utils.system.SystemDataUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.system.SystemDataUtil;
 import connect.widget.SideScrollView;
 import protos.Connect;
+
 /**
  * Created by gtq on 2016/12/15.
  */
 public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.MemberReHolder> {
 
-    private RecyclerView recyclerView;
     private SideScrollView sideScrollView = null;
     private Activity activity;
     private LayoutInflater inflater;
     private boolean canScroll = true;
     private List<GroupMemberEntity> groupMemEntities = new ArrayList<>();
 
-    public GroupMemberAdapter(Activity activity, RecyclerView recyclerView) {
+    public GroupMemberAdapter(Activity activity, List<GroupMemberEntity> entities) {
         this.activity = activity;
         inflater = LayoutInflater.from(activity);
-        this.recyclerView = recyclerView;
+        this.groupMemEntities = entities;
     }
 
     public void setCanScroll(boolean canScroll) {
@@ -72,7 +69,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
     @Override
     public void onBindViewHolder(final MemberReHolder holder, final int position) {
         GroupMemberEntity memEntity = groupMemEntities.get(position);
-        String name = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
+        String name = TextUtils.isEmpty(memEntity.getUsername()) ? "" : memEntity.getUsername();
         holder.nameTxt.setText(name);
         GlideUtil.loadAvatarRound(holder.headImg, memEntity.getAvatar());
 
@@ -84,7 +81,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
             holder.txt.setText(curFirst);
         } else {
             GroupMemberEntity lastEntity = groupMemEntities.get(position - 1);
-            String lastName = TextUtils.isEmpty(lastEntity.getNick()) ? lastEntity.getUsername() : lastEntity.getNick();
+            String lastName = TextUtils.isEmpty(lastEntity.getUsername()) ? "" : lastEntity.getUsername();
             if (TextUtils.isEmpty(lastName)) lastName = "#";
             String lastFirst = PinyinUtil.chatToPinyin(lastName.charAt(0));
 
@@ -115,15 +112,10 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
                 } else {
                     closeMenu();
                     GroupMemberEntity indexEntity = groupMemEntities.get(position);
-                    if (indexEntity.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getPubKey())) {
+                    if (indexEntity.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
                         UserInfoActivity.startActivity(activity);
                     } else {
-                        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(indexEntity.getUid());
-                        if (friendEntity == null) {
-                            StrangerInfoActivity.startActivity(activity, indexEntity.getUid(), SourceType.GROUP);
-                        } else {
-                            FriendInfoActivity.startActivity(activity, friendEntity.getUid());
-                        }
+                        ContactInfoActivity.lunchActivity(activity, indexEntity.getUid());
                     }
                 }
             }
@@ -163,7 +155,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
 
         public MemberReHolder(View itemView) {
             super(itemView);
-            txt= (TextView) itemView.findViewById(R.id.txt);
+            txt = (TextView) itemView.findViewById(R.id.txt);
             headImg = (ImageView) itemView.findViewById(R.id.roundimg);
             nameTxt = (TextView) itemView.findViewById(R.id.tvName);
             contentLayout = itemView.findViewById(R.id.content_layout);
@@ -176,8 +168,8 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
     public void removeData(int position) {
         closeMenu();
         GroupMemberEntity entity = groupMemEntities.get(position);
-        if (!SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(entity.getUid())) {
-            removeGroupMember(position ,entity);
+        if (!SharedPreferenceUtil.getInstance().getUser().getUid().equals(entity.getUid())) {
+            removeGroupMember(position, entity);
         }
     }
 
@@ -196,7 +188,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
         return scrollView != null && scrollView.isOpen();
     }
 
-    protected void removeGroupMember(final int position,final GroupMemberEntity entity) {
+    protected void removeGroupMember(final int position, final GroupMemberEntity entity) {
         Connect.DelOrQuitGroupMember delMember = Connect.DelOrQuitGroupMember.newBuilder()
                 .setIdentifier(entity.getIdentifier())
                 .setUid(entity.getUid())
@@ -214,7 +206,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
 
             @Override
             public void onError(Connect.HttpResponse response) {
-                if(response.getCode() == 2423){
+                if (response.getCode() == 2423) {
                     ToastEUtil.makeText(activity, R.string.Chat_Not_Group_Master, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else {
                     ToastEUtil.makeText(activity, response.getMessage(), ToastEUtil.TOAST_STATUS_FAILE).show();

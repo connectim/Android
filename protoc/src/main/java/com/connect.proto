@@ -103,9 +103,9 @@ string message=2;
 bytes body=3;
 }
 message HttpResponse {
-int32 code = 1;
-string message=2;
-IMResponse body=3;
+ int32 code = 1;
+   string message = 2;
+   bytes body = 3;
 }
 message HttpNotSignResponse {
 int32 code=1;
@@ -115,17 +115,20 @@ bytes body=3;
 
 //user ===============
 message UserInfo {
-    string username = 1;
-    string avatar = 2;
-    string pub_key = 3;
-    string uid = 4;
-    bool recommend = 5;
-    string connectId = 6;
-    int32 source = 7;
-    int64 created_at = 8;
-    bool update_connect_id = 9;
-    bool password_check = 10;
-    string ca_pub = 11;
+   string username = 1;
+ string avatar = 2;
+ string pub_key = 3;
+ string uid = 4;
+ bool recommend = 5;
+ string connectId = 6;
+ int32 source = 7;
+ int64 created_at = 8;
+ bool update_connect_id = 9;
+ bool password_check = 10;
+ string ca_pub = 11;
+ string name = 12;
+ string ou = 13;
+ int64 id = 100;
 }
 
 message UsersInfo {
@@ -330,11 +333,13 @@ int32 category = 5;
 
 message GroupMember {
 string username=1;
-string avatar=2;
-string uid=3;
-int32 role=4;
-string nick=5;
-string pub_key=6;
+ string avatar=2;
+ string uid=3;
+ int32 role=4;
+ string nick=5;
+ string pub_key=6;
+ string salt=7;
+ string name = 8;
 }
 
 message GroupApplyChange {
@@ -504,8 +509,8 @@ bytes tag = 3;
 bytes ciphertext = 4;
 }
 message IMResponse {
-string sign = 1;
-GcmData cipher_data = 2;
+   string sign = 1;
+   GcmData cipher_data = 2;
 }
 
 message RequestNotEncrypt {
@@ -521,8 +526,10 @@ GcmData cipher_data = 3;
 }
 
 message IMTransferData {
-string sign = 1;
-GcmData cipher_data = 2;
+ string sign = 1;
+ GcmData cipher_data = 2;
+ string token = 3;
+ string uid = 4;
 }
 
 message Ack {
@@ -531,8 +538,9 @@ int32 type = 2;
 }
 // connect Socket ,Return the data after connection
 message NewConnection {
-bytes salt = 1;
-bytes pub_key=2;
+string token=1;
+bytes salt = 2;
+bytes pub_key=3;
 }
 
 message Connection {
@@ -569,6 +577,7 @@ message DeviceInfo {
     int32 cv = 4;
     string uuid = 5;
     ChatCookieData chatCookieData = 6;
+    string token = 7;
 }
 
 message QuitMessage {
@@ -615,10 +624,6 @@ string upgrade_url=7;
 }
 
 //friend relationship ===============
-message RelationShip {
-string version = 1;
-repeated FriendInfo friends = 2;
-}
 
 message SyncRelationship {
 string version = 1;
@@ -665,29 +670,13 @@ string  tips = 2;
 int32 source = 3;
 }
 
-message ChangeRecords {
-string version=1;
-repeated ChangeRecord changeRecords = 2;
-}
-
-message ChangeRecord {
-string category = 1;
-FriendInfo friend_info = 2;
-}
-
-message SyncUserRelationship {
-RelationShip relationShip=1;
-UserCommonGroups userCommonGroups=2;
-}
-
 //message===============
 message UpdateMobileBind {
 string username = 1;
 }
 message MessagePost {
-string pub_key = 1;
-string sign = 2;
-MessageData msg_data = 3;
+string uid = 1;
+MessageData msg_data = 2;
 }
 
 message MSMessage {
@@ -702,10 +691,9 @@ string token = 2;
 }
 
 message MediaFile {
-string pub_key = 1;
-GcmData cipher_data = 2;
-string uid = 3;
-string sign = 4;
+ string token = 1;
+   bytes body = 2;
+   string uid = 3;
 }
 
 message RichMedia {
@@ -1189,9 +1177,8 @@ enum ChatType {
 }
 //临时协同密钥
 message ChatSession {
-	bytes salt = 1;
-	bytes ver = 2;
-	string pubKey = 3;
+   string pubKey = 1;
+   string friendPubkey = 2;
 }
 //消息体
 message ChatMessage {
@@ -1199,11 +1186,12 @@ message ChatMessage {
 	int64 msg_time = 2;
 	string from = 3;
 	string to= 4;
-	GcmData cipher_data = 5;
+	bytes body = 5;//群组聊天
 	ChatType chat_type=6;
 	int32 msg_type = 7;
 	string ext= 8;
 	bytes origin_msg = 9;
+	GcmData cipher_data = 10;//个人聊天
 }
 //传输层模型
 message MessageData {
@@ -1339,12 +1327,6 @@ message RelationshipChange {
     string category=3;
 }
 
-message HttpRequest {
-    string uid = 1;
-    string sign = 2;
-    GcmData cipher_data = 3;
-}
-
 message Mfa {
     int32 typ = 1;
     string val = 2;
@@ -1375,14 +1357,17 @@ message PasswordCheck {
 
 message FriendInfo {
     string username = 1;
-    string avatar = 2;
-    string ca_pub = 3;
-    string uid = 4;
-    bool common = 5;
-    int32 source = 6;
-    string remark = 7;
-    string connect_id = 8;
-    bool blackList = 9;
+  string avatar = 2;
+  string signed_per_key = 3;
+  string uid = 4;
+  bool common = 5;
+  int32 source = 6;
+  string remark = 7;
+  string connect_id = 8;
+  bool blackList = 9;
+  string name = 10;
+   string ou=11;
+   string pub_key = 12;
 }
 
 message Preferences {
@@ -1398,8 +1383,9 @@ string version = 2;
 
 message UserInfoBase {
     string username = 1;
-    string avatar = 2;
-    string uid = 3;
+  string avatar = 2;
+  string uid = 3;
+  string name =4;
 }
 
 
@@ -1754,4 +1740,190 @@ message WebSocketMessage {
     WebSocketResponseMessage response = 3;
 }
 
+message LoginReq {
+string username =1;
+string password = 2;
+}
 
+message UserLoginInfo {
+ string token = 1;
+ bool logined = 2;
+ string name = 3;
+ string o_u = 4;
+ string uid = 5;
+ string avatar = 6;
+ string pub_key = 7;
+ string emp_no = 8;
+ string mobile = 9;
+ int32  gender = 10;
+ string tips = 11;
+}
+
+message HttpRequest {
+  string uid = 1;
+  bytes body = 2;
+  string token = 3;
+}
+
+message Workmate {
+ string name = 1;
+ string o_u = 2;
+ string uid = 3;
+ string avatar = 4;
+ string pub_key = 5;
+ bool registed = 6;
+ string emp_no = 7;
+ string mobile = 8;
+ int32  gender = 9;
+ string tips = 10;
+}
+
+message Workmates {
+ repeated Workmate list = 1;
+}
+
+message PubKey {
+ string pub_key = 1;
+}
+
+message Department {
+ string name = 1;
+ int64 id = 2;
+ int64 count=3;
+}
+
+message Departments {
+ repeated Department list = 1;
+}
+
+message SyncWorkmates {
+Workmates workmates = 1;
+Departments depts = 2;
+}
+
+message UserFollow {
+ string uid = 1;
+ bool follow = 2;
+}
+
+message SyncUserRelationship {
+RelationShip relationShip=1;
+UserCommonGroups userCommonGroups=2;
+}
+
+message RelationShip {
+string version = 1;
+repeated FriendInfo friends = 2;
+}
+
+message ChangeRecords {
+string version=1;
+repeated ChangeRecord changeRecords = 2;
+}
+
+message ChangeRecord {
+string category = 1;
+FriendInfo friendInfo = 2;
+}
+
+message SyncCompany {
+ WorkmatesVersion workmatesVersion=1;
+ UserCommonGroups userCommonGroups=2;
+}
+
+message WorkmatesVersion {
+ repeated Workmate list = 1;
+ string version = 2;
+}
+
+message WorkmateChangeRecords {
+ string version = 1;
+ repeated WorkmateChangeRecord workmateChangeRecords = 2;
+}
+
+message WorkmateChangeRecord {
+ string category = 1;
+ Workmate workmate = 2;
+}
+
+message WorkmateVersion {
+ string uid = 1;
+ string version = 2;
+}
+
+message Staff {
+ string staff_id = 1;
+ string token = 2;
+}
+
+message Banner {
+  string name = 1;
+  string title = 2;
+  string img = 3;
+  string href = 4;
+  string router = 5;
+  int32 priority = 6;
+  int32 category = 7;
+}
+
+message Banners {
+  repeated Banner list =1;
+}
+
+message Application {
+ string name = 1;
+ string code = 2;
+ string img = 3;
+ string href = 4;
+ string router = 5;
+ int32 priority = 6;
+ int32 category = 7;
+ bool added = 8;
+}
+
+message Applications {
+  repeated Application list =1;
+}
+
+message VisitorRecordsReq {
+  string page_num = 1;
+  string page_size = 2;
+  string staff_id = 3;
+}
+
+message VisitorRecord {
+ int32 id = 1;
+ string staffId = 2;
+ string staffName = 3;
+ string staffPhone = 4;
+ string guestId = 5;
+ string guestName = 6;
+ int64 startTime = 7;
+ int64 endTime = 8;
+ string reason = 9;
+ bool status = 10;
+ string face_left = 11;
+ string face_middle = 12;
+ string face_right = 13;
+}
+
+message VisitorRecords {
+  repeated VisitorRecord list = 1;
+}
+
+message GroupInviteWorkmate {
+ string inviteBy = 1;
+ string tips = 2;
+ repeated string uids = 3;
+ string identifier = 4;
+}
+
+message Examine {
+ string guest_id = 1;
+ int32 valid = 2;
+ string reason = 3;
+}
+
+message ExamineMessage {
+  string body = 1;
+}

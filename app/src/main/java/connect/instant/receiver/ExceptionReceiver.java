@@ -21,6 +21,11 @@ public class ExceptionReceiver implements ExceptionListener{
     }
 
     @Override
+    public void remoteLogin(String devicename) {
+        HomeAction.getInstance().sendEvent(HomeAction.HomeType.REMOTE_LOGIN,devicename);
+    }
+
+    @Override
     public void exitAccount() {
         HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
     }

@@ -11,7 +11,6 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.set.bean.SystemSetBean;
-import connect.activity.wallet.manager.WalletManager;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamManager;
@@ -27,8 +26,6 @@ public class GeneralActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
     TopToolBar toolbarTop;
-    @Bind(R.id.currency_ll)
-    LinearLayout currencyLl;
     @Bind(R.id.sound_tb)
     View soundTb;
     @Bind(R.id.vibrate_tb)
@@ -59,10 +56,6 @@ public class GeneralActivity extends BaseActivity {
         SystemSetBean systemSetBean = ParamManager.getInstance().getSystemSet();
         soundTb.setSelected(systemSetBean.isRing());
         vibrateTb.setSelected(systemSetBean.isVibrate());
-
-        if (WalletManager.getInstance().isCreateWallet()) {
-            currencyLl.setVisibility(View.VISIBLE);
-        }
     }
 
     @OnClick({R.id.sound_tb})
@@ -80,13 +73,8 @@ public class GeneralActivity extends BaseActivity {
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.currency_ll)
-    void goCurrency(View view) {
-        ActivityUtil.next(mActivity, GeneralCurrencyActivity.class);
     }
 
     @OnClick(R.id.language_ll)

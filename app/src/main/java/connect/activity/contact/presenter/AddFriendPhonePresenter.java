@@ -14,17 +14,13 @@ import connect.activity.contact.bean.PhoneContactBean;
 import connect.activity.contact.contract.AddFriendPhoneContract;
 import connect.activity.contact.model.ConvertUtil;
 import connect.activity.contact.model.PhoneListComparatorSort;
-import connect.activity.set.bean.PrivateSetBean;
 import connect.database.SharedPreferenceUtil;
-import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ProgressUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.system.SystemDataUtil;
@@ -60,7 +56,8 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
                 Connect.PhoneBook.Builder builder = Connect.PhoneBook.newBuilder();
                 for (int i = 0; i < localList.size(); i++) {
                     String phone = StringUtil.filterNumber(localList.get(i).getPhone());
-                    String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.SaltHMAC);
+                   // String phoneHmac = SupportKeyUril.hmacSHA512(phone, SupportKeyUril.SaltHMAC);
+                    String phoneHmac = "";
                     Connect.PhoneInfo phoneInfo = Connect.PhoneInfo.newBuilder()
                             .setMobile(phoneHmac)
                             .build();
@@ -87,21 +84,17 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
      * Synchronize the encrypted phone number
      */
     private void syncPhone(Connect.PhoneBook phoneBook){
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PHONE_SYNC, phoneBook, new ResultCall<Connect.HttpResponse>() {
+        /*OkHttpUtil.getInstance().postEncrySelf(UriUtil.SETTING_PHONE_SYNC, phoneBook, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
-                PrivateSetBean privateSetBean = ParamManager.getInstance().getPrivateSet();
-                if(null != privateSetBean){
-                    ParamManager.getInstance().putPrivateSet(privateSetBean);
-                }
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 getServeFriend();
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 ProgressUtil.getInstance().dismissProgress();
             }
-        });
+        });*/
     }
 
     /**
@@ -109,12 +102,11 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
      */
     private void getServeFriend() {
         Connect.RequestNotEncrypt notEncrypt = Connect.RequestNotEncrypt.newBuilder().build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_PHONEBOOK, notEncrypt, new ResultCall<Connect.HttpResponse>() {
+        /*OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_PHONEBOOK, notEncrypt, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     usersInfo = Connect.PhoneBookUsersInfo.parseFrom(structData.getPlainData());
                     ArrayList<Connect.PhoneBookUserInfo> listCheck = new ArrayList<>();
                     for(Connect.PhoneBookUserInfo userInfo : usersInfo.getUsersList()){
@@ -130,10 +122,10 @@ public class AddFriendPhonePresenter implements AddFriendPhoneContract.Presenter
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {
+            public void onError(Connect.HttpNotSignResponse response) {
                 handler.sendEmptyMessage(UPDATE_CODE);
             }
-        });
+        });*/
     }
 
     private Handler handler = new Handler(Looper.getMainLooper()) {

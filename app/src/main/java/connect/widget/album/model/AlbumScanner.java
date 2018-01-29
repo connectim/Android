@@ -134,7 +134,7 @@ public class AlbumScanner implements IAlbumScanner {
                 IMAGES,
                 null,
                 null,
-                MediaStore.Images.Media.DATE_ADDED);
+                MediaStore.Images.Media.DATE_ADDED + " desc");
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -228,7 +228,7 @@ public class AlbumScanner implements IAlbumScanner {
                 String path = cursor.getString(cursor.getColumnIndex(VIDEOS[1]));
 
                 File file = new File(path);
-                if (!file.exists() || !file.canRead()) continue;
+                if (!file.exists() || !file.canRead() || file.length() > 10 * 1024 * 1024) continue;
 
                 String name = cursor.getString(cursor.getColumnIndex(VIDEOS[2]));
                 String title = cursor.getString(cursor.getColumnIndex(VIDEOS[3]));

@@ -7,4 +7,6 @@ package instant.parser.inter;
 public interface ExceptionListener {
 
     void exitAccount();
+
+    void remoteLogin(String devicename);
 }

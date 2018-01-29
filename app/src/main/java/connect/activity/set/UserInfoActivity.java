@@ -71,7 +71,7 @@ public class UserInfoActivity extends BaseActivity {
         GlideUtil.loadAvatarRound(avatarIv, userBean.getAvatar());
 
         nameTv.setText(userBean.getName());
-        idTv.setText(userBean.getConnectId());
+        //idTv.setText(userBean.getConnectId());
     }
 
     @OnClick(R.id.left_img)
@@ -86,16 +86,16 @@ public class UserInfoActivity extends BaseActivity {
 
     @OnClick(R.id.name_ll)
     void goName(View view) {
-        UserInfoNameActivity.startActivity(mActivity);
+        //UserInfoNameActivity.startActivity(mActivity);
     }
 
     @OnClick(R.id.id_ll)
     void goNumber(View view) {
-        if (!userBean.isUpdateConnectId()) {
+        /*if (!userBean.isUpdateConnectId()) {
             UserInfoConnectIdActivity.startActivity(mActivity);
         } else {
             ToastEUtil.makeText(mActivity, R.string.Set_CONNECT_ID_can_only_be_set_once, ToastEUtil.TOAST_STATUS_FAILE).show();
-        }
+        }*/
     }
 
 }

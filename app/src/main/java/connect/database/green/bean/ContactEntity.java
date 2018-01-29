@@ -1,12 +1,12 @@
 package connect.database.green.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
-import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class ContactEntity implements Serializable {
@@ -15,99 +15,140 @@ public class ContactEntity implements Serializable {
 
     @Id(autoincrement = true)
     private Long _id;
-    @NotNull
-    @Unique
-    private String ca_pub;
 
     @NotNull
     @Unique
     private String uid;
-    private String connectId;
-    private String username;
+    private String name;
     private String avatar;
+    private String ou;
+    private String publicKey;
+    private String empNo;
+    private String mobile;
+    private Integer gender;
+    private String tips;
     private String remark;
-    private Integer common;
-    private Integer source;
-    private Boolean blocked;
+    private Boolean registed;
 
-    @Generated(hash = 255488888)
-    public ContactEntity(Long _id, @NotNull String ca_pub, @NotNull String uid,
-            String connectId, String username, String avatar, String remark,
-            Integer common, Integer source, Boolean blocked) {
+    @Generated(hash = 259936923)
+    public ContactEntity(Long _id, @NotNull String uid, String name, String avatar,
+            String ou, String publicKey, String empNo, String mobile,
+            Integer gender, String tips, String remark, Boolean registed) {
         this._id = _id;
-        this.ca_pub = ca_pub;
         this.uid = uid;
-        this.connectId = connectId;
-        this.username = username;
+        this.name = name;
         this.avatar = avatar;
+        this.ou = ou;
+        this.publicKey = publicKey;
+        this.empNo = empNo;
+        this.mobile = mobile;
+        this.gender = gender;
+        this.tips = tips;
         this.remark = remark;
-        this.common = common;
-        this.source = source;
-        this.blocked = blocked;
+        this.registed = registed;
     }
+
     @Generated(hash = 393979869)
     public ContactEntity() {
     }
-    public Long get_id() {
-        return this._id;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
+
+    public Long get_id() {
+        return _id;
+    }
+
     public void set_id(Long _id) {
         this._id = _id;
     }
-    public String getCa_pub() {
-        return this.ca_pub;
-    }
-    public void setCa_pub(String ca_pub) {
-        this.ca_pub = ca_pub;
-    }
+
     public String getUid() {
-        return this.uid;
+        return uid;
     }
+
     public void setUid(String uid) {
         this.uid = uid;
     }
-    public String getConnectId() {
-        return this.connectId;
+
+    public String getName() {
+        return name;
     }
-    public void setConnectId(String connectId) {
-        this.connectId = connectId;
+
+    public void setName(String name) {
+        this.name = name;
     }
-    public String getUsername() {
-        return this.username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
+
     public String getAvatar() {
-        return this.avatar;
+        return avatar;
     }
+
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-    public String getRemark() {
-        return this.remark;
+
+    public String getOu() {
+        return ou;
     }
+
+    public void setOu(String ou) {
+        this.ou = ou;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public String getEmpNo() {
+        return empNo;
+    }
+
+    public void setEmpNo(String empNo) {
+        this.empNo = empNo;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public String getTips() {
+        return tips;
+    }
+
+    public void setTips(String tips) {
+        this.tips = tips;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
     public void setRemark(String remark) {
         this.remark = remark;
     }
-    public Integer getCommon() {
-        return this.common;
-    }
-    public void setCommon(Integer common) {
-        this.common = common;
-    }
-    public Integer getSource() {
-        return this.source;
-    }
-    public void setSource(Integer source) {
-        this.source = source;
-    }
-    public Boolean getBlocked() {
-        return this.blocked;
-    }
-    public void setBlocked(Boolean blocked) {
-        this.blocked = blocked;
+
+    public Boolean getRegisted() {
+        return registed;
     }
 
-    
+    public void setRegisted(Boolean registed) {
+        this.registed = registed;
+    }
 }

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.set.contract.PrivateSetContract;
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.bean.ContactEntity;
@@ -66,13 +65,10 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
 
         view.clearMessage();
 
-        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);
-        if (contactEntity == null) {
-            contactEntity = new ContactEntity();
-            contactEntity.setCa_pub(roomKey);
-        }
-
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(roomKey);
+        ContactEntity friendEntity = new ContactEntity();
+        friendEntity.setAvatar(view.getAvatar());
+        friendEntity.setUid(view.getRoomKey());
+        friendEntity.setName(view.getName());
         List<ContactEntity> entities = new ArrayList<>();
         entities.add(friendEntity);
         entities.add(new ContactEntity());
@@ -83,15 +79,15 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
             TextView name = (TextView) headerview.findViewById(R.id.name);
 
             adminImg.setVisibility(View.GONE);
-            if (TextUtils.isEmpty(entity.getUsername())) {
+            if (TextUtils.isEmpty(entity.getName())) {
                 name.setVisibility(View.GONE);
             } else {
                 name.setVisibility(View.VISIBLE);
-                String nametxt = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
+                String nametxt = TextUtils.isEmpty(entity.getName()) ? "" : entity.getName();
                 name.setText(nametxt);
             }
 
-            if (TextUtils.isEmpty(entity.getAvatar())) {
+            if (TextUtils.isEmpty(entity.getAvatar()) && TextUtils.isEmpty(entity.getUid())) {
                 GlideUtil.loadAvatarRound(headimg, R.mipmap.message_add_friends2x);
             } else {
                 GlideUtil.loadAvatarRound(headimg, entity.getAvatar());

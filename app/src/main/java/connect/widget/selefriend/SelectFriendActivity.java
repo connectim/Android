@@ -224,13 +224,13 @@ public class SelectFriendActivity extends BaseActivity {
         String groupId = getIntent().getExtras().getString("groupId", "");
         List<GroupMemberEntity> allMembers = ContactHelper.getInstance().loadGroupMemEntities(groupId);
         for (GroupMemberEntity groupMemEntity : allMembers) {
-            if (SharedPreferenceUtil.getInstance().getUser().getPubKey().equals(groupMemEntity.getUid()))
+            if (SharedPreferenceUtil.getInstance().getUser().getUid().equals(groupMemEntity.getUid()))
                 continue;
             ContactEntity friendEntity = new ContactEntity();
             friendEntity.setAvatar(groupMemEntity.getAvatar());
             friendEntity.setUid(groupMemEntity.getUid());
             String name = TextUtils.isEmpty(groupMemEntity.getUsername()) ? groupMemEntity.getNick() : groupMemEntity.getUsername();
-            friendEntity.setUsername(name);
+            friendEntity.setName(name);
             list.add(friendEntity);
         }
         return list;

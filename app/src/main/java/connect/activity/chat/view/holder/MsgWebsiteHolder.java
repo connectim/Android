@@ -10,18 +10,15 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.chat.exts.OuterWebsiteActivity;
-import connect.activity.chat.exts.TransferToActivity;
-import connect.activity.wallet.PacketDetailActivity;
 import connect.ui.activity.R;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import instant.bean.ChatMsgEntity;
-import instant.bean.UserOrderBean;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import instant.bean.ChatMsgEntity;
+import instant.bean.UserOrderBean;
 import protos.Connect;
 
 /**
@@ -93,17 +90,7 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                     }
                     String packetToken = content.substring(packetStart, packetEnd);
                     avaliableOuterRedPacket(packetToken);
-                } else if (RegularUtil.matches(content, RegularUtil.OUTER_BITWEBSITE_PAY)) {//outer gather
-                    GlideUtil.loadImage(typeImg, R.mipmap.message_send_payment2x);
-
-                    int payStart = content.indexOf("address") + 8;
-                    int payEnd = content.indexOf("&");
-                    if (payEnd == -1) {
-                        payEnd = content.length();
-                    }
-                    String transToken = content.substring(payStart, payEnd);
-                    TransferToActivity.startActivity((Activity) context, transToken);
-                } else {//outer link
+                }else {//outer link
                     OuterWebsiteActivity.startActivity((Activity) context, content);
                 }
             }
@@ -121,14 +108,14 @@ public class MsgWebsiteHolder extends MsgChatHolder {
                     @Override
                     public void onResponse(Connect.HttpResponse response) {
                         try {
-                            Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                            Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                            Connect.HttpNotSignResponse imResponse = Connect.HttpNotSignResponse.parseFrom(response.getBody().toByteArray());
+                            Connect.StructData structData = Connect.StructData.parseFrom(imResponse.getBody());
                             Connect.RedPackage redPackage = Connect.RedPackage.parseFrom(structData.getPlainData());
                             if (ProtoBufUtil.getInstance().checkProtoBuf(redPackage)) {
                                 if (redPackage.getRemainSize() == 0) {//lucky packet is brought out
                                     String hashid = redPackage.getHashId();
                                     int type = redPackage.getSystem() ? 1 : 0;
-                                    PacketDetailActivity.startActivity((Activity) context, hashid, type);
+                                    //PacketDetailActivity.startActivity((Activity) context, hashid, type);
                                 } else {
                                     UserOrderBean userOrderBean = new UserOrderBean();
                                     userOrderBean.outerRedPacket(token);

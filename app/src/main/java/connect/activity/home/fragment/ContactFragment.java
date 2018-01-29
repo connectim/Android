@@ -18,17 +18,16 @@ import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.set.GroupSetActivity;
+import connect.activity.contact.DepartmentActivity;
 import connect.activity.contact.AddFriendActivity;
-import connect.activity.contact.FriendInfoActivity;
-import connect.activity.contact.FriendInfoAliasActivity;
-import connect.activity.contact.ScanAddFriendActivity;
+import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.SearchFriendActivity;
-import connect.activity.contact.SubscribeActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ContactAdapter;
 import connect.activity.home.bean.ContactBean;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.widget.SideBar;
@@ -75,13 +74,14 @@ public class ContactFragment extends BaseFragment {
     private void initView() {
         toolbarTop.setBlackStyle();
         toolbarTop.setTitle(null, R.string.Link_Contacts);
-        toolbarTop.setRightImg(R.mipmap.add_white3x);
+        //toolbarTop.setRightImg(R.mipmap.add_white3x);
         toolbarTop.setLeftImg(R.mipmap.search3x);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new ContactAdapter(mActivity);
         recyclerview.setAdapter(adapter);
+        //recyclerview.addItemDecoration(new LineDecoration(mActivity));
         sideBar.setOnTouchingLetterChangedListener(changedListener);
 
         adapter.setOnSideMenuListener(onSideMenuListener);
@@ -95,7 +95,7 @@ public class ContactFragment extends BaseFragment {
 
     @OnClick(R.id.right_lin)
     void goAddFriend(View view) {
-        ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
+        //ActivityUtil.nextBottomToTop(mActivity, ScanAddFriendActivity.class, null, -1);
     }
 
     SideBar.OnTouchingLetterChangedListener changedListener = new SideBar.OnTouchingLetterChangedListener(){
@@ -124,10 +124,11 @@ public class ContactFragment extends BaseFragment {
                     break;
                 case 3:
                 case 4:
-                    FriendInfoActivity.startActivity(mActivity, entity.getUid());
+                    ContactEntity contactEntity = ContactHelper.getInstance().loadFriendByUid(entity.getUid());
+                    ContactInfoActivity.lunchActivity(mActivity, contactEntity, "");
                     break;
                 case 7:
-                    ActivityUtil.next(mActivity, SubscribeActivity.class);
+                    DepartmentActivity.lunchActivity(mActivity);
                     break;
                 default:
                     break;

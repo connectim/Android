@@ -48,7 +48,7 @@ public class RecentChatAdapter extends BaseAdapter {
 
         ContactEntity friendEntity = mDataList.get(position);
         GlideUtil.loadAvatarRound(viewHolder.avatarRimg,friendEntity.getAvatar());
-        viewHolder.nameTv.setText(friendEntity.getUsername());
+        viewHolder.nameTv.setText(friendEntity.getName());
 
         return convertView;
     }

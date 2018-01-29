@@ -7,8 +7,8 @@ import instant.bean.Session;
 import instant.bean.SocketACK;
 import instant.bean.UserCookie;
 import instant.parser.localreceiver.ConnectLocalReceiver;
-import instant.utils.XmlParser;
 import instant.utils.StringUtil;
+import instant.utils.XmlParser;
 import instant.utils.cryption.EncryptionUtil;
 import instant.utils.cryption.SupportKeyUril;
 import instant.utils.log.LogManager;
@@ -35,33 +35,37 @@ public class ShakeHandSender {
         }
 
         UserCookie userCookie = Session.getInstance().getConnectCookie();
-        String priKey = userCookie.getPriKey();
+        String uid = userCookie.getUid();
+        String token = userCookie.getToken();
+        String priKey = userCookie.getPrivateKey();
 
         String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
         String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);
 
         String cdSeed = AllNativeMethod.cdCreateSeed(16, 4);
-        Connect.NewConnection newConnection = Connect.NewConnection.newBuilder().
-                setPubKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey))).
-                setSalt(ByteString.copyFrom(cdSeed.getBytes())).build();
-
         UserCookie tempCookie = new UserCookie();
-        tempCookie.setPriKey(randomPriKey);
-        tempCookie.setPubKey(randomPubKey);
-        tempCookie.setSalt(cdSeed.getBytes());
-        Session.getInstance().setRandomCookie(tempCookie);
+        tempCookie.setPrivateKey(randomPriKey);
+        tempCookie.setPublicKey(randomPubKey);
+        tempCookie.setSalts(cdSeed.getBytes());
+        tempCookie.setToken(token);
+        Session.getInstance().setChatCookie(tempCookie);
+
+        Connect.NewConnection newConnection = Connect.NewConnection.newBuilder()
+                .setPubKey(ByteString.copyFrom(StringUtil.hexStringToBytes(randomPubKey)))
+                .setSalt(ByteString.copyFrom(cdSeed.getBytes()))
+                .setToken(token)
+                .build();
 
         Connect.GcmData gcmData = EncryptionUtil.encodeAESGCMStructData(EncryptionUtil.ExtendedECDH.EMPTY,
                 priKey, XmlParser.getInstance().serverPubKey(), newConnection.toByteString());
 
-        String uid = Session.getInstance().getConnectCookie().getUid();
         String signHash = SupportKeyUril.signHash(priKey, gcmData.toByteArray());
-        Connect.TcpRequest imRequest = Connect.TcpRequest.newBuilder()
+        Connect.TcpRequest tcpRequest = Connect.TcpRequest.newBuilder()
                 .setUid(uid)
-                .setSign(signHash)
                 .setCipherData(gcmData)
+                .setSign(signHash)
                 .build();
 
-        SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, imRequest.toByteString());
+        SenderManager.getInstance().sendToMsg(SocketACK.HAND_SHAKE_FIRST, tcpRequest.toByteString());
     }
 }

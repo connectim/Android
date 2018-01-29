@@ -10,9 +10,9 @@ public interface MessageListener {
 
     long chatBurnTime(String publicKey);
 
-    void singleChat(Connect.ChatMessage chatMessage, byte[] ecdh, byte[] contents) throws Exception;
+    void singleChat(Connect.MessageData messageData) throws Exception;
 
-    void groupChat(Connect.MessagePost messagePost);
+    void groupChat(Connect.ChatMessage messagePost);
 
     void inviteJoinGroup(Connect.CreateGroupMessage groupMessage);
 }

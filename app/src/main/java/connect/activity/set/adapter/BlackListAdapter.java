@@ -42,7 +42,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     public void onBindViewHolder(ViewHolder holder,final int position) {
         final ContactEntity userInfo = mDataList.get(position);
         GlideUtil.loadAvatarRound(holder.avatarRimg, userInfo.getAvatar());
-        holder.nicknameTv.setText(userInfo.getUsername());
+        holder.nicknameTv.setText(userInfo.getName());
         holder.statusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

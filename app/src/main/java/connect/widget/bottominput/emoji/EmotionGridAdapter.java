@@ -6,18 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import connect.ui.activity.R;
-import connect.widget.bottominput.EmoManager;
-import connect.widget.bottominput.bean.StickPagerBean;
-import connect.widget.bottominput.inter.IEmojiClickListener;
-import connect.activity.chat.view.PopWindowImg;
-import connect.utils.FileUtil;
-
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import connect.activity.chat.view.PopWindowImg;
+import connect.ui.activity.R;
+import connect.utils.FileUtil;
 import connect.utils.glide.GlideUtil;
+import connect.widget.bottominput.EmoManager;
+import connect.widget.bottominput.bean.StickPagerBean;
+import connect.widget.bottominput.inter.IEmojiClickListener;
 
 public class EmotionGridAdapter extends BaseAdapter {
 
@@ -60,13 +59,13 @@ public class EmotionGridAdapter extends BaseAdapter {
         }
 
         String path = EmoManager.EMOJI_PATH + "/" + stickBean.getName() + "/" + stickers.get(position);
-        String gif = EmoManager.GIF_PATH + "/" + FileUtil.subExtentsion(stickers.get(position)) + ".gif";
+        String gif = EmoManager.GIF_PATH + "/" + FileUtil.subExtentsion(stickers.get(position)) + ".png";
         GlideUtil.loadImageAssets(holder.img, path);
         holder.img.setGifPath(gif);
         holder.img.setPopListener(new PopWindowImg.IPopWindowListener() {
             @Override
             public void OnClick(String filePath) {
-                filePath = filePath.replace(".gif", "");
+                filePath = filePath.replace(".png", "");
                 itemClickListener.onEmtClick(filePath);
             }
         });

@@ -15,17 +15,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.FriendRecordAdapter;
-import connect.activity.wallet.BlockchainActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import com.wallet.bean.CurrencyEnum;
 import connect.widget.TopToolBar;
 import connect.widget.pullTorefresh.EndlessScrollListener;
 import protos.Connect;
@@ -110,7 +107,6 @@ public class FriendInfoRecordActivity extends BaseActivity {
     FriendRecordAdapter.OnItemClickListener onItemClickListener = new FriendRecordAdapter.OnItemClickListener() {
         @Override
         public void itemClick(Connect.FriendBill friendBill) {
-            BlockchainActivity.startActivity(mActivity, CurrencyEnum.BTC, friendBill.getTxId());
         }
     };
 
@@ -121,12 +117,11 @@ public class FriendInfoRecordActivity extends BaseActivity {
                 .setPageSize(MAX_RECOMMEND_COUNT)
                 .setPageIndex(page)
                 .build();
-        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_FRIEND_RECORDS, friendRecords, new ResultCall<Connect.HttpResponse>() {
+        OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNEXT_V1_USERS_FRIEND_RECORDS, friendRecords, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
-            public void onResponse(Connect.HttpResponse response) {
+            public void onResponse(Connect.HttpNotSignResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.FriendBillsMessage friendBillsMessage = Connect.FriendBillsMessage.parseFrom(structData.getPlainData());
                     if (friendBillsMessage.getFriendBillsList().size() == 0 && page == 1) {
                         noDataLin.setVisibility(View.VISIBLE);
@@ -150,7 +145,7 @@ public class FriendInfoRecordActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpResponse response) {}
+            public void onError(Connect.HttpNotSignResponse response) {}
         });
     }
 

@@ -67,44 +67,38 @@ public class ContactListManage {
      * friend list
      * @return
      */
-    public HashMap<String,List<ContactBean>> getFriendList(){
+    public ArrayList<ContactBean> getFriendList(){
         List<ContactEntity> loacalFriend = ContactHelper.getInstance().loadAll();
         return sortContactFriend("",loacalFriend);
     }
 
-    public HashMap<String,List<ContactBean>> getFriendListExcludeSys(String pubKeyExc){
+    public ArrayList<ContactBean> getFriendListExcludeSys(String pubKeyExc){
         List<ContactEntity> loacalFriend = ContactHelper.getInstance().loadFriend();
         return sortContactFriend(pubKeyExc,loacalFriend);
     }
 
-    private HashMap<String,List<ContactBean>> sortContactFriend(String pubKeyExc ,List<ContactEntity> loacalFriend){
+    private ArrayList<ContactBean> sortContactFriend(String pubKeyExc ,List<ContactEntity> loacalFriend){
         Collections.sort(loacalFriend, friendCompara);
-        ArrayList<ContactBean> favoritesList = new ArrayList<>();
         ArrayList<ContactBean> friendList = new ArrayList<>();
         for(ContactEntity friendEntity : loacalFriend){
-            if(friendEntity.getUid().equals(pubKeyExc)) continue;
-            if(friendEntity.getBlocked() != null && friendEntity.getBlocked()) continue;
+            if(friendEntity.getUid().equals(pubKeyExc))
+                continue;
 
             ContactBean contactBean = new ContactBean();
-            String name = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getUsername() : friendEntity.getRemark();
-            contactBean.setName(name);
+            contactBean.setName(friendEntity.getName());
             contactBean.setAvatar(friendEntity.getAvatar());
             contactBean.setUid(friendEntity.getUid());
-            if(friendEntity.getSource() != null && friendEntity.getSource() == -1){
+            contactBean.setOu(friendEntity.getOu());
+            contactBean.setGender(friendEntity.getGender() == null ? 1 : friendEntity.getGender());
+            if(TextUtils.isEmpty(friendEntity.getPublicKey())){
                 contactBean.setStatus(6);
                 friendList.add(contactBean);
-            }else if(friendEntity.getCommon() != null && friendEntity.getCommon()==1){
-                contactBean.setStatus(3);
-                favoritesList.add(contactBean);
             }else{
                 contactBean.setStatus(4);
                 friendList.add(contactBean);
             }
         }
-        HashMap<String,List<ContactBean>> friendMap = new HashMap<>();
-        friendMap.put("favorite",favoritesList);
-        friendMap.put("friend",friendList);
-        return friendMap;
+        return friendList;
     }
 
     public String checkShowFriendTop(ContactBean currBean,ContactBean lastBean){

@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="connect.ui.activity">
+    package="connect.ui.activity">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
-    <uses-feature android:name="android.hardware.camera"/>
-    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.WRITE_SMS"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
 
     <application
         android:name="connect.activity.base.BaseApplication"
@@ -40,383 +40,263 @@
             android:screenOrientation="portrait"
             android:theme="@style/welcomebg">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="friend"
-                    android:scheme="connectim"/>
+                    android:scheme="connectim" />
                 <data
                     android:host="pay"
-                    android:scheme="connectim"/>
+                    android:scheme="connectim" />
                 <data
                     android:host="transfer"
-                    android:scheme="connectim"/>
+                    android:scheme="connectim" />
                 <data
                     android:host="packet"
-                    android:scheme="connectim"/>
+                    android:scheme="connectim" />
                 <data
                     android:host="group"
-                    android:scheme="connectim"/>
+                    android:scheme="connectim" />
             </intent-filter>
         </activity>
 
         <meta-data
             android:name="connect.utils.glide.GlideModelConfig"
-            android:value="GlideModule"/>
+            android:value="GlideModule" />
 
         <activity
             android:name="connect.activity.login.GuidePageActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.login.LoginPhoneActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.login.LoginPhoneCountryCodeActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.login.LoginPhoneVerifyActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.login.RegisterActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.workbench.VisitorsAuditActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.login.LoginPassVerifyActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.SafetyPatterVerifyActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.widget.camera.CameraTakeActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.widget.takepicture.TakePictureActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.contact.DepartmentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.contact.ContactInfoActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.login.RegisterGetRandomActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name="connect.activity.contact.SubscribeActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.contact.SubscribeMarketActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.contact.SubscribeDetailActivity"
-            android:screenOrientation="portrait"/>
+            android:name="connect.activity.login.LoginUserActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.widget.clip.ClipImageActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.AboutActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.UserConnectIdActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.workbench.VisitorsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.SafetyActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.PrivateActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.GeneralActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.SupportActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.UserInfoActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.SafetyPhoneActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.SafetyNewPhoneActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.UserInfoNameActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.SafetyLoginPassActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.SafetyPayFeeActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.SafetyPatternActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.SafetyPatterDrawActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.UserInfoAvatarActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.SafetyPayActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.PrivateBlackActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.set.GeneralCurrencyActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.SupportFeedbackActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.AboutDeveloperActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.GeneralLanguageActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.set.UserInfoConnectIdActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.ScanTransferActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.RequestActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.PacketActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransactionActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.BlockchainActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.PacketSendActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.PacketHistoryActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.PacketDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferOutViaActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferOutViaHistoryActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferAddressActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferAddressBookActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.ScanAddressActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferFriendActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.wallet.TransferFriendDelActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.widget.random.RandomVoiceActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.AddFriendActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.SearchFriendActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.SearchFriendResultActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.ScanAddFriendActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.contact.StrangerInfoActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.contact.FriendInfoActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.FriendInfoAliasActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.AddFriendAcceptActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.AddFriendPhoneActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.AddFriendRecommendActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.FriendInfoRecordActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.home.HomeActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="connect.activity.chat.ChatActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="connect.activity.chat.set.PrivateSetActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="connect.activity.chat.set.GroupSetActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="connect.activity.chat.set.GroupMemberActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="connect.activity.chat.exts.PaymentActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="connect.activity.chat.exts.TransferToActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="connect.activity.chat.exts.PaymentDetailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="connect.activity.chat.exts.CrowdingDetailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="connect.activity.chat.exts.LuckyPacketActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="connect.activity.chat.set.ContactCardActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="connect.widget.imagewatcher.ImageViewerActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.exts.VideoPlayerActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name="connect.broadcast.NotificationBroadcastReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.notification"/>
+                <action android:name="com.notification" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="instant.ui.broadcast.NetBroadcastReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
-        <service android:name="connect.service.UpdateInfoService"/>
-        <service android:name="connect.service.UpdateAppService"/>
+        <service android:name="connect.service.UpdateInfoService" />
+        <service android:name="connect.service.UpdateAppService" />
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
-
-        <activity
-            android:name="connect.activity.chat.exts.TransferSingleDetailActivity"
-            android:screenOrientation="portrait"/>
+            android:value="@integer/google_play_services_version" />
         <activity
             android:name="connect.activity.chat.set.GroupNameActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.set.GroupMyNameActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.set.GroupManageActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.set.GroupQRActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.set.GroupIntroduceActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.set.GroupOwnerToActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.exts.HandleGroupRequestActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.exts.GroupCrowdingRecordsActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.exts.ApplyJoinGroupActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.exts.OuterWebsiteActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.widget.selefriend.SelectRecentlyChatActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.widget.selefriend.SelectContactActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.widget.selefriend.SelectFriendActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="connect.activity.chat.exts.GroupAtActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.chat.exts.GoogleMapActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.widget.album.AlbumActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.home.DBUpdateActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.set.GroupCreateSelecrActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.set.GroupInviteActivity"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name="connect.activity.chat.exts.TransferMutiDetailActivity"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <service
             android:name="connect.service.GroupService"
-            android:exported="false">
-        </service>
+            android:exported="false" />
 
         <activity
-            android:name="connect.activity.chat.set.GroupCreateActivity"
-            android:label="@string/title_activity_group_create">
-        </activity>
-        <activity android:name="connect.activity.chat.subscribe.SubscribeListActivity">
-        </activity>
+            android:name="connect.activity.chat.set.GroupDepartSelectActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="connect.activity.chat.subscribe.SubscribeMessageActivity"
-            android:label="@string/title_activity_subscribe_detail">
-        </activity>
+            android:name="connect.activity.chat.set.GroupCreateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.chat.set.BaseGroupSelectActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.workbench.WorkSeachActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

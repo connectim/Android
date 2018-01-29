@@ -82,7 +82,12 @@ public abstract class BaseChat<T> implements Serializable {
     public abstract T locationMsg(float latitude,float longitude,String address,String thum,int width,int height);
 
     /**
-     * @param noticeType 0: normal text 1:payment 2:crowding 3:lucky packet 4:stranger
+     * @param noticeType 0: normal text
+     *                   1:payment
+     *                   2:crowding
+     *                   3:lucky packet
+     *                   4:stranger
+     *                   5:审核信息
      * @param content show text
      * @param ext ext
      * @return
@@ -128,12 +133,6 @@ public abstract class BaseChat<T> implements Serializable {
     public abstract T outerWebsiteMsg(String url, String title, String subtitle, String img);
 
     /**
-     * 发送加密提示消息
-     * @return
-     */
-    public abstract T encryptChatMsg();
-
-    /**
      * 初始化不同类型的消息
      * @param type
      * @return
@@ -162,4 +161,5 @@ public abstract class BaseChat<T> implements Serializable {
         isStranger = stranger;
     }
 
+    public abstract String friendPublicKey();
 }

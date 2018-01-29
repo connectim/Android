@@ -150,6 +150,11 @@
         <item name="android:background">@color/color_eeeeee</item>
     </style>
 
+    <style name="BaseViewLine.f1f1f1">
+        <item name="android:layout_height">@dimen/dp_1</item>
+        <item name="android:background">@color/color_FBFBFB</item>
+    </style>
+
     <style name="text_chat_msgtime_style">
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/com_notice_r8</item>
@@ -174,4 +179,8 @@
         <item name="textAllCaps">true</item>
     </style>
 
+    <style name="AnimationPreview">
+        <item name="android:windowEnterAnimation">@anim/popupwindow_chatadd_fadein</item>
+        <item name="android:windowExitAnimation">@anim/popupwindow_chatadd_fadeout</item>
+    </style>
 </resources>

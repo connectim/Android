@@ -9,18 +9,14 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.ChatAdapter;
-import connect.activity.chat.bean.DestructOpenBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ConversionEntity;
-import connect.instant.model.CDiscussChat;
 import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.instant.model.CRobotChat;
@@ -75,17 +71,21 @@ public abstract class BaseChatActvity extends BaseActivity {
         roomSession = RoomSession.getInstance();
         roomSession.setRoomType(talker.getTalkType());
         roomSession.setRoomKey(talker.getTalkKey());
+        roomSession.setFriendAvatar(talker.getAvatar());
 
         Connect.ChatType chatType = talker.getTalkType();
         switch (chatType) {
             case PRIVATE:
-                normalChat = new CFriendChat(talker.getTalkKey());
+                CFriendChat cFriendChat = new CFriendChat(talker.getTalkKey());
+                if (!TextUtils.isEmpty(talker.getNickName())) {
+                    cFriendChat.setUserAvatar(talker.getAvatar());
+                    cFriendChat.setUserName(talker.getNickName());
+                }
+                normalChat = cFriendChat;
                 break;
             case GROUPCHAT:
-                normalChat = new CGroupChat(talker.getTalkKey());
-                break;
             case GROUP_DISCUSSION:
-                normalChat = new CDiscussChat(talker.getTalkKey());
+                normalChat = new CGroupChat(talker.getTalkKey());
                 break;
             case CONNECT_SYSTEM:
                 normalChat = CRobotChat.getInstance();
@@ -106,12 +106,6 @@ public abstract class BaseChatActvity extends BaseActivity {
                 .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(this))
                 .setErrorImageRes(R.mipmap.img_default)
                 .create();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(DestructOpenBean openBean) {
-        long time = openBean.getTime();
-        updateBurnState(time);
     }
 
     public void sendNormalMsg(boolean needSend, ChatMsgEntity bean) {

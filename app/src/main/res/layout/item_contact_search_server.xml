@@ -37,6 +37,7 @@
             android:layout_alignBottom="@+id/avatar_rimg"
             android:layout_marginLeft="@dimen/dp_20"
             android:textStyle="bold"
+            android:singleLine="true"
             android:text=""/>
     </RelativeLayout>
 

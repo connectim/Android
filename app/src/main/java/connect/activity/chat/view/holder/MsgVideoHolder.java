@@ -12,6 +12,7 @@ import connect.activity.chat.view.BubbleImg;
 import connect.activity.chat.view.DVideoProView;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
+import connect.utils.StringUtil;
 import connect.utils.chatfile.download.DownLoadFile;
 import connect.utils.chatfile.inter.InterFileDown;
 import connect.widget.selefriend.SelectRecentlyChatActivity;
@@ -41,7 +42,6 @@ public class MsgVideoHolder extends MsgChatHolder {
     public void buildRowData(final MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         final Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(msgExtEntity.getContents());
-        RoomSession.getInstance().checkBurnTime(videoMessage.getSnapTime());
 
         int videoTime = videoMessage.getTimeLength();
         timeTxt.setText(String.format(Locale.ENGLISH, "%1$02d:%2$02d", videoTime / 60, videoTime % 60));
@@ -56,8 +56,9 @@ public class MsgVideoHolder extends MsgChatHolder {
         }
 
         final Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
+        final String fileKey = StringUtil.bytesToHexString(videoMessage.getFileKey().toByteArray());
         videomsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),
-                msgExtEntity.getEcdh(),videoMessage.getCover(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
+                fileKey, videoMessage.getCover(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
         contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,14 +75,15 @@ public class MsgVideoHolder extends MsgChatHolder {
                             startPlayVideo(localPath, videoMessage.getTimeLength(), msgExtEntity.getMessage_id());
                         }
                     } else {
-                        DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getEcdh(),url, new InterFileDown() {
+                        DownLoadFile loadFile = new DownLoadFile(url, new InterFileDown() {
                             @Override
                             public void successDown(byte[] bytes) {
                                 videoProView.loadState(true, 0);
                                 videomsg.setOpenBurn(false);
                                 videomsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(),
-                                        msgExtEntity.getEcdh(),videoMessage.getUrl(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
+                                        fileKey, videoMessage.getUrl(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
 
+                                bytes = decodeFile(fileKey, bytes);
                                 FileUtil.byteArrToFilePath(bytes, localPath);
                                 if (videoMessage.getSnapTime() == 0) {
                                     startPlayVideo(localPath, videoMessage.getTimeLength(), "");
@@ -153,16 +155,19 @@ public class MsgVideoHolder extends MsgChatHolder {
             String url = videoMessage.getUrl();
             final String localPath = FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.VIDEO);
 
+            final String fileKey = StringUtil.bytesToHexString(videoMessage.getFileKey().toByteArray());
+
             if (FileUtil.isLocalFile(url)) {
-                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), url, videoMessage.getTimeLength());
+                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), url, videoMessage.getTimeLength(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
             } else if (FileUtil.isExistFilePath(localPath)) {
-                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
+                SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength(), videoMessage.getImageWidth(), videoMessage.getImageHeight());
             } else {
-                Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
-                DownLoadFile loadFile = new DownLoadFile(chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getEcdh(),url, new InterFileDown() {
+                DownLoadFile loadFile = new DownLoadFile(url, new InterFileDown() {
                     @Override
                     public void successDown(byte[] bytes) {
                         videoProView.loadState(true, 0);
+
+                        bytes = decodeFile(fileKey, bytes);
                         FileUtil.byteArrToFilePath(bytes, localPath);
                         SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(msgExtEntity.getMessageType()), localPath, videoMessage.getTimeLength());
                     }

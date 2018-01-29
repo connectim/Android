@@ -13,18 +13,17 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
 import connect.service.UpdateAppService;
+import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.DialogUtil;
-import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
-import connect.utils.permission.PermissionUtil;
-import connect.utils.system.SystemDataUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
@@ -39,8 +38,6 @@ public class AboutActivity extends BaseActivity {
     TextView appVersion;
     @Bind(R.id.llRate)
     LinearLayout llRate;
-    @Bind(R.id.llOpenSource)
-    LinearLayout llOpenSource;
     @Bind(R.id.tvNewVersion)
     TextView tvNewVersion;
     @Bind(R.id.llUpdate)
@@ -76,11 +73,6 @@ public class AboutActivity extends BaseActivity {
     @OnClick(R.id.left_img)
     void goback(View view){
         ActivityUtil.goBack(mActivity);
-    }
-
-    @OnClick(R.id.llOpenSource)
-    void goOpenSource(View view){
-        ActivityUtil.next(mActivity,AboutDeveloperActivity.class);
     }
 
     @OnClick(R.id.llUpdate)
@@ -125,9 +117,9 @@ public class AboutActivity extends BaseActivity {
 
     private void requestAppUpdate(){
         Connect.VersionRequest versionRequest = Connect.VersionRequest.newBuilder()
-                .setCategory(1)
+                .setCategory(2)
                 .setPlatform(2)
-                .setProtocolVersion(0)
+                .setProtocolVersion(1)
                 .setVersion(SystemDataUtil.getVersionName(mActivity))
                 .build();
         HttpRequest.getInstance().post(UriUtil.CONNECT_V1_VERSION, versionRequest, new ResultCall<Connect.HttpNotSignResponse>() {
@@ -136,7 +128,7 @@ public class AboutActivity extends BaseActivity {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                     versionResponse = Connect.VersionResponse.parseFrom(structData.getPlainData());
-                    if(ProtoBufUtil.getInstance().checkProtoBuf(versionResponse)){
+                    if(!TextUtils.isEmpty(versionResponse.getVersion())){
                         compareInt = StringUtil.VersionComparison(versionResponse.getVersion(),SystemDataUtil.getVersionName(mActivity));
                         switch (compareInt){
                             case 1:
@@ -158,5 +150,4 @@ public class AboutActivity extends BaseActivity {
             public void onError(Connect.HttpNotSignResponse response) {}
         });
     }
-
 }

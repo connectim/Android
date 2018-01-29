@@ -1,7 +1,5 @@
 package instant.parser;
 
-import android.text.TextUtils;
-
 import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
@@ -9,11 +7,8 @@ import java.nio.ByteBuffer;
 import instant.bean.Session;
 import instant.bean.UserCookie;
 import instant.parser.localreceiver.MessageLocalReceiver;
-import instant.utils.StringUtil;
 import instant.utils.cryption.DecryptionUtil;
 import instant.utils.cryption.EncryptionUtil;
-import instant.utils.cryption.SupportKeyUril;
-import instant.utils.log.LogManager;
 import protos.Connect;
 
 /**
@@ -51,29 +46,7 @@ public class ChatParser extends InterParse {
 
     public synchronized void singleChat(Connect.MessagePost msgpost) throws Exception {
         Connect.MessageData messageData = msgpost.getMsgData();
-        Connect.ChatSession chatSession = messageData.getChatSession();
-        Connect.ChatMessage chatMessage = messageData.getChatMsg();
-
-        String priKey = null;
-        String pubkey = null;
-        LogManager.getLogger().d(TAG, "Id: " + chatMessage.getMsgId());
-        ByteString fromSalt = chatSession.getSalt();
-        ByteString toSalt = chatSession.getVer();
-
-        UserCookie toCookie = Session.getInstance().getCookieBySalt(StringUtil.bytesToHexString(toSalt.toByteArray()));
-        if (toCookie == null) {
-            return;
-        }
-        priKey = toCookie.getPriKey();
-        pubkey = chatSession.getPubKey();
-        EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.OTHER;
-        ecdhExts.setBytes(SupportKeyUril.xor(fromSalt.toByteArray(), toSalt.toByteArray()));
-        byte[] rawECDHkey = SupportKeyUril.getRawECDHKey(priKey, pubkey);
-        rawECDHkey = EncryptionUtil.getKeyExtendedECDH(ecdhExts, rawECDHkey);
-
-        Connect.GcmData gcmData = messageData.getChatMsg().getCipherData();
-        byte[] contents = DecryptionUtil.decodeAESGCM(rawECDHkey, gcmData);
-        MessageLocalReceiver.localReceiver.singleChat(chatMessage, rawECDHkey, contents);
+        MessageLocalReceiver.localReceiver.singleChat(messageData);
     }
 
     /**
@@ -82,7 +55,9 @@ public class ChatParser extends InterParse {
      * @param msgpost
      */
     protected synchronized void groupChat(Connect.MessagePost msgpost) {
-        MessageLocalReceiver.localReceiver.groupChat(msgpost);
+        Connect.MessageData messageData = msgpost.getMsgData();
+        Connect.ChatMessage chatMessage = messageData.getChatMsg();
+        MessageLocalReceiver.localReceiver.groupChat(chatMessage);
     }
 
     /**

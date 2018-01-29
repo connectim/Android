@@ -3,10 +3,9 @@ package instant.utils.cryption;
 import com.google.protobuf.ByteString;
 
 import java.security.SecureRandom;
+
 import connect.wallet.jni.AllNativeMethod;
 import connect.wallet.jni.GCMModel;
-import instant.utils.XmlParser;
-import instant.utils.StringUtil;
 import protos.Connect;
 
 /**
@@ -26,7 +25,7 @@ public class EncryptionUtil {
      * Take struct encryption
      */
     public static Connect.GcmData encodeAESGCMStructData(ExtendedECDH extendedECDH, String priKey, ByteString bytes) {
-        return encodeAESGCMStructData(extendedECDH, priKey, XmlParser.getInstance().serverPubKey(), bytes);
+        return encodeAESGCMStructData(extendedECDH, priKey, "", bytes);
     }
 
     public static Connect.GcmData encodeAESGCMStructData(ExtendedECDH extendedECDH, String priKey, String serverPubKey, ByteString bytes) {
@@ -91,11 +90,6 @@ public class EncryptionUtil {
                 break;
             case EMPTY:
                 salts = new byte[64];
-                rawECDHKey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(rawECDHKey, rawECDHKey.length, salts, salts.length, 12, 32);
-                break;
-            case SALT:
-                String index = SupportKey.getInstance().getSaltToken();
-                salts = StringUtil.hexStringToBytes(index);
                 rawECDHKey = AllNativeMethod.cdxtalkPBKDF2HMACSHA512(rawECDHKey, rawECDHKey.length, salts, salts.length, 12, 32);
                 break;
             case OTHER:

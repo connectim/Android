@@ -28,6 +28,6 @@
             android:gravity="center"
             android:text="@string/Common_Cancel"
             android:textColor="@color/color_007aff"
-            android:textSize="@dimen/sp_18"/>
+            android:textSize="@dimen/sp_14"/>
     </RelativeLayout>
 </LinearLayout>

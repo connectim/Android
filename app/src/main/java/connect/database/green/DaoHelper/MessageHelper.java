@@ -13,11 +13,7 @@ import connect.database.green.BaseDao;
 import connect.database.green.bean.MessageEntity;
 import connect.database.green.dao.MessageEntityDao;
 import connect.utils.StringUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.cryption.EncryptionUtil;
-import connect.utils.cryption.SupportKeyUril;
 import instant.bean.ChatMsgEntity;
-import protos.Connect;
 
 /**
  * message detail
@@ -48,6 +44,8 @@ public class MessageHelper extends BaseDao {
 
     /********************************* select ***********************************/
     public List<ChatMsgEntity> loadMoreMsgEntities(String message_ower, long firsttime) {
+        daoSession.clear();
+
         if (TextUtils.isEmpty(message_ower)) {
             message_ower = "";
         }
@@ -60,7 +58,6 @@ public class MessageHelper extends BaseDao {
         ChatMsgEntity msgEntity = null;
         List<ChatMsgEntity> msgEntities = new ArrayList();
 
-        byte[] localHashKeys = SupportKeyUril.localHashKey().getBytes();
         while (cursor.moveToNext()) {
             msgEntity = new ChatMsgEntity();
             msgEntity.set_id(cursorGetLong(cursor, "_id"));
@@ -70,7 +67,6 @@ public class MessageHelper extends BaseDao {
             msgEntity.setMessage_from(cursorGetString(cursor, "MESSAGE_FROM"));
             msgEntity.setMessage_to(cursorGetString(cursor, "MESSAGE_TO"));
             msgEntity.setMessageType(cursorGetInt(cursor, "MESSAGE_TYPE"));
-            msgEntity.setEcdh(cursorGetString(cursor,"ECDH"));
             msgEntity.setContent(cursorGetString(cursor, "CONTENT"));
             msgEntity.setSnap_time(cursorGetLong(cursor, "SNAP_TIME"));
             msgEntity.setSend_status(cursorGetInt(cursor, "SEND_STATUS"));
@@ -84,13 +80,7 @@ public class MessageHelper extends BaseDao {
 
             String content = msgEntity.getContent();
             if (!TextUtils.isEmpty(content)) {
-                try {
-                    Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(content));
-                    byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
-                    msgEntity.setContents(contents);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                msgEntity.setContents(StringUtil.hexStringToBytes(content));
             }
             msgEntities.add(msgEntity);
         }
@@ -111,9 +101,7 @@ public class MessageHelper extends BaseDao {
         ChatMsgEntity chatMsgEntity = null;
         try {
             MessageEntity messageEntity = detailEntities.get(0);
-            byte[] localHashKeys = connect.utils.cryption.SupportKeyUril.localHashKey().getBytes();
-            Connect.GcmData gcmData = Connect.GcmData.parseFrom(StringUtil.hexStringToBytes(messageEntity.getContent()));
-            byte[] contents = DecryptionUtil.decodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, localHashKeys, gcmData);
+            byte[] contents = StringUtil.hexStringToBytes(messageEntity.getContent());
 
             chatMsgEntity = messageEntity.messageToChatEntity();
             chatMsgEntity.setContents(contents);
@@ -134,23 +122,34 @@ public class MessageHelper extends BaseDao {
         return detailEntities.get(0);
     }
 
+    public MessageEntity loadMsgLastOne(String owner) {
+        QueryBuilder<MessageEntity> queryBuilder = messageEntityDao.queryBuilder();
+        queryBuilder.where(MessageEntityDao.Properties.Message_ower.eq(owner))
+                .orderDesc(MessageEntityDao.Properties.Message_id)
+                .limit(1).build();
+        List<MessageEntity> detailEntities = queryBuilder.list();
+        if (detailEntities.size() == 0) {
+            return null;
+        }
+        return detailEntities.get(0);
+    }
+
     /********************************* add ***********************************/
     public void insertMessageEntity(MessageEntity msgEntity) {
         messageEntityDao.insertOrReplaceInTx(msgEntity);
 
-        /*String sql = "INSERT INTO MESSAGE_ENTITY (MESSAGE_OWER, MESSAGE_ID, CHAT_TYPE, MESSAGE_FROM ,MESSAGE_TO, MESSAGE_TYPE, CONTENT," +
-                "READ_TIME,SEND_STATUS,SNAP_TIME,CREATETIME) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
-
-        Object[] objects = new Object[]{"'" + msgEntity.getMessage_ower() + "'", "'" + msgEntity.getMessage_id() + "'", msgEntity.getChatType(), "'" + msgEntity.getMessage_from() + "'",
-                "'" + msgEntity.getMessage_to() + "'", msgEntity.getMessageType(), "'" + msgEntity.getContent() + "'",
-                msgEntity.getRead_time(), msgEntity.getSend_status(), msgEntity.getSnap_time(), msgEntity.getCreatetime()
-        };
-        daoSession.getDatabase().execSQL(sql, objects);*/
+        //        daoSession.clear();
+//        String sql = "INSERT INTO MESSAGE_ENTITY (MESSAGE_OWER, MESSAGE_ID, CHAT_TYPE, MESSAGE_FROM ,MESSAGE_TO, MESSAGE_TYPE, CONTENT," +
+//                "READ_TIME,SEND_STATUS,SNAP_TIME,CREATETIME) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+//
+//        Object[] objects = new Object[]{msgEntity.getMessage_ower(), msgEntity.getMessage_id(), msgEntity.getChatType(), msgEntity.getMessage_from(),
+//                msgEntity.getMessage_to(), msgEntity.getMessageType(), msgEntity.getContent(),
+//                msgEntity.getRead_time(), msgEntity.getSend_status(), msgEntity.getSnap_time(), msgEntity.getCreatetime()
+//        };
+//        daoSession.getDatabase().execSQL(sql, objects);
     }
 
     public ChatMsgEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
-        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, SupportKeyUril.localHashKey().getBytes(), contents);
-
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.setMessage_id(messageid);
         messageEntity.setMessage_ower(messageowner);
@@ -158,7 +157,7 @@ public class MessageHelper extends BaseDao {
         messageEntity.setMessageType(messagetype);
         messageEntity.setMessage_from(from);
         messageEntity.setMessage_to(to);
-        messageEntity.setContent(StringUtil.bytesToHexString(gcmData.toByteArray()));
+        messageEntity.setContent(StringUtil.bytesToHexString(contents));
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
         messageEntity.setRead_time(0L);
@@ -193,7 +192,7 @@ public class MessageHelper extends BaseDao {
         bd.executeDeleteWithoutDetachingEntities();
     }
 
-    public void clearChatMsgs(){
+    public void clearChatMsgs() {
         messageEntityDao.deleteAll();
     }
 

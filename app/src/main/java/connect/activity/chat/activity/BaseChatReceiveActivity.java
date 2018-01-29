@@ -8,15 +8,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 
 import connect.activity.base.BaseListener;
-import connect.activity.chat.bean.DestructOpenBean;
-import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.exts.GoogleMapActivity;
 import connect.activity.chat.exts.GroupAtActivity;
-import connect.activity.chat.exts.LuckyPacketActivity;
-import connect.activity.chat.exts.PaymentActivity;
-import connect.activity.chat.exts.TransferToActivity;
 import connect.activity.chat.set.ContactCardActivity;
 import connect.activity.home.HomeActivity;
 import connect.database.green.DaoHelper.MessageHelper;
@@ -32,12 +27,9 @@ import connect.widget.album.AlbumActivity;
 import connect.widget.bottominput.InputPanel;
 import connect.widget.camera.CameraTakeActivity;
 import connect.widget.imagewatcher.ImageViewerActivity;
-import connect.widget.selefriend.SelectFriendActivity;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
-import instant.sender.model.FriendChat;
 import instant.sender.model.GroupChat;
-import protos.Connect;
 
 /**
  * Created by Administrator on 2017/10/31.
@@ -87,21 +79,6 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                     chatAdapter.clearHistory();
                     MessageHelper.getInstance().deleteRoomMsg(talker.getTalkKey());
                 }
-                break;
-            case TRANSFER:
-                if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE) {
-                    TransferToActivity.startActivity(activity, normalChat.chatKey());
-                } else if (normalChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-                    SelectFriendActivity.startActivity(activity, SelectFriendActivity.SOURCE_GROUP, talker.getTalkKey(), null);
-                }
-                break;
-            case REDPACKET:
-                int talkType = talker.getTalkType().getNumber();
-                String talkKey = talker.getTalkKey();
-                LuckyPacketActivity.startActivity(activity, talkType, talkKey);
-                break;
-            case PAYMENT:
-                PaymentActivity.startActivity(activity, talker.getTalkType().getNumber(), talker.getTalkKey());
                 break;
             case NAMECARD:
                 ContactCardActivity.startActivity(activity,talker.getTalkKey());
@@ -155,7 +132,7 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 if (identify.equals(normalChat.chatKey())) {
                     String groupName = (String) objects[1];
                     ((GroupChat) normalChat).setNickName(groupName);
-                    updateBurnState(RoomSession.getInstance().getBurntime() <= 0 ? 0 : 1);
+                    updateBurnState(0);
                 }
                 break;
             case GROUP_UPDATEMYNAME://update my nick in group
@@ -175,28 +152,13 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 break;
             case UNARRIVE_UPDATE://update chat Cookie
                 if (normalChat.chatKey().equals(objects[0])) {
-                    ((FriendChat) normalChat).setFriendCookie(null);
-                    ((FriendChat) normalChat).loadFriendCookie();
+                    // ((FriendChat) normalChat).setFriendCookie(null);
                 }
                 break;
             case UNARRIVE_HALF:
                 break;
             case GROUPAT_TO:
                 GroupAtActivity.startActivity(activity, normalChat.chatKey());
-                break;
-            case BURNREAD_SET:
-                long time = (Long) objects[1];
-                if (objects[0].equals(talker.getTalkKey()) &&
-                        time != RoomSession.getInstance().getBurntime()) {
-                    RoomSession.getInstance().setBurntime(time);
-                    DestructOpenBean.sendDestructMsg(time);
-                }
-                break;
-            case BURNREAD_RECEIPT:
-                if (objects[0].equals(talker.getTalkKey())) {
-                    String readReceiptId = (String) objects[1];
-                    DestructReadBean.getInstance().sendEventDelay(readReceiptId);
-                }
                 break;
             case MESSAGE_RECEIVE:
                 if (objects[0].equals(talker.getTalkKey())) {

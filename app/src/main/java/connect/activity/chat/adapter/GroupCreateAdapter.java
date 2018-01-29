@@ -19,7 +19,6 @@ import connect.utils.glide.GlideUtil;
 /**
  * Created by Administrator on 2017/11/20.
  */
-
 public class GroupCreateAdapter extends RecyclerView.Adapter<GroupCreateAdapter.MemberHolder>{
 
     private List<ContactEntity> contactEntities=new ArrayList<>();
@@ -42,7 +41,7 @@ public class GroupCreateAdapter extends RecyclerView.Adapter<GroupCreateAdapter.
         ContactEntity entity = contactEntities.get(position);
 
         GlideUtil.loadAvatarRound(holder.avatar, entity.getAvatar());
-        String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getUsername() : entity.getRemark();
+        String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
         holder.name.setText(curName);
     }
 

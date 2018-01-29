@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginLeft="@dimen/dp_5"
-        android:background="@drawable/shape_stroke_green"
+        android:background="@drawable/shape_stroke_blue"
         android:gravity="center_vertical"
         android:paddingBottom="@dimen/dp_7"
         android:paddingLeft="@dimen/dp_5"

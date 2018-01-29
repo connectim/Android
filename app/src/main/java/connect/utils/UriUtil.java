@@ -32,6 +32,29 @@ public class UriUtil {
     public static String CONNECT_V2_SIGN_UP = "/connect/v2/sign_up";
     /** The private key is registered */
     public static String CONNECT_V2_SIGN_UP_PASSWORD = "/connect/v2/sign_in/password";
+    /** The private key is registered */
+    public static String CONNECT_V3_LOGIN = "/connect/v3/login";
+    /** The private key is registered */
+    public static String CONNECT_V3_SYNC_WORKMATE = "/connect/v3/sync_workmate";
+    /** The private key is registered */
+    public static String CONNECT_V3_DEPARTMENT = "/connect/v3/department";
+    /** Query the user information 1: name(en)  2:uid  3:name(zh)*/
+    public static String CONNECT_V3_WORKMATE_SEARCH = "/connect/v3/workmate/search";
+    public static String CONNECT_V3_USERS_FOLLOW = "/connect/v3/users/follow";
+    public static String CONNECT_V3_PROXY_TOKEN = "/attendance/v3/proxy/token";
+    public static String CONNECT_V3_API_BANNERS = "/connect/v3/api/banners";
+    public static String CONNECT_V3_API_APPLICATIONS = "/connect/v3/api/applications";
+    public static String CONNECT_V3_PROXY_VISITOR_RECORDS = "/attendance/v3/proxy/visitor/records";
+    public static String CONNECT_V3_PROXY_EXAMINE_VERIFY = "/attendance/v3/proxy/examine/verify";
+    public static String CONNECT_V3_PROXY_RECORDS_HISTORY = "/attendance/v3/proxy/visitor/records/history";
+
+    public static String CONNECT_V3_API_APPLICATIONS_ADD = "/connect/v3/api/applications/add";
+    public static String CONNECT_V3_API_APPLICATIONS_DEL = "/connect/v3/api/applications/del";
+
+    /** 根据 部门id查询 所有员工 */
+    public static String CONNECT_V3_DEPAERTMENT_WORKMATES = "/connect/v3/department/workmates";
+    /** 群成员邀请入群 */
+    public static String CONNECT_V3_GROUP_INVITE = "/connect/v3/group/invite";
 
     /**======================================================================================
      *                                Login successfully initialized
@@ -47,7 +70,7 @@ public class UriUtil {
     /**======================================================================================
      *                                setting
      * ====================================================================================== */
-    /** Query the user information 1: uid   2:connectid */
+    /** Query the user information 1: uid   2:connectid  "":username*/
     public static String CONNECT_V1_USER_SEARCH = "/connect/v1/users/search";
     /** Set user basic information */
     public static String CONNECT_V1_SETTING_USERINFO = "/connect/v1/setting/userinfo";
@@ -85,7 +108,8 @@ public class UriUtil {
     public static String V2_SETTING_MOBILE_VERIFY = "/connect/v2/setting/mobile/verify";
     /** delete account */
     public static String V2_SETTING_DELETE_USER = "/connect/v2/setting/delete_user";
-
+    /** delete account */
+    public static String CONNECT_V3_PUBKEY = "/connect/v3/pubkey";
 
     /**======================================================================================
      *                                wallet

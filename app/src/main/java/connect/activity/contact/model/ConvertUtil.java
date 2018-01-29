@@ -14,7 +14,6 @@ import connect.activity.contact.presenter.AddFriendPhonePresenter;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
-import connect.utils.cryption.SupportKeyUril;
 import protos.Connect;
 
 /**
@@ -29,7 +28,7 @@ public class ConvertUtil {
         requestEntity.setSource(receiver.getSource());
         requestEntity.setUid(receiver.getSender().getUid());
         requestEntity.setAvatar(receiver.getSender().getAvatar());
-        requestEntity.setUsername(receiver.getSender().getUsername());
+        requestEntity.setUsername(receiver.getSender().getName());
         requestEntity.setStatus(1);
         requestEntity.setRead(0);
         requestEntity.setTips(receiver.getTips());
@@ -77,7 +76,8 @@ public class ConvertUtil {
                 }
 
                 for (PhoneContactBean contactBean : localList) {
-                    String phoneHmac = SupportKeyUril.hmacSHA512(contactBean.getPhone(), SupportKeyUril.SaltHMAC);
+                    // String phoneHmac = SupportKeyUril.hmacSHA512(contactBean.getPhone(), SupportKeyUril.SaltHMAC);
+                    String phoneHmac="";
                     boolean isAdd = true;
                     for(PhoneContactBean serverContactBean : arrayList){
                         if (serverContactBean.getPhone().equals(phoneHmac)) {

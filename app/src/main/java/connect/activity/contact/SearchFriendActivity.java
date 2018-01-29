@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -64,10 +65,13 @@ public class SearchFriendActivity extends BaseActivity {
         recyclerview.setAdapter(adapter);
         adapter.setOnItemClickListener(itemClickListener);
         SystemUtil.showKeyBoard(mActivity, searchEdit);
+
+        searchEdit.setOnKeyListener(keyListener);
     }
 
     @OnClick(R.id.cancel_tv)
     void goBack(View view) {
+        SystemUtil.hideKeyBoard(mActivity, searchEdit);
         ActivityUtil.goBackWithResult(mActivity, 0, null, android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
@@ -78,13 +82,9 @@ public class SearchFriendActivity extends BaseActivity {
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
         public void afterTextChanged(Editable s) {
             if (TextUtils.isEmpty(s.toString())) {
@@ -111,13 +111,29 @@ public class SearchFriendActivity extends BaseActivity {
             switch (type) {
                 case 1:
                     SearchFriendResultActivity.startActivity(mActivity, list.getUid());
+                    mActivity.finish();
                     break;
                 case 2:
-                    FriendInfoActivity.startActivity(mActivity, list.getUid());
+                    ContactInfoActivity.lunchActivity(mActivity, list, "");
+                    mActivity.finish();
                     break;
                 default:
                     break;
             }
+        }
+    };
+
+    private View.OnKeyListener keyListener = new View.OnKeyListener(){
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                        .hideSoftInputFromWindow(SearchFriendActivity.this.getCurrentFocus()
+                                .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                SearchFriendResultActivity.startActivity(mActivity, searchEdit.getText().toString().trim());
+                mActivity.finish();
+            }
+            return false;
         }
     };
 

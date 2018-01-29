@@ -11,10 +11,7 @@ import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.log.LogManager;
 import instant.bean.ChatMsgEntity;
-import instant.bean.Session;
-import instant.bean.UserCookie;
 import instant.parser.inter.UnreachableListener;
-import instant.utils.SharedUtil;
 import protos.Connect;
 
 /**
@@ -40,16 +37,7 @@ public class UnreachableReceiver implements UnreachableListener {
 
     @Override
     public void blackFriendNotice(String publicKey) {
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(publicKey);
-        if (friendEntity != null) {
-            CFriendChat friendChat = new CFriendChat(friendEntity);
 
-            String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Message_Black_Friend_Notice);
-            ChatMsgEntity msgExtEntity = friendChat.noticeMsg(5, content, publicKey);
-
-            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, publicKey, msgExtEntity);
-        }
     }
 
     @Override
@@ -68,16 +56,13 @@ public class UnreachableReceiver implements UnreachableListener {
 
     @Override
     public void friendCookieExpired(String rejectUid) {
-        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(rejectUid);
-        if (friendEntity != null) {
-            CFriendChat friendChat = new CFriendChat(friendEntity);
+        CFriendChat friendChat = new CFriendChat(rejectUid);
 
-            String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Message_Friend_Cookie_Expired_Notice);
-            ChatMsgEntity msgExtEntity = friendChat.noticeMsg(0, content, rejectUid);
+        String content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Message_Friend_Cookie_Expired_Notice);
+        ChatMsgEntity msgExtEntity = friendChat.noticeMsg(0, content, rejectUid);
 
-            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, rejectUid, msgExtEntity);
-        }
+        MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, rejectUid, msgExtEntity);
     }
 
     @Override
@@ -85,22 +70,18 @@ public class UnreachableReceiver implements UnreachableListener {
         Connect.ChatCookieData cookieData = cookie.getData();
 
         LogManager.getLogger().d(TAG, "saltNotMatch :" + msgid);
-        ContactEntity friendEntity= ContactHelper.getInstance().loadFriendEntity(rejectUid);
+        ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(rejectUid);
         if (friendEntity == null) {
             return;
         }
+    }
 
-        UserCookie userCookie = new UserCookie();
-        userCookie.setPubKey(cookieData.getChatPubKey());
-        userCookie.setSalt(cookieData.getSalt().toByteArray());
-        userCookie.setExpiredTime(cookieData.getExpired());
-        Session.getInstance().setFriendCookie(rejectUid, userCookie);
-        SharedUtil.getInstance().insertFriendCookie(rejectUid, userCookie);
-        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UNARRIVE_UPDATE, rejectUid);
-
-        ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
+    @Override
+    public void publicKeyNotMatch(String msgid, final String rejectUid,Connect.PubKey pubKey) throws Exception {
+        final ChatMsgEntity messageEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
         if (messageEntity != null) {
-            CFriendChat friendChat = new CFriendChat(friendEntity);
+            CFriendChat friendChat = new CFriendChat(rejectUid);
+            friendChat.setFriendPublicKey(pubKey.getPubKey());
             friendChat.sendPushMsg(messageEntity);
         }
     }

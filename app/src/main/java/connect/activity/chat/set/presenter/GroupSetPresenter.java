@@ -27,7 +27,6 @@ import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -107,24 +106,6 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
 
         view.groupName(groupEntity.getName());
 
-        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
-        GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myUid);
-        String myAlias = "";
-        if (myMember == null) {
-
-        }else{
-            myAlias = TextUtils.isEmpty(myMember.getNick()) ? myMember.getUsername() : myMember.getNick();
-        }
-        view.groupMyAlias(myAlias);
-
-        view.groupQRCode();
-
-        boolean visiable = false;
-        if (!(myMember == null || myMember.getRole() == null || myMember.getRole() == 0)) {
-            visiable = true;
-        }
-        view.groupManager(visiable);
-
         ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(roomKey);
         boolean top = false;
         if (conversionEntity != null) {
@@ -158,24 +139,10 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.GroupSettingInfo settingInfo = Connect.GroupSettingInfo.parseFrom(structData.getPlainData());
                     if(ProtoBufUtil.getInstance().checkProtoBuf(settingInfo)){
                         view.noticeSwitch(settingInfo.getMute());
-
-                        // qwerty
-//                        if (settingInfo.getPublic()) {
-//                            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
-//                            GroupMemberEntity myMember = ContactHelper.getInstance().loadGroupMemberEntity(roomKey, myUid);
-//                            if (myMember == null || myMember.getRole() == 0) {
-//                                view.groupNameClickable(false);
-//                            } else {
-//                                view.groupNameClickable(true);
-//                            }
-//                        } else {
-//                            view.groupNameClickable(true);
-//                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -236,7 +203,6 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
 
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                 }
-
                 ContactNotice.receiverGroup();
             }
 

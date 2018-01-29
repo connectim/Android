@@ -48,7 +48,7 @@ public class UserConnectIdActivity extends BaseActivity {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
 
         CreateScan createScan = new CreateScan();
-        Bitmap bitmap = createScan.generateQRCode(ResolveScanUtil.CONNECT_HEAD + userBean.getConnectId(),
+        Bitmap bitmap = createScan.generateQRCode(ResolveScanUtil.CONNECT_HEAD + userBean.getUid(),
                 mActivity.getResources().getColor(R.color.color_00ffbf));
         scanImg.setImageBitmap(bitmap);
     }

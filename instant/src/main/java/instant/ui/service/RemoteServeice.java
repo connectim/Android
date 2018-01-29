@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.TrustManager;
 
 import connect.im.IMessage;
 import instant.bean.Session;
@@ -32,10 +31,9 @@ import instant.netty.CSslHandler;
 import instant.netty.MessageDecoder;
 import instant.netty.MessageEncoder;
 import instant.netty.NettySession;
-import instant.netty.SslContextFactory;
 import instant.ui.InstantSdk;
-import instant.utils.XmlParser;
 import instant.utils.TimeUtil;
+import instant.utils.XmlParser;
 import instant.utils.log.LogManager;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -50,8 +48,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;

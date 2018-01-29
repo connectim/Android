@@ -14,9 +14,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.io.File;
 
-import connect.activity.chat.bean.DestructReadBean;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.BubbleImg;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
@@ -49,11 +47,9 @@ public class MsgImgHolder extends MsgChatHolder {
     public void buildRowData(MsgBaseHolder msgBaseHolder, final ChatMsgEntity msgExtEntity) throws Exception {
         super.buildRowData(msgBaseHolder, msgExtEntity);
         photoMessage = Connect.PhotoMessage.parseFrom(msgExtEntity.getContents());
-        RoomSession.getInstance().checkBurnTime(photoMessage.getSnapTime());
 
         Connect.ChatType chatType = Connect.ChatType.forNumber(msgExtEntity.getChatType());
         String url = !TextUtils.isEmpty(photoMessage.getThum()) ? photoMessage.getThum() : photoMessage.getUrl();
-        imgmsg.setOpenBurn(photoMessage.getSnapTime() > 0);
         String hexString = StringUtil.bytesToHexString(photoMessage.getFileKey().toByteArray());
         imgmsg.loadUri(msgExtEntity.parseDirect(), chatType, msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), hexString,url, photoMessage.getImageWidth(), photoMessage.getImageHeight());
 
@@ -67,8 +63,6 @@ public class MsgImgHolder extends MsgChatHolder {
                 if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
                     msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-
-                    DestructReadBean.getInstance().sendEventDelay(msgExtEntity.getMessage_id());
                 }
             }
         });
@@ -130,7 +124,7 @@ public class MsgImgHolder extends MsgChatHolder {
 
         if (FileUtil.isLocalFile(url) || FileUtil.isExistFilePath(localPath)) {
             String local = FileUtil.isLocalFile(url) ? url : localPath;
-            SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(getMsgExtEntity().getMessageType()), local);
+            SelectRecentlyChatActivity.startActivity((Activity) context, SelectRecentlyChatActivity.TRANSPOND, String.valueOf(getMsgExtEntity().getMessageType()), local,photoMessage.getImageWidth(),photoMessage.getImageHeight());
         }
     }
 }

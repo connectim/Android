@@ -13,11 +13,11 @@ public interface CommandListener {
 
     void updateMsgSendState(String publickey,String msgid, int state);
 
-    void loadAllContacts(Connect.SyncUserRelationship userRelationship) throws Exception;
+    void loadAllContacts(Connect.SyncCompany userRelationship) throws Exception;
 
-    void contactChanges(Connect.ChangeRecords changeRecords);
+    void contactChanges(Connect.WorkmateChangeRecords changeRecords);
 
-    void receiverFriendRequest(Connect.ReceiveFriendRequest friendRequest);
+    void receiverFriendRequest(int number,Connect.ReceiveFriendRequest friendRequest);
 
     void acceptFriendRequest(Connect.FriendListChange listChange);
 

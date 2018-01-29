@@ -17,8 +17,6 @@ public interface RobotListener {
 
     void systemRedPackageMessage(Connect.SystemRedPackage redPackage);
 
-    void reviewedMessage(Connect.Reviewed reviewed);
-
     void announcementMessage(Connect.Announcement announcement);
 
     void systemRedpackgeNoticeMessage(Connect.SystemRedpackgeNotice packgeNotice);
@@ -31,5 +29,5 @@ public interface RobotListener {
 
     void addressNotifyMessage(Connect.AddressNotify addressNotify);
 
-    void subscribePull(Connect.RSSPush rssPush) throws Exception;
+    void auditMessage(Connect.ExamineMessage  examineMessage);
 }

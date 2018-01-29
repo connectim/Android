@@ -3,30 +3,19 @@ package connect.utils.chatfile.inter;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.instant.inter.ConversationListener;
 import connect.ui.activity.R;
 import connect.utils.FileUtil;
 import connect.utils.ProtoBufUtil;
-import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
-import connect.utils.cryption.DecryptionUtil;
-import connect.utils.log.LogManager;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
-import connect.wallet.jni.AllNativeMethod;
 import instant.bean.ChatMsgEntity;
-import instant.bean.Session;
-import instant.bean.UserCookie;
 import instant.sender.model.BaseChat;
-import instant.sender.model.GroupChat;
-import instant.utils.SharedUtil;
 import instant.utils.cryption.EncryptionUtil;
 import instant.utils.cryption.SupportKeyUril;
 import instant.utils.manager.FailMsgsManager;
@@ -50,53 +39,19 @@ public abstract class BaseFileUp implements InterFileUp {
         randomNumber = SupportKeyUril.createSecureRandom(32);
     }
 
-    public UserCookie loadUserCookie() {
-        UserCookie userCookie = Session.getInstance().getChatCookie();
-        if (userCookie == null) {
-            userCookie = SharedUtil.getInstance().loadLastChatUserCookie();
-        }
-
-        return userCookie;
-    }
-
-    public UserCookie loadFriendCookie(String caPublicKey) {
-        UserCookie friendCookie = Session.getInstance().getFriendCookie(caPublicKey);
-        if (friendCookie == null) {
-            friendCookie = SharedUtil.getInstance().loadFriendCookie(caPublicKey);
-        }
-        return friendCookie;
-    }
-
-    /**
-     * File encryption
-     *
-     * @param filePath
-     * @return
-     */
-    public Connect.GcmData encodeAESGCMStructData(String filePath) {
-        byte[] fileSie = FileUtil.filePathToByteArray(filePath);
-        ByteString fileBytes = ByteString.copyFrom(fileSie);
-        LogManager.getLogger().d(TAG, "ByteString size:" + fileBytes.size());
-
-        Connect.GcmData gcmData = null;
-        if (baseChat.chatType() == Connect.ChatType.PRIVATE_VALUE || baseChat.chatType() == Connect.ChatType.GROUPCHAT_VALUE) {
-            gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, randomNumber, fileSie);
-        }
-        return gcmData;
+    public synchronized byte[] encodeAESGCMStructData(String filePath) {
+        byte[] fileBytes = FileUtil.filePathToByteArray(filePath);
+        Connect.GcmData gcmData = EncryptionUtil.encodeAESGCM(EncryptionUtil.ExtendedECDH.NONE, randomNumber, fileBytes);
+        fileBytes = gcmData.toByteArray();
+        return fileBytes;
     }
 
     public void resultUpFile(Connect.MediaFile mediaFile, final FileResult fileResult) {
-        HttpRequest.getInstance().post(UriUtil.UPLOAD_FILE, mediaFile, new ResultCall<Connect.HttpResponse>() {
+        HttpRequest.getInstance().post(UriUtil.UPLOAD_FILE, mediaFile.toByteArray(), new ResultCall<Connect.HttpResponse>() {
             @Override
             public void onResponse(Connect.HttpResponse response) {
                 try {
-                    UserCookie userCookie = loadUserCookie();
-                    String myPrivateKey = userCookie.getPriKey();
-
-                    Connect.IMResponse imResponse = Connect.IMResponse.parseFrom(response.getBody().toByteArray());
-                    Connect.StructData structData = DecryptionUtil.decodeAESGCMStructData(connect.utils.cryption.EncryptionUtil.ExtendedECDH.EMPTY,
-                            myPrivateKey,
-                            imResponse.getCipherData());
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
 
                     Connect.FileData fileData = Connect.FileData.parseFrom(structData.getPlainData());
                     if (ProtoBufUtil.getInstance().checkProtoBuf(fileData)) {
