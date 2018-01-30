@@ -15,28 +15,33 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.contact.adapter.DepartmentAdapter;
-import connect.activity.contact.bean.DepartmentBean;
-import connect.widget.NameLinear;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.OrganizerHelper;
 import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.OrganizerEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
+import connect.widget.NameLinear;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
+/**
+ *  组织架构
+ */
 public class DepartmentActivity extends BaseActivity {
 
     @Bind(R.id.toolbar_top)
@@ -165,7 +170,7 @@ public class DepartmentActivity extends BaseActivity {
 
     DepartmentAdapter.OnItemClickListener onItemListener = new DepartmentAdapter.OnItemClickListener() {
         @Override
-        public void itemClick(DepartmentBean departmentBean) {
+        public void itemClick(OrganizerEntity departmentBean) {
             if (departmentBean.getId() != null) {
                 Connect.Department department = Connect.Department.newBuilder()
                         .setId(departmentBean.getId())
@@ -196,7 +201,10 @@ public class DepartmentActivity extends BaseActivity {
         }
     };
 
-    private void requestDepartment(Long id) {
+    private void requestDepartment(final Long id) {
+        List<OrganizerEntity> entities = OrganizerHelper.organizerHelper.loadParamEntityByUpperId(id);
+        adapter.setNotify(entities);
+
         final Connect.Department department = Connect.Department.newBuilder()
                 .setId(id)
                 .build();
@@ -206,18 +214,24 @@ public class DepartmentActivity extends BaseActivity {
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.SyncWorkmates syncWorkmates = Connect.SyncWorkmates.parseFrom(structData.getPlainData());
-                    ArrayList<DepartmentBean> list = new ArrayList<>();
+                    ArrayList<OrganizerEntity> list = new ArrayList<>();
                     for (Connect.Department department1 : syncWorkmates.getDepts().getListList()) {
-                        DepartmentBean departmentBean = new DepartmentBean();
+                        OrganizerEntity departmentBean = new OrganizerEntity();
+                        departmentBean.setUpperId(id);
                         departmentBean.setId(department1.getId());
                         departmentBean.setName(department1.getName());
                         departmentBean.setCount(department1.getCount());
                         list.add(departmentBean);
                     }
                     for (Connect.Workmate workmate : syncWorkmates.getWorkmates().getListList()) {
-                        list.add(getContactBean(workmate));
+                        OrganizerEntity organizerEntity = getContactBean(workmate);
+                        organizerEntity.setUpperId(id);
+                        list.add(organizerEntity);
                     }
                     adapter.setNotify(list);
+
+                    OrganizerHelper.organizerHelper.removeOrganizerEntityByUpperId(id);
+                    OrganizerHelper.organizerHelper.insertOrganizerEntities(list);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -248,9 +262,10 @@ public class DepartmentActivity extends BaseActivity {
                         ToastEUtil.makeText(mActivity, R.string.Wallet_No_match_user).show();
                         return;
                     }
-                    ArrayList<DepartmentBean> list = new ArrayList<>();
+                    ArrayList<OrganizerEntity> list = new ArrayList<>();
                     for (Connect.Workmate workmate : workmates.getListList()) {
-                        list.add(getContactBean(workmate));
+                        OrganizerEntity organizerEntity = getContactBean(workmate);
+                        list.add(organizerEntity);
                     }
                     adapter.setNotify(list);
                     nameLinear.setVisibility(View.GONE);
@@ -264,8 +279,8 @@ public class DepartmentActivity extends BaseActivity {
         });
     }
 
-    private DepartmentBean getContactBean(Connect.Workmate workmate){
-        DepartmentBean departmentBean = new DepartmentBean();
+    private OrganizerEntity getContactBean(Connect.Workmate workmate){
+        OrganizerEntity departmentBean = new OrganizerEntity();
         departmentBean.setUid(workmate.getUid());
         departmentBean.setName(workmate.getName());
         departmentBean.setAvatar(workmate.getAvatar());
