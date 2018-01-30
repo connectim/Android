@@ -32,6 +32,8 @@ import connect.activity.workbench.VisitorsActivity;
 import connect.activity.workbench.WorkSeachActivity;
 import connect.activity.workbench.data.MenuBean;
 import connect.activity.workbench.data.MenuData;
+import connect.database.green.DaoHelper.ApplicationHelper;
+import connect.database.green.bean.ApplicationEntity;
 import connect.ui.activity.R;
 import connect.utils.DialogUtil;
 import connect.utils.UriUtil;
@@ -62,7 +64,6 @@ public class WorkbenchFragment extends BaseFragment {
     private FragmentActivity activity;
     private WorkbenchMenuAdapter appMenuAdapter;
     private WorkbenchMenuAdapter myAppMenuAdapter;
-     ArrayList<MenuBean> myListMenu = new ArrayList<>();
 
     public static WorkbenchFragment startFragment() {
         WorkbenchFragment workbenchFragment = new WorkbenchFragment();
@@ -87,8 +88,7 @@ public class WorkbenchFragment extends BaseFragment {
 
     private void initView() {
         initCyclePager();
-        initAppMenu();
-        initMyAppMenu();
+        initMenu();
     }
 
     private void initCyclePager() {
@@ -103,26 +103,35 @@ public class WorkbenchFragment extends BaseFragment {
         getBanners();
     }
 
-    private void initAppMenu() {
+    private void initMenu() {
         appMenuAdapter = new WorkbenchMenuAdapter(activity);
         appMenuAdapter.setOnItemClickListence(onItemMenuClickListener);
         applicationMenuRecycler.setLayoutManager(new GridLayoutManager(activity, 4));
         applicationMenuRecycler.setAdapter(appMenuAdapter);
-        getApplication();
-    }
 
-    private void initMyAppMenu() {
         myAppMenuAdapter = new WorkbenchMenuAdapter(activity);
         myAppMenuAdapter.setOnItemClickListence(onItemMyMenuClickListener);
         myMenuRecycler.setLayoutManager(new GridLayoutManager(activity, 4));
         myMenuRecycler.setAdapter(myAppMenuAdapter);
+
+        initData();
+        getApplication();
+    }
+
+    private void initData(){
+        ArrayList<MenuBean> myListMenu = ApplicationHelper.getInstance().loadApplicationEntity(2);
+        myListMenu.add(MenuData.getInstance().getData("add"));
+        myAppLinear.setVisibility(View.VISIBLE);
+
+        appMenuAdapter.setNotify(ApplicationHelper.getInstance().loadApplicationEntity(1));
+        myAppMenuAdapter.setNotify(myListMenu);
     }
 
     @Subscribe
     public void onEventMainThread(AppsState appsState) {
         switch (appsState.getAppsEnum()) {
             case APPLICATION:
-                getApplication();
+                initData();
                 break;
         }
     }
@@ -197,7 +206,22 @@ public class WorkbenchFragment extends BaseFragment {
                             Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                             Connect.Applications applications = Connect.Applications.parseFrom(structData.getPlainData());
                             List<Connect.Application> list = applications.getListList();
-                            ArrayList<MenuBean> listMenu = new ArrayList<>();
+
+                            ArrayList<ApplicationEntity> appList = new ArrayList<>();
+                            for(Connect.Application application : list){
+                                ApplicationEntity applicationEntity = new ApplicationEntity();
+                                applicationEntity.setCode(application.getCode());
+                                applicationEntity.setCategory(application.getCategory());
+                                if (application.getCategory() == 1) {
+                                    appList.add(applicationEntity);
+                                } else if(application.getCategory() == 2 && application.getAdded()) {
+                                    appList.add(applicationEntity);
+                                }
+                            }
+                            ApplicationHelper.getInstance().insertAppEntityList(appList);
+
+                            initData();
+                            /*ArrayList<MenuBean> listMenu = new ArrayList<>();
 
                             ArrayList<MenuBean> myListMenu = new ArrayList<>();
                             for (Connect.Application application : list) {
@@ -207,11 +231,11 @@ public class WorkbenchFragment extends BaseFragment {
                                 } else if(application.getCategory() == 2 && application.getAdded()) {
                                     myListMenu.add(menuBean);
                                 }
-                            }
-                            myListMenu.add(MenuData.getInstance().getData("add"));
+                            }*/
+                            /*myListMenu.add(MenuData.getInstance().getData("add"));
                             myAppLinear.setVisibility(View.VISIBLE);
                             appMenuAdapter.setNotify(listMenu);
-                            myAppMenuAdapter.setNotify(myListMenu);
+                            myAppMenuAdapter.setNotify(myListMenu);*/
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

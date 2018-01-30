@@ -47,7 +47,7 @@ public class VisitorAdapter extends RecyclerView.Adapter<VisitorAdapter.ViewHold
         holder.nameTv.setText(visitorRecord.getGuestName());
         holder.reasonTv.setText(activity.getString(R.string.Work_Visitors_reason, visitorRecord.getReason()));
 
-        holder.phoneTv.setText(StringUtil.getFormatPhone(visitorRecord.getStaffPhone()));
+        holder.phoneTv.setText(StringUtil.getFormatPhone(visitorRecord.getGuestPhone()));
         String time = TimeUtil.getTime(visitorRecord.getStartTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR) + "——" +
                 TimeUtil.getTime(visitorRecord.getEndTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR);
         holder.timeTv.setText(activity.getString(R.string.Work_Visitors_time, time));

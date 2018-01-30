@@ -8,6 +8,7 @@ import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.internal.DaoConfig;
 
+import connect.database.green.bean.ApplicationEntity;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
@@ -20,6 +21,7 @@ import connect.database.green.bean.MessageEntity;
 import connect.database.green.bean.ParamEntity;
 import connect.database.green.bean.TransactionEntity;
 
+import connect.database.green.dao.ApplicationEntityDao;
 import connect.database.green.dao.ContactEntityDao;
 import connect.database.green.dao.ConversionEntityDao;
 import connect.database.green.dao.ConversionSettingEntityDao;
@@ -41,6 +43,7 @@ import connect.database.green.dao.TransactionEntityDao;
  */
 public class DaoSession extends AbstractDaoSession {
 
+    private final DaoConfig applicationEntityDaoConfig;
     private final DaoConfig contactEntityDaoConfig;
     private final DaoConfig conversionEntityDaoConfig;
     private final DaoConfig conversionSettingEntityDaoConfig;
@@ -53,6 +56,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig paramEntityDaoConfig;
     private final DaoConfig transactionEntityDaoConfig;
 
+    private final ApplicationEntityDao applicationEntityDao;
     private final ContactEntityDao contactEntityDao;
     private final ConversionEntityDao conversionEntityDao;
     private final ConversionSettingEntityDao conversionSettingEntityDao;
@@ -68,6 +72,9 @@ public class DaoSession extends AbstractDaoSession {
     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
+
+        applicationEntityDaoConfig = daoConfigMap.get(ApplicationEntityDao.class).clone();
+        applicationEntityDaoConfig.initIdentityScope(type);
 
         contactEntityDaoConfig = daoConfigMap.get(ContactEntityDao.class).clone();
         contactEntityDaoConfig.initIdentityScope(type);
@@ -102,6 +109,7 @@ public class DaoSession extends AbstractDaoSession {
         transactionEntityDaoConfig = daoConfigMap.get(TransactionEntityDao.class).clone();
         transactionEntityDaoConfig.initIdentityScope(type);
 
+        applicationEntityDao = new ApplicationEntityDao(applicationEntityDaoConfig, this);
         contactEntityDao = new ContactEntityDao(contactEntityDaoConfig, this);
         conversionEntityDao = new ConversionEntityDao(conversionEntityDaoConfig, this);
         conversionSettingEntityDao = new ConversionSettingEntityDao(conversionSettingEntityDaoConfig, this);
@@ -114,6 +122,7 @@ public class DaoSession extends AbstractDaoSession {
         paramEntityDao = new ParamEntityDao(paramEntityDaoConfig, this);
         transactionEntityDao = new TransactionEntityDao(transactionEntityDaoConfig, this);
 
+        registerDao(ApplicationEntity.class, applicationEntityDao);
         registerDao(ContactEntity.class, contactEntityDao);
         registerDao(ConversionEntity.class, conversionEntityDao);
         registerDao(ConversionSettingEntity.class, conversionSettingEntityDao);
@@ -128,6 +137,7 @@ public class DaoSession extends AbstractDaoSession {
     }
     
     public void clear() {
+        applicationEntityDaoConfig.clearIdentityScope();
         contactEntityDaoConfig.clearIdentityScope();
         conversionEntityDaoConfig.clearIdentityScope();
         conversionSettingEntityDaoConfig.clearIdentityScope();
@@ -139,6 +149,10 @@ public class DaoSession extends AbstractDaoSession {
         messageEntityDaoConfig.clearIdentityScope();
         paramEntityDaoConfig.clearIdentityScope();
         transactionEntityDaoConfig.clearIdentityScope();
+    }
+
+    public ApplicationEntityDao getApplicationEntityDao() {
+        return applicationEntityDao;
     }
 
     public ContactEntityDao getContactEntityDao() {

@@ -9,6 +9,7 @@ import connect.activity.base.BaseApplication;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ApplicationHelper;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
@@ -151,6 +152,7 @@ public class DaoManager {
         ParamHelper.closeHelper();
         TransactionHelper.closeHelper();
         CurrencyHelper.closeHelper();
+        ApplicationHelper.closeHelper();
     }
 
 }

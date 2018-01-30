@@ -20,6 +20,8 @@ import connect.activity.base.BaseActivity;
 import connect.activity.contact.bean.AppsState;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.workbench.adapter.WorkSearchAdapter;
+import connect.database.green.DaoHelper.ApplicationHelper;
+import connect.database.green.bean.ApplicationEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.UriUtil;
@@ -154,7 +156,7 @@ public class WorkSeachActivity extends BaseActivity {
      * @param isAdd
      * @param code
      */
-    public void updateAppsAddState(boolean isAdd, String code) {
+    public void updateAppsAddState(final boolean isAdd, final String code) {
         Connect.Application application = Connect.Application.newBuilder()
                 .setAdded(isAdd)
                 .setCode(code)
@@ -165,7 +167,14 @@ public class WorkSeachActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 searchAppsWorks("");
-
+                if(isAdd){
+                    ApplicationEntity applicationEntity = new ApplicationEntity();
+                    applicationEntity.setCode(code);
+                    applicationEntity.setCategory(2);
+                    ApplicationHelper.getInstance().insertApplicationEntity(applicationEntity);
+                }else{
+                    ApplicationHelper.getInstance().deleteApplicationEntity(code);
+                }
                 EventBus.getDefault().post(new AppsState(AppsState.AppsEnum.APPLICATION));
             }
 

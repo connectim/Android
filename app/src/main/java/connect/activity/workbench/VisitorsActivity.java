@@ -160,12 +160,11 @@ public class VisitorsActivity extends BaseFragmentActivity {
                 ProgressUtil.getInstance().dismissProgress();
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
-                    Connect.Staff staff1 = Connect.Staff.parseFrom(structData.getPlainData());
+                    staff1 = Connect.Staff.parseFrom(structData.getPlainData());
 
-                    CreateScan createScan = new CreateScan();
-                    Bitmap bitmap = createScan.generateQRCode("https://wx-kq.bitmain.com/guest/info?token=" + staff1.getToken());
-                    File file = BitmapUtil.getInstance().bitmapSavePath(bitmap);
-                    shareMsg(getResources().getString(R.string.Work_Visitors_share), "", "", file);
+                    PermissionUtil.getInstance().requestPermission(mActivity,
+                            new String[]{PermissionUtil.PERMISSION_STORAGE},
+                            permissionCallBack);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -179,7 +178,74 @@ public class VisitorsActivity extends BaseFragmentActivity {
         });
     }
 
+
+    private File saveBitmap(Bitmap bm) {
+        String path = FileUtil.newSdcardTempFile(FileUtil.FileType.IMG).getAbsolutePath();
+        File f = new File(path);
+        try {
+            if (!f.exists()) {
+                f.getParentFile().mkdirs();
+                f.createNewFile();
+            }
+
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+            return f;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void shareMsg(String activityTitle, String msgTitle, String msgText, File file) {
+        try {
+            String filepath = file.getAbsolutePath();
+            String imageUri = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), filepath, msgTitle, msgText);
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            if (file == null) {
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+                intent.putExtra(Intent.EXTRA_TEXT, msgText);
+            } else {
+                if (file != null && file.exists() && file.isFile()) {
+                    intent.setType("image/jpg");
+                    Uri u = Uri.fromFile(file);
+                    intent.putExtra(Intent.EXTRA_STREAM, u);
+                }
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(Intent.createChooser(intent, activityTitle));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionUtil.getInstance().onRequestPermissionsResult(mActivity, requestCode, permissions, grantResults, permissionCallBack);
+    }
+
+    private PermissionUtil.ResultCallBack permissionCallBack = new PermissionUtil.ResultCallBack(){
+        @Override
+        public void granted(String[] permissions) {
+            CreateScan createScan = new CreateScan();
+            Bitmap bitmap = createScan.generateQRCode("https://wx-kq.bitmain.com/guest/info?token=" + staff1.getToken());
+            File file = saveBitmap(bitmap);
+            shareMsg(getResources().getString(R.string.Work_Visitors_share), "", "", file);
+        }
+
+        @Override
+        public void deny(String[] permissions) {
+        }
+    };
+
+    /*public void shareMsg(String activityTitle, String msgTitle, String msgText, File file) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         if (file == null) {
             intent.setType("text/plain");
@@ -194,6 +260,6 @@ public class VisitorsActivity extends BaseFragmentActivity {
         intent.putExtra(Intent.EXTRA_TEXT, msgText);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(Intent.createChooser(intent, activityTitle));
-    }
+    }*/
 
 }

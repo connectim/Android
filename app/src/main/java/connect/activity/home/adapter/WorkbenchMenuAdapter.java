@@ -71,6 +71,7 @@ public class WorkbenchMenuAdapter extends RecyclerView.Adapter {
     }
 
     public void setNotify(ArrayList<MenuBean> list){
+
         mDates.clear();
         mDates.addAll(list);
         notifyDataSetChanged();
