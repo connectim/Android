@@ -16,7 +16,6 @@ import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 

@@ -256,6 +256,7 @@
     <string name="Link_Remove_Member_Failed">Сбой при удалении участника</string>
     <string name="Link_Save_to_Contacts">Сохранить в контактах</string>
     <string name="Link_Scan">Сканировать</string>
+    <string name="Link_Close_to_remind">Закрытие напомнить</string>
     <string name="Link_Search">Поиск</string>
     <string name="Link_Search_Result">Результат поиска</string>
     <string name="Link_Search_friends">Поиск друзей</string>

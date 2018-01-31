@@ -245,6 +245,7 @@
     <string name="Link_Remove_Member_Failed">Remove Member Failed</string>
     <string name="Link_Save_to_Contacts">Save to Contacts</string>
     <string name="Link_Scan">Scan</string>
+    <string name="Link_Close_to_remind">Close to remind</string>
     <string name="Link_Search">Search</string>
     <string name="Link_Search_Result">Search Result</string>
     <string name="Link_Search_friends">Search</string>

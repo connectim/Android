@@ -219,6 +219,7 @@
     <string name="Link_Remove_Member_Failed">移除成员失败</string>
     <string name="Link_Save_to_Contacts">保存到通讯录</string>
     <string name="Link_Scan">扫一扫</string>
+    <string name="Link_Close_to_remind">关闭提醒</string>
     <string name="Link_Search">搜索</string>
     <string name="Link_Search_Result">搜索结果</string>
     <string name="Link_Search_friends">搜索好友</string>
