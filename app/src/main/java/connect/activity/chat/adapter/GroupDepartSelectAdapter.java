@@ -17,6 +17,7 @@ import java.util.List;
 import connect.activity.chat.bean.DepartSelectBean;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.bean.OrganizerEntity;
 import connect.ui.activity.R;
 import connect.widget.DepartmentAvatar;
 import protos.Connect;
@@ -30,13 +31,13 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
     private Activity activity;
     private List<String> uids = null;
     private UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
-    private List<DepartSelectBean> departSelectBeens = new ArrayList<>();
+    private List<OrganizerEntity> departSelectBeens = new ArrayList<>();
 
     public GroupDepartSelectAdapter(Activity activity) {
         this.activity = activity;
     }
 
-    public void notifyData(List<DepartSelectBean> departSelectBeens) {
+    public void notifyData(List<OrganizerEntity> departSelectBeens) {
         this.departSelectBeens = departSelectBeens;
         notifyDataSetChanged();
     }
@@ -51,22 +52,21 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
 
     @Override
     public void onBindViewHolder(final GroupDepartSelectAdapter.ViewHolder holder, final int position) {
-        final DepartSelectBean department = departSelectBeens.get(position);
-        if (department.getDepartment() != null) {
+        final OrganizerEntity department = departSelectBeens.get(position);
+        if (department.isDepartment()) {
             holder.departmentLinear.setVisibility(View.VISIBLE);
             holder.contentLin.setVisibility(View.GONE);
 
-            final Connect.Department department1 = department.getDepartment();
-            final String departmentKey = "B" + department1.getId();
+            final String departmentKey = "B" + department.getId();
             holder.departmentSelectView.setSelected(departSelectListener.isContains(departmentKey));
-            holder.countTv.setText("(" + department1.getCount() + ")");
-            holder.departmentTv.setText(department1.getName());
+            holder.countTv.setText("(" + department.getCount() + ")");
+            holder.departmentTv.setText(department.getName());
             holder.departmentSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     boolean isselect = holder.departmentSelectView.isSelected();
                     isselect = !isselect;
-                    departSelectListener.departmentClick(isselect, department1);
+                    departSelectListener.departmentClick(isselect, department);
                     holder.departmentSelectView.setSelected(isselect);
                 }
             });
@@ -74,7 +74,7 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
                 @Override
                 public void onClick(View view) {
                     if (!departSelectListener.isContains(departmentKey)) {
-                        departSelectListener.itemClick(department1);
+                        departSelectListener.itemClick(department);
                     }
                 }
             });
@@ -82,30 +82,29 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
             holder.departmentLinear.setVisibility(View.GONE);
             holder.contentLin.setVisibility(View.VISIBLE);
 
-            final Connect.Workmate workmate = department.getWorkmate();
-            final String workmateKey = "W" + workmate.getUid();
+            final String workmateKey = "W" + department.getUid();
             holder.workmateSelectView.setSelected(departSelectListener.isContains(workmateKey)|| ("W" + userBean.getUid()).equals(workmateKey));
-            holder.nameTvS.setText(workmate.getName());
-            if (TextUtils.isEmpty(workmate.getOU())) {
+            holder.nameTvS.setText(department.getName());
+            if (TextUtils.isEmpty(department.getO_u())) {
                 holder.nicName.setVisibility(View.GONE);
             } else {
                 holder.nicName.setVisibility(View.VISIBLE);
-                holder.nicName.setText(workmate.getOU());
+                holder.nicName.setText(department.getO_u());
             }
-            if (workmate.getRegisted()) {
-                holder.avater.setAvatarName(workmate.getName(), false, workmate.getGender());
+            if (department.getRegisted()) {
+                holder.avater.setAvatarName(department.getName(), false, department.getGender());
             } else {
-                holder.avater.setAvatarName(workmate.getName(), true, workmate.getGender());
+                holder.avater.setAvatarName(department.getName(), true, department.getGender());
             }
             holder.workmateSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (("W" + userBean.getUid()).equals(workmateKey)) {
 
-                    } else if (!uids.contains(workmate.getUid()) && !TextUtils.isEmpty(workmate.getUid())) {
+                    } else if (!uids.contains(department.getUid()) && !TextUtils.isEmpty(department.getUid())) {
                         boolean isselect = holder.workmateSelectView.isSelected();
                         isselect = !isselect;
-                        departSelectListener.workmateClick(isselect, workmate);
+                        departSelectListener.workmateClick(isselect, department);
                         holder.workmateSelectView.setSelected(isselect);
                     }
                 }
@@ -158,13 +157,13 @@ public class GroupDepartSelectAdapter extends RecyclerView.Adapter<GroupDepartSe
 
     public interface GroupDepartSelectListener {
 
-        void departmentClick(boolean isSelect, Connect.Department department);
+        void departmentClick(boolean isSelect, OrganizerEntity department);
 
-        void workmateClick(boolean isSelect, Connect.Workmate workmate);
+        void workmateClick(boolean isSelect, OrganizerEntity workmate);
 
         boolean isContains(String selectKey);
 
-        void itemClick(Connect.Department department);
+        void itemClick(OrganizerEntity department);
     }
 
     public void setFriendUid(List<String> friendUid) {

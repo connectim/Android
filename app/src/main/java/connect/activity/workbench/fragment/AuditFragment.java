@@ -129,9 +129,10 @@ public class AuditFragment extends BaseFragment {
                     ArrayList<Connect.VisitorRecord> listData = new ArrayList<>();
 
                     for(Connect.VisitorRecord visitorRecord : list){
-                        if(!visitorRecord.getStatus()){
+                        /*if(!visitorRecord.getStatus()){
                             listData.add(visitorRecord);
-                        }
+                        }*/
+                        listData.add(visitorRecord);
                     }
 
                     if (page > 1) {

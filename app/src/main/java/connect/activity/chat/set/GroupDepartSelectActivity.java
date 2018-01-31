@@ -19,10 +19,11 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseListener;
 import connect.activity.chat.adapter.GroupDepartSelectAdapter;
-import connect.activity.chat.bean.DepartSelectBean;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.OrganizerHelper;
+import connect.database.green.bean.OrganizerEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.UriUtil;
@@ -89,10 +90,29 @@ public class GroupDepartSelectActivity extends BaseActivity {
                     if (key.startsWith("B")) {
 
                     } else if (key.startsWith("W")) {
-                        DepartSelectBean selectBean = (DepartSelectBean) object;
-                        workmates.add(selectBean.getWorkmate());
+                        OrganizerEntity entity = (OrganizerEntity) object;
+                        Connect.Workmate workmate = Connect.Workmate.newBuilder()
+                                .setName(entity.getName())
+                                .setMobile(entity.getMobile())
+                                .setAvatar(entity.getAvatar())
+                                .setGender(entity.getGender())
+                                .setEmpNo(entity.getEmpNo())
+                                .setUid(entity.getUid())
+                                .build();
+
+                        workmates.add(workmate);
                     } else {
-                        workmates.add((Connect.Workmate) object);
+                        OrganizerEntity entity = (OrganizerEntity) object;
+                        Connect.Workmate workmate = Connect.Workmate.newBuilder()
+                                .setName(entity.getName())
+                                .setMobile(entity.getMobile())
+                                .setAvatar(entity.getAvatar())
+                                .setGender(entity.getGender())
+                                .setEmpNo(entity.getEmpNo())
+                                .setUid(entity.getUid())
+                                .build();
+
+                        workmates.add(workmate);
                     }
                 }
 
@@ -144,15 +164,20 @@ public class GroupDepartSelectActivity extends BaseActivity {
             }
 
             @Override
-            public void itemClick(Connect.Department department) {
+            public void itemClick(OrganizerEntity department) {
                 requestDepartmentInfoShow(department.getId());
 
-                nameList.add(department);
+                Connect.Department department1 = Connect.Department.newBuilder()
+                        .setId(department.getId())
+                        .setCount(department.getCount())
+                        .setName(department.getName())
+                        .build();
+                nameList.add(department1);
                 nameLinear.notifyAddView(nameList, scrollview);
             }
 
             @Override
-            public void departmentClick(boolean isSelect, Connect.Department department) {
+            public void departmentClick(boolean isSelect, OrganizerEntity department) {
                 final long departmentId = department.getId();
                 final String departmentKey = "B" + departmentId;
                 if (isSelect) {
@@ -162,14 +187,13 @@ public class GroupDepartSelectActivity extends BaseActivity {
                             selectDeparts.put(departmentKey, "");
 
                             for (Connect.Workmate workmate : workmates.getListList()) {
-                                DepartSelectBean selectBean = new DepartSelectBean();
-                                selectBean.setWorkmate(workmate);
                                 if (workmate.getRegisted()) {
                                     String uid = workmate.getUid();
                                     String myUid =userBean.getUid();
                                     if (!selectedUids.contains(uid) && !uid.equals(myUid)) {
                                         String workmateKey = "W" + uid;
-                                        selectDeparts.put(workmateKey, selectBean);
+                                        OrganizerEntity organizerEntity = getOrganizerEntity(workmate);
+                                        selectDeparts.put(workmateKey, organizerEntity);
                                     }
                                 }
                             }
@@ -224,14 +248,12 @@ public class GroupDepartSelectActivity extends BaseActivity {
             }
 
             @Override
-            public void workmateClick(boolean isSelect, Connect.Workmate workmate) {
+            public void workmateClick(boolean isSelect, OrganizerEntity workmate) {
                 final String workmateId = workmate.getUid();
                 final String workmateKey = "W" + workmateId;
                 if (isSelect) {
                     if (workmate.getRegisted()) {
-                        DepartSelectBean selectBean = new DepartSelectBean();
-                        selectBean.setWorkmate(workmate);
-                        selectDeparts.put(workmateKey, selectBean);
+                        selectDeparts.put(workmateKey, workmate);
                     }
                 } else {
                     selectDeparts.remove(workmateKey);
@@ -333,28 +355,37 @@ public class GroupDepartSelectActivity extends BaseActivity {
         }
     };
 
-    protected void requestDepartmentInfoShow(long id) {
+    protected void requestDepartmentInfoShow(final long id) {
+        List<OrganizerEntity> entities = OrganizerHelper.organizerHelper.loadParamEntityByUpperId(id);
+        departSelectAdapter.notifyData(entities);
+
         requestDepartmentInfo(id, new BaseListener<Connect.SyncWorkmates>() {
             @Override
             public void Success(Connect.SyncWorkmates syncWorkmates) {
                 List<Connect.Department> departments = syncWorkmates.getDepts().getListList();
                 List<Connect.Workmate> workmates = syncWorkmates.getWorkmates().getListList();
 
-                List<DepartSelectBean> departSelectBeanList = new ArrayList();
+                List<OrganizerEntity> departSelectBeanList = new ArrayList();
                 for (Connect.Department department1 : departments) {
-                    DepartSelectBean selectBean = new DepartSelectBean();
-                    selectBean.setDepartment(department1);
-                    departSelectBeanList.add(selectBean);
+                    OrganizerEntity organizerEntity = new OrganizerEntity();
+                    organizerEntity.setUpperId(id);
+                    organizerEntity.setId(department1.getId());
+                    organizerEntity.setName(department1.getName());
+                    organizerEntity.setCount(department1.getCount());
+                    departSelectBeanList.add(organizerEntity);
                 }
 
                 for (Connect.Workmate workmate : workmates) {
                     if (workmate.getRegisted()) {
-                        DepartSelectBean selectBean = new DepartSelectBean();
-                        selectBean.setWorkmate(workmate);
-                        departSelectBeanList.add(selectBean);
+                        OrganizerEntity organizerEntity = getOrganizerEntity(workmate);
+                        organizerEntity.setUpperId(id);
+                        departSelectBeanList.add(organizerEntity);
                     }
                 }
                 departSelectAdapter.notifyData(departSelectBeanList);
+
+                OrganizerHelper.organizerHelper.removeOrganizerEntityByUpperId(id);
+                OrganizerHelper.organizerHelper.insertOrganizerEntities(departSelectBeanList);
             }
 
             @Override
@@ -383,7 +414,8 @@ public class GroupDepartSelectActivity extends BaseActivity {
                             .setPubKey(userInfo1.getCaPub())
                             .build();
 
-                    selectDeparts.put("F", workmate);
+                    OrganizerEntity organizerEntity = getOrganizerEntity(workmate);
+                    selectDeparts.put("F", organizerEntity);
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -393,5 +425,20 @@ public class GroupDepartSelectActivity extends BaseActivity {
             public void onError(Connect.HttpNotSignResponse response) {
             }
         });
+    }
+
+    private OrganizerEntity getOrganizerEntity(Connect.Workmate workmate){
+        OrganizerEntity entity = new OrganizerEntity();
+        entity.setUid(workmate.getUid());
+        entity.setName(workmate.getName());
+        entity.setAvatar(workmate.getAvatar());
+        entity.setO_u(workmate.getOU());
+        entity.setPub_key(workmate.getPubKey());
+        entity.setRegisted(workmate.getRegisted());
+        entity.setEmpNo(workmate.getEmpNo());
+        entity.setMobile(workmate.getMobile());
+        entity.setGender(workmate.getGender());
+        entity.setTips(workmate.getTips());
+        return entity;
     }
 }
