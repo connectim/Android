@@ -16,14 +16,16 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseFragment;
+import connect.activity.chat.ChatActivity;
 import connect.activity.chat.adapter.SearchAdapter;
+import connect.activity.chat.bean.Talker;
 import connect.activity.chat.fragment.bean.SearchBean;
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
+import protos.Connect;
 
 /**
  * Created by Administrator on 2018/1/31 0031.
@@ -71,12 +73,12 @@ public class SearchContentFragment extends BaseFragment {
     SearchAdapter.OnItemChildClickListener onItemChildClickListener = new SearchAdapter.OnItemChildClickListener(){
         @Override
         public void itemClick(int position, SearchBean searchBean) {
-            if(searchBean.getStyle() == 1){
+            if (searchBean.getStyle() == 1) {
                 ContactInfoActivity.lunchActivity(mActivity, searchBean.getUid());
-            } else if(searchBean.getStyle() == 2){
-
-            } else if(searchBean.getStyle() == 3){
-
+            } else if (searchBean.getStyle() == 2) {
+                ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.GROUP_DISCUSSION, searchBean.getUid()));
+            } else if (searchBean.getStyle() == 3) {
+                ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.GROUP_DISCUSSION, searchBean.getUid()), searchBean.getSearchStr());
             }
         }
     };
