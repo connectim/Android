@@ -32,6 +32,7 @@ import connect.activity.base.BaseFragmentActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.BaseGroupSelectActivity;
+import connect.activity.contact.ScanAddFriendActivity;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.MsgNoticeBean;
@@ -41,6 +42,7 @@ import connect.activity.home.fragment.SetFragment;
 import connect.activity.home.fragment.WorkbenchFragment;
 import connect.activity.home.view.CheckUpdate;
 import connect.activity.login.LoginUserActivity;
+import connect.activity.set.SupportFeedbackActivity;
 import connect.instant.bean.ConnectState;
 import connect.service.GroupService;
 import connect.service.UpdateInfoService;
@@ -198,7 +200,16 @@ public class HomeActivity extends BaseFragmentActivity {
                 switchFragment(fragmentCode);
                 break;
             case GROUP_NEWCHAT:
-                BaseGroupSelectActivity.startActivity(activity, true, "");
+                int position = (int) (objects[0]);
+                if(position == 1){
+                    BaseGroupSelectActivity.startActivity(activity, true, "");
+                }else if(position == 2){
+                    ActivityUtil.next(activity, ScanAddFriendActivity.class);
+                }else if(position == 3){
+
+                }else if(position == 4){
+                    ActivityUtil.next(activity, SupportFeedbackActivity.class);
+                }
                 break;
             case REMOTE_LOGIN:
                 String deviceName = (String) objects[0];

@@ -56,7 +56,7 @@ public class VisitorAdapter extends RecyclerView.Adapter<VisitorAdapter.ViewHold
             holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_868686));
             holder.statusTv.setText("(" + activity.getResources().getString(R.string.Work_Visitors_to_audit) + ")");
         }else{
-            if(visitorRecord.getStatus()){
+            if(visitorRecord.getPass()){
                 holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_3081EA));
                 holder.statusTv.setText("(" + activity.getResources().getString(R.string.Chat_Have_agreed) + ")");
             }else{

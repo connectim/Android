@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
+import connect.activity.chat.SearchActivity;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ConversationAdapter;
 import connect.activity.home.bean.ConversationAction;
@@ -32,6 +34,7 @@ import connect.activity.home.view.ConnectStateView;
 import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
 import connect.utils.log.LogManager;
 
 /**
@@ -55,7 +58,6 @@ public class ConversationFragment extends BaseFragment {
     private String Tag = "_ConversationFragment";
     private Activity activity;
     private View view;
-    private PopupWindow popupWindow;
 
     private ConversationAdapter chatFragmentAdapter;
 
@@ -185,18 +187,15 @@ public class ConversationFragment extends BaseFragment {
         EventBus.getDefault().register(this);
     }
 
-    @OnClick({R.id.relativelayout_1})
+    @OnClick({R.id.relativelayout_1, R.id.search_image1})
     void onClickListener(View view) {
         switch (view.getId()) {
             case R.id.relativelayout_1:
-                if (popupWindow == null || !popupWindow.isShowing()) {
-                    PopupWindow popWindow = new ChatAddPopWindow(getActivity());
-                    popWindow.showAsDropDown(connectStateView.findViewById(R.id.relativelayout_1), 0, 5);
-                } else {
-                    if (null != popupWindow && popupWindow.isShowing()) {
-                        popupWindow.dismiss();
-                    }
-                }
+                PopupWindow popWindow = new ChatAddPopWindow(getActivity());
+                popWindow.showAsDropDown(connectStateView.findViewById(R.id.relativelayout_1), 5, 5);
+                break;
+            case R.id.search_image1:
+                ActivityUtil.next(activity, SearchActivity.class);
                 break;
         }
     }

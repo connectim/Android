@@ -11,6 +11,7 @@
     <color name="color_BEBEBE">#BEBEBE</color>
     <color name="color_eeeeee">#EEEEEE</color>
     <color name="color_ffffff">#FFFFFF</color>
+    <color name="color_F5F5F5">#F5F5F5</color>
     <color name="color_b2161a21">#B2161A21</color>
     <color name="color_161A21">#161A21</color>
     <color name="color_838383">#838383</color>
@@ -74,6 +75,7 @@
     <color name="color_E6E6E6">#E6E6E6</color>
     <color name="color_3081EA">#3081EA</color>
     <color name="color_C72F2F">#C72F2F</color>
+    <color name="color_272D38">#272D38</color>
 
     <color name="color_bg_activity">#F1F1F1</color>
     <color name="color_spaceline">#D2D2D6</color>

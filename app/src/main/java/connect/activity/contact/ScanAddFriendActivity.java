@@ -1,5 +1,6 @@
 package connect.activity.contact;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +23,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseScanActivity;
 import connect.activity.home.bean.MsgNoticeBean;
-import connect.activity.set.UserConnectIdActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ProgressUtil;
@@ -47,8 +47,8 @@ public class ScanAddFriendActivity extends BaseScanActivity {
     ImageView rightImg;
     @Bind(R.id.content_rela)
     RelativeLayout contentRela;
-    @Bind(R.id.bottom_capture_img)
-    TextView bottomCaptureImg;
+    /*@Bind(R.id.bottom_capture_img)
+    TextView bottomCaptureImg;*/
     @Bind(R.id.photos_tv)
     TextView photosTv;
 
@@ -76,10 +76,10 @@ public class ScanAddFriendActivity extends BaseScanActivity {
         ActivityUtil.goBackBottom(mActivity);
     }
 
-    @OnClick(R.id.bottom_capture_img)
+    /*@OnClick(R.id.bottom_capture_img)
     void switchScan(View view) {
         ActivityUtil.next(mActivity, UserConnectIdActivity.class);
-    }
+    }*/
 
     @OnClick(R.id.photos_tv)
     void goSelectAlbm(View view){

@@ -94,7 +94,7 @@ public class VisitorsAuditActivity extends BaseActivity {
         timeTv.setText(getString(R.string.Work_Visitors_time, time));
 
         leftFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceLeft()));
-        isFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceMiddle()));
+        isFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFace()));
         rightFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceRight()));
 
         int status = getIntent().getExtras().getInt("status",0);
@@ -110,12 +110,12 @@ public class VisitorsAuditActivity extends BaseActivity {
 
     @OnClick(R.id.refuse_text)
     void refuseText(View view) {
-        showAuditDialog(getResources().getString(R.string.Work_Visitors_sure_to_deny_access), 0);
+        showAuditDialog(getResources().getString(R.string.Work_Visitors_sure_to_deny_access), false);
     }
 
     @OnClick(R.id.agree_text)
     void agreeText(View view) {
-        showAuditDialog(getResources().getString(R.string.Work_Visitors_agree_to_visit), 1);
+        showAuditDialog(getResources().getString(R.string.Work_Visitors_agree_to_visit), true);
     }
 
     @OnClick(R.id.phone_tv)
@@ -123,7 +123,7 @@ public class VisitorsAuditActivity extends BaseActivity {
         SystemUtil.callPhone(mActivity, visitorRecord.getStaffPhone());
     }
 
-    private void showAuditDialog(String message, final int valid) {
+    private void showAuditDialog(String message, final boolean valid) {
         DialogUtil.showAlertTextView(mActivity,
                 mActivity.getResources().getString(R.string.Set_tip_title), message,
                 "", "", false, new DialogUtil.OnItemClickListener() {
@@ -138,16 +138,16 @@ public class VisitorsAuditActivity extends BaseActivity {
                 });
     }
 
-    private void requestAudit(int valid) {
+    private void requestAudit(boolean valid) {
         Connect.Examine examine = Connect.Examine.newBuilder()
                 .setGuestId(visitorRecord.getGuestId())
-                .setValid(valid)
+                .setPass(valid)
                 .build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_EXAMINE_VERIFY, examine, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 ToastEUtil.makeText(mActivity, R.string.Login_Update_successful).show();
-                ActivityUtil.goBack(mActivity);
+                //ActivityUtil.goBack(mActivity);
             }
 
             @Override

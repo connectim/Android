@@ -4,6 +4,17 @@
     android:layout_height="@dimen/dp_45"
     android:background="@color/color_161A21">
 
+    <ImageView
+        android:id="@+id/search_image1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:clickable="false"
+        android:contentDescription="@string/app_name"
+        android:paddingLeft="@dimen/dp_17"
+        android:paddingRight="@dimen/dp_20"
+        android:src="@mipmap/search3x"/>
+
     <TextView
         android:id="@id/txt1"
         android:layout_width="wrap_content"
