@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="Chat_Add_as_a_friend_to_chat">Add as a friend to chat</string>
     <string name="Chat_Agree">agree</string>
     <string name="Chat_Album_Permission_Get">Lack of reading system album permissions, please click
@@ -675,4 +675,11 @@
     <string name="Link_Function_Manager">Application Management</string>
     <string name="Error_Device_Remote_Other_Login">Your account is already signed in on other device!</string>
     <string name="Link_Group_Launch">New chat</string>
+
+    <string name="Chat_There_Are_News_Mentions_You">TThere are %1$d messages mentioning you</string>
+    <string name="Chat_There_Are_News_Attention_You">There are %1$d follow-up messages</string>
+
+    <string name="Chat_Message_Top">Message top</string>
+    <string name="Chat_Conversation_Del">Delete the conversation</string>
+    <string name="Chat_Tip_Attention">[[My Focus]]</string>
 </resources>

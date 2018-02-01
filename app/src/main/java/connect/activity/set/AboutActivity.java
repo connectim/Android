@@ -17,7 +17,7 @@ import connect.activity.base.BaseActivity;
 import connect.service.UpdateAppService;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;

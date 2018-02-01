@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,6 +33,7 @@ import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.ui.activity.R;
 import connect.utils.log.LogManager;
+
 /**
  * Created by gtq on 2016/11/21.
  */
@@ -40,6 +43,14 @@ public class ConversationFragment extends BaseFragment {
     RecyclerView recyclerFragmentChat;
     @Bind(R.id.connectstate)
     ConnectStateView connectStateView;
+    @Bind(R.id.txt_count_at)
+    TextView txtCountAt;
+    @Bind(R.id.relative_at)
+    RelativeLayout relativeAt;
+    @Bind(R.id.txt_count_attention)
+    TextView txtCountAttention;
+    @Bind(R.id.relative_attention)
+    RelativeLayout relativeAttention;
 
     private String Tag = "_ConversationFragment";
     private Activity activity;
@@ -56,6 +67,7 @@ public class ConversationFragment extends BaseFragment {
             view = inflater.inflate(R.layout.fragment_chat, container, false);
             ButterKnife.bind(this, view);
         }
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -98,6 +110,7 @@ public class ConversationFragment extends BaseFragment {
     }
 
     protected void countUnread() {
+        // 消息未读
         new AsyncTask<Void, Void, Integer>() {
 
             @Override
@@ -108,6 +121,45 @@ public class ConversationFragment extends BaseFragment {
             @Override
             protected void onPostExecute(Integer integer) {
                 ((HomeActivity) activity).setFragmentDot(0, integer);
+            }
+        }.execute();
+
+        //有消息提到你
+        new AsyncTask<Void, Void, Integer>() {
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                return ConversionHelper.getInstance().countUnReadAt();
+            }
+
+            @Override
+            protected void onPostExecute(Integer integer) {
+                if (integer == 0) {
+                    relativeAt.setVisibility(View.GONE);
+                } else {
+                    relativeAt.setVisibility(View.VISIBLE);
+                    txtCountAt.setText(getResources().getString(R.string.Chat_There_Are_News_Mentions_You, integer));
+                }
+            }
+        }.execute();
+
+
+        //有新的关注消息
+        new AsyncTask<Void, Void, Integer>() {
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                return ConversionHelper.getInstance().countUnReadAttention();
+            }
+
+            @Override
+            protected void onPostExecute(Integer integer) {
+                if (integer == 0) {
+                    relativeAttention.setVisibility(View.GONE);
+                } else {
+                    relativeAttention.setVisibility(View.VISIBLE);
+                    txtCountAttention.setText(getResources().getString(R.string.Chat_There_Are_News_Attention_You, integer));
+                }
             }
         }.execute();
     }
@@ -125,16 +177,9 @@ public class ConversationFragment extends BaseFragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerFragmentChat.setLayoutManager(linearLayoutManager);
-        chatFragmentAdapter = new ConversationAdapter(recyclerFragmentChat);
+        chatFragmentAdapter = new ConversationAdapter();
         recyclerFragmentChat.setAdapter(chatFragmentAdapter);
         recyclerFragmentChat.addItemDecoration(new LineDecoration(activity));
-        recyclerFragmentChat.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                chatFragmentAdapter.closeMenu();
-            }
-        });
 
         loadRooms();
         EventBus.getDefault().register(this);

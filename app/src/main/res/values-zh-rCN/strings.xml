@@ -594,4 +594,11 @@
     <string name="Link_Function_Manager">应用管理</string>
     <string name="Error_Device_Remote_Other_Login">你的账号已经在其他设备上登录</string>
     <string name="Link_Group_Launch">发起群聊</string>
+
+    <string name="Chat_There_Are_News_Mentions_You">有%1$d条消息提到了你</string>
+    <string name="Chat_There_Are_News_Attention_You">有%1$d条新的关注消息</string>
+
+    <string name="Chat_Message_Top">消息置顶</string>
+    <string name="Chat_Conversation_Del">删除会话</string>
+    <string name="Chat_Tip_Attention">[我的关注]</string>
 </resources>

@@ -31,7 +31,9 @@ public class ReceiverHelper {
                 userBean.getUid(),
                 userBean.getPriKey(),
                 userBean.getPubKey(),
-                userBean.getToken());
+                userBean.getToken(),
+                userBean.getName(),
+                userBean.getAvatar());
 
         try {
             ConnectLocalReceiver.receiver.registerConnect(ConnectReceiver.receiver);

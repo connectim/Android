@@ -149,7 +149,7 @@ public class MessageHelper extends BaseDao {
 //        daoSession.getDatabase().execSQL(sql, objects);
     }
 
-    public ChatMsgEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
+    public ChatMsgEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents,String  txtcontent,long createtime, int sendstate) {
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.setMessage_id(messageid);
         messageEntity.setMessage_ower(messageowner);
@@ -158,6 +158,7 @@ public class MessageHelper extends BaseDao {
         messageEntity.setMessage_from(from);
         messageEntity.setMessage_to(to);
         messageEntity.setContent(StringUtil.bytesToHexString(contents));
+        messageEntity.setTxtContent(txtcontent);
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
         messageEntity.setRead_time(0L);

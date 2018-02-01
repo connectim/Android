@@ -31,13 +31,15 @@ public class InstantSdk {
         this.context = context;
     }
 
-    public void registerUserInfo(Context context, String uid,String privateKey,String publicKey,String token) {
+    public void registerUserInfo(Context context, String uid,String privateKey,String publicKey,String token,String username,String avatar) {
         UserCookie userCookie = new UserCookie();
         LogManager.getLogger().d(TAG, "uid :" + uid + "   token : " + token);
         userCookie.setUid(uid);
         userCookie.setToken(token);
         userCookie.setPrivateKey(privateKey);
         userCookie.setPublicKey(publicKey);
+        userCookie.setUserName(username);
+        userCookie.setUserAvatar(avatar);
 
         defaultCookie = userCookie;
         Session.getInstance().setConnectCookie(userCookie);

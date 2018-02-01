@@ -1192,6 +1192,7 @@ message ChatMessage {
 	string ext= 8;
 	bytes origin_msg = 9;
 	GcmData cipher_data = 10;//个人聊天
+	MessageUserInfo sender = 11; //发送方信息
 }
 //传输层模型
 message MessageData {
@@ -1905,6 +1906,7 @@ message VisitorRecord {
  string face_left = 11;
  string face_middle = 12;
  string face_right = 13;
+ string guest_phone = 14;
 }
 
 message VisitorRecords {

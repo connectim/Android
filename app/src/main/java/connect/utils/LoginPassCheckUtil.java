@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import connect.ui.activity.R;
+import connect.utils.dialog.DialogUtil;
 
 /**
  * Verify login password

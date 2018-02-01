@@ -1,7 +1,6 @@
 package connect.widget.selefriend;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +10,6 @@ import android.view.View;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,7 +20,7 @@ import connect.activity.contact.model.ContactListManage;
 import connect.activity.home.bean.ContactBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
 import connect.widget.selefriend.adapter.ContactAdapter;
