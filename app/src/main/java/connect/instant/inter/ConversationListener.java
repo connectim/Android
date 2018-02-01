@@ -13,4 +13,6 @@ public interface ConversationListener {
     void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg);
 
     void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad);
+
+    void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad,int attention);
 }

@@ -733,4 +733,11 @@
     <string name="Link_Function_Manager">Управление приложениями</string>
     <string name="Error_Device_Remote_Other_Login">Ваша учетная запись уже подписана на других устройствах</string>
     <string name="Link_Group_Launch">Групповой чат</string>
+
+    <string name="Chat_There_Are_News_Mentions_You">В сообщениях %1$d указано, что вы</string>
+    <string name="Chat_There_Are_News_Attention_You">%1$d новые последующие новости</string>
+
+    <string name="Chat_Message_Top">Верх страницы</string>
+    <string name="Chat_Conversation_Del">Удалить разговор</string>
+    <string name="Chat_Tip_Attention">[我的关注]</string>
 </resources>

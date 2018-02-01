@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import connect.ui.activity.R;
-import connect.utils.log.LogManager;
 import connect.widget.bottominput.EmoManager;
 
 /**
@@ -35,23 +34,26 @@ public class ShowTextView extends TextView {
     }
 
 
-    /**
-     * @param drat
-     * @param content
-     */
-    public void showText(int at, String drat, String content) {
-        SpannableStringBuilder stringBuilder = null;
+    public void showText(int at,int attemtion, String drat, String content) {
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
 
-        if (at == 1) {
-            stringBuilder = new SpannableStringBuilder();
+        if (at >= 1) {
             String string = getContext().getString(R.string.Chat_Someone_note_me);
             SpannableStringBuilder builder = new SpannableStringBuilder(string);
             ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.RED);
             builder.setSpan(colorSpan, 0, string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             stringBuilder.append(builder);
-            stringBuilder.append(apostropheString(content));
-        } else if (!TextUtils.isEmpty(drat)) {
-            stringBuilder = new SpannableStringBuilder();
+        }
+
+        if (attemtion >= 1) {
+            String string = getContext().getString(R.string.Chat_Tip_Attention);
+            SpannableStringBuilder builder = new SpannableStringBuilder(string);
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.RED);
+            builder.setSpan(colorSpan, 0, string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringBuilder.append(builder);
+        }
+
+        if (!TextUtils.isEmpty(drat)) {
             String string = getContext().getString(R.string.Chat_Draft);
             SpannableStringBuilder builder = new SpannableStringBuilder(string);
             ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.RED);
@@ -59,10 +61,9 @@ public class ShowTextView extends TextView {
             stringBuilder.append(builder);
             stringBuilder.append(apostropheString(drat));
         } else {
-            stringBuilder = apostropheString(content);
+            SpannableStringBuilder builder = apostropheString(content);
+            stringBuilder.append(builder);
         }
-
-        LogManager.getLogger().d(Tag, stringBuilder.toString());
         setText(stringBuilder);
     }
 

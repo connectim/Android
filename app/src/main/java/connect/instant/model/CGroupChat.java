@@ -17,7 +17,7 @@ import instant.sender.model.GroupChat;
 /**
  * Created by Administrator on 2017/10/19.
  */
-public class CGroupChat extends GroupChat implements ConversationListener{
+public class CGroupChat extends GroupChat implements ConversationListener {
 
     private GroupEntity groupEntity;
 
@@ -53,7 +53,7 @@ public class CGroupChat extends GroupChat implements ConversationListener{
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime) {
-        updateRoomMsg(draft, showText, msgtime, -1);
+        updateRoomMsg(draft, showText, msgtime, 0);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at) {
@@ -61,30 +61,58 @@ public class CGroupChat extends GroupChat implements ConversationListener{
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg) {
-        updateRoomMsg(draft,showText,msgtime,at,newmsg,true);
+        updateRoomMsg(draft, showText, msgtime, at, newmsg, true);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad) {
+        updateRoomMsg(draft, showText, msgtime, at, newmsg, true, 0);
+    }
+
+    @Override
+    public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad, int attention) {
         if (TextUtils.isEmpty(chatKey())) {
             return;
         }
 
         List<RoomAttrBean> roomEntities = ConversionHelper.getInstance().loadRoomEntities(chatKey());
         if (roomEntities == null || roomEntities.size() == 0) {
+            int atCount = at;
+            if (at == -1) {
+                atCount = 0;
+            }
+
+            int attentionCount = attention;
+            if (attention == -1) {
+                attentionCount = 0;
+            }
+
             ConversionEntity conversionEntity = new ConversionEntity();
             conversionEntity.setIdentifier(groupKey);
             conversionEntity.setName(nickName());
             conversionEntity.setAvatar(headImg());
             conversionEntity.setType(chatType());
             conversionEntity.setContent(TextUtils.isEmpty(showText) ? "" : showText);
-            conversionEntity.setStranger(isStranger ? 1 : 0);
             conversionEntity.setUnread_count(newmsg == 0 ? 0 : 1);
             conversionEntity.setDraft(TextUtils.isEmpty(draft) ? "" : draft);
-            conversionEntity.setIsAt(at);
+            conversionEntity.setUnread_at(atCount);
+            conversionEntity.setUnread_attention(attentionCount);
             conversionEntity.setLast_time((msgtime < 0 ? 0 : msgtime));
             ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         } else {
             for (RoomAttrBean attrBean : roomEntities) {
+                int atCount = attrBean.getUnreadAt();
+                if (at == 0) {
+                    atCount = 0;
+                } else if (at == 1) {
+                    atCount = 1 + attrBean.getUnreadAt();
+                }
+
+                int attentionCount = attrBean.getUnreadAttention();
+                if (attention == 0) {
+                    attentionCount = 0;
+                } else if (attention == 1) {
+                    attentionCount = 1 + attrBean.getUnreadAttention();
+                }
                 ConversionHelper.getInstance().updateRoomEntity(
                         groupKey,
                         nickName(),
@@ -92,9 +120,9 @@ public class CGroupChat extends GroupChat implements ConversationListener{
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
-                        at,
-                        (isStranger ? 1 : 0),
-                        (msgtime < 0 ? 0 : msgtime)
+                        atCount,
+                        (msgtime < 0 ? 0 : msgtime),
+                        attentionCount
                 );
             }
         }

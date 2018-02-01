@@ -36,7 +36,7 @@ import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.RegularUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.TopToolBar;
