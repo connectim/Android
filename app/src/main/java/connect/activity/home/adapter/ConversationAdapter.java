@@ -1,6 +1,6 @@
 package connect.activity.home.adapter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -41,15 +41,12 @@ import static connect.widget.SideScrollView.SideScrollListener;
  */
 public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ConversationHolder> {
 
-    private Activity activity;
+    private Context context;
     private RecyclerView recyclerView;
     private SideScrollView lastOpenScrollView = null;
-    private LayoutInflater inflater;
     private List<RoomAttrBean> roomAttrBeanList = new ArrayList<>();
 
-    public ConversationAdapter(Activity activity, RecyclerView recyclerView) {
-        this.activity = activity;
-        inflater = LayoutInflater.from(activity);
+    public ConversationAdapter(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
     }
 
@@ -66,6 +63,8 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     @Override
     public ConversationHolder onCreateViewHolder(ViewGroup parent, int arg1) {
+        context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_fm_chatlist, parent, false);
         ConversationHolder holder = new ConversationHolder(view);
         return holder;
@@ -90,12 +89,12 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             holder.bottomNotify.setSelected(false);
         }
         if (roomAttr.getRoomtype() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-            holder.nameTxt.setText(inflater.getContext().getString(R.string.app_name));
+            holder.nameTxt.setText(context.getString(R.string.app_name));
             GlideUtil.loadAvatarRound(holder.headImg, R.mipmap.connect_logo);
             holder.bottomNotify.setVisibility(View.GONE);
             holder.badgeTxt.setBadgeCount(roomAttr.getDisturb(), roomAttr.getUnread());
         } else if (roomAttr.getRoomtype() == Connect.ChatType.SUBSCRIBER_VALUE) {
-            holder.nameTxt.setText(inflater.getContext().getString(R.string.Chat_Subscriber));
+            holder.nameTxt.setText(context.getString(R.string.Chat_Subscriber));
             GlideUtil.loadAvatarRound(holder.headImg, R.mipmap.chat_rss_subscribe);
             holder.bottomNotify.setVisibility(View.GONE);
             holder.conNotify.setVisibility(View.VISIBLE);

@@ -96,12 +96,22 @@ public class ConversationFragment extends BaseFragment {
                 chatFragmentAdapter.setData(entities);
                 countUnread();
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);//并行执行任务
     }
 
     protected void countUnread() {
-        int unreadCount = ConversionHelper.getInstance().countUnReads();
-        ((HomeActivity) activity).setFragmentDot(0, unreadCount);
+        new AsyncTask<Void, Void, Integer>() {
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                return ConversionHelper.getInstance().countUnReads();
+            }
+
+            @Override
+            protected void onPostExecute(Integer integer) {
+                ((HomeActivity) activity).setFragmentDot(0, integer);
+            }
+        }.execute();
     }
 
     /**
@@ -117,7 +127,7 @@ public class ConversationFragment extends BaseFragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerFragmentChat.setLayoutManager(linearLayoutManager);
-        chatFragmentAdapter = new ConversationAdapter(activity, recyclerFragmentChat);
+        chatFragmentAdapter = new ConversationAdapter(recyclerFragmentChat);
         recyclerFragmentChat.setAdapter(chatFragmentAdapter);
         recyclerFragmentChat.addItemDecoration(new LineDecoration(activity));
         recyclerFragmentChat.addOnScrollListener(new RecyclerView.OnScrollListener() {

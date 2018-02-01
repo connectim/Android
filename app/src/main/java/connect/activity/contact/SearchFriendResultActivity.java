@@ -27,6 +27,7 @@ import connect.activity.login.bean.UserBean;
 import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.OrganizerEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -143,7 +144,7 @@ public class SearchFriendResultActivity extends BaseActivity {
 
     DepartmentAdapter.OnItemClickListener onItemChildClickListener = new DepartmentAdapter.OnItemClickListener() {
         @Override
-        public void itemClick(DepartmentBean departmentBean) {
+        public void itemClick(OrganizerEntity departmentBean) {
             if(userBean.getUid().equals(departmentBean.getUid())){
                 UserInfoActivity.startActivity(mActivity);
             }else{
@@ -184,7 +185,7 @@ public class SearchFriendResultActivity extends BaseActivity {
                     if (workmates.getListList().size() > 0) {
                         noResultTv.setVisibility(View.GONE);
                         recyclerview.setVisibility(View.VISIBLE);
-                        ArrayList<DepartmentBean> list = new ArrayList<>();
+                        ArrayList<OrganizerEntity> list = new ArrayList<>();
                         for (Connect.Workmate workmate : workmates.getListList()) {
                             list.add(getContactBean(workmate));
                         }
@@ -212,8 +213,8 @@ public class SearchFriendResultActivity extends BaseActivity {
         });
     }
 
-    private DepartmentBean getContactBean(Connect.Workmate workmate){
-        DepartmentBean departmentBean = new DepartmentBean();
+    private OrganizerEntity getContactBean(Connect.Workmate workmate){
+        OrganizerEntity departmentBean = new OrganizerEntity();
         departmentBean.setUid(workmate.getUid());
         departmentBean.setName(workmate.getName());
         departmentBean.setAvatar(workmate.getAvatar());

@@ -13,8 +13,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import connect.activity.contact.bean.DepartmentBean;
+import connect.database.green.bean.OrganizerEntity;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
 import connect.widget.DepartmentAvatar;
@@ -22,7 +24,7 @@ import connect.widget.DepartmentAvatar;
 public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.ViewHolder> {
 
     private Activity activity;
-    private ArrayList<DepartmentBean> list = new ArrayList<>();
+    private ArrayList<OrganizerEntity> list = new ArrayList<>();
     private OnItemClickListener itemClickListener;
 
     public DepartmentAdapter(Activity activity) {
@@ -39,7 +41,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
 
     @Override
     public void onBindViewHolder(DepartmentAdapter.ViewHolder holder, final int position) {
-        final DepartmentBean departmentBean = list.get(position);
+        final OrganizerEntity departmentBean = list.get(position);
         if(departmentBean.getId() != null){
             holder.departmentLinear.setVisibility(View.VISIBLE);
             holder.contentLin.setVisibility(View.GONE);
@@ -115,7 +117,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
         }
     }
 
-    public void setNotify(ArrayList<DepartmentBean> list){
+    public void setNotify(List<OrganizerEntity> list){
         this.list.clear();
         if(list.size() > 0){
             this.list.addAll(list);
@@ -128,7 +130,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
     }
 
     public interface OnItemClickListener{
-        void itemClick(DepartmentBean departmentBean);
+        void itemClick(OrganizerEntity departmentBean);
     }
 
 }
