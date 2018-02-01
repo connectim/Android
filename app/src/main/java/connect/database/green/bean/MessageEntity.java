@@ -30,6 +30,7 @@ public class MessageEntity implements Serializable {
     private int messageType;
 
     private String content;
+    private String txtContent;
     private Long read_time;
     private Integer send_status;
     private Long snap_time;
@@ -39,9 +40,11 @@ public class MessageEntity implements Serializable {
     public MessageEntity() {
     }
 
-    @Generated(hash = 814481234)
-    public MessageEntity(Long _id, @NotNull String message_ower, @NotNull String message_id, int chatType, String message_from, String message_to, int messageType,
-            String content, Long read_time, Integer send_status, Long snap_time, Long createtime) {
+    @Generated(hash = 999777953)
+    public MessageEntity(Long _id, @NotNull String message_ower, @NotNull String message_id,
+            int chatType, String message_from, String message_to, int messageType,
+            String content, String txtContent, Long read_time, Integer send_status,
+            Long snap_time, Long createtime) {
         this._id = _id;
         this.message_ower = message_ower;
         this.message_id = message_id;
@@ -50,6 +53,7 @@ public class MessageEntity implements Serializable {
         this.message_to = message_to;
         this.messageType = messageType;
         this.content = content;
+        this.txtContent = txtContent;
         this.read_time = read_time;
         this.send_status = send_status;
         this.snap_time = snap_time;
@@ -89,6 +93,7 @@ public class MessageEntity implements Serializable {
         messageEntity.setMessage_from(chatMsgEntity.getMessage_from());
         messageEntity.setMessage_to(chatMsgEntity.getMessage_to());
         messageEntity.setContent(content);
+        messageEntity.setTxtContent(chatMsgEntity.showContent());
         messageEntity.setCreatetime(chatMsgEntity.getCreatetime());
         messageEntity.setRead_time(chatMsgEntity.getRead_time());
         messageEntity.setSend_status(chatMsgEntity.getSend_status());
@@ -182,6 +187,14 @@ public class MessageEntity implements Serializable {
 
     public void setSnap_time(Long snap_time) {
         this.snap_time = snap_time;
+    }
+
+    public String getTxtContent() {
+        return txtContent;
+    }
+
+    public void setTxtContent(String txtContent) {
+        this.txtContent = txtContent;
     }
 
     public Long getCreatetime() {

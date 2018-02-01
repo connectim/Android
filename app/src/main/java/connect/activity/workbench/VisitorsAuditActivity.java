@@ -15,7 +15,7 @@ import connect.activity.base.BaseActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;

@@ -1,10 +1,5 @@
 package connect.instant.receiver;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -138,24 +133,33 @@ public class MessageReceiver implements MessageListener {
         String groupIdentify = chatMessage.getTo();
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupIdentify);
 
+        String txtContent = "";
+        if (chatMessage.getMsgType() == MessageType.Text.type) {
+            try {
+                Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(chatMessage.getBody());
+                txtContent = textMessage.getContent();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         ChatMsgEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), groupIdentify,
                 chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
-                chatMessage.getTo(), chatMessage.getBody().toByteArray(), chatMessage.getMsgTime(), 1);
+                chatMessage.getTo(), chatMessage.getBody().toByteArray(), txtContent, chatMessage.getMsgTime(), 1);
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
         if (groupEntity == null) {//group backup
             GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
         } else {
-            ConversationListener conversationListener = new CGroupChat(groupEntity);
-            conversationListener.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
-
             String content = msgExtEntity.showContent();
             String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+
+            int isAtMe = -1;
             if (chatMessage.getMsgType() == MessageType.Text.type) {
                 try {
                     Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(chatMessage.getBody());
                     if (textMessage.getAtUidsList().lastIndexOf(myUid) != -1) {
+                        isAtMe =1;
                         content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
                     }
                 } catch (Exception e) {
@@ -163,6 +167,14 @@ public class MessageReceiver implements MessageListener {
                 }
             }
             NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
+
+            int isMyAttention = -1;
+            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
+            isMyAttention = contactEntity == null ? -1 : 1;
+
+            ConversationListener conversationListener = new CGroupChat(groupEntity);
+            conversationListener.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), isAtMe, 1, false, isMyAttention);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
         }
     }
 

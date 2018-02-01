@@ -13,10 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import connect.activity.chat.bean.LinkMessageRow;
 import connect.ui.activity.R;
 import connect.activity.chat.bean.MsgSend;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.FileUtil;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;

@@ -18,8 +18,9 @@ public class RoomAttrBean implements Serializable {
     private int unread;
     private String draft;
     private String showtxt;
-    private int stranger;
-    private int at;
+
+    private int unreadAt;
+    private int unreadAttention;
 
     public String getRoomid() {
         return roomid;
@@ -101,19 +102,19 @@ public class RoomAttrBean implements Serializable {
         this.showtxt = content;
     }
 
-    public int getStranger() {
-        return stranger;
+    public int getUnreadAt() {
+        return unreadAt;
     }
 
-    public void setStranger(int stranger) {
-        this.stranger = stranger;
+    public void setUnreadAt(int unreadAt) {
+        this.unreadAt = unreadAt;
     }
 
-    public int getAt() {
-        return at;
+    public int getUnreadAttention() {
+        return unreadAttention;
     }
 
-    public void setAt(int at) {
-        this.at = at;
+    public void setUnreadAttention(int unreadAttention) {
+        this.unreadAttention = unreadAttention;
     }
 }

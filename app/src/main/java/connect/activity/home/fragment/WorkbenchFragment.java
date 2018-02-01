@@ -35,7 +35,7 @@ import connect.activity.workbench.data.MenuData;
 import connect.database.green.DaoHelper.ApplicationHelper;
 import connect.database.green.bean.ApplicationEntity;
 import connect.ui.activity.R;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;

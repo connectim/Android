@@ -442,8 +442,8 @@ public class ContactHelper extends BaseDao {
 
 
     public List<SearchBean> loadGroupByMemberName(String membername) {
-        String sql = "SELECT G.*,MSG.COUNTS FROM GROUP_ENTITY G LEFT OUTER JOIN (SELECT M.MESSAGE_OWER ,COUNT(*) AS COUNTS FROM MESSAGE_ENTITY M WHERE M.CONTENT LIKE '%?%' GROUP BY M.MESSAGE_OWER) AS MSG ON G.IDENTIFIER = MSG.MESSAGE_OWER";
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{membername});
+        String sql = "SELECT G.*,MSG.COUNTS FROM GROUP_ENTITY G LEFT OUTER JOIN (SELECT M.MESSAGE_OWER ,COUNT(*) AS COUNTS FROM MESSAGE_ENTITY M WHERE M.CONTENT LIKE ? GROUP BY M.MESSAGE_OWER) AS MSG ON G.IDENTIFIER = MSG.MESSAGE_OWER";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%"+membername+"%"});
 
         List<SearchBean> groupEntities = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -463,8 +463,8 @@ public class ContactHelper extends BaseDao {
 
 
     public List<SearchBean> loadGroupByMessages(String message) {
-        String sql = "SELECT * FROM GROUP_ENTITY G,(SELECT M.MESSAGE_OWER ,COUNT() AS COUNTS FROM MESSAGE_ENTITY M WHERE M.CONTENT LIKE '%?%' GROUP BY M.MESSAGE_OWER) AS MSG WHERE G.IDENTIFIER = MSG.MESSAGE_OWER";
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{message});
+        String sql = "SELECT * FROM GROUP_ENTITY G,(SELECT M.MESSAGE_OWER ,COUNT() AS COUNTS FROM MESSAGE_ENTITY M WHERE M.TXT_CONTENT LIKE ? GROUP BY M.MESSAGE_OWER) AS MSG WHERE G.IDENTIFIER = MSG.MESSAGE_OWER";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%"+message+"%"});
 
         List<SearchBean> groupEntities = new ArrayList<>();
         while (cursor.moveToNext()) {

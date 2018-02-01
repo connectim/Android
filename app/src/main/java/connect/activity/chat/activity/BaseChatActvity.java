@@ -41,6 +41,7 @@ public abstract class BaseChatActvity extends BaseActivity {
     protected BaseChatActvity activity;
 
     protected static String ROOM_TALKER = "ROOM_TALKER";
+    protected static String ROOM_SEARCH = "ROOM_SEARCH";
     protected static int CODE_TAKEPHOTO = 150;
     protected static final int CODE_REQUEST = 512;
     protected Talker talker;

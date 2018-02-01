@@ -1,12 +1,12 @@
 package connect.database.green.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
-import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class ConversionEntity implements Serializable {
@@ -25,20 +25,20 @@ public class ConversionEntity implements Serializable {
     private String draft;
     private String content;
     private Integer unread_count;
+    private Integer unread_at;
+    private Integer unread_attention;
     private Integer top;
-    private Integer isAt;
-    private Integer stranger;
     private Long last_time;
 
     @Generated(hash = 1944361742)
     public ConversionEntity() {
     }
 
-    @Generated(hash = 1307192277)
+    @Generated(hash = 1456079774)
     public ConversionEntity(Long _id, @NotNull String identifier, Integer type,
             String name, String avatar, String draft, String content,
-            Integer unread_count, Integer top, Integer isAt, Integer stranger,
-            Long last_time) {
+            Integer unread_count, Integer unread_at, Integer unread_attention,
+            Integer top, Long last_time) {
         this._id = _id;
         this.identifier = identifier;
         this.type = type;
@@ -47,9 +47,9 @@ public class ConversionEntity implements Serializable {
         this.draft = draft;
         this.content = content;
         this.unread_count = unread_count;
+        this.unread_at = unread_at;
+        this.unread_attention = unread_attention;
         this.top = top;
-        this.isAt = isAt;
-        this.stranger = stranger;
         this.last_time = last_time;
     }
 
@@ -107,24 +107,28 @@ public class ConversionEntity implements Serializable {
     public void setTop(Integer top) {
         this.top = top;
     }
-    public Integer getStranger() {
-        return this.stranger;
-    }
-    public void setStranger(Integer stranger) {
-        this.stranger = stranger;
-    }
     public Long getLast_time() {
         return this.last_time;
     }
+
+    public Integer getUnread_at() {
+        return unread_at;
+    }
+
+    public void setUnread_at(Integer unread_at) {
+        this.unread_at = unread_at;
+    }
+
+    public Integer getUnread_attention() {
+        return unread_attention;
+    }
+
+    public void setUnread_attention(Integer unread_attention) {
+        this.unread_attention = unread_attention;
+    }
+
     public void setLast_time(Long last_time) {
         this.last_time = last_time;
     }
 
-    public Integer getIsAt() {
-        return isAt;
-    }
-
-    public void setIsAt(Integer isAt) {
-        this.isAt = isAt;
-    }
 }

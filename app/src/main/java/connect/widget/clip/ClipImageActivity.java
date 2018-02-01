@@ -19,7 +19,7 @@ import connect.ui.activity.R;
 import connect.activity.base.BaseActivity;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.widget.TopToolBar;
 
 /**

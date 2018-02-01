@@ -14,7 +14,7 @@ import java.util.List;
 import connect.activity.workbench.data.MenuBean;
 import connect.activity.workbench.data.MenuData;
 import connect.ui.activity.R;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import protos.Connect;
 
 

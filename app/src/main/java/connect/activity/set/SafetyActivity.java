@@ -18,7 +18,7 @@ import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.ProgressUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;

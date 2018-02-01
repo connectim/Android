@@ -50,6 +50,13 @@ public class FriendChat extends NormalChat {
             Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
 
             UserCookie userCookie = Session.getInstance().getConnectCookie();
+            Connect.MessageUserInfo userInfo = Connect.MessageUserInfo.newBuilder()
+                    .setAvatar(userCookie.getUserAvatar())
+                    .setUsername(userCookie.getUserName())
+                    .setUid(userCookie.getUid())
+                    .build();
+            chatMessageBuilder.setSender(userInfo);
+
             String userPrivate = userCookie.getPrivateKey();
             String userPublicKey = userCookie.getPublicKey();
             EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;

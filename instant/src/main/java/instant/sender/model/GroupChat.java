@@ -54,6 +54,14 @@ public class GroupChat extends NormalChat {
         Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
         chatMessageBuilder.setBody(ByteString.copyFrom(msgExtEntity.getContents()));
 
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
+        Connect.MessageUserInfo userInfo = Connect.MessageUserInfo.newBuilder()
+                .setAvatar(userCookie.getUserAvatar())
+                .setUsername(userCookie.getUserName())
+                .setUid(userCookie.getUid())
+                .build();
+        chatMessageBuilder.setSender(userInfo);
+
         Connect.MessageData messageData = Connect.MessageData.newBuilder()
                 .setChatMsg(chatMessageBuilder)
                 .build();

@@ -61,7 +61,7 @@ public class DaoManager {
             } else {
                 String uid = userBean.getUid();
                 DB_NAME = "connect_" + StringUtil.bytesToHexString(StringUtil.digest(StringUtil.MD5,
-                        StringUtil.hexStringToBytes(uid)));
+                        StringUtil.hexStringToBytes(uid))) + ".db";
                 DB_PWD = "connect_" + StringUtil.bytesToHexString(StringUtil.digest(StringUtil.SHA_256,
                         StringUtil.hexStringToBytes(uid)));
             }
@@ -74,6 +74,7 @@ public class DaoManager {
 
             Database db = null;
             boolean appMode = ConfigUtil.getInstance().appMode();
+            appMode = false;//aaa
             if (appMode) {//release version
                 setDebug(false);//log
                 try {

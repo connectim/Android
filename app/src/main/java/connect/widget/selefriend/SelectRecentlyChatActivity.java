@@ -21,7 +21,7 @@ import connect.activity.home.bean.RoomAttrBean;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.widget.TopToolBar;
 import connect.widget.selefriend.adapter.RecentlyChatAdapter;
 

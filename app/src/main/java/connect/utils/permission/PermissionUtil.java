@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat;
 import java.util.ArrayList;
 
 import connect.ui.activity.R;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 
 /**
  * Rights management tools

@@ -1,13 +1,11 @@
 package connect.activity.home.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,16 +24,10 @@ import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ConfigUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.ProgressUtil;
-import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.okhttp.OkHttpUtil;
-import connect.utils.okhttp.ResultCall;
 import connect.widget.TopToolBar;
-import instant.utils.SharedUtil;
-import protos.Connect;
 
 /**
  * Set the main interface.
