@@ -142,6 +142,8 @@
     <string name="Link_contact_loading_failed_check_the_contact_pression">获取联系人失败，请到手机设置中检查联系人权限
     </string>
     <string name="Link_Accept">接受</string>
+    <string name="Link_Contains">包含：%s</string>
+    <string name="Link_Relevant_record">%s 条相关记录</string>
     <string name="Link_Add">添加</string>
     <string name="Link_Add_Failed">添加失败</string>
     <string name="Link_Add_focus">设置为特别关注</string>

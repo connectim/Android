@@ -165,6 +165,8 @@
         please check the contact access in the settings of your phone
     </string>
     <string name="Link_Accept">Accept</string>
+    <string name="Link_Contains">Contains:%s</string>
+    <string name="Link_Relevant_record">%s relevant record</string>
     <string name="Link_Add">Add</string>
     <string name="Link_Add_Failed">Add Failed</string>
     <string name="Link_Add_focus">Set to pay special attention to</string>

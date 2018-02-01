@@ -146,8 +146,8 @@ public class VisitorsAuditActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_EXAMINE_VERIFY, examine, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                ToastEUtil.makeText(mActivity, R.string.Login_Update_successful).show();
-                //ActivityUtil.goBack(mActivity);
+                ToastUtil.getInstance().showToast(R.string.Login_Update_successful);
+                ActivityUtil.goBack(mActivity);
             }
 
             @Override

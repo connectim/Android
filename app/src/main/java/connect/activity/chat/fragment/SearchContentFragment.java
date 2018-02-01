@@ -63,7 +63,7 @@ public class SearchContentFragment extends BaseFragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
         adapter = new SearchAdapter(mActivity);
-        recyclerview.addItemDecoration(new LineDecoration(mActivity, false));
+        //recyclerview.addItemDecoration(new LineDecoration(mActivity, false));
         adapter.setOnItemChildListence(onItemChildClickListener);
         recyclerview.setAdapter(adapter);
     }
@@ -85,12 +85,14 @@ public class SearchContentFragment extends BaseFragment {
         ArrayList<SearchBean> list = new ArrayList<>();
         if(status == 0){
             list.addAll(getFriendData(value));
+            list.addAll(ContactHelper.getInstance().loadGroupByMemberName(value));
+            list.addAll(ContactHelper.getInstance().loadGroupByMessages(value));
         }else if(status == 1){
             list.addAll(getFriendData(value));
         }else if(status == 2){
-            //list.addAll(ContactHelper.getInstance().loadGroupByMemberName(value));
+            list.addAll(ContactHelper.getInstance().loadGroupByMemberName(value));
         } else if(status == 3){
-            //list.addAll(ContactHelper.getInstance().loadGroupByMessages(value));
+            list.addAll(ContactHelper.getInstance().loadGroupByMessages(value));
         }
 
         if(list.size() > 0){
