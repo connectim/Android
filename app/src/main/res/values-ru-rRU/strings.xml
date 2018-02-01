@@ -179,6 +179,8 @@
     <string name="Link_Add_Successful">Успешно добавлен</string>
     <string name="Link_Add_as_a_friend">Добавить в друзья</string>
     <string name="Link_Add_to_Contacts">Добавить контакт</string>
+    <string name="Link_Contains">Содержит:%s</string>
+    <string name="Link_Relevant_record">Соответствующие статьи %s запись</string>
     <string name="Link_Added">Добавлено</string>
     <string name="Link_Not_logged_in">Не в</string>
     <string name="Link_An_error_occurred_change_nickname">Ошибка при обновлении никнейма</string>

@@ -55,9 +55,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         if(searchBean.getStyle() == 1){
             holder.hintTv.setVisibility(View.GONE);
-        }else{
+        }else if(searchBean.getStyle() == 2){
             holder.hintTv.setVisibility(View.VISIBLE);
-            holder.hintTv.setText(searchBean.getHinit());
+            holder.hintTv.setText(activity.getString(R.string.Link_Contains, searchBean.getSearchStr()));
+        }else if(searchBean.getStyle() == 3){
+            holder.hintTv.setVisibility(View.VISIBLE);
+            holder.hintTv.setText(activity.getString(R.string.Link_Relevant_record, searchBean.getHinit()));
         }
 
         GlideUtil.loadAvatarRound(holder.avatarImage, searchBean.getAvatar());
