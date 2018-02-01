@@ -43,6 +43,52 @@ public class MessageHelper extends BaseDao {
     }
 
     /********************************* select ***********************************/
+    public List<ChatMsgEntity> loadMessageBySearchTxt(String message_ower, String searchTxt) {
+        daoSession.clear();
+
+        if (TextUtils.isEmpty(message_ower)) {
+            message_ower = "";
+        }
+
+        String sql = "SELECT M.* FROM MESSAGE_ENTITY M,(SELECT * FROM MESSAGE_ENTITY TEMP WHERE TEMP.TXT_CONTENT LIKE ? ORDER BY TEMP._id DESC LIMIT 1) AS LAST  WHERE M.MESSAGE_OWER = ? AND M.CREATETIME >= LAST.CREATETIME;";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%" + searchTxt + "%", message_ower});
+
+        ChatMsgEntity msgEntity = null;
+        List<ChatMsgEntity> msgEntities = new ArrayList();
+
+        while (cursor.moveToNext()) {
+            msgEntity = new ChatMsgEntity();
+            msgEntity.set_id(cursorGetLong(cursor, "_id"));
+            msgEntity.setMessage_ower(cursorGetString(cursor, "MESSAGE_OWER"));
+            msgEntity.setMessage_id(cursorGetString(cursor, "MESSAGE_ID"));
+            msgEntity.setChatType(cursorGetInt(cursor, "CHAT_TYPE"));
+            msgEntity.setMessage_from(cursorGetString(cursor, "MESSAGE_FROM"));
+            msgEntity.setMessage_to(cursorGetString(cursor, "MESSAGE_TO"));
+            msgEntity.setMessageType(cursorGetInt(cursor, "MESSAGE_TYPE"));
+            msgEntity.setContent(cursorGetString(cursor, "CONTENT"));
+            msgEntity.setSnap_time(cursorGetLong(cursor, "SNAP_TIME"));
+            msgEntity.setSend_status(cursorGetInt(cursor, "SEND_STATUS"));
+            msgEntity.setRead_time(cursorGetLong(cursor, "READ_TIME"));
+            msgEntity.setCreatetime(cursorGetLong(cursor, "CREATETIME"));
+
+            msgEntity.setTransStatus(cursorGetInt(cursor, "TRANS_STATUS"));
+            msgEntity.setHashid(cursorGetString(cursor, "HASHID"));
+            msgEntity.setPayCount(cursorGetInt(cursor, "PAY_COUNT"));
+            msgEntity.setCrowdCount(cursorGetInt(cursor, "CROWD_COUNT"));
+
+            String content = msgEntity.getContent();
+            if (!TextUtils.isEmpty(content)) {
+                msgEntity.setContents(StringUtil.hexStringToBytes(content));
+            }
+            msgEntities.add(msgEntity);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return msgEntities;
+    }
+
+
     public List<ChatMsgEntity> loadMoreMsgEntities(String message_ower, long firsttime) {
         daoSession.clear();
 

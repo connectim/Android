@@ -32,7 +32,6 @@ import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.fragment.bean.SearchBean;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -84,6 +83,7 @@ public class ChatActivity extends BaseChatSendActivity {
     RelativeLayout relativelayout1;
 
     private static String TAG = "_ChatActivity";
+    private String searchTxt = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +106,20 @@ public class ChatActivity extends BaseChatSendActivity {
         ActivityUtil.next(activity, ChatActivity.class, bundle);
     }
 
+    /**
+     * @param activity
+     * @param talker
+     */
+    public static void startActivity(Activity activity, Talker talker, String searchTxt) {
+        RoomSession.getInstance().setRoomType(talker.getTalkType());
+        RoomSession.getInstance().setRoomKey(talker.getTalkKey());
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ROOM_TALKER, talker);
+        bundle.putString(ROOM_SEARCH, searchTxt);
+        ActivityUtil.next(activity, ChatActivity.class, bundle);
+    }
+
     @Override
     public void initView() {
         super.initView();
@@ -125,7 +139,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 if (!TextUtils.isEmpty(talkey)) {
                     switch (talker.getTalkType()) {
                         case PRIVATE:
-                            PrivateSetActivity.startActivity(activity, normalChat.chatKey(),normalChat.headImg(),normalChat.nickName());
+                            PrivateSetActivity.startActivity(activity, normalChat.chatKey(), normalChat.headImg(), normalChat.nickName());
                             break;
                         case GROUPCHAT:
                         case GROUP_DISCUSSION:
@@ -144,9 +158,13 @@ public class ChatActivity extends BaseChatSendActivity {
             toolbar.setRightImg(R.mipmap.menu_white);
         }
 
+        searchTxt = getIntent().getStringExtra("ROOM_SEARCH");
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
-        linearLayoutManager.setStackFromEnd(true);
+        if(TextUtils.isEmpty(searchTxt)){
+            linearLayoutManager.setStackFromEnd(true);
+        }
         chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
         recyclerChat.setLayoutManager(linearLayoutManager);
         recyclerChat.setAdapter(chatAdapter);
@@ -175,7 +193,13 @@ public class ChatActivity extends BaseChatSendActivity {
 
             @Override
             protected List<ChatMsgEntity> doInBackground(Void... params) {
-                return MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(), TimeUtil.getCurrentTimeInLong());
+                List<ChatMsgEntity> msgEntities = null;
+                if (TextUtils.isEmpty(searchTxt)) {
+                    msgEntities = MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(), TimeUtil.getCurrentTimeInLong());
+                } else {
+                    msgEntities = MessageHelper.getInstance().loadMessageBySearchTxt(normalChat.chatKey(), searchTxt);
+                }
+                return msgEntities;
             }
 
             @Override
