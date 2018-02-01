@@ -180,6 +180,8 @@
     <string name="Link_Clear_All_Chat_History">Clear All Chat History</string>
     <string name="Link_Clear_Chat_History">Clear Chat History</string>
     <string name="Link_Contacts">Contacts</string>
+    <string name="Link_My_group">My group</string>
+    <string name="Link_Chat_record">Chat record</string>
     <string name="Link_Delete">Delete</string>
     <string name="Link_Delete_Failed">Delete Failed</string>
     <string name="Link_Delete_Successful">Delete Successful</string>
@@ -247,6 +249,11 @@
     <string name="Link_Scan">Scan</string>
     <string name="Link_Close_to_remind">Close to remind</string>
     <string name="Link_Search">Search</string>
+    <string name="Link_Search_contacts">Search contacts</string>
+    <string name="Link_Search_chat_log">Search chat log</string>
+    <string name="Link_Search_group">Search group</string>
+    <string name="Link_Search_for_specified_content">Search for specified content</string>
+    <string name="Link_Commonly_used_search">Commonly used search</string>
     <string name="Link_Search_Result">Search Result</string>
     <string name="Link_Search_friends">Search</string>
     <string name="Link_Select_new_owner">Select new owner</string>

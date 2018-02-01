@@ -187,6 +187,8 @@
     <string name="Link_Clear_All_Chat_History">Очистить историю переписки</string>
     <string name="Link_Clear_Chat_History">Очистить историю записи</string>
     <string name="Link_Contacts">Контактное лицо</string>
+    <string name="Link_My_group">Я группы</string>
+    <string name="Link_Chat_record">чата</string>
     <string name="Link_Delete">Удалить</string>
     <string name="Link_Delete_Failed">Ошибка при удалении</string>
     <string name="Link_Delete_Successful">Успешное удаление</string>
@@ -258,6 +260,11 @@
     <string name="Link_Scan">Сканировать</string>
     <string name="Link_Close_to_remind">Закрытие напомнить</string>
     <string name="Link_Search">Поиск</string>
+    <string name="Link_Search_contacts">Поиск контактов</string>
+    <string name="Link_Search_chat_log">Поиск чата</string>
+    <string name="Link_Search_group">Поиск групп</string>
+    <string name="Link_Search_for_specified_content">Поиск указать содержание</string>
+    <string name="Link_Commonly_used_search">Часто поиск</string>
     <string name="Link_Search_Result">Результат поиска</string>
     <string name="Link_Search_friends">Поиск друзей</string>
     <string name="Link_Select_new_owner">Выбрать нового хозяина группы</string>

@@ -22,6 +22,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
+import connect.activity.chat.SearchActivity;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ConversationAdapter;
 import connect.activity.home.bean.ConversationAction;
@@ -31,6 +32,7 @@ import connect.activity.home.view.ConnectStateView;
 import connect.activity.home.view.LineDecoration;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
 import connect.utils.log.LogManager;
 /**
  * Created by gtq on 2016/11/21.
@@ -130,12 +132,15 @@ public class ConversationFragment extends BaseFragment {
         EventBus.getDefault().register(this);
     }
 
-    @OnClick({R.id.relativelayout_1})
+    @OnClick({R.id.relativelayout_1, R.id.search_image1})
     void onClickListener(View view) {
         switch (view.getId()) {
             case R.id.relativelayout_1:
                 PopupWindow popWindow = new ChatAddPopWindow(getActivity());
                 popWindow.showAsDropDown(connectStateView.findViewById(R.id.relativelayout_1), 5, 5);
+                break;
+            case R.id.search_image1:
+                ActivityUtil.next(activity, SearchActivity.class);
                 break;
         }
     }

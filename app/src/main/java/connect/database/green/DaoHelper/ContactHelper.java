@@ -12,6 +12,8 @@ import java.util.List;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.Talker;
+import connect.activity.chat.fragment.bean.GroupWithCountEntity;
+import connect.activity.chat.fragment.bean.SearchBean;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.ConversationAction;
 import connect.database.green.BaseDao;
@@ -223,7 +225,7 @@ public class ContactHelper extends BaseDao {
      */
     public List<ContactEntity> loadFriendEntityFromText(String text) {
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.where(ContactEntityDao.Properties.Name.like(text + "%")).limit(1).build();
+        queryBuilder.where(ContactEntityDao.Properties.Name.like("%" + text + "%")).limit(1).build();
         List<ContactEntity> friendEntities = queryBuilder.list();
         return friendEntities;
     }
@@ -436,6 +438,49 @@ public class ContactHelper extends BaseDao {
             cursor.close();
         }
         return groupMemEntities;
+    }
+
+
+    public List<SearchBean> loadGroupByMemberName(String membername) {
+        String sql = "SELECT G.*,MSG.COUNTS FROM GROUP_ENTITY G LEFT OUTER JOIN (SELECT M.MESSAGE_OWER ,COUNT(*) AS COUNTS FROM MESSAGE_ENTITY M WHERE M.CONTENT LIKE '%?%' GROUP BY M.MESSAGE_OWER) AS MSG ON G.IDENTIFIER = MSG.MESSAGE_OWER";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{membername});
+
+        List<SearchBean> groupEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            SearchBean searchBean = new SearchBean();
+            searchBean.setUid(cursorGetString(cursor, "IDENTIFIER"));
+            searchBean.setName(cursorGetString(cursor, "NAME"));
+            searchBean.setAvatar(cursorGetString(cursor, "AVATAR"));
+            searchBean.setSearchStr(membername);
+            searchBean.setStyle(2);
+            groupEntities.add(searchBean);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return groupEntities;
+    }
+
+
+    public List<SearchBean> loadGroupByMessages(String message) {
+        String sql = "SELECT * FROM GROUP_ENTITY G,(SELECT M.MESSAGE_OWER ,COUNT() AS COUNTS FROM MESSAGE_ENTITY M WHERE M.CONTENT LIKE '%?%' GROUP BY M.MESSAGE_OWER) AS MSG WHERE G.IDENTIFIER = MSG.MESSAGE_OWER";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{message});
+
+        List<SearchBean> groupEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            SearchBean searchBean = new SearchBean();
+            searchBean.setUid(cursorGetString(cursor, "IDENTIFIER"));
+            searchBean.setName(cursorGetString(cursor, "NAME"));
+            searchBean.setAvatar(cursorGetString(cursor, "AVATAR"));
+            searchBean.setHinit(cursorGetString(cursor, "COUNTS"));
+            searchBean.setSearchStr(message);
+            searchBean.setStyle(3);
+            groupEntities.add(searchBean);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return groupEntities;
     }
     /*********************************  update ***********************************/
 

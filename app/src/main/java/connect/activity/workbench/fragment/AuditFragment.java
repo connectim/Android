@@ -126,18 +126,10 @@ public class AuditFragment extends BaseFragment {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.VisitorRecords visitorRecords = Connect.VisitorRecords.parseFrom(structData.getPlainData());
                     List<Connect.VisitorRecord> list = visitorRecords.getListList();
-                    ArrayList<Connect.VisitorRecord> listData = new ArrayList<>();
-
-                    for(Connect.VisitorRecord visitorRecord : list){
-                        if(!visitorRecord.getStatus()){
-                            listData.add(visitorRecord);
-                        }
-                    }
-
                     if (page > 1) {
-                        adapter.setNotifyData(listData, false);
+                        adapter.setNotifyData(list, false);
                     } else {
-                        adapter.setNotifyData(listData, true);
+                        adapter.setNotifyData(list, true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
