@@ -1853,7 +1853,7 @@ message WorkmateVersion {
 }
 
 message Staff {
- string staff_id = 1;
+ string staff_no = 1;
  string token = 2;
 }
 
@@ -1887,14 +1887,14 @@ message Applications {
 }
 
 message VisitorRecordsReq {
-  string page_num = 1;
-  string page_size = 2;
-  string staff_id = 3;
+ string page_num = 1;
+ string page_size = 2;
+ string staff_id = 3;
 }
 
 message VisitorRecord {
  int32 id = 1;
- string staffId = 2;
+ string staffNo = 2;
  string staffName = 3;
  string staffPhone = 4;
  string guestId = 5;
@@ -1902,15 +1902,17 @@ message VisitorRecord {
  int64 startTime = 7;
  int64 endTime = 8;
  string reason = 9;
- bool status = 10;
+ string face = 10;
  string face_left = 11;
- string face_middle = 12;
- string face_right = 13;
- string guest_phone = 14;
+ string face_right = 12;
+ string guest_phone = 13;
+ bool check = 14;
+ int32 extract = 15;
+ bool pass = 16;
 }
 
 message VisitorRecords {
-  repeated VisitorRecord list = 1;
+ repeated VisitorRecord list = 1;
 }
 
 message GroupInviteWorkmate {
@@ -1922,7 +1924,7 @@ message GroupInviteWorkmate {
 
 message Examine {
  string guest_id = 1;
- int32 valid = 2;
+ bool pass = 2;
  string reason = 3;
 }
 

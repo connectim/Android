@@ -32,6 +32,7 @@ import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.bean.Talker;
+import connect.activity.chat.fragment.bean.SearchBean;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
