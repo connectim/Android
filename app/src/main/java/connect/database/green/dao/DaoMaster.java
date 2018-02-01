@@ -21,7 +21,6 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
-        ApplicationEntityDao.createTable(db, ifNotExists);
         ContactEntityDao.createTable(db, ifNotExists);
         ConversionEntityDao.createTable(db, ifNotExists);
         ConversionSettingEntityDao.createTable(db, ifNotExists);
@@ -31,14 +30,14 @@ public class DaoMaster extends AbstractDaoMaster {
         GroupEntityDao.createTable(db, ifNotExists);
         GroupMemberEntityDao.createTable(db, ifNotExists);
         MessageEntityDao.createTable(db, ifNotExists);
-        OrganizerEntityDao.createTable(db, ifNotExists);
         ParamEntityDao.createTable(db, ifNotExists);
         TransactionEntityDao.createTable(db, ifNotExists);
+        OrganizerEntityDao.createTable(db, ifNotExists);
+        ApplicationEntityDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
-        ApplicationEntityDao.dropTable(db, ifExists);
         ContactEntityDao.dropTable(db, ifExists);
         ConversionEntityDao.dropTable(db, ifExists);
         ConversionSettingEntityDao.dropTable(db, ifExists);
@@ -48,9 +47,10 @@ public class DaoMaster extends AbstractDaoMaster {
         GroupEntityDao.dropTable(db, ifExists);
         GroupMemberEntityDao.dropTable(db, ifExists);
         MessageEntityDao.dropTable(db, ifExists);
-        OrganizerEntityDao.dropTable(db, ifExists);
         ParamEntityDao.dropTable(db, ifExists);
         TransactionEntityDao.dropTable(db, ifExists);
+        OrganizerEntityDao.dropTable(db, ifExists);
+        ApplicationEntityDao.dropTable(db, ifExists);
     }
 
     /**
@@ -69,7 +69,6 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(ApplicationEntityDao.class);
         registerDaoClass(ContactEntityDao.class);
         registerDaoClass(ConversionEntityDao.class);
         registerDaoClass(ConversionSettingEntityDao.class);
@@ -79,9 +78,10 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(GroupEntityDao.class);
         registerDaoClass(GroupMemberEntityDao.class);
         registerDaoClass(MessageEntityDao.class);
-        registerDaoClass(OrganizerEntityDao.class);
         registerDaoClass(ParamEntityDao.class);
         registerDaoClass(TransactionEntityDao.class);
+        registerDaoClass(OrganizerEntityDao.class);
+        registerDaoClass(ApplicationEntityDao.class);
     }
 
     public DaoSession newSession() {
