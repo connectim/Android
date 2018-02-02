@@ -65,7 +65,7 @@ public class FriendInfoAliasActivity extends BaseActivity {
         toolbar.setTitle(null, R.string.Link_Set_Remark_and_Tag);
 
         friendEntity = ContactHelper.getInstance().loadFriendEntity(getIntent().getExtras().getString("uid"));
-        nicknameEt.setText(friendEntity.getRemark());
+        nicknameEt.setText(friendEntity.getName());
         saveTv.setEnabled(true);
     }
 
@@ -77,7 +77,7 @@ public class FriendInfoAliasActivity extends BaseActivity {
     @OnClick(R.id.save_tv)
     void goSave(View view) {
         String remark = nicknameEt.getText().toString();
-        friendEntity.setRemark(remark);
+        friendEntity.setName(remark);
         MsgSendBean msgSendBean = new MsgSendBean();
         msgSendBean.setType(MsgSendBean.SendType.TypeFriendRemark);
 

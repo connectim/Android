@@ -41,7 +41,7 @@ public class GroupCreateAdapter extends RecyclerView.Adapter<GroupCreateAdapter.
         ContactEntity entity = contactEntities.get(position);
 
         GlideUtil.loadAvatarRound(holder.avatar, entity.getAvatar());
-        String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
+        String curName = entity.getName();
         holder.name.setText(curName);
     }
 

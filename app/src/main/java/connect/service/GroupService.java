@@ -119,7 +119,6 @@ public class GroupService extends Service {
                             memEntity.setIdentifier(groupIdentifier);
                             memEntity.setUid(member.getUid());
                             memEntity.setAvatar(member.getAvatar());
-                            memEntity.setNick(member.getNick());
                             memEntity.setUsername(member.getName());
                             memEntity.setRole(member.getRole());
                             memberEntityMap.put(member.getUid(), memEntity);

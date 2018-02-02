@@ -208,7 +208,6 @@ public class MessageHelper extends BaseDao {
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
         messageEntity.setRead_time(0L);
-        messageEntity.setSnap_time(0L);
 
         ChatMsgEntity msgExtEntity = messageEntity.messageToChatEntity();
         msgExtEntity.setContents(contents);
@@ -250,15 +249,5 @@ public class MessageHelper extends BaseDao {
 
     public void updateMsg(List<MessageEntity> msgEntities) {
         messageEntityDao.updateInTx(msgEntities);
-    }
-
-    public void updateBurnMsg(String msgid, long time) {
-        QueryBuilder<MessageEntity> queryBuilder = messageEntityDao.queryBuilder();
-        queryBuilder.where(MessageEntityDao.Properties.Message_id.eq(msgid)).build();
-        List<MessageEntity> detailEntities = queryBuilder.list();
-        for (MessageEntity entity : detailEntities) {
-            entity.setSnap_time(time);
-        }
-        messageEntityDao.updateInTx(detailEntities);
     }
 }

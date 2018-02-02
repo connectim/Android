@@ -109,7 +109,6 @@ public class CommandReceiver implements CommandListener {
             contactEntity.setUid(friendUid);
             contactEntity.setName(friendInfo.getName());
             contactEntity.setAvatar(friendInfo.getAvatar());
-            contactEntity.setRemark("");
             contactEntity.setOu(friendInfo.getOU());
             contactEntity.setPublicKey(friendInfo.getPubKey());
             contactEntity.setRegisted(true);
@@ -197,7 +196,6 @@ public class CommandReceiver implements CommandListener {
                     entity.setUid(uid);
                     entity.setName(friendInfo.getName());
                     entity.setAvatar(friendInfo.getAvatar());
-                    entity.setRemark("");
                     entity.setOu(friendInfo.getOU());
                     entity.setPublicKey(friendInfo.getPubKey());
                     entity.setRegisted(true);
@@ -273,7 +271,6 @@ public class CommandReceiver implements CommandListener {
         contactEntity.setUid(friendInfo.getUid());
         contactEntity.setName(friendInfo.getName());
         contactEntity.setAvatar(friendInfo.getAvatar());
-        contactEntity.setRemark(friendInfo.getRemark());
         contactEntity.setOu(friendInfo.getOu());
         contactEntity.setPublicKey(friendInfo.getPubKey());
         contactEntity.setRegisted(true);
@@ -343,7 +340,6 @@ public class CommandReceiver implements CommandListener {
                     groupMemEntity.setIdentifier(groupKey);
                     groupMemEntity.setUid(info.getUid());
                     groupMemEntity.setUsername(info.getName());
-                    groupMemEntity.setNick(info.getUsername());
                     groupMemEntity.setAvatar(info.getAvatar());
                     groupMemEntity.setRole(0);
                     memberEntityMap.put(info.getUid(), groupMemEntity);
@@ -354,7 +350,7 @@ public class CommandReceiver implements CommandListener {
 
                 StringBuffer stringBuffer =new StringBuffer();
                 for (GroupMemberEntity memEntity : memEntities) {
-                    String memberName = TextUtils.isEmpty(memEntity.getUsername()) ? memEntity.getNick() : memEntity.getUsername();
+                    String memberName = memEntity.getUsername();
                     stringBuffer.append(memberName);
                     stringBuffer.append(",");
                 }
@@ -434,7 +430,7 @@ public class CommandReceiver implements CommandListener {
                         if (groupAttorn.getUid().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
                             showName = context.getString(R.string.Chat_You);
                         } else {
-                            showName = TextUtils.isEmpty(member.getNick()) ? member.getUsername() : member.getNick();
+                            showName = member.getUsername();
                         }
                         noticeStr = context.getString(R.string.Link_become_new_group_owner, showName);
 
@@ -526,6 +522,5 @@ public class CommandReceiver implements CommandListener {
         String messageId = ack.getMsgID();
 
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.BURNREAD_RECEIPT, friendUid, messageId);
-        MessageHelper.getInstance().updateBurnMsg(messageId, TimeUtil.getCurrentTimeInLong());
     }
 }

@@ -82,7 +82,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
                 adminImg.setVisibility(View.GONE);
             }
 
-            String nameTxt = TextUtils.isEmpty(entity.getUsername()) ? entity.getNick() : entity.getUsername();
+            String nameTxt = entity.getUsername();
             if (TextUtils.isEmpty(nameTxt)) {
                 name.setVisibility(View.GONE);
             } else {

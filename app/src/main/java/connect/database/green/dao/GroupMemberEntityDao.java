@@ -30,8 +30,6 @@ public class GroupMemberEntityDao extends AbstractDao<GroupMemberEntity, Long> {
         public final static Property Username = new Property(3, String.class, "username", false, "USERNAME");
         public final static Property Avatar = new Property(4, String.class, "avatar", false, "AVATAR");
         public final static Property Role = new Property(5, Integer.class, "role", false, "ROLE");
-        public final static Property Nick = new Property(6, String.class, "nick", false, "NICK");
-        public final static Property Connect_id = new Property(7, String.class, "connect_id", false, "CONNECT_ID");
     }
 
 
@@ -52,9 +50,7 @@ public class GroupMemberEntityDao extends AbstractDao<GroupMemberEntity, Long> {
                 "\"UID\" TEXT NOT NULL ," + // 2: uid
                 "\"USERNAME\" TEXT NOT NULL ," + // 3: username
                 "\"AVATAR\" TEXT NOT NULL ," + // 4: avatar
-                "\"ROLE\" INTEGER," + // 5: role
-                "\"NICK\" TEXT," + // 6: nick
-                "\"CONNECT_ID\" TEXT);"); // 7: connect_id
+                "\"ROLE\" INTEGER);"); // 5: role
     }
 
     /** Drops the underlying database table. */
@@ -80,16 +76,6 @@ public class GroupMemberEntityDao extends AbstractDao<GroupMemberEntity, Long> {
         if (role != null) {
             stmt.bindLong(6, role);
         }
- 
-        String nick = entity.getNick();
-        if (nick != null) {
-            stmt.bindString(7, nick);
-        }
- 
-        String connect_id = entity.getConnect_id();
-        if (connect_id != null) {
-            stmt.bindString(8, connect_id);
-        }
     }
 
     @Override
@@ -109,16 +95,6 @@ public class GroupMemberEntityDao extends AbstractDao<GroupMemberEntity, Long> {
         if (role != null) {
             stmt.bindLong(6, role);
         }
- 
-        String nick = entity.getNick();
-        if (nick != null) {
-            stmt.bindString(7, nick);
-        }
- 
-        String connect_id = entity.getConnect_id();
-        if (connect_id != null) {
-            stmt.bindString(8, connect_id);
-        }
     }
 
     @Override
@@ -134,9 +110,7 @@ public class GroupMemberEntityDao extends AbstractDao<GroupMemberEntity, Long> {
             cursor.getString(offset + 2), // uid
             cursor.getString(offset + 3), // username
             cursor.getString(offset + 4), // avatar
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // role
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // nick
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // connect_id
+            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5) // role
         );
         return entity;
     }
@@ -149,8 +123,6 @@ public class GroupMemberEntityDao extends AbstractDao<GroupMemberEntity, Long> {
         entity.setUsername(cursor.getString(offset + 3));
         entity.setAvatar(cursor.getString(offset + 4));
         entity.setRole(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setNick(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setConnect_id(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     @Override
