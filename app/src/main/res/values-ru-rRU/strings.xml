@@ -442,8 +442,9 @@
     </string>
     <string name="Set_FeedBack">Отзывы</string>
     <string name="Set_Found_new_version">Новая версия программы</string>
-    <string name="Set_General">Общепринятый</string>
+    <string name="Set_General">Универсальный настройки</string>
     <string name="Set_Help_and_feedback">Справка и отзывы</string>
+    <string name="Set_Feedback">отзывы</string>
     <string name="Set_ID">ID</string>
     <string name="Set_Installed">Установлено</string>
     <string name="Set_Language">Язык</string>
@@ -496,7 +497,7 @@
     <string name="Set_Set_success">Успешное завершение исправления данных</string>
     <string name="Set_Setting">Установка</string>
     <string name="Set_Setting_Faied">Сбой установки</string>
-    <string name="Set_Sound">Громкость</string>
+    <string name="Set_Sound">Звук напоминает</string>
     <string name="Set_Start_encrypted_messaging">Начать зашифрованное общение</string>
     <string name="Set_This_is_the_newest_version">Самая последняя новая версия</string>
     <string name="Set_Two_Patterns_do_not_match">При введении 2 раза, пароль-рисунок не совпал
@@ -504,7 +505,7 @@
     <string name="Set_Use_Login_Password">Пароль для входа в систему</string>
     <string name="Set_Verify_Phone">Проверка телеофна</string>
     <string name="Set_Versions_number">Версия программы : %s</string>
-    <string name="Set_Vibrate">Вибрация</string>
+    <string name="Set_Vibrate">Толчок намек</string>
     <string name="Set_Your_Phone">Ваш телефон</string>
     <string name="Set_miner_fee_explain">Интернетный комиссионный сбор используется для оплаты
         запуска работы, т.е. чем выше комиссионый сбор, тем быстрее операционная сделка будет

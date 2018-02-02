@@ -11,12 +11,15 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.set.bean.SystemSetBean;
+import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastUtil;
+import connect.utils.data.LanguageData;
+import connect.utils.data.RateBean;
 import connect.widget.TopToolBar;
 
 /**
@@ -34,6 +37,8 @@ public class GeneralActivity extends BaseActivity {
     TextView clearChatTv;
     @Bind(R.id.language_ll)
     LinearLayout languageLl;
+    @Bind(R.id.language_text)
+    TextView languageText;
 
     private GeneralActivity mActivity;
 
@@ -56,6 +61,10 @@ public class GeneralActivity extends BaseActivity {
         SystemSetBean systemSetBean = ParamManager.getInstance().getSystemSet();
         soundTb.setSelected(systemSetBean.isRing());
         vibrateTb.setSelected(systemSetBean.isVibrate());
+
+        String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
+        RateBean rateBean = LanguageData.getInstance().getLanguageData(languageCode);
+        languageText.setText(rateBean.getName());
     }
 
     @OnClick({R.id.sound_tb})
