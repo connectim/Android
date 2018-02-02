@@ -75,6 +75,7 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/number_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/color_8E8E8E"

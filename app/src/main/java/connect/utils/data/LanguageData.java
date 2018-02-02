@@ -45,4 +45,15 @@ public class LanguageData {
         return new Gson().fromJson(language_data, type);
     }
 
+    public RateBean getLanguageData(String code) {
+        Type type = new TypeToken<ArrayList<RateBean>>() {}.getType();
+        ArrayList<RateBean> list =  new Gson().fromJson(language_data, type);
+        for(RateBean rateBean : list){
+            if(rateBean.getCode().equals(code)){
+                return rateBean;
+            }
+        }
+        return new RateBean();
+    }
+
 }
