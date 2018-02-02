@@ -32,11 +32,6 @@ public class MessageLocalReceiver implements MessageListener {
     }
 
     @Override
-    public long chatBurnTime(String publicKey) {
-        return getMessageListener().chatBurnTime(publicKey);
-    }
-
-    @Override
     public void singleChat(Connect.MessageData messageData) throws Exception {
         getMessageListener().singleChat(messageData);
     }
@@ -44,10 +39,5 @@ public class MessageLocalReceiver implements MessageListener {
     @Override
     public void groupChat(Connect.ChatMessage chatMessage) {
         getMessageListener().groupChat(chatMessage);
-    }
-
-    @Override
-    public void inviteJoinGroup(Connect.CreateGroupMessage groupMessage) {
-        getMessageListener().inviteJoinGroup(groupMessage);
     }
 }

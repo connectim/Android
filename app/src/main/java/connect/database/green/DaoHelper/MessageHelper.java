@@ -66,7 +66,6 @@ public class MessageHelper extends BaseDao {
             msgEntity.setMessage_to(cursorGetString(cursor, "MESSAGE_TO"));
             msgEntity.setMessageType(cursorGetInt(cursor, "MESSAGE_TYPE"));
             msgEntity.setContent(cursorGetString(cursor, "CONTENT"));
-            msgEntity.setSnap_time(cursorGetLong(cursor, "SNAP_TIME"));
             msgEntity.setSend_status(cursorGetInt(cursor, "SEND_STATUS"));
             msgEntity.setRead_time(cursorGetLong(cursor, "READ_TIME"));
             msgEntity.setCreatetime(cursorGetLong(cursor, "CREATETIME"));
@@ -114,7 +113,6 @@ public class MessageHelper extends BaseDao {
             msgEntity.setMessage_to(cursorGetString(cursor, "MESSAGE_TO"));
             msgEntity.setMessageType(cursorGetInt(cursor, "MESSAGE_TYPE"));
             msgEntity.setContent(cursorGetString(cursor, "CONTENT"));
-            msgEntity.setSnap_time(cursorGetLong(cursor, "SNAP_TIME"));
             msgEntity.setSend_status(cursorGetInt(cursor, "SEND_STATUS"));
             msgEntity.setRead_time(cursorGetLong(cursor, "READ_TIME"));
             msgEntity.setCreatetime(cursorGetLong(cursor, "CREATETIME"));
@@ -183,16 +181,6 @@ public class MessageHelper extends BaseDao {
     /********************************* add ***********************************/
     public void insertMessageEntity(MessageEntity msgEntity) {
         messageEntityDao.insertOrReplaceInTx(msgEntity);
-
-        //        daoSession.clear();
-//        String sql = "INSERT INTO MESSAGE_ENTITY (MESSAGE_OWER, MESSAGE_ID, CHAT_TYPE, MESSAGE_FROM ,MESSAGE_TO, MESSAGE_TYPE, CONTENT," +
-//                "READ_TIME,SEND_STATUS,SNAP_TIME,CREATETIME) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
-//
-//        Object[] objects = new Object[]{msgEntity.getMessage_ower(), msgEntity.getMessage_id(), msgEntity.getChatType(), msgEntity.getMessage_from(),
-//                msgEntity.getMessage_to(), msgEntity.getMessageType(), msgEntity.getContent(),
-//                msgEntity.getRead_time(), msgEntity.getSend_status(), msgEntity.getSnap_time(), msgEntity.getCreatetime()
-//        };
-//        daoSession.getDatabase().execSQL(sql, objects);
     }
 
     public ChatMsgEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents,String  txtcontent,long createtime, int sendstate) {
@@ -208,7 +196,6 @@ public class MessageHelper extends BaseDao {
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
         messageEntity.setRead_time(0L);
-        messageEntity.setSnap_time(0L);
 
         ChatMsgEntity msgExtEntity = messageEntity.messageToChatEntity();
         msgExtEntity.setContents(contents);
@@ -250,15 +237,5 @@ public class MessageHelper extends BaseDao {
 
     public void updateMsg(List<MessageEntity> msgEntities) {
         messageEntityDao.updateInTx(msgEntities);
-    }
-
-    public void updateBurnMsg(String msgid, long time) {
-        QueryBuilder<MessageEntity> queryBuilder = messageEntityDao.queryBuilder();
-        queryBuilder.where(MessageEntityDao.Properties.Message_id.eq(msgid)).build();
-        List<MessageEntity> detailEntities = queryBuilder.list();
-        for (MessageEntity entity : detailEntities) {
-            entity.setSnap_time(time);
-        }
-        messageEntityDao.updateInTx(detailEntities);
     }
 }

@@ -18,7 +18,6 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseFragment;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.adapter.SearchAdapter;
-import connect.activity.chat.bean.Talker;
 import connect.activity.chat.fragment.bean.SearchBean;
 import connect.activity.contact.ContactInfoActivity;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -76,9 +75,9 @@ public class SearchContentFragment extends BaseFragment {
             if (searchBean.getStyle() == 1) {
                 ContactInfoActivity.lunchActivity(mActivity, searchBean.getUid());
             } else if (searchBean.getStyle() == 2) {
-                ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.GROUP_DISCUSSION, searchBean.getUid()));
+                ChatActivity.startActivity(mActivity, Connect.ChatType.GROUPCHAT, searchBean.getUid());
             } else if (searchBean.getStyle() == 3) {
-                ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.GROUP_DISCUSSION, searchBean.getUid()), searchBean.getSearchStr());
+                ChatActivity.startActivity(mActivity, Connect.ChatType.GROUPCHAT, searchBean.getUid(), searchBean.getSearchStr());
             }
         }
     };

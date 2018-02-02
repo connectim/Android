@@ -19,6 +19,8 @@ public interface PrivateSetContract {
 
         String getName();
 
+        void searchHistoryTxt();
+
         void switchTop(String name, boolean state);
 
         void switchDisturb(String name, boolean state);

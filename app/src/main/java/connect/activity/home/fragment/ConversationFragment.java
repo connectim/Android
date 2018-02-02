@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
+import connect.activity.chat.ChatActivity;
 import connect.activity.chat.SearchActivity;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ConversationAdapter;
@@ -36,6 +36,7 @@ import connect.database.green.DaoHelper.ConversionHelper;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.log.LogManager;
+import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/21.
@@ -60,6 +61,7 @@ public class ConversationFragment extends BaseFragment {
     private View view;
 
     private ConversationAdapter chatFragmentAdapter;
+    private ConversationListener conversationListener = new ConversationListener();
 
     @Nullable
     @Override
@@ -182,6 +184,7 @@ public class ConversationFragment extends BaseFragment {
         chatFragmentAdapter = new ConversationAdapter();
         recyclerFragmentChat.setAdapter(chatFragmentAdapter);
         recyclerFragmentChat.addItemDecoration(new LineDecoration(activity));
+        chatFragmentAdapter.setConversationListener(conversationListener);
 
         loadRooms();
         EventBus.getDefault().register(this);
@@ -197,6 +200,14 @@ public class ConversationFragment extends BaseFragment {
             case R.id.search_image1:
                 ActivityUtil.next(activity, SearchActivity.class);
                 break;
+        }
+    }
+
+    private class ConversationListener implements ConversationAdapter.ItemListener {
+
+        @Override
+        public void itemClick(Connect.ChatType chatType, String identify) {
+            ChatActivity.startActivity(activity, chatType, identify);
         }
     }
 

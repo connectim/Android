@@ -38,7 +38,7 @@ public class GroupMyAliasPresenter implements GroupMyAliasContract.Presenter {
         String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
         GroupMemberEntity myMemberEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupKey, myUid);
         if (null != myMemberEntity) {
-            String myGroupName= TextUtils.isEmpty(myMemberEntity.getNick()) ? myMemberEntity.getUsername() : myMemberEntity.getNick();
+            String myGroupName= myMemberEntity.getUsername();
             view.myNameInGroup(myGroupName);
         }
     }

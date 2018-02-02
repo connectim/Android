@@ -187,14 +187,6 @@ public class HomeActivity extends BaseFragmentActivity {
                 activity.startActivity(intent);
                 finish();
                 break;
-            case TOCHAT:
-                Talker talker = (Talker) (objects[0]);
-                if (talker.getTalkType() == Connect.ChatType.SUBSCRIBER) {
-
-                } else {
-                    ChatActivity.startActivity(activity, (Talker) (objects[0]));
-                }
-                break;
             case SWITCHFRAGMENT:
                 int fragmentCode = (Integer) objects[0];
                 switchFragment(fragmentCode);

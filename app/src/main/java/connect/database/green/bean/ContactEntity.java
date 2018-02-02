@@ -27,13 +27,16 @@ public class ContactEntity implements Serializable {
     private String mobile;
     private Integer gender;
     private String tips;
-    private String remark;
     private Boolean registed;
 
-    @Generated(hash = 259936923)
+    @Generated(hash = 393979869)
+    public ContactEntity() {
+    }
+
+    @Generated(hash = 338746229)
     public ContactEntity(Long _id, @NotNull String uid, String name, String avatar,
             String ou, String publicKey, String empNo, String mobile,
-            Integer gender, String tips, String remark, Boolean registed) {
+            Integer gender, String tips, Boolean registed) {
         this._id = _id;
         this.uid = uid;
         this.name = name;
@@ -44,12 +47,7 @@ public class ContactEntity implements Serializable {
         this.mobile = mobile;
         this.gender = gender;
         this.tips = tips;
-        this.remark = remark;
         this.registed = registed;
-    }
-
-    @Generated(hash = 393979869)
-    public ContactEntity() {
     }
 
     public static long getSerialVersionUID() {
@@ -134,14 +132,6 @@ public class ContactEntity implements Serializable {
 
     public void setTips(String tips) {
         this.tips = tips;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
     }
 
     public Boolean getRegisted() {

@@ -35,8 +35,7 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
         public final static Property TxtContent = new Property(8, String.class, "txtContent", false, "TXT_CONTENT");
         public final static Property Read_time = new Property(9, Long.class, "read_time", false, "READ_TIME");
         public final static Property Send_status = new Property(10, Integer.class, "send_status", false, "SEND_STATUS");
-        public final static Property Snap_time = new Property(11, Long.class, "snap_time", false, "SNAP_TIME");
-        public final static Property Createtime = new Property(12, Long.class, "createtime", false, "CREATETIME");
+        public final static Property Createtime = new Property(11, Long.class, "createtime", false, "CREATETIME");
     }
 
 
@@ -63,8 +62,7 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
                 "\"TXT_CONTENT\" TEXT," + // 8: txtContent
                 "\"READ_TIME\" INTEGER," + // 9: read_time
                 "\"SEND_STATUS\" INTEGER," + // 10: send_status
-                "\"SNAP_TIME\" INTEGER," + // 11: snap_time
-                "\"CREATETIME\" INTEGER);"); // 12: createtime
+                "\"CREATETIME\" INTEGER);"); // 11: createtime
     }
 
     /** Drops the underlying database table. */
@@ -116,14 +114,9 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
             stmt.bindLong(11, send_status);
         }
  
-        Long snap_time = entity.getSnap_time();
-        if (snap_time != null) {
-            stmt.bindLong(12, snap_time);
-        }
- 
         Long createtime = entity.getCreatetime();
         if (createtime != null) {
-            stmt.bindLong(13, createtime);
+            stmt.bindLong(12, createtime);
         }
     }
 
@@ -170,14 +163,9 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
             stmt.bindLong(11, send_status);
         }
  
-        Long snap_time = entity.getSnap_time();
-        if (snap_time != null) {
-            stmt.bindLong(12, snap_time);
-        }
- 
         Long createtime = entity.getCreatetime();
         if (createtime != null) {
-            stmt.bindLong(13, createtime);
+            stmt.bindLong(12, createtime);
         }
     }
 
@@ -200,8 +188,7 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // txtContent
             cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // read_time
             cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // send_status
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // snap_time
-            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12) // createtime
+            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11) // createtime
         );
         return entity;
     }
@@ -219,8 +206,7 @@ public class MessageEntityDao extends AbstractDao<MessageEntity, Long> {
         entity.setTxtContent(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setRead_time(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
         entity.setSend_status(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
-        entity.setSnap_time(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
-        entity.setCreatetime(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
+        entity.setCreatetime(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
      }
     
     @Override

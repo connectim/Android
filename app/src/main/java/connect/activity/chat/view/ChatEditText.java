@@ -56,7 +56,7 @@ public class ChatEditText extends EditText{
                 int start = getSelectionStart();
                 getText().delete(start - 1, 1);
 
-                String showName = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
+                String showName = memEntity.getUsername();
                 showName = "@" + showName + " ";
                 SpannableStringBuilder builder = new SpannableStringBuilder(showName);
                 ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.BLACK);
@@ -84,7 +84,7 @@ public class ChatEditText extends EditText{
         List<String> addressList = new ArrayList<>();
         for (Map.Entry<String, GroupMemberEntity> entry : atMemberMap.entrySet()) {
             GroupMemberEntity memEntity = entry.getValue();
-            String showName = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
+            String showName = memEntity.getUsername();
             showName = "@" + showName + " ";
 
             if (contents.contains(showName)) {
@@ -104,7 +104,7 @@ public class ChatEditText extends EditText{
         if (RegularUtil.matches(firstHalf, "@.* ")) {
             for (Map.Entry<String, GroupMemberEntity> entry : atMemberMap.entrySet()) {
                 GroupMemberEntity memEntity = entry.getValue();
-                String showName = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
+                String showName = memEntity.getUsername();
                 showName = "@" + showName + " ";
                 int lastAtSelect = contents.lastIndexOf("@");
                 if (firstHalf.substring(lastAtSelect).contains(showName)) {
