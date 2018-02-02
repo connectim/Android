@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.Talker;
 import connect.activity.contact.bean.ContactNotice;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
@@ -153,14 +152,9 @@ public class ContactInfoActivity extends BaseActivity {
 
     @OnClick(R.id.chat_btn)
     void chat(View view) {
-        if (contactEntity == null || TextUtils.isEmpty(contactEntity.getUid())) {
-            return;
+        if (contactEntity != null && !TextUtils.isEmpty(contactEntity.getUid())) {
+            ChatActivity.startActivity(mActivity, Connect.ChatType.PRIVATE, contactEntity.getUid());
         }
-        Talker talker = new Talker(Connect.ChatType.PRIVATE, contactEntity.getUid());
-        talker.setAvatar(contactEntity.getAvatar());
-        talker.setNickName(contactEntity.getName());
-        talker.setFriendPublicKey(contactEntity.getPublicKey());
-        ChatActivity.startActivity(mActivity, talker);
     }
 
     private void searchUser(String uid) {

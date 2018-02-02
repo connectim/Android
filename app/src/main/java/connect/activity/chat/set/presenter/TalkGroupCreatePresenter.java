@@ -148,7 +148,7 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
         ToastEUtil.makeText(activity, activity.getString(R.string.Chat_Create_Group_Success), 1, new ToastEUtil.OnToastListener() {
             @Override
             public void animFinish() {
-                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupKey));
+                ChatActivity.startActivity(activity, Connect.ChatType.GROUPCHAT, groupKey);
             }
         }).show();
     }

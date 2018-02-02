@@ -52,21 +52,6 @@ public class CommandLocalReceiver implements CommandListener {
     }
 
     @Override
-    public void receiverFriendRequest(int number,Connect.ReceiveFriendRequest friendRequest) {
-        getCommandListener().receiverFriendRequest(number,friendRequest);
-    }
-
-    @Override
-    public void acceptFriendRequest(Connect.FriendListChange listChange) {
-        getCommandListener().acceptFriendRequest(listChange);
-    }
-
-    @Override
-    public void acceptDelFriend(Connect.FriendListChange listChange) {
-        getCommandListener().acceptDelFriend(listChange);
-    }
-
-    @Override
     public void conversationMute(Connect.ManageSession manageSession) {
         getCommandListener().conversationMute(manageSession);
     }
@@ -79,15 +64,5 @@ public class CommandLocalReceiver implements CommandListener {
     @Override
     public void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo) {
         getCommandListener().handlerOuterRedPacket(packageInfo);
-    }
-
-    @Override
-    public void burnReadingSetting(Connect.EphemeralSetting setting) {
-        getCommandListener().burnReadingSetting(setting);
-    }
-
-    @Override
-    public void burnReadingReceipt(Connect.EphemeralAck ack) {
-        getCommandListener().burnReadingReceipt(ack);
     }
 }

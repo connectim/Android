@@ -17,10 +17,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.Talker;
-import connect.activity.contact.DepartmentActivity;
 import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.ContactInfoActivity;
+import connect.activity.contact.DepartmentActivity;
 import connect.activity.contact.SearchFriendActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
@@ -117,10 +116,10 @@ public class ContactFragment extends BaseFragment {
                     ActivityUtil.next(mActivity, AddFriendActivity.class);
                     break;
                 case 6:
-                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.CONNECT_SYSTEM, "Connect"));
+                    ChatActivity.startActivity(mActivity, Connect.ChatType.CONNECT_SYSTEM, "Connect");
                     break;
                 case 2:
-                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.GROUPCHAT,entity.getUid()));
+                    ChatActivity.startActivity(mActivity, Connect.ChatType.GROUPCHAT, entity.getUid());
                     break;
                 case 3:
                 case 4:

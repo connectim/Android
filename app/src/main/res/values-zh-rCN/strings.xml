@@ -609,6 +609,7 @@
     <string name="Chat_There_Are_News_Attention_You">有%1$d条新的关注消息</string>
 
     <string name="Chat_Message_Top">消息置顶</string>
+    <string name="Chat_Message_Top_Remove">取消置顶</string>
     <string name="Chat_Conversation_Del">删除会话</string>
     <string name="Chat_Tip_Attention">[我的关注]</string>
 </resources>

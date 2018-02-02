@@ -254,4 +254,5 @@
     <item name="position" type="id" />
     <item name="roomid" type="id" />
     <item name="roomtype" type="id" />
+    <item name="roomtop" type="id" />
 </resources>

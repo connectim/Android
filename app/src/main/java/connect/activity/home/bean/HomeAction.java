@@ -23,7 +23,6 @@ public class HomeAction extends BaseEvent {
     public enum HomeType {
         DELAY_EXIT,// 5S, Quit to the main interface
         EXIT,// Quit to the main interface
-        TOCHAT,// to chat interface
         SWITCHFRAGMENT,// switch to fragment
 
         TOCHAT_FRIEND,

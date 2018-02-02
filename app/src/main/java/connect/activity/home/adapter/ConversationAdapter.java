@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.ConversationAction;
-import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.view.ShowTextView;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -36,6 +34,7 @@ import protos.Connect;
 public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ConversationHolder> {
 
     private Context context;
+    private ItemListener itemListener;
     private List<RoomAttrBean> roomAttrBeanList = new ArrayList<>();
 
     private ItemClickListener itemClickListener = new ItemClickListener();
@@ -107,6 +106,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         holder.itemRelative.setTag(R.id.position, position);
         holder.itemRelative.setTag(R.id.roomid, roomAttr.getRoomid());
         holder.itemRelative.setTag(R.id.roomtype, roomAttr.getRoomtype());
+        holder.itemRelative.setTag(R.id.roomtop,roomAttr.getTop());
         holder.itemRelative.setOnClickListener(itemClickListener);
         holder.itemRelative.setOnLongClickListener(longClickListener);
     }
@@ -115,11 +115,10 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
         @Override
         public void onClick(View view) {
-            String roomId = (String) view.getTag(R.id.roomid);
+            String roomIdentify = (String) view.getTag(R.id.roomid);
             int roomType = (int) view.getTag(R.id.roomtype);
 
-            Talker talker = new Talker(Connect.ChatType.forNumber(roomType), roomId);
-            HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, talker);
+            itemListener.itemClick(Connect.ChatType.forNumber(roomType), roomIdentify);
         }
     }
 
@@ -128,14 +127,18 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         boolean isDeleteAble = true;
         private int position;
         private String roomId;
+        private int top;
 
         @Override
         public boolean onLongClick(View view) {
             position = (int) view.getTag(R.id.position);
             roomId = (String) view.getTag(R.id.roomid);
+            top = (int) view.getTag(R.id.roomtop);
 
             String[] strings = new String[]{
-                    context.getResources().getString(R.string.Chat_Message_Top),
+                    (top <= 0 ? context.getResources().getString(R.string.Chat_Message_Top) :
+                            context.getResources().getString(R.string.Chat_Message_Top_Remove)
+                    ),
                     context.getResources().getString(R.string.Chat_Conversation_Del)
             };
             DialogUtil.showItemListView(context, Arrays.asList(strings), new DialogUtil.DialogListItemClickListener() {
@@ -221,6 +224,14 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
             badgeTxt = (MaterialBadgeTextView) itemView.findViewById(R.id.badgetv);
         }
+    }
+
+    public void setConversationListener(ItemListener itemListener) {
+        this.itemListener = itemListener;
+    }
+
+    public interface ItemListener{
+        void itemClick(Connect.ChatType chatType,String identify);
     }
 }
 
