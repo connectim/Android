@@ -105,6 +105,8 @@ public class CGroupChat extends GroupChat implements ConversationListener {
                     atCount = 0;
                 } else if (at == 1) {
                     atCount = 1 + attrBean.getUnreadAt();
+                } else if (at == -1) {
+                    atCount = attrBean.getUnreadAt();
                 }
 
                 int attentionCount = attrBean.getUnreadAttention();
@@ -112,7 +114,10 @@ public class CGroupChat extends GroupChat implements ConversationListener {
                     attentionCount = 0;
                 } else if (attention == 1) {
                     attentionCount = 1 + attrBean.getUnreadAttention();
+                } else if (attention == -1) {
+                    attentionCount = attrBean.getUnreadAttention();
                 }
+
                 ConversionHelper.getInstance().updateRoomEntity(
                         groupKey,
                         nickName(),
