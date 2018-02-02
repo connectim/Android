@@ -612,4 +612,6 @@
     <string name="Chat_Message_Top_Remove">取消置顶</string>
     <string name="Chat_Conversation_Del">删除会话</string>
     <string name="Chat_Tip_Attention">[我的关注]</string>
+
+    <string name="Chat_Search_Txt">查找聊天内容</string>
 </resources>

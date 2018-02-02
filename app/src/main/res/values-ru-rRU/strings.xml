@@ -743,4 +743,6 @@
     <string name="Chat_Message_Top">Верх страницы</string>
     <string name="Chat_Conversation_Del">Удалить разговор</string>
     <string name="Chat_Tip_Attention">[Моя забота]</string>
+
+    <string name="Chat_Search_Txt">Поиск содержимого чата</string>
 </resources>

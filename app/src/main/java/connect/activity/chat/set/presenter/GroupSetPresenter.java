@@ -60,9 +60,6 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         }
 
         List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(roomKey);
-        String countTxt = String.format(activity.getString(R.string.Link_Members), memberEntities.size());
-        view.countMember(countTxt);
-
         int subPosi = memberEntities.size() >= 3 ? 3 : memberEntities.size();
         List<GroupMemberEntity> showMemberEntities = memberEntities.subList(0, subPosi);
         GroupMemberEntity addEntity = new GroupMemberEntity();

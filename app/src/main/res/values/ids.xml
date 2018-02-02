@@ -255,4 +255,7 @@
     <item name="roomid" type="id" />
     <item name="roomtype" type="id" />
     <item name="roomtop" type="id" />
+
+    <item name="privateset_searchhistory" type="id"/>
+    <item name="groupset_searchhistory" type="id"/>
 </resources>
