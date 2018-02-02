@@ -308,7 +308,7 @@
     <string name="Link_enter_the_group">%s join the group</string>
     <string name="Link_group_count">%d group</string>
     <string name="Link_My_application">My applications</string>
-    <string name="Link_Employee_number">Employee number:</string>
+    <string name="Link_Employee_number">Employee number</string>
     <string name="Link_Subordinate_departments">Subordinate departments:</string>
     <string name="Link_Contact_number">Contact number:</string>
     <string name="Link_have_joined_the_group">You\'ve joined in the group</string>

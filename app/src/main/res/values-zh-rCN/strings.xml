@@ -270,7 +270,7 @@
     <string name="Link_contact_count_group_count">%1$d位联系人 %2$d个群组</string>
     <string name="Link_enter_the_group">%s加入群聊</string>
     <string name="Link_group_count">%d个群组</string>
-    <string name="Link_Employee_number">员工编号：</string>
+    <string name="Link_Employee_number">员工编号</string>
     <string name="Link_My_application">我的应用</string>
     <string name="Link_Subordinate_departments">所属部门：</string>
     <string name="Link_Contact_number">联系号码：</string>

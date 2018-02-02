@@ -324,7 +324,7 @@
     <string name="Link_enter_the_group">Добавить группу %s</string>
     <string name="Link_group_count">Группа %d</string>
     <string name="Link_My_application">Я приложений</string>
-    <string name="Link_Employee_number">Номер сотрудника:</string>
+    <string name="Link_Employee_number">Номер сотрудника</string>
     <string name="Link_Subordinate_departments">Принадлежащего сектор:</string>
     <string name="Link_Contact_number">Номер:</string>
     <string name="Link_have_joined_the_group">Вы уже добавлены в эту группу</string>
