@@ -131,7 +131,7 @@ public class ChatActivity extends BaseChatSendActivity {
         activity = this;
         chatType = (Connect.ChatType) getIntent().getSerializableExtra("CHAT_TYPE");
         chatIdentify = getIntent().getStringExtra("CHAT_IDENTIFY");
-        searchTxt = getIntent().getStringExtra("ROOM_SEARCH");
+        searchTxt = getIntent().getStringExtra("CHAT_SEARCH_TXT");
         if (!(chatType == Connect.ChatType.CONNECT_SYSTEM)) {
             toolbar.setRightImg(R.mipmap.menu_white);
         }

@@ -170,6 +170,8 @@ public class CommandReceiver implements CommandListener {
         Collection<GroupMemberEntity> memberEntityCollection = memberEntityMap.values();
         List<GroupMemberEntity> memEntities = new ArrayList<GroupMemberEntity>(memberEntityCollection);
         ContactHelper.getInstance().inserGroupMemEntity(memEntities);
+
+        ContactNotice.receiverContact();
     }
 
     @Override
