@@ -188,7 +188,7 @@ public class ConversionHelper extends BaseDao {
                 (TextUtils.isEmpty(avatar) ? " " : ", AVATAR = '" + avatar + "'") +
                 (TextUtils.isEmpty(content) ? " " : ", CONTENT = '" + content + "'") +
                 (messagetime == 0 ? " " : ", LAST_TIME = " + messagetime) +
-                (TextUtils.isEmpty(roomName) ? "" : ", NAME = '" + roomName + "' ") +
+                (TextUtils.isEmpty(roomName) ? "" : ", NAME = \"" + roomName + "\" ") +
                 " WHERE IDENTIFIER = ?;";
         daoSession.getDatabase().execSQL(sql, new Object[]{draf, unRead, unAt,isAttention, identify});
     }
