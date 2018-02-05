@@ -308,7 +308,7 @@
     <string name="Link_enter_the_group">%s join the group</string>
     <string name="Link_group_count">%d group</string>
     <string name="Link_My_application">My applications</string>
-    <string name="Link_Employee_number">Employee number:</string>
+    <string name="Link_Employee_number">Employee number</string>
     <string name="Link_Subordinate_departments">Subordinate departments:</string>
     <string name="Link_Contact_number">Contact number:</string>
     <string name="Link_have_joined_the_group">You\'ve joined in the group</string>
@@ -416,8 +416,9 @@
     </string>
     <string name="Set_FeedBack">FeedBack</string>
     <string name="Set_Found_new_version">New version</string>
-    <string name="Set_General">General</string>
+    <string name="Set_General">General Settings</string>
     <string name="Set_Help_and_feedback">Help and feedback</string>
+    <string name="Set_Feedback">Feedback</string>
     <string name="Set_ID">ID</string>
     <string name="Set_Installed">Installed</string>
     <string name="Set_Language">Language</string>
@@ -469,14 +470,14 @@
     <string name="Set_Set_success">Edit successfully</string>
     <string name="Set_Setting">Setting</string>
     <string name="Set_Setting_Faied">Setting Failed</string>
-    <string name="Set_Sound">Sound</string>
+    <string name="Set_Sound">Voice remind</string>
     <string name="Set_Start_encrypted_messaging">You are starting an encrypt chat</string>
     <string name="Set_This_is_the_newest_version">This is the newest version</string>
     <string name="Set_Two_Patterns_do_not_match">Two Patterns do not match</string>
     <string name="Set_Use_Login_Password">Use Login Password</string>
     <string name="Set_Verify_Phone">Verify Phone</string>
     <string name="Set_Versions_number">Version: %s</string>
-    <string name="Set_Vibrate">Vibrate</string>
+    <string name="Set_Vibrate">Vibrate alert</string>
     <string name="Set_Your_Phone">Your Phone</string>
     <string name="Set_miner_fee_explain">A transaction fee is included to transactions so that
         miners will include your transaction in the next block.The higher the fee, the faster
@@ -638,10 +639,12 @@
     <string name="Work_The_contract">Contract</string>
     <string name="Work_Wage">Salary</string>
     <string name="Work_Visitors">Visitors</string>
+    <string name="Work_Warehouse">Warehouse</string>
     <string name="Work_Visitors_info">Visitor informations</string>
     <string name="Work_Visitors_reason">Purpose of this visit:%1$s</string>
     <string name="Work_Visitors_phone">Contact information:</string>
     <string name="Work_Visitors_time">Visit time:%1$s</string>
+    <string name="Work_Time">Time:%1$s</string>
     <string name="Work_Visitors_share">Share invitation qr code</string>
     <string name="Work_Visitors_Facial_information">Facial information:</string>
     <string name="Work_Visitors_Left_face">Left face</string>
@@ -674,6 +677,8 @@
     <string name="Work_No_More_Results">No more search results</string>
     <string name="Work_Service_Search">Search application</string>
     <string name="Work_Search">Search</string>
+    <string name="Work_Entering_the_warehouse">Entering the warehouse</string>
+    <string name="Work_Left_the_warehouse">Left the warehouse</string>
     <string name="Link_exit_the_group">%sexit the group</string>
     <string name="Work_Third_Party_Service">Third-party service</string>
     <string name="Link_Group_Create">Create Group</string>

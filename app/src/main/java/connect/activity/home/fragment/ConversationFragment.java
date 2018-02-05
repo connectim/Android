@@ -180,12 +180,14 @@ public class ConversationFragment extends BaseFragment {
         LogManager.getLogger().d(Tag, "onActivityCreated()");
         activity = getActivity();
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
-        recyclerFragmentChat.setLayoutManager(linearLayoutManager);
-        chatFragmentAdapter = new ConversationAdapter();
-        recyclerFragmentChat.setAdapter(chatFragmentAdapter);
-        recyclerFragmentChat.addItemDecoration(new LineDecoration(activity));
-        chatFragmentAdapter.setConversationListener(conversationListener);
+        if (chatFragmentAdapter == null) {
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
+            recyclerFragmentChat.setLayoutManager(linearLayoutManager);
+            chatFragmentAdapter = new ConversationAdapter();
+            recyclerFragmentChat.setAdapter(chatFragmentAdapter);
+            recyclerFragmentChat.addItemDecoration(new LineDecoration(activity));
+            chatFragmentAdapter.setConversationListener(conversationListener);
+        }
 
         loadRooms();
         EventBus.getDefault().register(this);

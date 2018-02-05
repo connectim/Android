@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_62"
+    android:layout_height="wrap_content"
     android:id="@id/relative_item"
     android:background="@color/color_white"
     android:gravity="center_vertical">
@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@id/framelayout"
         android:layout_width="@dimen/dp_62"
-        android:layout_height="@dimen/dp_74"
+        android:layout_height="@dimen/dp_62"
         android:layout_centerVertical="true">
 
         <ImageView
@@ -38,6 +38,7 @@
         android:layout_height="@dimen/dp_62"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/dp_10"
+        android:gravity="center_vertical"
         android:layout_toRightOf="@id/framelayout"
         android:orientation="vertical">
 
@@ -45,7 +46,6 @@
             android:id="@id/usernameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/color_393939"
@@ -98,7 +98,6 @@
             android:id="@id/txt1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_3"
             android:textColor="@color/color_b3b5bc"
             android:textSize="@dimen/sp_12" />
     </LinearLayout>

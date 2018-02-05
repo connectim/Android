@@ -15,9 +15,9 @@
         android:contentDescription="@string/app_name"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
-        android:src="@mipmap/connect_logo"
+        android:src="@mipmap/icon_logo_circle"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_68"/>
+        android:layout_marginTop="@dimen/dp_30"/>
 
     <TextView
         android:id="@+id/appVersion"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_20"
-        android:textSize="@dimen/sp_14"
+        android:textSize="@dimen/sp_16"
         android:textColor="@color/color_6d6e75"
         android:text="@string/Set_Versions_number"/>
 

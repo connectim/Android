@@ -37,8 +37,13 @@ public class RobotLocalReceiver implements RobotListener {
     }
 
     @Override
-    public void voiceMessage(Connect.VoiceMessage voiceMessage) {
-        getRobotListener().voiceMessage(voiceMessage);
+    public void unRegisterMessage(Connect.UnRegisterMessage textMessage) {
+        getRobotListener().unRegisterMessage(textMessage);
+    }
+
+    @Override
+    public void voiceMessage(Connect.VoiceMessage unRegisterMessage) {
+        getRobotListener().voiceMessage(unRegisterMessage);
     }
 
     @Override

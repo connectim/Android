@@ -91,6 +91,12 @@
             android:name="connect.activity.workbench.VisitorsAuditActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="connect.activity.workbench.WarehouseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="connect.activity.workbench.WarehouseDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="connect.activity.login.LoginPassVerifyActivity"
             android:screenOrientation="portrait" />
         <activity

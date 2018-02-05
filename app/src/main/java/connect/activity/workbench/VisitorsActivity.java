@@ -107,11 +107,13 @@ public class VisitorsActivity extends BaseFragmentActivity {
                 switchFragment(0);
                 toAuditText.setSelected(true);
                 toAuditLine.setVisibility(View.VISIBLE);
+                auditFragment.initData();
                 break;
             case R.id.the_approved_text:
                 switchFragment(1);
                 theApprovedText.setSelected(true);
                 theApprovedLine.setVisibility(View.VISIBLE);
+                approvedFragment.initData();
                 break;
         }
     }

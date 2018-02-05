@@ -17,10 +17,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/selector_list_item_bg"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/dp_15"
         android:paddingLeft="@dimen/dp_15"
         android:paddingRight="@dimen/dp_15">
-
         <TextView
             style="@style/BaseTextStyle.14"
             android:layout_width="0dp"
@@ -28,7 +27,11 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/Set_Language"/>
-
+        <TextView
+            android:id="@+id/language_text"
+            style="@style/BaseTextStyle.14"
+            android:textColor="@color/color_A6A6A6"
+            android:text=""/>
         <ImageView
             android:contentDescription="@string/app_name"
             android:layout_width="wrap_content"
@@ -36,20 +39,12 @@
             android:src="@mipmap/group_item_arrow"/>
     </LinearLayout>
 
-    <TextView
-        style="@style/BaseTextStyle"
-        android:textColor="@color/color_858998"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginLeft="@dimen/dp_15"
-        android:layout_marginBottom="@dimen/dp_2"
-        android:text="@string/Chat_New_message_notification"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_52"
         android:background="@drawable/selector_list_item_bg"
         android:orientation="horizontal"
-
+        android:layout_marginTop="@dimen/dp_15"
         android:paddingLeft="@dimen/dp_15"
         android:paddingRight="@dimen/dp_15">
         <TextView
@@ -94,22 +89,23 @@
             android:layout_gravity="center_vertical"/>
     </LinearLayout>
 
-    <TextView
+    <!--<TextView
         style="@style/BaseTextStyle"
         android:textColor="@color/color_858998"
         android:layout_marginLeft="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_2"
         android:text="@string/Set_Enable_or_disable_Connect_Notification_via"/>
-
+-->
     <TextView
         android:id="@+id/clear_chat_tv"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_52"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_15"
+        android:paddingLeft="@dimen/dp_15"
+        android:textColor="@color/color_161A21"
         android:background="@drawable/selector_list_item_bg"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:text="@string/Link_Clear_All_Chat_History"
-        android:textColor="@color/color_f53333"
         android:textSize="@dimen/sp_14"/>
 
 </LinearLayout>

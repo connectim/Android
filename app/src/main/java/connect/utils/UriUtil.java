@@ -55,6 +55,12 @@ public class UriUtil {
     public static String CONNECT_V3_DEPAERTMENT_WORKMATES = "/connect/v3/department/workmates";
     /** 群成员邀请入群 */
     public static String CONNECT_V3_GROUP_INVITE = "/connect/v3/group/invite";
+    /** 获取仓库列表 */
+    public static String STORES_V1_IWORK_LOGS = "/stores/v1/iwork/logs";
+    /** 确认陌生人信息 */
+    public static String STORES_V1_IWORK_LOG_COMFIRM = "/stores/v1/iwork/log/confirm";
+    /** 查询陌生人信息详情 */
+    public static String STORES_V1_IWORK_LOGS_DETAIL = "/stores/v1/iwork/logs/detail";
 
     /**======================================================================================
      *                                Login successfully initialized

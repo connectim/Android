@@ -20,7 +20,6 @@ import connect.activity.chat.ChatActivity;
 import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.DepartmentActivity;
-import connect.activity.contact.SearchFriendActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ContactAdapter;
@@ -74,7 +73,7 @@ public class ContactFragment extends BaseFragment {
         toolbarTop.setBlackStyle();
         toolbarTop.setTitle(null, R.string.Link_Contacts);
         //toolbarTop.setRightImg(R.mipmap.add_white3x);
-        toolbarTop.setLeftImg(R.mipmap.search3x);
+        //toolbarTop.setLeftImg(R.mipmap.search3x);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
@@ -87,10 +86,10 @@ public class ContactFragment extends BaseFragment {
         adapter.updateContact(adapter.updateTypeContact);
     }
 
-    @OnClick(R.id.left_img)
+    /*@OnClick(R.id.left_img)
     void search(View view) {
         ActivityUtil.next(mActivity, SearchFriendActivity.class, android.R.anim.fade_in, android.R.anim.fade_out);
-    }
+    }*/
 
     @OnClick(R.id.right_lin)
     void goAddFriend(View view) {

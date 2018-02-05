@@ -103,6 +103,10 @@ public class MessageParser extends InterParse {
                 Connect.ExamineMessage examineMessage = Connect.ExamineMessage.parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.auditMessage(examineMessage);
                 break;
+            case 21://仓库信息
+                Connect.UnRegisterMessage visotorMessage = Connect.UnRegisterMessage.parseFrom(msMessage.getBody().toByteArray());
+                RobotLocalReceiver.localReceiver.unRegisterMessage(visotorMessage);
+                break;
             case 102://announce message
                 Connect.Announcement announcement = Connect.Announcement.parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.announcementMessage(announcement);

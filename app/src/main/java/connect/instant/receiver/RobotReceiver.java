@@ -39,6 +39,12 @@ public class RobotReceiver implements RobotListener {
     }
 
     @Override
+    public void unRegisterMessage(Connect.UnRegisterMessage unRegisterMessage) {
+        ChatMsgEntity chatMsgEntity = RobotChat.getInstance().noticeMsg(6, unRegisterMessage.getBody(), String.valueOf(unRegisterMessage.getId()));
+        dealRobotMessage(chatMsgEntity);
+    }
+
+    @Override
     public void auditMessage(Connect.ExamineMessage examineMessage) {
         ChatMsgEntity chatMsgEntity = RobotChat.getInstance().noticeMsg(5, examineMessage.getBody(), "");
         dealRobotMessage(chatMsgEntity);
