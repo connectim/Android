@@ -14,6 +14,11 @@ import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
+import connect.utils.ProtoBufUtil;
+import connect.utils.RegularUtil;
+import connect.utils.UriUtil;
+import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.ResultCall;
 import instant.bean.ChatMsgEntity;
 import instant.bean.MessageType;
 import instant.bean.Session;
@@ -97,34 +102,92 @@ public class MessageReceiver implements MessageListener {
                 chatMessage.getTo(), chatMessage.getBody().toByteArray(), txtContent, chatMessage.getMsgTime(), 1);
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
 
+        String content = msgExtEntity.showContent();
+        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+
+        // At消息
+        int isAtMe = -1;
+        if (chatMessage.getMsgType() == MessageType.Text.type) {
+            try {
+                Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(chatMessage.getBody());
+                if (textMessage.getAtUidsList().lastIndexOf(myUid) != -1) {
+                    isAtMe = 1;
+                    content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
+
+        int isMyAttention = -1;
+        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
+        isMyAttention = contactEntity == null ? -1 : 1;
+
+        final GroupUpdate groupUpdate = new GroupUpdate(groupIdentify, msgExtEntity.showContent(), chatMessage.getMsgTime(), isAtMe, isMyAttention, msgExtEntity);
+
         if (groupEntity == null) {//group backup
+            Connect.GroupId groupId = Connect.GroupId.newBuilder()
+                    .setIdentifier(groupIdentify)
+                    .build();
+
+            OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PULLINFO, groupId, new ResultCall<Connect.HttpResponse>() {
+                @Override
+                public void onResponse(Connect.HttpResponse response) {
+                    try {
+                        Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
+                        Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
+                        if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
+                            Connect.Group group = groupInfo.getGroup();
+                            String groupIdentifier = group.getIdentifier();
+
+                            GroupEntity groupEntity = new GroupEntity();
+                            groupEntity.setIdentifier(groupIdentifier);
+                            String groupname = group.getName();
+                            groupEntity.setCategory(group.getCategory());
+                            groupEntity.setName(groupname);
+                            groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
+
+                            groupUpdate.updateRoomMessage(groupEntity);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onError(Connect.HttpResponse response) {
+
+                }
+            });
             GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
         } else {
-            String content = msgExtEntity.showContent();
-            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+            groupUpdate.updateRoomMessage(groupEntity);
+        }
+    }
 
-            // At消息
-            int isAtMe = -1;
-            if (chatMessage.getMsgType() == MessageType.Text.type) {
-                try {
-                    Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(chatMessage.getBody());
-                    if (textMessage.getAtUidsList().lastIndexOf(myUid) != -1) {
-                        isAtMe = 1;
-                        content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
+    private class GroupUpdate {
 
-            int isMyAttention = -1;
-            ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
-            isMyAttention = contactEntity == null ? -1 : 1;
+        String identify;
+        String content;
+        long messageTime;
+        int isAtMe;
+        int isMyAttention;
+        ChatMsgEntity msgEntity;
 
+        public GroupUpdate(String identify, String content, long messageTime, int isAtMe, int isMyAttention, ChatMsgEntity msgEntity) {
+            this.identify = identify;
+            this.content = content;
+            this.messageTime = messageTime;
+            this.isAtMe = isAtMe;
+            this.isMyAttention = isMyAttention;
+            this.msgEntity = msgEntity;
+        }
+
+        void updateRoomMessage(GroupEntity groupEntity) {
             CGroupChat cGroupChat = new CGroupChat(groupEntity);
-            cGroupChat.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), isAtMe, 1, false, isMyAttention);
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
+            cGroupChat.updateRoomMsg(null, content, messageTime, isAtMe, 1, false, isMyAttention);
+           // RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, identify, msgEntity);
         }
     }
 }
