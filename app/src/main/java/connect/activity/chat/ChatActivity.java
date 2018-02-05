@@ -34,7 +34,9 @@ import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.instant.inter.ConversationListener;
@@ -103,7 +105,7 @@ public class ChatActivity extends BaseChatSendActivity {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("CHAT_TYPE", chattype);
-        bundle.putSerializable("CHAT_IDENTIFY", chattype);
+        bundle.putSerializable("CHAT_IDENTIFY", identify);
         ActivityUtil.next(activity, ChatActivity.class, bundle);
     }
 
@@ -119,15 +121,22 @@ public class ChatActivity extends BaseChatSendActivity {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("CHAT_TYPE", chattype);
-        bundle.putSerializable("CHAT_IDENTIFY", chattype);
+        bundle.putSerializable("CHAT_IDENTIFY", identify);
         bundle.putString("CHAT_SEARCH_TXT", searchTxt);
         ActivityUtil.next(activity, ChatActivity.class, bundle);
     }
 
     @Override
     public void initView() {
-        super.initView();
         activity = this;
+        chatType = (Connect.ChatType) getIntent().getSerializableExtra("CHAT_TYPE");
+        chatIdentify = getIntent().getStringExtra("CHAT_IDENTIFY");
+        searchTxt = getIntent().getStringExtra("ROOM_SEARCH");
+        if (!(chatType == Connect.ChatType.CONNECT_SYSTEM)) {
+            toolbar.setRightImg(R.mipmap.menu_white);
+        }
+
+        super.initView();
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setLeftListener(new View.OnClickListener() {
@@ -139,30 +148,20 @@ public class ChatActivity extends BaseChatSendActivity {
         toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String talkey = talker.getTalkKey();
-                if (!TextUtils.isEmpty(talkey)) {
-                    switch (talker.getTalkType()) {
-                        case PRIVATE:
-                            PrivateSetActivity.startActivity(activity, normalChat.chatKey(), normalChat.headImg(), normalChat.nickName());
-                            break;
-                        case GROUPCHAT:
-                        case GROUP_DISCUSSION:
-                            GroupSetActivity.startActivity(activity, talkey);
-                            break;
-                    }
+                switch (chatType) {
+                    case PRIVATE:
+                        PrivateSetActivity.startActivity(activity, normalChat.chatKey(), normalChat.headImg(), normalChat.nickName());
+                        break;
+                    case GROUPCHAT:
+                    case GROUP_DISCUSSION:
+                        GroupSetActivity.startActivity(activity, chatIdentify);
+                        break;
                 }
             }
         });
         recordview.setVisibility(View.GONE);
         inputPanel.setActivity(this);
         inputPanel.setRecordView(recordview);
-        updateBurnState(0);
-
-        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM)) {
-            toolbar.setRightImg(R.mipmap.menu_white);
-        }
-
-        searchTxt = getIntent().getStringExtra("ROOM_SEARCH");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
@@ -211,7 +210,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 super.onPostExecute(entities);
                 chatAdapter.insertItems(entities);
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -244,38 +243,50 @@ public class ChatActivity extends BaseChatSendActivity {
     }
 
     @Override
-    public void updateBurnState(long time) {
-        String titleName = "";
-        if (time <= 0) {
-            titleName = normalChat.nickName();
-            if (titleName.length() > 15) {
-                titleName = titleName.substring(0, 12);
-                titleName += "...";
+    protected void onStart() {
+        super.onStart();
+        updateTitleName();
+    }
+
+    @Override
+    public void updateTitleName() {
+        new AsyncTask<Void, Void, ConversionSettingEntity>() {
+
+            @Override
+            protected ConversionSettingEntity doInBackground(Void... voids) {
+                ConversionSettingEntity settingEntity = ConversionSettingHelper.getInstance().loadSetEntity(chatIdentify);
+                if (settingEntity == null) {
+                    settingEntity = new ConversionSettingEntity();
+                    settingEntity.setIdentifier(chatIdentify);
+                    settingEntity.setDisturb(0);
+                }
+                return settingEntity;
             }
-            if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE || normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-                toolbar.setTitle(titleName);
-            } else {
-                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
-                toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
-            }
-        } else {
-            String name = normalChat.nickName();
-            StringBuffer indexName = new StringBuffer();
-            indexName.append(name.charAt(0));
-            if (name.length() > 2) {
-                for (int i = 1; (i < name.length() - 1) && (i < 8); i++) {
-                    indexName.append("*");
+
+            @Override
+            protected void onPostExecute(ConversionSettingEntity settingEntity) {
+                super.onPostExecute(settingEntity);
+                String titleName = "";
+                titleName = normalChat.nickName();
+                if (titleName.length() > 15) {
+                    titleName = titleName.substring(0, 12);
+                    titleName += "...";
+                }
+                switch (chatType) {
+                    case CONNECT_SYSTEM:
+                        toolbar.setTitle(titleName);
+                        break;
+                    case PRIVATE:
+                        toolbar.setTitle(settingEntity.getDisturb() == 0 ? null : R.mipmap.icon_close_notify, titleName);
+                        break;
+                    case GROUPCHAT:
+                    case GROUP_DISCUSSION:
+                        List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
+                        toolbar.setTitle(settingEntity.getDisturb() == 0 ? null : R.mipmap.icon_close_notify, (titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size())));
+                        break;
                 }
             }
-            indexName.append(name.charAt(name.length() - 1));
-            if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE || normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-                toolbar.setTitle(R.mipmap.message_privacy_grey2x, null);
-                toolbar.setTitle(indexName.toString());
-            } else {
-                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
-                toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
-            }
-        }
+        }.execute();
     }
 
     /**
@@ -429,7 +440,7 @@ public class ChatActivity extends BaseChatSendActivity {
             }
         }
 
-        switch (talker.getTalkType()) {
+        switch (chatType) {
             case CONNECT_SYSTEM:
                 CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
                 break;

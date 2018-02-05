@@ -71,7 +71,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
         activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setTitle(getResources().getString(R.string.Wallet_Detail));
+        toolbar.setTitle(getResources().getString(R.string.Chat_Private_Setting));
         toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,11 +187,9 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
     public void clearMessage() {
         View view = findViewById(R.id.clear);
         String str = getResources().getString(R.string.Link_Clear_Chat_History);
-        TextView txt = (TextView) view.findViewById(R.id.txt);
+        TextView txt = (TextView) view.findViewById(R.id.private_clear_history);
         txt.setText(str);
 
-        ImageView img = (ImageView) view.findViewById(R.id.img);
-        img.setBackgroundResource(R.mipmap.message_clear_history2x);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

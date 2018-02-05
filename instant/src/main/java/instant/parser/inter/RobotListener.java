@@ -9,6 +9,8 @@ public interface RobotListener {
 
     void textMessage(Connect.TextMessage textMessage);
 
+    void unRegisterMessage(Connect.UnRegisterMessage unRegisterMessage);
+
     void voiceMessage(Connect.VoiceMessage voiceMessage);
 
     void photoMessage(Connect.PhotoMessage photoMessage);

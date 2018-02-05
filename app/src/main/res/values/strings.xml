@@ -702,4 +702,7 @@
     <string name="Chat_Tip_Attention">[My Focus]</string>
 
     <string name="Chat_Search_Txt">Find chat content</string>
+    <string name="Chat_Private_Setting">Setting</string>
+    <string name="Chat_Group_Setting">Group Setting(%1$d)</string>
+    <string name="Link_Open_to_remind">Turn on reminder</string>
 </resources>

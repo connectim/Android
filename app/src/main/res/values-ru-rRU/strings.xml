@@ -752,4 +752,7 @@
     <string name="Chat_Tip_Attention">[Моя забота]</string>
 
     <string name="Chat_Search_Txt">Поиск содержимого чата</string>
+    <string name="Chat_Private_Setting">устанавливать</string>
+    <string name="Chat_Group_Setting">Настройки группы(%1$d)</string>
+    <string name="Link_Open_to_remind">Включить напоминания</string>
 </resources>

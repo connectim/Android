@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -41,8 +42,6 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
-    @Bind(R.id.count)
-    TextView count;
     @Bind(R.id.linearlayout)
     LinearLayout linearlayout;
     @Bind(R.id.relativelayout_1)
@@ -73,7 +72,6 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
         activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setTitle(getResources().getString(R.string.Link_Group));
         toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +114,11 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
     }
 
     @Override
+    public void countMember(int members) {
+        toolbar.setTitle(getResources().getString(R.string.Chat_Group_Setting,members));
+    }
+
+    @Override
     public void memberList(View view) {
         LinearLayout layout = (LinearLayout) findViewById(R.id.linearlayout);
         layout.addView(view);
@@ -137,38 +140,6 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
     }
 
     @Override
-    public void groupName(String groupname) {
-        View view = findViewById(R.id.groupset_groupname);
-        ImageView img1 = (ImageView) view.findViewById(R.id.img1);
-        TextView txt1 = (TextView) view.findViewById(R.id.txt1);
-        TextView txt2 = (TextView) view.findViewById(R.id.txt2);
-        ImageView img2 = (ImageView) view.findViewById(R.id.img2);
-
-        img1.setBackgroundResource(R.mipmap.message_groupchat_name2x);
-        txt1.setText(getString(R.string.Link_Group_Name));
-        if (!TextUtils.isEmpty(groupname)) {
-            if (groupname.length() > 10) {
-                groupname = groupname.substring(0, 10) + "...";
-            }
-            txt2.setText(groupname);
-        }
-
-        img2.setImageResource(R.mipmap.group_item_arrow);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GroupNameActivity.startActivity(activity, groupKey);
-            }
-        });
-    }
-
-    @Override
-    public void groupNameClickable(boolean clickable) {
-        View view = findViewById(R.id.groupset_groupname);
-        view.setEnabled(clickable);
-    }
-
-    @Override
     public void searchGroupHistoryTxt() {
         View view = findViewById(R.id.groupset_searchhistory);
 
@@ -183,6 +154,34 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
                 SearchContentActivity.lunchActivity(activity, 1);
             }
         });
+    }
+
+    @Override
+    public void groupName(String groupname) {
+        View view = findViewById(R.id.groupset_groupname);
+        TextView txt1 = (TextView) view.findViewById(R.id.txt1);
+        TextView txt2 = (TextView) view.findViewById(R.id.txt2);
+
+        txt1.setText(getString(R.string.Link_Group_Name));
+        if (!TextUtils.isEmpty(groupname)) {
+            if (groupname.length() > 10) {
+                groupname = groupname.substring(0, 10) + "...";
+            }
+            txt2.setText(groupname);
+        }
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GroupNameActivity.startActivity(activity, groupKey);
+            }
+        });
+    }
+
+    @Override
+    public void groupNameClickable(boolean clickable) {
+        View view = findViewById(R.id.groupset_groupname);
+        view.setEnabled(clickable);
     }
 
     @Override
@@ -249,8 +248,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
     public void clearHistory() {
         View view = findViewById(R.id.clear);
         ImageView img = (ImageView) view.findViewById(R.id.img);
-        img.setBackgroundResource(R.mipmap.message_clear_history2x);
-        TextView txt = (TextView) view.findViewById(R.id.txt);
+        TextView txt = (TextView) view.findViewById(R.id.groupset_clear_history);
         txt.setText(getResources().getString(R.string.Link_Clear_Chat_History));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,11 +268,8 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     @Override
     public void exitGroup() {
-        View view = findViewById(R.id.delete);
-        ImageView img = (ImageView) view.findViewById(R.id.img);
-        img.setBackgroundResource(R.mipmap.message_group_leave2x);
-        TextView txt = (TextView) view.findViewById(R.id.txt);
-        txt.setText(getResources().getString(R.string.Link_Delete_and_Leave));
+        Button view = (Button) findViewById(R.id.groupset_exit_group);
+        view.setText(getResources().getString(R.string.Link_Delete_and_Leave));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

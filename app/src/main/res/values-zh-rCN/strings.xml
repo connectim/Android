@@ -157,7 +157,7 @@
     <string name="Link_Black_List">黑名单</string>
     <string name="Link_Block">加入黑名单</string>
     <string name="Link_Clear_All_Chat_History">清除聊天记录</string>
-    <string name="Link_Clear_Chat_History">清空历史记录</string>
+    <string name="Link_Clear_Chat_History">清空聊天记录</string>
     <string name="Link_Delete">删除</string>
     <string name="Link_Delete_Failed">删除失败</string>
     <string name="Link_Delete_Successful">删除成功</string>
@@ -621,4 +621,7 @@
     <string name="Chat_Tip_Attention">[我的关注]</string>
 
     <string name="Chat_Search_Txt">查找聊天内容</string>
+    <string name="Chat_Private_Setting">聊天信息</string>
+    <string name="Chat_Group_Setting">群聊信息(%1$d)</string>
+    <string name="Link_Open_to_remind">开启提醒</string>
 </resources>

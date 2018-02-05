@@ -86,6 +86,7 @@ public abstract class BaseChat<T> implements Serializable {
      *                   3:lucky packet
      *                   4:stranger
      *                   5:审核信息
+     *                   6:访客信息
      * @param content show text
      * @param ext ext
      * @return

@@ -76,7 +76,7 @@ public class WarehouseActivity extends BaseActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
-        recyclerview.addItemDecoration(new LineDecoration(mActivity, true));
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
         recyclerview.setAdapter(adapter);
 
         page = 1;
