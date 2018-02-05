@@ -37,16 +37,8 @@ public class EmoManager {
     public static final String EMOJI_PATH = "emoji";
     public static final String GIF_PATH = "gif";
 
-    private final static String EMJ_ACTIVITIES = "activities";
-    private final static String EMJ_ANIMALS = "animals";
     private final static String EMJ_EMOTION = "emotion";
-    private final static String EMJ_FOOD = "food";
-    private final static String EMJ_GESTURE = "gestures";
-    private final static String EMJ_NATURE = "nature";
-    private final static String EMJ_OBJECTS = "Objects";
-    private final static String EMJ_PEOPLE = "People";
     private final static String EMJ_PNG = "png";
-    private final static String EMJ_TRAVEL = "travel";
 
     /** Expression package sorting */
     private Map<String, Integer> stickerOrder = new HashMap();
@@ -63,14 +55,6 @@ public class EmoManager {
     private void initEMJOrder(){
         stickerOrder.put(EMJ_PNG, 0);
         stickerOrder.put(EMJ_EMOTION, 1);
-        stickerOrder.put(EMJ_ACTIVITIES, 2);
-        stickerOrder.put(EMJ_ANIMALS, 3);
-        stickerOrder.put(EMJ_FOOD, 4);
-        stickerOrder.put(EMJ_GESTURE, 5);
-        stickerOrder.put(EMJ_NATURE, 6);
-        stickerOrder.put(EMJ_OBJECTS, 7);
-        stickerOrder.put(EMJ_PEOPLE, 8);
-        stickerOrder.put(EMJ_TRAVEL, 9);
 
         bigStickers.add(EMJ_PNG);
     }

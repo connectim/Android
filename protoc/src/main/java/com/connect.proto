@@ -1931,3 +1931,33 @@ message Examine {
 message ExamineMessage {
   string body = 1;
 }
+
+message StaffLog {
+  int64 id = 1;
+  string face = 2;
+  int32 status = 3;
+  int64 date_time = 4;
+  int32 category = 5;
+  int32 Typ = 6;
+  string device_id = 7;
+  string confirm_uid = 8;
+}
+
+message StaffLogs {
+  repeated StaffLog list = 1;
+}
+
+message StaffLogsReq {
+  int32 page_num = 1;
+  int32 page_size = 2;
+}
+
+message UnRegisterCheck {
+  int32 status = 1;
+  int64 id = 2;
+}
+
+message UnRegisterMessage {
+ string body = 1;
+ int64 id = 2;
+}

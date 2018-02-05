@@ -145,7 +145,7 @@ public abstract class BaseChatSendActivity extends BaseChatReceiveActivity {
 
                 uid = SharedPreferenceUtil.getInstance().getUser().getUid();
                 userOrderBean = new UserOrderBean();
-                userOrderBean.burnReadReceipt(uid, talker.getTalkKey(), messageId);
+                userOrderBean.burnReadReceipt(uid, chatIdentify, messageId);
                 break;
             case Request_Payment:
                 int payType = (int) objects[0];

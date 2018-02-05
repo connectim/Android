@@ -33,12 +33,12 @@ public class BottomCateView extends FrameLayout {
     }
 
     public void setNormal() {
-        setBackgroundColor(getResources().getColor(R.color.color_cdd0d4));
+        setBackgroundColor(getResources().getColor(R.color.color_F5F5F5));
         GlideUtil.loadImageAssets(img, EmoManager.EMOJI_PATH + "/" + cateName + "_normal.png");
     }
 
     public void setPress() {
-        setBackgroundColor(getResources().getColor(R.color.color_ff6c5a));
+        setBackgroundColor(getResources().getColor(R.color.color_e7e7e7));
         GlideUtil.loadImageAssets(img, EmoManager.EMOJI_PATH + "/" + cateName + "_press.png");
     }
 }

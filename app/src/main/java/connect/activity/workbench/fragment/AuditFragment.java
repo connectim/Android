@@ -21,6 +21,7 @@ import connect.activity.workbench.VisitorsAuditActivity;
 import connect.activity.workbench.adapter.VisitorAdapter;
 import connect.ui.activity.R;
 import connect.utils.UriUtil;
+import connect.utils.data.ResourceUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.system.SystemUtil;
@@ -82,7 +83,7 @@ public class AuditFragment extends BaseFragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
-        recyclerview.addItemDecoration(new LineDecoration(mActivity, true));
+        recyclerview.addItemDecoration(new LineDecoration(mActivity, ResourceUtil.getDrawable(getContext(), R.drawable.divider_recycler, null)));
         recyclerview.setAdapter(adapter);
         initData();
     }

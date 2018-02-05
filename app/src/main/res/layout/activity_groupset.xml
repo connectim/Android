@@ -66,7 +66,7 @@
                 android:orientation="vertical">
 
                 <include
-                    android:id="@id/groupset_searchhistory"
+                    android:id="@id/groupset_groupname"
                     layout="@layout/include_txt_right_txt"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_56" />
@@ -80,8 +80,8 @@
                 android:orientation="vertical">
 
                 <include
-                    android:id="@id/groupset_groupname"
-                    layout="@layout/include_txt_right_txt"
+                    android:id="@id/groupset_searchhistory"
+                    layout="@layout/include_txt_right_img"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_56" />
             </LinearLayout>
@@ -97,7 +97,7 @@
                     android:id="@id/top"
                     layout="@layout/include_line_toggle"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52" />
+                    android:layout_height="@dimen/dp_42" />
 
                 <View
                     style="@style/BaseViewLine.d1d5da"
@@ -107,7 +107,7 @@
                     android:id="@id/mute"
                     layout="@layout/include_line_toggle"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52" />
+                    android:layout_height="@dimen/dp_42" />
 
                 <View
                     style="@style/BaseViewLine.d1d5da"
@@ -117,28 +117,28 @@
                     android:id="@id/save"
                     layout="@layout/include_line_toggle"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52" />
+                    android:layout_height="@dimen/dp_42" />
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
+                android:id="@id/clear"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_20"
+                android:layout_height="@dimen/dp_42"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@color/color_white"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dp_16">
 
                 <TextView
-                    android:id="@id/clear"
+                    android:id="@id/groupset_clear_history"
                     style="@style/BaseTextStyle.16"
-                    android:layout_centerVertical="true"
                     android:textColor="@color/color_black" />
-            </LinearLayout>
+            </RelativeLayout>
 
             <Button
-                android:id="@+id/chat_btn"
+                android:id="@id/groupset_exit_group"
                 style="@style/ButtonLongStyle_Red"
-                android:layout_marginTop="@dimen/dp_50"
+                android:layout_marginTop="@dimen/dp_36"
                 android:text="@string/Link_Delete_and_Leave" />
         </LinearLayout>
     </ScrollView>

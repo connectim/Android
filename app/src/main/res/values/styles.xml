@@ -110,7 +110,7 @@
         <item name="android:layout_marginLeft">@dimen/dp_20</item>
         <item name="android:layout_marginRight">@dimen/dp_20</item>
         <item name="android:textColor">@color/color_ffffff</item>
-        <item name="android:background">@drawable/shape_stroke_red</item>
+        <item name="android:background">@drawable/select_btn_red_stroke</item>
     </style>
 
     <style name="ButtonShortStyle" parent="Base.Widget.AppCompat.Button.Borderless">
