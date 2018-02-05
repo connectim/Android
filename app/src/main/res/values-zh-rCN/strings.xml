@@ -556,12 +556,13 @@
     <string name="Work_The_contract">合同</string>
     <string name="Work_Wage">工资</string>
     <string name="Work_Visitors">访客</string>
-    <string name="Work_Warehouse">仓库</string>
+    <string name="Work_Warehouse">仓库安防</string>
+    <string name="Work_Warehouse_abnormal_records">仓库异常出入记录</string>
     <string name="Work_Visitors_info">访客信息</string>
     <string name="Work_Visitors_reason">访客目的：%1$s</string>
     <string name="Work_Visitors_phone">联系方式：</string>
     <string name="Work_Visitors_time">访问时间：%1$s</string>
-    <string name="Work_Time">出入时间：%1$s</string>
+    <string name="Work_Time">记录时间：%1$s</string>
     <string name="Work_Visitors_share">分享邀请二维码</string>
     <string name="Work_Visitors_Facial_information">脸部信息：</string>
     <string name="Work_Visitors_Left_face">左脸</string>
@@ -577,6 +578,7 @@
     <string name="Work_Pay_attention_to_him">关注他</string>
     <string name="Work_Pay_attention_to_her">关注她</string>
     <string name="Work_Cancel_the_attention">取消关注</string>
+    <string name="Work_Security_record_information">安防记录信息：</string>
 
     <string name="Chat_Refreshing">正在更新...</string>
     <string name="Link_Join_Group_Success">成功加入群聊</string>
@@ -596,7 +598,7 @@
     <string name="Work_Third_Party_Service">第三方服务</string>
     <string name="Work_Service_Search">搜索应用</string>
     <string name="Work_Search">搜索</string>
-    <string name="Work_Entering_the_warehouse">进入仓库</string>
+    <string name="Work_Entering_the_warehouse">仓库位置：%1$s</string>
     <string name="Work_Left_the_warehouse">离开仓库</string>
 
     <string name="Link_exit_the_group">%s离开了群聊</string>

@@ -41,17 +41,14 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Connect.StaffLog staffLog = mListData.get(position);
         holder.timeTv.setText(activity.getString(R.string.Work_Time, TimeUtil.getTime(staffLog.getDateTime()*1000, TimeUtil.DEFAULT_DATE_FORMAT)));
-        if(staffLog.getTyp() == 1){
-            holder.typeTv.setText(R.string.Work_Entering_the_warehouse);
-        }else{
-            holder.typeTv.setText(R.string.Work_Left_the_warehouse);
-        }
+        holder.typeTv.setText(activity.getString(R.string.Work_Entering_the_warehouse, ""));
+
         if(staffLog.getStatus() == 1){
             holder.statusTv.setText(R.string.Wallet_Confirmed);
-            holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_A5A5A5));
+            holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_3081EA));
         }else{
             holder.statusTv.setText(R.string.Wallet_Unconfirmed);
-            holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_3081EA));
+            holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_868686));
         }
         holder.contentLinear.setOnClickListener(new View.OnClickListener() {
             @Override
