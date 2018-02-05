@@ -1934,13 +1934,15 @@ message ExamineMessage {
 
 message StaffLog {
   int64 id = 1;
-  string face = 2;
-  int32 status = 3;
-  int64 date_time = 4;
-  int32 category = 5;
-  int32 Typ = 6;
-  string device_id = 7;
-  string confirm_uid = 8;
+ string face = 2;
+ int32 status = 3;
+ int64 date_time = 4;
+ int32 category = 5;
+ int32 Typ = 6;
+ string device_id = 7;
+ string confirm_uid = 8;
+ string location = 9;
+ int32 action_type = 10;
 }
 
 message StaffLogs {
@@ -1960,4 +1962,10 @@ message UnRegisterCheck {
 message UnRegisterMessage {
  string body = 1;
  int64 id = 2;
+}
+
+message AesGcm {
+ string pub_key = 1;
+ string sign = 2;
+ repeated GcmData cipher_data = 3;
 }
