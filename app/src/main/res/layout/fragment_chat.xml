@@ -36,7 +36,7 @@
                 android:layout_marginLeft="@dimen/dp_46"
                 android:layout_marginTop="@dimen/dp_2"
                 android:textColor="@color/color_8E8E8E"
-                android:textSize="@dimen/sp_10" />
+                android:textSize="@dimen/sp_12" />
         </RelativeLayout>
 
         <View
@@ -64,7 +64,7 @@
                 android:layout_marginLeft="@dimen/dp_46"
                 android:layout_marginTop="@dimen/dp_2"
                 android:textColor="@color/color_8E8E8E"
-                android:textSize="@dimen/sp_10" />
+                android:textSize="@dimen/sp_12" />
         </RelativeLayout>
     </LinearLayout>
 
