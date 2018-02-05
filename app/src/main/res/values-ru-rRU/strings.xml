@@ -688,10 +688,12 @@
     <string name="Work_The_contract">контракт</string>
     <string name="Work_Wage">зарплата</string>
     <string name="Work_Visitors">посетители</string>
+    <string name="Work_Warehouse">склад</string>
     <string name="Work_Visitors_info">Посетители информации</string>
     <string name="Work_Visitors_reason">Посетители цели:%1$s</string>
     <string name="Work_Visitors_phone">Способ связи:</string>
     <string name="Work_Visitors_time">Время визита:%1$s</string>
+    <string name="Work_Time">Время доступа:%1$s</string>
     <string name="Work_Visitors_share">ErWeiMa поделиться приглашение</string>
     <string name="Work_Visitors_Facial_information">Личной информации:</string>
     <string name="Work_Visitors_Left_face">налево</string>
@@ -723,8 +725,10 @@
     <string name="Beijing_BitMain">Beijing BitMain Technology Co., Ltd.</string>
     <string name="Work_No_More_Results">Больше никаких  результатов поиска</string>
     <string name="Work_Third_Party_Service">услуг третьих сторон</string>
-    <string name="Work_Service_Search">Поиск  приложений</string>
+    <string name="Work_Service_Search">Поиск приложений</string>
     <string name="Work_Search">поиск</string>
+    <string name="Work_Entering_the_warehouse">На склад</string>
+    <string name="Work_Left_the_warehouse">Из склад</string>
     <string name="Link_exit_the_group">%sыход из  группы</string>
 
     <string name="Link_Group_Create">создать группу</string>

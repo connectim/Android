@@ -639,10 +639,12 @@
     <string name="Work_The_contract">Contract</string>
     <string name="Work_Wage">Salary</string>
     <string name="Work_Visitors">Visitors</string>
+    <string name="Work_Warehouse">Warehouse</string>
     <string name="Work_Visitors_info">Visitor informations</string>
     <string name="Work_Visitors_reason">Purpose of this visit:%1$s</string>
     <string name="Work_Visitors_phone">Contact information:</string>
     <string name="Work_Visitors_time">Visit time:%1$s</string>
+    <string name="Work_Time">Time:%1$s</string>
     <string name="Work_Visitors_share">Share invitation qr code</string>
     <string name="Work_Visitors_Facial_information">Facial information:</string>
     <string name="Work_Visitors_Left_face">Left face</string>
@@ -675,6 +677,8 @@
     <string name="Work_No_More_Results">No more search results</string>
     <string name="Work_Service_Search">Search application</string>
     <string name="Work_Search">Search</string>
+    <string name="Work_Entering_the_warehouse">Entering the warehouse</string>
+    <string name="Work_Left_the_warehouse">Left the warehouse</string>
     <string name="Link_exit_the_group">%sexit the group</string>
     <string name="Work_Third_Party_Service">Third-party service</string>
     <string name="Link_Group_Create">Create Group</string>

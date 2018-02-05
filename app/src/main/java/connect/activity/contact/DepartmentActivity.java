@@ -105,7 +105,7 @@ public class DepartmentActivity extends BaseActivity {
         nameList.clear();
         Connect.Department department = Connect.Department.newBuilder()
                 .setId(2)
-                .setName("BITMAIN")
+                .setName("组织架构")
                 .build();
         nameList.add(department);
         nameLinear.notifyAddView(nameList, scrollview);

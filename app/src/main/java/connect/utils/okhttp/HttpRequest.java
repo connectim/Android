@@ -155,6 +155,10 @@ public class HttpRequest {
                 url.equals(UriUtil.CONNECT_V3_PROXY_EXAMINE_VERIFY) ||
                 url.equals(UriUtil.CONNECT_V3_PROXY_TOKEN)){
             address = ConfigUtil.getInstance().visitorAddress() + url;
+        }else if(url.equals(UriUtil.STORES_V1_IWORK_LOGS) ||
+                url.equals(UriUtil.STORES_V1_IWORK_LOG_COMFIRM) ||
+                url.equals(UriUtil.STORES_V1_IWORK_LOGS_DETAIL)){
+            address = ConfigUtil.getInstance().warehouseAddress() + url;
         }else{
             address = ConfigUtil.getInstance().serverAddress() + url;
         }

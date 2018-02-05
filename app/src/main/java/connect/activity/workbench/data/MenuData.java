@@ -58,6 +58,10 @@ public class MenuData {
                 menuBean.setTextId(R.string.Work_Visitors);
                 menuBean.setIconId(R.mipmap.menu_visitors);
                 break;
+            case "warehouse":
+                menuBean.setTextId(R.string.Work_Warehouse);
+                menuBean.setIconId(R.mipmap.menu_warehouse);
+                break;
             case "add":
                 menuBean.setTextId(R.string.Work_Add);
                 menuBean.setIconId(R.mipmap.menu_add);
