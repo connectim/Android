@@ -138,9 +138,7 @@ public class WarehouseActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Connect.HttpNotSignResponse response) {
-                int a = 12;
-            }
+            public void onError(Connect.HttpNotSignResponse response) {}
         });
     }
 

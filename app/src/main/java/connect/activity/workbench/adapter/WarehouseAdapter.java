@@ -41,7 +41,7 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Connect.StaffLog staffLog = mListData.get(position);
         holder.timeTv.setText(activity.getString(R.string.Work_Time, TimeUtil.getTime(staffLog.getDateTime()*1000, TimeUtil.DEFAULT_DATE_FORMAT)));
-        holder.typeTv.setText(activity.getString(R.string.Work_Entering_the_warehouse, ""));
+        holder.typeTv.setText(activity.getString(R.string.Work_Entering_the_warehouse, staffLog.getLocation()));
 
         if(staffLog.getStatus() == 1){
             holder.statusTv.setText(R.string.Wallet_Confirmed);
