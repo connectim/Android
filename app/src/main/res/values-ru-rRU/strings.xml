@@ -711,6 +711,7 @@
     <string name="Work_Pay_attention_to_her">Внимание,она</string>
     <string name="Work_Cancel_the_attention">Отмена внимание</string>
     <string name="Work_Security_record_information">AnFang запись информации:</string>
+    <string name="Work_Exception_type">Аномалия тип: неопознанный персонал на склад</string>
 
     <string name="Chat_Refreshing">обновление ...</string>
     <string name="Link_Join_Group_Success">успех  к  групповой чат </string>

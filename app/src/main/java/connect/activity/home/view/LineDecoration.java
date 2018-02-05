@@ -22,6 +22,10 @@ public class LineDecoration extends RecyclerView.ItemDecoration {
         mDrawable = ResourceUtil.getDrawable(context, R.drawable.divider_recycler, null);
     }
 
+    public LineDecoration(Context context, boolean isBold) {
+        mDrawable = ResourceUtil.getDrawable(context, R.drawable.divider_recucle_8px, null);
+    }
+
     public LineDecoration(Context context, Drawable drawable) {
         mDrawable = drawable;
     }

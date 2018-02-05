@@ -9,6 +9,7 @@ import java.net.URL;
 
 import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.contact.ContactInfoActivity;
+import connect.activity.contact.ScanResultActivity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
@@ -44,14 +45,16 @@ public class ResolveScanUtil {
         if(RegularUtil.matches(value, Url_Matches)){
             //Determine whether to link types
             dealScanUrl(value);
-        }else if(value.contains(TYPE_WEB_GROUP_)){
+        }/*else if(value.contains(TYPE_WEB_GROUP_)){
             // Determine whether to join the group of links
             // dealScanGroup(value);
-        }/*else if(value.contains(TRANSFER_SCAN_HEAD)){
+        }else if(value.contains(TRANSFER_SCAN_HEAD)){
             // Determine whether to transfer links
             dealScanTransfer(value);
         }*/else {
-            dealScanValue(value);
+            //dealScanValue(value);
+            ScanResultActivity.lunchActivity(activity, value);
+            activity.finish();
         }
     }
 
@@ -60,7 +63,9 @@ public class ResolveScanUtil {
      */
     private void dealScanUrl(String value){
         try {
-            URL url = new URL(value);
+            OuterWebsiteActivity.startActivity(activity,value);
+            ActivityUtil.goBack(activity);
+            /*URL url = new URL(value);
             if(RegularUtil.matches(value,Url_Packet_Transfer_Group)){
                 String[] pathArray = url.getPath().split("/");
                 String token = Uri.parse(value).getQueryParameter("token");
@@ -73,7 +78,7 @@ public class ResolveScanUtil {
             }else{
                 OuterWebsiteActivity.startActivity(activity,value);
                 ActivityUtil.goBack(activity);
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }

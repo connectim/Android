@@ -579,6 +579,7 @@
     <string name="Work_Pay_attention_to_her">关注她</string>
     <string name="Work_Cancel_the_attention">取消关注</string>
     <string name="Work_Security_record_information">安防记录信息：</string>
+    <string name="Work_Exception_type">异常类型：未识别人员进入仓库</string>
 
     <string name="Chat_Refreshing">正在更新...</string>
     <string name="Link_Join_Group_Success">成功加入群聊</string>
