@@ -33,7 +33,8 @@
                 android:id="@id/txt_count_at"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_26"
+                android:layout_marginLeft="@dimen/dp_46"
+                android:layout_marginTop="@dimen/dp_2"
                 android:textColor="@color/color_8E8E8E"
                 android:textSize="@dimen/sp_10" />
         </RelativeLayout>
@@ -60,7 +61,8 @@
                 android:id="@id/txt_count_attention"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_26"
+                android:layout_marginLeft="@dimen/dp_46"
+                android:layout_marginTop="@dimen/dp_2"
                 android:textColor="@color/color_8E8E8E"
                 android:textSize="@dimen/sp_10" />
         </RelativeLayout>

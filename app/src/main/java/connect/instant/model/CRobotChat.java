@@ -47,7 +47,7 @@ public class CRobotChat extends RobotChat implements ConversationListener{
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime) {
-        updateRoomMsg(draft, showText, msgtime, -1);
+        updateRoomMsg(draft, showText, msgtime, 0);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at) {
@@ -88,7 +88,7 @@ public class CRobotChat extends RobotChat implements ConversationListener{
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
-                        at,
+                        0,
                         (msgtime < 0 ? 0 : msgtime)
                 );
             }

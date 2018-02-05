@@ -66,6 +66,7 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
         view.switchDisturb(activity.getResources().getString(R.string.Chat_Mute_Notification), isDisturb);
 
         view.clearMessage();
+        view.searchHistoryTxt();
 
         ContactEntity friendEntity = new ContactEntity();
         friendEntity.setAvatar(view.getAvatar());

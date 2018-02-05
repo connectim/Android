@@ -36,6 +36,7 @@ import connect.database.green.DaoHelper.ConversionHelper;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.log.LogManager;
+import connect.utils.system.SystemUtil;
 import protos.Connect;
 
 /**
@@ -195,7 +196,9 @@ public class ConversationFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.relativelayout_1:
                 PopupWindow popWindow = new ChatAddPopWindow(getActivity());
-                popWindow.showAsDropDown(connectStateView.findViewById(R.id.relativelayout_1), 5, 5);
+                int offsetX = SystemUtil.dipToPx(30);
+                int offsetY = SystemUtil.dipToPx(1);
+                popWindow.showAsDropDown(connectStateView.findViewById(R.id.txt1), offsetX, offsetY);
                 break;
             case R.id.search_image1:
                 ActivityUtil.next(activity, SearchActivity.class);

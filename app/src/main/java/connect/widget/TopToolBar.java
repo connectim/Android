@@ -3,6 +3,7 @@ package connect.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,6 +101,19 @@ public class TopToolBar extends LinearLayout {
         }
         if (textId != null) {
             titleTv.setText(textId);
+        }
+    }
+
+    public void setTitle(Integer imgId, String text) {
+        if (imgId != null) {
+            titleImg.setVisibility(VISIBLE);
+            titleImg.setImageResource(imgId);
+        }
+        if (TextUtils.isEmpty(text)) {
+            titleTv.setVisibility(GONE);
+        }else {
+            titleTv.setVisibility(VISIBLE);
+            titleTv.setText(text);
         }
     }
 

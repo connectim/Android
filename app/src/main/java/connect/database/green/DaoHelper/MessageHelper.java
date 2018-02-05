@@ -50,7 +50,7 @@ public class MessageHelper extends BaseDao {
             message_ower = "";
         }
 
-        String sql = "SELECT M.* FROM MESSAGE_ENTITY M,(SELECT * FROM MESSAGE_ENTITY TEMP WHERE TEMP.TXT_CONTENT LIKE ? ORDER BY TEMP._id DESC LIMIT 1) AS LAST  WHERE M.MESSAGE_OWER = ? AND M.CREATETIME >= LAST.CREATETIME;";
+        String sql = "SELECT M.* FROM MESSAGE_ENTITY M,(SELECT * FROM MESSAGE_ENTITY TEMP WHERE TEMP.TXT_CONTENT LIKE ? ORDER BY TEMP._id ASC LIMIT 1) AS LAST  WHERE M.MESSAGE_OWER = ? AND M.CREATETIME >= LAST.CREATETIME;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%" + searchTxt + "%", message_ower});
 
         ChatMsgEntity msgEntity = null;

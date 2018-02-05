@@ -60,6 +60,8 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         }
 
         List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(roomKey);
+        view.countMember(memberEntities.size());
+
         int subPosi = memberEntities.size() >= 3 ? 3 : memberEntities.size();
         List<GroupMemberEntity> showMemberEntities = memberEntities.subList(0, subPosi);
         GroupMemberEntity addEntity = new GroupMemberEntity();
@@ -121,6 +123,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         boolean common = Integer.valueOf(1).equals(groupEntity.getCommon());
         view.commonSwtich(common);
 
+        view.searchGroupHistoryTxt();
         view.clearHistory();
         view.exitGroup();
     }

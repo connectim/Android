@@ -7,12 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
-import connect.activity.contact.ScanAddFriendActivity;
 import connect.activity.home.bean.HomeAction;
-import connect.activity.set.SupportFeedbackActivity;
+import connect.activity.set.bean.SystemSetBean;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
 
 /**
  * Created by PuJin on 2018/1/18.
@@ -45,6 +45,12 @@ public class ChatAddPopWindow extends PopupWindow {
         // mPopupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
         // 设置SelectPicPopupWindow弹出窗体动画效果
         this.setAnimationStyle(R.style.AnimationPreview);
+
+        SystemSetBean systemSetBean = ParamManager.getInstance().getSystemSet();
+        String notifyTxt = systemSetBean.isRing() && systemSetBean.isVibrate() ?
+                activity.getString(R.string.Link_Close_to_remind):
+                activity.getString(R.string.Link_Open_to_remind);
+        ((TextView) conentView.findViewById(R.id.popup_turn_notify)).setText(notifyTxt);
 
         conentView.findViewById(R.id.new_chat_linear).setOnClickListener(onClickListener);
         conentView.findViewById(R.id.scan_linear).setOnClickListener(onClickListener);

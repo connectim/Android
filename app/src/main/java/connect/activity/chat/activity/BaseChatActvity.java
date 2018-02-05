@@ -13,7 +13,6 @@ import org.greenrobot.eventbus.EventBus;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.bean.Talker;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ConversionEntity;
@@ -40,11 +39,8 @@ public abstract class BaseChatActvity extends BaseActivity {
 
     protected BaseChatActvity activity;
 
-    protected static String ROOM_TALKER = "ROOM_TALKER";
-    protected static String ROOM_SEARCH = "ROOM_SEARCH";
     protected static int CODE_TAKEPHOTO = 150;
     protected static final int CODE_REQUEST = 512;
-    protected Talker talker;
     protected RoomSession roomSession;
 
     protected RecycleViewScrollHelper scrollHelper;
@@ -52,6 +48,10 @@ public abstract class BaseChatActvity extends BaseActivity {
     protected NormalChat normalChat;
     protected ChatAdapter chatAdapter;
     protected ScrollPositionListener positionListener = new ScrollPositionListener();
+
+    protected Connect.ChatType chatType;
+    protected String chatIdentify;
+    protected String searchTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,28 +65,18 @@ public abstract class BaseChatActvity extends BaseActivity {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(1001);
 
-        talker = (Talker) getIntent().getSerializableExtra(ROOM_TALKER);
-        if (talker == null) {
-            talker = new Talker(Connect.ChatType.PRIVATE, "");
-        }
         roomSession = RoomSession.getInstance();
-        roomSession.setRoomType(talker.getTalkType());
-        roomSession.setRoomKey(talker.getTalkKey());
-        roomSession.setFriendAvatar(talker.getAvatar());
+        roomSession.setRoomType(chatType);
+        roomSession.setRoomKey(chatIdentify);
 
-        Connect.ChatType chatType = talker.getTalkType();
         switch (chatType) {
             case PRIVATE:
-                CFriendChat cFriendChat = new CFriendChat(talker.getTalkKey());
-                if (!TextUtils.isEmpty(talker.getNickName())) {
-                    cFriendChat.setUserAvatar(talker.getAvatar());
-                    cFriendChat.setUserName(talker.getNickName());
-                }
+                CFriendChat cFriendChat = new CFriendChat(chatIdentify);
                 normalChat = cFriendChat;
                 break;
             case GROUPCHAT:
             case GROUP_DISCUSSION:
-                normalChat = new CGroupChat(talker.getTalkKey());
+                normalChat = new CGroupChat(chatIdentify);
                 break;
             case CONNECT_SYSTEM:
                 normalChat = CRobotChat.getInstance();
@@ -95,7 +85,7 @@ public abstract class BaseChatActvity extends BaseActivity {
 
         scrollHelper = new RecycleViewScrollHelper(positionListener);
 
-        ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(talker.getTalkKey());
+        ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(chatIdentify);
         if (roomEntity != null) {
             if (!TextUtils.isEmpty(roomEntity.getDraft())) {
                 InputBottomLayout.bottomLayout.insertDraft(" " + roomEntity.getDraft());
@@ -194,7 +184,7 @@ public abstract class BaseChatActvity extends BaseActivity {
     public abstract void adapterInsetItem(ChatMsgEntity bean);
 
     /** update title bar */
-    public abstract void updateBurnState(long time);
+    public abstract void updateTitleName();
 
     public BaseChat getNormalChat() {
         return normalChat;

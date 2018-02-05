@@ -64,13 +64,14 @@
         <ImageView
             android:layout_width="@dimen/dp_26"
             android:layout_height="@dimen/dp_26"
-            android:src="@mipmap/voice_pop"
+            android:src="@mipmap/icon_close_notify"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"/>
+
         <TextView
+            android:id="@id/popup_turn_notify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Link_Close_to_remind"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>

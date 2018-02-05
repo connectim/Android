@@ -18,9 +18,10 @@
     <TextView
         android:id="@id/txt1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_height="@dimen/dp_45"
+        android:gravity="center"
         android:text="@string/Chat_Not_connected"
+        android:layout_centerHorizontal="true"
         android:textColor="@color/color_ffffff"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold" />

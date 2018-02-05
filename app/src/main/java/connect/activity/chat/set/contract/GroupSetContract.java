@@ -15,6 +15,8 @@ public interface GroupSetContract {
 
         String getRoomKey();
 
+        void countMember(int members);
+
         void memberList(View view);
 
         void searchGroupHistoryTxt();
