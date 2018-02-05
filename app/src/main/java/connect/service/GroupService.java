@@ -135,7 +135,7 @@ public class GroupService extends Service {
                             content = messageEntity.messageToChatEntity().showContent();
                             messageTime = messageEntity.getCreatetime();
                         }
-                        cGroupChat.updateRoomMsg("", content, messageTime, -1, -1, true, -1);
+                        cGroupChat.updateRoomMsg("", content, messageTime, -1, 0, true, -1);
 
                         Map<String, Object> failMaps = FailMsgsManager.getInstance().receiveFailMsgs(pubkey);
                         if (!failMaps.isEmpty()) {

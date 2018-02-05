@@ -81,6 +81,11 @@ public class CGroupChat extends GroupChat implements ConversationListener {
                 atCount = 0;
             }
 
+            int unreadCount = newmsg;
+            if (newmsg == -1) {
+                unreadCount = 0;
+            }
+
             int attentionCount = attention;
             if (attention == -1) {
                 attentionCount = 0;
@@ -92,7 +97,7 @@ public class CGroupChat extends GroupChat implements ConversationListener {
             conversionEntity.setAvatar(headImg());
             conversionEntity.setType(chatType());
             conversionEntity.setContent(TextUtils.isEmpty(showText) ? "" : showText);
-            conversionEntity.setUnread_count(newmsg == 0 ? 0 : 1);
+            conversionEntity.setUnread_count(unreadCount);
             conversionEntity.setDraft(TextUtils.isEmpty(draft) ? "" : draft);
             conversionEntity.setUnread_at(atCount);
             conversionEntity.setUnread_attention(attentionCount);
@@ -107,6 +112,15 @@ public class CGroupChat extends GroupChat implements ConversationListener {
                     atCount = 1 + attrBean.getUnreadAt();
                 } else if (at == -1) {
                     atCount = attrBean.getUnreadAt();
+                }
+
+                int unreadCount = newmsg;
+                if (newmsg == -1) {
+                    unreadCount = attrBean.getUnread();
+                } else if (newmsg == 0) {
+                    unreadCount = 0;
+                } else {
+                    unreadCount = 1 + attrBean.getUnread();
                 }
 
                 int attentionCount = attrBean.getUnreadAttention();
@@ -124,7 +138,7 @@ public class CGroupChat extends GroupChat implements ConversationListener {
                         headImg(),
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
-                        (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
+                        (unreadCount),
                         atCount,
                         (msgtime < 0 ? 0 : msgtime),
                         attentionCount
