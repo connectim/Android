@@ -21,6 +21,7 @@ import connect.utils.TimeUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
+import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.system.SystemUtil;
@@ -93,9 +94,12 @@ public class VisitorsAuditActivity extends BaseActivity {
                 TimeUtil.getTime(visitorRecord.getEndTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR);
         timeTv.setText(getString(R.string.Work_Visitors_time, time));
 
-        leftFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceLeft()));
+        GlideUtil.loadImage(leftFaceImage, visitorRecord.getFaceLeft());
+        GlideUtil.loadImage(isFaceImage, visitorRecord.getFace());
+        GlideUtil.loadImage(rightFaceImage, visitorRecord.getFaceRight());
+        /*leftFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceLeft()));
         isFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFace()));
-        rightFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceRight()));
+        rightFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(visitorRecord.getFaceRight()));*/
 
         int status = getIntent().getExtras().getInt("status",0);
         if(status == 1){

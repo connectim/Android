@@ -9,8 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -37,6 +37,8 @@ public class AuditFragment extends BaseFragment {
     RecyclerView recyclerview;
     @Bind(R.id.refreshview)
     SwipeRefreshLayout refreshview;
+    @Bind(R.id.no_data_lin)
+    LinearLayout noDataLin;
 
     private FragmentActivity mActivity;
     private int page = 1;
@@ -82,6 +84,11 @@ public class AuditFragment extends BaseFragment {
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.addItemDecoration(new LineDecoration(mActivity, true));
         recyclerview.setAdapter(adapter);
+        initData();
+    }
+
+    public void initData(){
+        page = 1;
         requestVisitorData();
     }
 
@@ -126,6 +133,14 @@ public class AuditFragment extends BaseFragment {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.VisitorRecords visitorRecords = Connect.VisitorRecords.parseFrom(structData.getPlainData());
                     List<Connect.VisitorRecord> list = visitorRecords.getListList();
+                    if(page == 1 && list.size() == 0){
+                        noDataLin.setVisibility(View.VISIBLE);
+                        refreshview.setVisibility(View.GONE);
+                    }else{
+                        noDataLin.setVisibility(View.GONE);
+                        refreshview.setVisibility(View.VISIBLE);
+                    }
+
                     if (page > 1) {
                         adapter.setNotifyData(list, false);
                     } else {

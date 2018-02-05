@@ -37,8 +37,6 @@ public class ContactInfoActivity extends BaseActivity {
     TopToolBar toolbar;
     @Bind(R.id.name_text)
     TextView nameText;
-    @Bind(R.id.sign_tv)
-    TextView signTv;
     @Bind(R.id.number_tv)
     TextView numberTv;
     @Bind(R.id.department_tv)
@@ -61,7 +59,6 @@ public class ContactInfoActivity extends BaseActivity {
     private ContactInfoActivity mActivity;
     private ContactEntity contactEntity;
     private String uid;
-
 
     public static void lunchActivity(Activity activity, String uid) {
         Bundle bundle = new Bundle();
@@ -108,7 +105,6 @@ public class ContactInfoActivity extends BaseActivity {
         } else {
             genderImage.setImageResource(R.mipmap.woman);
         }
-        signTv.setText(contactEntity.getTips());
         numberTv.setText(contactEntity.getEmpNo());
         departmentTv.setText(contactEntity.getOu());
         phoneTv.setText(contactEntity.getMobile());
