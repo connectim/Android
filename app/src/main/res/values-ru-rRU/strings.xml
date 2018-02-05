@@ -688,12 +688,13 @@
     <string name="Work_The_contract">контракт</string>
     <string name="Work_Wage">зарплата</string>
     <string name="Work_Visitors">посетители</string>
-    <string name="Work_Warehouse">склад</string>
+    <string name="Work_Warehouse">Склад AnFang</string>
+    <string name="Work_Warehouse_abnormal_records">Склад аномалия доступа запись</string>
     <string name="Work_Visitors_info">Посетители информации</string>
     <string name="Work_Visitors_reason">Посетители цели:%1$s</string>
     <string name="Work_Visitors_phone">Способ связи:</string>
     <string name="Work_Visitors_time">Время визита:%1$s</string>
-    <string name="Work_Time">Время доступа:%1$s</string>
+    <string name="Work_Time">Время записи:%1$s</string>
     <string name="Work_Visitors_share">ErWeiMa поделиться приглашение</string>
     <string name="Work_Visitors_Facial_information">Личной информации:</string>
     <string name="Work_Visitors_Left_face">налево</string>
@@ -709,6 +710,7 @@
     <string name="Work_Pay_attention_to_him">Внимание,он</string>
     <string name="Work_Pay_attention_to_her">Внимание,она</string>
     <string name="Work_Cancel_the_attention">Отмена внимание</string>
+    <string name="Work_Security_record_information">AnFang запись информации:</string>
 
     <string name="Chat_Refreshing">обновление ...</string>
     <string name="Link_Join_Group_Success">успех  к  групповой чат </string>
@@ -727,7 +729,7 @@
     <string name="Work_Third_Party_Service">услуг третьих сторон</string>
     <string name="Work_Service_Search">Поиск приложений</string>
     <string name="Work_Search">поиск</string>
-    <string name="Work_Entering_the_warehouse">На склад</string>
+    <string name="Work_Entering_the_warehouse">Склад положение:%1$s</string>
     <string name="Work_Left_the_warehouse">Из склад</string>
     <string name="Link_exit_the_group">%sыход из  группы</string>
 

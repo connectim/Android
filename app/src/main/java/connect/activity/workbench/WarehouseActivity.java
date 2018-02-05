@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.home.view.LineDecoration;
-import connect.activity.workbench.adapter.VisitorAdapter;
 import connect.activity.workbench.adapter.WarehouseAdapter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
@@ -58,7 +57,7 @@ public class WarehouseActivity extends BaseActivity {
         mActivity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
-        toolbarTop.setTitle(null, R.string.Work_Warehouse);
+        toolbarTop.setTitle(null, R.string.Work_Warehouse_abnormal_records);
         initRecycler();
     }
 

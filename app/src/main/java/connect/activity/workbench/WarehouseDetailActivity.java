@@ -71,11 +71,7 @@ public class WarehouseDetailActivity extends BaseActivity {
 
     private void initData(){
         timeTv.setText(getString(R.string.Work_Time, TimeUtil.getTime(staffLog.getDateTime()*1000, TimeUtil.DEFAULT_DATE_FORMAT)));
-        if(staffLog.getTyp() == 1){
-            typeTv.setText(R.string.Work_Entering_the_warehouse);
-        }else{
-            typeTv.setText(R.string.Work_Left_the_warehouse);
-        }
+        typeTv.setText(getString(R.string.Work_Entering_the_warehouse, ""));
         GlideUtil.loadImage(isFaceImage, staffLog.getFace());
         if(staffLog.getStatus() == 1){
             bottomRelative.setVisibility(View.GONE);

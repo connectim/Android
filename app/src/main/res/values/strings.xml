@@ -639,12 +639,13 @@
     <string name="Work_The_contract">Contract</string>
     <string name="Work_Wage">Salary</string>
     <string name="Work_Visitors">Visitors</string>
-    <string name="Work_Warehouse">Warehouse</string>
+    <string name="Work_Warehouse">Warehouse security</string>
+    <string name="Work_Warehouse_abnormal_records">Warehouse abnormal entry and exit records</string>
     <string name="Work_Visitors_info">Visitor informations</string>
     <string name="Work_Visitors_reason">Purpose of this visit:%1$s</string>
     <string name="Work_Visitors_phone">Contact information:</string>
     <string name="Work_Visitors_time">Visit time:%1$s</string>
-    <string name="Work_Time">Time:%1$s</string>
+    <string name="Work_Time">Recording time:%1$s</string>
     <string name="Work_Visitors_share">Share invitation qr code</string>
     <string name="Work_Visitors_Facial_information">Facial information:</string>
     <string name="Work_Visitors_Left_face">Left face</string>
@@ -660,6 +661,7 @@
     <string name="Work_Pay_attention_to_him">Follow</string>
     <string name="Work_Pay_attention_to_her">Follow</string>
     <string name="Work_Cancel_the_attention">Unfollow</string>
+    <string name="Work_Security_record_information">Security record information:</string>
 
     <string name="Chat_Refreshing">Refreshing...</string>
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>
@@ -677,7 +679,7 @@
     <string name="Work_No_More_Results">No more search results</string>
     <string name="Work_Service_Search">Search application</string>
     <string name="Work_Search">Search</string>
-    <string name="Work_Entering_the_warehouse">Entering the warehouse</string>
+    <string name="Work_Entering_the_warehouse">Warehouse location:%1$s</string>
     <string name="Work_Left_the_warehouse">Left the warehouse</string>
     <string name="Link_exit_the_group">%sexit the group</string>
     <string name="Work_Third_Party_Service">Third-party service</string>
