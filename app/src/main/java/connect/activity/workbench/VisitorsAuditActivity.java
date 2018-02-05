@@ -90,8 +90,8 @@ public class VisitorsAuditActivity extends BaseActivity {
         reasonTv.setText(getString(R.string.Work_Visitors_reason, visitorRecord.getReason()));
 
         phoneTv.setText(StringUtil.getFormatPhone(visitorRecord.getGuestPhone()));
-        String time = TimeUtil.getTime(visitorRecord.getStartTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR) + "——" +
-                TimeUtil.getTime(visitorRecord.getEndTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR);
+        String time = TimeUtil.getTime(visitorRecord.getStartTime()*1000, TimeUtil.DATE_FORMAT_MONTH_HOUR) + "——" +
+                TimeUtil.getTime(visitorRecord.getEndTime()*1000, TimeUtil.DATE_FORMAT_MONTH_HOUR);
         timeTv.setText(getString(R.string.Work_Visitors_time, time));
 
         GlideUtil.loadImage(leftFaceImage, visitorRecord.getFaceLeft());

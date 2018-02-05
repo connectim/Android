@@ -13,6 +13,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
+import connect.utils.BitmapUtil;
 import connect.utils.TimeUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
@@ -72,7 +73,7 @@ public class WarehouseDetailActivity extends BaseActivity {
     private void initData(){
         timeTv.setText(getString(R.string.Work_Time, TimeUtil.getTime(staffLog.getDateTime()*1000, TimeUtil.DEFAULT_DATE_FORMAT)));
         typeTv.setText(getString(R.string.Work_Entering_the_warehouse, staffLog.getLocation()));
-        GlideUtil.loadImage(isFaceImage, staffLog.getFace());
+        isFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(staffLog.getFace()));
         if(staffLog.getStatus() == 1){
             bottomRelative.setVisibility(View.GONE);
         }

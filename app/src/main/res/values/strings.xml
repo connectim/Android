@@ -662,6 +662,7 @@
     <string name="Work_Pay_attention_to_her">Follow</string>
     <string name="Work_Cancel_the_attention">Unfollow</string>
     <string name="Work_Security_record_information">Security record information:</string>
+    <string name="Work_Exception_type">Exception type: unrecognized personnel enter the warehouse.</string>
 
     <string name="Chat_Refreshing">Refreshing...</string>
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>

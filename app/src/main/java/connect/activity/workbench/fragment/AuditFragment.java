@@ -83,7 +83,7 @@ public class AuditFragment extends BaseFragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
-        recyclerview.addItemDecoration(new LineDecoration(mActivity, ResourceUtil.getDrawable(getContext(), R.drawable.divider_recycler, null)));
+        recyclerview.addItemDecoration(new LineDecoration(mActivity, true));
         recyclerview.setAdapter(adapter);
         initData();
     }

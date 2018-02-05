@@ -190,6 +190,9 @@
             android:name="connect.activity.contact.ScanAddFriendActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="connect.activity.contact.ScanResultActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="connect.activity.contact.FriendInfoAliasActivity"
             android:screenOrientation="portrait" />
         <activity

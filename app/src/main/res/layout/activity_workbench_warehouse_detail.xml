@@ -35,6 +35,17 @@
         android:paddingRight="@dimen/dp_15"
         android:text="" />
 
+    <TextView
+        style="@style/BaseTextStyle.12"
+        android:layout_width="match_parent"
+        android:textColor="@color/color_A5A5A5"
+        android:background="@color/color_ffffff"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingBottom="@dimen/dp_15"
+        android:paddingTop="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15"
+        android:text="@string/Work_Exception_type" />
+
     <!--<View
         style="@style/BaseViewLine"
         android:background="@color/color_E0E0E0"/>-->
