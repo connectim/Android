@@ -40,6 +40,9 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
     private int payCount;
     private int crowdCount;
     private byte[] contents;
+    // 发送方
+    private String from_avatar;
+    private String from_username;
 
     public Long get_id() {
         return _id;
@@ -121,14 +124,6 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
         this.send_status = send_status;
     }
 
-    public Long getSnap_time() {
-        return snap_time;
-    }
-
-    public void setSnap_time(Long snap_time) {
-        this.snap_time = snap_time;
-    }
-
     public Long getCreatetime() {
         return createtime;
     }
@@ -177,6 +172,30 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
         this.contents = contents;
     }
 
+    public Long getSnap_time() {
+        return snap_time;
+    }
+
+    public void setSnap_time(Long snap_time) {
+        this.snap_time = snap_time;
+    }
+
+    public String getFrom_avatar() {
+        return from_avatar;
+    }
+
+    public void setFrom_avatar(String from_avatar) {
+        this.from_avatar = from_avatar;
+    }
+
+    public String getFrom_username() {
+        return from_username;
+    }
+
+    public void setFrom_username(String from_username) {
+        this.from_username = from_username;
+    }
+
     public Connect.ChatMessage.Builder transToChatMessageBuilder() {
         Connect.ChatMessage.Builder builder = Connect.ChatMessage.newBuilder()
                 .setMsgId(getMessage_id())
@@ -201,7 +220,7 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
         messageEntity.setRead_time(0L);
-        messageEntity.setSnap_time(0L);
+
         return messageEntity;
     }
 
@@ -209,41 +228,6 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
         UserCookie userCookie = Session.getInstance().getConnectCookie();
         String mypubkey = userCookie == null ? "" : userCookie.getUid();
         return mypubkey.equals(getMessage_from()) ? MsgDirect.To : MsgDirect.From;
-    }
-
-    public long parseDestructTime() {
-        long destructtime = -1;
-        try {
-            Connect.ChatType chatType = Connect.ChatType.forNumber(getChatType());
-            if (chatType == Connect.ChatType.PRIVATE) {
-                MessageType msgType = MessageType.toMessageType(getMessageType());
-                switch (msgType) {
-                    case Text:
-                        Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(getContents());
-                        destructtime = textMessage.getSnapTime();
-                        break;
-                    case Emotion:
-                        Connect.EmotionMessage emotionMessage = Connect.EmotionMessage.parseFrom(getContents());
-                        destructtime = emotionMessage.getSnapTime();
-                        break;
-                    case Photo:
-                        Connect.PhotoMessage photoMessage = Connect.PhotoMessage.parseFrom(getContents());
-                        destructtime = photoMessage.getSnapTime();
-                        break;
-                    case Voice:
-                        Connect.VoiceMessage voiceMessage = Connect.VoiceMessage.parseFrom(getContents());
-                        destructtime = voiceMessage.getSnapTime();
-                        break;
-                    case Video:
-                        Connect.VideoMessage videoMessage = Connect.VideoMessage.parseFrom(getContents());
-                        destructtime = videoMessage.getSnapTime();
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return destructtime;
     }
 
     /**

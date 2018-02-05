@@ -53,8 +53,6 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
 
     /**
      * @param groupName
-     * @param groupCategory “LOW”:1,
-     *                      “HIGH”:2
      */
     @Override
     public void createGroup(String groupName) {
@@ -126,7 +124,6 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
             memEntity.setIdentifier(groupKey);
             memEntity.setUid(contact.getUid());
             memEntity.setAvatar(contact.getAvatar());
-            memEntity.setNick(contact.getName());
             memEntity.setRole(0);
             memEntity.setUsername(contact.getName());
             memEntities.add(memEntity);
@@ -151,7 +148,7 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
         ToastEUtil.makeText(activity, activity.getString(R.string.Chat_Create_Group_Success), 1, new ToastEUtil.OnToastListener() {
             @Override
             public void animFinish() {
-                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupKey));
+                ChatActivity.startActivity(activity, Connect.ChatType.GROUPCHAT, groupKey);
             }
         }).show();
     }

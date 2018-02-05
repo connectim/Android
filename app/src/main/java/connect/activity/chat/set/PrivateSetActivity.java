@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.SearchContentActivity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.PrivateSetContract;
 import connect.activity.chat.set.presenter.PrivateSetPresenter;
@@ -107,6 +108,23 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void searchHistoryTxt() {
+        View view = findViewById(R.id.privateset_searchhistory);
+
+        TextView searchTxt = (TextView) view.findViewById(R.id.txt1);
+        ImageView imageView = (ImageView) view.findViewById(R.id.img1);
+
+        searchTxt.setText(getResources().getString(R.string.Chat_Search_Txt));
+        imageView.setImageResource(R.mipmap.group_item_arrow);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SearchContentActivity.lunchActivity(activity, 1);
+            }
+        });
     }
 
     @Override

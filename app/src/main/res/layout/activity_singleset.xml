@@ -29,7 +29,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/color_ffffff"
+        android:orientation="vertical">
+
+        <include
+            android:id="@id/privateset_searchhistory"
+            layout="@layout/include_txt_right_img"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_56" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/color_white"
         android:orientation="vertical">
 

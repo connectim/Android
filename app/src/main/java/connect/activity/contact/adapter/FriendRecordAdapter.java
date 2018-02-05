@@ -46,7 +46,7 @@ public class FriendRecordAdapter extends RecyclerView.Adapter<FriendRecordAdapte
         viewHolder.avaterRimg.setVisibility(View.VISIBLE);
 
         GlideUtil.loadAvatarRound(viewHolder.avaterRimg, friendEntity.getAvatar());
-        String curName = TextUtils.isEmpty(friendEntity.getRemark()) ? friendEntity.getName() : friendEntity.getRemark();
+        String curName = friendEntity.getName();
         viewHolder.nameTv.setText(curName);
         viewHolder.timeTv.setText(TimeUtil.getTime(friendBill.getCreatedAt() * 1000, TimeUtil.DATE_FORMAT_MONTH_HOUR));
 

@@ -17,19 +17,9 @@ public interface CommandListener {
 
     void contactChanges(Connect.WorkmateChangeRecords changeRecords);
 
-    void receiverFriendRequest(int number,Connect.ReceiveFriendRequest friendRequest);
-
-    void acceptFriendRequest(Connect.FriendListChange listChange);
-
-    void acceptDelFriend(Connect.FriendListChange listChange);
-
     void conversationMute(Connect.ManageSession manageSession);
 
     void updateGroupChange( Connect.GroupChange groupChange) throws Exception;
 
     void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo);
-
-    void burnReadingSetting(Connect.EphemeralSetting setting);
-
-    void burnReadingReceipt(Connect.EphemeralAck ack);
 }

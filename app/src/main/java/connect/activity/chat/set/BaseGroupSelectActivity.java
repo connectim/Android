@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.adapter.BaseGroupSelectAdapter;
-import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.GroupRecBean;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
@@ -299,7 +298,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
                 ToastEUtil.makeText(activity, showHint, 1, new ToastEUtil.OnToastListener() {
                     @Override
                     public void animFinish() {
-                        ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupIdentify));
+                        ChatActivity.startActivity(activity, Connect.ChatType.GROUPCHAT, groupIdentify);
                     }
                 }).show();
             }

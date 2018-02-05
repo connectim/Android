@@ -229,11 +229,10 @@ public class SelectFriendActivity extends BaseActivity {
             ContactEntity friendEntity = new ContactEntity();
             friendEntity.setAvatar(groupMemEntity.getAvatar());
             friendEntity.setUid(groupMemEntity.getUid());
-            String name = TextUtils.isEmpty(groupMemEntity.getUsername()) ? groupMemEntity.getNick() : groupMemEntity.getUsername();
+            String name =  groupMemEntity.getUsername();
             friendEntity.setName(name);
             list.add(friendEntity);
         }
         return list;
     }
-
 }

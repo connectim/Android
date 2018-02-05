@@ -88,7 +88,7 @@ public class TransactionReceiver implements TransactionListener {
                     receiverName = "*";
                     GroupMemberEntity memEntity = ContactHelper.getInstance().loadGroupMemberEntity(notice.getIdentifer(), receiverAddress);
                     if (memEntity != null) {
-                        receiverName = TextUtils.isEmpty(memEntity.getNick()) ? memEntity.getUsername() : memEntity.getNick();
+                        receiverName = memEntity.getUsername();
                     }
                 }
             }
@@ -120,7 +120,7 @@ public class TransactionReceiver implements TransactionListener {
         String receiverName = "";
         GroupMemberEntity receiverEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupid, crowdfundingNotice.getReceiver());
         if (receiverEntity != null) {
-            receiverName = TextUtils.isEmpty(receiverEntity.getNick()) ? receiverEntity.getUsername() : receiverEntity.getNick();
+            receiverName = receiverEntity.getUsername();
         }
 
         String senderName = "";
@@ -129,7 +129,7 @@ public class TransactionReceiver implements TransactionListener {
         } else {
             GroupMemberEntity senderEntity = ContactHelper.getInstance().loadGroupMemberEntity(groupid, crowdfundingNotice.getReceiver());
             if (senderEntity != null) {
-                senderName = TextUtils.isEmpty(senderEntity.getNick()) ? senderEntity.getUsername() : senderEntity.getNick();
+                senderName = senderEntity.getUsername();
             }
         }
 

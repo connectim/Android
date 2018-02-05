@@ -39,6 +39,8 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
         roomKey = view.getRoomKey();
         activity = view.getActivity();
 
+        view.searchHistoryTxt();
+
         boolean istop = false;
         ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(roomKey);
         if (roomEntity == null) {

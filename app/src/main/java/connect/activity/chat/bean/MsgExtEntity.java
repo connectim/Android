@@ -78,7 +78,6 @@ public class MsgExtEntity extends MessageEntity implements Cloneable {
         messageEntity.setCreatetime(getCreatetime());
         messageEntity.setRead_time(getRead_time());
         messageEntity.setSend_status(getSend_status());
-        messageEntity.setSnap_time(getSnap_time());
         return messageEntity;
     }
 

@@ -31,7 +31,6 @@ import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -95,28 +94,33 @@ public class ChatActivity extends BaseChatSendActivity {
 
     /**
      * @param activity
-     * @param talker
+     * @param chattype
+     * @param identify
      */
-    public static void startActivity(Activity activity, Talker talker) {
-        RoomSession.getInstance().setRoomType(talker.getTalkType());
-        RoomSession.getInstance().setRoomKey(talker.getTalkKey());
+    public static void startActivity(Activity activity, Connect.ChatType chattype, String identify) {
+        RoomSession.getInstance().setRoomType(chattype);
+        RoomSession.getInstance().setRoomKey(identify);
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ROOM_TALKER, talker);
+        bundle.putSerializable("CHAT_TYPE", chattype);
+        bundle.putSerializable("CHAT_IDENTIFY", chattype);
         ActivityUtil.next(activity, ChatActivity.class, bundle);
     }
 
     /**
      * @param activity
-     * @param talker
+     * @param chattype
+     * @param identify
+     * @param searchTxt
      */
-    public static void startActivity(Activity activity, Talker talker, String searchTxt) {
-        RoomSession.getInstance().setRoomType(talker.getTalkType());
-        RoomSession.getInstance().setRoomKey(talker.getTalkKey());
+    public static void startActivity(Activity activity, Connect.ChatType chattype, String identify, String searchTxt) {
+        RoomSession.getInstance().setRoomType(chattype);
+        RoomSession.getInstance().setRoomKey(identify);
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ROOM_TALKER, talker);
-        bundle.putString(ROOM_SEARCH, searchTxt);
+        bundle.putSerializable("CHAT_TYPE", chattype);
+        bundle.putSerializable("CHAT_IDENTIFY", chattype);
+        bundle.putString("CHAT_SEARCH_TXT", searchTxt);
         ActivityUtil.next(activity, ChatActivity.class, bundle);
     }
 
@@ -162,7 +166,7 @@ public class ChatActivity extends BaseChatSendActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
-        if(TextUtils.isEmpty(searchTxt)){
+        if (TextUtils.isEmpty(searchTxt)) {
             linearLayoutManager.setStackFromEnd(true);
         }
         chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);

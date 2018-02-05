@@ -691,6 +691,9 @@
     <string name="Chat_There_Are_News_Attention_You">There are %1$d follow-up messages</string>
 
     <string name="Chat_Message_Top">Message top</string>
+    <string name="Chat_Message_Top_Remove">Cancel the top</string>
     <string name="Chat_Conversation_Del">Delete the conversation</string>
-    <string name="Chat_Tip_Attention">[[My Focus]]</string>
+    <string name="Chat_Tip_Attention">[My Focus]</string>
+
+    <string name="Chat_Search_Txt">Find chat content</string>
 </resources>

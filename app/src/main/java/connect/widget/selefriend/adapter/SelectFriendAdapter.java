@@ -44,7 +44,7 @@ public class SelectFriendAdapter extends RecyclerView.Adapter<SelectFriendAdapte
     public void onBindViewHolder(final SelectFriendAdapter.Holder holder, int position) {
         final ContactEntity entity = dataList.get(position);
         GlideUtil.loadAvatarRound(holder.avatar, entity.getAvatar());
-        String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
+        String curName = entity.getName();
         holder.name.setText(curName);
 
         // According to the head alphabetical order
@@ -84,14 +84,14 @@ public class SelectFriendAdapter extends RecyclerView.Adapter<SelectFriendAdapte
     }
 
     private void showTopView(ContactEntity entity, int  position, SelectFriendAdapter.Holder holder){
-        String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
+        String curName = entity.getName();
         String curFirstPing = PinyinUtil.chatToPinyin(curName.charAt(0));
         if (position == 0) {
             holder.txt.setVisibility(View.VISIBLE);
             holder.txt.setText(curFirstPing);
         } else {
             ContactEntity lastEntity = dataList.get(position - 1);
-            String lastName = TextUtils.isEmpty(lastEntity.getRemark()) ? lastEntity.getName() : lastEntity.getRemark();
+            String lastName = lastEntity.getName();
             String lastFirstPing = PinyinUtil.chatToPinyin(lastName.charAt(0));
             if (lastFirstPing.equals(curFirstPing)) {
                 holder.txt.setVisibility(View.GONE);
@@ -105,7 +105,7 @@ public class SelectFriendAdapter extends RecyclerView.Adapter<SelectFriendAdapte
     public int getPositionForSection(char selectChar) {
         for (int i = 0; i < dataList.size(); i++) {
             ContactEntity entity = dataList.get(i);
-            String showName = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
+            String showName = entity.getName();
             String firstChar = PinyinUtil.chatToPinyin(showName.charAt(0));
             if (firstChar.charAt(0) >= selectChar) {
                 return i;
