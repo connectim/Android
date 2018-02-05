@@ -12,7 +12,6 @@ import java.util.List;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.fragment.bean.GroupWithCountEntity;
 import connect.activity.chat.fragment.bean.SearchBean;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.ConversationAction;
@@ -409,15 +408,15 @@ public class ContactHelper extends BaseDao {
 
 
     public List<SearchBean> loadGroupByMemberName(String membername) {
-        String sql = "SELECT G.*,MSG.COUNTS FROM GROUP_ENTITY G LEFT OUTER JOIN (SELECT M.MESSAGE_OWER ,COUNT(*) AS COUNTS FROM MESSAGE_ENTITY M WHERE M.CONTENT LIKE ? GROUP BY M.MESSAGE_OWER) AS MSG ON G.IDENTIFIER = MSG.MESSAGE_OWER";
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%"+membername+"%"});
+        String sql = "SELECT G.IDENTIFIER AS GIDENTIFIER, G.NAME AS GNAME,G.AVATAR AS GAVATAR FROM GROUP_ENTITY G,(SELECT * FROM GROUP_MEMBER_ENTITY) AS M WHERE G.IDENTIFIER = M.IDENTIFIER AND (G.NAME LIKE ? OR M.USERNAME LIKE ?) GROUP BY G.IDENTIFIER";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%" + membername + "%", "%" + membername + "%"});
 
         List<SearchBean> groupEntities = new ArrayList<>();
         while (cursor.moveToNext()) {
             SearchBean searchBean = new SearchBean();
-            searchBean.setUid(cursorGetString(cursor, "IDENTIFIER"));
-            searchBean.setName(cursorGetString(cursor, "NAME"));
-            searchBean.setAvatar(cursorGetString(cursor, "AVATAR"));
+            searchBean.setUid(cursorGetString(cursor, "GIDENTIFIER"));
+            searchBean.setName(cursorGetString(cursor, "GNAME"));
+            searchBean.setAvatar(cursorGetString(cursor, "GAVATAR"));
             searchBean.setSearchStr(membername);
             searchBean.setStyle(2);
             groupEntities.add(searchBean);

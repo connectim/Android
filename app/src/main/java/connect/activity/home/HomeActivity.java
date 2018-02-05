@@ -8,7 +8,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -92,16 +94,6 @@ public class HomeActivity extends BaseFragmentActivity {
     TextView workbenchText;
     @Bind(R.id.set_text)
     TextView setText;
-    @Bind(R.id.msg_content_rela)
-    LinearLayout msgContentRela;
-    @Bind(R.id.contact_content_rela)
-    LinearLayout contactContentRela;
-    @Bind(R.id.workbench_content_rela)
-    LinearLayout workbenchContentRela;
-    @Bind(R.id.workbench_badgetv)
-    MaterialBadgeTextView workbenchBadgetv;
-    @Bind(R.id.viewpager)
-    ViewPager viewpager;
 
     private HomeActivity activity;
 
@@ -111,9 +103,6 @@ public class HomeActivity extends BaseFragmentActivity {
     private SetFragment setFragment;
     private ResolveUrlUtil resolveUrlUtil;
     private CheckUpdate checkUpdata;
-
-    private HomePagerAdapter pagerAdapter = null;
-    private HomePageChangeListener pageChangeListener = new HomePageChangeListener();
 
     public static void startActivity(Activity activity) {
         ActivityUtil.next(activity, HomeActivity.class);
@@ -200,20 +189,17 @@ public class HomeActivity extends BaseFragmentActivity {
                 break;
             case SWITCHFRAGMENT:
                 int fragmentCode = (Integer) objects[0];
-                viewpager.setCurrentItem(fragmentCode);
+                switchFragment(fragmentCode);
                 break;
             case GROUP_NEWCHAT:
                 int position = (int) (objects[0]);
-                if (position == 1) {
+                if(position == 1){
                     BaseGroupSelectActivity.startActivity(activity, true, "");
-                } else if (position == 2) {
+                }else if(position == 2){
                     ActivityUtil.next(activity, ScanAddFriendActivity.class);
-                } else if (position == 3) {
-                    SystemSetBean setBean = ParamManager.getInstance().getSystemSet();
-                    setBean.setRing(!setBean.isRing());
-                    setBean.setVibrate(!setBean.isVibrate());
-                    ParamManager.getInstance().putSystemSet(setBean);
-                } else if (position == 4) {
+                }else if(position == 3){
+
+                }else if(position == 4){
                     ActivityUtil.next(activity, SupportFeedbackActivity.class);
                 }
                 break;
@@ -222,7 +208,7 @@ public class HomeActivity extends BaseFragmentActivity {
                 String showContent = TextUtils.isEmpty(deviceName) ?
                         getString(R.string.Error_Device_Remote_Other_Login) :
                         getString(R.string.Error_Device_Remote_Login, deviceName);
-                DialogUtil.showAlertTextView(activity, null, showContent, null, getString(R.string.Common_OK), true, false, new DialogUtil.OnItemClickListener() {
+                DialogUtil.showAlertTextView(activity, null,showContent , null, getString(R.string.Common_OK), true, false, new DialogUtil.OnItemClickListener() {
                     @Override
                     public void confirm(String value) {
                         HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
@@ -254,16 +240,24 @@ public class HomeActivity extends BaseFragmentActivity {
         initBottomTab();
         switch (view.getId()) {
             case R.id.msg_rela:
-                viewpager.setCurrentItem(0);
+                switchFragment(0);
+                msg.setSelected(true);
+                msgText.setSelected(true);
                 break;
             case R.id.contact_rela:
-                viewpager.setCurrentItem(1);
+                switchFragment(1);
+                contact.setSelected(true);
+                contactText.setSelected(true);
                 break;
             case R.id.workbench_rela:
-                viewpager.setCurrentItem(2);
+                switchFragment(2);
+                workbench.setSelected(true);
+                workbenchText.setSelected(true);
                 break;
             case R.id.set_rela:
-                viewpager.setCurrentItem(3);
+                switchFragment(3);
+                set.setSelected(true);
+                setText.setSelected(true);
                 break;
         }
     }
@@ -286,12 +280,56 @@ public class HomeActivity extends BaseFragmentActivity {
         workbenchFragment = WorkbenchFragment.startFragment();
         setFragment = SetFragment.startFragment();
 
+        switchFragment(0);
         msg.setSelected(true);
-        BaseFragment[] baseFragments = new BaseFragment[]{chatListFragment, contactFragment, workbenchFragment, setFragment};
-        pagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), Arrays.asList(baseFragments));
-        viewpager.setCurrentItem(0);
-        viewpager.setAdapter(pagerAdapter);
-        viewpager.addOnPageChangeListener(pageChangeListener);
+    }
+
+    public void switchFragment(int code) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                if (fragment.isVisible()) {
+                    fragmentTransaction.hide(fragment);
+                }
+            }
+        }
+
+        switch (code) {
+            case 0:
+                if (!chatListFragment.isAdded()) {
+                    fragmentTransaction.add(R.id.home_content, chatListFragment);
+                } else {
+                    fragmentTransaction.show(chatListFragment);
+                }
+                break;
+            case 1:
+                if (!contactFragment.isAdded()) {
+                    fragmentTransaction.add(R.id.home_content, contactFragment);
+                } else {
+                    fragmentTransaction.show(contactFragment);
+                }
+                break;
+            case 2:
+                if (!workbenchFragment.isAdded()) {
+                    fragmentTransaction.add(R.id.home_content, workbenchFragment);
+                } else {
+                    fragmentTransaction.show(workbenchFragment);
+                }
+                break;
+            case 3:
+                if (!setFragment.isAdded()) {
+                    fragmentTransaction.add(R.id.home_content, setFragment);
+                } else {
+                    fragmentTransaction.show(setFragment);
+                }
+                break;
+        }
+
+        //commit :IllegalStateException: Can not perform this action after onSaveInstanceState
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     public void setFragmentDot(int pager, int count) {
@@ -312,42 +350,6 @@ public class HomeActivity extends BaseFragmentActivity {
     private void requestAppUpdata() {
         checkUpdata = new CheckUpdate(activity);
         checkUpdata.check();
-    }
-
-    private class HomePageChangeListener implements ViewPager.OnPageChangeListener {
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            initBottomTab();
-            switch (position) {
-                case 0:
-                    msg.setSelected(true);
-                    msgText.setSelected(true);
-                    break;
-                case 1:
-                    contact.setSelected(true);
-                    contactText.setSelected(true);
-                    break;
-                case 2:
-                    workbench.setSelected(true);
-                    workbenchText.setSelected(true);
-                    break;
-                case 3:
-                    set.setSelected(true);
-                    setText.setSelected(true);
-                    break;
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
     }
 
     @Override

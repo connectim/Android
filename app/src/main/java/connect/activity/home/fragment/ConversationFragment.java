@@ -187,9 +187,9 @@ public class ConversationFragment extends BaseFragment {
             recyclerFragmentChat.setAdapter(chatFragmentAdapter);
             recyclerFragmentChat.addItemDecoration(new LineDecoration(activity));
             chatFragmentAdapter.setConversationListener(conversationListener);
+            loadRooms();
         }
 
-        loadRooms();
         EventBus.getDefault().register(this);
     }
 
