@@ -306,6 +306,8 @@
     <string name="Login_SMS_code_has_been_send">短信验证码已发送</string>
     <string name="Login_SMS_code_sent_failure">短信验证码发送失败</string>
     <string name="Login_Save_successful">保存成功</string>
+    <string name="Link_Focus_successful">关注成功</string>
+    <string name="Link_Focus_cancle_successful">取消关注成功</string>
     <string name="Login_Select_Country">选择国家</string>
     <string name="Login_Select_form_album">从相册选择</string>
     <string name="Login_Send_failed">发送失败</string>

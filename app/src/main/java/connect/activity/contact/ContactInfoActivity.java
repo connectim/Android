@@ -221,12 +221,12 @@ public class ContactInfoActivity extends BaseActivity {
                 if (isAdd) {
                     contactEntity.setRegisted(true);
                     ContactHelper.getInstance().insertContact(contactEntity);
-                    ToastEUtil.makeText(mActivity, R.string.Login_Save_successful).show();
+                    ToastEUtil.makeText(mActivity, R.string.Link_Focus_successful).show();
                     ContactNotice.receiverContact();
                     toolbar.setRightText(R.string.Work_Cancel_the_attention);
                 } else {
                     ContactHelper.getInstance().deleteEntity(contactEntity.getUid());
-                    ToastEUtil.makeText(mActivity, R.string.Link_Delete_Successful).show();
+                    ToastEUtil.makeText(mActivity, R.string.Link_Focus_cancle_successful).show();
                     ContactNotice.receiverContact();
                     if (contactEntity.getGender() == 1) {
                         toolbar.setRightText(R.string.Work_Pay_attention_to_him);

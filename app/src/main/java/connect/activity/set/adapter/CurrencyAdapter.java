@@ -46,7 +46,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
         } else {
             viewHolder.text.setText(rateBean.getName());
         }
-        if (currency.equals(rateBean.getCode())) {
+        if (rateBean.getCode().equals(currency)) {
             viewHolder.img.setVisibility(View.VISIBLE);
         } else {
             viewHolder.img.setVisibility(View.GONE);

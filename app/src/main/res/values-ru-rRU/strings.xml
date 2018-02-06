@@ -369,6 +369,8 @@
     <string name="Login_SMS_code_has_been_send">SMS-код был отправлен</string>
     <string name="Login_SMS_code_sent_failure">Сбой при отправки кода SMS-подтверждения</string>
     <string name="Login_Save_successful">Успешно сохранено</string>
+    <string name="Link_Focus_successful">Внимание успешно</string>
+    <string name="Link_Focus_cancle_successful">отменить внимание успех</string>
     <string name="Login_Select_Country">Выбрать страну</string>
     <string name="Login_Select_form_album">Выбрать из фотогалереи</string>
     <string name="Login_Send_failed">Сбой при отправке</string>
