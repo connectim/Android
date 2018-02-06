@@ -128,6 +128,13 @@ public class ParamManager {
         if(list.contains(value)){
             list.remove(value);
         }
+        if(list.size() > 9){
+            for(int i = 0; i < list.size(); i++){
+                if(i > 9){
+                    list.remove(i);
+                }
+            }
+        }
         list.add(0, value);
         putCommonlySearch(list);
     }

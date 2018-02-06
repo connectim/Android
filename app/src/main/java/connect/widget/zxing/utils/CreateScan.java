@@ -26,7 +26,7 @@ public class CreateScan {
     /** Default height */
     private int heightDef = 350;
     /** Default background */
-    private int defaultBg = BaseApplication.getInstance().getResources().getColor(R.color.color_f1f1f1);
+    private int defaultBg = BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff);
 
     public Bitmap generateQRCode(String content) {
         return generateQRCode(content,defaultBg);
@@ -41,7 +41,7 @@ public class CreateScan {
             Hashtable hints = new Hashtable();
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
             //Two dimensional code frame width, where the document says 0-4
-            hints.put(EncodeHintType.MARGIN, 4);
+            hints.put(EncodeHintType.MARGIN, 0);
             BitMatrix matrix = writer.encode(content, BarcodeFormat.QR_CODE, widthDef, heightDef,hints);
             return bitMatrix2Bitmap(matrix,colorBg);
         } catch (WriterException e) {

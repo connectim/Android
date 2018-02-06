@@ -200,6 +200,7 @@ public abstract class InterParse {
         if (TextUtils.isEmpty(version)) {
             version = "0";
         }
+        version = "0";
         Connect.SyncRelationship syncRelationship = Connect.SyncRelationship.newBuilder()
                 .setVersion(version).build();
         commandToIMTransfer(TimeUtil.timestampToMsgid(), SocketACK.CONTACT_SYNC, syncRelationship.toByteString());

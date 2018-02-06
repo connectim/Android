@@ -83,6 +83,7 @@ public class SearchContentFragment extends BaseFragment {
     };
 
     public void updateView(String value, int status){
+        ParamManager.getInstance().putCommonlyString(value);
         ArrayList<SearchBean> list = new ArrayList<>();
         if(status == 0){
             list.addAll(getFriendData(value));
@@ -100,7 +101,6 @@ public class SearchContentFragment extends BaseFragment {
             noDataLin.setVisibility(View.GONE);
             recyclerview.setVisibility(View.VISIBLE);
             adapter.setDataNotify(list);
-            ParamManager.getInstance().putCommonlyString(value);
         }else{
             noDataLin.setVisibility(View.VISIBLE);
             recyclerview.setVisibility(View.GONE);

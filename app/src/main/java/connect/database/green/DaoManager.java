@@ -78,7 +78,7 @@ public class DaoManager {
             if (appMode) {//release version
                 setDebug(false);//log
                 try {
-                    db = helper.getEncryptedWritableDb(DB_PWD);
+                    db = helper.getEncryptedReadableDb(DB_PWD);
                 } catch (Exception e) {
                     e.printStackTrace();
                     context.deleteDatabase(DB_NAME);

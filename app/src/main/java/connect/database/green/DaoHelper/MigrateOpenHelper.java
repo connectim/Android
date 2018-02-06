@@ -47,25 +47,25 @@ public class MigrateOpenHelper extends DaoMaster.OpenHelper {
      */
     @Override
     public SQLiteDatabase getReadableDatabase() {
-        if (!mainTmpDirSet) {
-            Context context = BaseApplication.getInstance().getBaseContext();
-            String innerPath = context.getFilesDir().getParentFile().getPath();
-            boolean rs = new File(innerPath + "/databases/main").mkdirs();
-            super.getReadableDatabase().execSQL("PRAGMA temp_store_directory='/data/data/connect.im/databases/main'");
-            mainTmpDirSet = true;
-        }
+//        if (!mainTmpDirSet) {
+//            Context context = BaseApplication.getInstance().getBaseContext();
+//            String innerPath = context.getFilesDir().getParentFile().getPath();
+//            boolean rs = new File(innerPath + "/databases/main").mkdirs();
+//            super.getReadableDatabase().execSQL("PRAGMA temp_store_directory='/data/data/com.iwork.im/databases/main'");
+//            mainTmpDirSet = true;
+//        }
         return super.getReadableDatabase();
     }
 
     @Override
     public Database getEncryptedReadableDb(String password) {
-        if (!mainTmpDirSet) {
-            Context context = BaseApplication.getInstance().getBaseContext();
-            String innerPath = context.getFilesDir().getParentFile().getPath();
-            boolean rs = new File(innerPath + "/databases/main").mkdirs();
-            super.getReadableDatabase().execSQL("PRAGMA temp_store_directory='/data/data/connect.im/databases/main'");
-            mainTmpDirSet = true;
-        }
+//        if (!mainTmpDirSet) {
+//            Context context = BaseApplication.getInstance().getBaseContext();
+//            String innerPath = context.getFilesDir().getParentFile().getPath();
+//            boolean rs = new File(innerPath + "/databases/main").mkdirs();
+//            super.getReadableDatabase().execSQL("PRAGMA temp_store_directory='/data/data/com.iwork.im/databases/main'");
+//            mainTmpDirSet = true;
+//        }
         return super.getEncryptedReadableDb(password);
     }
 

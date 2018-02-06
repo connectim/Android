@@ -30,8 +30,10 @@ public class WorkbenchMenuAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.workbench_menu_item, null);
-        return new WalletMenuItem(view);
+        LayoutInflater inflater = LayoutInflater.from(mActivity);
+        View view = inflater.inflate(R.layout.workbench_menu_item, parent, false);
+        WalletMenuItem holder = new WalletMenuItem(view);
+        return holder;
     }
 
     @Override
