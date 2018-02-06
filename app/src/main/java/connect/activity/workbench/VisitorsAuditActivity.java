@@ -2,6 +2,7 @@ package connect.activity.workbench;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,13 +15,11 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.BitmapUtil;
-import connect.utils.dialog.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.TimeUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -86,7 +85,8 @@ public class VisitorsAuditActivity extends BaseActivity {
 
         visitorRecord = (Connect.VisitorRecord) getIntent().getExtras().getSerializable("bean");
 
-        nameTv.setText(visitorRecord.getGuestName());
+        String guestName = TextUtils.isEmpty(visitorRecord.getGuestName()) ? "" : visitorRecord.getGuestName();
+        nameTv.setText(guestName);
         reasonTv.setText(getString(R.string.Work_Visitors_reason, visitorRecord.getReason()));
 
         phoneTv.setText(StringUtil.getFormatPhone(visitorRecord.getGuestPhone()));
