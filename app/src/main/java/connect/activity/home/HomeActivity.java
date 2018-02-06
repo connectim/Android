@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,19 +21,16 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseApplication;
-import connect.activity.base.BaseFragment;
 import connect.activity.base.BaseFragmentActivity;
 import connect.activity.chat.set.BaseGroupSelectActivity;
 import connect.activity.contact.ScanAddFriendActivity;
 import connect.activity.contact.bean.MsgSendBean;
-import connect.activity.home.adapter.HomePagerAdapter;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.activity.home.fragment.ContactFragment;
@@ -198,7 +194,17 @@ public class HomeActivity extends BaseFragmentActivity {
                 }else if(position == 2){
                     ActivityUtil.next(activity, ScanAddFriendActivity.class);
                 }else if(position == 3){
-
+                    SystemSetBean systemSetBean = ParamManager.getInstance().getSystemSet();
+                    boolean isVibrate = systemSetBean.isVibrate();
+                    boolean isRing = systemSetBean.isRing();
+                    if (isVibrate && isRing) {
+                        systemSetBean.setVibrate(false);
+                        systemSetBean.setRing(false);
+                    } else {
+                        systemSetBean.setVibrate(true);
+                        systemSetBean.setRing(true);
+                    }
+                    ParamManager.getInstance().putSystemSet(systemSetBean);
                 }else if(position == 4){
                     ActivityUtil.next(activity, SupportFeedbackActivity.class);
                 }

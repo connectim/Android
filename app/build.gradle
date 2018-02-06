@@ -71,7 +71,7 @@ android {
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
 
         release {
@@ -112,6 +112,7 @@ def releaseTime() {
 
 /**
  * 0.0.3  ==> 5
+ * 0.0.4  ==> 6
  */
 greendao {
     schemaVersion 6

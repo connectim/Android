@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
-import android.text.TextUtils;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
@@ -122,7 +121,7 @@ public class NotificationBar {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         Intent intent = new Intent();
 
-        String tickerTitle = "Connnect";
+        String tickerTitle = context.getString(R.string.app_name);
         Talker talker = null;
 
         Connect.ChatType chatType = Connect.ChatType.forNumber(type);

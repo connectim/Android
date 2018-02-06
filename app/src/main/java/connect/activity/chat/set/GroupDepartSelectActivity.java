@@ -165,15 +165,17 @@ public class GroupDepartSelectActivity extends BaseActivity {
 
             @Override
             public void itemClick(OrganizerEntity department) {
-                requestDepartmentInfoShow(department.getId());
+                if (department != null || department.getId() != null) {
+                    requestDepartmentInfoShow(department.getId());
 
-                Connect.Department department1 = Connect.Department.newBuilder()
-                        .setId(department.getId())
-                        .setCount(department.getCount())
-                        .setName(department.getName())
-                        .build();
-                nameList.add(department1);
-                nameLinear.notifyAddView(nameList, scrollview);
+                    Connect.Department department1 = Connect.Department.newBuilder()
+                            .setId(department.getId())
+                            .setCount(department.getCount())
+                            .setName(department.getName())
+                            .build();
+                    nameList.add(department1);
+                    nameLinear.notifyAddView(nameList, scrollview);
+                }
             }
 
             @Override

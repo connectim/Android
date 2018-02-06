@@ -16,6 +16,7 @@ import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.MigrateOpenHelper;
+import connect.database.green.DaoHelper.OrganizerHelper;
 import connect.database.green.DaoHelper.ParamHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.dao.DaoMaster;
@@ -145,14 +146,14 @@ public class DaoManager {
             mHelper = null;
         }
 
-        MessageHelper.closeHelper();
+        ApplicationHelper.closeHelper();
+        ContactHelper.closeHelper();
         ConversionHelper.closeHelper();
         ConversionSettingHelper.closeHelper();
-        ContactHelper.closeHelper();
+        CurrencyHelper.closeHelper();
+        MessageHelper.closeHelper();
+        OrganizerHelper.closeHelper();
         ParamHelper.closeHelper();
         TransactionHelper.closeHelper();
-        CurrencyHelper.closeHelper();
-        ApplicationHelper.closeHelper();
     }
-
 }

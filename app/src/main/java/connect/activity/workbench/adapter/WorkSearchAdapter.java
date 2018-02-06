@@ -46,6 +46,9 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
         final Connect.Application application = applications.get(position);
 
         MenuBean menuBean = MenuData.getInstance().getData(application.getCode());
+        if(menuBean == null){
+            menuBean = new MenuBean();
+        }
         holder.categortyImg.setBackgroundResource(menuBean.getIconId());
         holder.categoryTxt.setText(menuBean.getTextId());
         holder.addStateTxt.setVisibility(View.GONE);

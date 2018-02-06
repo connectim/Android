@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Instant</string>
+    <string name="app_name">iWork</string>
     <string name="Login_Welcome">Welcome</string>
     <string name="Chat_You_are_start_encrypt_chat_Messages_encrypted">Starting encrypted chat\n\nMessages P2P encrypted with private key\nAny 3th party can’t get contents\nServer doesn’t retain any history</string>
 
-    <string name="Connect_name">Connect</string>
+    <string name="Connect_name">iWork</string>
 
     <string name="Chat_Audio">[Audio]</string>
     <string name="Chat_Picture">[Picture]</string>
