@@ -25,7 +25,7 @@ public class UpdateAppService extends Service {
     DownloadManager manager;
     DownloadCompleteReceiver receiver;
     File file;
-    private String pathDown = "/iWork/download/iWork.apk";
+    private String pathDown = "iWork/download/iWork.apk";
 
     private void initDownManager(String downLoadUrl) {
         manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -37,6 +37,10 @@ public class UpdateAppService extends Service {
         down.setVisibleInDownloadsUi(true);
         down.setTitle(getString(R.string.app_name));
         down.setDescription(getString(R.string.Common_Download_App,"iWork"));
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
+            //在下载过程中通知栏会一直显示该下载的Notification，在下载完成后该Notification会继续显示，直到用户点击该Notification或者消除该Notification
+            down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        }
 
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             // 解决没有内存卡的手机升级
@@ -74,7 +78,11 @@ public class UpdateAppService extends Service {
     class DownloadCompleteReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+            /*if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+                installAPK(Uri.fromFile(file),context);
+                UpdateAppService.this.stopSelf();
+            }*/
+            /*if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
                 long completeId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                 DownloadManager dManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                 Intent install = new Intent(Intent.ACTION_VIEW);
@@ -89,7 +97,7 @@ public class UpdateAppService extends Service {
                     installAPK(Uri.fromFile(file),context);
                     UpdateAppService.this.stopSelf();
                 }
-            }
+            }*/
         }
 
         private void installAPK(Uri apk,Context context) {
