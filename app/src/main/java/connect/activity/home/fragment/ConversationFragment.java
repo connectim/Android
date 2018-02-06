@@ -201,7 +201,7 @@ public class ConversationFragment extends BaseFragment {
             case R.id.relativelayout_1:
                 PopupWindow popWindow = new ChatAddPopWindow(getActivity());
                 int offsetX = SystemUtil.dipToPx(30);
-                int offsetY = SystemUtil.dipToPx(1);
+                int offsetY = SystemUtil.dipToPx(0);
                 popWindow.showAsDropDown(connectStateView.findViewById(R.id.txt1), offsetX, offsetY);
                 break;
             case R.id.search_image1:

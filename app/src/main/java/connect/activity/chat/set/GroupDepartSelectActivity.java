@@ -165,7 +165,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
 
             @Override
             public void itemClick(OrganizerEntity department) {
-                if(department==null||department.getId()==null){
+                if (department != null || department.getId() != null) {
                     requestDepartmentInfoShow(department.getId());
 
                     Connect.Department department1 = Connect.Department.newBuilder()
