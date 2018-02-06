@@ -38,7 +38,8 @@ public class UpdateAppService extends Service {
         down.setTitle(getString(R.string.app_name));
         down.setDescription(getString(R.string.Common_Download_App,"iWork"));
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-            //在下载过程中通知栏会一直显示该下载的Notification，在下载完成后该Notification会继续显示，直到用户点击该Notification或者消除该Notification
+            //在下载过程中通知栏会一直显示该下载的Notification
+            //在下载完成后该Notification会继续显示，直到用户点击该Notification或者消除该Notification
             down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         }
 
