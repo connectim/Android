@@ -67,7 +67,7 @@ public class MenuData {
                 menuBean.setIconId(R.mipmap.menu_add);
                 break;
             default:
-                break;
+                return null;
         }
         return menuBean;
     }

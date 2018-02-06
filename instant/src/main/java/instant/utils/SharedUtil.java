@@ -34,9 +34,6 @@ public class SharedUtil {
     public static String UPLOAD_APPINFO_VERSION = "UPLOAD_APPINFO_VERSION";
     public static String COOKIE_CONNECT_USER = "COOKIE_CONNECT_USER";
     public static String COOKIE_CHATUSER = "COOKIE_CHATUSER";
-    public static String COOKIE_RANDOM = "COOKIE_RANDOM";
-    public static String COOKIE_CHATFRIEND = "COOKIE_CHATFRIEND:";
-    public static String COOKIE_CHATGROUP_MEMBER = "COOKIE_CHATGROUP_MEMBER";
 
     public static SharedUtil getInstance() {
         return getInstance(InstantSdk.instantSdk.getBaseContext());
@@ -142,7 +139,8 @@ public class SharedUtil {
 
         sharePre.edit()
                 .clear()
-                .commit();
+                .apply();
+        sharePre = null;
     }
 
     /******************************  Connect Cookie  ********************************************************/

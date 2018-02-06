@@ -51,7 +51,10 @@ public class ApplicationHelper extends BaseDao {
             return listData;
         }else{
             for(ApplicationEntity applicationEntity : applicationEntities){
-                listData.add(MenuData.getInstance().getData(applicationEntity.getCode()));
+                MenuBean menuBean = MenuData.getInstance().getData(applicationEntity.getCode());
+                if(menuBean != null){
+                    listData.add(menuBean);
+                }
             }
             return listData;
         }

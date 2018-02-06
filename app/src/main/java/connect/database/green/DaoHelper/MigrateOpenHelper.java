@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.greenrobot.greendao.database.Database;
+
 import java.io.File;
+
 import connect.activity.base.BaseApplication;
 import connect.activity.home.DBUpdateActivity;
 import connect.database.green.DaoHelper.mergin.MigrationHelper;
@@ -22,6 +24,7 @@ import connect.database.green.dao.MessageEntityDao;
 import connect.database.green.dao.OrganizerEntityDao;
 import connect.database.green.dao.ParamEntityDao;
 import connect.database.green.dao.TransactionEntityDao;
+import instant.utils.SharedUtil;
 
 public class MigrateOpenHelper extends DaoMaster.OpenHelper {
 
@@ -67,23 +70,51 @@ public class MigrateOpenHelper extends DaoMaster.OpenHelper {
     }
 
     @Override
-    public void onUpgrade(Database db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        super.onUpgrade(db, oldVersion, newVersion);
+        super.onUpgrade(getWritableDatabase(), oldVersion, newVersion);
+
+        SharedUtil.getInstance().deleteUserInfo();
         DBUpdateActivity.startActivity();
 
-        MigrationHelper.migrate(db,
-                ApplicationEntityDao.class,
-                ContactEntityDao.class,
-                ConversionEntityDao.class,
-                ConversionSettingEntityDao.class,
-                CurrencyAddressEntityDao.class,
-                CurrencyEntityDao.class,
-                FriendRequestEntityDao.class,
-                GroupEntityDao.class,
-                GroupMemberEntityDao.class,
-                MessageEntityDao.class,
-                OrganizerEntityDao.class,
-                ParamEntityDao.class,
-                TransactionEntityDao.class
-        );
+//        MigrationHelper.migrate(db,
+//                ApplicationEntityDao.class,
+//                ContactEntityDao.class,
+//                ConversionEntityDao.class,
+//                ConversionSettingEntityDao.class,
+//                CurrencyAddressEntityDao.class,
+//                CurrencyEntityDao.class,
+//                FriendRequestEntityDao.class,
+//                GroupEntityDao.class,
+//                GroupMemberEntityDao.class,
+//                MessageEntityDao.class,
+//                OrganizerEntityDao.class,
+//                ParamEntityDao.class,
+//                TransactionEntityDao.class
+//        );
+    }
+
+    @Override
+    public void onUpgrade(Database db, int oldVersion, int newVersion) {
+        super.onUpgrade(getWritableDatabase(), oldVersion, newVersion);
+
+        SharedUtil.getInstance().deleteUserInfo();
+        DBUpdateActivity.startActivity();
+
+//        MigrationHelper.migrate(db,
+//                ApplicationEntityDao.class,
+//                ContactEntityDao.class,
+//                ConversionEntityDao.class,
+//                ConversionSettingEntityDao.class,
+//                CurrencyAddressEntityDao.class,
+//                CurrencyEntityDao.class,
+//                FriendRequestEntityDao.class,
+//                GroupEntityDao.class,
+//                GroupMemberEntityDao.class,
+//                MessageEntityDao.class,
+//                OrganizerEntityDao.class,
+//                ParamEntityDao.class,
+//                TransactionEntityDao.class
+//        );
     }
 }

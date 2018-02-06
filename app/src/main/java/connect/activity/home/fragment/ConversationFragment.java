@@ -32,11 +32,13 @@ import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.fragment.view.ChatAddPopWindow;
 import connect.activity.home.view.ConnectStateView;
 import connect.activity.home.view.LineDecoration;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.log.LogManager;
 import connect.utils.system.SystemUtil;
+import instant.utils.SharedUtil;
 import protos.Connect;
 
 /**
@@ -212,7 +214,7 @@ public class ConversationFragment extends BaseFragment {
 
         @Override
         public void itemClick(Connect.ChatType chatType, String identify) {
-            ChatActivity.startActivity(activity, chatType, identify);
+             ChatActivity.startActivity(activity, chatType, identify);
         }
     }
 
