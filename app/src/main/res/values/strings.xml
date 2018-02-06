@@ -348,6 +348,8 @@
     <string name="Login_SMS_code_has_been_send">SMS code has been sent</string>
     <string name="Login_SMS_code_sent_failure">SMS code sent failure</string>
     <string name="Login_Save_successful">Save successful</string>
+    <string name="Link_Focus_successful">Focus on success</string>
+    <string name="Link_Focus_cancle_successful">Abolish attention to success</string>
     <string name="Login_Select_Country">Select Country</string>
     <string name="Login_Select_form_album">Choose from Photos</string>
     <string name="Login_Send_failed">Send failed</string>
