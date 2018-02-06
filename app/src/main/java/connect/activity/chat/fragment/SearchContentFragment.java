@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,12 +112,14 @@ public class SearchContentFragment extends BaseFragment {
         ArrayList<SearchBean> list = new ArrayList<>();
         List<ContactEntity> listFriend = ContactHelper.getInstance().loadFriendEntityFromText(value);
         for(ContactEntity contactEntity : listFriend){
-            SearchBean searchBean = new SearchBean();
-            searchBean.setStyle(1);
-            searchBean.setUid(contactEntity.getUid());
-            searchBean.setName(contactEntity.getName());
-            searchBean.setAvatar(contactEntity.getAvatar());
-            list.add(searchBean);
+            if(!TextUtils.isEmpty(contactEntity.getPublicKey())){
+                SearchBean searchBean = new SearchBean();
+                searchBean.setStyle(1);
+                searchBean.setUid(contactEntity.getUid());
+                searchBean.setName(contactEntity.getName());
+                searchBean.setAvatar(contactEntity.getAvatar());
+                list.add(searchBean);
+            }
         }
         return list;
     }
