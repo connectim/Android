@@ -26,6 +26,8 @@ import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.system.SystemUtil;
 import connect.widget.TopToolBar;
+import connect.widget.imagewatcher.ImageWatcher;
+import connect.widget.imagewatcher.ImageWatcherUtil;
 import protos.Connect;
 
 /**
@@ -61,6 +63,7 @@ public class VisitorsAuditActivity extends BaseActivity {
 
     private VisitorsAuditActivity mActivity;
     private Connect.VisitorRecord visitorRecord;
+    private ImageWatcher vImageWatcher;
 
     public static void lunchActivity(Activity activity, Connect.VisitorRecord visitorRecord, int status) {
         Bundle bundle = new Bundle();
@@ -105,11 +108,31 @@ public class VisitorsAuditActivity extends BaseActivity {
         if(status == 1){
             bottomRelative.setVisibility(View.GONE);
         }
+
+        vImageWatcher = ImageWatcher.Helper.with(mActivity)
+                .setTranslucentStatus(ImageWatcherUtil.isShowBarHeight(mActivity))
+                .setErrorImageRes(R.mipmap.default_user_avatar)
+                .create();
     }
 
     @OnClick(R.id.left_img)
     void goback(View view) {
         ActivityUtil.goBack(mActivity);
+    }
+
+    @OnClick(R.id.left_face_image)
+    void leftFace(View view) {
+        vImageWatcher.showSingle((ImageView) view, leftFaceImage, visitorRecord.getFaceLeft() + "?size=400");
+    }
+
+    @OnClick(R.id.is_face_image)
+    void isFace(View view) {
+        vImageWatcher.showSingle((ImageView) view, isFaceImage, visitorRecord.getFace() + "?size=400");
+    }
+
+    @OnClick(R.id.right_face_image)
+    void rightFace(View view) {
+        vImageWatcher.showSingle((ImageView) view, rightFaceImage, visitorRecord.getFaceRight() + "?size=400");
     }
 
     @OnClick(R.id.refuse_text)

@@ -38,9 +38,14 @@ public class UpdateAppService extends Service {
         down.setTitle(getString(R.string.app_name));
         down.setDescription(getString(R.string.Common_Download_App,"iWork"));
 
-        FileUtil.deleteFile(Environment.getExternalStorageDirectory() + pathDown);
-        file = new File(Environment.getExternalStorageDirectory() + pathDown);
-        down.setDestinationUri(Uri.fromFile(file));
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            // 解决没有内存卡的手机升级
+            down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "iWork.apk");
+        }else{
+            FileUtil.deleteFile(Environment.getExternalStorageDirectory() + pathDown);
+            file = new File(Environment.getExternalStorageDirectory() + pathDown);
+            down.setDestinationUri(Uri.fromFile(file));
+        }
         manager.enqueue(down);
         registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
@@ -69,10 +74,21 @@ public class UpdateAppService extends Service {
     class DownloadCompleteReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(
-                    DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
-                installAPK(Uri.fromFile(file),context);
-                UpdateAppService.this.stopSelf();
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+                long completeId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                DownloadManager dManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                Intent install = new Intent(Intent.ACTION_VIEW);
+                Uri downloadFileUri = dManager.getUriForDownloadedFile(completeId);
+                if (downloadFileUri != null) {
+                    install.setDataAndType(downloadFileUri, "application/vnd.android.package-archive");
+                    install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(install);
+                }
+            }else{
+                if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+                    installAPK(Uri.fromFile(file),context);
+                    UpdateAppService.this.stopSelf();
+                }
             }
         }
 

@@ -26,7 +26,7 @@ public class CreateScan {
     /** Default height */
     private int heightDef = 350;
     /** Default background */
-    private int defaultBg = BaseApplication.getInstance().getResources().getColor(R.color.color_f1f1f1);
+    private int defaultBg = BaseApplication.getInstance().getResources().getColor(R.color.color_ffffff);
 
     public Bitmap generateQRCode(String content) {
         return generateQRCode(content,defaultBg);
