@@ -65,7 +65,7 @@ public class WarehouseDetailActivity extends BaseActivity {
         mActivity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
-        toolbarTop.setTitle(null, R.string.Wallet_Detail);
+        toolbarTop.setTitle(null, R.string.Work_Warehouse_abnormal_records);
         staffId = getIntent().getExtras().getLong("id");
         requestStaff();
     }
@@ -73,9 +73,15 @@ public class WarehouseDetailActivity extends BaseActivity {
     private void initData(){
         timeTv.setText(getString(R.string.Work_Time, TimeUtil.getTime(staffLog.getDateTime()*1000, TimeUtil.DEFAULT_DATE_FORMAT)));
         typeTv.setText(getString(R.string.Work_Entering_the_warehouse, staffLog.getLocation()));
-        isFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(staffLog.getFace()));
+        try {
+            isFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(staffLog.getFace()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         if(staffLog.getStatus() == 1){
             bottomRelative.setVisibility(View.GONE);
+        }else{
+            bottomRelative.setVisibility(View.VISIBLE);
         }
     }
 

@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -274,16 +275,27 @@ public class VisitorsActivity extends BaseFragmentActivity {
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
 
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int mScreenWidth = dm.widthPixels;
+        int mScreenHeight = dm.heightPixels;
+
+        //以分辨率为720*1080准，计算宽高比值
+        //解决不同屏幕字体大小不一样
+        float ratioWidth = (float) mScreenWidth / 720;
+        float ratioHeight = (float) mScreenHeight / 1080;
+        float ratioMetrics = Math.min(ratioWidth, ratioHeight);
+        int textSize = Math.round(30 * ratioMetrics);
+
         TextPaint textPaint = new TextPaint();
         textPaint.setColor(getResources().getColor(R.color.color_161A21));
-        textPaint.setTextSize(30);
+        textPaint.setTextSize(textSize);
         //textPaint.setTypeface(Typeface.BOLD);
         textPaint.setAntiAlias(true);
         canvas.drawText("BITMAIN 访客系统", SystemUtil.dipToPx(90), SystemUtil.dipToPx(65), textPaint);
 
         String hint = userBean.getName() + "邀请你访问公司，通过小程序录入基本信息\n和肖像，以便通过公司门禁AI人像识别设备\n二维码3小时内有效，并且只能使用一次";
         StaticLayout myStaticLayout = new StaticLayout(hint, textPaint, canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-        canvas.translate(SystemUtil.dipToPx(20), SystemDataUtil.getScreenHeight() - SystemUtil.dipToPx(150));
+        canvas.translate(SystemUtil.dipToPx(20), SystemDataUtil.getScreenHeight() - SystemUtil.dipToPx(200));
         myStaticLayout.draw(canvas);
 
         File file = saveBitmap(bitmap);

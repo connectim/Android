@@ -76,7 +76,8 @@
     <RelativeLayout
         android:id="@+id/bottom_relative"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
         <View
             style="@style/BaseViewLine.eeeeee"
             android:layout_above="@+id/know_text"
