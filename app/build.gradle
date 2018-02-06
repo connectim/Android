@@ -112,6 +112,7 @@ def releaseTime() {
 
 /**
  * 0.0.3  ==> 5
+ * 0.0.4  ==> 6
  */
 greendao {
     schemaVersion 6
