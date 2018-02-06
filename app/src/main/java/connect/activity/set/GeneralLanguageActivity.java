@@ -16,6 +16,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.activity.home.HomeActivity;
+import connect.activity.home.view.LineDecoration;
 import connect.activity.set.adapter.CurrencyAdapter;
 import connect.utils.data.LanguageData;
 import connect.database.SharedPreferenceUtil;
@@ -74,6 +75,7 @@ public class GeneralLanguageActivity extends BaseActivity {
     private void bindingAdapter(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
         List<RateBean> list = LanguageData.getInstance().getLanguageData();
         adapter = new CurrencyAdapter(mActivity);
 

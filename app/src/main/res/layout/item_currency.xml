@@ -21,7 +21,7 @@
         android:src="@mipmap/checklist_icon2x"
         android:visibility="gone"/>
 
-    <View
-        style="@style/BaseViewLine.d1d5da"/>
+    <!--<View
+        style="@style/BaseViewLine.d1d5da"/>-->
 
 </RelativeLayout>
