@@ -266,8 +266,7 @@ public class ChatActivity extends BaseChatSendActivity {
             @Override
             protected void onPostExecute(ConversionSettingEntity settingEntity) {
                 super.onPostExecute(settingEntity);
-                String titleName = "";
-                titleName = normalChat.nickName();
+                String titleName = TextUtils.isEmpty(normalChat.nickName()) ? "" : normalChat.nickName();
                 if (titleName.length() > 15) {
                     titleName = titleName.substring(0, 12);
                     titleName += "...";
@@ -430,8 +429,9 @@ public class ChatActivity extends BaseChatSendActivity {
         long sendtime = 0;
         String draft = InputBottomLayout.bottomLayout.getDraft();
 
+        ChatMsgEntity lastExtEntity =null;
         if (chatAdapter.getMsgEntities().size() != 0) {
-            ChatMsgEntity lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
+            lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
             if (lastExtEntity != null) {
                 if (lastExtEntity.getMessageType() != -500) {
                     showtxt = lastExtEntity.showContent();
@@ -449,6 +449,14 @@ public class ChatActivity extends BaseChatSendActivity {
                 break;
             case GROUPCHAT:
             case GROUP_DISCUSSION:
+                if (lastExtEntity != null) {
+                    GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(chatIdentify, lastExtEntity.getMessage_from());
+                    if (memberEntity != null) {
+                        String memberName = memberEntity.getUsername();
+                        showtxt = memberName + ": " + showtxt;
+                    }
+                }
+
                 ((CGroupChat) normalChat).updateRoomMsg(draft, showtxt, sendtime);
                 break;
         }

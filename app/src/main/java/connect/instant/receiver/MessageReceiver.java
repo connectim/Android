@@ -118,15 +118,22 @@ public class MessageReceiver implements MessageListener {
                 e.printStackTrace();
             }
         }
-        NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
+
+        Connect.MessageUserInfo senderInfo = chatMessage.getSender();
+        String senderAvatar = senderInfo == null ? "" : senderInfo.getAvatar();
+        String senderName = senderInfo == null ? "" : senderInfo.getUsername();
+
+        String showContent = senderName + ":" + content;
+        NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, showContent);
 
         int isMyAttention = -1;
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
         isMyAttention = contactEntity == null ? -1 : 1;
 
-        final GroupUpdate groupUpdate = new GroupUpdate(groupIdentify, msgExtEntity.showContent(), chatMessage.getMsgTime(), isAtMe, isMyAttention, msgExtEntity);
+        final GroupUpdate groupUpdate = new GroupUpdate(groupIdentify, showContent, chatMessage.getMsgTime(), isAtMe, isMyAttention, msgExtEntity);
 
         if (groupEntity == null) {//group backup
+            GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
             Connect.GroupId groupId = Connect.GroupId.newBuilder()
                     .setIdentifier(groupIdentify)
                     .build();
@@ -160,7 +167,6 @@ public class MessageReceiver implements MessageListener {
 
                 }
             });
-            GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
         } else {
             groupUpdate.updateRoomMessage(groupEntity);
         }
@@ -187,7 +193,7 @@ public class MessageReceiver implements MessageListener {
         void updateRoomMessage(GroupEntity groupEntity) {
             CGroupChat cGroupChat = new CGroupChat(groupEntity);
             cGroupChat.updateRoomMsg(null, content, messageTime, isAtMe, 1, false, isMyAttention);
-           // RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, identify, msgEntity);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, identify, msgEntity);
         }
     }
 }

@@ -55,6 +55,7 @@ import connect.utils.dialog.DialogUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveUrlUtil;
+import connect.widget.DialogView;
 import connect.widget.MaterialBadgeTextView;
 import instant.bean.UserOrderBean;
 import instant.utils.manager.FailMsgsManager;

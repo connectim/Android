@@ -39,7 +39,8 @@ public class UpdateAppService extends Service {
         down.setDescription(getString(R.string.Common_Download_App,"iWork"));
 
         FileUtil.deleteFile(Environment.getExternalStorageDirectory() + pathDown);
-        file = new File(Environment.getExternalStorageDirectory() + pathDown);
+        String filePath = Environment.getExternalStorageDirectory() + pathDown;
+        file = FileUtil.createAbsNewFile(filePath);
         down.setDestinationUri(Uri.fromFile(file));
         manager.enqueue(down);
         registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));

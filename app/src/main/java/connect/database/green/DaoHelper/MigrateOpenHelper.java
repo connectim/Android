@@ -8,6 +8,7 @@ import java.io.File;
 import connect.activity.base.BaseApplication;
 import connect.activity.home.DBUpdateActivity;
 import connect.database.green.DaoHelper.mergin.MigrationHelper;
+import connect.database.green.dao.ApplicationEntityDao;
 import connect.database.green.dao.ContactEntityDao;
 import connect.database.green.dao.ConversionEntityDao;
 import connect.database.green.dao.ConversionSettingEntityDao;
@@ -18,6 +19,7 @@ import connect.database.green.dao.FriendRequestEntityDao;
 import connect.database.green.dao.GroupEntityDao;
 import connect.database.green.dao.GroupMemberEntityDao;
 import connect.database.green.dao.MessageEntityDao;
+import connect.database.green.dao.OrganizerEntityDao;
 import connect.database.green.dao.ParamEntityDao;
 import connect.database.green.dao.TransactionEntityDao;
 
@@ -69,6 +71,7 @@ public class MigrateOpenHelper extends DaoMaster.OpenHelper {
         DBUpdateActivity.startActivity();
 
         MigrationHelper.migrate(db,
+                ApplicationEntityDao.class,
                 ContactEntityDao.class,
                 ConversionEntityDao.class,
                 ConversionSettingEntityDao.class,
@@ -78,6 +81,7 @@ public class MigrateOpenHelper extends DaoMaster.OpenHelper {
                 GroupEntityDao.class,
                 GroupMemberEntityDao.class,
                 MessageEntityDao.class,
+                OrganizerEntityDao.class,
                 ParamEntityDao.class,
                 TransactionEntityDao.class
         );
