@@ -78,7 +78,11 @@ public class SearchContentFragment extends BaseFragment {
             } else if (searchBean.getStyle() == 2) {
                 ChatActivity.startActivity(mActivity, Connect.ChatType.GROUPCHAT, searchBean.getUid());
             } else if (searchBean.getStyle() == 3) {
-                ChatActivity.startActivity(mActivity, Connect.ChatType.GROUPCHAT, searchBean.getUid(), searchBean.getSearchStr());
+                if(searchBean.getStatus() == 1){
+                    ChatActivity.startActivity(mActivity, Connect.ChatType.PRIVATE, searchBean.getUid(), searchBean.getSearchStr());
+                }else{
+                    ChatActivity.startActivity(mActivity, Connect.ChatType.GROUPCHAT, searchBean.getUid(), searchBean.getSearchStr());
+                }
             }
         }
     };
@@ -90,12 +94,14 @@ public class SearchContentFragment extends BaseFragment {
             list.addAll(getFriendData(value));
             list.addAll(ContactHelper.getInstance().loadGroupByMemberName(value));
             list.addAll(ContactHelper.getInstance().loadGroupByMessages(value));
+            list.addAll(ContactHelper.getInstance().loadChatByMessages(value));
         }else if(status == 1){
             list.addAll(getFriendData(value));
         }else if(status == 2){
             list.addAll(ContactHelper.getInstance().loadGroupByMemberName(value));
         } else if(status == 3){
             list.addAll(ContactHelper.getInstance().loadGroupByMessages(value));
+            list.addAll(ContactHelper.getInstance().loadChatByMessages(value));
         }
 
         if(list.size() > 0){

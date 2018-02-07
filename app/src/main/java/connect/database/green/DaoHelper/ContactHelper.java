@@ -441,6 +441,7 @@ public class ContactHelper extends BaseDao {
             searchBean.setHinit(cursorGetString(cursor, "COUNTS"));
             searchBean.setSearchStr(message);
             searchBean.setStyle(3);
+            searchBean.setStatus(2);
             groupEntities.add(searchBean);
         }
         if (cursor != null) {
@@ -448,6 +449,29 @@ public class ContactHelper extends BaseDao {
         }
         return groupEntities;
     }
+
+    public List<SearchBean> loadChatByMessages(String message) {
+        String sql = "SELECT * FROM CONTACT_ENTITY G,(SELECT M.MESSAGE_OWER ,COUNT() AS COUNTS FROM MESSAGE_ENTITY M WHERE M.TXT_CONTENT LIKE ? GROUP BY M.MESSAGE_OWER) AS MSG WHERE G.UID = MSG.MESSAGE_OWER";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%"+message+"%"});
+
+        List<SearchBean> groupEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            SearchBean searchBean = new SearchBean();
+            searchBean.setUid(cursorGetString(cursor, "UID"));
+            searchBean.setName(cursorGetString(cursor, "NAME"));
+            searchBean.setAvatar(cursorGetString(cursor, "AVATAR"));
+            searchBean.setHinit(cursorGetString(cursor, "COUNTS"));
+            searchBean.setSearchStr(message);
+            searchBean.setStyle(3);
+            searchBean.setStatus(1);
+            groupEntities.add(searchBean);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return groupEntities;
+    }
+
     /*********************************  update ***********************************/
 
     /**
