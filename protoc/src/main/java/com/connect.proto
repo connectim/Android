@@ -1960,12 +1960,25 @@ message UnRegisterCheck {
 }
 
 message UnRegisterMessage {
- string body = 1;
+string body = 1;
+int64 id = 2;
+}
+
+message UnRegisterNotify {
+ string uid = 1;
  int64 id = 2;
+ int64 time = 3;
+ string location = 4;
 }
 
 message AesGcm {
  string pub_key = 1;
  string sign = 2;
  repeated GcmData cipher_data = 3;
+}
+
+message VisitorNotify {
+ string uid= 1;
+ int64 time = 2;
+ string reason = 3;
 }

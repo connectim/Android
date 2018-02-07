@@ -145,7 +145,7 @@ public class ContactHelper extends BaseDao {
         return chatType;
     }
 
-    public Talker loadTalkerFriend(String uid) {
+    public ContactEntity loadConversationFriend(String uid) {
         if (TextUtils.isEmpty(uid)) {
             uid = "";
         }
@@ -154,14 +154,16 @@ public class ContactHelper extends BaseDao {
 
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{uid});
 
-        Talker talker = new Talker(Connect.ChatType.PRIVATE, uid);
+        ContactEntity contactEntity = new ContactEntity();
         while (cursor.moveToNext()) {
             String userName = cursorGetString(cursor, "CNAME");
             String userAvatar = cursorGetString(cursor, "FAVATAR");
-            talker.setNickName(userName);
-            talker.setAvatar(userAvatar);
+            String identify = uid;
+            contactEntity.setUid(uid);
+            contactEntity.setName(userName);
+            contactEntity.setAvatar(userAvatar);
         }
-        return talker;
+        return contactEntity;
     }
 
     public Talker loadTalkerGroup(String identify) {

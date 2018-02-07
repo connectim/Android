@@ -19,6 +19,7 @@ import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.TimeUtil;

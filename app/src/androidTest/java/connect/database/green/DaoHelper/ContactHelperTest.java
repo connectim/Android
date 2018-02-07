@@ -23,11 +23,6 @@ public class ContactHelperTest {
     }
 
     @Test
-    public Talker loadTalkerFriend(String uid) {
-        return ContactHelper.getInstance().loadTalkerFriend(uid);
-    }
-
-    @Test
     public Talker loadTalkerGroup(String identify) {
         return ContactHelper.getInstance().loadTalkerGroup(identify);
     }

@@ -26,7 +26,8 @@ public enum MessageType {
     INVITE_GROUP(23),
     OUTER_WEBSITE(25),
     GROUP_REVIEW(101),
-    SYSTEM_AD(102);//system ad
+    SYSTEM_AD(102),//system ad
+    ROBOT_WAREHOSE(103);
 
     public int type;
 

@@ -37,8 +37,8 @@ public class RobotLocalReceiver implements RobotListener {
     }
 
     @Override
-    public void unRegisterMessage(Connect.UnRegisterMessage textMessage) {
-        getRobotListener().unRegisterMessage(textMessage);
+    public void warehouseMessage(int wareType, byte[] message) {
+        getRobotListener().warehouseMessage(wareType, message);
     }
 
     @Override

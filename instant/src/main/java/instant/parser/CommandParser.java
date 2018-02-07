@@ -9,14 +9,13 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import instant.bean.Session;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.parser.localreceiver.ConnectLocalReceiver;
+import instant.parser.localreceiver.RobotLocalReceiver;
 import instant.utils.SharedUtil;
-import instant.utils.StringUtil;
 import instant.utils.log.LogManager;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;

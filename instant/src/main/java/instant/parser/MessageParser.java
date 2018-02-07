@@ -3,15 +3,12 @@ package instant.parser;
 import com.google.protobuf.ByteString;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import instant.bean.ChatMsgEntity;
-import instant.utils.log.LogManager;
-import instant.utils.manager.FailMsgsManager;
 import instant.parser.localreceiver.RobotLocalReceiver;
 import instant.parser.localreceiver.UnreachableLocalReceiver;
+import instant.utils.log.LogManager;
+import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
 /**
@@ -99,18 +96,17 @@ public class MessageParser extends InterParse {
                 Connect.SystemRedPackage redPackage = Connect.SystemRedPackage.parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.systemRedPackageMessage(redPackage);
                 break;
-            case 20://有待审核消息
-                Connect.ExamineMessage examineMessage = Connect.ExamineMessage.parseFrom(msMessage.getBody().toByteArray());
-                RobotLocalReceiver.localReceiver.auditMessage(examineMessage);
+            case 20://访客申请
+                Connect.UnRegisterNotify unRegisterNotify = Connect.UnRegisterNotify.parseFrom(msMessage.getBody().toByteArray());
+                RobotLocalReceiver.localReceiver.warehouseMessage(20, unRegisterNotify.toByteArray());
                 break;
-            case 21://仓库信息
-                Connect.UnRegisterMessage visotorMessage = Connect.UnRegisterMessage.parseFrom(msMessage.getBody().toByteArray());
-                RobotLocalReceiver.localReceiver.unRegisterMessage(visotorMessage);
+            case 21://仓库异常
+                Connect.VisitorNotify visitorNotify = Connect.VisitorNotify.parseFrom(msMessage.getBody().toByteArray());
+                RobotLocalReceiver.localReceiver.warehouseMessage(21, visitorNotify.toByteArray());
                 break;
             case 102://announce message
                 Connect.Announcement announcement = Connect.Announcement.parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.announcementMessage(announcement);
-
                 break;
             case 103://red packet has get notice
                 Connect.SystemRedpackgeNotice packgeNotice = Connect.SystemRedpackgeNotice.parseFrom(msMessage.getBody().toByteArray());

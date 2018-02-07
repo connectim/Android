@@ -295,7 +295,9 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
                 content = context.getString(R.string.Chat_Group_Namecard);
                 break;
             case OUTER_WEBSITE:
-                content = context.getString(R.string.Chat_Group_certification);
+                content = context.getString(R.string.Chat_Warehouse);
+                break;
+            case ROBOT_WAREHOSE:
                 break;
             default:
                 content = context.getString(R.string.Chat_Tips);

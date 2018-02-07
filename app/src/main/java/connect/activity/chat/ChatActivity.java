@@ -276,7 +276,7 @@ public class ChatActivity extends BaseChatSendActivity {
                         toolbar.setTitle(titleName);
                         break;
                     case PRIVATE:
-                        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatIdentify);
+                        ContactEntity contactEntity = ContactHelper.getInstance().loadConversationFriend(chatIdentify);
                         titleName = TextUtils.isEmpty(contactEntity.getName()) ? "" : contactEntity.getName();
                         if (titleName.length() > 15) {
                             titleName = titleName.substring(0, 12);

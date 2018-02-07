@@ -168,6 +168,9 @@ public class HomeActivity extends BaseFragmentActivity {
                 mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 1000);
                 break;
             case EXIT:
+                UserOrderBean orderBean = new UserOrderBean();
+                orderBean.connectLogout();
+
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.cancel(1001);
 

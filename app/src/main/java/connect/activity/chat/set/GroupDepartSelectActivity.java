@@ -140,7 +140,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
 
         nameLinear.setVisibility(View.VISIBLE);
         nameList.clear();
-        final Connect.Department department = Connect.Department.newBuilder()
+        Connect.Department department = Connect.Department.newBuilder()
                 .setId(2)
                 .setName("比特大陆")
                 .build();

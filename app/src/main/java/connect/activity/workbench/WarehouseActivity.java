@@ -1,5 +1,6 @@
 package connect.activity.workbench;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,6 +51,10 @@ public class WarehouseActivity extends BaseActivity {
         setContentView(R.layout.activity_workbench_warehouse);
         ButterKnife.bind(this);
         initView();
+    }
+
+    public static void lunchActivity(Activity activity) {
+        ActivityUtil.next(activity, WarehouseActivity.class);
     }
 
     @Override

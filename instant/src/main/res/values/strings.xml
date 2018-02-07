@@ -19,6 +19,7 @@
     <string name="Chat_Group_Namecard">[Group Namecard]</string>
     <string name="Chat_Group_certification">[Group certification]</string>
     <string name="Chat_Tips">[Tips message]</string>
+    <string name="Chat_Warehouse">[WareHouse Information]</string>
 
     <string name="Chat_Subscriber">Subscribe</string>
 </resources>
