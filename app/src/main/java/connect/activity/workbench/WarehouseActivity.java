@@ -7,6 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -15,6 +18,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.workbench.adapter.WarehouseAdapter;
+import connect.activity.workbench.bean.UpdateState;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.UriUtil;
@@ -49,6 +53,7 @@ public class WarehouseActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workbench_warehouse);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         initView();
     }
 
@@ -64,6 +69,16 @@ public class WarehouseActivity extends BaseActivity {
     @OnClick(R.id.left_img)
     void goBack(View view) {
         ActivityUtil.goBack(mActivity);
+    }
+
+    @Subscribe
+    public void onEventMainThread(UpdateState updateState) {
+        switch (updateState.getStatusEnum()) {
+            case UPDATE_WAREHOUSE:
+                page = 1;
+                requestStaffs();
+                break;
+        }
     }
 
     private void initRecycler() {
@@ -142,4 +157,9 @@ public class WarehouseActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }
