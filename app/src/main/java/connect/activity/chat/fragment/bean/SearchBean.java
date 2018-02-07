@@ -12,6 +12,7 @@ public class SearchBean {
     private String searchStr;
     private String hinit;
     private int style;
+    private int status;
 
     public String getUid() {
         return uid;
@@ -59,5 +60,13 @@ public class SearchBean {
 
     public void setSearchStr(String searchStr) {
         this.searchStr = searchStr;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

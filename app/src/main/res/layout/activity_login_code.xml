@@ -14,7 +14,7 @@
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
             android:layout_marginTop="@dimen/dp_68"
-            android:background="@mipmap/icon_userlogo" />
+            android:background="@mipmap/icon_logo_circle" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -79,6 +79,8 @@ public class UpdateAppService extends Service {
     class DownloadCompleteReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+
+
             /*if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
                 installAPK(Uri.fromFile(file),context);
                 UpdateAppService.this.stopSelf();
